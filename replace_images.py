@@ -9,30 +9,59 @@ LOG_PATH = os.path.join(LOG_DIR, LOG_FILENAME)
 def ensure_log_directory():
     os.makedirs(LOG_DIR, exist_ok=True)
 
+def extract_attributes(tag: str):
+    """Extracts src and alt attributes from a tag string."""
+    src_match = re.search(r'src\s*=\s*["\']([^"\']+)["\']', tag)
+    alt_match = re.search(r'alt\s*=\s*["\']([^"\']+)["\']', tag)
+    if src_match and alt_match:
+        return src_match.group(1), alt_match.group(1)
+    return None, None
+
 def process_file(filepath, log_entries):
     with open(filepath, 'r', encoding='utf-8') as file:
         lines = file.readlines()
 
-    pattern = re.compile(
-        r'\{\{<\s*figure\s+src="([^"]+)"\s+width="[^"]*"\s+alt="([^"]+)"\s*>\}\}'
-    )
-
     changed = False
 
     for line_number, line in enumerate(lines, start=1):
-        matches = list(pattern.finditer(line))
-        if not matches:
-            continue
-
         new_line = line
-        for match in matches:
+
+        # Match MDX-wrapped <img ...> tags
+        mdx_pattern = re.finditer(
+            r"""\{\s*/\*\s*<img\s+([^>]+?)\s*/?>\s*\*/\}\s*\{\s*/\*\s*mdx-disabled\s*\*/\s*\}""", new_line)
+        for match in mdx_pattern:
+            old = match.group(0)
+            attrs = match.group(1)
+            src, alt = extract_attributes(attrs)
+            if src and alt:
+                new = f'![{alt}](/images/aws/{src})'
+                new_line = new_line.replace(old, new)
+                log_entries.append(f"{filepath}:{line_number}: {old} -> {new}")
+                changed = True
+
+        # Match raw <img ...> tags
+        img_pattern = re.finditer(
+            r"""<img\s+([^>]*?)\s*/?>""", new_line)
+        for match in img_pattern:
+            old = match.group(0)
+            attrs = match.group(1)
+            src, alt = extract_attributes(attrs)
+            if src and alt:
+                new = f'![{alt}](/images/aws/{src})'
+                new_line = new_line.replace(old, new)
+                log_entries.append(f"{filepath}:{line_number}: {old} -> {new}")
+                changed = True
+
+        # Match Hugo-style figure tags
+        hugo_pattern = re.finditer(
+            r"""\{\{<\s*figure\s+[^>]*src="([^"]+)"[^>]*alt="([^"]+)"[^>]*>\}\}""", new_line)
+        for match in hugo_pattern:
+            old = match.group(0)
             src = match.group(1)
             alt = match.group(2)
-            old_text = match.group(0)
-            new_text = f'![{alt}](/images/aws/{src})'
-            new_line = new_line.replace(old_text, new_text, 1)
-            log_entry = f"{filepath}:{line_number}: {old_text} -> {new_text}"
-            log_entries.append(log_entry)
+            new = f'![{alt}](/images/aws/{src})'
+            new_line = new_line.replace(old, new)
+            log_entries.append(f"{filepath}:{line_number}: {old} -> {new}")
             changed = True
 
         lines[line_number - 1] = new_line
@@ -51,7 +80,6 @@ def crawl_directory(directory):
                 filepath = os.path.join(root, filename)
                 process_file(filepath, log_entries)
 
-    # Write log file
     with open(LOG_PATH, 'w', encoding='utf-8') as log_file:
         for entry in log_entries:
             log_file.write(entry + '\n')
