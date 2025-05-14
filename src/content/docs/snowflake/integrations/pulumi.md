@@ -37,7 +37,7 @@ $ npm install @pulumi/snowflake
 
 You can now use Pulumi to create Snowflake resources using the Snowflake provider. The following example shows how to create a Snowflake database using Pulumi:
 
-```typescript
+```javascript
 import * as snowflake from "@pulumi/snowflake";
 
 const simple = new snowflake.Database("simple", {

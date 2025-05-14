@@ -51,7 +51,7 @@ var s3client = new AmazonS3Client(config);
 
 :::note
 
-{/* In case of issues resolving this DNS record, we can fallback to <http://localhost:4566> in combination with the provider setting `ForcePathStyle = true`. */} {/* mdx-disabled */}
+In case of issues resolving this DNS record, we can fallback to [http://localhost:4566](http://localhost:4566) in combination with the provider setting `ForcePathStyle = true`.
 The S3 service endpoint is slightly different from the other service endpoints, because AWS is deprecating path-style based access for hosting buckets.
 :::
 
@@ -94,12 +94,12 @@ public void ConfigureServices(IServiceCollection services)
 
     services.AddLocalStack(Configuration)
     services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-{/* services.AddAwsService<IAmazonS3>(); */} {/* mdx-disabled */}
+    services.AddAwsService<IAmazonS3>();
 }
 
 ...
 
-{/* var amazonS3Client = serviceProvider.GetRequiredService<IAmazonS3>(); */} {/* mdx-disabled */}
+var amazonS3Client = serviceProvider.GetRequiredService<IAmazonS3>();
 ```
 
 #### Standalone Approach
@@ -112,7 +112,7 @@ ISession session = SessionStandalone.Init()
     .WithSessionOptions(sessionOptions)
     .WithConfigurationOptions(configOptions).Create();
 
-{/* var amazonS3Client = session.CreateClientByImplementation<AmazonS3Client>(); */} {/* mdx-disabled */}
+var amazonS3Client = session.CreateClientByImplementation<AmazonS3Client>();
 ```
 
 ### Benefits
