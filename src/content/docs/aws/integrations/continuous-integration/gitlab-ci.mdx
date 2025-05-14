@@ -109,7 +109,7 @@ If the CI Auth Token activation fails, LocalStack container will exit with an er
 ...
 job:
   variables:
-{/* LOCALSTACK_HOST: <LS_HOST>:<LS_PORT> */} {/* mdx-disabled */}
+    LOCALSTACK_HOST: <LS_HOST>:<LS_PORT>
   script:
   - localstack logs | tee localstack.log
 ... 
@@ -169,10 +169,10 @@ Additional information about state export and import [here](/user-guide/state-ma
 ...
 job:
   before_script:
-{/* - localstack pod load <POD_NAME> || true */} {/* mdx-disabled */}
+    - localstack pod load <POD_NAME> || true
   script:
   ...
-{/* - localstack pod save <POD_NAME> */} {/* mdx-disabled */}
+    - localstack pod save <POD_NAME>
 ...
 ```
 

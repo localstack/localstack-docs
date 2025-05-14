@@ -152,12 +152,12 @@ jobs:
       # LocalStack already running
       - run:
         name: Load state if exists
-{/* command: localstack pod load <POD_NAME> || true # Not allowed to fail yet */} {/* mdx-disabled */}
+        command: localstack pod load <POD_NAME> || true # Not allowed to fail yet
       ...
       # Deploy infrastructure changes
       ...
       - localstack/cloud_pods:
-{/* pod_name: <POD_NAME> */} {/* mdx-disabled */}
+          pod_name: <POD_NAME>
 
 
 workflows:
@@ -179,7 +179,7 @@ jobs:
       ...
       # LocalStack already running
       - localstack/cloud_pods:
-{/* pod_name: <POD_NAME> */} {/* mdx-disabled */}
+          pod_name: <POD_NAME>
           pod_action: load
       ...
       # Run some tests
@@ -222,20 +222,20 @@ jobs:
       ...
       # LocalStack already running
       - localstack/cloud_pods:
-{/* pod_name: <POD_NAME> */} {/* mdx-disabled */}
+          pod_name: <POD_NAME>
           pod_action: load
       ...
       # Deploy infrastructure
       ...
       - localstack/cloud_pods:
-{/* pod_name: <POD_NAME> */} {/* mdx-disabled */}
+          pod_name: <POD_NAME>
           pod_action: save  # Optional as this is the default
       - run:
           name: Trigger other workflows
           # Replace placeholders with right values
           command: |
             curl --request POST \
-{/* --url https://circleci.com/api/v2/project/<vcs-slug>/<org-name>/<repo-name>/pipeline \ */} {/* mdx-disabled */}
+              --url https://circleci.com/api/v2/project/<vcs-slug>/<org-name>/<repo-name>/pipeline
               --header 'Circle-Token: $CIRCLECI_TOKEN' \
               --header 'content-type: application/json' \
               --data '{"parameters":{"run_workflow_build":false, "run_workflow_test1":true, "run_workflow_test2":true}}'
@@ -248,23 +248,22 @@ jobs:
       # LocalStack already running
       - run:
         name: Load state if exists
-{/* command: localstack pod load <POD_NAME> || true */} {/* mdx-disabled */}
+        command: localstack pod load <POD_NAME> || true
       ...
 
 
 # Example workflows
 workflows:
   localstack-build:
-{/* when: << pipeline.parameters.run_workflow_build >> */} {/* mdx-disabled */}
+    when: << pipeline.parameters.run_workflow_build >>
     jobs:
       - localstack-update-state
   localstack-test1:
-{/* when: << pipeline.parameters.run_workflow_test1 >> */} {/* mdx-disabled */}
-    jobs:
+    when: << pipeline.parameters.run_workflow_test1 >>
       - localstack-use-state
       ...
   localstack-test2:
-{/* when: << pipeline.parameters.run_workflow_test2 >> */} {/* mdx-disabled */}
+    when: << pipeline.parameters.run_workflow_test2 >>
     jobs:
       - localstack-use-state
       ...
@@ -285,7 +284,7 @@ jobs:
     executor: localstack/default
     steps:
       - localstack/ephemeral:
-{/* auto_load_pod: <POD_NAME>  # Pod to load (optional) */} {/* mdx-disabled */}
+          auto_load_pod: <POD_NAME>  # Pod to load (optional)
           # Commands to run (optional)
           preview-cmd: |
             awslocal sqs create-queue --queue-name=test-queue
