@@ -5,6 +5,7 @@ template: doc
 sidebar:
     order: 6
 ---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -120,8 +121,9 @@ rancher-desktop --start
 
 Modify your Docker Compose configuration to work with Rancher Desktop:
 
-{/* {{< tabpane lang="yml" >}} */} {/* mdx-disabled */}
-{/* {{< tab header="Community" lang="yml" >}} */} {/* mdx-disabled */}
+<Tabs>
+<TabItem label="Community">
+```yml
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -136,8 +138,10 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-{/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-{/* {{< tab header="Pro" lang="yml" >}} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="Pro">
+```yml
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -155,8 +159,9 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-{{< /tab >}}
-{/* {{< /tabpane >}} */} {/* mdx-disabled */}
+      ```
+</TabItem>
+</Tabs>
 
 Finally, start the services using `docker compose up` or `nerdctl compose up`, depending on your configuration.
 This will launch your LocalStack instance configured to interact with Rancher Desktop.

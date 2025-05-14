@@ -5,6 +5,7 @@ template: doc
 sidebar:
     order: 1
 ---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Overview
 
@@ -19,12 +20,13 @@ You can use the following two approaches to set up LocalStack with DevContainers
 ## LocalStack Templates
 
 LocalStack provides two different approaches for [Templates](https://github.com/localstack/devcontainer-template) which can be used via [supporting tools](https://containers.dev/supporting).
-
+{/* TODO: transform this into a proper table */}
+{/*
 | **Type**                     | **Advantages**                                                                                      | **Disadvantages**                                                                                                                                                                         |
 |------------------------------|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Docker-in-Docker**         | • Strict separation from host Docker service<br>• Control LocalStack with LocalStack CLI<br>• All-in-one container      | • Resources are limited as all resources spawned by LocalStack are encapsulated within the container<br>• LocalStack volume directory must exist beforehand<br>• Larger container size<br>• Cannot use existing images on host system |
 | **Docker-outside-of-Docker** | • Easy addition of external services managed by Docker Compose<br>• DNS service for custom domains | • Host's Docker socket mounted into containers, raising security concerns<br>• Limited LocalStack CLI usage<br>• LocalStack volume directory must exist beforehand                        |
-
+*/}
 ### Docker-in-Docker
 
 * [Dev Container CLI](#dev-container-cli)
@@ -99,64 +101,64 @@ To get started with LocalStack and DevContainers in VS Code, follow these steps:
 
 * Open VS Code with the DevContainers extension installed.
 * From the Command Palette, select **Dev Containers: Add Dev Container configuration file**.
-  <br><br>
+  <br></br>
 {/* <img alt="Add Dev Container configuration file" src="01_add_devcontainer_conf.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Choose **Add configuration to workspace**; alternatively, select **Add configuration to user data folder** for general usage.
-  <br><br>
+  <br></br>
 {/* <img alt="Add configuration to workspace" src="02_add_conf_workspace.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Select **Show All Definitions...** to view community templates.
-  <br><br>
+  <br></br>
 {/* <img alt="Show all Template definitions" src="03_show_all_definitions.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Filter by typing "localstack" in the search bar and select the **LocalStack Docker-in-Docker** template.
-  <br><br>
+  <br></br>
 {/* <img alt="Select official LocalStack Template (DinD)" src="04a_select_template_dind.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Proceed through the configuration by selecting or entering values.
   Pressing **Enter** through the options will apply default settings, which include:
-  <br><br>
+  <br></br>
   * Select the image variant (only Debian-based images are supported).
-    <br><br>
+    <br></br>
 {/* <img alt="Image variant option" src="05_option_1.png" width="800px" /> */} {/* mdx-disabled */}
-    <br><br>
+    <br></br>
   * Select the log level.
-    <br><br>
+    <br></br>
 {/* <img alt="Log level option" src="06_option_2.png" width="800px" /> */} {/* mdx-disabled */}
-    <br><br>
+    <br></br>
   * Select the LocalStack version.
-    <br><br>
+    <br></br>
 {/* <img alt="LocalStack version option" src="07_option_3.png" width="800px" /> */} {/* mdx-disabled */}
-    <br><br>
+    <br></br>
 
 * Relative paths are acceptable for the volume path, but the specified mount folder must be created prior to building the container.
-  <br><br>
+  <br></br>
 {/* <img alt="Volume path option" src="08_volume_option.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 {/* <img alt="Volume folder exists" src="09_volume_folder.png" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Select various tools and configuration options from the checklist.
   For local tools, either select the appropriate SDK or tool feature, or install it manually.
   The template and LocalStack CLI feature do not manage these installations.
-  <br><br>
+  <br></br>
 {/* <img alt="List of options (DinD)" src="10a_options_list_dind.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * You can also add additional features.
-  <br><br>
+  <br></br>
 {/* <img alt="Additional Features" src="11_additional_features.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * This results in the following folder structure in your workspace.
-  <br><br>
+  <br></br>
 {/* <img alt="Generated folder structure (DinD)" src="12a_folder_structure_dind.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 #### Reference file
 
@@ -294,75 +296,76 @@ To get started with LocalStack and DevContainers in VS Code, follow these steps:
 
 * Open VSCode with the DevContainers extension installed.
 * From the Command Palette, choose **Dev Containers: Add Dev Container configuration file**.
-  <br><br>
+  <br></br>
 {/* <img alt="Add Dev Container configuration file" src="01_add_devcontainer_conf.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Choose the **Add configuration to workspace** option; alternatively, select **Add configuration to user data folder** for general usage.
-  <br><br>
+  <br></br>
 {/* <img alt="Add configuration to workspace" src="02_add_conf_workspace.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Select **Show All Definitions...** to view community templates.
-  <br><br>
+  <br></br>
 {/* <img alt="Show all Template definitions" src="03_show_all_definitions.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Start typing "localstack" in the search bar to filter the official LocalStack templates and choose **LocalStack Docker-outside-of-Docker**.
-  <br><br>
+  <br></br>
 {/* <img alt="Select official LocalStack Template (DooD)" src="04b_select_template_dood.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Navigate through the configuration inputs by either selecting or typing in values.
   The defaults provided in the template are sufficient; navigating through the options by hitting Enter will result in a valid configuration.
   These options include:
-  <br><br>
+  <br></br>
   * The image variant (currently only Debian-based images are supported).
-    <br><br>
+    <br></br>
 {/* <img alt="Image variant option" src="05_option_1.png" width="800px" /> */} {/* mdx-disabled */}
-    <br><br>
+    <br></br>
   * The log level.
-    <br><br>
+    <br></br>
 {/* <img alt="Log level option" src="06_option_2.png" width="800px" /> */} {/* mdx-disabled */}
-    <br><br>
+    <br></br>
   * The LocalStack version.
-    <br><br>
+    <br></br>
 {/* <img alt="LocalStack version option" src="07_option_3.png" width="800px" /> */} {/* mdx-disabled */}
-    <br><br>
+    <br></br>
 
 * Note that LocalStack's IP address must be within the defined CIDR range.
   The network CIDR defaults to `10.0.2.0/24`, with the container IP set to `10.0.2.20`.
-  <br><br>
+  <br></br>
 
 * For the volume path, relative paths are accepted, but you must create the specified mount's folder before successfully building the container.
   The default is `./.volume`.
-  <br><br>
+  <br></br>
 {/* <img alt="Volume path option" src="08_volume_option.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 {/* <img alt="Volume folder exists" src="09_volume_folder.png" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * Select multiple tools and configuration options from the checklist.
   For local tools, you must select the appropriate SDK or tool feature, or install it manually.
   The template and the underlying LocalStack CLI Feature do not manage these installations.
-  <br><br>
+  <br></br>
 {/* <img alt="List of options (DooD)" src="10b_options_list_dood.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * You can also add additional features.
-  <br><br>
+  <br></br>
 {/* <img alt="Additional Features" src="11_additional_features.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 * As a result, you will end up with the folder structure shown below.
-  <br><br>
+  <br></br>
 {/* <img alt="Folder structure (DooD)" src="12b_folder_structure_dood.png" width="800px" /> */} {/* mdx-disabled */}
-  <br><br>
+  <br></br>
 
 ###### Reference files
 
-{/* {{< tabpane lang="json" >}} */} {/* mdx-disabled */}
-{/* {{< tab header="devcontainer.json" lang="json" >}} */} {/* mdx-disabled */}
+<Tabs>
+<TabItem label="devcontainer.json">
+```json
 {
  "name": "LocalStack DooD setup",
  "dockerComposeFile": "docker-compose.yml",
@@ -384,9 +387,10 @@ To get started with LocalStack and DevContainers in VS Code, follow these steps:
   "ghcr.io/devcontainers/features/aws-cli:1": {}
  }
 }
-{/* {/* {/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-
-{/* {{< tab header="docker-compose.yml" lang="yaml" >}} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="docker-compose.yml">
+```yml
 services:
   localstack:
     container_name: "localstack-main"
@@ -428,12 +432,16 @@ networks:
       config:
         # Specify the subnet range for IP address allocation
         - subnet: 10.0.2.0/24
-{{< /tab >}}
+```
+</TabItem>
 
-{/* {{< tab header="Dockerfile" lang="dockerfile" >}} */} {/* mdx-disabled */}
+<TabItem label="Dockerfile">
+```dockerfile
 FROM mcr.microsoft.com/devcontainers/base:bookworm
-{{< /tab >}}
-{/* {{< tab header=".env" lang="bash" >}} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label=".env">
+```bash
 # Activate LocalStack Pro: https://docs.localstack.cloud/getting-started/auth-token/
 LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:-}  # required for Pro, not processed via template due to security reasons
 LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY:-}
@@ -449,8 +457,9 @@ ENFORCE_IAM=false
 AWS_REGION=us-east-1
 AWS_DEFAULT_REGION=us-east-1
 IMAGE_NAME=localstack/localstack-pro:latest
-{{< /tab >}}
-{/* {{< /tabpane >}} */} {/* mdx-disabled */}
+```
+</TabItem>
+</Tabs>
 
 ## LocalStack Feature
 

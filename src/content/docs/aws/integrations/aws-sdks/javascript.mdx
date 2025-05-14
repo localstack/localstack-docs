@@ -5,6 +5,7 @@ template: doc
 sidebar:
     order: 5
 ---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Overview
 
@@ -20,9 +21,9 @@ The JavaScript SDK has two major versions, each with their own way of specifying
 
 Here is an example of how to create a Lambda client and an S3 client with the endpoint set to LocalStack.
 
-{/* {{< tabpane lang="javascript" >}} */} {/* mdx-disabled */}
-{/* {{< tab header="aws-sdk-js" lang="javascript" >}} */} {/* mdx-disabled */}
-
+<Tabs>
+<TabItem label="aws-sdk-js">
+```javascript
 const AWS = require('aws-sdk');
 
 // Configure the AWS SDK to use the LocalStack endpoint and credentials
@@ -66,8 +67,10 @@ s3.listBuckets((err, data) => {
     console.log(data);
   }
 });
-{/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-{/* {{< tab header="aws-sdk-js-v3" lang="javascript" >}} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="aws-sdk-js-v3">
+```javascript
 const { LambdaClient, ListFunctionsCommand } = require('@aws-sdk/client-lambda');
 const { S3Client, ListBucketsCommand } = require('@aws-sdk/client-s3');
 
@@ -87,11 +90,11 @@ lambda.send(new ListFunctionsCommand({}))
   .catch((error) => console.error(error));
 
 // By default, @aws-sdk/client-s3 will using virtual host addressing:
-{/* // -> http://<bucket-name>.s3.localhost.localstack.cloud:4566/<key-name> */} {/* mdx-disabled */}
+// -> http://<bucket-name>.s3.localhost.localstack.cloud:4566/<key-name>
 // To allow those requests to be directed to LocalStack, you need to set a specific endpoint.
 // If this is not possible, you can set the special S3 configuration flag to use path
 // addressing instead:
-{/* // -> http://s3.localhost.localstack.cloud:4566/<bucket-name>/<key-name> */} {/* mdx-disabled */}
+// -> http://s3.localhost.localstack.cloud:4566/<bucket-name>/<key-name>
 // You can read the S3 documentation to learn more about the different endpoints.
 
 const s3 = new S3Client({
@@ -108,9 +111,9 @@ const s3 = new S3Client({
 s3.send(new ListBucketsCommand({}))
   .then((data) => console.log(data))
   .catch((error) => console.error(error));
-  
-{{< /tab >}}
-{/* {{< /tabpane >}} */} {/* mdx-disabled */}
+``` 
+</TabItem>
+</Tabs>
 
 :::note
 

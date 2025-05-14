@@ -5,6 +5,7 @@ template: doc
 sidebar:
     order: 1
 ---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Overview
 
@@ -26,58 +27,79 @@ with LocalStack.
 
 ### Installing the Localstack module
 
-{/* {/* {/* {{< tabpane >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-{/* {{< tab header="NuGet" lang="shell">}} */} {/* mdx-disabled */}
+<Tabs>
+<TabItem label="NuGet">
+```sh
 dotnet add package Testcontainers.LocalStack --version 3.0.0
-{/* {/* {/* {/* {/* {/* {/* {/* {/* {/* {/* {/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-{/* {/* {/* {{< tab header="Go" lang="go">}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="Go">
+```go
 go get github.com/testcontainers/testcontainers-go/modules/localstack
-{{< /tab >}}
-{/* {{< tab header="Java (Maven)" lang="xml">}} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="Java (Maven)">
+```java
 <dependency>
     <groupId>org.testcontainers</groupId>
     <artifactId>localstack</artifactId>
     <version>1.18.0</version>
     <scope>test</scope>
 </dependency>
-{{< /tab >}}
-{/* {{< tab header="Java (Gradle)" lang="gradle">}} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="Java (Gradle)">
+```java
 testImplementation 'org.testcontainers:localstack:1.18.0'
-{{< /tab >}}
-{/* {{< tab header="NodeJS (npm)" lang="npm">}} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="NodeJS (npm)">
+```javascript
 npm i @testcontainers/localstack
-{{< /tab >}}
-{/* {/* {/* {{< /tabpane >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+```
+</TabItem>
+</Tabs>
 
 ### Obtaining a LocalStack container
 
-{{< tabpane >}}
-{/* {/* {{< tab header=".NET" lang="csharp">}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+<Tabs>
+<TabItem label=".NET">
+```c#
 var localStackContainer = new LocalStackBuilder().Build();
 
 await localStackContainer.StartAsync()
     .ConfigureAwait(false);
-{{< /tab >}}
-{{< tab header="Go" lang="go">}}
+```
+</TabItem>
+<TabItem label="Go">
+```go
 container, err := localstack.StartContainer(ctx, localstack.NoopOverrideContainerRequest)
-{{< /tab >}}
-{/* {/* {{< tab header="Java" lang="java">}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="Java">
+```java
 LocalStackContainer localstack = new LocalStackContainer(DockerImageName.parse("localstack/localstack:3"));
-{{< /tab >}}
-{/* {/* {{< tab header="NodeJS (typescript)" lang="typescript">}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+```
+</TabItem>
+<TabItem label="NodeJs (typescript)">
+```typescript
 const localstack = new LocalstackContainer("localstack/localstack:3").start()
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ## Configuring the AWS client
 
-{{< tabpane >}}
-{{< tab header=".NET" lang="csharp">}}
+<Tabs>
+<TabItem label=".NET">
+```c#
 var config = new AmazonS3Config();
 config.ServiceURL = localStackContainer.GetConnectionString();
 using var client = new AmazonS3Client(config);
-{{< /tab >}}
-{{< tab header="Go" lang="go">}}
+```
+</TabItem>
+<TabItem label="Go">
+```go
 func s3Client(ctx context.Context, l *localstack.LocalStackContainer) (*s3.Client, error) {
     // the Testcontainers Docker provider is used to get the host of the Docker daemon
     provider, err := testcontainers.NewDockerProvider()
@@ -119,14 +141,16 @@ func s3Client(ctx context.Context, l *localstack.LocalStackContainer) (*s3.Clien
 
     return client, nil
 }
-{{< /tab >}}
-{{< tab header="Java" lang="java">}}
+```
+</TabItem>
+<TabItem label="Java">
+```java
 S3Client s3 = S3Client.builder()
     .endpointOverride(localstack.getEndpoint())
     .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(localstack.getAccessKey(), localstack.getSecretKey())))
     .region(Region.of(localstack.getRegion()))
     .build();
-{{< /tab >}}
+</TabItem>
 {{< tab header="NodeJS (typescript)" lang="typescript">}}
 const awsConfig = {
       endpoint: localstack.getConnectionUri(),
@@ -137,8 +161,9 @@ const awsConfig = {
       region: "eu-central-1",
     };
 const s3 = S3Client(awsConfig);
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ## Special Setup for using RDS
 

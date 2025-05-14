@@ -5,6 +5,7 @@ template: doc
 sidebar:
     order: 4
 ---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Overview
 
@@ -38,9 +39,9 @@ The client can be used to upload a file to an existing bucket and then retrieve 
 
 #### Configuring the S3 Client
 
-{/* {/* {/* {/* {{< tabpane lang="java" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-{/* {/* {{< tab header="v1" lang="java" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-
+<Tabs>
+  <TabItem label="v1">
+```java
     // Credentials that can be replaced with real AWS values. (To be handled properly and not hardcoded.)
     // These can be skipped altogether for LocalStack, but we generally want to avoid discrepancies with production code.
 final String ACCESS_KEY = "test";
@@ -52,11 +53,11 @@ AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
     .withEndpointConfiguration(new EndpointConfiguration("s3.localhost.localstack.cloud:4566",
     Regions.US_EAST_1.getName()))
     .build();
+    ```
+</TabItem>
 
-{/* {/* {/* {/* {/* {/* {/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-
-{/* {/* {{< tab header="v2" lang="java" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-
+  <TabItem label="v2">
+```java
     // Credentials that can be replaced with real AWS values. (To be handled properly and not hardcoded.)
     // These can be skipped altogether for LocalStack, but we generally want to avoid discrepancies with production code.
 final String ACCESS_KEY = "test";
@@ -72,14 +73,15 @@ S3Client s3Client = S3Client.builder()
     AwsBasicCredentials.create(ACCESS_KEY, SECRET_KEY)))
     .region(region)
     .build();
-
-{{< /tab >}}
-{/* {/* {/* {/* {{< /tabpane >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+```
+</TabItem>
+</Tabs>
 
 #### Interacting with S3
 
-{{< tabpane lang="java" >}}
-{{< tab header="v1" lang="java" >}}
+<Tabs>
+  <TabItem label="v1">
+```java
 
     // Existing bucket name.
 final String BUCKET_NAME = "records";
@@ -105,11 +107,11 @@ S3Object s3Object = s3Client.getObject(BUCKET_NAME, key);
       // Read the text content of the file using a BufferedReader.
 S3ObjectInputStream objectInputStream = s3Object.getObjectContent();
 BufferedReader reader = new BufferedReader(new InputStreamReader(objectInputStream));
+```
+</TabItem>
 
-{{< /tab >}}
-
-{{< tab header="v2" lang="java" >}}
-
+  <TabItem label="v2">
+```java
     // Existing bucket name.
 final String BUCKET_NAME = "records";
 
@@ -134,8 +136,9 @@ GetObjectRequest getObjectRequest = GetObjectRequest.builder()
     // Retrieving the object from the bucket.
 ResponseInputStream<GetObjectResponse> response = s3Client.getObject(getObjectRequest);
 
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ### DynamoDB Service
 
@@ -158,9 +161,9 @@ The full list of supported converters can be found
 
 #### Configuring the DynamoDB Client
 
-{{< tabpane lang="java" >}}
-{/* {/* {{< tab header="v1" lang="java">}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-
+<Tabs>
+<TabItem label="v1">
+```java
     // Credentials that can be replaced with real AWS values. (To be handled properly and not hardcoded.)
     // These can be skipped altogether for LocalStack, but we generally want to avoid discrepancies with production code.
 final String ACCESS_KEY = "test";
@@ -175,11 +178,10 @@ private static AmazonDynamoDB dynamoDBClient = AmazonDynamoDBClientBuilder.stand
     .withEndpointConfiguration(
     new EndpointConfiguration("localhost.localstack.cloud:4566", Regions.US_EAST_1.getName()))
     .build();
-
-{{< /tab >}}
-
-{/* {/* {{< tab header="v2" lang="java">}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
-
+```
+</TabItem>
+<TabItem label="v2">
+```java
     // Credentials that can be replaced with real AWS values. (To be handled properly and not hardcoded.)
     // These can be skipped altogether for LocalStack, but we generally want to avoid discrepancies with production code.
 final String ACCESS_KEY = "test";
@@ -204,16 +206,16 @@ DynamoDbClient dynamoDbClient = DynamoDbClient.builder()
 DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
     .dynamoDbClient(dynamoDbClient)
     .build();
-
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 #### Interacting with DynamoDB
 
-{{< tabpane lang="java" >}}
+<Tabs>
 
-{{< tab header="v1" lang="java">}}
-
+<TabItem label="v1">
+```java
     // Existing table name
 String TABLE_NAME = "person";
 
@@ -249,11 +251,11 @@ Person person = new Person();
 person.setId(item.getString("id"));
 person.setName(item.getString("name"));
 person.setBirthdateFromString(item.getString("birthdate"));
+```
+</TabItem>
 
-{{< /tab >}}
-
-{{< tab header="v2" lang="java">}}
-
+<TabItem label="v2">
+```java
     // Existing table name.
 String TABLE_NAME = "person";
 
@@ -275,9 +277,9 @@ String personId = "000012356";
 
     // Retrieving the entity based on id.
 Person person = table.getItem(Key.builder().partitionValue(personId).build());
-
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ## Resources
 

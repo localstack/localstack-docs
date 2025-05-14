@@ -118,7 +118,8 @@ To that end, we use the "Shadow Jar" plugin.
 
 Here's our final `build.gradle`:
 
-{/* {{< highlight gradle "linenos=table" >}} */} {/* mdx-disabled */}
+{/* {{< highlight gradle "linenos=table" >}} */} {/* mdx-disabled */} {/* TODO: packing this into a bash block for now */}
+```gradle
 plugins {
   id "java"
   id "org.jetbrains.kotlin.jvm" version '1.5.31'
@@ -195,6 +196,7 @@ shadowJar {
 }
 
 assemble.dependsOn shadowJar
+```
 {/* {/* {/* {/* {/* {/* {/* {/* {/* {/* {{< / highlight >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 
 Please note that we will be using `org.localstack.sampleproject` as a
@@ -211,18 +213,18 @@ In this project, we are following
 to setup up `src/main/resources/log4j2.xml` content.
 
 ```xml
-{/* <?xml version="1.0" encoding="UTF-8"?> */} {/* mdx-disabled */}
-{/* <Configuration packages="com.amazonaws.services.lambda.runtime.log4j2.LambdaAppender"> */} {/* mdx-disabled */}
+?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="com.amazonaws.services.lambda.runtime.log4j2.LambdaAppender">
     <Appenders>
-{/* <Lambda name="Lambda"> */} {/* mdx-disabled */}
+<Lambda name="Lambda">
             <PatternLayout>
                 <pattern>%d{yyyy-MM-dd HH:mm:ss} %X{AWSRequestId} %-5p %c{1}:%L - %m%n</pattern>
             </PatternLayout>
         </Lambda>
     </Appenders>
     <Loggers>
-{/* <Root level="debug"> */} {/* mdx-disabled */}
-{/* <AppenderRef ref="Lambda" /> */} {/* mdx-disabled */}
+<Root level="debug">
+<AppenderRef ref="Lambda" />
         </Root>
     </Loggers>
 </Configuration>
@@ -256,6 +258,8 @@ Now our application needs an entry-class, the one we referenced earlier.
 Let's add it under `src/main/kotlin/org/localstack/sampleproject/Application.kt`.
 
 {/* {/* {/* {/* {/* {/* {/* {/* {/* {{< highlight kotlin "linenos=table" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+{/* TODO: packing this into a java block for now */}
+```java
 package org.localstack.sampleproject
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -266,7 +270,8 @@ class Application
 fun main(args: Array<String>) {
     // Do nothing unless you use a custom runtime
 }
-{{< / highlight >}}
+```
+{/*{{< / highlight >}}*/}
 
 ### Configure Jackson
 
@@ -275,7 +280,9 @@ The easiest way to get started with JSON is to use the Jackson library.
 Let's configure it by creating a new configuration class `JacksonConfiguration.kt` under
 `src/main/kotlin/org/localstack/sampleproject/config`:
 
-{{< highlight kotlin "linenos=table" >}}
+{/*{{< highlight kotlin "linenos=table" >}}*/}
+
+```java
 package org.localstack.sampleproject.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -306,8 +313,8 @@ class JacksonConfiguration {
         findAndRegisterModules()
     }
 }
-
-{{< / highlight >}}
+```
+{/*{{< / highlight >}}*/}
 
 In applications where you need support for multiple formats or a format
 different from JSON (for example, SOAP/XML applications) simply use multiple
@@ -319,7 +326,9 @@ implementations.
 
 Let's create a small logging utility to simplify interactions with the logger
 
-{{< highlight kotlin "linenos=table" >}}
+{/*{{< highlight kotlin "linenos=table" >}}*/}
+{/* TODO: packing this into a java block for now */}
+```java
 package org.localstack.sampleproject.util
 
 import org.apache.logging.log4j.LogManager
@@ -328,7 +337,8 @@ import org.apache.logging.log4j.Logger
 open class Logger {
     val LOGGER: Logger = LogManager.getLogger(javaClass.enclosingClass)
 }
-{{< / highlight >}}
+```
+{/*{{< / highlight >}}*/}
 
 ### Add Request/Response utilities
 
@@ -343,7 +353,9 @@ Your application may even support multiple protocols with different request/resp
 
 Let's define utility functions to to build  API gateway responses:
 
-{{< highlight kotlin "linenos=table" >}}
+{/*{{< highlight kotlin "linenos=table" >}}*/}
+{/* TODO: packing this into a java block for now */}
+```java
 package org.localstack.sampleproject.util
 
 import org.springframework.messaging.Message
@@ -365,11 +377,14 @@ fun <T>buildJsonResponse(data: T, code: Int = 200): Message<T> {
 
 fun buildJsonErrorResponse(message: String, code: Int = 500) =
     buildJsonResponse(ResponseError(message), code)
-{{< / highlight >}}
+```
+{/*{{< / highlight >}}*/}
 
 And now a utility function to process API Gateway requests:
 
-{{< highlight kotlin "linenos=table" >}}
+{/*{{< highlight kotlin "linenos=table" >}}*/}
+{/* TODO: packing this into a java block for now */}
+```java
 package org.localstack.sampleproject.util
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
@@ -393,7 +408,8 @@ fun <T>apiGatewayFunction(
         return@Function buildJsonErrorResponse(message ?: "", 500)
     }
 }
-{{< / highlight >}}
+```
+{/*{{< / highlight >}}*/}
 
 ### Creating a sample Model / DTO
 
@@ -401,7 +417,9 @@ To transfer data from requests into something more meaningful than JSON strings
 (and back) you will be using a lot of Models and Data Transfer Objects (DTOs).
 It's time to define our first one.
 
-{{< highlight kotlin "linenos=table" >}}
+{/*{{< highlight kotlin "linenos=table" >}}*/}
+{/* TODO: packing this into a java block for now */}
+```java
 package org.localstack.sampleproject.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -413,14 +431,17 @@ data class SampleModel(
     @JsonIgnore
     val jsonIgnoredProperty: String? = null,
 )
-{{< / highlight >}}
+```
+{/*{{< / highlight >}}*/}
 
 ### Creating Rest API endpoints
 
 Let's add our first endpoints to simulate CRUD operations on previously
 defined `SampleModel`:
 
-{{< highlight kotlin "linenos=table" >}}
+{/*{{< highlight kotlin "linenos=table" >}}*/}
+{/* TODO: packing this into a java block for now */}
+```java
 package org.localstack.sampleproject.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -461,7 +482,9 @@ class SampleApi(private val objectMapper: ObjectMapper) {
         buildJsonResponse(SAMPLE_RESPONSE.find { it.id == desiredId })
     }
 }
-{{< / highlight >}}
+
+```
+{/*{{< / highlight >}}*/}
 
 Note how we used Spring's dependency injection to inject `ObjectMapper` Bean we
 configured earlier.
@@ -472,7 +495,9 @@ We know Java's cold start is always a pain.
 To minimize this pain, we will try to define a pre-warming endpoint within the Rest API.
 By invoking this function every 5-10 mins we can make sure Rest API lambda is always kept in a pre-warmed state.
 
-{{< highlight kotlin "linenos=table" >}}
+{/*{{< highlight kotlin "linenos=table" >}}*/}
+{/* TODO: packing this into a java block for now */}
+```java
 package org.localstack.sampleproject.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -490,7 +515,9 @@ class ScheduleApi(private val objectMapper: ObjectMapper) {
         buildJsonResponse("OK")
     }
 }
-{{< / highlight >}}
+
+```
+{/*{{< / highlight >}}*/}
 
 Now you can add a scheduled event to the Rest API lambda function with the following synthetic payload (to simulate API gateway request).
 This way, you can define any other scheduled events, but we recommend using pure lambda functions.
@@ -513,7 +540,9 @@ We can still define pure lambda functions, DynamoDB stream handlers, and so on.
 
 Below you can find a little example of few lambda functions grouped in `LambdaApi` class.
 
-{{< highlight kotlin "linenos=table" >}}
+{/*{{< highlight kotlin "linenos=table" >}}*/}
+{/* TODO: packing this into a java block for now */}
+```java
 package org.localstack.sampleproject.api
 
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent
@@ -552,7 +581,9 @@ class LambdaApi : SpringBootStreamHandler() {
         }
     }
 }
-{{< / highlight >}}
+
+```
+{/*{{< / highlight >}}*/}
 
 As you can see from the example above, we are using `SpringBootStreamHandler`
 class as a base that takes care of the application bootstrapping process and
@@ -572,6 +603,7 @@ for usage examples.
 
 {/* {{< tabpane >}} */} {/* mdx-disabled */}
 {/* {{< tab header="Serverless" lang="yaml" >}} */} {/* mdx-disabled */}
+```yaml
 service: localstack-sampleproject-serverless
 
 provider:
@@ -621,8 +653,10 @@ functions:
     handler: org.localstack.sampleproject.api.LambdaApi
     environment:
       FUNCTION_NAME: functionTwo
+```yaml
 {/* {/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 {/* {{< tab header="AWS CDK" lang="kotlin" >}} */} {/* mdx-disabled */}
+```java
 package org.localstack.cdkstack
 
 import java.util.UUID
@@ -845,7 +879,7 @@ resource "aws_lambda_function" "exampleFunctionTwo" {
 }
 {{< /tab >}}
 {/* {{< /tabpane >}} */} {/* mdx-disabled */}
-
+```
 ## Testing, Debugging and Hot Reloading
 
 Please read our [Lambda Tools](/content/en/tools/lambda-tools/_index.md)
