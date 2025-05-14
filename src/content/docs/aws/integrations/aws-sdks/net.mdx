@@ -34,10 +34,11 @@ var lambdaClient = new AmazonLambdaClient(new BasicAWSCredentials("test", "test"
 );
 ```
 
-{{< callout >}}
+:::note
+
 Make sure you are setting the `AuthenticationRegion` and not the `RegionEndpoint`.
 Setting the `RegionEndpoint` to a constant like `RegionEndpoint.EUWest1` will override the ServiceURL, and your request will end up against AWS.
-{{< /callout >}}
+:::
 
 ### S3 specific endpoint
 
@@ -48,10 +49,11 @@ var config = new AmazonS3Config({ ServiceURL = "http://s3.localhost.localstack.c
 var s3client = new AmazonS3Client(config);
 ```
 
-{{< callout >}}
-In case of issues resolving this DNS record, we can fallback to <http://localhost:4566> in combination with the provider setting `ForcePathStyle = true`.
+:::note
+
+{/* In case of issues resolving this DNS record, we can fallback to <http://localhost:4566> in combination with the provider setting `ForcePathStyle = true`. */} {/* mdx-disabled */}
 The S3 service endpoint is slightly different from the other service endpoints, because AWS is deprecating path-style based access for hosting buckets.
-{{< /callout >}}
+:::
 
 ```csharp
 var config = new AmazonS3Config(
@@ -92,12 +94,12 @@ public void ConfigureServices(IServiceCollection services)
 
     services.AddLocalStack(Configuration)
     services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-    services.AddAwsService<IAmazonS3>();
+{/* services.AddAwsService<IAmazonS3>(); */} {/* mdx-disabled */}
 }
 
 ...
 
-var amazonS3Client = serviceProvider.GetRequiredService<IAmazonS3>();
+{/* var amazonS3Client = serviceProvider.GetRequiredService<IAmazonS3>(); */} {/* mdx-disabled */}
 ```
 
 #### Standalone Approach
@@ -110,7 +112,7 @@ ISession session = SessionStandalone.Init()
     .WithSessionOptions(sessionOptions)
     .WithConfigurationOptions(configOptions).Create();
 
-var amazonS3Client = session.CreateClientByImplementation<AmazonS3Client>();
+{/* var amazonS3Client = session.CreateClientByImplementation<AmazonS3Client>(); */} {/* mdx-disabled */}
 ```
 
 ### Benefits

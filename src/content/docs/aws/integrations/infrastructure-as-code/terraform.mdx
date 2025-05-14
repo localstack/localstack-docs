@@ -50,7 +50,7 @@ After installation, you can use the `tflocal` command, which has the same interf
 
 ```bash
 tflocal --help
-<disable-copy>
+{/* {/* {/* <disable-copy> */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 Usage: terraform [global options] <subcommand> [args]
 ...
 <disable-copy>
@@ -86,7 +86,8 @@ tflocal apply
 | `CUSTOMIZE_ACCESS_KEY`   | -                                | Enables you to override the static AWS Access Key ID |
 | `AWS_ACCESS_KEY_ID`      | `test` (`accountId`: 000000000000)   | AWS Access Key ID to use for multi-account setups |
 
-{{< callout >}}
+:::note
+
 While using `CUSTOMIZE_ACCESS_KEY`, following cases are taking precedence over each other from top to bottom:
 1. If the `AWS_ACCESS_KEY_ID` environment variable is set.
 2. If `access_key` is configured in the Terraform AWS provider.
@@ -94,7 +95,7 @@ While using `CUSTOMIZE_ACCESS_KEY`, following cases are taking precedence over e
 4. If the `AWS_DEFAULT_PROFILE` environment variable is set and configured.
 5. If credentials for the `default` profile are configured.
 6. If none of the above settings are present, it falls back to using the default `AWS_ACCESS_KEY_ID` mock value.
-{{< /callout >}}
+:::
 
 ## Manual Configuration
 
@@ -147,10 +148,11 @@ For S3, this configuration resembles the following snippet, where we've chosen t
   }
 ```
 
-{{< callout >}}
+:::note
+
 If there are any difficulties resolving this DNS record, you can utilize `http://localhost:4566` as a fallback option in combination with setting `s3_use_path_style = true` in the provider.
 It's worth noting that the S3 service endpoint differs slightly from the other service endpoints due to AWS deprecating path-style based access for hosting buckets.
-{{< /callout  >}}
+:::
 
 ### Final Configuration
 
@@ -222,7 +224,8 @@ provider "aws" {
 }
 ```
 
-{{< callout >}}
+:::note
+
 To heuristically detect whether your Terraform configuration should be deployed against LocalStack, you can use the following snippet:
 
 ```hcl
@@ -234,7 +237,7 @@ output "is_localstack" {
 
 It will detect whether the AWS account ID is `000000000000`, which is the default value for LocalStack.
 If you use a different account ID within LocalStack, you can customize the snippet accordingly.
-{{< /callout >}}
+:::
 
 ## CDK for Terraform
 
@@ -253,8 +256,8 @@ It includes:
 
 Here is a configuration example to use with Python & TypeScript CDKTF configurations:
 
-{{< tabpane >}}
-{{< tab header="localstack_config.py" lang="py" >}}
+{/* {/* {/* {/* {/* {{< tabpane >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+{/* {{< tab header="localstack_config.py" lang="py" >}} */} {/* mdx-disabled */}
 AWS_CONFIG = {
     "region": "us-east-1",
     "endpoints": [
@@ -285,8 +288,8 @@ AWS_CONFIG = {
         }
     ],
 }
-{{< /tab >}}
-{{< tab header="localstack-config.ts" lang="ts" >}}
+{/* {/* {/* {/* {/* {/* {/* {/* {/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+{/* {{< tab header="localstack-config.ts" lang="ts" >}} */} {/* mdx-disabled */}
 export const AWS_CONFIG = {
   region: "us-east-1",
   endpoints: [
@@ -318,19 +321,19 @@ export const AWS_CONFIG = {
   ],
 };
 {{< /tab >}}
-{{< /tabpane >}}
+{/* {/* {/* {/* {/* {{< /tabpane >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 
 You can further import the above configuration in your project's code, and use it to configure the AWS provider:
 
 {{< tabpane >}}
-{{< tab header="main.py" lang="py" >}}
+{/* {/* {{< tab header="main.py" lang="py" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 ...
 from localstack_config import AWS_CONFIG
 ...
 AwsProvider(self, "Aws", **AWS_CONFIG)
 ...
 {{< /tab >}}
-{{< tab header="main.ts" lang="ts" >}}
+{/* {/* {{< tab header="main.ts" lang="ts" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 ...
 import { AWS_CONFIG } from "./localstack-config";
 ...
@@ -360,7 +363,7 @@ For TypeScript:
 Create a new directory named `cdktf-localstack` and initialize a new CDKTF project using the following command:
 
 {{< tabpane >}}
-{{< tab header="Python" lang="py" >}}
+{/* {/* {{< tab header="Python" lang="py" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 $ cdktf init
 ...
 ? Do you want to continue with Terraform Cloud remote state management? No
@@ -375,7 +378,7 @@ Note: You can always add providers using 'cdktf provider add' later on
 ? What providers do you want to use? aws
 ...
 {{< /tab >}}
-{{< tab header="TypeScript" lang="ts" >}}
+{/* {/* {{< tab header="TypeScript" lang="ts" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 $ cdktf init
 ...
 ? Do you want to continue with Terraform Cloud remote state management? No

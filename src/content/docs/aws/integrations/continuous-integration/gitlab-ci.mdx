@@ -12,11 +12,12 @@ This page contains easily customisable snippets to show you how to manage LocalS
 
 ### Start up Localstack
 
-{{< callout "tip" >}}
+:::tip
+
 While working with a Docker-in-Docker (`dind`) setup, the Docker runner requires `privileged` mode.
 You must always use `privileged = true` in your GitLab CI's `config.toml` file while setting up LocalStack in GitLab CI runners.
 For more information, see [GitLab CI Docker-in-Docker](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor) documentation.
-{{< /callout >}}
+:::
 
 <details>
 <summary>For LocalStack versions before 3.0.0</summary>
@@ -106,7 +107,7 @@ If the CI Auth Token activation fails, LocalStack container will exit with an er
 ...
 job:
   variables:
-    LOCALSTACK_HOST: <LS_HOST>:<LS_PORT>
+{/* LOCALSTACK_HOST: <LS_HOST>:<LS_PORT> */} {/* mdx-disabled */}
   script:
   - localstack logs | tee localstack.log
 ... 
@@ -166,10 +167,10 @@ Additional information about state export and import [here](/user-guide/state-ma
 ...
 job:
   before_script:
-    - localstack pod load <POD_NAME> || true
+{/* - localstack pod load <POD_NAME> || true */} {/* mdx-disabled */}
   script:
   ...
-    - localstack pod save <POD_NAME>
+{/* - localstack pod save <POD_NAME> */} {/* mdx-disabled */}
 ...
 ```
 
@@ -224,4 +225,4 @@ Find out more about ephemeral instances [here](/user-guide/cloud-sandbox/).
 
 ## Examples
 
-- [End-to-End Testing in Gitlab CI with Testcontainers and LocalStack: Understanding Runners and Docker in Docker]({{< ref "tutorials/gitlab_ci_testcontainers/" >}}) - A readily configured demo project, that will walk you through the process of setting up end-to-end testing for a backend application using Testcontainers and LocalStack within GitLab CI.
+{/* - [End-to-End Testing in Gitlab CI with Testcontainers and LocalStack: Understanding Runners and Docker in Docker]({{< ref "tutorials/gitlab_ci_testcontainers/" >}}) - A readily configured demo project, that will walk you through the process of setting up end-to-end testing for a backend application using Testcontainers and LocalStack within GitLab CI. */} {/* mdx-disabled */}

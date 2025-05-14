@@ -11,9 +11,10 @@ sidebar:
 In this guide, you will learn how to use LocalStack to test
 your serverless applications powered by Spring Cloud Function framework.
 
-{{< callout >}}
+:::note
+
 Some features and services described in this document may not work properly on aarch64, including Apple's M1 silicon.
-{{< /callout >}}
+:::
 
 ## Covered Topics
 
@@ -117,7 +118,7 @@ To that end, we use the "Shadow Jar" plugin.
 
 Here's our final `build.gradle`:
 
-{{< highlight gradle "linenos=table" >}}
+{/* {{< highlight gradle "linenos=table" >}} */} {/* mdx-disabled */}
 plugins {
   id "java"
   id "org.jetbrains.kotlin.jvm" version '1.5.31'
@@ -194,7 +195,7 @@ shadowJar {
 }
 
 assemble.dependsOn shadowJar
-{{< / highlight >}}
+{/* {/* {/* {/* {/* {/* {/* {/* {/* {/* {{< / highlight >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 
 Please note that we will be using `org.localstack.sampleproject` as a
 working namespace, and `org.localstack.sampleproject.Application` as an
@@ -210,18 +211,18 @@ In this project, we are following
 to setup up `src/main/resources/log4j2.xml` content.
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration packages="com.amazonaws.services.lambda.runtime.log4j2.LambdaAppender">
+{/* <?xml version="1.0" encoding="UTF-8"?> */} {/* mdx-disabled */}
+{/* <Configuration packages="com.amazonaws.services.lambda.runtime.log4j2.LambdaAppender"> */} {/* mdx-disabled */}
     <Appenders>
-        <Lambda name="Lambda">
+{/* <Lambda name="Lambda"> */} {/* mdx-disabled */}
             <PatternLayout>
                 <pattern>%d{yyyy-MM-dd HH:mm:ss} %X{AWSRequestId} %-5p %c{1}:%L - %m%n</pattern>
             </PatternLayout>
         </Lambda>
     </Appenders>
     <Loggers>
-        <Root level="debug">
-            <AppenderRef ref="Lambda" />
+{/* <Root level="debug"> */} {/* mdx-disabled */}
+{/* <AppenderRef ref="Lambda" /> */} {/* mdx-disabled */}
         </Root>
     </Loggers>
 </Configuration>
@@ -254,7 +255,7 @@ org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
 Now our application needs an entry-class, the one we referenced earlier.
 Let's add it under `src/main/kotlin/org/localstack/sampleproject/Application.kt`.
 
-{{< highlight kotlin "linenos=table" >}}
+{/* {/* {/* {/* {/* {/* {/* {/* {/* {{< highlight kotlin "linenos=table" >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
 package org.localstack.sampleproject
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -529,7 +530,7 @@ class LambdaApi : SpringBootStreamHandler() {
     companion object : Logger()
 
     @Bean
-    fun functionOne(): Function<Any, String> {
+{/* fun functionOne(): Function<Any, String> { */} {/* mdx-disabled */}
         return Function {
             LOGGER.info("calling function one")
             return@Function "ONE";
@@ -537,7 +538,7 @@ class LambdaApi : SpringBootStreamHandler() {
     }
 
     @Bean
-    fun functionTwo(): Function<SampleModel, SampleModel> {
+{/* fun functionTwo(): Function<SampleModel, SampleModel> { */} {/* mdx-disabled */}
         return Function {
             LOGGER.info("calling function two")
             return@Function it;
@@ -545,7 +546,7 @@ class LambdaApi : SpringBootStreamHandler() {
     }
 
     @Bean
-    fun dynamoDbStreamHandlerExample(): Function<DynamodbEvent, Unit> {
+{/* fun dynamoDbStreamHandlerExample(): Function<DynamodbEvent, Unit> { */} {/* mdx-disabled */}
         return Function {
             LOGGER.info("handling DynamoDB stream event")
         }
@@ -569,8 +570,8 @@ The `Lambda-Events` package comes with a set of predefined wrappers that you can
 Check our [sample project](https://github.com/localstack/localstack-pro-samples/tree/master/sample-archive/spring-cloud-function-microservice)
 for usage examples.
 
-{{< tabpane >}}
-{{< tab header="Serverless" lang="yaml" >}}
+{/* {{< tabpane >}} */} {/* mdx-disabled */}
+{/* {{< tab header="Serverless" lang="yaml" >}} */} {/* mdx-disabled */}
 service: localstack-sampleproject-serverless
 
 provider:
@@ -620,8 +621,8 @@ functions:
     handler: org.localstack.sampleproject.api.LambdaApi
     environment:
       FUNCTION_NAME: functionTwo
-{{< /tab >}}
-{{< tab header="AWS CDK" lang="kotlin" >}}
+{/* {/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+{/* {{< tab header="AWS CDK" lang="kotlin" >}} */} {/* mdx-disabled */}
 package org.localstack.cdkstack
 
 import java.util.UUID
@@ -694,7 +695,7 @@ class ApplicationStack(parent: Construct, name: String) : Stack(parent, name) {
     }
 }
 {{< /tab >}}
-{{< tab header="Terraform" lang="tf" >}}
+{/* {{< tab header="Terraform" lang="tf" >}} */} {/* mdx-disabled */}
 variable "STAGE" {
     type    = string
     default = "local"
@@ -843,7 +844,7 @@ resource "aws_lambda_function" "exampleFunctionTwo" {
     }
 }
 {{< /tab >}}
-{{< /tabpane >}}
+{/* {{< /tabpane >}} */} {/* mdx-disabled */}
 
 ## Testing, Debugging and Hot Reloading
 

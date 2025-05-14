@@ -20,8 +20,8 @@ The JavaScript SDK has two major versions, each with their own way of specifying
 
 Here is an example of how to create a Lambda client and an S3 client with the endpoint set to LocalStack.
 
-{{< tabpane lang="javascript" >}}
-{{< tab header="aws-sdk-js" lang="javascript" >}}
+{/* {{< tabpane lang="javascript" >}} */} {/* mdx-disabled */}
+{/* {{< tab header="aws-sdk-js" lang="javascript" >}} */} {/* mdx-disabled */}
 
 const AWS = require('aws-sdk');
 
@@ -66,8 +66,8 @@ s3.listBuckets((err, data) => {
     console.log(data);
   }
 });
-{{< /tab >}}
-{{< tab header="aws-sdk-js-v3" lang="javascript" >}}
+{/* {/* {{< /tab >}} */} {/* mdx-disabled */} */} {/* mdx-disabled */}
+{/* {{< tab header="aws-sdk-js-v3" lang="javascript" >}} */} {/* mdx-disabled */}
 const { LambdaClient, ListFunctionsCommand } = require('@aws-sdk/client-lambda');
 const { S3Client, ListBucketsCommand } = require('@aws-sdk/client-s3');
 
@@ -87,11 +87,11 @@ lambda.send(new ListFunctionsCommand({}))
   .catch((error) => console.error(error));
 
 // By default, @aws-sdk/client-s3 will using virtual host addressing:
-// -> http://<bucket-name>.s3.localhost.localstack.cloud:4566/<key-name>
+{/* // -> http://<bucket-name>.s3.localhost.localstack.cloud:4566/<key-name> */} {/* mdx-disabled */}
 // To allow those requests to be directed to LocalStack, you need to set a specific endpoint.
 // If this is not possible, you can set the special S3 configuration flag to use path
 // addressing instead:
-// -> http://s3.localhost.localstack.cloud:4566/<bucket-name>/<key-name>
+{/* // -> http://s3.localhost.localstack.cloud:4566/<bucket-name>/<key-name> */} {/* mdx-disabled */}
 // You can read the S3 documentation to learn more about the different endpoints.
 
 const s3 = new S3Client({
@@ -110,13 +110,14 @@ s3.send(new ListBucketsCommand({}))
   .catch((error) => console.error(error));
   
 {{< /tab >}}
-{{< /tabpane >}}
+{/* {{< /tabpane >}} */} {/* mdx-disabled */}
 
-{{< callout >}}
+:::note
+
 In case of issues resolving S3 DNS record, we can fallback to `http://localhost:4566` in combination with the provider setting `forcePathStyle: true` (see the specific way of setting this parameter for each SDK above).
 The S3 service endpoint is slightly different from the other service endpoints, because AWS is deprecating path-style based access for hosting buckets.
-See [S3 documentation]({{< ref "user-guide/aws/s3" >}}) about endpoints.
-{{< /callout >}}
+{/* See [S3 documentation]({{< ref "user-guide/aws/s3" >}}) about endpoints. */} {/* mdx-disabled */}
+:::
 
 ## Resources
 

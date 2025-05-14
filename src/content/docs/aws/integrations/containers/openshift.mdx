@@ -15,16 +15,18 @@ With OpenShift, you can deploy LocalStack on a managed Kubernetes cluster, as a 
 This guide demonstrates how you can deploy LocalStack on OpenShift using Devfile.
 You can use the deployed LocalStack container to create AWS resources that you can use for local development and testing purposes.
 
-{{< callout "warning" >}}
+:::danger
+
 Creating shared/hosted LocalStack instances may have some licensing implications.
 For example, a valid license might be necessary for each user who interacts with the instance.
 If you have any questions or uncertainties regarding the licensing implications, we encourage you to [contact us](https://localstack.cloud/contact) for further details.
-{{< /callout >}}
+:::
 
-{{< callout >}}
+:::note
+
 LocalStack on OpenShift can be used in conjunction with the [LocalStack Community image](https://hub.docker.com/r/localstack/localstack).
 However, specific features such as execution of Lambda functions as OpenShift pods and other container workloads is only available in the [LocalStack Pro image](https://hub.docker.com/r/localstack/localstack-pro).
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -39,7 +41,7 @@ Instead of running LocalStack locally, you will deploy it on OpenShift and use t
 You can deploy LocalStack via the **Developer** perspective in the OpenShift Web Console.
 Navigate to the **+Add** view to deploy LocalStack using a Devfile.
 
-<img src="openshift-developer-view.png" alt="OpenShift Developer perspective" title="OpenShift Developer perspective" width="900" />
+{/* <img src="openshift-developer-view.png" alt="OpenShift Developer perspective" title="OpenShift Developer perspective" width="900" /> */} {/* mdx-disabled */}
 <br><br>
 
 To deploy LocalStack on OpenShift, click on **Import from Git** in the **Git Repository** tile.
@@ -56,7 +58,7 @@ Click on **Create** to deploy LocalStack on OpenShift.
 
 You can see the build status of the LocalStack deployment in the **Topology** view.
 
-<img src="openshift-topology-view.png" alt="OpenShift Topology view" title="OpenShift Topology view" width="900" />
+{/* <img src="openshift-topology-view.png" alt="OpenShift Topology view" title="OpenShift Topology view" width="900" /> */} {/* mdx-disabled */}
 <br><br>
 
 After successful deployment, you can see the **localstack-dev-spaces** pod in the **Topology** view.
@@ -68,7 +70,7 @@ You will be able to see the following details:
 - Exposed services along with the service port and the pod port.
 - Exposed routes for your deployed pods on the cluster.
 
-<img src="localstack-dev-spaces.png" alt="LocalStack Dev Spaces Deployment" title="LocalStack Dev Spaces Deployment" width="900" />
+{/* <img src="localstack-dev-spaces.png" alt="LocalStack Dev Spaces Deployment" title="LocalStack Dev Spaces Deployment" width="900" /> */} {/* mdx-disabled */}
 <br><br>
 
 ### Creating AWS resources on OpenShift
@@ -80,19 +82,20 @@ Copy the route URL and use it to interact with the LocalStack container.
 To create an S3 bucket and an SQS queue, run the following commands:
 
 ```bash
-export AWS_ENDPOINT_URL='<localstack-route-url>'
+{/* export AWS_ENDPOINT_URL='<localstack-route-url>' */} {/* mdx-disabled */}
 awslocal s3 mb s3://my-bucket
 awslocal sqs create-queue --queue-name my-queue
 ```
 
-In the above commands, replace `<localstack-route-url>` with the route URL of the LocalStack container.
+{/* In the above commands, replace `<localstack-route-url>` with the route URL of the LocalStack container. */} {/* mdx-disabled */}
 The `AWS_ENDPOINT_URL` environment variable is used to specify the endpoint URL of the LocalStack container.
 
-{{< callout >}}
+:::note
+
 By default, the endpoint URL for `awslocal` is `http://localhost:4566`.
 Since we are running LocalStack on OpenShift, we need to specify the route URL of the LocalStack container.
 You can swap `awslocal` with the AWS CLI, by specifying the additional `--endpoint-url` parameter.
-{{< /callout >}}
+:::
 
 You can further use integrations, such as [CDK](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/), [SAM CLI](https://docs.localstack.cloud/user-guide/integrations/aws-sam/), and [Terraform](https://docs.localstack.cloud/user-guide/integrations/terraform/), to interact with the Ephemeral Instance.
 In these integrations, you can change the `AWS_ENDPOINT_URL` environment variable to the endpoint URL of the Ephemeral Instance.

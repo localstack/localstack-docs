@@ -12,10 +12,10 @@ sidebar:
 CodeBuild allows you to define your build project, set the source code location, and handles the building and testing, while supporting various programming languages, build tools, and runtime environments.
 LocalStack supports CodeBuild out of the box and can be easily integrated into your pipeline to run your tests against a cloud emulator.
 
-{{< alert title="Requirement" >}}
+{/* {{< alert title="Requirement" >}} */} {/* mdx-disabled */}
 LocalStack depends on the Docker socket to emulate your infrastructure.
 To enable it, update your project by ticking **Environment > Additional Configuration > Privileged > Enable this flag if you want to build Docker Images or want your builds to get elevated privileges**.
-{{< / alert >}}
+{/* {{< / alert >}} */} {/* mdx-disabled */}
 
 ## Snippets
 
@@ -181,9 +181,9 @@ phases:
     commands:
       ...
       # LocalStack is up and running already
-      - localstack pod load <POD_NAME> || true
+{/* - localstack pod load <POD_NAME> || true */} {/* mdx-disabled */}
       ...
-      - localstack pod save <POD_NAME>
+{/* - localstack pod save <POD_NAME> */} {/* mdx-disabled */}
       ...
 ```
 
@@ -200,7 +200,7 @@ phases:
         uses: LocalStack/setup-localstack@v0.2.2
         with:
           state-backend: cloud-pods
-          name: <cloud-pod-name>
+{/* name: <cloud-pod-name> */} {/* mdx-disabled */}
           action: load
           skip-startup: 'true'
       ...
@@ -208,7 +208,7 @@ phases:
         uses: LocalStack/setup-localstack@v0.2.2
         with:
           state-backend: cloud-pods
-          state-name: <cloud-pod-name>
+{/* state-name: <cloud-pod-name> */} {/* mdx-disabled */}
           state-action: save
       ...
 ```

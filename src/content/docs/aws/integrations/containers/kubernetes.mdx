@@ -11,11 +11,12 @@ sidebar:
 [Kubernetes](https://kubernetes.io) is an open-source container orchestration platform that simplifies the deployment, scaling, and management of containerized applications.
 LocalStack can be deployed on Kubernetes using the [LocalStack Helm chart](https://github.com/localstack/helm-charts).
 
-{{< callout "warning" >}}
+:::danger
+
 Creating shared/hosted LocalStack instances may have some licensing implications.
 For example, a valid license might be necessary for each user who interacts with the instance.
 If you have any questions or uncertainties regarding the licensing implications, we encourage you to [contact us](https://localstack.cloud/contact) for further details.
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -73,7 +74,7 @@ image:
 
 extraEnvVars:
   - name: LOCALSTACK_AUTH_TOKEN
-    value: "<your auth token>"
+{/* value: "<your auth token>" */} {/* mdx-disabled */}
 ```
 
 If you have the LocalStack Auth Token in a secret, you can also reference it directly with `extraEnvVars`:
@@ -83,8 +84,8 @@ extraEnvVars:
 - name: LOCALSTACK_AUTH_TOKEN
   valueFrom:
     secretKeyRef:
-      name: <name of the secret>
-      key: <name of the key in the secret containing the API key>
+{/* name: <name of the secret> */} {/* mdx-disabled */}
+{/* key: <name of the key in the secret containing the API key> */} {/* mdx-disabled */}
 ```
 
 And you can use these values when installing the chart in your cluster:
@@ -96,4 +97,4 @@ helm install my-release localstack-charts/localstack -f pro-values.yaml
 
 ## Parameters
 
-{{< github-markdown repo="localstack/helm-charts" file="charts/localstack/README.md#parameters" lang="markdown" >}}
+{/* {{< github-markdown repo="localstack/helm-charts" file="charts/localstack/README.md#parameters" lang="markdown" >}} */} {/* mdx-disabled */}
