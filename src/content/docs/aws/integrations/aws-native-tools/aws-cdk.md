@@ -37,9 +37,9 @@ Using `cdklocal` locally (e.g. within the `node_modules` of your repo instead of
 
 `cdklocal` can be used as a drop-in replacement of where you would otherwise use `cdk` when targeting the AWS Cloud.
 
-{{< command >}}
-$ cdklocal --help
-{{< /command >}}
+```bash
+cdklocal --help
+```
 
 ### Configuration
 
@@ -52,9 +52,9 @@ The following environment variables can be configured:
 
 Make sure that LocalStack is installed and successfully started with the required services before running the example
 
-{{< command >}}
-$ curl http://localhost:4566/_localstack/health
-{{< /command >}}
+```bash
+curl http://localhost:4566/_localstack/health
+```
 
 The CDK command line ships with a sample app generator to run a quick test for getting started.
 
@@ -73,8 +73,8 @@ cdklocal deploy
 
 Once the deployment is done, you can inspect the created resources via the [`awslocal`](https://github.com/localstack/awscli-local) command line
 
-{{< command >}}
-$ awslocal sns list-topics
+```bash
+awslocal sns list-topics
  {
      "Topics": [
          {
@@ -82,7 +82,7 @@ $ awslocal sns list-topics
          }
      ]
 }
-{{< /command >}}
+```
 
 ## Current Limitations
 

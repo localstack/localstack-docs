@@ -17,31 +17,31 @@ If you are adapting an existing configuration, you might be able to skip certain
 ### Setup
 
 To use Architect in conjunction with LocalStack, simply install the `arclocal` command (sources can be found [here](https://github.com/localstack/architect-local)).
-{{< command >}}
-$ npm install -g architect-local @architect/architect aws-sdk
-{{< /command >}}
+```bash
+npm install -g architect-local @architect/architect aws-sdk
+```
 
 The `arclocal` command has the same usage as the `arc` command, so you can start right away.
 
 Create a test directory
 
-{{< command >}}
-$ mkdir architect_quickstart && cd architect_quickstart
-{{< / command >}}
+```bash
+mkdir architect_quickstart && cd architect_quickstart
+```
 
 then create an architect project
 
-{{< command >}}
-$ arclocal init
-{{< / command >}}
+```bash
+arclocal init
+```
 
 ### Deployment
 
 Now you need to start LocalStack.
 After LocalStack has started you can deploy your Architect setup via:
-{{< command >}}
-$ arclocal deploy
-{{< / command >}}
+```bash
+arclocal deploy
+```
 
 ## Further reading
 

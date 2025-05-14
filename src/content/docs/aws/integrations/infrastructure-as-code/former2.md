@@ -52,20 +52,20 @@ Start your LocalStack container using your preferred method with the following e
 You can create local AWS resources using the AWS CLI and the `awslocal` wrapper script.
 For example, you can create a new S3 bucket, SQS queue, and DynamoDB table using the following commands:
 
-{{< command >}}
-$ awslocal s3 mb s3://my-bucket
-$ awslocal sqs create-queue --queue-name my-queue
-$ awslocal dynamodb create-table \
+```bash
+awslocal s3 mb s3://my-bucket
+awslocal sqs create-queue --queue-name my-queue
+awslocal dynamodb create-table \
     --table-name my-table \
     --attribute-definitions AttributeName=id,AttributeType=S \
     --key-schema AttributeName=id,KeyType=HASH \
     --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
-{{< / command >}}
+```
 
 You can verify that the resources were created successfully by running the following command:
 
-{{< command >}}
-$ localstack logs
+```bash
+localstack logs
 <disable-copy>
 2023-10-14T15:31:08.852  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS s3.CreateBucket => 200
 2023-10-14T15:31:09.356  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS sqs.CreateQueue => 200
@@ -73,11 +73,11 @@ $ localstack logs
 2023-10-14T15:31:13.332  INFO --- [   asgi_gw_0] localstack.utils.bootstrap : Execution of "require" took 2028.25ms
 2023-10-14T15:31:13.712  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS dynamodb.CreateTable => 200
 </disable-copy>
-$ awslocal s3 ls
+awslocal s3 ls
 <disable-copy>
 2023-10-14 21:01:08 my-bucket
 </disable-copy>
-$ awslocal sqs list-queues
+awslocal sqs list-queues
 <disable-copy>
 {
     "QueueUrls": [
@@ -85,7 +85,7 @@ $ awslocal sqs list-queues
     ]
 }
 </disable-copy>
-$ awslocal dynamodb list-tables
+awslocal dynamodb list-tables
 <disable-copy>
 {
     "TableNames": [
@@ -93,7 +93,7 @@ $ awslocal dynamodb list-tables
     ]
 }
 </disable-copy>
-{{< / command >}}
+```
 
 ### Configure Former2
 

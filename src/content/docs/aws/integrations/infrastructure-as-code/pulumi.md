@@ -36,10 +36,10 @@ This setup simplifies the deployment of Pulumi stacks against LocalStack.
 
 Optionally, you can set environment variables to store state locally, avoiding cloud storage.
 
-{{< command >}}
-$ export PULUMI_CONFIG_PASSPHRASE=lsdevtest
-$ export PULUMI_BACKEND_URL=file://`pwd`/myproj
-{{< / command >}}
+```bash
+export PULUMI_CONFIG_PASSPHRASE=lsdevtest
+export PULUMI_BACKEND_URL=file://`pwd`/myproj
+```
 
 {{< callout >}}
 For further options please consult the official documentation on available  [environment variables](https://www.pulumi.com/docs/cli/environment-variables/) and [local backend](https://www.pulumi.com/docs/concepts/state/#local-filesystem).
@@ -49,28 +49,28 @@ For further options please consult the official documentation on available  [env
 
 You can install the `pulumilocal` wrapper script by running the following command:
 
-{{< command >}}
-$ pip install pulumi-local
-{{< / command >}}
+```bash
+pip install pulumi-local
+```
 
 You can now use the `pulumilocal` command to interact with your Pulumi project.
 
-{{< command >}}
-$ pulumilocal --help
+```bash
+pulumilocal --help
 <disable-copy>
 Pulumi - Modern Infrastructure as Code
 ...
 <disable-copy>
-{{< / command >}}
+```
 
 ### Create a new Pulumi project
 
 To start a new project, use these commands:
 
-{{< command >}}
-$ mkdir myproj
-$ pulumilocal new aws-typescript -y -s lsdev --cwd myproj
-{{< / command >}}
+```bash
+mkdir myproj
+pulumilocal new aws-typescript -y -s lsdev --cwd myproj
+```
 
 {{< callout "tip" >}}
 The `--cwd` option is unnecessary if you're already in the project directory.
@@ -80,16 +80,16 @@ The `--cwd` option is unnecessary if you're already in the project directory.
 
 Create and select the `lsdev` stack with:
 
-{{< command >}}
-$ pulumilocal stack select -c lsdev --cwd myproj
-{{< / command >}}
+```bash
+pulumilocal stack select -c lsdev --cwd myproj
+```
 
 If you've just run the `new typescript` command, the stack is already selected.
 Deploy it with:
 
-{{< command >}}
-$ pulumilocal up --cwd myproj
-{{< / command >}}
+```bash
+pulumilocal up --cwd myproj
+```
 
 ### Configuration
 
@@ -109,10 +109,10 @@ The following section will provide detailed steps for this manual configuration,
 
 Start a new project with:
 
-{{< command >}}
-$ mkdir quickstart && cd quickstart
-$ pulumi new aws-typescript
-{{< / command >}}
+```bash
+mkdir quickstart && cd quickstart
+pulumi new aws-typescript
+```
 
 We use the default configuration values:
 
@@ -139,8 +139,8 @@ Installing dependencies...
 
 This will create the following directory structure.
 
-{{< command >}}
-$ tree -L 1
+```bash
+tree -L 1
 .
 ├── index.ts
 ├── node_modules
@@ -149,7 +149,7 @@ $ tree -L 1
 ├── Pulumi.dev.yaml
 ├── Pulumi.yaml
 └── tsconfig.json
-{{< / command >}}
+```
 
 ### Configure the stack
 
@@ -443,15 +443,15 @@ config:
 
 To deploy, ensure the S3 service is included in your configuration, start LocalStack, and run:
 
-{{< command >}}
-$ pulumi up
-{{< / command >}}
+```bash
+pulumi up
+```
 
 After the update, check the S3 buckets with:
 
-{{< command >}}
-$ awslocal s3 ls
-{{< / command >}}
+```bash
+awslocal s3 ls
+```
 
 You should see output similar to:
 

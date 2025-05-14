@@ -51,41 +51,41 @@ Create a JSON file called `options.json` with the desired options in it.
 Use the command below to generate your `devcontainer.json` from the template.
 Include additional features with the `--features` option if needed.
 
-{{< command >}}
-$ devcontainer templates apply \
+```bash
+devcontainer templates apply \
     --template-id ghcr.io/localstack/devcontainer-template/localstack-dind \
     --template-args "$(cat ./options.json)" \
     --features '[{"id":"ghcr.io/devcontainers/features/aws-cli:1"}]'
-{{< /command >}}
+```
 
 Start your container using the following command.
 
-{{< command >}}
-$ devcontainer up --id-label project=localstack --workspace-folder .
-{{< /command >}}
+```bash
+devcontainer up --id-label project=localstack --workspace-folder .
+```
 
 Connect to it using the `id-label`.
 
-{{< command >}}
-$ devcontainer exec --id-label project=localstack /bin/bash
-{{< /command >}}
+```bash
+devcontainer exec --id-label project=localstack /bin/bash
+```
 
 Check that the LocalStack CLI is installed by executing:
 
-{{< command >}}
+```bash
 vscode ➜ ~ $ localstack --version
 3.6.0
 vscode ➜ ~ $
-{{< /command >}}
+```
 
 To remove the container, run this cleanup script since the Dev Container CLI cannot currently do it.
 
-{{< command >}}
-$ for container in $(docker ps -q); do \
+```bash
+for container in $(docker ps -q); do \
     [[ "$(docker inspect --format '{{ index .Config.Labels "project"}}' $container)" = "localstack" ]] && \
     docker rm -f $container; \
 done
-{{< /command >}}
+```
 
 #### VSCode
 
@@ -246,40 +246,40 @@ Create a JSON file called  `options.json`  with the desired options in it.
 Use the command below to generate your  `devcontainer.json`  from the template.
 Include additional features with the  `--features`  option if needed.
 
-{{< command >}}
-$ devcontainer templates apply \
+```bash
+devcontainer templates apply \
     --template-id ghcr.io/localstack/devcontainer-template/localstack-dood \
     --template-args "$(cat ./options.json)" \
     --features '[{"id":"ghcr.io/devcontainers/features/aws-cli:1"}]'
-{{< /command >}}
+```
 
 Start your container using the following command.
 
-{{< command >}}
-$ devcontainer up --id-label project=localstack --workspace-folder .
-{{< /command >}}
+```bash
+devcontainer up --id-label project=localstack --workspace-folder .
+```
 
 Connect to it using the `id-label`.
 
-{{< command >}}
-$ devcontainer exec --id-label project=localstack /bin/bash
-{{< /command >}}
+```bash
+devcontainer exec --id-label project=localstack /bin/bash
+```
 
 Check that the LocalStack CLI is installed by executing:
 
-{{< command >}}
+```bash
 vscode ➜ ~ $ localstack --version
 3.6.0
 vscode ➜ ~ $
-{{< /command >}}
+```
 
 To remove the container, run this cleanup script since the Dev Container CLI cannot currently do it.
 
-{{< command >}}
-$ docker compose \
+```bash
+docker compose \
   --project-name "$(basename $PWD)_devcontainer" \
   -f ./.devcontainer/docker-compose.yml down
-{{< /command >}}
+```
 
 #### VSCode
 

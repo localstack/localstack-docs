@@ -25,9 +25,9 @@ We will demonstrate how you can spin up an EC2 instance and tag it with the key 
 
 To install Cloud Custodian, run the following command:
 
-{{< command >}}
-$ pip install c7n
-{{< / command >}}
+```bash
+pip install c7n
+```
 
 After installing Cloud Custodian, you can configure a [custom LocalStack profile](http://docs.localstack.cloud/user-guide/integrations/aws-cli/#configuring-a-custom-profile) in your AWS CLI configuration file.
 
@@ -37,13 +37,13 @@ You can create an EC2 instance using the `awslocal` wrapper script.
 You can use the [`RunInstances`](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html) API to create an EC2 instance.
 The following example creates an EC2 instance with the tag `Custodian` (any value):
 
-{{< command >}}
-$ awslocal ec2 run-instances \
+```bash
+awslocal ec2 run-instances \
     --image-id ami-ff0fea8310f3 \
     --count 1 \
     --instance-type t3.nano \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Custodian,Value=AnyValue}]"
-{{< / command >}}
+```
 
 You can navigate to the LocalStack logs to verify that the EC2 instance was created successfully:
 
@@ -83,12 +83,12 @@ The above policy specifies the following:
 
 You can now run the Cloud Custodian policy using the following command:
 
-{{< command >}}
-$ custodian run \
+```bash
+custodian run \
     --output-dir=.
 custodian.yml \
     --profile localstack
-{{< / command >}}
+```
 
 {{< callout "tip" >}}
 Alternatively, you can also set the `AWS_PROFILE=localstack` environment variable, in which case the `--profile localstack` parameter can be omitted in the commands above.
@@ -117,11 +117,11 @@ These metrics show how many resources met the filters, the time taken to gather 
 Certain filters and actions might produce their own metrics.
 To activate metric output, you must set the `metrics` flag running Cloud Custodian.
 
-{{< command >}}
-$ custodian run -s . \
+```bash
+custodian run -s . \
     --metrics aws custodian.yml \
     --profile localstack
-{{< / command >}}
+```
 
 You can access the CloudWatch metrics in the [LocalStack Web Application](https://app.localstack.cloud/inst/default/resources/cloudwatch).
 

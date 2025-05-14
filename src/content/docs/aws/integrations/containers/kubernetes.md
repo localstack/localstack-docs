@@ -41,9 +41,9 @@ To install Helm, refer to the  [Helm install guide](https://github.com/helm/helm
 
 The following command allows you to download and install all the charts from this repository:
 
-{{< command >}}
-$ helm repo add localstack https://localstack.github.io/helm-charts
-{{< /command >}}
+```bash
+helm repo add localstack https://localstack.github.io/helm-charts
+```
 
 ### Using Helm
 
@@ -89,10 +89,10 @@ extraEnvVars:
 
 And you can use these values when installing the chart in your cluster:
 
-{{< command >}}
-$ helm repo add localstack-charts https://localstack.github.io/helm-charts
-$ helm install my-release localstack-charts/localstack -f pro-values.yaml
-{{< /command >}}
+```bash
+helm repo add localstack-charts https://localstack.github.io/helm-charts
+helm install my-release localstack-charts/localstack -f pro-values.yaml
+```
 
 ## Parameters
 

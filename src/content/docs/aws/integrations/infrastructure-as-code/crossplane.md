@@ -29,30 +29,30 @@ In the following, we provide a step-by-step guide for installing Crossplane in a
 ## Installing Crossplane in local Kubernetes
 
 Once your `kubectl` is configured to point to the local Kubernetes cluster, we first install Crossplane via `helm`:
-{{<command>}}
-$ helm repo add crossplane-stable https://charts.crossplane.io/stable
-$ helm repo update
-$ helm install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace
-{{</command>}}
+```bash
+helm repo add crossplane-stable https://charts.crossplane.io/stable
+helm repo update
+helm install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace
+```
 
 The installation may take a few minutes.
 In parallel, we can install the `crossplane` command-line tool.
-{{<command>}}
-$ curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | bash
+```bash
+curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | bash
 <disable-copy>...</disable-copy>
-$ sudo mv crossplane /usr/local/bin
-{{</command>}}
+sudo mv crossplane /usr/local/bin
+```
 To confirm that the installation was successful, we can run these commands, which should yield output similar to the following:
-{{<command>}}
-$ crossplane version
+```bash
+crossplane version
 <disable-copy>Client Version: v1.17.0
 Server Version: v1.17.0</disable-copy>
 
-$ kubectl get crds | grep crossplane
+kubectl get crds | grep crossplane
 <disable-copy>compositions.apiextensions.crossplane.io                     2023-09-03T11:30:36Z
 configurations.pkg.crossplane.io                             2023-09-03T11:30:36Z
 ...</disable-copy>
-{{</command>}}
+```
 
 ### Installing the Crossplane AWS Provider
 
@@ -62,8 +62,8 @@ For example, there is a separate provider for each individual AWS service (like 
 
 In the following, we first install the AWS provider for S3.
 Note that you can copy/paste the entire multi-line command below into your terminal:
-{{<command>}}
-$ cat <<EOF | kubectl apply -f -
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
@@ -71,11 +71,11 @@ metadata:
 spec:
   package: xpkg.upbound.io/upbound/provider-aws-s3:v0.40.0
 EOF
-{{</command>}}
+```
 
 We also install the AWS provider for SQS:
-{{<command>}}
-$ cat <<EOF | kubectl apply -f -
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
@@ -83,21 +83,21 @@ metadata:
 spec:
   package: xpkg.upbound.io/upbound/provider-aws-sqs:v0.40.0
 EOF
-{{</command>}}
+```
 
 After some time, the providers should get into healthy state, which can be confirmed via `kubectl get providers`:
-{{<command>}}
-$ kubectl get providers<disable-copy>
+```bash
+kubectl get providers<disable-copy>
 NAME                          INSTALLED   HEALTHY   PACKAGE                                               AGE
 upbound-provider-family-aws   True        True      xpkg.upbound.io/upbound/provider-family-aws:v0.40.0   2m
 provider-aws-s3               True        True      xpkg.upbound.io/upbound/provider-aws-s3:v0.40.0       2m
 provider-aws-sqs              True        True      xpkg.upbound.io/upbound/provider-aws-sqs:v0.40.0      2m
 </disable-copy>
-{{</command>}}
+```
 
 Next, we install a secret to define the test credentials for the AWS provider:
-{{<command>}}
-$ cat <<EOF | kubectl apply -f -
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
 metadata:
@@ -108,11 +108,11 @@ stringData:
     aws_access_key_id = test
     aws_secret_access_key = test
 EOF
-{{</command>}}
+```
 
 Finally, we create an AWS  `ProviderConfig` that references the secret created above, and defines a static `endpoint` pointing to the LocalStack URL `http://host.docker.internal:4566`:
-{{<command>}}
-$ cat <<EOF | kubectl apply -f -
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: aws.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:
@@ -126,7 +126,7 @@ spec:
       key: creds
   endpoint:
     hostnameImmutable: true
-    # TODO: add more services to this list, as needed
+TODO: add more services to this list, as needed
     services: [iam, s3, sqs, sts]
     url:
       type: Static
@@ -136,7 +136,7 @@ spec:
   skip_requesting_account_id: true
   s3_use_path_style: true
 EOF
-{{</command>}}
+```
 
 {{< callout >}}
 The endpoint `http://host.docker.internal:4566` in the listing above assumes that you are running Kubernetes in the local Docker engine, and that LocalStack is up and running and available on default port `4566`.
@@ -152,8 +152,8 @@ Please make sure to extend this list accordingly if you're working with addition
 After the Crossplane AWS provider is properly installed and configured, we can proceed with creating some local resources.
 
 First, we create an S3 bucket named `crossplane-test-bucket`:
-{{<command>}}
-$ cat <<EOF | kubectl apply -f -
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: s3.aws.upbound.io/v1beta1
 kind: Bucket
 metadata:
@@ -162,28 +162,28 @@ spec:
   forProvider:
     region: us-east-1
 EOF
-{{</command>}}
+```
 
 If everything is wired up correctly, you should now see some activity in the LocalStack log outputs, where Crossplane starts deploying the S3 bucket against LocalStack.
 After some time, the bucket should be transitioning into `ready` state within Crossplane:
-{{<command>}}
-$ kubectl get buckets<disable-copy>
+```bash
+kubectl get buckets<disable-copy>
 NAME                     READY   SYNCED   EXTERNAL-NAME            AGE
 crossplane-test-bucket   True    True     crossplane-test-bucket   30s
 </disable-copy>
-{{</command>}}
+```
 
 ...
 and the bucket it should also be visible when querying the local S3 buckets in LocalStack via [`awslocal`](https://github.com/localstack/awscli-local):
-{{<command>}}
-$ awslocal s3 ls<disable-copy>
+```bash
+awslocal s3 ls<disable-copy>
 2023-09-03 15:18:47 crossplane-test-bucket
 </disable-copy>
-{{</command>}}
+```
 
 We can repeat the same exercise for creating a local SQS queue named `crossplane-test-queue`:
-{{<command>}}
-$ cat <<EOF | kubectl apply -f -
+```bash
+cat <<EOF | kubectl apply -f -
 apiVersion: sqs.aws.upbound.io/v1beta1
 kind: Queue
 metadata:
@@ -193,27 +193,27 @@ spec:
     name: crossplane-test-queue
     region: us-east-1
 EOF
-{{</command>}}
+```
 
 After some time, the queue should transition into `ready` state in Crossplane:
-{{<command>}}
-$ kubectl get queues<disable-copy>
+```bash
+kubectl get queues<disable-copy>
 NAME                    READY   SYNCED   EXTERNAL-NAME                                                         AGE
 crossplane-test-queue   True    True     http://host.docker.internal:4566/000000000000/crossplane-test-queue   40s
 </disable-copy>
-{{</command>}}
+```
 
 ...
 and the queue should be visible when listing the SQS queues in LocalStack:
-{{<command>}}
-$ awslocal sqs list-queues<disable-copy>
+```bash
+awslocal sqs list-queues<disable-copy>
 {
     "QueueUrls": [
         "http://localhost:4566/000000000000/crossplane-test-queue"
     ]
 }
 </disable-copy>
-{{</command>}}
+```
 
 ### Summary
 

@@ -17,21 +17,21 @@ Using LocalStack, you can kick-start your development process, create a new Chal
 
 Start LocalStack inside a Docker container by running:
 
-{{< command >}}
-$ localstack start -d
-{{< / command >}}
+```bash
+localstack start -d
+```
 
 Install the `chalice-local` package by running:
 
-{{< command >}}
-$ pip install chalice-local
-{{< / command >}}
+```bash
+pip install chalice-local
+```
 
 You can now create a new Chalice project by running:
 
-{{< command >}}
-$ chalice-local new-project
-{{< / command >}}
+```bash
+chalice-local new-project
+```
 
 You will be prompted with an interactive menu where you can choose the name of your project and the project type.
 In this example, we are using `localstack-test` as the project name and `REST API` as the project type:
@@ -85,24 +85,24 @@ For now, our Application is serving only a JSON Message which is `{'hello': 'wor
 
 Just as with AWS, you can now test your API using `chalice-local local`:
 
-{{< command >}}
-$ chalice-local local
+```bash
+chalice-local local
 Serving on http://127.0.0.1:8000
-{{< / command >}}
+```
 
 You can also do a `curl` to test the API:
 
-{{< command >}}
-$ curl -X GET http://127.0.0.1:8000
+```bash
+curl -X GET http://127.0.0.1:8000
 {"hello":"world"}
-{{< / command >}}
+```
 
 ## Deploying the Chalice API
 
 You can use `chalice-local deploy` to deploy the REST API now:
 
-{{< command >}}
-$ chalice-local deploy
+```bash
+chalice-local deploy
 
 Creating deployment package.
 Creating IAM role: localstack-test-dev
@@ -111,6 +111,6 @@ Creating Rest API
 Resources deployed:
 - Lambda ARN: arn:aws:lambda:us-east-1:000000000000:function:localstack-test-dev
 - Rest API URL: https://y5iuni004m.execute-api.us-east-1.amazonaws.com/api/
-{{< / command >}}
+```
 
 We now have our Chalice Application deployed on a Lambda Amazon Resource Name (ARN) along with a REST API URL.

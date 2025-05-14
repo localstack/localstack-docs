@@ -63,22 +63,22 @@ install the Gradle build tool on your machine.
 
 Then run the following command to initialize a new Gradle project
 
-{{< command >}}
-$ gradle init
-{{< / command >}}
+```bash
+gradle init
+```
 
 Running the command below will run the gradle wrapper task
 
-{{< command >}}
-$ gradle wrapper
-{{< / command >}}
+```bash
+gradle wrapper
+```
 
 After running the wrapper task, you will find the Gradle wrapper script `gradlew`.
 From now on, we will use the wrapper instead of the globally installed Gradle binary:
 
-{{< command >}}
-$ ./gradlew <command>
-{{< / command >}}
+```bash
+./gradlew <command>
+```
 
 ### Project Settings
 

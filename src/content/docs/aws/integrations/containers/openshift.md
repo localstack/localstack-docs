@@ -79,11 +79,11 @@ Copy the route URL and use it to interact with the LocalStack container.
 
 To create an S3 bucket and an SQS queue, run the following commands:
 
-{{< command >}}
-$ export AWS_ENDPOINT_URL='<localstack-route-url>'
-$ awslocal s3 mb s3://my-bucket
-$ awslocal sqs create-queue --queue-name my-queue
-{{< /command >}}
+```bash
+export AWS_ENDPOINT_URL='<localstack-route-url>'
+awslocal s3 mb s3://my-bucket
+awslocal sqs create-queue --queue-name my-queue
+```
 
 In the above commands, replace `<localstack-route-url>` with the route URL of the LocalStack container.
 The `AWS_ENDPOINT_URL` environment variable is used to specify the endpoint URL of the LocalStack container.

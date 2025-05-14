@@ -25,17 +25,17 @@ When executing deployment commands like `samlocal ["build", "deploy", "validate"
 
 You can install the `samlocal` wrapper script by running the following command:
 
-{{< command >}}
-$ pip install aws-sam-cli-local
-{{< / command >}}
+```bash
+pip install aws-sam-cli-local
+```
 
 ### Create a new SAM project
 
 You can initialize a new SAM project using the following command:
 
-{{< command >}}
-$ samlocal init
-{{< / command >}}
+```bash
+samlocal init
+```
 
 Select `1` to create a new SAM application using an AWS Quick Start template.
 The SAM CLI will ask you for the project name and the runtime for the Lambda function.
@@ -49,9 +49,9 @@ Then, enter the project name and press `Enter`.
 
 After initializing the SAM project, enter the project directory and deploy the application using the following command:
 
-{{< command >}}
-$ samlocal deploy --guided
-{{< / command >}}
+```bash
+samlocal deploy --guided
+```
 
 Enter the default values for the deployment, such as the stack name, region, and confirm the changes.
 The `samlocal` wrapper will package and deploy the application to LocalStack.

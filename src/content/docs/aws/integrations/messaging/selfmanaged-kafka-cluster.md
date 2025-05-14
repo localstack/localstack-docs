@@ -16,14 +16,14 @@ You can find the [example Docker Compose](docker-compose.yml) file which contain
 
 1. Run Docker Compose:
 
-{{< command >}}
-$ docker-compose up -d
-{{< / command >}}
+```bash
+docker-compose up -d
+```
 
 2. Create the Lambda function:
 
-{{< command >}}
-$ awslocal lambda create-function \
+```bash
+awslocal lambda create-function \
     --function-name fun1 \
     --handler lambda.handler \
     --runtime python3.8 \
@@ -50,30 +50,30 @@ $ awslocal lambda create-function \
     "LastUpdateStatus": "Successful",
     "PackageType": "Zip"
 }
-{{< / command >}}
+```
 
 3. Create an example secret:
 
-{{< command >}}
-$ awslocal secretsmanager create-secret --name localstack
+```bash
+awslocal secretsmanager create-secret --name localstack
 {
     "ARN": "arn:aws:secretsmanager:us-east-1:000000000000:secret:localstack-TDIuI",
     "Name": "localstack",
     "VersionId": "32bbb8e2-46ee-4322-b3d5-b6459d54513b"
 }
-{{< / command >}}
+```
 
 4. Create an example Kafka topic:
 
-{{< command >}}
-$ docker exec -ti kafka kafka-topics --zookeeper zookeeper:2181 --create --replication-factor 1 --partitions 1 --topic t1
+```bash
+docker exec -ti kafka kafka-topics --zookeeper zookeeper:2181 --create --replication-factor 1 --partitions 1 --topic t1
 Created topic t1.
-{{< / command >}}
+```
 
 5. Create the event source mapping to your local kafka cluster:
 
-{{< command >}}
-$ awslocal lambda create-event-source-mapping \
+```bash
+awslocal lambda create-event-source-mapping \
     --topics t1 \
     --source-access-configuration Type=SASL_SCRAM_512_AUTH,URI=arn:aws:secretsmanager:us-east-1:000000000000:secret:localstack-TDIuI \
     --function-name arn:aws:lambda:us-east-1:000000000000:function:fun1 \
@@ -103,6 +103,6 @@ $ awslocal lambda create-event-source-mapping \
         }
     }
 }
-{{< / command >}}
+```
 
 6. Additionally visit `http://localhost:8080` for Kowl's UI.

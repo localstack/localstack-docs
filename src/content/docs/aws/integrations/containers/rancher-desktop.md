@@ -77,19 +77,19 @@ In this scenario, you need to create a symlink from the Rancher Desktop socket t
 Start Rancher Desktop and verify it is set to use the Docker runtime.
 Link the Docker socket with the following command:
 
-{{< command >}}
-# 1. Make sure there is no existing socket at /var/run/docker.sock
+```bash
+1. Make sure there is no existing socket at /var/run/docker.sock
 sudo rm -f /var/run/docker.sock
 
-# 2. Adjust the path if your Rancher Desktop socket is in a different location
-$ sudo ln -s /var/run/rancher-desktop-lima/docker.sock /var/run/docker.sock
-{{< /command >}}
+2. Adjust the path if your Rancher Desktop socket is in a different location
+sudo ln -s /var/run/rancher-desktop-lima/docker.sock /var/run/docker.sock
+```
 
 Start LocalStack using this command:
 
-{{< command >}}
-$ DEBUG=1 localstack start --network rancher
-{{< /command >}}
+```bash
+DEBUG=1 localstack start --network rancher
+```
 
 #### Rancher Desktop with containerd
 
@@ -98,9 +98,9 @@ Ensure that the `docker` command is available through Rancher Desktop's setup, o
 
 To start LocalStack with the `containerd` environment, use the following command:
 
-{{< command >}}
-$ DEBUG=1 DOCKER_CMD=nerdctl localstack start --network rancher
-{{< /command >}}
+```bash
+DEBUG=1 DOCKER_CMD=nerdctl localstack start --network rancher
+```
 
 ### Windows
 
@@ -108,15 +108,15 @@ You can run Rancher Desktop on Windows using WSL2 (Windows Subsystem for Linux) 
 
 Ensure Rancher Desktop is configured to use `dockerd`, and that the Docker socket is accessible in WSL2:
 
-{{< command >}}
-$ rancher-desktop settings set --docker
-{{< /command >}}
+```bash
+rancher-desktop settings set --docker
+```
 
 Initialize and start Rancher Desktop:
 
-{{< command >}}
-$ rancher-desktop --start
-{{< /command >}}
+```bash
+rancher-desktop --start
+```
 
 Modify your Docker Compose configuration to work with Rancher Desktop:
 

@@ -42,34 +42,34 @@ resource "aws_s3_bucket" "test-bucket" {
 
 To install the `tflocal` command, you can use `pip` (assuming you have a local Python installation):
 
-{{< command >}}
-$ pip install terraform-local
-{{< / command >}}
+```bash
+pip install terraform-local
+```
 
 After installation, you can use the `tflocal` command, which has the same interface as the `terraform` command line.
 
-{{< command >}}
-$ tflocal --help
+```bash
+tflocal --help
 <disable-copy>
 Usage: terraform [global options] <subcommand> [args]
 ...
 <disable-copy>
-{{< / command >}}
+```
 
 ### Deploy the Terraform configuration
 
 Start your LocalStack container using your preferred method.
 Initialize Terraform using the following command:
 
-{{< command >}}
-$ tflocal init
-{{< / command >}}
+```bash
+tflocal init
+```
 
 You can now provision the S3 bucket specified in the configuration:
 
-{{< command >}}
-$ tflocal apply
-{{< / command >}}
+```bash
+tflocal apply
+```
 
 ### Configuration
 
@@ -469,9 +469,9 @@ app.synth();
 
 Run the following command to compile and deploy the CDKTF stack to LocalStack:
 
-{{< command >}}
-$ cdktf synth && cdktf deploy
-{{< /command >}}
+```bash
+cdktf synth && cdktf deploy
+```
 
 You should see the following output:
 
@@ -489,9 +489,9 @@ example
 
 Verify that the S3 bucket has been created successfully by running the following command:
 
-{{< command >}}
-$ awslocal s3 ls
-{{< /command >}}
+```bash
+awslocal s3 ls
+```
 
 Your CDKTF stack is now successfully deployed to LocalStack. You can now start using CDKTF to create and manage your AWS resources on LocalStack.
 
@@ -499,8 +499,8 @@ Your CDKTF stack is now successfully deployed to LocalStack. You can now start u
 
 OpenTofu is an open-source fork of Terraform acting as a drop-in replacement for Terraform, as it's compatible with Terraform versions 1.5.x and most of 1.6.x. You can use OpenTofu with LocalStack to create and manage your AWS resources with your pre-existing Terraform configurations. You can use the `TF_CMD` environment variable with `tflocal` to specify the `tofu` binary to call, or setup a manual configuration to point the individual services to LocalStack.
 
-{{< command >}}
-$ TF_CMD=tofu tflocal --help
+```bash
+TF_CMD=tofu tflocal --help
 <disable-copy>
 Usage: tofu [global options] <subcommand> [args]
 
@@ -509,7 +509,7 @@ The primary workflow commands are given first, followed by
 less common or more advanced commands.
 ...
 </disable-copy>
-{{< /command >}}
+```
 
 ## Terragrunt
 
