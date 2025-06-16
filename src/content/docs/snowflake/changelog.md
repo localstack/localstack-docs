@@ -4,6 +4,48 @@ description: Changelog for the latest releases of the LocalStack for Snowflake.
 template: doc
 ---
 
+### 1.0.0
+- Add support for `SHOW/ALTER FUNCTION`
+- Fix incompatibilities with GO driver and SnowSQL client
+- Add support for `SHOW INDEXES`
+- Improve timestamp string support in `TO_TIMESTAMP`
+- Fix casting values to array
+- Cast `MERGE INTO/UPDATE` commands arguments to target type
+- Make `TO_BOOLEAN` work with all boolean strings
+- Enhance parity for parsing URLs with whitespaces in `PUT` commands
+- Enhance and add support for metadata columns in parquet format
+- Enhance CRUD support for external volumes
+- Add support for `EXECUTE TASK`
+- Fix identifier parsing in stages and file formats
+- Enhance `SHOW TABLES` feature parity
+- Handle `DATE` and `TIME` functions
+- Add initial Iceberg support
+- Enhance parity for GRANT statements and DB permissions
+- Add initial support for password-less auth using RSA key
+- Enhance parity for queries over staged JSON files
+- Add initial support for Catalog Integrations
+- Support prepared statements in ODBC driver
+- Enhance decimals parity
+- Add initial support for granting `APPLICATION ROLE`
+- Enhance parity for SQL procedures with SF-native statements
+- Add support for lateral column references on `SELECT`
+- Fix `SHOW TABLE` with schema scope for Flyway
+- Decode field delimiters passed as hex or octal values
+- Remove modifiers from binary columns
+- Fix permissions to clone default database
+- Add support for numeric paramstyle
+- Enhance support for `CASE` expressions in `BEGIN..END` blocks
+- Refreshed UI
+- Enhance parity for `DESCRIBE DATABASE` queries
+- Enable local deployment of Streamlit Native Apps
+- Enhance parity for materialized view queries
+- Enhance parity for `SHOW DYNAMIC TABLES`
+- Fix handling of `IF EXISTS` statements within transactions
+- Enhance support for `BEGIN` code blocks with multiple command statements
+- Enhance logic for native apps and permission grants
+- Enhance parity for Native Apps that contain streamlit apps
+- Add auto-conversion of strings to `ARRAY/OBJECT` types
+- Add support for Polaris catalog
 
 
 ### 0.3.0
