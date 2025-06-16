@@ -3,7 +3,7 @@ title: Snowflake Drivers
 description: Get started with Snowflake Drivers in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

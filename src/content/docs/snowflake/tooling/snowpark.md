@@ -3,7 +3,7 @@ title: Snowpark
 description: Get started with Snowpark in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

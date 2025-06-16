@@ -3,7 +3,7 @@ title: Continuous Integration
 description: Get started with Snowflake emulator in continuous integration (CI) environments. 
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

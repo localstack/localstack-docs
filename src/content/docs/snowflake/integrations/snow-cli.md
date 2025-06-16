@@ -3,7 +3,7 @@ title: Snow CLI
 description: Use Snow CLI to interact with the Snowflake emulator.
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

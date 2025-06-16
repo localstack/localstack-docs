@@ -3,7 +3,7 @@ title: Snowpipe
 description: Get started with Snowpipe in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

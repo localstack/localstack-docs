@@ -3,7 +3,7 @@ title: Dynamic Tables
 description: Get started with Dynamic Tables in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

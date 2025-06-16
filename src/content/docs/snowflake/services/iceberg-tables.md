@@ -3,7 +3,7 @@ title: Iceberg Tables
 description: This is a dummy description.
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

@@ -3,7 +3,7 @@ title: Clones
 description: Get started with Clones in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

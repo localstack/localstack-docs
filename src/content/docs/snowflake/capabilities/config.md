@@ -7,7 +7,7 @@ label:
 ---
 
 
-{{< preview-notice >}}
+
 
 LocalStack exposes various configuration options to control its behaviour.
 

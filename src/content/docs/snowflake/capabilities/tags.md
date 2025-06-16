@@ -3,7 +3,7 @@ title: Tags
 description: Get started with Tags in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

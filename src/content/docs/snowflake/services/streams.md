@@ -3,7 +3,7 @@ title: Streams
 description: Get started with Streams in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

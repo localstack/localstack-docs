@@ -3,7 +3,7 @@ title: Pulumi
 description: Use Pulumi to interact with the Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

@@ -3,7 +3,7 @@ title: Terraform
 description: Use Terraform to interact with the Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

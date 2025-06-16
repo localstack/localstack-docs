@@ -4,7 +4,7 @@ description: Get started with LocalStack for Snowflake in a few simple steps
 template: doc
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

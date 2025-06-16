@@ -3,7 +3,7 @@ title: Initialization Hooks
 description: Writing SQL scripts to initialize your Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
  
 ## Introduction
 

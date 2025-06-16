@@ -6,7 +6,7 @@ nav:
 label: 
 ---
 
-{{< preview-notice >}}
+
 
 ### 0.3.0
 - Add support for multi-account setups

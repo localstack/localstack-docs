@@ -3,7 +3,7 @@ title: Airflow
 description: Use Airflow to run local ETL jobs against the Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
  

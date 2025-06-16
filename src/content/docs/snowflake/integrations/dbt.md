@@ -3,7 +3,7 @@ title: dbt
 description: Use dbt to interact with the Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

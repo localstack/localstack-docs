@@ -3,7 +3,7 @@ title: User-Defined Functions
 description: Get started with User-Defined Functions in Node.js & Python with LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

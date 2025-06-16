@@ -3,7 +3,7 @@ title: Stages
 description: Get started with Stages in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

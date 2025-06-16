@@ -3,7 +3,7 @@ title: Web UI
 description: Get started with LocalStack for Snowflake Web User Interface
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

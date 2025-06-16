@@ -3,7 +3,7 @@ title: Cross-Database Resource Sharing
 description: Get started with cross-database resource sharing in the Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

@@ -3,7 +3,7 @@ title: Storage Integrations
 description: Get started with Storage Integrations in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

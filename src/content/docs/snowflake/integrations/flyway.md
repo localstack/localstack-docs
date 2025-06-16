@@ -3,7 +3,7 @@ title: Flyway
 description: Use Flyway to interact with the Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

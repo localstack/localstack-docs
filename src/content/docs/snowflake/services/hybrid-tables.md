@@ -3,7 +3,7 @@ title: Hybrid Tables
 description: Get started with Hybrid Tables in LocalStack for Snowflake
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

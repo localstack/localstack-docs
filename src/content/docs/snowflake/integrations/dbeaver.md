@@ -3,7 +3,7 @@ title: DBeaver
 description: Use DBeaver to interact with the Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 

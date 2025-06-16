@@ -3,7 +3,7 @@ title: SnowSQL
 description: Use SnowSQL to interact with the Snowflake emulator
 ---
 
-{{< preview-notice >}}
+
 
 ## Introduction
 
