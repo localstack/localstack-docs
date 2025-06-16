@@ -11,7 +11,6 @@ State Management in LocalStack allows you to save and load the state of your Loc
 
 State Management in LocalStack encompasses the following features:
 
-- **Cloud Pods**: Cloud Pods are persistent state snapshots of your LocalStack instance that can easily be shared, stored, versioned, and restored.
 - **Export & Import State**: Export and import the state of your LocalStack instance on your local machine as a local file.
 - **Persistence**: Persist the state of your LocalStack instance on your local machine using a configuration variable.
 
@@ -75,30 +74,3 @@ $ localstack state import '<file-name>'
 {{< /command >}}
 
 The `<file-name>` argument is required and specifies the file path to import the state from. The file should be generated from a previous export.
-
-## Cloud Pods
-
-Cloud pods are persistent state snapshots of your LocalStack instance that can easily be stored, versioned, shared, and restored. Cloud Pods can be used for various purposes, such as:
-
--  Save and manage snapshots of active LocalStack instances.
--  Share state snapshots with your team to debug collectively.
--  Automate your testing pipelines by pre-seeding CI environments.
--  Create reproducible development and testing environments locally.
-
-You can save and load the persistent state of Cloud Pods, using the Cloud Pods CLI. LocalStack provides a remote storage backend that can be used to store the state of your running application and share it with your team members. Cloud Pods CLI is included in the [LocalStack CLI installation](https://docs.localstack.cloud/getting-started/installation/#localstack-cli), so there's no need for additional installations to begin using it.
-
-### Create a new Cloud Pod
-
-To create the Cloud Pod, you can run the following command:
-
-{{< command >}}
-$ localstack pod save '<pod-name>'
-{{< /command >}}
-
-### Load an existing Cloud Pod
-
-To load the Cloud Pod, you can run the following command:
-
-{{< command >}}
-$ localstack pod load '<pod-name>'
-{{< /command >}}
