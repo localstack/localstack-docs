@@ -296,9 +296,9 @@ export default defineConfig({
               collapsed: true,
             },
             {
-              label: 'Services',
+              label: 'Features',
               collapsed: true,
-              autogenerate: { directory: '/snowflake/services' },
+              autogenerate: { directory: '/snowflake/features' },
             },
             {
               label: 'Capabilities',
