@@ -324,6 +324,14 @@ export default defineConfig({
               label: 'SQL Functions',
               slug: 'snowflake/sql-functions',
             },
+            {
+              label: 'Feature Coverage',
+              slug: 'snowflake/coverage-features',
+            },
+            {
+              label: 'Changelog',
+              slug: 'snowflake/changelog',
+            },
           ],
         },
       ],
