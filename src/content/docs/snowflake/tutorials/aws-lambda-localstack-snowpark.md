@@ -28,10 +28,10 @@ The code in this tutorial is available on [GitHub](https://github.com/localstack
 
 Create a new directory for your lambda function and navigate to it:
 
-{{< command >}}
-$ mkdir -p lambda-snowpark
-$ cd lambda-snowpark
-{{< / command >}}
+```bash
+mkdir -p lambda-snowpark
+cd lambda-snowpark
+```
 
 Create a new file named `handler.py` and add the following code:
 
@@ -112,24 +112,24 @@ You can now install the dependencies for your Lambda function. These include:
 
 Run the following command:
 
-{{< command >}}
-$ pip3 install \
+```bash
+pip3 install \
 		--platform manylinux2010_x86_64 \
 		--implementation cp \
 		--only-binary=:all: --upgrade \
 		--target ./libs \
  		snowflake-connector-python==2.7.9 boto3==1.26.153 botocore==1.29.153
-{{< / command >}}
+```
 
 ## Package the Lambda function
 
 Package the Lambda function and its dependencies into a ZIP file. Run the following command:
 
-{{< command >}}
-$ mkdir -p build
-$ cp -r libs/* build/
-$ (cd build && zip -q -r function-py.zip .)
-{{< / command >}}
+```bash
+mkdir -p build
+cp -r libs/* build/
+(cd build && zip -q -r function-py.zip .)
+```
 
 You have now created a ZIP file named `function-py.zip` that contains the Lambda function and its dependencies.
 
@@ -137,13 +137,13 @@ You have now created a ZIP file named `function-py.zip` that contains the Lambda
 
 Start your LocalStack container in your preferred terminal/shell.
 
-{{< command >}}
-$ export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-$ DEBUG=1 \
+```bash
+export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
+DEBUG=1 \
   LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=180 \
   IMAGE_NAME=localstack/snowflake \
   localstack start
-{{< / command >}}
+```
 
 > The `DEBUG=1` environment variable is set to enable debug logs. It would allow you to see the SQL queries executed by the Lambda function. The `LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT` environment variable is set to increase the Lambda function's timeout to 180 seconds.
 
@@ -151,22 +151,22 @@ $ DEBUG=1 \
 
 You can now deploy the Lambda function to LocalStack using the `awslocal` CLI. Run the following command:
 
-{{< command >}}
-$ awslocal lambda create-function \
+```bash
+awslocal lambda create-function \
     --function-name localstack-snowflake-lambda-example \
 	--runtime python3.10 \
 	--timeout 180 \
 	--zip-file fileb://build/function-py.zip \
 	--handler handler.lambda_handler \
 	--role arn:aws:iam::000000000000:role/lambda-role
-{{< / command >}}
+```
 
 After successfully deploying the Lambda function, you will receive a response with the details of the function. You can now invoke the function using the `awslocal` CLI:
 
-{{< command >}}
-$ awslocal lambda invoke --function-name localstack-snowflake-lambda-example \
+```bash
+awslocal lambda invoke --function-name localstack-snowflake-lambda-example \
 	--payload '{"body": "test" }' output.txt
-{{< / command >}}
+```
 
 You will receive a response with the details of the invocation. You can view the output in the `output.txt` file. To see the SQL queries executed by the Lambda function, check the logs by navigating to LocalStack logs (`localstack logs`).
 
