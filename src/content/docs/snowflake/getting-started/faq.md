@@ -2,9 +2,11 @@
 title: FAQ
 description: Frequently asked questions about LocalStack for Snowflake
 template: doc
+sidebar:
+    order: 3
 ---
 
-## FAQs
+## Core FAQs
 
 ### Are Snowflake v2 APIs supported?
 

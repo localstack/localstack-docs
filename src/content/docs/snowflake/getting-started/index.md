@@ -2,6 +2,8 @@
 title: Installation
 description: Basic installation guide to get started with LocalStack for Snowflake.
 template: doc
+sidebar:
+    order: 0
 ---
 
 ## Introduction

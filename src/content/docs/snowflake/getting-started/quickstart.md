@@ -2,6 +2,8 @@
 title: Quickstart
 description: Get started with LocalStack for Snowflake in a few simple steps
 template: doc
+sidebar:
+    order: 2
 ---
 
 ## Introduction
