@@ -3,7 +3,7 @@ title: Continuous Integration
 description: Get started with Snowflake emulator in continuous integration (CI) environments. 
 ---
 
-
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -26,8 +26,9 @@ To create a CI key, follow these steps:
 
 The following examples demonstrate how to set up the emulator in GitHub Actions, CircleCI, and GitLab CI.
 
-{{< tabpane >}}
-{{< tab header="GitHub Actions" lang="yaml" >}}
+<Tabs>
+<TabItem label="GitHub Actions">
+```yaml
 name: LocalStack Test
 on: [ push, pull_request ]
 
@@ -48,8 +49,10 @@ jobs:
           echo "Startup complete"
         env:
           LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
-{{< /tab >}}
-{{< tab header="CircleCI" lang="yaml" >}}
+```
+</TabItem>
+<TabItem label="CircleCI">
+```yaml
 version: 2.1
 
 orbs:
@@ -79,8 +82,10 @@ workflows:
   build:
     jobs:
       - example-job
-{{< /tab >}}
-{{< tab header="GitLab CI" lang="yaml" >}}
+```
+</TabItem>
+<TabItem label="GitLab CI">
+```yaml
 image: docker:20.10.16
 
 stages:
@@ -108,5 +113,6 @@ test:
     - echo "${dind_ip} localhost.localstack.cloud " >> /etc/hosts
     - DOCKER_HOST="tcp://${dind_ip}:2375" IMAGE_NAME=localstack/snowflake localstack start -d
     - localstack wait -t 15
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>

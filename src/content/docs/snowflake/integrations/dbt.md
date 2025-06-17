@@ -3,8 +3,6 @@ title: dbt
 description: Use dbt to interact with the Snowflake emulator
 ---
 
-
-
 ## Introduction
 
 [dbt (data build tool)](https://www.getdbt.com/) is a transformation workflow tool that enables data analysts and engineers to transform data in their warehouses by writing modular SQL. dbt handles version control, documentation, and modularity for data transformations.
@@ -19,9 +17,9 @@ In this guide, you will learn how to configure dbt to interact with the Snowflak
 
 First, install dbt with the Snowflake adapter:
 
-{{< command >}}
-$ pip install dbt-snowflake
-{{< /command >}}
+```bash
+pip install dbt-snowflake
+```
 
 ### Configure dbt Profile
 
@@ -49,9 +47,9 @@ localstack_snowflake:
 
 To verify your dbt configuration is working correctly with the Snowflake emulator, run:
 
-{{< command >}}
-$ dbt debug --profile localstack_snowflake
-{{< /command >}}
+```bash
+dbt debug --profile localstack_snowflake
+```
 
 You should see output indicating a successful connection to the Snowflake emulator.
 
@@ -96,14 +94,15 @@ models:
           - not_null
 ```
 
-{{< command >}}
+You can run all models and tests with the following commands:
+
+```bash
 # Run all models
-$ dbt run --profile localstack_snowflake
+dbt run --profile localstack_snowflake
 
 # Run tests
-$ dbt test --profile localstack_snowflake
-
-{{< /command >}}
+dbt test --profile localstack_snowflake
+```
 
 ### Project Structure
 
@@ -149,6 +148,6 @@ models:
 3. **Documentation**: Document your models using dbt's built-in documentation features
 4. **Modularity**: Break down complex transformations into smaller, reusable models
 
-{{< alert type="info" >}}
+:::note
 It's a good practice to always test your dbt models locally with the Snowflake emulator before deploying to production, to save time and resources.
-{{< /alert >}} 
+:::

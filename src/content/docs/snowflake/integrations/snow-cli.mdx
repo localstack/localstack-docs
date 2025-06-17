@@ -1,52 +1,52 @@
 ---
-title: Snow CLI
-description: Use Snow CLI to interact with the Snowflake emulator.
+title: Snowflake CLI
+description: Use Snowflake CLI to interact with the Snowflake emulator.
 ---
 
-
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
-Snow CLI is a command-line interface (CLI) for Snowflake. You can use Snow CLI to interact with the Snowflake emulator. Snow CLI provides a set of commands to manage and interact with Snowflake accounts, databases, warehouses, and more.
+Snowflake CLI is a command-line interface (CLI) for Snowflake. You can use Snowflake CLI to interact with the Snowflake emulator. Snowflake CLI provides a set of commands to manage and interact with Snowflake accounts, databases, warehouses, and more.
 
-You can connect Snow CLI to the Snowflake emulator using a connection profile. A connection profile is a set of parameters that define the connection to a Snowflake account. You can create, list, and test connection profiles using Snow CLI.
-
-{{<alert type="info">}}
-Snow CLI is still under [active development](https://docs.snowflake.com/LIMITEDACCESS/snowcli/snowcli-guide), hence the commands and features might change in future releases.
-{{</alert>}}
+You can connect Snowflake CLI to the Snowflake emulator using a connection profile. A connection profile is a set of parameters that define the connection to a Snowflake account. You can create, list, and test connection profiles using Snowflake CLI.
 
 ## Installation
 
-You can install Snow CLI using the following methods:
+You can install Snowflake CLI using the following methods:
 
-{{< tabpane >}}
-{{< tab header="PyPI" lang="bash" >}}
+<Tabs>
+<TabItem label="PyPI">
+```bash
 pip install snowflake-cli-labs
 snow --help
-{{< /tab >}}
-{{< tab header="Homebrew" lang="bash" >}}
+```
+</TabItem>
+<TabItem label="Homebrew">
+```bash
 brew tap Snowflake-Labs/snowflake-cli
 brew install snowcli
 snow --help
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
-## Configuring Snow CLI
+## Configuring Snowflake CLI
 
-In this guide, you will learn how to configure Snow CLI to interact with the Snowflake emulator using a `localstack` connection profile.
+In this guide, you will learn how to configure Snowflake CLI to interact with the Snowflake emulator using a `localstack` connection profile.
 
 ### Create a connection profile
 
-To configure Snow CLI to interact with the Snowflake emulator, create a connection profile using the following command:
+To configure Snowflake CLI to interact with the Snowflake emulator, create a connection profile using the following command:
 
-{{< command >}}
-$ snow connection add \
+```bash
+snow connection add \
     --connection-name localstack \
     --user test \
     --password test \
     --account test \
     --host snowflake.localhost.localstack.cloud
-{{< / command >}}
+```
 
 You might be prompted to enter more optional parameters, such as the connection port, database name, warehouse name, authentication method, and more. These are however optional and can be skipped.
 
@@ -54,11 +54,11 @@ After a successful configuration, you can the `localstack` connection profile is
 
 ### List your connection profiles
 
-To list all the connection profiles configured in Snow CLI, execute the following command:
+To list all the connection profiles configured in Snowflake CLI, execute the following command:
 
-{{< command >}}
-$ snow connection list
-{{< / command >}}
+```bash
+snow connection list
+```
 
 The output should be:
 
@@ -75,9 +75,9 @@ The output should be:
 
 To test the connection to the Snowflake emulator, execute the following command:
 
-{{< command >}}
-$ snow connection test --connection localstack
-{{< / command >}}
+```bash
+snow connection test --connection localstack
+```
 
 The output should be:
 
@@ -97,18 +97,18 @@ The output should be:
 
 To run a query using the connection profile, execute the following command:
 
-{{< command >}}
-$ snow sql --query "CREATE DATABASE mytestdb;" --connection localstack
-{{< / command >}}
+```bash
+snow sql --query "CREATE DATABASE mytestdb;" --connection localstack
+```
 
 You can see all the databases in your Snowflake emulator using the following command:
 
-{{< command >}}
-$ snow sql --query "SHOW DATABASES;" --connection localstack
-{{< / command >}}
+```bash
+snow sql --query "SHOW DATABASES;" --connection localstack
+```
 
 You can create a schema using the following commands:
 
-{{< command >}}
-$ snow sql --query "CREATE SCHEMA mytestdb.mytestschema;" --connection localstack
-{{< / command >}}
+```bash
+snow sql --query "CREATE SCHEMA mytestdb.mytestschema;" --connection localstack
+```

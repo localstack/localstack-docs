@@ -3,8 +3,6 @@ title: Snowflake Drivers
 description: Get started with Snowflake Drivers in LocalStack for Snowflake
 ---
 
-
-
 ## Introduction
 
 Snowflake Drivers enable the use of programming languages like Go, C#, and Python for developing applications that interact with Snowflake. The Snowflake emulator facilitates testing Snowflake integration without connecting to the actual Snowflake instance. This guide provides instructions on connecting the Snowflake emulator with various drivers.
@@ -15,9 +13,9 @@ The Snowflake Connector for Python (`snowflake-connector-python`) is a Python li
 
 To install the Snowflake Connector for Python, execute the following command:
 
-{{< command >}}
-$ pip install snowflake-connector-python
-{{< /command >}}
+```bash
+pip install snowflake-connector-python
+```
 
 The Snowflake emulator operates on `snowflake.localhost.localstack.cloud` - note that this is a DNS name that resolves to a local IP address (`127.0.0.1`) to make sure the connector interacts with the local APIs. Connect to the emulator using the following Python code:
 
@@ -48,9 +46,9 @@ The Snowflake Node.js driver facilitates connecting to Snowflake and executing o
 
 To install the Snowflake Node.js driver, execute the following command:
 
-{{< command >}}
-$ npm install snowflake-sdk
-{{< /command >}}
+```bash
+npm install snowflake-sdk
+```
 
 The Snowflake emulator runs on `snowflake.localhost.localstack.cloud`. Connect to the emulator using the following JavaScript code:
 
@@ -95,9 +93,9 @@ The Go Snowflake driver provides a way to connect to Snowflake and perform datab
 
 To install the Go Snowflake driver, execute the following command:
 
-{{< command >}}
-$ go get github.com/snowflakedb/gosnowflake
-{{< /command >}}
+```bash
+go get github.com/snowflakedb/gosnowflake
+```
 
 The connection string follows the format `username:password@host:port/database?account=account_name`. For the emulator use:
 `test:test@snowflake.localhost.localstack.cloud:4566/test?account=test`

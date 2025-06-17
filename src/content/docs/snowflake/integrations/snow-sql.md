@@ -3,8 +3,6 @@ title: SnowSQL
 description: Use SnowSQL to interact with the Snowflake emulator
 ---
 
-
-
 ## Introduction
 
 [SnowSQL](https://docs.snowflake.com/en/user-guide/snowsql.html) is a command-line client for Snowflake that allows you to interact with the Snowflake service using SQL commands. SnowSQL provides a wide range of features, such as executing SQL statements, loading data, unloading data, and more.
@@ -23,7 +21,7 @@ To install SnowSQL, follow the instructions in the [official SnowSQL documentati
 
 To start SnowSQL, execute the following command:
 
-{{< command >}}
+```bash
 $ export SNOWSQL_PWD=test
 $ snowsql \
     -a test \
@@ -34,7 +32,7 @@ $ snowsql \
     -w test \
     -r test \
     -s test
-{{< / command >}}
+```
 
 In the above command:
 
@@ -59,14 +57,12 @@ test#test@test.test>
 
 You can execute SQL commands using SnowSQL. For example, to create a new database, execute the following command:
 
-{{< command >}}
+```bash
 $ CREATE DATABASE test_db;
-<disable-copy>
 +----------------------------------------+                                      
 | status                                 |
 |----------------------------------------|
 | Database TEST_DB successfully created. |
 +----------------------------------------+
 0 Row(s) produced. Time Elapsed: 0.198s
-</disable-copy>
-{{< / command >}}
+```

@@ -3,8 +3,6 @@ title: Pulumi
 description: Use Pulumi to interact with the Snowflake emulator
 ---
 
-
-
 ## Introduction
 
 [Pulumi](https://pulumi.com/) is an Infrastructure-as-Code (IaC) framework that allows you to define and provision infrastructure using familiar programming languages. Pulumi supports a wide range of cloud providers and services, including AWS, Azure, Google Cloud, and more.
@@ -19,19 +17,19 @@ In this guide, you will learn how to configure Pulumi to interact with the Snowf
 
 To use Pulumi with the Snowflake emulator, you need to configure the Snowflake provider in your Pulumi configuration file. Create a blank Pulumi project, and add the following environment variables to your Pulumi stack:
 
-{{< command>}}
-$ pulumi config set snowflake:account test
-$ pulumi config set snowflake:region test
-$ pulumi config set snowflake:username test
-$ pulumi config set snowflake:password test
-$ pulumi config set snowflake:host snowflake.localhost.localstack.cloud
-{{< /command >}}
+```bash
+pulumi config set snowflake:account test
+pulumi config set snowflake:region test
+pulumi config set snowflake:username test
+pulumi config set snowflake:password test
+pulumi config set snowflake:host snowflake.localhost.localstack.cloud
+```
 
 You can install the Snowflake provider in any of the programming languages supported by Pulumi, such as Python, JavaScript, TypeScript, and Go. The following example shows how to install the Snowflake provider for your TypeScript project:
 
-{{< command >}}
-$ npm install @pulumi/snowflake
-{{< /command >}}
+```bash
+npm install @pulumi/snowflake
+```
 
 ### Create Snowflake resources
 
@@ -50,9 +48,9 @@ const simple = new snowflake.Database("simple", {
 
 You can now deploy the Pulumi configuration to create the Snowflake resources locally. Run the following command to deploy the Pulumi configuration:
 
-{{< command >}}
-$ pulumi up
-{{< /command >}}
+```bash
+pulumi up
+```
 
 The expected output should show the resources being created in the Snowflake emulator:
 

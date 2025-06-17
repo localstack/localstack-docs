@@ -3,8 +3,6 @@ title: Terraform
 description: Use Terraform to interact with the Snowflake emulator
 ---
 
-
-
 ## Introduction
 
 [Terraform](https://terraform.io/) is an Infrastructure-as-Code (IaC) framework developed by HashiCorp. It enables users to define and provision infrastructure using a high-level configuration language. Terraform uses HashiCorp Configuration Language (HCL) as its configuration syntax.
@@ -38,12 +36,13 @@ provider "snowflake" {
 }
 ```
 
-{{< alert type="info" title="Note" >}}
+:::note
 Instead of manually specifying the `host`, you can export the `SNOWFLAKE_HOST` environment variable to set the Snowflake host. Here is an example:
-{{< command >}}
-$ export SNOWFLAKE_HOST=snowflake.localhost.localstack.cloud
-{{< /command >}}
-{{< /alert >}}
+
+```bash
+export SNOWFLAKE_HOST=snowflake.localhost.localstack.cloud
+```
+:::
 
 ### Create Snowflake resources
 
@@ -61,9 +60,9 @@ resource "snowflake_database" "example" {
 
 You can now deploy the Terraform configuration using the following command:
 
-{{< command >}}
-$ terraform init
-$ terraform apply
-{{< /command >}}
+```bash
+terraform init
+terraform apply
+```
 
 The `terraform init` command initializes the Terraform configuration, and the `terraform apply` command creates the Snowflake database.
