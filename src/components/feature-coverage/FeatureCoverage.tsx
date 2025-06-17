@@ -46,49 +46,8 @@ const columns: ColumnDef<any>[] = [
     id: "image",
     accessorFn: row => row[Object.keys(row)[0]].availability,
     header: () => "Image",
-    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
     meta: { className: "w-1/6" },
     enableSorting: false,
-  },
-  {
-    id: "internal_test_suite",
-    accessorFn: row => row[Object.keys(row)[0]].internal_test_suite,
-    header: () => "Internal Test Suite",
-    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
-    enableSorting: false,
-    meta: { className: "whitespace-normal" },
-  },
-  {
-    id: "external_test_suite",
-    accessorFn: row => row[Object.keys(row)[0]].external_test_suite,
-    header: () => "External Test Suite",
-    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
-    enableSorting: false,
-    meta: { className: "whitespace-normal" },
-  },
-  {
-    id: "terraform_test_suite",
-    accessorFn: row => row[Object.keys(row)[0]].terraform_test_suite,
-    header: () => "Terraform Validated",
-    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
-    enableSorting: false,
-    meta: { className: "whitespace-normal" },
-  },
-  {
-    id: "aws_validated",
-    accessorFn: row => row[Object.keys(row)[0]].aws_validated,
-    header: () => "AWS Validated",
-    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
-    enableSorting: false,
-    meta: { className: "whitespace-normal" },
-  },
-  {
-    id: "snapshot_tested",
-    accessorFn: row => row[Object.keys(row)[0]].snapshot_tested,
-    header: () => "Snapshot Tested",
-    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
-    enableSorting: false,
-    meta: { className: "whitespace-normal" },
   },
 ];
 
@@ -123,7 +82,6 @@ export default function PersistenceCoverage({service}: {service: string}) {
 
   return (
     <div className="w-full">
-        <h2 id="api-coverage">API Coverage</h2>
       <div style={{ marginBottom: 12, marginTop: 12 }}>
         <input
           type="text"
