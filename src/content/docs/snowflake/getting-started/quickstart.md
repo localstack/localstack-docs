@@ -11,7 +11,7 @@ This guide explains how to set up the Snowflake emulator and develop a Python pr
 ## Prerequisites
 
 - [`localstack` CLI](https://docs.localstack.cloud/getting-started/installation/#localstack-cli)
-- [LocalStack for Snowflake]({{< ref "installation" >}})
+- [LocalStack for Snowflake](/snowflake/getting-started/)
 - Python 3.10 or later 
 - [`snowflake-connector-python` library](https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-install)
 
@@ -133,6 +133,6 @@ LocalStack is ephemeral and doesn't persist data across restarts. It runs inside
 
 You can now explore the following resources to learn more about the Snowflake emulator:
 
-- [User Guide]({{< ref "user-guide" >}}): Learn about the Snowflake emulator's features and how to use them.
-- [Tutorials](/aws/tutorials): Explore tutorials to use the Snowflake emulator for local development and testing.
-- [References]({{< ref "references" >}}): Find information about the Snowflake emulator's configuration, changelog, and function coverage.
+- [Features](/snowflake/features/): Learn about the Snowflake emulator's features and how to use them.
+- [SQL Functions](/snowflake/sql-functions): Learn about the SQL functions supported by the Snowflake emulator.
+- [Changelog](/snowflake/changelog): Find information about the Snowflake emulator's changelog.

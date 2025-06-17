@@ -15,8 +15,8 @@ The Jupyter Notebook and the dataset used in this tutorial are available on [Git
 ## Prerequisites
 
 - [`localstack` CLI](https://docs.localstack.cloud/getting-started/installation/#localstack-cli) with a [`LOCALSTACK_AUTH_TOKEN`](https://docs.localstack.cloud/getting-started/auth-token/)
-- [LocalStack for Snowflake]({{< ref "installation" >}})
-- [Snowpark]({{< ref "snowpark" >}}) with other Python libraries
+- [LocalStack for Snowflake](/snowflake/getting-started/)
+- [Snowpark](/snowflake/integrations/snowpark) with other Python libraries
 - [Jupyter Notebook](https://jupyter.org/install#jupyter-notebook)
 
 You should also download [`credit_files.csv`](https://github.com/localstack-samples/localstack-snowflake-samples/blob/main/credit-scoring-with-snowpark/credit_files.csv) and [`credit_request.csv`](https://github.com/localstack-samples/localstack-snowflake-samples/blob/main/credit-scoring-with-snowpark/credit_request.csv) files from the LocalStack repository. The files should be present in the same directory as your Jupyter Notebook.

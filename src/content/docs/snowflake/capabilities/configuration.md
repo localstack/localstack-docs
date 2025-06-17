@@ -36,7 +36,7 @@ These options are applicable when using the CLI to start LocalStack.
 | Variable | Example Values | Description |
 | - | - | - |
 | `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. |
-| `CONFIG_PROFILE` | | The configuration profile to load. See [Profiles]({{< ref "#profiles" >}}) |
+| `CONFIG_PROFILE` | | The configuration profile to load. See [Profiles](#profiles) |
 | `CONFIG_DIR` | `~/.localstack` | The path where LocalStack can find configuration profiles and other CLI-specific configuration |
 
 ## Docker
