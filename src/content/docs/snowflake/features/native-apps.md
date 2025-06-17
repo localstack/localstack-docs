@@ -7,13 +7,7 @@ description: Get started with Native Apps in LocalStack for Snowflake
 
 Snowflake Native Apps are applications built and executed directly within the Snowflake Data Cloud platform. These apps can be used to extend the capabilities of Snowflake by integrating with external services, automating workflows, and building custom data applications. These apps are developed using Snowflake-native tools (e.g., Snowflake SQL, Snowflake API, and JavaScript) and can be distributed on the Snowflake Marketplace.
 
-The Snowflake emulator supports creating & deploying Native Apps locally with the same statements as the Snowflake service. The following operations are supported:
-
-- [`CREATE APPLICATIONS`](https://docs.snowflake.com/en/sql-reference/sql/create-application.html)
-- [`SHOW APPLICATION PACKAGES`](https://docs.snowflake.com/en/sql-reference/sql/show-application-packages.html)
-- [`ALTER APPLICATION PACKAGE`](https://docs.snowflake.com/en/sql-reference/sql/alter-application-package.html)
-- [`DESCRIBE APPLICATION`]( https://docs.snowflake.com/en/sql-reference/sql/desc-application)
-- [`DROP APPLICATION PACKAGE`](https://docs.snowflake.com/en/sql-reference/sql/drop-application-package.html)
+The Snowflake emulator supports creating & deploying Native Apps locally with the same statements as the Snowflake service.
 
 ## Getting started
 

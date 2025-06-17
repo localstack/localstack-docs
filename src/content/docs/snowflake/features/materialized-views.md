@@ -7,14 +7,7 @@ description: Get started with Materialized Views in LocalStack for Snowflake
 
 Materialized views are a feature of Snowflake that allows you to create a persistent view of a table. This view is pre-computed and stored in the database, allowing for faster queries and improved performance.
 
-The Snowflake emulator supports Materialized Views, allowing you to accurately test materialized view logic and behavior in local development environments. The following operations are supported:
-
-- [`CREATE MATERIALIZED VIEW`](https://docs.snowflake.com/en/sql-reference/sql/create-materialized-view)
-- [`ALTER MATERIALIZED VIEW`](https://docs.snowflake.com/en/sql-reference/sql/alter-materialized-view)
-- [`DESCRIBE MATERIALIZED VIEW`](https://docs.snowflake.com/en/sql-reference/sql/desc-materialized-view)
-- [`DROP MATERIALIZED VIEW`](https://docs.snowflake.com/en/sql-reference/sql/drop-materialized-view)
-- [`SHOW MATERIALIZED VIEWS`](https://docs.snowflake.com/en/sql-reference/sql/show-materialized-views)
-- [`TRUNCATE MATERIALIZED VIEW`](https://docs.snowflake.com/en/sql-reference/sql/truncate-materialized-view)
+The Snowflake emulator supports Materialized Views, allowing you to accurately test materialized view logic and behavior in local development environments.
 
 ## Getting started
 

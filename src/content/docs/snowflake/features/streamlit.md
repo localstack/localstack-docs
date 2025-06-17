@@ -7,13 +7,7 @@ description: Get started with Streamlit in LocalStack for Snowflake
 
 Snowflake provides SQL commands to create and modify a `STREAMLIT` object. Streamlit is a Python library that allows you to create web applications with simple Python scripts. With Streamlit, you can create interactive web applications without having to learn complex web development technologies.
 
-The Snowflake emulator supports Streamlit, allowing you to create Streamlit applications using the same commands and syntax as the Snowflake service. The following operations are supported:
-
-- [`CREATE STREAMLIT`](https://docs.snowflake.com/en/sql-reference/sql/create-streamlit)
-- [`SHOW STREAMLITS`](https://docs.snowflake.com/en/sql-reference/sql/show-streamlits)
-- [`DESCRIBE STREAMLIT`](https://docs.snowflake.com/en/sql-reference/sql/describe-streamlit)
-- [`ALTER STREAMLIT`](https://docs.snowflake.com/en/sql-reference/sql/alter-streamlit)
-- [`DROP STREAMLIT`](https://docs.snowflake.com/en/sql-reference/sql/drop-streamlit)
+The Snowflake emulator supports Streamlit, allowing you to create Streamlit applications using the same commands and syntax as the Snowflake service.
 
 ## Getting started
 

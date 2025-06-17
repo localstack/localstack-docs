@@ -7,11 +7,7 @@ description: Get started with Storage Integrations in LocalStack for Snowflake
 
 Snowflake storage integrations enable access to external cloud storage like Amazon S3, Google Cloud Storage, and Azure Blob Storage. They manage authentication through generated IAM roles, enhancing security and simplifying data operations without exposing sensitive credentials. This approach centralizes and controls access, streamlining workflows across major cloud platforms.
 
-The Snowflake emulator supports storage integrations, allowing you to test interactions with external storage using the same commands and syntax as the Snowflake service. The following operations are supported:
-
--   [`CREATE STORAGE INTEGRATION`](https://docs.snowflake.com/en/sql-reference/sql/create-storage-integration)
--   [`DESCRIBE STORAGE INTEGRATION`](https://docs.snowflake.com/en/sql-reference/sql/describe-storage-integration)
--   [`DROP STORAGE INTEGRATION`](https://docs.snowflake.com/en/sql-reference/sql/drop-storage-integration)
+The Snowflake emulator supports storage integrations, allowing you to test interactions with external storage using the same commands and syntax as the Snowflake service.
 
 ## Getting started
 

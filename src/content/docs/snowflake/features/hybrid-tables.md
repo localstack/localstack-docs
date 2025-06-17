@@ -7,11 +7,7 @@ description: Get started with Hybrid Tables in LocalStack for Snowflake
 
 Snowflake Hybrid tables, also known as Unistore hybrid tables, support fast, single-row operations by enforcing unique constraints for required primary keys and including indexes to speed up data retrieval. These tables are designed to optimize support for both analytical and transactional workloads simultaneously, underpinning Snowflake's Unistore architecture.
 
-The Snowflake emulator supports Hybrid tables, allowing you to create and manage Hybrid tables locally. The following operations are supported:
-
-* [`CREATE HYBRID TABLE`](https://docs.snowflake.com/en/sql-reference/sql/create-hybrid-table)
-* [`DROP HYBRID TABLE`](https://docs.snowflake.com/en/sql-reference/sql/drop-hybrid-table)
-* [`SHOW HYBRID TABLES`](https://docs.snowflake.com/en/sql-reference/sql/show-hybrid-tables)
+The Snowflake emulator supports Hybrid tables, allowing you to create and manage Hybrid tables locally.
 
 ## Getting started
 

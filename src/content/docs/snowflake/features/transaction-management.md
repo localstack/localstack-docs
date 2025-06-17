@@ -7,13 +7,7 @@ description: Get started with Transaction Management in LocalStack for Snowflake
 
 Transaction Management is a feature that allows you to manage transactions in Snowflake. You can use Transaction Management to create a transaction management system that is specific to your application.
 
-The Snowflake emulator supports Transaction Management, allowing you to emulate realistic database operations that require precise control over when changes are committed or rolled back. The following operations are supported:
-
--   [`BEGIN`](https://docs.snowflake.com/en/sql-reference/sql/begin)
--   [`COMMIT`](https://docs.snowflake.com/en/sql-reference/sql/commit)
--   [`ROLLBACK`](https://docs.snowflake.com/en/sql-reference/sql/rollback)
--   [`CURRENT_TRANSACTION`()](https://docs.snowflake.com/en/sql-reference/functions/current_transaction)
--   [`SHOW TRANSACTIONS`](https://docs.snowflake.com/en/sql-reference/sql/show-transactions)
+The Snowflake emulator supports Transaction Management, allowing you to emulate realistic database operations that require precise control over when changes are committed or rolled back.
 
 ## Getting started
 

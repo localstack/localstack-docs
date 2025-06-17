@@ -7,12 +7,7 @@ description: Get started with Snowpipe in LocalStack for Snowflake
 
 Snowpipe allows you to load data into Snowflake tables from files stored in an external stage. Snowpipe continuously loads data from files in a stage into a table as soon as the files are available. Snowpipe uses a queue to manage the data loading process, which allows you to load data into Snowflake tables in near real-time.
 
-The Snowflake emulator supports Snowpipe, allowing you to create and manage Snowpipe objects in the emulator. You can use Snowpipe to load data into Snowflake tables from files stored in a local directory or a local/remote S3 bucket. The following operations are supported:
-
-* [`CREATE PIPE`](https://docs.snowflake.com/en/sql-reference/sql/create-pipe)
-* [`DESCRIBE PIPE`](https://docs.snowflake.com/en/sql-reference/sql/describe-pipe)
-* [`DROP PIPE`](https://docs.snowflake.com/en/sql-reference/sql/drop-pipe)
-* [`SHOW PIPES`](https://docs.snowflake.com/en/sql-reference/sql/show-pipes)
+The Snowflake emulator supports Snowpipe, allowing you to create and manage Snowpipe objects in the emulator. You can use Snowpipe to load data into Snowflake tables from files stored in a local directory or a local/remote S3 bucket.
 
 ## Getting started
 

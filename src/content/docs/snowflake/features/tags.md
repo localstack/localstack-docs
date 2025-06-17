@@ -7,12 +7,7 @@ description: Get started with Tags in LocalStack for Snowflake
 
 Snowflake tags allow you to categorize and manage Snowflake objects by associating custom metadata with them. These tags support governance, cost tracking, and data lineage by enabling organizations to label resources with business-relevant information.
 
-The Snowflake emulator supports tags, allowing you to apply these tags to the local Snowflake tables, views, and databases using the same commands and syntax as the Snowflake service. The following operations are supported:
-
--   [`CREATE TAG`](https://docs.snowflake.com/en/sql-reference/sql/create-tag)
--   [`SHOW TAGS`](https://docs.snowflake.com/en/sql-reference/sql/show-tags)
--   [`ALTER TAG`](https://docs.snowflake.com/en/sql-reference/sql/alter-tag)
--   [`DROP TAG`](https://docs.snowflake.com/en/sql-reference/sql/drop-tag)
+The Snowflake emulator supports tags, allowing you to apply these tags to the local Snowflake tables, views, and databases using the same commands and syntax as the Snowflake service.
 
 ## Getting started
 

@@ -7,10 +7,7 @@ description: Get started with Dynamic Tables in LocalStack for Snowflake
 
 Snowflake Dynamic Tables enable a background process to continuously load new data from sources into the table, supporting both delta and full load operations. A dynamic table automatically updates to reflect query results, removing the need for a separate target table and custom code for data transformation. This table is kept current through regularly scheduled refreshes by an automated process.
 
-The Snowflake emulator supports Dynamic tables, allowing you to create and manage Dynamic tables locally. The following operations are supported:
-
-* [`CREATE DYNAMIC TABLE`](https://docs.snowflake.com/en/sql-reference/sql/create-dynamic-table)
-* [`DROP DYNAMIC TABLE`](https://docs.snowflake.com/en/sql-reference/sql/drop-dynamic-table)
+The Snowflake emulator supports Dynamic tables, allowing you to create and manage Dynamic tables locally.
 
 ## Getting started
 
