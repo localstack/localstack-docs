@@ -4,8 +4,6 @@ description: This is a dummy description
 template: doc
 ---
 
-## Overview
-
 This table provides a list of all Snowflake system-defined SQL functions, scalar or table, emulated by LocalStack.
 The content will be updated as additional query features and functions are implemented.
 
