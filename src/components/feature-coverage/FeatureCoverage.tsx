@@ -20,64 +20,92 @@ import type { SortingState, ColumnDef, ColumnFiltersState } from "@tanstack/reac
 
 const columns: ColumnDef<any>[] = [
   {
-    accessorKey: "full_name",
-    header: () => "Service",
-    cell: ({ row }) => (
-      <a href={`/aws/${row.original.service}`}>{row.original.full_name}</a>
+    id: "operation",
+    accessorFn: (row) => (
+        Object.keys(row)[0]
     ),
+    header: () => "Operation",
     enableColumnFilter: true,
     filterFn: (row, columnId, filterValue) => {
-      return row.original.full_name
+      let operation = Object.keys(row.original)[0];
+      return operation
         .toLowerCase()
         .includes((filterValue ?? "").toLowerCase());
     },
     meta: { className: "w-1/3" },
   },
   {
-    accessorKey: "support",
-    header: () => "Supported",
-    cell: ({ row }) =>
-      row.original.support === "supported" ||
-      row.original.support === "supported with limitations"
-        ? "✔️"
-        : "",
-    meta: { className: "w-1/6" },
-    enableSorting: true,
-    sortingFn: (rowA, rowB) => {
-      // Sort supported to the top
-      const a = rowA.original.support;
-      const b = rowB.original.support;
-      if (a === b) return 0;
-      if (a === "supported") return -1;
-      if (b === "supported") return 1;
-      if (a === "supported with limitations") return -1;
-      if (b === "supported with limitations") return 1;
-      return a.localeCompare(b);
-    },
-  },
-  {
-    accessorKey: "test_suite",
-    header: () => "Persistence Test Suite",
-    cell: ({ row }) => (row.original.test_suite ? "✔️" : ""),
+    id: "implemented",
+    accessorFn: row => row[Object.keys(row)[0]].implemented,
+    header: () => "Implemented",
+    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
     meta: { className: "w-1/6" },
     enableSorting: true,
   },
   {
-    accessorKey: "limitations",
-    header: () => "Limitations",
-    cell: ({ row }) => row.original.limitations,
+    id: "image",
+    accessorFn: row => row[Object.keys(row)[0]].availability,
+    header: () => "Image",
+    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
+    meta: { className: "w-1/6" },
+    enableSorting: false,
+  },
+  {
+    id: "internal_test_suite",
+    accessorFn: row => row[Object.keys(row)[0]].internal_test_suite,
+    header: () => "Internal Test Suite",
+    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
+    enableSorting: false,
+    meta: { className: "whitespace-normal" },
+  },
+  {
+    id: "external_test_suite",
+    accessorFn: row => row[Object.keys(row)[0]].external_test_suite,
+    header: () => "External Test Suite",
+    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
+    enableSorting: false,
+    meta: { className: "whitespace-normal" },
+  },
+  {
+    id: "terraform_test_suite",
+    accessorFn: row => row[Object.keys(row)[0]].terraform_test_suite,
+    header: () => "Terraform Validated",
+    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
+    enableSorting: false,
+    meta: { className: "whitespace-normal" },
+  },
+  {
+    id: "aws_validated",
+    accessorFn: row => row[Object.keys(row)[0]].aws_validated,
+    header: () => "AWS Validated",
+    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
+    enableSorting: false,
+    meta: { className: "whitespace-normal" },
+  },
+  {
+    id: "snapshot_tested",
+    accessorFn: row => row[Object.keys(row)[0]].snapshot_tested,
+    header: () => "Snapshot Tested",
+    cell: ({ getValue }) => (getValue() ? "✔️" : ""),
     enableSorting: false,
     meta: { className: "whitespace-normal" },
   },
 ];
 
 export default function PersistenceCoverage({service}: {service: string}) {
-  const data = jsonData[`/src/data/coverage/${service}.json`];
-  const coverage = Object.values(data);
+  const [coverage, setCoverage] = React.useState<any[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([
-    { id: "full_name", desc: false },
+    { id: "operation", desc: false },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+
+  React.useEffect(() => {
+    const loadData = async () => {
+      const moduleData = await jsonData[`/src/data/coverage/${service}.json`]() as { default: Record<string, any> };
+      setCoverage(moduleData.default.operations);
+    };
+    loadData();
+  }, [service]);
 
   const table = useReactTable({
     data: coverage,
@@ -99,12 +127,12 @@ export default function PersistenceCoverage({service}: {service: string}) {
       <div style={{ marginBottom: 12, marginTop: 12 }}>
         <input
           type="text"
-          placeholder="Filter by service name..."
+          placeholder="Filter by operation name..."
           value={
-            table.getColumn("full_name")?.getFilterValue() as string || ""
+            table.getColumn("operation")?.getFilterValue() as string || ""
           }
           onChange={e =>
-            table.getColumn("full_name")?.setFilterValue(e.target.value)
+            table.getColumn("operation")?.setFilterValue(e.target.value)
           }
           className="border rounded px-2 py-1 w-full max-w-xs"
         />
