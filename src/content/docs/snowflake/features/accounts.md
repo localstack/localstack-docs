@@ -47,7 +47,7 @@ You can also specify the account for Snowflake drivers that let you connect with
 
 Example establishing a JDBC connection:
 
-```
+```text
 jdbc:snowflake://snowflake.localhost.localstack.cloud:4566/?account=your_account
 ```
 

@@ -3,8 +3,6 @@ title: Hybrid Tables
 description: Get started with Hybrid Tables in LocalStack for Snowflake
 ---
 
-
-
 ## Introduction
 
 Snowflake Hybrid tables, also known as Unistore hybrid tables, support fast, single-row operations by enforcing unique constraints for required primary keys and including indexes to speed up data retrieval. These tables are designed to optimize support for both analytical and transactional workloads simultaneously, underpinning Snowflake's Unistore architecture.

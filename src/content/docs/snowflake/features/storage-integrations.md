@@ -3,8 +3,6 @@ title: Storage Integrations
 description: Get started with Storage Integrations in LocalStack for Snowflake
 ---
 
-
-
 ## Introduction
 
 Snowflake storage integrations enable access to external cloud storage like Amazon S3, Google Cloud Storage, and Azure Blob Storage. They manage authentication through generated IAM roles, enhancing security and simplifying data operations without exposing sensitive credentials. This approach centralizes and controls access, streamlining workflows across major cloud platforms.
@@ -26,7 +24,7 @@ In this guide, you will create a Snowflake Storage Integration with Amazon S3 an
 You can create a local S3 bucket using the `mb` command with the `awslocal` CLI.
 
 ```bash
-$ awslocal s3 mb s3://testbucket
+awslocal s3 mb s3://testbucket
 ```
 
 Upload some sample CSV file into the S3 bucket using the following command:

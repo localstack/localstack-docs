@@ -2,8 +2,7 @@
 title: Stages
 description: Get started with Stages in LocalStack for Snowflake
 ---
-
-
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -60,14 +59,22 @@ FILE_FORMAT = csv;
 
 In this example, you can upload the CSV files to the table stage provided for `employees` table.
 
-{{< tabpane >}}
-{{< tab header="Linux/macOS" lang="sql" >}}
+
+<Tabs>
+   <TabItem label="Linux/macOS">
+   ```sql
 PUT file://./employees0*.csv @@employees_stage AUTO_COMPRESS=TRUE;
-{{< /tab >}}
-{{< tab header="Windows" lang="sql" >}}
+```
+</TabItem>
+   <TabItem label="Windows">
+   ```sql
 PUT file://C:\temp\employees0*.csv @@employees_stage AUTO_COMPRESS=TRUE;
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
+
+
+
 
 The expected output is:
 
@@ -87,10 +94,10 @@ The expected output is:
 
 You can also load data from an S3 bucket using the `CREATE STAGE` command. Create a new S3 bucket named `testbucket` and upload the [employees CSV files](./getting-started.zip) to the bucket. You can use LocalStack's `awslocal` CLI to create the S3 bucket and upload the files.
 
-{{< command >}}
+```bash
 awslocal s3 mb s3://testbucket
 awslocal s3 cp employees0*.csv s3://testbucket
-{{< /command >}}
+```
 
 In this example, you can create a stage called `my_s3_stage` to load data from an S3 bucket:
 

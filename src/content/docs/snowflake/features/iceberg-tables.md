@@ -3,8 +3,6 @@ title: Iceberg Tables
 description: This is a dummy description.
 ---
 
-
-
 ## Introduction
 
 Iceberg tables uses [Apache Iceberg](https://iceberg.apache.org/) open table format specification to provide an abstraction layer on data files stored in open formats. Iceberg tables for Snowflake offer schema evolution, partitioning, and snapshot isolation to manage the table data efficiently.
@@ -81,6 +79,6 @@ The output should be:
 
 You can also list the content of the S3 bucket:
 
-{{< command >}}
-$ awslocal s3 ls --recursive s3://test-bucket/
-{{< / command >}}
+```bash
+awslocal s3 ls --recursive s3://test-bucket/
+```

@@ -66,14 +66,14 @@ You can access the Native App by visiting your preferred browser and navigating 
 https://snowflake.localhost.localstack.cloud:4566/apps/test/test/TASKS_STREAMS_APP_username/
 ```
 
-{{< alert title="Note" >}}
+:::note
 The URL above is an example. Change the outputted URL by:
 
 1.  Replacing `https://app.snowflake.com` with `https://snowflake.localhost.localstack.cloud:4566`.
 2.  Changing the path structure from `/#/apps/application/` to `/apps/test/test/`.
 
 You can make additional changes depending on your local setup.
-{{< /alert >}}
+:::
 
 The following app should be displayed:
 

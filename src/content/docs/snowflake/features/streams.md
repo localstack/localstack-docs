@@ -3,8 +3,6 @@ title: Streams
 description: Get started with Streams in LocalStack for Snowflake
 ---
 
-
-
 ## Introduction
 
 Streams allow you to track changes made to a table. Streams capture changes made to a table, such as inserts, updates, and deletes, and store the changes in a log that you can query to see what changes have been made. 
