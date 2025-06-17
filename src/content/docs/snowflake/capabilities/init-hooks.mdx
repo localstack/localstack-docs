@@ -3,8 +3,8 @@ title: Initialization Hooks
 description: Writing SQL scripts to initialize your Snowflake emulator
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
- 
 ## Introduction
 
 LocalStack for Snowflake supports automatically executing `*.sf.sql` files via [Init Hooks](https://docs.localstack.cloud/references/init-hooks/) when mounted into the Docker container. A script can be added to one of these stages in the lifecycle:
@@ -28,8 +28,9 @@ SHOW DATABASES;
 
 Mount the script into `/etc/localstack/init/ready.d/` using Docker Compose or the `localstack` CLI:
 
-{{< tabpane >}}
-{{< tab header="docker-compose.yml" lang="yml" >}}
+<Tabs>
+<TabItem label="docker-compose.yml">
+```yaml
 version: "3.8"
 
 services:
@@ -47,13 +48,17 @@ services:
       - "/path/to/test.sf.sql:/etc/localstack/init/ready.d/test.sf.sql"  # ready hook
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-{{< /tab >}}
-{{< tab header="CLI" lang="bash" >}}
+```
+</TabItem>
+<TabItem label="CLI">
+```bash
 # DOCKER_FLAGS are additional parameters to the `docker run` command of localstack start
-
-DOCKER_FLAGS='-v /path/to/test.sf.sql:/etc/localstack/init/ready.d/test.sf.sql' DEBUG=1 localstack start
-{{< /tab >}}
-{{< /tabpane >}}
+DOCKER_FLAGS='-v /path/to/test.sf.sql:/etc/localstack/init/ready.d/test.sf.sql' \
+DEBUG=1 \
+localstack start
+```
+</TabItem>
+</Tabs>
 
 Start the Snowflake emulator, and the following logs will appear:
 

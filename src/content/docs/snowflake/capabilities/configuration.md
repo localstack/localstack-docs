@@ -6,16 +6,13 @@ nav:
 label: 
 ---
 
-
-
-
 LocalStack exposes various configuration options to control its behaviour.
 
 These options can be passed to LocalStack as environment variables like so:
 
-{{< command >}}
-$ DEBUG=1 localstack start
-{{< / command >}}
+```bash
+DEBUG=1 localstack start
+```
 
 ## Core
 
@@ -72,42 +69,41 @@ A configuration profile is a set of environment variables stored in a `*.env` fi
 
 Here is an example of what configuration profiles might look like:
 
-{{< command >}}
+```bash
 $ tree ~/.localstack
 /home/username/.localstack
 ├── default.env
 ├── dev.env
 └── pro.env
-{{< / command >}}
+```
 
 Here is an example of what a specific environment profile looks like
 
-{{< command >}}
+```bash
 $ cat ~/.localstack/pro-debug.env
 LOCALSTACK_AUTH_TOKEN=XXXXX
 SF_LOG=trace
 SF_S3_ENDPOINT=s3.localhost.localstack.cloud:4566
-{{< / command >}}
+```
 
 You can load a profile by either setting the environment variable `CONFIG_PROFILE=<profile>` or the `--profile=<profile>` CLI flag when using the CLI.
 Let's take an example to load the `dev.env` profile file if it exists:
 
-{{< command >}}
-$ IMAGE_NAME=localstack/snowflake localstack --profile=dev start
-{{< / command >}}
+```bash
+IMAGE_NAME=localstack/snowflake localstack --profile=dev start
+```
 
 If no profile is specified, the `default.env` profile will be loaded.
 If explicitly specified, any environment variables will overwrite the configurations defined in the profile.
 
 To display the config environment variables, you can use the following command:
 
-{{< command >}}
-$ localstack --profile=dev config show
-{{< / command >}}
+```bash
+localstack --profile=dev config show
+```
 
-{{< alert title="Note" >}}
+:::note
 The `CONFIG_PROFILE` is a CLI feature and cannot be used directly with a docker-compose setup.
 You can look at [alternative means of setting environment variables](https://docs.docker.com/compose/environment-variables/set-environment-variables/) for your Docker Compose setups.
 For Docker setups, we recommend passing the environment variables directly to the `docker run` command.
-{{< /alert >}}
-
+:::

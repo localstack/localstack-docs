@@ -3,7 +3,7 @@ title: State Management
 description: Get started with State Management in LocalStack for Snowflake
 ---
 
-
+import { Tabs, TabItem } from '@astrojs/starlight/components'; 
 
 ## Introduction
 
@@ -22,11 +22,17 @@ LocalStack’s Persistence mechanism enables the saving and restoration of the e
 
 To start snapshot-based persistence, launch LocalStack with the configuration option `PERSISTENCE=1`. This setting instructs LocalStack to save all local Snowflake resources and their respective application states into the LocalStack Volume Directory. Upon restarting LocalStack, you'll be able to resume your activities exactly where you left off.
 
-{{< tabpane >}}
-{{< tab header="LocalStack CLI" lang="bash" >}}
-LOCALSTACK_AUTH_TOKEN=... PERSISTENCE=1 IMAGE_NAME=localstack/snowflake localstack start
-{{< /tab >}}
-{{< tab header="Docker Compose" lang="yaml" >}}
+<Tabs>
+<TabItem label="LocalStack CLI">
+```bash
+LOCALSTACK_AUTH_TOKEN=... \
+PERSISTENCE=1 \
+IMAGE_NAME=localstack/snowflake \
+localstack start
+```
+</TabItem>
+<TabItem label="Docker Compose">
+```yaml
     ...
     image: localstack/snowflake
     environment:
@@ -34,22 +40,25 @@ LOCALSTACK_AUTH_TOKEN=... PERSISTENCE=1 IMAGE_NAME=localstack/snowflake localsta
       - PERSISTENCE=1
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-{{< /tab >}}
-{{< tab header="Docker" lang="bash" >}}
+```
+</TabItem>
+<TabItem label="Docker">
+```bash
 docker run \
   -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} \
   -e PERSISTENCE=1 \
   -v ./volume:/var/lib/localstack \
   -p 4566:4566 \
   localstack/snowflake
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
-{{< alert title="Note">}}
+:::note
 Snapshots may not be compatible across different versions of LocalStack.
 It is possible that snapshots from older versions can be restored, but there are no guarantees as to whether LocalStack will start into a consistent state.
 We are actively working on a solution for this problem.
-{{< /alert >}}
+:::
 
 ## Export/Import State
 
@@ -59,9 +68,9 @@ The Export/Import State feature enables you to export the state of your LocalSta
 
 To export the state, you can run the following command:
 
-{{< command >}}
-$ localstack state export '<file-name>'
-{{< /command >}}
+```bash
+localstack state export '<file-name>'
+```
 
 You can use the `<file-name>` argument to specify a file path to export the state to. If you do not specify a file path, the state will be exported to the current working directory into a file named `ls-state-export`.
 
@@ -69,8 +78,8 @@ You can use the `<file-name>` argument to specify a file path to export the stat
 
 To import the state, you can run the following command:
 
-{{< command >}}
-$ localstack state import '<file-name>'
-{{< /command >}}
+```bash
+localstack state import '<file-name>'
+```
 
 The `<file-name>` argument is required and specifies the file path to import the state from. The file should be generated from a previous export.
