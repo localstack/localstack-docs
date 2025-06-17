@@ -4,8 +4,6 @@ description: Get started with LocalStack for Snowflake in a few simple steps
 template: doc
 ---
 
-
-
 ## Introduction
 
 This guide explains how to set up the Snowflake emulator and develop a Python program using the Snowflake Connector for Python (`snowflake-connector-python`) to interact with emulated Snowflake running on your local machine.
@@ -21,19 +19,22 @@ This guide explains how to set up the Snowflake emulator and develop a Python pr
 
 Before you begin, pull the Snowflake emulator image (`localstack/snowflake`) and start the container:
 
-{{< command >}}
-$ export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-$ IMAGE_NAME=localstack/snowflake:latest localstack start
-{{< / command >}}
+```bash
+export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
+IMAGE_NAME=localstack/snowflake:latest localstack start
+```
 
 Check the emulator's availability by running:
 
-{{< command >}}
-$ curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
-<disable-copy>
+```bash
+curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
+```
+
+The response should be:
+
+```bash
 {"success": true}
-</disable-copy>
-{{< / command >}}
+```
 
 ### Connect to the Snowflake emulator
 
@@ -90,9 +91,9 @@ This program creates a table named `ability`, inserts rows, and fetches the resu
 
 Execute the Python program with:
 
-{{< command >}}
-$ python main.py
-{{< / command >}}
+```bash
+python main.py
+```
 
 The output should be:
 
@@ -122,9 +123,9 @@ Verify the results by navigating to the LocalStack logs:
 
 To stop LocalStack and remove locally created resources, use:
 
-{{< command >}}
-$ localstack stop
-{{< / command >}}
+```bash
+localstack stop
+```
 
 LocalStack is ephemeral and doesn't persist data across restarts. It runs inside a Docker container, and once it’s stopped, all locally created resources are automatically removed. In a future release of the Snowflake emulator, we will provide proper persistence and integration with our [Cloud Pods](https://docs.localstack.cloud/user-guide/state-management/cloud-pods/) feature as well.
 

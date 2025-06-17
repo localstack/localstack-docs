@@ -4,9 +4,6 @@ description: Frequently asked questions about LocalStack for Snowflake
 template: doc
 ---
 
-
-
-
 ## FAQs
 
 ### Are Snowflake v2 APIs supported?

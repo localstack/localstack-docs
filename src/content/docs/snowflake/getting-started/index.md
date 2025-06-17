@@ -4,17 +4,15 @@ description: Basic installation guide to get started with LocalStack for Snowfla
 template: doc
 ---
 
-
-
 ## Introduction
 
 You can use the Snowflake Docker image to run the Snowflake emulator.
 The Snowflake Docker image is available on the [LocalStack Docker Hub](https://hub.docker.com/r/localstack/snowflake).
 To pull the Snowflake Docker image, execute the following command:
 
-{{< command >}}
-$ docker pull localstack/snowflake
-{{< / command >}}
+```bash
+docker pull localstack/snowflake
+```
 
 You can start the Snowflake Docker container using the following methods:
 
@@ -22,32 +20,32 @@ You can start the Snowflake Docker container using the following methods:
 2. [`docker` CLI](https://docs.docker.com/get-docker/)
 2. [Docker Compose](https://docs.docker.com/compose/install/)
 
-{{<alert type="info">}}
+:::note
 Before starting, ensure you have a valid `LOCALSTACK_AUTH_TOKEN` to access the Snowflake emulator. Refer to the [Auth Token guide](https://docs.localstack.cloud/getting-started/auth-token/) to obtain your Auth Token and specify it in the `LOCALSTACK_AUTH_TOKEN` environment variable.
-{{</alert>}}
+:::
 
 ### `localstack` CLI
 
 To start the Snowflake Docker container using the `localstack` CLI, execute the following command:
 
-{{< command >}}
-$ export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-$ IMAGE_NAME=localstack/snowflake localstack start
-{{< / command >}}
+```bash
+export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
+IMAGE_NAME=localstack/snowflake localstack start
+```
 
 ### `docker` CLI
 
 To start the Snowflake Docker container using the `docker` CLI, execute the following command:
 
-{{< command >}}
-$ docker run \
+```bash
+docker run \
     --rm -it \
     -p 127.0.0.1:4566:4566 \
     -p 127.0.0.1:4510-4559:4510-4559 \
     -p 127.0.0.1:443:443 \
     -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} \
     localstack/snowflake
-{{< / command >}}
+```
 
 ### Docker Compose
 
@@ -72,9 +70,9 @@ services:
 
 Start the Snowflake Docker container with the following command:
 
-{{< command >}}
-$ docker-compose up
-{{< / command >}}
+```bash
+docker-compose up
+```
 
 ## Updating
 
@@ -86,10 +84,15 @@ To update the Snowflake Docker container, pull the latest image and restart the 
 
 You can check if the Snowflake emulator is running by executing the following command:
 
-{{< command >}}
-$ curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
+```bash
+curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
+```
+
+The response should be:
+
+```bash
 {"success": true}
-{{< / command >}}
+```
 
 ### How to enable detailed debug logs?
 
@@ -98,18 +101,18 @@ You can set the `SF_LOG=trace` environment variable in the Snowflake container t
 When using `docker-compose` then simply add this variable to the `environment` section of the YAML configuration file.
 If you're starting up via the `localstack start` CLI, then make sure to start up via the following configuration: 
 
-{{< command >}}
-$ DOCKER_FLAGS='-e SF_LOG=trace' DEBUG=1 IMAGE_NAME=localstack/snowflake localstack start
-{{< / command >}}
+```bash
+DOCKER_FLAGS='-e SF_LOG=trace' DEBUG=1 IMAGE_NAME=localstack/snowflake localstack start
+```
 
 ### The `snowflake.localhost.localstack.cloud` hostname doesn't resolve on my machine, what can I do?
 
 On some systems, including some newer versions of MacOS, the domain name `snowflake.localhost.localstack.cloud` may not resolve properly.
 If you are encountering network issues and your Snowflake client drivers are unable to connect to the emulator, you may need to manually add the following entry to your `/etc/hosts` file:
 
-{{< command >}}
+```bash
 127.0.0.1	snowflake.localhost.localstack.cloud
-{{< / command >}}
+```
 
 ## Next steps
 
