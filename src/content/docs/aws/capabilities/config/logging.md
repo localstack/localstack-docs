@@ -63,5 +63,5 @@ With Docker/Docker-Compose, you can run `docker ps` to get the container ID of t
 
 To view the logs via a user interface, you can use the following options:
 
-- [LocalStack Desktop](https://docs.localstack.cloud/user-guide/tools/localstack-desktop/)
-- [LocalStack Docker Extension](https://docs.localstack.cloud/user-guide/tools/localstack-docker-extension/)
+- [LocalStack Desktop](/aws/capabilities/web-app/localstack-desktop/)
+- [LocalStack Docker Extension](/aws/tooling/localstack-docker-extension/)
