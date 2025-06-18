@@ -11,7 +11,7 @@ Custom Single-Sign On (SSO) Identity providers, can be enabled to facilitate the
 In order to configure SSO access, first sign in to the LocalStack Web application under [app.localstack.cloud](https://app.localstack.cloud/).
 In your profile settings, navigate to the Single Sign-on tab which will list existing SSO Identity Providers (if any exist).
 
-<img src="localstack-setting-sso.png" width="800px" alt="Adding SSO Identity providers in LocalStack Settings">
+![Adding SSO Identity providers in LocalStack Settings](/images/aws/localstack-setting-sso.png)
 
 Next, click the button to create a new identity provider (IdP), where you can choose between the two leading industry standards:
 
@@ -26,7 +26,7 @@ In the form illustrated below, you can then enter the main information for the n
 - Client ID, Client Secret, Attributes request method, OIDC issues, Authorize scopes, and more.
   - You should be able to find these attributes in your OIDC IdP configuration.
 
-<img src="oidc-sso.png" width="600px" alt="Configuring SSO using OpenID Connect (OIDC)">
+![Configuring SSO using OpenID Connect (OIDC)](/images/aws/oidc-sso.png)
 
 ## Configuring SSO using SAML
 
@@ -35,7 +35,7 @@ The SAML metadata file can be specified either via URL or via a file upload.
 
 Select **Enable IdP sign out flow** if you want your users to be logged out from our app and your SAML IdP when they log out from your our Web Application.
 
-<img src="saml-sso.png" width="600px" alt="Configuring SSO using SAML">
+![Configuring SSO using SAML](/images/aws/saml-sso.png)
 
 ## Attribute mapping
 
@@ -49,7 +49,7 @@ The following user attribute mappings can currently be configured:
 
 The Email should be configured to ensure correct functionality.
 
-<img src="attribute-mapping.png" width="600px" alt="Attribute Mapping">
+![Attribute Mapping](/images/aws/attribute-mapping.png)
 
 ## Callback URL, Sign Up Portal URL and Identifier (Entity Id)
 
@@ -60,7 +60,7 @@ After configuring the base details for your Identity Provider (IdP), the followi
 - **Sign Up Portal URL**: This is the URL that can be shared with your users to start the SSO signup flow for the LocalStack Web Application.
   The format of this endpoint is `https://app.localstack.cloud/auth/sso/<organizationId>/<ssoName>`
 
-<img src="additional-information-page.png" width="600px" alt="Callback URL, Sign Up Portal URL, and Identifier (Entity Id)">
+![Callback URL, Sign Up Portal URL, and Identifier (Entity Id)](/images/aws/additional-information-page.png)
 
 ## User Roles and Permissions
 
@@ -70,4 +70,5 @@ For each new member that joins your org, you can specify user roles and permissi
 - **Default User Permissions**: Use this to define which permissions should be assigned to users of your organization signing up via SSO.
   - Tip: In order to enable self-serve licences (i.e., allowing your users to allocate themselves their own license), make sure to select the **Allow member to issue a license for themselves (or a legacy API key)** permission.
 
-<img src="roles-permissions.png" width="600px" alt="User Roles and Permissions">
+
+![User Roles and Permissions](/images/aws/roles-permissions.png)

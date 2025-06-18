@@ -28,9 +28,7 @@ Currently, the **customer portal** is only **available to Enterprise customers**
 
 You can find the customer portal here: [https://support.localstack.cloud/portal](https://support.localstack.cloud/portal)
 
-<p>
-{{< img src="customer-portal.png" alt="Customer portal for enterprise support" class="img-fluid shadow rounded" width="800px" >}}
-</p>
+![Customer portal for enterprise support](/images/aws/customer-portal.png)
 
 ## Signing up for Enterprise Support
 
@@ -45,9 +43,7 @@ Once you do so, you will be able to log in and start using the customer portal t
 You can open a new ticket with LocalStack support by going to the **Create a Support Ticket** link.
 You will be redirected to a form where you will have to provide certain information to file a new support ticket.
 
-<p>
-{{< img src="file-a-support-ticket.png" alt="Filing a support ticket" class="img-fluid shadow rounded" width="800px" >}}
-</p>
+![Filing a support ticket](/images/aws/file-a-support-ticket.png)
 
 The form consists of two parts.
 One is basic information, which is mandatory to fill out, and additional information, which adds more context to your issue but is not mandatory.
