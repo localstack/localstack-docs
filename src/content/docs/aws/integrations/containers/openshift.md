@@ -16,14 +16,12 @@ This guide demonstrates how you can deploy LocalStack on OpenShift using Devfile
 You can use the deployed LocalStack container to create AWS resources that you can use for local development and testing purposes.
 
 :::danger
-
 Creating shared/hosted LocalStack instances may have some licensing implications.
 For example, a valid license might be necessary for each user who interacts with the instance.
 If you have any questions or uncertainties regarding the licensing implications, we encourage you to [contact us](https://localstack.cloud/contact) for further details.
 :::
 
 :::note
-
 LocalStack on OpenShift can be used in conjunction with the [LocalStack Community image](https://hub.docker.com/r/localstack/localstack).
 However, specific features such as execution of Lambda functions as OpenShift pods and other container workloads is only available in the [LocalStack Pro image](https://hub.docker.com/r/localstack/localstack-pro).
 :::
@@ -42,7 +40,6 @@ You can deploy LocalStack via the **Developer** perspective in the OpenShift Web
 Navigate to the **+Add** view to deploy LocalStack using a Devfile.
 
 ![OpenShift Developer perspective](/images/aws/openshift-developer-view.png)
-<br></br>
 
 To deploy LocalStack on OpenShift, click on **Import from Git** in the **Git Repository** tile.
 In the Git section, enter the following Git repository URL to import the Devfile and Helm charts which contains the configuration for LocalStack: [**https://github.com/localstack/localstack-dev-spaces**](https://github.com/localstack/localstack-dev-spaces).
@@ -59,7 +56,6 @@ Click on **Create** to deploy LocalStack on OpenShift.
 You can see the build status of the LocalStack deployment in the **Topology** view.
 
 ![OpenShift Topology view](/images/aws/openshift-topology-view.png)
-<br></br>
 
 After successful deployment, you can see the **localstack-dev-spaces** pod in the **Topology** view.
 Click on the pod to view the details.
@@ -71,7 +67,6 @@ You will be able to see the following details:
 - Exposed routes for your deployed pods on the cluster.
 
 ![LocalStack Dev Spaces Deployment](/images/aws/localstack-dev-spaces.png)
-<br></br>
 
 ### Creating AWS resources on OpenShift
 
@@ -91,7 +86,6 @@ In the above commands, replace `<localstack-route-url>` with the route URL of th
 The `AWS_ENDPOINT_URL` environment variable is used to specify the endpoint URL of the LocalStack container.
 
 :::note
-
 By default, the endpoint URL for `awslocal` is `http://localhost:4566`.
 Since we are running LocalStack on OpenShift, we need to specify the route URL of the LocalStack container.
 You can swap `awslocal` with the AWS CLI, by specifying the additional `--endpoint-url` parameter.
