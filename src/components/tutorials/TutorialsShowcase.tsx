@@ -96,7 +96,9 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
   }, [tutorials, services]);
 
   const uniquePlatforms = useMemo(() => {
-    const allPlatforms = new Set(tutorials.flatMap(tutorial => tutorial.platform));
+    const allPlatforms = new Set(tutorials.flatMap(tutorial => 
+      tutorial.platform.map(p => p.toLowerCase()) // Convert to lowercase
+    ));
     return Array.from(allPlatforms).sort((a, b) => (platforms[a] || a).localeCompare(platforms[b] || b));
   }, [tutorials, platforms]);
 
@@ -121,7 +123,7 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
 
       // Other filters
       if (filters.services.length > 0 && !filters.services.some(service => tutorial.services.includes(service))) return false;
-      if (filters.platforms.length > 0 && !filters.platforms.some(platform => tutorial.platform.includes(platform))) return false;
+      if (filters.platforms.length > 0 && !filters.platforms.some(platform => tutorial.platform.map(p => p.toLowerCase()).includes(platform))) return false;
       if (filters.deployments.length > 0 && !filters.deployments.some(deployment => tutorial.deployment.includes(deployment))) return false;
       if (filters.showProOnly && !tutorial.pro) return false;
 
@@ -510,7 +512,10 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           
           <select 
             value={filters.services[0] || ''} 
-            onChange={(e) => e.target.value ? toggleFilter('services', e.target.value) : null}
+            onChange={(e) => setFilters(prev => ({ 
+              ...prev, 
+              services: e.target.value ? [e.target.value] : [] 
+            }))}
             className="filter-select"
           >
             <option value="">Services</option>
@@ -523,7 +528,10 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
 
           <select 
             value={filters.platforms[0] || ''} 
-            onChange={(e) => e.target.value ? toggleFilter('platforms', e.target.value) : null}
+            onChange={(e) => setFilters(prev => ({ 
+              ...prev, 
+              platforms: e.target.value ? [e.target.value] : [] 
+            }))}
             className="filter-select"
           >
             <option value="">Languages</option>
@@ -536,7 +544,10 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
 
           <select 
             value={filters.deployments[0] || ''} 
-            onChange={(e) => e.target.value ? toggleFilter('deployments', e.target.value) : null}
+            onChange={(e) => setFilters(prev => ({ 
+              ...prev, 
+              deployments: e.target.value ? [e.target.value] : [] 
+            }))}
             className="filter-select"
           >
             <option value="">Deployment</option>
