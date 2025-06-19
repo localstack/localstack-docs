@@ -26,7 +26,7 @@ You can save and load the persistent state of Cloud Pods, you can use the [Cloud
 LocalStack provides a remote storage backend that can be used to store the state of your running application and share it with your team members.
 You can interact with the Cloud Pods over the storage backend via the LocalStack Web Application.
 
-Cloud Pods CLI is included in the [LocalStack CLI installation](https://docs.localstack.cloud/getting-started/installation/#localstack-cli), so there's no need for additional installations to begin using it.
+Cloud Pods CLI is included in the [LocalStack CLI installation](/aws/getting-started/installation/#installing-localstack-cli), so there's no need for additional installations to begin using it.
 If you're a licensed user, we suggest setting the `LOCALSTACK_AUTH_TOKEN` as an environment variable.
 This enables you to access the complete range of LocalStack Cloud Pods features.
 
@@ -197,7 +197,7 @@ localstack state inspect --format json
 }
 ```
 
-For comprehensive instructions, navigate to our [Command-Line Interface (CLI) Guide](/aws/capabilities/state-management/cli-commands).
+For comprehensive instructions, navigate to our [Command-Line Interface (CLI) Guide](/aws/capabilities/state-management/cli-commands/).
 To access your Cloud Pods through the LocalStack Web Application, navigate to the [Cloud Pods browser](https://app.localstack.cloud/pods).
 
 :::note
@@ -284,7 +284,7 @@ In addition to loading Cloud Pods through the Command-Line Interface (CLI) or th
 
 ### Environmental variables
 
-To automatically load a Cloud Pod at startup, utilize the `AUTO_LOAD_POD` [configuration variable](https://docs.localstack.cloud/references/configuration/).
+To automatically load a Cloud Pod at startup, utilize the `AUTO_LOAD_POD` [configuration variable](/aws/capabilities/config/configuration/).
 
 `AUTO_LOAD_POD` can accept multiple Cloud Pod names separated by commas.
 To autoload multiple Cloud Pods, such as `foo-pod` and `bar-pod`, use: `AUTO_LOAD_POD=foo-pod,bar-pod`.
@@ -448,7 +448,7 @@ localstack pod list s3-storage-aws
 
 :::note
 Full S3 remotes support is available in the CLI from version 3.2.0.
-If you experience any difficulties, update your [LocalStack CLI](https://docs.localstack.cloud/getting-started/installation/#updating).
+If you experience any difficulties, update your [LocalStack CLI](/aws/getting-started/installation/#updating-localstack-cli).
 :::
 
 ### ORAS remote storage
@@ -519,7 +519,7 @@ services:
 :::note
 The Auto Load from remote feature does not automatically configure the remote.
 This needs to be done with the `localstack pod remote add ...` command.
-This commands creates a configuration file for the remote in the [LocalStack volume directory](https://docs.localstack.cloud/references/filesystem/#localstack-volume).
+This commands creates a configuration file for the remote in the [LocalStack volume directory](/aws/capabilities/config/filesystem-layout/#localstack-volume-directory).
 :::
 
 ## End-to-End Encryption (Enterprise)
@@ -572,7 +572,7 @@ The process is the following:
 Unless explicitly specified, all Cloud Pods commands default to targeting the LocalStack Platform as the storage remote.
 It's important to note that the CLI must be authenticated correctly with our Platform.
 
-Custom remote configurations are stored within the [LocalStack volume directory](https://docs.localstack.cloud/references/filesystem/#localstack-volume-directory) and are managed by the LocalStack container.
+Custom remote configurations are stored within the [LocalStack volume directory](/aws/capabilities/config/filesystem-layout/#localstack-volume-directory) and are managed by the LocalStack container.
 Consequently, when sharing Cloud Pods among your team using a custom remote, each team member must define the identical remote configuration.
 Once added, a remote persists even after LocalStack restarts.
 
@@ -711,3 +711,33 @@ An error occurred while checking remote management for pod "cloud-pod-product-ap
 Check if your machine's clock is set incorrectly or if the certificate store is outdated.
 This error can also occur if you use `localstack` as `LOCALSTACK_HOST`.
 In this case, the DNS incorrectly resolves `api.localstack.cloud` to `localhost`, causing a certificate mismatch.
+
+### `InvalidAccessKeyId` during `CreateBucket` API call
+
+You may see this error:
+
+```bash
+An error occurred (InvalidAccessKeyId) when calling the CreateBucket operation: The AWS Access Key Id you provided does not exist in our records.
+```
+
+This usually means you're using temporary AWS credentials, but `AWS_SESSION_TOKEN` is missing from the environment.
+
+To fix this, ensure that you export the `AWS_SESSION_TOKEN` environment variable:
+
+```bash
+export AWS_SESSION_TOKEN=...
+```
+
+Then, add `session_token` to the `pod remote add` URL:
+
+```bash
+localstack pod remote add s3-storage-aws 's3://ls-pods-bucket-test/?access_key_id={access_key_id}&secret_access_key={secret_access_key}&session_token={session_token}'
+```
+
+If you're still unable to connect to the S3 bucket, add the bucket hostname to the upstream DNS resolution list:
+
+```bash
+DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM=ls-pods-bucket-test.s3.amazonaws.com/
+```
+
+For more details, see the [Skip LocalStack DNS Resolution](/aws/tooling/dns-server/#skip-localstack-dns-resolution) section. 
