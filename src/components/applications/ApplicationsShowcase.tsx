@@ -208,7 +208,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           onChange={(e) => e.target.value ? toggleFilter('services', e.target.value) : null}
           className="filter-select"
         >
-          <option value="">All Services</option>
+          <option value="">Services</option>
           {uniqueServices.map((service) => (
             <option key={service} value={service}>
               {services[service] || service}
@@ -221,7 +221,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           onChange={(e) => e.target.value ? toggleFilter('platforms', e.target.value) : null}
           className="filter-select"
         >
-          <option value="">All Languages</option>
+          <option value="">Languages</option>
           {uniquePlatforms.map((platform) => (
             <option key={platform} value={platform}>
               {platforms[platform] || platform}
@@ -234,7 +234,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           onChange={(e) => e.target.value ? toggleFilter('deployments', e.target.value) : null}
           className="filter-select"
         >
-          <option value="">All Deployment</option>
+          <option value="">Deployment</option>
           {uniqueDeployments.map((deployment) => (
             <option key={deployment} value={deployment}>
               {deployments[deployment] || deployment}
@@ -247,7 +247,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           onChange={(e) => e.target.value ? toggleFilter('complexities', e.target.value) : null}
           className="filter-select"
         >
-          <option value="">All Complexity</option>
+          <option value="">Complexity</option>
           {uniqueComplexities.map((complexity) => (
             <option key={complexity} value={complexity}>
               {complexities.data[complexity] || complexity}
