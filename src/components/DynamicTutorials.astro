@@ -14,7 +14,7 @@ const allTutorials = await getCollection('docs', ({ id }) => {
 const tutorialData = allTutorials.map(tutorial => {
   const title = tutorial.data.title || 'Unknown Tutorial';
   const description = tutorial.data.description || `Tutorial: ${title}`;
-  const slug = tutorial.slug ? tutorial.slug.replace('aws/tutorials/', '') : '';
+  const slug = tutorial.id; // Use id instead of slug for proper path
   
   return {
     title,
