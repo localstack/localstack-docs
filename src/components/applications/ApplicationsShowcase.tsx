@@ -186,125 +186,457 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
     searchTerm.length > 0;
 
   return (
-    <div className="applications-showcase">
-      <div className="top-bar">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search applications..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          {searchTerm && (
-            <button onClick={() => setSearchTerm('')} className="search-clear">
-              ×
+    <>
+      <style>{`
+        /* Clean Applications Showcase */
+        .applications-showcase {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 1rem;
+        }
+
+        /* Top Bar */
+        .top-bar {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+          margin-bottom: 1.5rem;
+          padding: 1rem;
+          background: var(--sl-color-bg-sidebar);
+          border: 1px solid var(--sl-color-gray-6);
+          border-radius: 0.5rem;
+          flex-wrap: wrap;
+        }
+
+        .search-container {
+          position: relative;
+          flex: 1;
+          min-width: 300px;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid var(--sl-color-gray-5);
+          border-radius: 0.375rem;
+          background: var(--sl-color-bg);
+          color: var(--sl-color-white);
+          font-size: 0.875rem;
+        }
+
+        .search-input:focus {
+          outline: none;
+          border-color: var(--sl-color-accent);
+        }
+
+        .search-clear {
+          position: absolute;
+          right: 0.75rem;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          color: var(--sl-color-gray-3);
+          font-size: 1.25rem;
+          cursor: pointer;
+          width: 1.5rem;
+          height: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .search-clear:hover {
+          color: var(--sl-color-white);
+        }
+
+        .filter-select {
+          padding: 0.75rem;
+          border: 1px solid var(--sl-color-gray-5);
+          border-radius: 0.375rem;
+          background: var(--sl-color-bg);
+          color: var(--sl-color-white);
+          font-size: 0.875rem;
+          min-width: 140px;
+        }
+
+        .filter-select:focus {
+          outline: none;
+          border-color: var(--sl-color-accent);
+        }
+
+        .pro-toggle {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.875rem;
+          color: var(--sl-color-white);
+          cursor: pointer;
+          white-space: nowrap;
+        }
+
+        .sort-select {
+          padding: 0.75rem;
+          border: 1px solid var(--sl-color-gray-5);
+          border-radius: 0.375rem;
+          background: var(--sl-color-bg);
+          color: var(--sl-color-white);
+          font-size: 0.875rem;
+          min-width: 120px;
+        }
+
+        .clear-filters {
+          background: var(--sl-color-accent);
+          color: white;
+          border: none;
+          padding: 0.75rem 1rem;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+
+        .clear-filters:hover {
+          background: var(--sl-color-accent-high);
+        }
+
+        .results-info {
+          margin-bottom: 1rem;
+          color: var(--sl-color-gray-2);
+          font-size: 0.875rem;
+        }
+
+        /* Applications Grid */
+        .applications-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 1.5rem;
+        }
+
+        /* Application Cards */
+        .app-card {
+          background: var(--sl-color-bg-sidebar);
+          border: 1px solid var(--sl-color-gray-6);
+          border-radius: 0.75rem;
+          overflow: hidden;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .app-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-image {
+          position: relative;
+          width: 100%;
+          height: 180px;
+          overflow: hidden;
+        }
+
+        .card-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .card-badges {
+          position: absolute;
+          top: 0.75rem;
+          right: 0.75rem;
+          display: flex;
+          gap: 0.5rem;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+
+        .pro-badge {
+          background: var(--sl-color-accent);
+          color: white;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        .complexity-badge {
+          background: rgba(255, 255, 255, 0.9);
+          color: var(--sl-color-gray-6);
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: capitalize;
+        }
+
+        .card-content {
+          padding: 1.25rem;
+        }
+
+        .card-title {
+          margin: 0 0 0.75rem 0;
+          font-size: 1.125rem;
+          font-weight: 700;
+          color: var(--sl-color-white);
+          line-height: 1.3;
+        }
+
+        .card-description {
+          margin: 0 0 1.25rem 0;
+          color: var(--sl-color-gray-2);
+          line-height: 1.5;
+          font-size: 0.875rem;
+        }
+
+        .card-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .service-icons {
+          display: flex;
+          gap: 0.375rem;
+          align-items: center;
+          flex-wrap: wrap;
+          flex: 1;
+        }
+
+        .service-icon {
+          width: 1.75rem;
+          height: 1.75rem;
+          padding: 0.125rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+        }
+
+        .service-icon:hover {
+          transform: scale(1.1);
+        }
+
+        .service-icon img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+
+        .service-more {
+          padding: 0.25rem 0.5rem;
+          background: var(--sl-color-bg);
+          border: 1px solid var(--sl-color-gray-6);
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          color: var(--sl-color-gray-3);
+        }
+
+        .card-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: white;
+          text-decoration: none;
+          font-weight: 500;
+          font-size: 0.875rem;
+          padding: 0.5rem 0.75rem;
+          border-radius: 0.375rem;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+        }
+
+        .card-link:hover {
+          color: var(--sl-color-accent);
+        }
+
+        /* No Results */
+        .no-results {
+          grid-column: 1 / -1;
+          text-align: center;
+          padding: 3rem 1rem;
+          color: var(--sl-color-gray-2);
+        }
+
+        .no-results h3 {
+          margin: 0 0 0.5rem 0;
+          color: var(--sl-color-white);
+        }
+
+        .no-results p {
+          margin: 0 0 1.5rem 0;
+        }
+
+        .reset-button {
+          background: var(--sl-color-accent);
+          color: white;
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: 0.375rem;
+          cursor: pointer;
+        }
+
+        .reset-button:hover {
+          background: var(--sl-color-accent-high);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .applications-showcase {
+            padding: 0 0.75rem;
+          }
+
+          .top-bar {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .search-container {
+            min-width: auto;
+            flex: none;
+          }
+
+          .filter-select,
+          .sort-select {
+            min-width: auto;
+          }
+
+          .applications-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .card-footer {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+          }
+
+          .service-icons {
+            justify-content: center;
+          }
+        }
+      `}</style>
+      
+      <div className="applications-showcase">
+        <div className="top-bar">
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search applications..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            {searchTerm && (
+              <button onClick={() => setSearchTerm('')} className="search-clear">
+                ×
+              </button>
+            )}
+          </div>
+          
+          <select 
+            value={filters.services[0] || ''} 
+            onChange={(e) => e.target.value ? toggleFilter('services', e.target.value) : null}
+            className="filter-select"
+          >
+            <option value="">Services</option>
+            {uniqueServices.map((service) => (
+              <option key={service} value={service}>
+                {services[service] || service}
+              </option>
+            ))}
+          </select>
+
+          <select 
+            value={filters.platforms[0] || ''} 
+            onChange={(e) => e.target.value ? toggleFilter('platforms', e.target.value) : null}
+            className="filter-select"
+          >
+            <option value="">Languages</option>
+            {uniquePlatforms.map((platform) => (
+              <option key={platform} value={platform}>
+                {platforms[platform] || platform}
+              </option>
+            ))}
+          </select>
+
+          <select 
+            value={filters.deployments[0] || ''} 
+            onChange={(e) => e.target.value ? toggleFilter('deployments', e.target.value) : null}
+            className="filter-select"
+          >
+            <option value="">Deployment</option>
+            {uniqueDeployments.map((deployment) => (
+              <option key={deployment} value={deployment}>
+                {deployments[deployment] || deployment}
+              </option>
+            ))}
+          </select>
+
+          <select 
+            value={filters.complexities[0] || ''} 
+            onChange={(e) => e.target.value ? toggleFilter('complexities', e.target.value) : null}
+            className="filter-select"
+          >
+            <option value="">Complexity</option>
+            {uniqueComplexities.map((complexity) => (
+              <option key={complexity} value={complexity}>
+                {complexities.data[complexity] || complexity}
+              </option>
+            ))}
+          </select>
+
+          <label className="pro-toggle">
+            <input
+              type="checkbox"
+              checked={filters.showProOnly}
+              onChange={(e) => setFilters(prev => ({ ...prev, showProOnly: e.target.checked }))}
+            />
+            Pro Only
+          </label>
+          
+          <select 
+            value={sortBy} 
+            onChange={(e) => setSortBy(e.target.value as 'title' | 'complexity')}
+            className="sort-select"
+          >
+            <option value="title">A-Z</option>
+            <option value="complexity">By Complexity</option>
+          </select>
+
+          {hasActiveFilters && (
+            <button onClick={clearAllFilters} className="clear-filters">
+              Clear
             </button>
           )}
         </div>
-        
-        <select 
-          value={filters.services[0] || ''} 
-          onChange={(e) => e.target.value ? toggleFilter('services', e.target.value) : null}
-          className="filter-select"
-        >
-          <option value="">Services</option>
-          {uniqueServices.map((service) => (
-            <option key={service} value={service}>
-              {services[service] || service}
-            </option>
+
+        <div className="results-info">
+          {filteredApplications.length} application{filteredApplications.length !== 1 ? 's' : ''}
+        </div>
+
+        <div className="applications-grid">
+          {filteredApplications.map((app, index) => (
+            <ApplicationCard
+              key={`${app.title}-${index}`}
+              app={app}
+              services={services}
+              platforms={platforms}
+              deployments={deployments}
+            />
           ))}
-        </select>
-
-        <select 
-          value={filters.platforms[0] || ''} 
-          onChange={(e) => e.target.value ? toggleFilter('platforms', e.target.value) : null}
-          className="filter-select"
-        >
-          <option value="">Languages</option>
-          {uniquePlatforms.map((platform) => (
-            <option key={platform} value={platform}>
-              {platforms[platform] || platform}
-            </option>
-          ))}
-        </select>
-
-        <select 
-          value={filters.deployments[0] || ''} 
-          onChange={(e) => e.target.value ? toggleFilter('deployments', e.target.value) : null}
-          className="filter-select"
-        >
-          <option value="">Deployment</option>
-          {uniqueDeployments.map((deployment) => (
-            <option key={deployment} value={deployment}>
-              {deployments[deployment] || deployment}
-            </option>
-          ))}
-        </select>
-
-        <select 
-          value={filters.complexities[0] || ''} 
-          onChange={(e) => e.target.value ? toggleFilter('complexities', e.target.value) : null}
-          className="filter-select"
-        >
-          <option value="">Complexity</option>
-          {uniqueComplexities.map((complexity) => (
-            <option key={complexity} value={complexity}>
-              {complexities.data[complexity] || complexity}
-            </option>
-          ))}
-        </select>
-
-        <label className="pro-toggle">
-          <input
-            type="checkbox"
-            checked={filters.showProOnly}
-            onChange={(e) => setFilters(prev => ({ ...prev, showProOnly: e.target.checked }))}
-          />
-          Pro Only
-        </label>
-        
-        <select 
-          value={sortBy} 
-          onChange={(e) => setSortBy(e.target.value as 'title' | 'complexity')}
-          className="sort-select"
-        >
-          <option value="title">A-Z</option>
-          <option value="complexity">By Complexity</option>
-        </select>
-
-        {hasActiveFilters && (
-          <button onClick={clearAllFilters} className="clear-filters">
-            Clear
-          </button>
-        )}
+          
+          {filteredApplications.length === 0 && (
+            <div className="no-results">
+              <h3>No applications found</h3>
+              <p>Try adjusting your search or filters.</p>
+              <button onClick={clearAllFilters} className="reset-button">
+                Reset filters
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-
-      <div className="results-info">
-        {filteredApplications.length} application{filteredApplications.length !== 1 ? 's' : ''}
-      </div>
-
-      <div className="applications-grid">
-        {filteredApplications.map((app, index) => (
-          <ApplicationCard
-            key={`${app.title}-${index}`}
-            app={app}
-            services={services}
-            platforms={platforms}
-            deployments={deployments}
-          />
-        ))}
-        
-        {filteredApplications.length === 0 && (
-          <div className="no-results">
-            <h3>No applications found</h3>
-            <p>Try adjusting your search or filters.</p>
-            <button onClick={clearAllFilters} className="reset-button">
-              Reset filters
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 }; 
