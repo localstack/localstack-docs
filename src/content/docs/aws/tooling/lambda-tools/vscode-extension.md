@@ -14,7 +14,7 @@ sidebar:
 
 - [VS Code](https://code.visualstudio.com/)
 - [`samlocal`](https://github.com/localstack/aws-sam-cli-local) command line wrapper around the [AWS SAM CLI](https://github.com/aws/aws-sam-cli) for use with [LocalStack](https://github.com/localstack/localstack).
-- [LocalStack](https://docs.localstack.cloud/getting-started/) running in the background.
+- [LocalStack](/aws/getting-started/) running in the background.
 
 ## Getting Started
 
