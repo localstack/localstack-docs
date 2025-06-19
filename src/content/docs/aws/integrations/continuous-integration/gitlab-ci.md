@@ -13,21 +13,19 @@ This page contains easily customisable snippets to show you how to manage LocalS
 ### Start up Localstack
 
 :::tip
-
 While working with a Docker-in-Docker (`dind`) setup, the Docker runner requires `privileged` mode.
 You must always use `privileged = true` in your GitLab CI's `config.toml` file while setting up LocalStack in GitLab CI runners.
 For more information, see [GitLab CI Docker-in-Docker](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor) documentation.
 :::
 
-{/*TODO: transform this into a proper collapsable item*/}
-{/*
+
 <details>
 <summary>For LocalStack versions before 3.0.0</summary>
 Under test>variables, add:<br>
 LOCALSTACK_HOSTNAME: localhost.localstack.cloud<br>
 HOSTNAME_EXTERNAL: localhost.localstack.cloud.
 </details>
-*/}
+
 #### Service
 
 ```yaml
