@@ -62,7 +62,7 @@ const TutorialCard: React.FC<{
           </div>
           
           <a 
-            href={`/${tutorial.slug}`}
+            href={`/${tutorial.slug}/`}
             className="card-link"
           >
             Read Tutorial →
