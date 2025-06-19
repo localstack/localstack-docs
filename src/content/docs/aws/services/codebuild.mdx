@@ -4,6 +4,8 @@ description: Get started with CodeBuild on LocalStack
 tags: ["Base"]
 ---
 
+import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+
 import { FileTree } from '@astrojs/starlight/components';
 
 ## Introduction
@@ -12,7 +14,7 @@ AWS CodeBuild is a fully managed continuous integration service that compiles so
 It is part of the [AWS Developer Tools suite](https://aws.amazon.com/products/developer-tools/) and integrates with other AWS services to provide an end-to-end development pipeline.
 
 LocalStack supports the emulation of most of the CodeBuild operations.
-The supported operations are listed on the [API coverage page]().
+The supported operations are listed on the [API Coverage section](#api-coverage).
 
 AWS CodeBuild emulation is powered by the [AWS CodeBuild agent](https://docs.aws.amazon.com/codebuild/latest/userguide/use-codebuild-agent.html).
 
@@ -371,3 +373,7 @@ awslocal s3 ls s3://codebuild-demo-output
 - CodeBuild currently only supports S3, NO_SOURCE, and CODEPIPELINE as [project source](https://docs.aws.amazon.com/codebuild/latest/APIReference/API_ProjectSource.html).
 - CodeBuild only uses Amazon Linux as the build environment for a build project.
 - Communication with the LocalStack container within the build environment is possible only via the host network, by using the Gateway IP address (typically 172.17.0.1) or `host.docker.internal` if running on MacOS.
+
+## API Coverage
+
+<FeatureCoverage service="codebuild" client:load />

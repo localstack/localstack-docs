@@ -122,6 +122,18 @@ This section covers configuration options that are specific to certain AWS servi
 | - | - | - |
 | `PROVIDER_OVERRIDE_CLOUDWATCH` | `v1` | Use the old CloudWatch provider. |
 
+### CodeBuild
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `CODEBUILD_REMOVE_CONTAINERS` | `0`\|`1` (default) | Remove Docker containers associated with a CodeBuild build tasks after execution. Disabling this and dumping container logs might help with troubleshooting failing builds. |
+
+### CodePipeline
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `CODEPIPELINE_GH_TOKEN` | | GitHub Personal Access Token to used by CodeConnections Source action to access private repositories on GitHub. |
+
 ### DMS
 
 | Variable | Example Values | Description |
@@ -224,6 +236,9 @@ Also see [OpenSearch configuration variables](#opensearch) which are used to man
 | `KINESIS_SHARD_LIMIT` | `100` (default), `Infinity` (to disable) | Integer value , causing the Kinesis API to start throwing exceptions to mimic the default shard limit. |
 | `KINESIS_ON_DEMAND_STREAM_COUNT_LIMIT` | `10` (default), `Infinity` (to disable) | Integer value , causing the Kinesis API to start throwing exceptions to mimic the default on demand stream count limit. |
 | `KINESIS_LATENCY` | `500` (default), `0` (to disable)| Integer value of milliseconds, causing the Kinesis API to delay returning a response in order to mimic latency from a live AWS call. |
+| `KINESIS_MOCK_PROVIDER_ENGINE` | `node` (default) \| `scala` | String value of `node` (default) or `scala` that determines the underlying build of Kinesis Mock. |
+| `KINESIS_MOCK_MAXIMUM_HEAP_SIZE` | `512m` (default) | JVM memory format string that sets the maximum memory size for the Kinesis Mock Scala server, corresponds to the JVM `-Xmx` flag. |
+| `KINESIS_MOCK_INITIAL_HEAP_SIZE` | `256m` (default) | JVM memory format string that sets the initial memory size for the Kinesis Mock Scala server, corresponds to the JVM `-Xms` flag. | 
 
 ### Lambda
 
@@ -304,11 +319,12 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | Variable | Example Values | Description |
 | - | - | - |
 | `RDS_CLUSTER_ENDPOINT_HOST_ONLY` | `1` (default) \| `0` | Whether the cluster endpoint returns the host only (which is AWS parity). If set to `0` it will return `<host>:<port>`. |
-| `RDS_PG_CUSTOM_VERSIONS`         | `0` \| `1` (default) | Whether to install and use custom Postgres versions for RDS (or alternatively, use default version 11). |
+| `RDS_PG_CUSTOM_VERSIONS`         | `0` \| `1` (default) | Whether to install and use custom Postgres versions for RDS (or alternatively, use default version 15). |
 | `RDS_MYSQL_DOCKER`               | `1` (default) \| `0` | Whether to disable MySQL engines (and use MariaDB instead). MySQL engine for cluster/instances will start in a new docker container. If you have troubles running MySQL in docker, you can disable the feature. |
 | `MYSQL_IMAGE`                    | `mysql:8.0`       | Defines a specific MySQL image that should be used when spinning up the MySQL engine. Only available if `RDS_MYSQL_DOCKER` is enabled. |
 | `MSSQL_IMAGE`                    | `mcr.microsoft.com/mssql/server:2022-latest` | Defines a specific image that should be used when spinning up a SQL server engine. |
 | `MSSQL_ACCEPT_EULA`              | `Y`     | Set to `Y` if you accept the [EULA from MSSQL](https://hub.docker.com/_/microsoft-mssql-server). |
+| `RDS_PG_MAX_CONNECTIONS` | `0` (default) | Sets the maximum number of connections for Postgres RDS instances. |
 
 ### S3
 
@@ -329,10 +345,16 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | - | - | - |
 | `SQS_DELAY_PURGE_RETRY` | `0` (default) | Used to toggle PurgeQueueInProgress errors when making more than one PurgeQueue call within 60 seconds. |
 | `SQS_DELAY_RECENTLY_DELETED` | `0` (default) | Used to toggle QueueDeletedRecently errors when re-creating a queue within 60 seconds of deleting it. |
-| `SQS_ENABLE_MESSAGE_RETENTION_PERIOD`| `0` (default) \| `1` | Used to toggle the MessageRetentionPeriod feature (see [Enabling `MessageRetentionPeriod`](https://docs.localstack.cloud/user-guide/aws/sqs/#enabling-messageretentionperiod) |
-| `SQS_ENDPOINT_STRATEGY`| `standard` (default) \| `domain` \| `path` \| `off` | Configures the format of Queue URLs (see [SQS Queue URLs](https://docs.localstack.cloud/user-guide/aws/sqs/#queue-urls) |
+| `SQS_ENABLE_MESSAGE_RETENTION_PERIOD`| `0` (default) \| `1` | Used to toggle the MessageRetentionPeriod feature (see [Enabling `MessageRetentionPeriod`](/aws/sqs/#enabling-messageretentionperiod) |
+| `SQS_ENDPOINT_STRATEGY`| `standard` (default) \| `domain` \| `path` \| `off` | Configures the format of Queue URLs (see [SQS Queue URLs](/aws/sqs/#queue-urls) |
 | `SQS_DISABLE_CLOUDWATCH_METRICS` | `0` (default) | Disables the CloudWatch Metrics for SQS when set to `1` |
 | `SQS_CLOUDWATCH_METRICS_REPORT_INTERVAL` | `60` (default) | Configures the report interval (in seconds) for `Approximate*` metrics that are sent to CloudWatch periodically. Sending will be disabled if `SQS_DISABLE_CLOUDWATCH_METRICS=1` |
+
+### Step Functions
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `SFN_MOCK_CONFIG` | `/tmp/MockConfigFile.json` | Specifies the file path to the mock configuration file that defines mock service integrations for Step Functions. |
 
 ## Security
 
@@ -492,9 +514,9 @@ These configurations have already been removed and **won't have any effect** on 
 | `DATA_DIR`| 2.0.0 | blank (disabled/default), `/tmp/localstack/data` |  Local directory for saving persistent data. Use `PERSISTENCE` instead. |
 | `DISABLE_TERM_HANDLER` | 2.0.0 | `""` (default) \| `1` | Whether to disable signal passing to LocalStack when running in docker. Enabling this will prevent an orderly shutdown when running inside LS in docker. Setting this to anything else than an empty string will disable it.
 | `HOST_TMP_FOLDER` | 2.0.0 | `/some/path` |  Temporary folder on the host that gets mounted as `$TMPDIR/localstack` into the LocalStack container. Required only for Lambda volume mounts when using `LAMBDA_REMOTE_DOCKER=false.` |
-| `INIT_SCRIPTS_PATH` | 2.0.0 | `/some/path` | Before 1.0, this was used to configure the path to the initializing files with extensions `.sh` that were found in `/docker-entrypoint-initaws.d`. This has been replaced by the [init-hook system](https://docs.localstack.cloud/references/init-hooks/). |
+| `INIT_SCRIPTS_PATH` | 2.0.0 | `/some/path` | Before 1.0, this was used to configure the path to the initializing files with extensions `.sh` that were found in `/docker-entrypoint-initaws.d`. This has been replaced by the [init-hook system](/aws/capabilities/config/initialization-hooks/). |
 | `LEGACY_DIRECTORIES` | 2.0.0 | `0` (default) | Use legacy method of managing internal filesystem layout. See [Filesystem Layout](/aws/capabilities/config/filesystem-layout). |
-| `LEGACY_INIT_DIR` | 2.0.0 | `1` \| `0`(default) | Used with `INIT_SCRIPTS_PATH`. This has been replaced by the [init-hook system](https://docs.localstack.cloud/references/init-hooks/). |
+| `LEGACY_INIT_DIR` | 2.0.0 | `1` \| `0`(default) | Used with `INIT_SCRIPTS_PATH`. This has been replaced by the [init-hook system](/aws/capabilities/config/initialization-hooks). |
 | `MULTI_ACCOUNTS` | 2.0.0 | `0` (default) | Enable multi-accounts (preview) |
 | `SQS_PROVIDER` | 2.0.0 |  `moto` (default) and `elasticmq` | |
 | `SYNCHRONOUS_API_GATEWAY_EVENTS` | 2.0.0 | `1` (default) \| `0` | Whether or not to handle API Gateway Lambda event sources as synchronous invocations. |

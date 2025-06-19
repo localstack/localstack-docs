@@ -14,7 +14,7 @@ sidebar:
 
 - [VS Code](https://code.visualstudio.com/)
 - [`samlocal`](https://github.com/localstack/aws-sam-cli-local) command line wrapper around the [AWS SAM CLI](https://github.com/aws/aws-sam-cli) for use with [LocalStack](https://github.com/localstack/localstack).
-- [LocalStack](https://docs.localstack.cloud/getting-started/) running in the background.
+- [LocalStack](/aws/getting-started/) running in the background.
 
 ## Getting Started
 
@@ -22,11 +22,11 @@ You can use a [sample project](https://github.com/joe4dev/lambda-python) to get 
 The sample project contains a simple Lambda function and a SAM template.
 Clone the repository and open the project in VSCode.
 
-{{< command >}}
-$ git clone https://github.com/joe4dev/lambda-python.git
-$ cd lambda-python
-$ code .
-{{< /command >}}
+```bash
+git clone https://github.com/joe4dev/lambda-python.git
+cd lambda-python
+code .
+```
 
 Install the [LocalStack VSCode Extension](https://marketplace.visualstudio.com/items?itemName=localstack.localstack) as recommended by the project.
 

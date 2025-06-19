@@ -244,7 +244,7 @@ The CLI manual for the `version` command is as follows:
 The `remote` command group lets you manage custom Cloud Pod remotes, to enable alternative storage backends in addition to the default LocalStack managed platform.
 It offers 3 commands: `add`, `delete`, and `list`.
 
-For more info about remote usage, check our [documentation](https://docs.localstack.cloud/user-guide/cloud-pods/remotes/).
+For more info about remote usage, check our [documentation](/aws/capabilities/state-management/cloud-pods/#remotes).
 
 ```bash
 Usage: pod remote [OPTIONS] COMMAND [ARGS]...
@@ -315,7 +315,7 @@ Usage: state [OPTIONS] COMMAND [ARGS]...
   The state command group allows you to interact with LocalStack's state
   backend.
 
-  Read more: https://docs.localstack.cloud/references/persistence-mechanism/#snapshot-based-persistence
+  Read more: https://docs.localstack.cloud/aws/capabilities/state-management/persistence/
 
 Options:
   --help  Show this message and exit.
@@ -340,7 +340,7 @@ Usage: state export [OPTIONS] [DESTINATION]
 
   If you are looking for a managed solution to handle the state of your
   LocalStack container, please check out the Cloud Pods feature:
-  https://docs.localstack.cloud/user-guide/tools/cloud-pods/
+  https://docs.localstack.cloud/aws/capabilities/state-management/cloud-pods/
 
   Use the DESTINATION argument to specify an absolute path for the exported
   file or a filename in current working directory.

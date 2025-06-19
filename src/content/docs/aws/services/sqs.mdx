@@ -5,6 +5,8 @@ persistence: supported
 tags: ["Free"]
 ---
 
+import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+
 ## Introduction
 
 Simple Queue Service (SQS) is a managed messaging service offered by AWS.
@@ -12,7 +14,7 @@ It allows you to decouple different components of your applications by enabling 
 SQS allows you to reliably send, store, and receive messages with support for standard and FIFO queues.
 
 LocalStack allows you to use the SQS APIs in your local environment to integrate and decouple distributed systems via hosted queues.
-The supported APIs are available on our [API coverage page](), which provides information on the extent of SQS's integration with LocalStack.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of SQS's integration with LocalStack.
 
 ## Getting started
 
@@ -161,7 +163,7 @@ awslocal sqs send-message \
 
 Receive the message twice to provoke a move into the dead-letter queue:
 
-```bas
+```bash
 awslocal sqs receive-message \
     --visibility-timeout 0 \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue
@@ -694,3 +696,7 @@ The following code snippets and sample applications provide practical examples o
 ## Current Limitations
 
 - Updating a queue's `MessageRetentionPeriod` currently has no effect on existing messages
+
+## API Coverage
+
+<FeatureCoverage service="sqs" client:load />
