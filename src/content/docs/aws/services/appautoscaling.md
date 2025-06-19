@@ -1,6 +1,5 @@
 ---
 title: "Application Auto Scaling"
-linkTitle: "Application Auto Scaling"
 description: Get started with Application Auto Scaling on LocalStack
 tags: ["Base"]
 persistence: supported
@@ -14,7 +13,7 @@ With Application Auto Scaling, you can configure automatic scaling for services 
 Auto scaling uses CloudWatch under the hood to configure scalable targets which a service namespace, resource ID, and scalable dimension can uniquely identify.
 
 LocalStack allows you to use the Application Auto Scaling APIs in your local environment to scale different resources based on scaling policies and scheduled scaling.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_application-autoscaling" >}}), which provides information on the extent of Application Auto Scaling's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Application Auto Scaling's integration with LocalStack.
 
 ## Getting Started
 
@@ -39,16 +38,15 @@ exports.handler = async (event, context) => {
 
 Run the following command to create a new Lambda function using the [`CreateFunction`](https://docs.aws.amazon.com/cli/latest/reference/lambda/create-function.html) API:
 
-{{< command >}}
-$ zip function.zip index.js
-
-$ awslocal lambda create-function \
+```bash
+zip function.zip index.js
+awslocal lambda create-function \
     --function-name autoscaling-example \
     --runtime nodejs18.x \
     --zip-file fileb://function.zip \
     --handler index.handler \
     --role arn:aws:iam::000000000000:role/cool-stacklifter
-{{< /command >}}
+```
 
 ### Create a version and alias for your Lambda function
 
@@ -56,14 +54,14 @@ Next, you can create a version for your Lambda function and publish an alias.
 We will use the [`PublishVersion`](https://docs.aws.amazon.com/cli/latest/reference/lambda/publish-version.html) and [`CreateAlias`](https://docs.aws.amazon.com/cli/latest/reference/lambda/create-alias.html) APIs for this.
 Run the following commands:
 
-{{< command >}}
-$ awslocal lambda publish-version --function-name autoscaling-example
-$ awslocal lambda create-alias \
+```bash
+awslocal lambda publish-version --function-name autoscaling-example
+awslocal lambda create-alias \
     --function-name autoscaling-example \
     --description "alias for blue version of function" \
     --function-version 1 \
     --name BLUE
-{{< /command >}}
+```
 
 ### Register the Lambda function as a scalable target
 
@@ -72,20 +70,20 @@ We will specify the `--service-namespace` as `lambda`, `--scalable-dimension` as
 
 Run the following command to register the scalable target:
 
-{{< command >}}
-$ awslocal application-autoscaling register-scalable-target \
+```bash
+awslocal application-autoscaling register-scalable-target \
     --service-namespace lambda \
     --scalable-dimension lambda:function:ProvisionedConcurrency \
     --resource-id function:autoscaling-example:BLUE \
     --min-capacity 0 --max-capacity 0
-{{< /command >}}
+```
 
 ### Setting up a scheduled action
 
 You can create a scheduled action that scales out by specifying the `--schedule` parameter with a recurring schedule specified as a cron job.
 Run the following command to create a scheduled action using the [`PutScheduledAction`](https://docs.aws.amazon.com/cli/latest/reference/application-autoscaling/put-scheduled-action.html) API:
 
-{{< command >}}
+```bash
 awslocal application-autoscaling put-scheduled-action \
     --service-namespace lambda \
     --scalable-dimension lambda:function:ProvisionedConcurrency \
@@ -93,14 +91,14 @@ awslocal application-autoscaling put-scheduled-action \
     --scheduled-action-name lambda-action \
     --schedule "cron(*/2* ** *)" \
     --scalable-target-action MinCapacity=1,MaxCapacity=5
-{{< /command >}}
+```
 
 You can confirm if the scheduled action exists using [`DescribeScheduledActions`](https://docs.aws.amazon.com/cli/latest/reference/application-autoscaling/describe-scheduled-actions.html) API:
 
-{{< command >}}
-$ awslocal application-autoscaling describe-scheduled-actions \
+```bash
+awslocal application-autoscaling describe-scheduled-actions \
     --service-namespace lambda
-{{< /command >}}
+```
 
 ### Setting up a target tracking scaling policy
 
@@ -110,22 +108,21 @@ When metrics lack data due to minimal application load, Application Auto Scaling
 
 Run the following command to create a target-tracking scaling policy:
 
-{{< command >}}
-$ awslocal application-autoscaling put-scaling-policy \
+```bash
+awslocal application-autoscaling put-scaling-policy \
     --service-namespace lambda \
     --scalable-dimension lambda:function:ProvisionedConcurrency \
     --resource-id function:events-example:BLUE \
     --policy-name scaling-policy --policy-type TargetTrackingScaling \
     --target-tracking-scaling-policy-configuration '{ "TargetValue": 50.0, "PredefinedMetricSpecification": { "PredefinedMetricType": "predefinedmetric" }}'
-{{< /command >}}
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing AppConfig applications.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **Application Auto Scaling** under the **App Integration** section.
 
-<img src="application-auto-scaling-resource-browser.png" alt="Application Auto Scaling Resource Browser" title="Application Auto Scaling Resource Browser" width="900" />
-<br><br>
+![Application Auto Scaling Resource Browser](/images/aws/application-auto-scaling-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

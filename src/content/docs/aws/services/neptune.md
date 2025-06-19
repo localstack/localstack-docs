@@ -1,8 +1,6 @@
 ---
 title: "Neptune"
-linkTitle: "Neptune"
-description: >
-  Get started with Neptune on LocalStack
+description: Get started with Neptune on LocalStack
 tags: ["Ultimate"]
 ---
 
@@ -13,7 +11,7 @@ It is designed for storing and querying highly connected data for applications t
 Neptune supports popular graph query languages like Gremlin and SPARQL, making it compatible with a wide range of graph applications and tools.
 
 LocalStack allows you to use the Neptune APIs in your local environment  to support both property graph and RDF graph models.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_neptune" >}}), which provides information on the extent of Neptune's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Neptune's integration with LocalStack.
 
  The following versions of Neptune engine are supported by LocalStack:
 
@@ -52,11 +50,11 @@ We will demonstrate the following with AWS CLI & Python:
 To create a Neptune cluster you can use the [`CreateDBCluster`](https://docs.aws.amazon.com/neptune/latest/userguide/api-clusters.html#CreateDBCluster) API.
 Run the following command to create a Neptune cluster:
 
-{{< command >}}
-$ awslocal neptune create-db-cluster \
+```bash
+awslocal neptune create-db-cluster \
     --engine neptune \
     --db-cluster-identifier my-neptune-db
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -77,13 +75,13 @@ You should see the following output:
 To add an instance you can use the [`CreateDBInstance`](https://docs.aws.amazon.com/neptune/latest/userguide/api-instances.html#CreateDBInstance) API.
 Run the following command to create a Neptune instance:
 
-{{< command >}}
-$ awslocal neptune create-db-instance \
+```bash
+awslocal neptune create-db-instance \
     --db-cluster-identifier my-neptune-db \
     --db-instance-identifier my-neptune-instance \
     --engine neptune \
     --db-instance-class db.t3.medium
-{{< / command >}}
+```
 
 In LocalStack the `Endpoint` for the `DBCluster` and the `Endpoint.Address` of the `DBInstance` will be the same and can be used to connect to the graph database.
 
@@ -144,7 +142,7 @@ if __name__ == '__main__':
 
 Amazon Neptune resources with IAM DB authentication enabled require all requests to use AWS Signature Version 4.  
 
-When LocalStack starts with [IAM enforcement enabled]({{< ref "/user-guide/security-testing" >}}), the Neptune database checks user permissions before granting access.
+When LocalStack starts with [IAM enforcement enabled](/aws/capabilities/security-testing/iam-policy-enforcement), the Neptune database checks user permissions before granting access.
  The following Gremlin query actions are available for database engine versions `1.3.2.0` and higher:
 
 ```json
@@ -159,37 +157,44 @@ When LocalStack starts with [IAM enforcement enabled]({{< ref "/user-guide/secur
 
 Start LocalStack with `LOCALSTACK_ENFORCE_IAM=1` to create a Neptune cluster with IAM DB authentication enabled.
 
-{{< command >}}
-$ LOCALSTACK_ENFORCE_IAM=1 localstack start
-{{< /command >}}
+```bash
+LOCALSTACK_ENFORCE_IAM=1 localstack start
+```
 
 You can then create a cluster.
 
-{{< command >}}
-$ awslocal neptune create-db-cluster \
+```bash
+awslocal neptune create-db-cluster \
     --engine neptune \
     --db-cluster-identifier myneptune-db \
     --enable-iam-database-authentication
-{{< /command >}}
+```
 
 After the cluster is deployed, the Gremlin server will reject unsigned queries.
 
-{{< command >}}
-$ curl "https://localhost.localstack.cloud:4510/gremlin?gremlin=g.V()" -v
-<disable-copy>...
+```bash
+curl "https://localhost.localstack.cloud:4510/gremlin?gremlin=g.V()" -v
+```
+
+The output will be similar to the following:
+
+```bash
 - Request completely sent off
 < HTTP/1.1 403 Forbidden
 - no chunk, no close, no size.
   Assume close to signal end
 ...
-</disable-copy>
-{{< /command >}}
+```
 
 Use the Python package [awscurl](https://pypi.org/project/awscurl/) to make your first signed query.
 
-{{< command >}}
-$ awscurl "https://localhost.localstack.cloud:4510/gremlin?gremlin=g.V().count()" -H "Accept: application/json" | jq .
-<disable-copy>
+```bash
+awscurl "https://localhost.localstack.cloud:4510/gremlin?gremlin=g.V().count()" -H "Accept: application/json" | jq .
+```
+
+The output will be similar to the following:
+
+```json
 {
   "requestId": "729c3e7b-50b3-4df7-b0b6-d1123c4e81df",
   "status": {
@@ -216,25 +221,23 @@ $ awscurl "https://localhost.localstack.cloud:4510/gremlin?gremlin=g.V().count()
     }
   }
 }
-</disable-copy>
-{{< /command >}}
+```
 
-{{< callout "note" >}}
+:::note
 If Gremlin Server is installed in your LocalStack environment, you must delete it and restart LocalStack.
-You can find your LocalStack volume location on the [LocalStack filesystem documentation]({{< ref "/references/filesystem/#localstack-volume" >}}).
-{{< command >}}
-$ rm -rf <LocalStack Volume>/lib/tinkerpop
-{{< /command >}}
-{{< /callout >}}
+You can find your LocalStack volume location on the [LocalStack filesystem documentation](/aws/capabilities/config/filesystem/#localstack-volume).
+
+```bash
+rm -rf <LocalStack Volume>/lib/tinkerpop
+```
+:::
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing Neptune databases and clusters.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Neptune** under the **Database** section.
 
-<img src="neptune-resource-browser.png" alt="Neptune Resource Browser" title="Neptune Resource Browser" width="900" />
-<br>
-<br>
+![Neptune Resource Browser](/images/aws/neptune-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

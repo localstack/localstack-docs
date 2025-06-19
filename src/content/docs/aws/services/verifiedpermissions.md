@@ -1,6 +1,5 @@
 ---
 title: "Verified Permissions"
-linkTitle: "Verified Permissions"
 description: Get started with Verified Permissions on LocalStack
 tags: ["Ultimate"]
 ---
@@ -12,7 +11,7 @@ It helps secure applications by moving authorization logic outside the app and m
 It checks if a principal can take an action on a resource in a specific context in your application.
 
 LocalStack allows you to use the Verified Permissions APIs in your local environment to test your authorization logic, with integrations with other AWS services like Cognito.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_verifiedpermissions" >}}), which provides information on the extent of Verified Permissions' integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Verified Permissions' integration with LocalStack.
 
 ## Getting started
 
@@ -26,11 +25,11 @@ We will demonstrate how to create a Verified Permissions Policy Store, add a pol
 To create a Verified Permissions Policy Store, use the [`CreatePolicyStore`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicyStore.html) API.
 Run the following command to create a Policy Store with Schema validation settings set to `OFF`:
 
-{{< command >}}
-$ awslocal verifiedpermissions create-policy-store \
+```bash
+awslocal verifiedpermissions create-policy-store \
   --validation-settings mode=OFF \
   --description "A local Policy Store"
-{{< /command >}}
+```
 
 The above command returns the following response:
 
@@ -46,9 +45,9 @@ The above command returns the following response:
 You can list all the Verified Permissions policy stores using the [`ListPolicyStores`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicyStores.html) API.
 Run the following command to list all the Verified Permissions policy stores:
 
-{{< command >}}
-$ awslocal verifiedpermissions list-policy-stores
-{{< /command >}}
+```bash
+awslocal verifiedpermissions list-policy-stores
+```
 
 ### Create a Policy
 
@@ -66,11 +65,12 @@ Create a JSON file named `static_policy.json` with the following content:
 ```
 
 You can then run this command to create the policy:
-{{< command >}}
-$ awslocal verifiedpermissions create-policy \
+
+```bash
+awslocal verifiedpermissions create-policy \
     --definition file://static_policy.json \
     --policy-store-id q5PCScu9qo4aswMVc0owNN
-{{< /command >}}
+```
 
 Replace the policy store ID with the ID of the policy store you created previously.
 
@@ -106,13 +106,13 @@ You should see the following output:
 We can now make use of the Policy Store and the Policy to start authorizing requests.
 To authorize a request using Verified Permissions, use the [`IsAuthorized`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html) API.
 
-{{< command >}}
-$ awslocal verifiedpermissions is-authorized \
+```bash
+awslocal verifiedpermissions is-authorized \
   --policy-store-id q5PCScu9qo4aswMVc0owNN \
   --principal entityType=User,entityId=alice \
   --action actionType=Action,actionId=view \
   --resource entityType=Album,entityId=trip
-{{< /command >}}
+```
 
 You should get the following output, indicating that your request was allowed:
 

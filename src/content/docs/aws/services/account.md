@@ -1,24 +1,23 @@
 ---
 title: "Account Management"
-linkTitle: "Account Management"
 description: Get started with AWS Account Management on LocalStack
 tags: ["Ultimate"]
 ---
 
 ## Introduction
 
-The Account service provides APIs to manage your AWS account.
+Account service provides APIs to manage your AWS account.
 You can use the Account APIs to retrieve information about your account, manage your contact information and alternate contacts.
 Additionally, you can use the Account APIs to enable or disable a region for your account, and delete alternate contacts in your account.
 
 LocalStack allows you to use the Account API to retrieve information about your account.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_account" >}}), which provides information on the extent of Account's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Account's integration with LocalStack.
 
-{{< callout >}}
-LocalStack's Account provider is mock-only and does not support any real AWS account.
+:::note
+LocalStack's Account provider is mock-only and does not support connecting to any real AWS account.
 The Account APIs are only intended to demonstrate how you can use and mock the AWS Account APIs in your local environment.
 It's important to note that LocalStack doesn't offer a programmatic interface to manage your AWS or your LocalStack account.
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -32,8 +31,8 @@ We will demonstrate how to put contact information, fetch account details, and a
 You can use the [`PutContactInformation`](https://docs.aws.amazon.com/accounts/latest/reference/API_PutContactInformation.html) API to add or update the contact information for your AWS account.
 Run the following command to add contact information to your account:
 
-{{< command >}}
-$ awslocal account put-contact-information \
+```bash
+awslocal account put-contact-information \
     --contact-information '{
         "FullName": "Jane Doe",
         "PhoneNumber": "+XXXXXXXXX",
@@ -43,16 +42,16 @@ $ awslocal account put-contact-information \
         "CountryCode": "US",
         "StateOrRegion": "WA"
     }'
-{{< /command >}}
+```
 
 ### Fetch account details
 
 You can use the [`GetContactInformation`](https://docs.aws.amazon.com/accounts/latest/reference/API_GetContactInformation.html) API to retrieve the contact information for your AWS account.
 Run the following command to fetch the contact information for your account:
 
-{{< command >}}
-$ awslocal account get-contact-information
-{{< /command >}}
+```bash
+awslocal account get-contact-information
+```
 
 The command will return the contact information for your account:
 
@@ -75,22 +74,21 @@ The command will return the contact information for your account:
 You can attach an alternate contact using [`PutAlternateContact`](https://docs.aws.amazon.com/accounts/latest/reference/API_PutAlternateContact.html) API.
 Run the following command to attach an alternate contact to your account:
 
-{{< command >}}
-$ awslocal account put-alternate-contact \
+```bash
+awslocal account put-alternate-contact \
     --alternate-contact-type "BILLING" \
     --email-address "bill@ing.com" \
     --name "Bill Ing" \
     --phone-number "+1 555-555-5555" \
     --title "Billing"
-{{< /command >}}
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing contact information & alternate accounts for the Account service.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the Resources section, and then clicking on **Account** under the **Management & Governance** section.
 
-<img src="account-resource-browser.png" alt="Account Resource Browser" title="Account Resource Browser" width="900" />
-<br><br>
+![Account Resource Browser](/images/aws/account-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

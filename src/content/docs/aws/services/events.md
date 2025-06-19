@@ -1,6 +1,5 @@
 ---
 title: "EventBridge"
-linkTitle: "EventBridge"
 description: Get started with EventBridge on LocalStack
 persistence: supported with limitations
 tags: ["Free"]
@@ -14,12 +13,12 @@ EventBridge rules are tied to an Event Bus to manage event-driven workflows.
 You can use either identity-based or resource-based policies to control access to EventBridge resources, where the former can be attached to IAM users, groups, and roles, and the latter can be attached to specific AWS resources.
 
 LocalStack allows you to use the EventBridge APIs in your local environment to create rules that route events to a target.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_events" >}}), which provides information on the extent of EventBridge's integration with LocalStack.
-For information on EventBridge Pipes, please refer to the [EventBridge Pipes]({{< ref "user-guide/aws/pipes" >}}) section.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of EventBridge's integration with LocalStack.
+For information on EventBridge Pipes, please refer to the [EventBridge Pipes]() section.
 
-{{< callout >}}
+:::note
 The native EventBridge provider, introduced in [LocalStack 3.5.0](https://discuss.localstack.cloud/t/localstack-release-v3-5-0/947), is now the default in 4.0. The legacy provider can still be enabled using the `PROVIDER_OVERRIDE_EVENTS=v1` configuration, but it is deprecated and will be removed in the next major release. We strongly recommend migrating to the new provider.
-{{< /callout >}}
+:::
 
 ## Getting Started
 
@@ -44,16 +43,16 @@ exports.handler = (event, context, callback) => {
 
 Run the following command to create a new Lambda function using the [`CreateFunction`](https://docs.aws.amazon.com/cli/latest/reference/lambda/create-function.html) API:
 
-{{< command >}}
-$ zip function.zip index.js
+```bash
+zip function.zip index.js
 
-$ awslocal lambda create-function \
+awslocal lambda create-function \
     --function-name events-example \
     --runtime nodejs16.x \
     --zip-file fileb://function.zip \
     --handler index.handler \
     --role arn:aws:iam::000000000000:role/cool-stacklifter
-{{< /command >}}
+```
 
 The output will consist of the `FunctionArn`, which you will need to add the Lambda function to the EventBridge target.
 
@@ -61,25 +60,25 @@ The output will consist of the `FunctionArn`, which you will need to add the Lam
 
 Run the following command to create a new EventBridge rule using the [`PutRule`](https://docs.aws.amazon.com/cli/latest/reference/events/put-rule.html) API:
 
-{{< command >}}
-$ awslocal events put-rule \
+```bash
+awslocal events put-rule \
     --name my-scheduled-rule \
     --schedule-expression 'rate(2 minutes)'
-{{< /command >}}
+```
 
 In the above command, we have specified a schedule expression of `rate(2 minutes)`, which will run the rule every two minutes.
 It means that the Lambda function will be invoked every two minutes.
 
 Next, grant the EventBridge service principal (`events.amazonaws.com`) permission to run the rule, using the [`AddPermission`](https://docs.aws.amazon.com/cli/latest/reference/events/add-permission.html) API:
 
-{{< command >}}
-$ awslocal lambda add-permission \
+```bash
+awslocal lambda add-permission \
     --function-name events-example \
     --statement-id my-scheduled-event \
     --action 'lambda:InvokeFunction' \
     --principal events.amazonaws.com \
     --source-arn arn:aws:events:us-east-1:000000000000:rule/my-scheduled-rule
-{{< /command >}}
+```
 
 ### Add the Lambda Function as a Target
 
@@ -96,11 +95,11 @@ Create a file named `targets.json` with the following content:
 
 Finally, add the Lambda function as a target to the EventBridge rule using the [`PutTargets`](https://docs.aws.amazon.com/cli/latest/reference/events/put-targets.html) API:
 
-{{< command >}}
-$ awslocal events put-targets \
+```bash
+awslocal events put-targets \
     --rule my-scheduled-rule \
     --targets file://targets.json
-{{< /command >}}
+```
 
 ### Verify the Lambda invocation
 
@@ -109,27 +108,27 @@ However, wait at least 2 minutes after running the last command before checking 
 
 Run the following command to list the CloudWatch log groups:
 
-{{< command >}}
-$ awslocal logs describe-log-groups
-{{< /command >}}
+```bash
+awslocal logs describe-log-groups
+```
 
 The output will contain the log group name, which you can use to list the log streams:
 
-{{< command >}}
-$ awslocal logs describe-log-streams \
+```bash
+awslocal logs describe-log-streams \
     --log-group-name /aws/lambda/events-example
-{{< /command >}}
+```
 
 Alternatively, you can fetch LocalStack logs to verify the Lambda invocation:
 
-{{< command >}}
-$ localstack logs
+```bash
+localstack logs
 ...
 2023-07-17T09:37:52.028  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS lambda.Invoke => 202
 2023-07-17T09:37:52.106  INFO --- [   asgi_gw_0] localstack.request.http    : POST /_localstack_lambda/97e08ac50c18930f131d9dd9744b8df4/invocations/ecb744d0-b3f2-400f-9e49-c85cf12b1e00/logs => 202
 2023-07-17T09:37:52.114  INFO --- [   asgi_gw_0] localstack.request.http    : POST /_localstack_lambda/97e08ac50c18930f131d9dd9744b8df4/invocations/ecb744d0-b3f2-400f-9e49-c85cf12b1e00/response => 202
 ...
-{{< /command >}}
+```
 
 ## Supported target types
 
@@ -150,6 +149,8 @@ At this time LocalStack supports the following [target types](https://docs.aws.a
 
 The LocalStack Web Application provides a Resource Browser for managing EventBridge Buses.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **EventBridge** under the **App Integration** section.
+
+![EventBridge Resource Browser](/images/aws/eventbridge-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

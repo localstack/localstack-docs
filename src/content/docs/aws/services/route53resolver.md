@@ -1,6 +1,5 @@
 ---
 title: "Route 53 Resolver"
-linkTitle: "Route 53 Resolver"
 description: Get started with Route 53 Resolver on LocalStack
 persistence: supported
 tags: ["Free"]
@@ -13,7 +12,7 @@ Route 53 Resolver forwards DNS queries for domain names to the appropriate DNS s
 Route 53 Resolver can be used to resolve domain names between your VPC and your network, and to resolve domain names between your VPCs.
 
 LocalStack allows you to use the Route 53 Resolver endpoints in your local environment.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_route53resolver" >}}), which provides information on the extent of Route 53 Resolver's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Route 53 Resolver's integration with LocalStack.
 
 ## Getting started
 
@@ -26,15 +25,15 @@ We will demonstrate how to create a resolver endpoint, list the endpoints, and d
 
 Fetch the default VPC ID using the following command:
 
-{{< command >}}
-$ VPC_ID=$(awslocal ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId' --output text)
-{{< / command >}}
+```bash
+VPC_ID=$(awslocal ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId' --output text)
+```
 
 Fetch the default VPC's security group ID using the following command:
 
-{{< command >}}
-$ awslocal ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID --query 'Subnets[].SubnetId'
-{{< / command >}}
+```bash
+awslocal ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID --query 'Subnets[].SubnetId'
+```
 
 You should see the following output:
 
@@ -49,34 +48,48 @@ You should see the following output:
 ]
 ```
 
-Choose two subnets from the list above and fetch the CIDR block of the subnets which tells you the range of IP addresses within it:
+Choose two subnets from the list above and fetch the CIDR block of the subnets which tells you the range of IP addresses within it. Let's fetch the CIDR block of the subnet `subnet-957d6ba6`:
 
-{{< command >}}
-$ awslocal ec2 describe-subnets --subnet-ids subnet-957d6ba6 --query 'Subnets[*].CidrBlock'
-<disable-copy>
+```bash
+awslocal ec2 describe-subnets --subnet-ids subnet-957d6ba6 --query 'Subnets[*].CidrBlock'
+```
+
+The following output would be retrieved:
+
+```bash
 [
     "172.31.16.0/20"
 ]
-</disable-copy>
-$ awslocal ec2 describe-subnets --subnet-ids subnet-bdd58a47 --query 'Subnets[*].CidrBlock'
-<disable-copy>
+```
+
+Similarly, fetch the CIDR block of the subnet `subnet-bdd58a47`:
+
+```bash
+awslocal ec2 describe-subnets --subnet-ids subnet-bdd58a47 --query 'Subnets[*].CidrBlock'
+```
+
+The following output would be retrieved:
+
+```bash
 [
     "172.31.0.0/20"
 ]
-</disable-copy>
-{{< / command >}}
+```
 
 Save the CIDR blocks of the subnets as you will need them later.
 Lastly fetch the security group ID of the default VPC:
 
-{{< command >}}
-$ awslocal ec2 describe-security-groups \
+```bash
+awslocal ec2 describe-security-groups \
     --filters Name=vpc-id,Values=$VPC_ID \
     --query 'SecurityGroups[0].GroupId'
-<disable-copy>
+```
+
+The following output would be retrieved:
+
+```bash
 sg-39936e572e797b360
-</disable-copy>
-{{< / command >}}
+```
 
 Save the security group ID as you will need it later.
 
@@ -114,10 +127,10 @@ Replace the `Ip` and `SubnetId` values with the CIDR blocks and subnet IDs you f
 You can now use the [`CreateResolverEndpoint`](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html) API to create an outbound resolver endpoint.
 Run the following command:
 
-{{< command >}}
-$ awslocal route53resolver create-resolver-endpoint \
+```bash
+awslocal route53resolver create-resolver-endpoint \
     --cli-input-json file://create-outbound-resolver-endpoint.json
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -147,9 +160,9 @@ The following output would be retrieved:
 You can list the resolver endpoints using the [`ListResolverEndpoints`](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverEndpoints.html) API.
 Run the following command:
 
-{{< command >}}
-$ awslocal route53resolver list-resolver-endpoints
-{{< / command >}}
+```bash
+awslocal route53resolver list-resolver-endpoints
+```
 
 The following output would be retrieved:
 
@@ -182,10 +195,10 @@ The following output would be retrieved:
 You can delete the resolver endpoint using the [`DeleteResolverEndpoint`](https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html) API.
 Run the following command:
 
-{{< command >}}
-$ awslocal route53resolver delete-resolver-endpoint \
+```bash
+awslocal route53resolver delete-resolver-endpoint \
     --resolver-endpoint-id rslvr-out-5d61abaff9de06b99
-{{< / command >}}
+```
 
 Replace `rslvr-out-5d61abaff9de06b99` with the ID of the resolver endpoint you want to delete.
 
@@ -195,7 +208,7 @@ The LocalStack Web Application provides a Route53 Resolver for creating and mana
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **Route53** under the **Analytics** section.
 Navigate to the **Resolver Endpoints** tab to view the resolver endpoints.
 
-<img src="route53-resolver-resource-browser.png" alt="Route53Resolver Resource Browser" title="Route53Resolver Resource Browser" width="900" />
+![Route53Resolver Resource Browser](/images/aws/route53-resolver-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

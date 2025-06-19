@@ -1,6 +1,5 @@
 ---
 title: "CloudFront"
-linkTitle: "CloudFront"
 description: Get started with CloudFront on LocalStack
 tags: ["Base"]
 persistence: supported
@@ -13,7 +12,7 @@ CloudFront distributes its web content, videos, applications, and APIs with low 
 CloudFront APIs allow you to configure distributions, customize cache behavior, secure content with access controls, and monitor the CDN's performance through real-time metrics.
 
 LocalStack allows you to use the CloudFront APIs in your local environment to create local CloudFront distributions to transparently access your applications and file artifacts.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_cloudfront" >}}), which provides information on the extent of CloudFront's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of CloudFront's integration with LocalStack.
 
 ## Getting started
 
@@ -25,46 +24,48 @@ We will demonstrate how you can create an S3 bucket, put a text file named `hell
 
 To get started, create an S3 bucket using the `mb` command:
 
-{{< command >}}
-$ awslocal s3 mb s3://abc123
-{{< / command >}}
+```bash
+awslocal s3 mb s3://abc123
+```
 
 You can now go ahead, create a new text file named `hello.txt` and upload it to the bucket:
 
-{{< command >}}
-$ echo 'Hello World' > /tmp/hello.txt
-$ awslocal s3 cp /tmp/hello.txt s3://abc123/hello.txt --acl public-read
-{{< / command >}}
+```bash
+echo 'Hello World' > /tmp/hello.txt
+awslocal s3 cp /tmp/hello.txt s3://abc123/hello.txt --acl public-read
+```
 
 After uploading the file to S3, you can create a CloudFront distribution using the [`CreateDistribution`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateDistribution.html) API call.
 Run the following command to create a distribution with the default settings:
 
-{{< command >}}
-$ domain=$(awslocal cloudfront create-distribution \
+```bash
+domain=$(awslocal cloudfront create-distribution \
    --origin-domain-name abc123.s3.amazonaws.com | jq -r '.Distribution.DomainName')
-$ curl -k https://$domain/hello.txt
-{{< / command >}}
+curl -k https://$domain/hello.txt
+```
 
-{{< callout "tip" >}}
+:::note
 If you wish to use CloudFront on system host, ensure your local DNS setup is correctly configured.
-Refer to the section on [System DNS configuration]({{< ref "dns-server#system-dns-configuration" >}}) for details.
-{{< /callout >}}
+Refer to the section on [System DNS configuration](/aws/tooling/dns-server#system-dns-configuration) for details.
+:::
 
 In the example provided above, be aware that the final command (`curl https://$domain/hello.txt`) might encounter a temporary failure accompanied by a warning message `Could not resolve host`.
+
 This can occur because different operating systems adopt diverse DNS caching strategies, causing a delay in the availability of the CloudFront distribution's DNS name (e.g., `abc123.cloudfront.net`) within the system.
 Typically, after a few retries, the command should succeed.
+
 It's worth noting that similar behavior can be observed in the actual AWS environment, where CloudFront DNS names may take up to 10-15 minutes to propagate across the network.
 
 ## Lambda@Edge
 
-{{< callout "note">}}
+:::note
 We’re introducing an early, incomplete, and experimental feature that emulates AWS CloudFront Lambda@Edge, starting with version 4.3.0.
 
 It enables running Lambda functions at simulated edge locations.
 This allows you to locally test and develop request/response modifications, security enhancements and more.
 
 This feature is still under development, and functionality is limited.
-{{< /callout >}}
+:::
 
 You can enable this feature by setting `CLOUDFRONT_LAMBDA_EDGE=1` in your LocalStack configuration.
 
@@ -77,7 +78,7 @@ You can enable this feature by setting `CLOUDFRONT_LAMBDA_EDGE=1` in your LocalS
 
 ### Current limitations
 
-- The [`UpdateDistribution`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html), [`DeleteDistribution`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_DeleteDistribution.html), and [`Persistence Restore`]({{< ref "persistence" >}}) features are not yet supported for Lambda@Edge.
+- The [`UpdateDistribution`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html), [`DeleteDistribution`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_DeleteDistribution.html), and [Persistence Restore](/aws/capabilities/state-management/persistence) features are not yet supported for Lambda@Edge.
 - The `origin-request` and `origin-response` event types currently trigger for each request because caching is not implemented in CloudFront.
 
 ## Using custom URLs
@@ -92,18 +93,16 @@ The format of this structure is similar to the one used in [AWS CloudFront optio
 In the given example, two domains are specified as `Aliases` for a distribution.
 Please note that a complete configuration would entail additional values relevant to the distribution, which have been omitted here for brevity.
 
-{{< command >}}
+```bash
 --distribution-config {...'Aliases':'{'Quantity':2, 'Items': ['custom.domain.one', 'customDomain.two']}'...}
-{{< / command >}}
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for CloudFront, which allows you to view and manage your CloudFront distributions.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **CloudFront** under the **Analytics** section.
 
-<img src="cloudfront-resource-browser.png" alt="CloudFront Resource Browser" title="CloudFront Resource Browser" width="900" />
-<br>
-<br>
+![CloudFront Resource Browser](/images/aws/cloudfront-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

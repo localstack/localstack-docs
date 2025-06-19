@@ -1,6 +1,5 @@
 ---
 title: "Amplify"
-linkTitle: "Amplify"
 description: Get started with Amplify on LocalStack
 tags: ["Ultimate"]
 persistence: supported
@@ -12,12 +11,12 @@ Amplify is a JavaScript-based development framework with libraries, UI component
 With Amplify, developers can build and host static websites, single-page applications, and full-stack serverless web applications using an abstraction layer over popular AWS services like DynamoDB, Cognito, AppSync, Lambda, S3, and more.
 
 LocalStack allows you to use the Amplify APIs to build and test their Amplify applications locally.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_amplify" >}}), which provides information on the extent of Amplify's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Amplify's integration with LocalStack.
 
-{{< callout "note" >}}
+:::note
 The `amplifylocal` CLI and the Amplify JS library have been deprecated and are no longer supported.
 We recommend using the Amplify CLI with the Amplify LocalStack Plugin instead.
-{{< /callout >}}
+:::
 
 ## Amplify LocalStack Plugin
 
@@ -28,10 +27,10 @@ It achieves this by redirecting any requests to AWS to a LocalStack container ru
 
 To install the Amplify LocalStack Plugin, install the [amplify-localstack](https://www.npmjs.com/package/amplify-localstack) package from the npm registry and add the plugin to your Amplify setup:
 
-{{< command >}}
-$ npm install -g amplify-localstack
-$ amplify plugin add amplify-localstack
-{{< /command >}}
+```bash
+npm install -g amplify-localstack
+amplify plugin add amplify-localstack
+```
 
 ### Configuration
 
@@ -53,19 +52,18 @@ The console will prompt you to select whether to deploy to LocalStack or AWS.
 You can also add the parameter `--use-localstack true` to your commands to avoid being prompted and automatically use LocalStack.
 Here is an example:
 
-{{< command >}}
-$ amplify init --use-localstack true
-$ amplify add api
-$ amplify push --use-localstack true
-{{< /command >}}
+```bash
+amplify init --use-localstack true
+amplify add api
+amplify push --use-localstack true
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing Amplify applications.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **Amplify** under the **Front-end Web & Mobile** section.
 
-<img src="amplify-resource-browser.png" alt="Amplify Resource Browser" title="Amplify Resource Browser" width="900" />
-<br><br>
+![Amplify Resource Browser](/images/aws/amplify-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

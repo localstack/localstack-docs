@@ -1,6 +1,5 @@
 ---
 title: "Elastic Container Registry (ECR)"
-linkTitle: "Elastic Container Registry (ECR)"
 description: Get started with Elastic Container Registry (ECR) on LocalStack
 tags: ["Base"]
 persistence: supported
@@ -13,7 +12,7 @@ ECR enables you to store, manage, and deploy Docker container images to build, s
 ECR integrates with other AWS services, such as Lambda, ECS, and EKS.
 
 LocalStack allows you to use the ECR APIs in your local environment to build & push Docker images to a local ECR registry.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_ecr" >}}), which provides information on the extent of ECR's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of ECR's integration with LocalStack.
 
 ## Getting started
 
@@ -53,15 +52,15 @@ CMD /root/run_apache.sh
 
 You can now build the Docker image from the `Dockerfile` using the `docker CLI:
 
-{{< command >}}
-$ docker build -t localstack-ecr-image .
-{{< / command >}}
+```bash
+docker build -t localstack-ecr-image .
+```
 
 You can run the following command to verify that the image was built successfully:
 
-{{< command >}}
-$ docker images
-{{< / command >}}
+```bash
+docker images
+```
 
 You will see output similar to the following:
 
@@ -77,15 +76,15 @@ To push the Docker image to ECR, you first need to create a repository.
 You can create an ECR repository using the [`CreateRepository`](https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_CreateRepository.html) API.
 Run the following command to create a repository named `localstack-ecr-repository`:
 
-{{< command >}}
-$ awslocal ecr create-repository \
+```bash
+awslocal ecr create-repository \
     --repository-name localstack-ecr-repository \
     --image-scanning-configuration scanOnPush=true
-{{< / command >}}
+```
 
 You will see an output similar to the following:
 
-```sh
+```bash
 {
     "repository": {
         "repositoryArn": "arn:aws:ecr:us-east-1:000000000000:repository/localstack-ecr-repository",
@@ -111,22 +110,22 @@ You will need the `repositoryUri` value to push the Docker image to the reposito
 To push the Docker image to the repository, you first need to tag the image with the `repositoryUri`.
 Run the following command to tag the image:
 
-{{< command >}}
-$ docker tag localstack-ecr-image 000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/localstack-ecr-repository
-{{< / command >}}
+```bash
+docker tag localstack-ecr-image 000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/localstack-ecr-repository
+```
 
 You can now push the image to the repository using the `docker` CLI:
 
-{{< command >}}
-$ docker push 000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/localstack-ecr-repository
-{{< / command >}}
+```bash
+docker push 000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/localstack-ecr-repository
+```
 
 The image will take a few seconds to push to the repository.
 You can run the following command to verify that the image was pushed successfully:
 
-{{< command >}}
-$ awslocal ecr list-images --repository-name localstack-ecr-repository
-{{< / command >}}
+```bash
+awslocal ecr list-images --repository-name localstack-ecr-repository
+```
 
 You will see an output similar to the following:
 
@@ -146,7 +145,7 @@ You will see an output similar to the following:
 The LocalStack Web Application provides a Resource Browser for managing ECR repositories and images.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **ECR** under the **Compute** section.
 
-<img src="ecr-resource-browser.png" alt="ECR Resource Browser" title="ECR Resource Browser" width="900" />
+![ECR Resource Browser](/images/aws/ecr-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

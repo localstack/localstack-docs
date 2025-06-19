@@ -1,6 +1,5 @@
 ---
 title: "Elemental MediaConvert"
-linkTitle: "Elemental MediaConvert"
 description: Get started with Elemental MediaConvert on LocalStack
 tags: ["Ultimate"]
 ---
@@ -11,11 +10,11 @@ Elemental MediaConvert is a file-based video transcoding service with broadcast-
 It enables you to easily create high-quality video streams for broadcast and multiscreen delivery.
 
 LocalStack allows you to mock the MediaConvert APIs in your local environment.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_mediaconvert" >}}), which provides information on the extent of MediaConvert's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of MediaConvert's integration with LocalStack.
 
-{{< callout "note">}}
+:::note
 Elemental MediaConvert is in a preview state.
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -98,9 +97,9 @@ Create a new file named `job.json` on your local directory:
 You can create a MediaConvert job using the [`CreateJob`](https://docs.aws.amazon.com/goto/WebAPI/mediaconvert-2017-08-29/CreateJob) API.
 Execute the following command to create a job using a `job.json` file:
 
-{{< command >}}
-$ awslocal mediaconvert create-job --cli-input-json file://job.json
-{{< /command >}}
+```bash
+awslocal mediaconvert create-job --cli-input-json file://job.json
+```
 
 The following output would be retrieved:
 
@@ -148,20 +147,20 @@ The following output would be retrieved:
 You can list all MediaConvert jobs using the [`ListJobs`](https://docs.aws.amazon.com/mediaconvert/latest/apireference/jobs.html#jobsget) API.
 Execute the following command to list all jobs:
 
-{{< command >}}
-$ awslocal mediaconvert list-jobs
-{{< /command >}}
+```bash
+awslocal mediaconvert list-jobs
+```
 
 ### Create a queue
 
 You can create a MediaConvert queue using the [`CreateQueue`](https://docs.aws.amazon.com/mediaconvert/latest/apireference/queues.html#queuespost) API.
 Execute the following command to create a queue named `MyQueue`:
 
-{{< command >}}
-$ awslocal mediaconvert create-queue  
+```bash
+awslocal mediaconvert create-queue  
     --name MyQueue  
     --description "High priority queue for video encoding"
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -187,9 +186,9 @@ The following output would be retrieved:
 You can list all MediaConvert queues using the [`ListQueues`](https://docs.aws.amazon.com/mediaconvert/latest/apireference/queues.html#queuesget) API.
 Execute the following command to list all queues:
 
-{{< command >}}
-$ awslocal mediaconvert list-queues
-{{< /command >}}
+```bash
+awslocal mediaconvert list-queues
+```
 
 ## Current Limitations
 

@@ -1,6 +1,5 @@
 ---
 title: "Security Token Service (STS)"
-linkTitle: "Security Token Service (STS)"
 description: Get started with Security Token Service on LocalStack
 persistence: supported
 tags: ["Free"]
@@ -13,7 +12,7 @@ STS implements fine-grained access control and reduce the exposure of your long-
 The temporary credentials, known as security tokens, can be used to access AWS services and resources based on the permissions specified in the associated policies.
 
 LocalStack allows you to use the STS APIs in your local environment to request security tokens, manage permissions, integrate with identity providers, and more.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_sts" >}}), which provides information on the extent of STS's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of STS's integration with LocalStack.
 
 ## Getting started
 
@@ -28,18 +27,18 @@ You can create an IAM User and Role using the [`CreateUser`](https://docs.aws.am
 The IAM User will be used to assume the IAM Role.
 Run the following command to create an IAM User, named `localstack-user`:
 
-{{< command >}}
-$ awslocal iam create-user \
+```bash
+awslocal iam create-user \
     --user-name localstack-user
-{{< /command >}}
+```
 
 You can generate long-term access keys for the IAM user using the [`CreateAccessKey`](https://docs.aws.amazon.com/STS/latest/APIReference/API_CreateAccessKey.html) API.
 Run the following command to create an access key for the IAM user:
 
-{{< command >}}
-$ awslocal iam create-access-key \
+```bash
+awslocal iam create-access-key \
     --user-name localstack-user
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -58,9 +57,9 @@ The following output would be retrieved:
 Using STS, you can also fetch temporary credentials for this user using the [`GetSessionToken`](https://docs.aws.amazon.com/STS/latest/APIReference/API_GetSessionToken.html) API.
 Run the following command using your long-term credentials to get your temporary credentials:
 
-{{< command >}}
-$ awslocal sts get-session-token
-{{< /command >}}
+```bash
+awslocal sts get-session-token
+```
 
 The following output would be retrieved:
 
@@ -80,11 +79,11 @@ The following output would be retrieved:
 You can now create an IAM Role, named `localstack-role`, using the [`CreateRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_CreateRole.html) API.
 Run the following command to create the IAM Role:
 
-{{< command >}}
-$ awslocal iam create-role \
+```bash
+awslocal iam create-role \
     --role-name localstack-role \
     --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::000000000000:root"},"Action":"sts:AssumeRole"}]}'
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -115,22 +114,22 @@ The following output would be retrieved:
 You can attach the policy to the IAM role using the [`AttachRolePolicy`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AttachRolePolicy.html) API.
 Run the following command to attach the policy to the IAM role:
 
-{{< command >}}
-$ awslocal iam attach-role-policy \
+```bash
+awslocal iam attach-role-policy \
     --role-name localstack-role \
     --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
-{{< /command >}}
+```
 
 ### Assume an IAM Role
 
 You can assume an IAM Role using the [`AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html) API.
 Run the following command to assume the IAM Role:
 
-{{< command >}}
-$ awslocal sts assume-role \
+```bash
+awslocal sts assume-role \
     --role-arn arn:aws:iam::000000000000:role/localstack-role \
     --role-session-name localstack-session
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -157,9 +156,9 @@ You can use the temporary credentials in your applications for temporary access.
 You can get the caller identity to identify the principal your current credentials are valid for using the [`GetCallerIdentity`](https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity.html) API.
 Run the following command to get the caller identity for the credentials set in your environment:
 
-{{< command >}}
-$ awslocal sts get-caller-identity
-{{< /command >}}
+```bash
+awslocal sts get-caller-identity
+```
 
 The following output would be retrieved:
 

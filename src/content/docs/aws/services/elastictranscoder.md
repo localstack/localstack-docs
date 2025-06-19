@@ -1,6 +1,5 @@
 ---
 title: "Elastic Transcoder"
-linkTitle: "Elastic Transcoder"
 description: Get started with Elastic Transcoder on LocalStack
 tags: ["Base"]
 ---
@@ -12,7 +11,7 @@ Elastic Transcoder manages the underlying resources, ensuring high availability 
 It also supports a wide range of input and output formats, enabling users to efficiently process and deliver video content at scale.
 
 LocalStack allows you to mock the Elastic Transcoder APIs in your local environment.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_elastictranscoder" >}}), which provides information on the extent of Elastic Transcoder's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Elastic Transcoder's integration with LocalStack.
 
 ## Getting started
 
@@ -26,23 +25,23 @@ We will demonstrate how to create an Elastic Transcoder pipeline, read the pipel
 You can create S3 buckets using the [`mb`](https://docs.aws.amazon.com/cli/latest/reference/s3/mb.html) API.
 Execute the following command to create two buckets named `elasticbucket` and `outputbucket`:
 
-{{< command >}}
-$ awslocal s3 mb s3://elasticbucket
-$ awslocal s3 mb s3://outputbucket
-{{< /command >}}
+```bash
+awslocal s3 mb s3://elasticbucket
+awslocal s3 mb s3://outputbucket
+```
 
 ### Create an Elastic Transcoder pipeline
 
 You can create an Elastic Transcoder pipeline using the [`CreatePipeline`](https://docs.aws.amazon.com/elastictranscoder/latest/developerguide/create-pipeline.html) API.
 Execute the following command to create a pipeline named `test-pipeline`:
 
-{{< command >}}
-$ awslocal elastictranscoder create-pipeline \
+```bash
+awslocal elastictranscoder create-pipeline \
     --name Default \
     --input-bucket elasticbucket \
     --output-bucket outputbucket \
     --role arn:aws:iam::000000000000:role/Elastic_Transcoder_Default_Role
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -80,9 +79,9 @@ The following output would be retrieved:
 You can list all pipelines using the [`ListPipelines`](https://docs.aws.amazon.com/elastictranscoder/latest/developerguide/list-pipelines.html) API.
 Execute the following command to list all pipelines:
 
-{{< command >}}
-$ awslocal elastictranscoder list-pipelines
-{{< /command >}}
+```bash
+awslocal elastictranscoder list-pipelines
+```
 
 The following output would be retrieved:
 
@@ -121,9 +120,9 @@ The following output would be retrieved:
 You can read a pipeline using the [`ReadPipeline`](https://docs.aws.amazon.com/elastictranscoder/latest/developerguide/read-pipeline.html) API.
 Execute the following command to read the pipeline with the ID `0998507242379-vltecz`:
 
-{{< command >}}
-$ awslocal elastictranscoder read-pipeline --id 0998507242379-vltecz
-{{< /command >}}
+```bash
+awslocal elastictranscoder read-pipeline --id 0998507242379-vltecz
+```
 
 The following output would be retrieved:
 

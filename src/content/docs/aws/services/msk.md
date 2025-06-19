@@ -1,6 +1,5 @@
 ---
 title: "Managed Streaming for Kafka (MSK)"
-linkTitle: "Managed Streaming for Kafka (MSK)"
 description: Get started with Managed Streaming for Kafka (MSK) on LocalStack
 tags: ["Ultimate"]
 persistence: supported with limitations
@@ -13,7 +12,7 @@ MSK offers a centralized platform to facilitate seamless communication between v
 MSK also features automatic scaling and built-in monitoring, allowing users to build robust, high-throughput data pipelines.
 
 LocalStack allows you to use the MSK APIs in your local environment to spin up Kafka clusters on the local machine, create topics for exchanging messages, and define event source mappings that trigger Lambda functions when messages are received on a certain topic.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_kafka" >}}), which provides information on the extent of MSK's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of MSK's integration with LocalStack.
 
 ## Getting started
 
@@ -43,13 +42,13 @@ Create the file and add the following content to it:
 
 Run the following command to create the cluster:
 
-{{< command >}}
-$ awslocal kafka create-cluster \
+```bash
+awslocal kafka create-cluster \
     --cluster-name "EventsCluster" \
     --broker-node-group-info file://brokernodegroupinfo.json \
     --kafka-version "2.8.0" \
     --number-of-broker-nodes 3
-{{< / command >}}
+```
 
 The output of the command looks similar to this:
 
@@ -65,10 +64,10 @@ The cluster creation process might take a few minutes.
 You can describe the cluster using the [`DescribeCluster`](https://docs.aws.amazon.com/msk/1.0/apireference/clusters.html#DescribeCluster) API.
 Run the following command, replacing `ClusterArn` with the Amazon Resource Name (ARN) you obtained above when you created cluster.
 
-{{< command >}}
-$ awslocal kafka describe-cluster \
+```bash
+awslocal kafka describe-cluster \
     --cluster-arn "arn:aws:kafka:us-east-1:000000000000:cluster/EventsCluster/b154d18a-8ecb-4691-96b2-50348357fc2f-25"
-{{< / command >}}
+```
 
 The output of the command looks similar to this:
 
@@ -104,22 +103,22 @@ To use LocalStack MSK, you can download and utilize the Kafka command line inter
 
 To download Apache Kafka, execute the following commands.
 
-{{< command >}}
-$ wget https://archive.apache.org/dist/kafka/2.8.0/kafka_2.12-2.8.0.tgz
-$ tar -xzf kafka_2.12-2.8.0.tgz
-{{< / command >}}
+```bash
+wget https://archive.apache.org/dist/kafka/2.8.0/kafka_2.12-2.8.0.tgz
+tar -xzf kafka_2.12-2.8.0.tgz
+```
 
 Navigate to the **kafka_2.12-2.8.0** directory.
 Execute the following command, replacing `ZookeeperConnectString` with the value you saved after running the [`DescribeCluster`](https://docs.aws.amazon.com/msk/1.0/apireference/clusters.html#DescribeCluster) API:
 
-{{< command >}}
-$ bin/kafka-topics.sh \
+```bash
+bin/kafka-topics.sh \
     --create \
     --zookeeper localhost:4510 \
     --replication-factor 1 \
     --partitions 1 \
     --topic LocalMSKTopic
-{{< / command >}}
+```
 
 After executing the command, your output should resemble the following:
 
@@ -135,13 +134,13 @@ Create a folder named `/tmp` on the client machine, and navigate to the bin fold
 Run the following command, replacing `java_home` with the path of your `java_home`.
 For this instance, the java_home path is `/Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home`.
 
-{{< callout >}}
+:::note
 The following step is optional and may not be required, depending on the operating system environment being used.
-{{< /callout >}}
+:::
 
-{{< command >}}
-$ cp java_home/lib/security/cacerts /tmp/kafka.client.truststore.jks
-{{< / command >}}
+```bash
+cp java_home/lib/security/cacerts /tmp/kafka.client.truststore.jks
+```
 
 While you are still in the `bin` folder of the Apache Kafka installation on the client machine, create a text file named `client.properties` with the following contents:
 
@@ -151,10 +150,10 @@ ssl.truststore.location=/tmp/kafka.client.truststore.jks
 
 Run the following command, replacing `ClusterArn` with the Amazon Resource Name (ARN) you have.
 
-{{< command >}}
-$ awslocal kafka get-bootstrap-brokers \
+```bash
+awslocal kafka get-bootstrap-brokers \
     --cluster-arn ClusterArn
-{{< / command >}}
+```
 
 To proceed with the following commands, save the value associated with the string named `BootstrapBrokerStringTls` from the JSON result obtained from the previous command.
 It should look like this:
@@ -167,12 +166,12 @@ It should look like this:
 
 Now, navigate to the bin folder and run the next command, replacing `BootstrapBrokerStringTls` with the value you obtained:
 
-{{< command >}}
-$ ./kafka-console-producer.sh \
+```bash
+./kafka-console-producer.sh \
     --broker-list BootstrapBrokerStringTls \
     --producer.config client.properties \
     --topic LocalMSKTopic
-{{< / command >}}
+```
 
 To send messages to your Apache Kafka cluster, enter any desired message and press Enter.
 You can repeat this process twice or thrice, sending each line as a separate message to the Kafka cluster.
@@ -182,13 +181,13 @@ Keep the connection to the client machine open, and open a separate connection t
 In this new connection, navigate to the `bin` folder and run a command, replacing `BootstrapBrokerStringTls` with the value you saved earlier.
 This command will allow you to interact with the Apache Kafka cluster using the saved value for secure communication.
 
-{{< command >}}
-$ ./kafka-console-consumer.sh \
+```bash
+./kafka-console-consumer.sh \
     --bootstrap-server BootstrapBrokerStringTls \
     --consumer.config client.properties \
     --topic LocalMSKTopic \
     --from-beginning
-{{< / command >}}
+```
 
 You should start seeing the messages you entered earlier when you used the console producer command.
 These messages are TLS encrypted in transit.
@@ -201,13 +200,13 @@ The configuration for this mapping sets the starting position of the topic to `L
 
 Run the following command to use the [`CreateEventSourceMapping`](https://docs.aws.amazon.com/lambda/latest/dg/API_CreateEventSourceMapping.html) API by specifying the Event Source ARN, the topic name, the starting position, and the Lambda function name.
 
-{{< command >}}
-$ awslocal lambda create-event-source-mapping \
+```bash
+awslocal lambda create-event-source-mapping \
   --event-source-arn arn:aws:kafka:us-east-1:000000000000:cluster/EventsCluster \
   --topics LocalMSKTopic \
   --starting-position LATEST \
   --function-name my-kafka-function
-{{< / command >}}
+```
 
 Upon successful completion of the operation to create the Lambda Event Source Mapping, you can expect the following response:
 
@@ -240,24 +239,22 @@ You can delete the local MSK cluster using the [`DeleteCluster`](https://docs.aw
 To do so, you must first obtain the ARN of the cluster you want to delete.
 Run the following command to list all the clusters in the region:
 
-{{< command >}}
-$ awslocal kafka list-clusters --region us-east-1
-{{< / command >}}
+```bash
+awslocal kafka list-clusters --region us-east-1
+```
 
 To initiate the deletion of a cluster, select the corresponding `ClusterARN` from the list of clusters, and then execute the following command:
 
-{{< command >}}
+```bash
 awslocal kafka delete-cluster --cluster-arn ClusterArn
-{{< / command >}}
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing MSK clusters.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Kafka** under the **Analytics** section.
 
-<img src="msk-resource-browser.png" alt="MSK Resource Browser" title="MSK Resource Browser" width="900" />
-<br>
-<br>
+![MSK Resource Browser](/images/aws/msk-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

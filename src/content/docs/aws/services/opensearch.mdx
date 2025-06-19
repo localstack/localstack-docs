@@ -1,8 +1,6 @@
 ---
 title: "OpenSearch Service"
-linkTitle: "OpenSearch Service"
-description: >
-  Get started with OpenSearch Service on LocalStack
+description: Get started with OpenSearch Service on LocalStack
 tags: ["Free"]
 ---
 
@@ -12,7 +10,7 @@ OpenSearch Service is an open-source search and analytics engine, offering devel
 OpenSearch Service also offers log analytics, real-time application monitoring, and clickstream analysis.
 
 LocalStack allows you to use the OpenSearch Service APIs in your local environment to create, manage, and operate the OpenSearch clusters.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_opensearch" >}}), which provides information on the extent of OpenSearch's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of OpenSearch's integration with LocalStack.
 
 The following versions of OpenSearch Service are supported by LocalStack:
 
@@ -42,9 +40,9 @@ To create an OpenSearch Service cluster, you can use the [`CreateDomain`](https:
 OpenSearch Service domain is synonymous with an OpenSearch cluster.
 Execute the following command to create a new OpenSearch domain:
 
-{{< command >}}
-$ awslocal opensearch create-domain --domain-name my-domain
-{{< / command >}}
+```bash
+awslocal opensearch create-domain --domain-name my-domain
+```
 
 Each time you establish a cluster using a new version of OpenSearch, the corresponding OpenSearch binary must be downloaded, a process that might require some time to complete.
 In the LocalStack log you will see something like, where you can see the cluster starting up in the background.
@@ -52,10 +50,10 @@ In the LocalStack log you will see something like, where you can see the cluster
 You can open the LocalStack logs, to see that the OpenSearch Service cluster is being created in the background.
 You can use the [`DescribeDomain`](https://docs.aws.amazon.com/opensearch-service/latest/APIReference/API_DescribeDomain.html) API to check the status of the cluster:
 
-{{< command >}}
-$ awslocal opensearch describe-domain \
+```bash
+awslocal opensearch describe-domain \
     --domain-name my-domain | jq ".DomainStatus.Processing"
-{{< / command >}}
+```
 
 The `Processing` attribute will be `false` once the cluster is up and running.
 Once the cluster is up, you can interact with the cluster.
@@ -66,15 +64,15 @@ You can now interact with the cluster at the cluster API endpoint for the domain
 
 Run the following command to get the cluster health:
 
-{{< command >}}
-$ curl http://my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566
-{{< / command >}}
+```bash
+curl http://my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566
+```
 
 You can verify that the cluster is up and running by checking the cluster health:
 
-{{< command >}}
-$ curl -s http://my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/_cluster/health | jq .
-{{< / command >}}
+```bash
+curl -s http://my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/_cluster/health | jq .
+```
 
 The following output will be visible on your terminal:
 
@@ -108,7 +106,7 @@ The strategy can be configured via the `OPENSEARCH_ENDPOINT_STRATEGY` environmen
 | ------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `domain` | `<domain-name>.<region>.<engine-type>.localhost.localstack.cloud:4566`             | The default strategy employing the `localhost.localstack.cloud` domain for routing to localhost.     |
 | `path`   | `localhost:4566/<engine-type>/<region>/<domain-name>`                              | An alternative strategy useful if resolving LocalStack's localhost domain poses difficulties.       |
-| `port`   | `localhost:<port-from-range>`                                                      | Directly exposes cluster(s) via ports from [the external service port range]({{< ref "external-ports" >}}). |
+| `port`   | `localhost:<port-from-range>`                                                      | Directly exposes cluster(s) via ports from [the external service port range](). |
 
 Irrespective of the originating service for the clusters, the domain of each cluster consistently aligns with its engine type, be it OpenSearch or Elasticsearch.
 Consequently, OpenSearch clusters incorporate `opensearch` within their domains (e.g., `my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566`), while Elasticsearch clusters feature `es` in their domains (e.g., `my-domain.us-east-1.es.localhost.localstack.cloud:4566`).
@@ -121,16 +119,16 @@ Moreover, you can opt for custom domains, though it's important to incorporate t
 
 Run the following command to create a new OpenSearch domain with a custom endpoint:
 
-{{< command >}}
-$ awslocal opensearch create-domain --domain-name my-domain \
+```bash
+awslocal opensearch create-domain --domain-name my-domain \
       --domain-endpoint-options '{ "CustomEndpoint": "http://localhost:4566/my-custom-endpoint", "CustomEndpointEnabled": true }'
-{{< / command >}}
+```
 
 After the domain processing is complete, you can access the cluster using the custom endpoint:
 
-{{< command >}}
-$ curl http://localhost:4566/my-custom-endpoint/_cluster/health
-{{< / command >}}
+```bash
+curl http://localhost:4566/my-custom-endpoint/_cluster/health
+```
 
 ## Re-using a single cluster instance
 
@@ -146,20 +144,22 @@ As a result, we advise caution when considering this approach and generally reco
 
 OpenSearch will be organized in your state directory as follows:
 
-{{< command >}}
-$ tree -L 4 ./volume/state
-./volume/state
-├── opensearch
-│   └── arn:aws:es:us-east-1:000000000000:domain
-│       ├── my-cluster-1
-│       │   ├── backup
-│       │   ├── data
-│       │   └── tmp
-│       ├── my-cluster-2
-│       │   ├── backup
-│       │   ├── data
-│       │   └── tmp
-{{< /command >}}
+import { Tabs, TabItem, FileTree } from '@astrojs/starlight/components';
+
+<FileTree>
+- volume
+    - state
+        - opensearch
+            - arn:aws:es:us-east-1:000000000000:domain
+                - my-cluster-1
+                    - backup
+                    - data
+                    - tmp
+                - my-cluster-2
+                    - backup
+                    - data
+                    - tmp
+</FileTree>
 
 ## Advanced Security Options
 
@@ -208,15 +208,15 @@ Save it in a file named `opensearch_domain.json`.
 
 To provision it, use the following `awslocal` CLI command, assuming the aforementioned CLI input has been stored in a file named `opensearch_domain.json`:
 
-{{< command >}}
-$ awslocal opensearch create-domain --cli-input-json file://./opensearch_domain.json
-{{< /command >}}
+```bash
+awslocal opensearch create-domain --cli-input-json file://./opensearch_domain.json
+```
 
 Once the domain setup is complete (`Processing: false`), the cluster can only be accessed with the given master user credentials, via HTTP basic authentication:
 
-{{< command >}}
-$ curl -u 'admin:really-secure-passwordAa!1' http://secure-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/_cluster/health
-{{< /command >}}
+```bash
+curl -u 'admin:really-secure-passwordAa!1' http://secure-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/_cluster/health
+```
 
 The following output will be visible on your terminal:
 
@@ -232,22 +232,23 @@ It's important to note that any unauthorized requests will yield an HTTP respons
 And you can directly use the official OpenSearch Dashboards Docker image to analyze data in your OpenSearch domain within LocalStack!
 
 When using OpenSearch Dashboards with LocalStack, you need to make sure to:
-- Enable the [advanced security options]({{< ref "#advanced-security-options" >}}) and set a username and a password.
+- Enable the [advanced security options](#advanced-security-options) and set a username and a password.
   This is required by OpenSearch Dashboards.
 - Ensure that the OpenSearch Dashboards Docker container uses the LocalStack DNS.
-  You can find more information on how to connect your Docker container to Localstack in our [Network Troubleshooting guide]({{< ref "references/network-troubleshooting/endpoint-url/#from-your-container" >}}).
+  You can find more information on how to connect your Docker container to Localstack in our [Network Troubleshooting guide]().
 
 First, you need to make sure to start LocalStack in a specific Docker network:
-{{< command >}}
-$ localstack start --network ls
-{{< /command >}}
+
+```bash
+localstack start --network ls
+```
 
 Now you can provision a new OpenSearch domain.
-Make sure to enable the [advanced security options]({{< ref "#advanced-security-options" >}}):
+Make sure to enable the [advanced security options](#advanced-security-options):
 
-{{< command >}}
-$ awslocal opensearch create-domain --cli-input-json file://./opensearch_domain.json
-{{< /command >}}
+```bash
+awslocal opensearch create-domain --cli-input-json file://./opensearch_domain.json
+```
 
 Now you can start another container for OpenSearch Dashboards, which is configured such that:
 - The port for OpenSearch Dashboards is mapped (`5601`).
@@ -257,10 +258,9 @@ Now you can start another container for OpenSearch Dashboards, which is configur
 - The OpenSearch credentials are set.
 - The version of OpenSearch Dashboards is the same as the OpenSearch domain.
 
-{{< command >}}
+```bash
 docker inspect localstack-main | \
  jq -r '.[0].NetworkSettings.Networks | to_entries | .[].value.IPAddress'
-# prints 172.22.0.2
 
 docker run --rm -p 5601:5601 \
   --network ls \
@@ -268,7 +268,7 @@ docker run --rm -p 5601:5601 \
   -e "OPENSEARCH_HOSTS=http://secure-domain.us-east-1.opensearch.localhost.localstack.cloud:4566" \
   -e "OPENSEARCH_USERNAME=admin" -e 'OPENSEARCH_PASSWORD=really-secure-passwordAa!1' \
   opensearchproject/opensearch-dashboards:2.11.0
-{{< /command >}}
+```
 
 Once the container is running, you can reach OpenSearch Dashboards at `http://localhost:5601` and you can log in with your OpenSearch domain credentials.
 
@@ -329,45 +329,43 @@ volumes:
 
 You can start the Docker Compose environment using the following command:
 
-{{< command >}}
-$ docker-compose up -d
-{{< /command >}}
+```bash
+docker-compose up -d
+```
 
 You can now create an OpenSearch cluster using the `awslocal` CLI:
 
-{{< command >}}
-$ awslocal opensearch create-domain --domain-name my-domain
-{{< /command >}}
+```bash
+awslocal opensearch create-domain --domain-name my-domain
+```
 
 If the `Processing` status shows as `true`, the cluster isn't fully operational yet.
 You can use the `describe-domain` command to retrieve the current status:
 
-{{< command >}}
-$ awslocal opensearch describe-domain --domain-name my-domain
-{{< /command >}}
+```bash
+awslocal opensearch describe-domain --domain-name my-domain
+```
 
 You can now verify cluster health and set up indices:
 
-{{< command >}}
-$ curl my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/_cluster/health | jq
-{{< /command >}}
+```bash
+curl my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/_cluster/health | jq
+```
 
 The output will provide insights into the cluster's health and version information.
 
 Finally create an example index using the following command:
 
-{{< command >}}
-$ curl -X PUT my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/my-index
-{{< /command >}}
+```bash
+curl -X PUT my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/my-index
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing OpenSearch domains.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **OpenSearch Service** under the **Analytics** section.
 
-<img src="opensearch-resource-browser.png" alt="OpenSearch Resource Browser" title="OpenSearch Resource Browser" width="900" />
-<br>
-<br>
+![OpenSearch Resource Browser](/images/aws/opensearch-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 
@@ -390,4 +388,4 @@ The `CustomEndpointOptions` in LocalStack offers the flexibility to utilize arbi
 ## Troubleshooting
 
 If you encounter difficulties resolving subdomains while employing the `OPENSEARCH_ENDPOINT_STRATEGY=domain` (the default setting), it's advisable to investigate whether your DNS configuration might be obstructing rebind queries.
-For further insights on addressing this issue, refer to the section on [DNS rebind protection]({{< ref "dns-server#dns-rebind-protection" >}}).
+For further insights on addressing this issue, refer to the section on [DNS rebind protection](/aws/tooling/dns-server#dns-rebind-protection).

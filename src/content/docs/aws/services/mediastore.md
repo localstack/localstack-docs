@@ -1,6 +1,5 @@
 ---
 title: Elemental MediaStore
-linkTitle: Elemental MediaStore
 description: Get started with Elemental MediaStore on LocalStack
 tags: ["Ultimate"]
 ---
@@ -12,7 +11,7 @@ It provides a reliable way to store, manage, and serve media assets, such as aud
 MediaStore seamlessly integrates with other AWS services like Elemental MediaConvert, Elemental MediaLive, Elemental MediaPackage, and CloudFront.
 
 LocalStack allows you to use the Elemental MediaStore APIs as a high-performance storage solution for media content in your local environment.
-The supported APIs are available on our [API Coverage Page]({{< ref "coverage_mediastore" >}}), which provides information on the extent of Elemental MediaStore integration with LocalStack.
+The supported APIs are available on our [API Coverage Page](), which provides information on the extent of Elemental MediaStore integration with LocalStack.
 
 ## Getting started
 
@@ -26,9 +25,9 @@ We will demonstrate how you can create a MediaStore container, upload an asset, 
 You can create a container using the [`CreateContainer`](https://docs.aws.amazon.com/mediastore/latest/apireference/API_CreateContainer.html) API.
 Run the following command to create a container and retrieve the the `Endpoint` value which should be used in subsequent requests:
 
-{{< command >}}
-$ awslocal mediastore create-container --container-name mycontainer
-{{< / command >}}
+```bash
+awslocal mediastore create-container --container-name mycontainer
+```
 
 You should see the following output:
 
@@ -50,13 +49,13 @@ This action will transfer the file to the specified path, `/myfolder/myfile.txt`
 Provide the `endpoint` obtained in the previous step for the operation to be successful.
 Run the following command to upload the file:
 
-{{< command >}}
-$ awslocal mediastore-data put-object \
+```bash
+awslocal mediastore-data put-object \
     --endpoint http://mediastore-mycontainer.mediastore.localhost.localstack.cloud:4566 \
     --body myfile.txt \
     --path /myfolder/myfile.txt \
     --content-type binary/octet-stream
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -74,12 +73,12 @@ In this process, you need to specify the endpoint, the path for downloading the 
 The downloaded file will then be accessible at the specified output path.
 Run the following command to download the file:
 
-{{< command >}}
-$ awslocal mediastore-data get-object \
+```bash
+awslocal mediastore-data get-object \
     --endpoint http://mediastore-mycontainer.mediastore.localhost.localstack.cloud:4566 \
     --path /myfolder/myfile.txt \
     /tmp/out.txt
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -96,4 +95,4 @@ You should see the following output:
 ## Troubleshooting
 
 The Elemental MediaStore service requires the use of a custom HTTP/HTTPS endpoint.
-In case you encounter any issues, please consult our [Networking documentation]({{< ref "references/network-troubleshooting" >}}) for assistance.
+In case you encounter any issues, please consult our [Networking documentation](/aws/capabilities/networking/) for assistance.

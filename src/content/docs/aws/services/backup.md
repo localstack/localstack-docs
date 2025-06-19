@@ -1,6 +1,5 @@
 ---
 title: "Backup"
-linkTitle: "Backup"
 description: Get started with Backup on LocalStack
 tags: ["Ultimate"]
 persistence: supported
@@ -14,7 +13,7 @@ Backup supports a wide range of AWS resources, including Elastic Block Store (EB
 Backup enables you to set backup retention policies, allowing you to specify how long you want to retain your backup copies.
 
 LocalStack allows you to use the Backup APIs in your local environment to manage backup plans, create scheduled or on-demand backups of certain resource types.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_backup" >}}), which provides information on the extent of Backup's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Backup's integration with LocalStack.
 
 ## Getting started
 
@@ -28,10 +27,10 @@ We will demonstrate how to create a backup job and specify a set of resources to
 You can create a backup vault which acts as a logical container where backups are stored using the [`CreateBackupVault`](https://docs.aws.amazon.com/aws-backup/latest/devguide/API_CreateBackupVault.html) API.
 Run the following command to create a backup vault named `my-vault`:
 
-{{< command >}}
-$ awslocal backup create-backup-vault \
+```bash
+awslocal backup create-backup-vault \
     --backup-vault-name primary
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -73,10 +72,10 @@ You can specify the backup plan in a `backup-plan.json` file:
 You can use the [`CreateBackupPlan`](https://docs.aws.amazon.com/aws-backup/latest/devguide/API_CreateBackupPlan.html) API to create a backup plan.
 Run the following command to create a backup plan:
 
-{{< command >}}
-$ awslocal backup create-backup-plan \
+```bash
+awslocal backup create-backup-plan \
     --backup-plan file://backup-plan.json
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -111,11 +110,11 @@ You can specify the backup selection in a `backup-selection.json` file:
 You can use the [`CreateBackupSelection`](https://docs.aws.amazon.com/aws-backup/latest/devguide/API_CreateBackupSelection.html) API to create a backup selection.
 Run the following command to create a backup selection:
 
-{{< command >}}
-$ awslocal backup create-backup-selection \
+```bash
+awslocal backup create-backup-selection \
     --backup-plan-id 9337aba3 \
     --backup-selection file://backup-plan-resources.json
-{{< / command >}}
+```
 
 Replace the `--backup-plan-id` value with the `BackupPlanId` value from the output of the previous command.
 The following output would be retrieved:
@@ -133,7 +132,7 @@ The following output would be retrieved:
 The LocalStack Web Application provides a Resource Browser for managing backup plans and vaults.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Backup** under the **Storage** section.
 
-<img src="backup-resource-browser.png" alt="Backup Resource Browser" title="Backup Resource Browser" width="900" />
+![Backup Resource Browser](/images/aws/backup-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

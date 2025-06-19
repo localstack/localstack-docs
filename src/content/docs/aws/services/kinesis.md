@@ -1,6 +1,5 @@
 ---
 title: "Kinesis Data Streams"
-linkTitle: "Kinesis Data Streams"
 description: Get started with Kinesis Data Streams on LocalStack
 persistence: supported
 tags: ["Free"]
@@ -12,7 +11,7 @@ Kinesis Data Streams is an AWS service for ingesting, buffering, and processing 
 It is used for applications that require real-time processing and deriving insights from data streams such as logs, metrics, user interactions, and sensor readings.
 
 LocalStack allows you to use the Kinesis Data Streams APIs in your local environment from setting up data streams and configuring data processing to building real-time applications.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_kinesis" >}}).
+The supported APIs are available on our [API coverage page]().
 
 Emulation for Kinesis is powered by [Kinesis Mock](https://github.com/etspaceman/kinesis-mock).
 
@@ -42,15 +41,15 @@ export const handler = (event, context) => {
 You can create a Lambda function using the [`CreateFunction`](https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html) API.
 Run the following command to create a Lambda function named `ProcessKinesisRecords`:
 
-{{< command >}}
-$ zip function.zip index.mjs
-$ awslocal lambda create-function \
+```bash
+zip function.zip index.mjs
+awslocal lambda create-function \
     --function-name ProcessKinesisRecords \
     --zip-file fileb://function.zip \
     --handler index.handler \
     --runtime nodejs18.x \
     --role arn:aws:iam::000000000000:role/lambda-kinesis-role
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -96,30 +95,30 @@ The JSON contains a sample Kinesis event.
 You can use the [`Invoke`](https://docs.aws.amazon.com/lambda/latest/dg/API_Invoke.html) API to invoke the Lambda function with the Kinesis event as input.
 Execute the following command:
 
-{{< command >}}
-$ awslocal lambda invoke \
+```bash
+awslocal lambda invoke \
     --function-name ProcessKinesisRecords \
     --payload file://input.txt outputfile.txt
-{{< / command >}}
+```
 
 ### Create a Kinesis Stream
 
 You can create a Kinesis Stream using the [`CreateStream`](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_CreateStream.html) API.
 Run the following command to create a Kinesis Stream named `lambda-stream`:
 
-{{< command >}}
-$ awslocal kinesis create-stream \
+```bash
+awslocal kinesis create-stream \
   --stream-name lambda-stream \
   --shard-count 1
-{{< / command >}}
+```
 
 You can retrieve the Stream ARN using the [`DescribeStream`](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_DescribeStream.html) API.
 Execute the following command:
 
-{{< command >}}
-$ awslocal kinesis describe-stream \
+```bash
+awslocal kinesis describe-stream \
   --stream-name lambda-stream
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -149,25 +148,25 @@ You can save the `StreamARN` value for later use.
 You can add an Event Source to your Lambda function using the [`CreateEventSourceMapping`](https://docs.aws.amazon.com/lambda/latest/dg/API_CreateEventSourceMapping.html) API.
 Run the following command to add the Kinesis Stream as an Event Source to your Lambda function:
 
-{{< command >}}
-$ awslocal lambda create-event-source-mapping \
+```bash
+awslocal lambda create-event-source-mapping \
     --function-name ProcessKinesisRecords \
     --event-source arn:aws:kinesis:us-east-1:000000000000:stream/lambda-stream \
     --batch-size 100 \
     --starting-position LATEST
-{{< / command >}}
+```
 
 ### Test the Event Source mapping
 
 You can test the event source mapping by adding a record to the Kinesis Stream using the [`PutRecord`](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecord.html) API.
 Run the following command to add a record to the Kinesis Stream:
 
-{{< command >}}
-$ awslocal kinesis put-record \
+```bash
+awslocal kinesis put-record \
     --stream-name lambda-stream \
     --partition-key 1 \
     --data "Hello, this is a test."
-{{< / command >}}
+```
 
 You can fetch the CloudWatch logs for your Lambda function reading records from the stream, using AWS CLI or LocalStack Resource Browser.
 
@@ -183,19 +182,17 @@ Additionally, the following parameters can be tuned:
 
 Refer to our [Kinesis configuration documentation](https://docs.localstack.cloud/references/configuration/#kinesis) for more details on these parameters.
 
-{{< callout "note" >}}
+:::note
 `KINESIS_MOCK_MAXIMUM_HEAP_SIZE` and `KINESIS_MOCK_INITIAL_HEAP_SIZE` are only applicable when using the Scala engine.
 Future versions of LocalStack will likely default to using the `scala` engine over the less-performant `node` version currently in use.
-{{< /callout >}}
+:::
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing Kinesis Streams & Kafka Clusters.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Kinesis** under the **Analytics** section.
 
-<img src="kinesis-resource-browser.png" alt="Kinesis Resource Browser" title="Kinesis Resource Browser" width="900" />
-<br>
-<br>
+![Kinesis Resource Browser](/images/aws/kinesis-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

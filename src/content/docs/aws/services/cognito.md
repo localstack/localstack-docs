@@ -1,6 +1,5 @@
 ---
 title: "Cognito"
-linkTitle: "Cognito"
 description: Get started with Cognito on LocalStack
 tags: ["Base"]
 persistence: supported
@@ -13,7 +12,7 @@ Cognito enables developers to add user sign-up, sign-in, and access control func
 Cognito supports various authentication methods, including social identity providers, SAML-based identity providers, and custom authentication flows.
 
 LocalStack allows you to use the Cognito APIs in your local environment to manage authentication and access control for your local application and resources.
-The supported APIs are available on our [Cognito Identity coverage page]({{< ref "coverage_cognito-identity" >}}) and [Cognito User Pools coverage page]({{< ref "coverage_cognito-idp" >}}), which provides information on the extent of Cognito's integration with LocalStack.
+The supported APIs are available on our [Cognito Identity coverage page]() and [Cognito User Pools coverage page](), which provides information on the extent of Cognito's integration with LocalStack.
 
 ## Getting started
 
@@ -27,9 +26,9 @@ We will demonstrate how you can create a Cognito user pool and client, and then 
 To create a user pool, you can use the [`CreateUserPool`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html) API call.
 The following command creates a user pool named `test`:
 
-{{< command >}}
-$ awslocal cognito-idp create-user-pool --pool-name test
-{{< /command >}}
+```bash
+awslocal cognito-idp create-user-pool --pool-name test
+```
 
 You can see an output similar to the following:
 
@@ -66,15 +65,15 @@ You can see an output similar to the following:
 You will need the user pool's `id` for further operations.
 Save it in a `pool_id` variable:
 
-{{< command >}}
-$ pool_id=<your-pool-id>
-{{< /command >}}
+```bash
+pool_id=<your-pool-id>
+```
 
 Alternatively, you can use JSON processor like [`jq`](https://stedolan.github.io/jq/) to extract the essential information right from the outset when creating a pool.
 
-{{< command >}}
-$ pool_id=$(awslocal cognito-idp create-user-pool --pool-name test | jq -rc ".UserPool.Id")
-{{< /command >}}
+```bash
+pool_id=$(awslocal cognito-idp create-user-pool --pool-name test | jq -rc ".UserPool.Id")
+```
 
 ### Adding a Client
 
@@ -83,9 +82,9 @@ You will require the ID of the newly created client for the subsequent steps.
 You can use the [`CreateUserPoolClient`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPoolClient.html) for both client creation and extraction of the corresponding ID.
 Run the following command:
 
-{{< command >}}
-$ client_id=$(awslocal cognito-idp create-user-pool-client --user-pool-id $pool_id --client-name test-client | jq -rc ".UserPoolClient.ClientId")
-{{< /command >}}
+```bash
+client_id=$(awslocal cognito-idp create-user-pool-client --user-pool-id $pool_id --client-name test-client | jq -rc ".UserPoolClient.ClientId")
+```
 
 ### Using Predefined IDs for Pool Creation
 
@@ -95,39 +94,49 @@ Please note that a valid custom id must be in the format `<region>_<custom_pool_
 
 Run the following command to create a user pool with a predefined ID:
 
-{{< command >}}
-$ awslocal cognito-idp create-user-pool --pool-name p1 --user-pool-tags "_custom_id_=us-east-1_myid123"
+```bash
+awslocal cognito-idp create-user-pool --pool-name p1 --user-pool-tags "_custom_id_=us-east-1_myid123"
+```
+
+The output will be:
+
+```json
 {
     "UserPool": {
         "Id": "myid123",
         "Name": "p1",
     ...
-{{< /command >}}
+```
 
 You also have the possibility to create a Cognito user pool client with a predefined ID by specifying a `ClientName` with the specific format: `_custom_id_:<custom_client_id>`.
 
-{{< command >}}
-$ awslocal cognito-idp create-user-pool-client --user-pool-id us-east-1_myid123 --client-name _custom_id_:myclient123
+```bash
+awslocal cognito-idp create-user-pool-client --user-pool-id us-east-1_myid123 --client-name _custom_id_:myclient123
+```
+
+The output will be:
+
+```json
 {
     "UserPoolClient": {
         "UserPoolId": "us-east-1_myid123",
         "ClientName": "_custom_id_:myclient123",
         "ClientId": "myclient123",
     ...
-{{< /command >}}
+```
 
 ### Signing up and confirming a user
 
 You can now use the [`SignUp`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html) API to sign up a user.
 Run the following command:
 
-{{< command >}}
-$ awslocal cognito-idp sign-up \
+```bash
+awslocal cognito-idp sign-up \
   --client-id $client_id \
   --username example_user \
   --password 12345678Aa! \
   --user-attributes Name=email,Value=<your.email@address.com>
-{{< /command >}}
+```
 
 You can see an output similar to the following:
 
@@ -140,7 +149,7 @@ You can see an output similar to the following:
 
 Once the user is successfully created, a confirmation code will be generated.
 This code can be found in the LocalStack container logs (as shown below).
-Additionally, if you have [SMTP configured]({{< ref "configuration#emails" >}}), the confirmation code can be optionally sent via email for enhanced convenience and user experience.
+Additionally, if you have [SMTP configured](/aws/capabilities/config/configuration/#emails), the confirmation code can be optionally sent via email for enhanced convenience and user experience.
 
 ```bash
 INFO:localstack_ext.services.cognito.cognito_idp_api: Confirmation code for Cognito user example_user: 125796
@@ -150,18 +159,23 @@ DEBUG:localstack_ext.bootstrap.email_utils: Sending confirmation code via email 
 You can confirm the user with the activation code, using the [`ConfirmSignUp`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmSignUp.html) API.
 Execute the following command:
 
-{{< command >}}
-$ awslocal cognito-idp confirm-sign-up \
+```bash
+awslocal cognito-idp confirm-sign-up \
   --client-id $client_id \
   --username example_user \
   --confirmation-code <received-confirmation-code>
-{{< /command >}}
+```
 
 Since the above command does not provide a direct response, we need to verify the success of the request by checking the pool.
 Run the following command to use the [`ListUsers`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUsers.html) API to list the users in the pool:
 
-{{< command "hl_lines=21" >}}
-$ awslocal cognito-idp list-users --user-pool-id $pool_id
+```bash
+awslocal cognito-idp list-users --user-pool-id $pool_id
+```
+
+The output will be similar to the following:
+
+```json
 {
     "Users": [
         {
@@ -185,7 +199,7 @@ $ awslocal cognito-idp list-users --user-pool-id $pool_id
         }
     ]
 }
-{{< /command >}}
+```
 
 ## JWT Token Issuer and JSON Web Key Sets (JWKS) endpoints
 
@@ -204,17 +218,27 @@ https://cognito-idp.localhost.localstack.cloud/<pool_id>
 
 To access the JSON Web Key Sets (JWKS) configuration for each user pool, you can use the standardized well-known URL below:
 
-{{< command >}}
-$ curl 'http://localhost:4566/<pool_id>/.well-known/jwks.json'
+```bash
+curl 'http://localhost:4566/<pool_id>/.well-known/jwks.json'
+```
+
+The output will be similar to the following:
+
+```json
 {"keys": [{"kty": "RSA", "alg": "RS256", "use": "sig", "kid": "test-key", "n": "k6lrbEH..."]}
-{{</ command >}}
+```
 
 Moreover, you can retrieve the global region-specific public keys for Cognito Identity Pools using the following endpoint:
 
-{{< command >}}
-$ curl http://localhost:4566/.well-known/jwks_uri
+```bash
+curl http://localhost:4566/.well-known/jwks_uri
+```
+
+The output will be similar to the following:
+
+```bash
 {"keys": [{"kty": "RSA", "alg": "RS512", "use": "sig", "kid": "ap-northeast-11", "n": "AI7mc1assO5..."]}
-{{</ command >}}
+```
 
 ## Cognito Lambda Triggers
 
@@ -278,23 +302,23 @@ exports.handler = async (event) => {
 
 Enter the following commands to create the Lambda function:
 
-{{< command >}}
-$ zip function.zip index.js
-$ awslocal lambda create-function \
+```bash
+zip function.zip index.js
+awslocal lambda create-function \
     --function-name migrate_users \
     --runtime nodejs18.x \
     --zip-file fileb://function.zip \
     --handler index.handler \
     --role arn:aws:iam::000000000000:role/lambda-role
-{{</ command >}}
+```
 
 Subsequently, you can define the corresponding `--lambda-config` when creating the user pool to link it with the Lambda function:
 
-{{< command >}}
-$ awslocal cognito-idp create-user-pool \
+```bash
+awslocal cognito-idp create-user-pool \
   --pool-name test2 \
   --lambda-config '{"UserMigration":"arn:aws:lambda:us-east-1:000000000000:function:migrate_users"}'
-{{</ command >}}
+```
 
 Upon successful authentication of a non-registered user, Cognito will automatically trigger the migration Lambda function, allowing the user to be added to the pool after migration.
 
@@ -310,7 +334,7 @@ Replace `<client_id>` with the ID of your existing user pool client (for example
 
 The login form should look similar to the screenshot below:
 
-{{< figure src="cognitoLogin.png" width="320" >}}
+![Cognito Login Form](/images/aws/cognito-login-form.png)
 
 Upon successful login, the page will automatically redirect to the designated `<redirect_uri>`, with an appended path parameter `?code=<code>`.
 For instance, the redirect URL might look like `http://example.com?code=test123`.
@@ -320,13 +344,18 @@ To obtain a token, you need to submit the received code using `grant_type=author
 Note that the value of the `redirect_uri` parameter in your token request must match the value provided during the login process.
 Ensuring this match is crucial for the proper functioning of the authentication flow.
 
-```sh
-% curl \
+```bash
+curl \
   --data-urlencode 'grant_type=authorization_code' \
   --data-urlencode 'redirect_uri=http://example.com' \
   --data-urlencode "client_id=${client_id}" \
   --data-urlencode 'code=test123' \
   'http://localhost:4566/_aws/cognito-idp/oauth2/token'
+```
+
+The output will be similar to the following:
+
+```json
 {"access_token": "eyJ0eXAi…lKaHx44Q", "expires_in": 86400, "token_type": "Bearer", "refresh_token": "e3f08304", "id_token": "eyJ0eXAi…ADTXv5mA"}
 ```
 
@@ -338,13 +367,13 @@ The client credentials grant allows for scope-based authorization from a non-int
 Your app can directly request client credentials from the token endpoint to receive an access token.
 
 To request the token from the LocalStack URL, use the following endpoint: `://cognito-idp.localhost.localstack.cloud:4566/_aws/cognito-idp/oauth2/token`.
-For additional information on our endpoints, refer to our [Internal Endpoints]({{< ref "/references/internal-endpoints" >}}) documentation.
+For additional information on our endpoints, refer to our [Internal Endpoints]() documentation.
 
 If there are multiple user pools, LocalStack identifies the appropriate one by examining the `clientid` of the request.
 
 To get started, follow the example below:
 
-```sh
+```bash
 #Create client user pool with a client.
 export client_id=$(awslocal cognito-idp create-user-pool-client --user-pool-id $pool_id --client-name test-client --generate-secret  | jq -rc ".UserPoolClient.ClientId")
 
@@ -449,7 +478,7 @@ Authentication: AWS4-HMAC-SHA256 Credential=test-1234567/20190821/us-east-1/cogn
 The LocalStack Web Application provides a Resource Browser for managing Cognito User Pools, and more.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Cognito** under the **Security Identity Compliance** section.
 
-<img src="cognito-resource-browser.png" alt="Cognito Resource Browser" title="Cognito Resource Browser" width="900" />
+![Cognito Resource Browser](/images/aws/cognito-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 
@@ -472,4 +501,4 @@ The following code snippets and sample applications provide practical examples o
 
 By default, LocalStack's Cognito does not send actual email messages.
 However, if you wish to enable this feature, you will need to provide an email address and configure the corresponding SMTP settings.
-The instructions on configuring the connection parameters of your SMTP server can be found in the [Configuration]({{< ref "configuration#emails" >}}) guide to allow your local Cognito environment to send email notifications.
+The instructions on configuring the connection parameters of your SMTP server can be found in the [Configuration](/aws/capabilities/config/configuration/#emails) guide to allow your local Cognito environment to send email notifications.

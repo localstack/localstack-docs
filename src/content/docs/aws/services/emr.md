@@ -1,9 +1,7 @@
 ---
 title: "Elastic MapReduce (EMR)"
-linkTitle: "Elastic MapReduce (EMR)"
 tags: ["Ultimate"]
-description: >
-  Get started with Elastic MapReduce (EMR) on LocalStack
+description: Get started with Elastic MapReduce (EMR) on LocalStack
 ---
 
 ## Introduction
@@ -16,13 +14,13 @@ LocalStack supports EMR and allows developers to run data analytics workloads lo
 EMR utilizes various tools in the [Hadoop](https://hadoop.apache.org/) and [Spark](https://spark.apache.org) ecosystem, and your EMR instance is automatically configured to connect seamlessly to LocalStack's S3 API.
 LocalStack also supports EMR Serverless to create applications and job runs, to run your Spark/PySpark jobs locally.
 
-The supported APIs are available on our [API coverage page]({{ ref "coverage_emr" >}}), which provides information on the extent of EMR's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of EMR's integration with LocalStack.
 
-{{< callout >}}
+:::note
 To utilize the EMR API, certain additional dependencies need to be downloaded from the network (including Hadoop, Hive, Spark, etc).
 These dependencies are fetched automatically during service startup, hence it is important to ensure a reliable internet connection when retrieving the dependencies for the first time.
-Alternatively, you can use one of our `*-bigdata` Docker image tags which already ship with the required libraries baked in and may provide better stability (see [here]({{< ref "/user-guide/ci/#ci-images" >}}) for more details).
-{{< /callout >}}
+Alternatively, you can use one of our `*-bigdata` Docker image tags which already ship with the required libraries baked in and may provide better stability (see [here]() for more details).
+:::
 
 ## Getting started
 
@@ -32,14 +30,15 @@ Start your LocalStack container using your preferred method.
 We will create a virtual EMR cluster using the AWS CLI.
 To create an EMR cluster, run the following command:
 
-{{< command >}}
-$ awslocal emr create-cluster \
+```bash
+awslocal emr create-cluster \
           --release-label emr-5.9.0 \
           --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large
-{{< / command >}}
+```
+
 You will see a response similar to the following:
 
-```sh
+```bash
 {
     "ClusterId": "j-A2KF3EKLAOWRI"
 }

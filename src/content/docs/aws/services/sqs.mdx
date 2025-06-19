@@ -1,8 +1,6 @@
 ---
 title: "Simple Queue Service (SQS)"
 description: Get started with Simple Queue Service (SQS) on LocalStack
-aliases:
-- /aws/sqs/
 persistence: supported
 tags: ["Free"]
 ---
@@ -14,7 +12,7 @@ It allows you to decouple different components of your applications by enabling 
 SQS allows you to reliably send, store, and receive messages with support for standard and FIFO queues.
 
 LocalStack allows you to use the SQS APIs in your local environment to integrate and decouple distributed systems via hosted queues.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_sqs" >}}), which provides information on the extent of SQS's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of SQS's integration with LocalStack.
 
 ## Getting started
 
@@ -28,16 +26,16 @@ We will demonstrate how to create an SQS queue, retrieve queue attributes and UR
 To create an SQS queue, use the [`CreateQueue`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_CreateQueue.html) API.
 Run the following command to create a queue named `localstack-queue`:
 
-{{< command >}}
-$ awslocal sqs create-queue --queue-name localstack-queue
-{{< / command >}}
+```bash
+awslocal sqs create-queue --queue-name localstack-queue
+```
 
 You can list all queues in your account using the [`ListQueues`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ListQueues.html) API.
 Run the following command to list all queues in your account:
 
-{{< command >}}
-$ awslocal sqs list-queues
-{{< / command >}}
+```bash
+awslocal sqs list-queues
+```
 
 You will see the following output:
 
@@ -54,9 +52,11 @@ You need to pass the `queue-url` and `attribute-names` parameters.
 
 Run the following command to retrieve the queue attributes:
 
-{{< command >}}
-$ awslocal sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue --attribute-names All
-{{< / command >}}
+```bash
+awslocal sqs get-queue-attributes \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue \
+    --attribute-names All
+```
 
 ### Sending and receiving messages from the queue
 
@@ -65,9 +65,11 @@ To send a message to a SQS queue, you can use the [`SendMessage`](https://docs.a
 
 Run the following command to send a message to the queue:
 
-{{< command >}}
-$ awslocal sqs send-message --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue --message-body "Hello World"
-{{< / command >}}
+```bash
+awslocal sqs send-message \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue \
+    --message-body "Hello World"
+```
 
 It will return the MD5 hash of the Message Body and a Message ID.
 You will see output similar to the following:
@@ -82,9 +84,10 @@ You will see output similar to the following:
 You can receive messages from the queue using the [`ReceiveMessage`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html) API.
 Run the following command to receive messages from the queue:
 
-{{< command >}}
-$ awslocal sqs receive-message --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue
-{{< / command >}}
+```bash
+awslocal sqs receive-message \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue
+```
 
 You will see the Message ID, MD5 hash of the Message Body, Receipt Handle, and the Message Body in the output.
 
@@ -95,18 +98,21 @@ You need to pass the `queue-url` and `receipt-handle` parameters.
 
 Run the following command to delete a message from the queue:
 
-{{< command >}}
-$ awslocal sqs delete-message --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue --receipt-handle <receipt-handle>
-{{< / command >}}
+```bash
+awslocal sqs delete-message \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue \
+    --receipt-handle <receipt-handle>
+```
 
 Replace `<receipt-handle>` with the receipt handle you received in the previous step.
 If you have sent multiple messages to the queue, you can purge the queue using the [`PurgeQueue`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_PurgeQueue.html) API.
 
 Run the following command to purge the queue:
 
-{{< command >}}
-$ awslocal sqs purge-queue --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue
-{{< / command >}}
+```bash
+awslocal sqs purge-queue \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue
+```
 
 ## Dead-letter queue testing
 
@@ -115,10 +121,15 @@ Here's an end-to-end example of how to use message move tasks to test DLQ redriv
 
 First, create three queues.
 One will serve as original input queue, one as DLQ, and the third as target for DLQ redrive.
-{{< command >}}
-$ awslocal sqs create-queue --queue-name input-queue
-$ awslocal sqs create-queue --queue-name dead-letter-queue
-$ awslocal sqs create-queue --queue-name recovery-queue
+```bash
+awslocal sqs create-queue --queue-name input-queue
+awslocal sqs create-queue --queue-name dead-letter-queue
+awslocal sqs create-queue --queue-name recovery-queue
+```
+
+The following output is displayed:
+
+```json
 {
     "QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue"
 }
@@ -128,27 +139,36 @@ $ awslocal sqs create-queue --queue-name recovery-queue
 {
     "QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/recovery-queue"
 }
-{{< /command >}}
+```
 
 Configure `dead-letter-queue` to be a DLQ for `input-queue`:
-{{< command >}}
-$ awslocal sqs set-queue-attributes \
---queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue \
---attributes '{
+
+```bash
+awslocal sqs set-queue-attributes \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue \
+    --attributes '{
     "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:000000000000:dead-letter-queue\",\"maxReceiveCount\":\"1\"}"
 }'
-{{< /command >}}
+```
 
 Send a message to the input queue:
-{{< command >}}
-$ awslocal sqs send-message --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue --message-body '{"hello": "world"}'
-{{< /command >}}
+
+```bash
+awslocal sqs send-message \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue \
+    --message-body '{"hello": "world"}'
+```
 
 Receive the message twice to provoke a move into the dead-letter queue:
-{{< command >}}
-$ awslocal sqs receive-message --visibility-timeout 0 --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue
-$ awslocal sqs receive-message --visibility-timeout 0 --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue
-{{< /command >}}
+
+```bas
+awslocal sqs receive-message \
+    --visibility-timeout 0 \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue
+awslocal sqs receive-message \
+    --visibility-timeout 0 \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue
+```
 
 In the localstack logs you should see something like the following line, indicating the message was moved to the DLQ:
 
@@ -157,15 +177,23 @@ In the localstack logs you should see something like the following line, indicat
 ```
 
 Now, start a message move task to asynchronously move the messages from the DLQ into the recovery queue:
-{{< command >}}
-$ awslocal sqs start-message-move-task \
-        --source-arn arn:aws:sqs:us-east-1:000000000000:dead-letter-queue \
-        --destination-arn arn:aws:sqs:us-east-1:000000000000:recovery-queue
-{{< /command >}}
+
+```bash
+awslocal sqs start-message-move-task \
+    --source-arn arn:aws:sqs:us-east-1:000000000000:dead-letter-queue \
+    --destination-arn arn:aws:sqs:us-east-1:000000000000:recovery-queue
+```
 
 Listing the message move tasks should yield something like
-{{< command >}}
-$ awslocal sqs list-message-move-tasks --source-arn arn:aws:sqs:us-east-1:000000000000:dead-letter-queue
+
+```bash
+awslocal sqs list-message-move-tasks \
+    --source-arn arn:aws:sqs:us-east-1:000000000000:dead-letter-queue
+```
+
+The following output is displayed:
+
+```json
 {
     "Results": [
         {
@@ -178,10 +206,11 @@ $ awslocal sqs list-message-move-tasks --source-arn arn:aws:sqs:us-east-1:000000
         }
     ]
 }
-{{< /command >}}
+```
 
 Receiving messages from the recovery queue should now show us the original message:
-{{< command >}}
+
+```bash
 $ awslocal sqs receive-message --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/recovery-queue
 {
     "Messages": [
@@ -193,7 +222,7 @@ $ awslocal sqs receive-message --queue-url http://sqs.us-east-1.localhost.locals
         }
     ]
 }
-{{< /command >}}
+```
 
 ## SQS Query API
 
@@ -204,9 +233,9 @@ With LocalStack, you can conveniently test SQS Query API calls without the need 
 
 For instance, you can use a basic [curl](https://curl.se/) command to send a `SendMessage` command along with a MessageBody attribute:
 
-{{< command >}}
-$ curl "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue?Action=SendMessage&MessageBody=hello%2Fworld"
-{{< / command >}}
+```bash
+curl "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue?Action=SendMessage&MessageBody=hello%2Fworld"
+```
 
 You will see the following output:
 
@@ -229,9 +258,9 @@ Adding the `Accept: application/json` header will make the server return JSON:
 To receive JSON responses from the server, include the `Accept: application/json` header in your request.
 Here's an example using the [curl](https://curl.se/) command:
 
-{{< command >}}
-$ curl -H "Accept: application/json" "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue?Action=SendMessage&MessageBody=hello%2Fworld"
-{{< / command >}}
+```bash
+curl -H "Accept: application/json" "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue?Action=SendMessage&MessageBody=hello%2Fworld"
+```
 
 The response will be in JSON format:
 
@@ -288,11 +317,11 @@ You can enable this behavior in LocalStack by setting the `SQS_ENABLE_MESSAGE_RE
 In AWS, valid values for message retention range from 60 (1 minute) to 1,209,600 (14 days).
 In LocalStack, we do not put constraints on the value which can be helpful for test scenarios.
 
-{{< callout >}}
-Note that, if you enable this option, [persistence]({{< ref "user-guide/state-management/persistence" >}}) or [cloud pods]({{<ref "user-guide/state-management/cloud-pods" >}}) for SQS may not work as expected.
+:::note
+Note that, if you enable this option, [persistence](/aws/capabilities/state-management/persistence) or [cloud pods](/aws/capabilities/state-management/cloud-pods) for SQS may not work as expected.
 The reason is that, LocalStack does not adjust timestamps when restoring a state, so time appears to pass between LocalStack runs.
 Consequently, when you restart LocalStack after a period that is longer than the message retention period, LocalStack will remove all those messages when SQS starts.
-{{</callout>}}
+:::
 
 ### Disable CloudWatch Metrics Reporting
 
@@ -337,7 +366,7 @@ Our Lambda implementation automatically resolves these URLs to the LocalStack co
 When your code run within different containers like ECS tasks or your custom ones, it's advisable to establish your Docker network setup.
 You can follow these steps:
 
-1. Override the `LOCALSTACK_HOST` variable as outlined in our [network troubleshooting guide]({{< ref "endpoint-url" >}}).
+1. Override the `LOCALSTACK_HOST` variable as outlined in our [network troubleshooting guide]().
 2. Ensure that your containers can resolve `LOCALSTACK_HOST` to the LocalStack container within the Docker network.
 3. We recommend employing `SQS_ENDPOINT_STRATEGY=path`, which generates queue URLs in the format `http://<LOCALSTACK_HOST>/queue/...`.
 
@@ -359,24 +388,29 @@ The endpoint ignores any additional parameters from the `ReceiveMessage` operati
 You can call the `/_aws/sqs/messages` endpoint in two different ways:
 
 1. Using the query argument `QueueUrl`, like this:
-    {{< command >}}
-    $ http://localhost.localstack.cloud:4566/_aws/sqs/messages?QueueUrl=http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue
-    {{< / command >}}
+    ```bash
+    http://localhost.localstack.cloud:4566/_aws/sqs/messages?QueueUrl=http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue
+    ```
 
 2. Utilizing the path-based endpoint, as shown in this example:
-    {{< command >}}
-    $ http://localhost.localstack.cloud:4566/_aws/sqs/messages/us-east-1/000000000000/my-queue
-    {{< / command >}}
+    ```bash
+    http://localhost.localstack.cloud:4566/_aws/sqs/messages/us-east-1/000000000000/my-queue
+    ```
 
 #### XML response
 
 You can directly call the endpoint to obtain the raw AWS XML response.
 
-{{< tabpane >}}
-{{< tab header="curl" lang="bash" >}}
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Tabs>
+<TabItem label="curl">
+```bash
 curl "http://localhost.localstack.cloud:4566/_aws/sqs/messages?QueueUrl=http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue"
-{{< /tab >}}
-{{< tab header="Python Requests" lang="python" >}}
+```
+</TabItem>
+<TabItem label="Python Requests">
+```python
 import requests
 
 response = requests.get(
@@ -384,8 +418,9 @@ response = requests.get(
     params={"QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue"},
 )
 print(response.text)  # outputs the response XML
-{{< /tab >}}
-{{< / tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 An example response is shown below:
 
@@ -448,21 +483,25 @@ An example response is shown below:
 
 You can include the `Accept: application/json` header in your request if you prefer a JSON response.
 
-{{< tabpane >}}
-{{< tab header="curl" lang="bash" >}}
+<Tabs>
+<TabItem label="curl">
+```bash
 curl -H "Accept: application/json" \
     "http://localhost.localstack.cloud:4566/_aws/sqs/messages?QueueUrl=http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue"
-{{< /tab >}}
-{{< tab header="Python Requests" lang="python" >}}
+```
+</TabItem>
+<TabItem label="Python Requests">
+```python
 import requests
 
 response = requests.get(
     url="http://localhost.localstack.cloud:4566/_aws/sqs/messages",
-    params={"QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue""},
+    params={"QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue"},
 )
 print(response.text)  # outputs the response XML
-{{< /tab >}}
-{{< / tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 An example response is shown below:
 
@@ -532,18 +571,22 @@ An example response is shown below:
 
 Since the `/_aws/sqs/messages` endpoint is compatible with the SQS `ReceiveMessage` operation, you can use the endpoint as the endpoint URL parameter in your AWS client call.
 
-{{< tabpane >}}
-{{< tab header="aws-cli" lang="bash" >}}
+<Tabs>
+<TabItem label="aws-cli">
+```bash
 aws --endpoint-url=http://localhost.localstack.cloud:4566/_aws/sqs/messages sqs receive-message \
   --queue-url=http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue
-{{< /tab >}}
-{{< tab header="Boto3" lang="python" >}}
+```
+</TabItem>
+<TabItem label="Boto3">
+```python
 import boto3
 sqs = boto3.client("sqs", endpoint_url="http://localhost.localstack.cloud:4566/_aws/sqs/messages")
 response = sqs.receive_message(QueueUrl="http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue")
 print(response)
-{{< /tab >}}
-{{< / tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 An example response is shown below:
 
@@ -582,22 +625,25 @@ An example response is shown below:
 
 The developer endpoint also supports showing invisible and delayed messages via the query arguments `ShowInvisible` and `ShowDelayed`.
 
-{{< tabpane >}}
-{{< tab header="curl" lang="bash" >}}
+<Tabs>
+<TabItem label="curl">
+```bash
 curl -H "Accept: application/json" \
     "http://localhost.localstack.cloud:4566/_aws/sqs/messages?ShowInvisible=true&ShowDelayed=true&QueueUrl=http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue
-{{< /tab >}}
-{{< tab header="Python Requests" lang="python" >}}
+```
+</TabItem>
+<TabItem label="Python Requests">
+```python
 import requests
-
 response = requests.get(
     "http://localhost.localstack.cloud:4566/_aws/sqs/messages",
     params={"QueueUrl": queue_url, "ShowInvisible": True, "ShowDelayed": True},
     headers={"Accept": "application/json"},
 )
 print(response.text)
-{{< /tab >}}
-{{< / tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 This will also include messages that currently have an active visibility timeout or were delayed and are not actually in the queue yet.
 Here's an example:
@@ -627,7 +673,7 @@ Here's an example:
 The LocalStack Web Application provides a Resource Browser for managing SQS queues.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **SQS** under the **App Integration** section.
 
-<img src="sqs-resource-browser.png" alt="SQS Resource Browser" title="SQS Resource Browser" width="900" />
+![SQS Resource Browser](/images/aws/sqs-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

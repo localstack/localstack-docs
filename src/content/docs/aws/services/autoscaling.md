@@ -1,7 +1,6 @@
 ---
 title: "Auto Scaling"
-linkTitle: "Auto Scaling"
-description: Get started with Auto Scaling" on LocalStack
+description: Get started with Auto Scaling on LocalStack
 tags: ["Base"]
 ---
 
@@ -11,7 +10,7 @@ Auto Scaling helps you maintain application availability and allows you to autom
 You can use Auto Scaling to ensure that you are running your desired number of instances.
 
 LocalStack allows you to use the Auto Scaling APIs locally to create and manage Auto Scaling groups locally.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_autoscaling" >}}), which provides information on the extent of Auto Scaling's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Auto Scaling's integration with LocalStack.
 
 ## Getting started
 
@@ -25,12 +24,12 @@ We will demonstrate how you can create a launch template, an Auto Scaling group,
 You can create a launch template that defines the launch configuration for the instances in the Auto Scaling group using the [`CreateLaunchTemplate`](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateLaunchTemplate.html) API.
 Run the following command to create a launch template:
 
-{{< command >}}
-$ awslocal ec2 create-launch-template \
+```bash
+awslocal ec2 create-launch-template \
     --launch-template-name my-template-for-auto-scaling \
     --version-description version1 \
     --launch-template-data '{"ImageId":"ami-ff0fea8310f3","InstanceType":"t2.micro"}'
-{{< /command >}}
+```
 
 The following output is displayed:
 
@@ -53,30 +52,30 @@ The following output is displayed:
 Before creating an Auto Scaling group, you need to fetch the subnet ID.
 Run the following command to describe the subnets:
 
-{{< command >}}
-$ awslocal ec2 describe-subnets --output text --query Subnets[0].SubnetId
-{{< /command >}}
+```bash
+awslocal ec2 describe-subnets --output text --query Subnets[0].SubnetId
+```
 
 Copy the subnet ID from the output and use it to create the Auto Scaling group.
 Run the following command to create an Auto Scaling group using the [`CreateAutoScalingGroup`](https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_CreateAutoScalingGroup.html) API:
 
-{{< command >}}
-$ awslocal autoscaling create-auto-scaling-group \
+```bash
+awslocal autoscaling create-auto-scaling-group \
     --auto-scaling-group-name my-asg \
     --launch-template LaunchTemplateId=lt-5ccdf1a84f178ba44 \
     --min-size 1 \
     --max-size 5 \
     --vpc-zone-identifier 'subnet-d4d16268'
-{{< /command >}}
+```
 
 ### Describe the Auto Scaling group
 
 You can describe the Auto Scaling group using the [`DescribeAutoScalingGroups`](https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DescribeAutoScalingGroups.html) API.
 Run the following command to describe the Auto Scaling group:
 
-{{< command >}}
-$ awslocal autoscaling describe-auto-scaling-groups
-{{< /command >}}
+```bash
+awslocal autoscaling describe-auto-scaling-groups
+```
 
 The following output is displayed:
 
@@ -119,23 +118,23 @@ You can attach an instance to the Auto Scaling group using the [`AttachInstances
 Before that, create an EC2 instance using the [`RunInstances`](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html) API.
 Run the following command to create an EC2 instance locally:
 
-{{< command >}}
-$ awslocal ec2 run-instances \
+```bash
+awslocal ec2 run-instances \
     --image-id ami-ff0fea8310f3 --count 1
-{{< /command >}}
+```
 
 Fetch the instance ID from the output and use it to attach the instance to the Auto Scaling group.
 Run the following command to attach the instance to the Auto Scaling group:
 
-{{< command >}}
-$ awslocal autoscaling attach-instances \
+```bash
+awslocal autoscaling attach-instances \
     --instance-ids i-0d678c4ecf6018dde \
     --auto-scaling-group-name my-asg
-{{< /command >}}
+```
 
 Replace `i-0d678c4ecf6018dde` with the instance ID that you fetched from the output.
 
 ## Current Limitations
 
-LocalStack does not support the `docker`/`libvirt` [VM manager for EC2]({{< ref "/user-guide/aws/ec2/#vm-managers" >}}).
+LocalStack does not support the `docker`/`libvirt` [VM manager for EC2](/aws/services/ec2/#vm-managers).
 It only works with the `mock` VM manager.

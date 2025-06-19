@@ -1,10 +1,11 @@
 ---
 title: "Lambda"
-linkTitle: "Lambda"
 description: Get started with Lambda on LocalStack
 tags: ["Free"]
 persistence: supported with limitations
 ---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -13,7 +14,7 @@ AWS Lambda automatically scales your code to meet demand and handles server prov
 AWS Lambda allows you to break down your application into smaller, independent functions that integrate seamlessly with AWS services.
 
 LocalStack allows you to use the Lambda APIs to create, deploy, and test your Lambda functions.
-The supported APIs are available on our [Lambda coverage page]({{< ref "coverage_lambda" >}}), which provides information on the extent of Lambda's integration with LocalStack.
+The supported APIs are available on our [Lambda coverage page](), which provides information on the extent of Lambda's integration with LocalStack.
 
 ## Getting started
 
@@ -41,113 +42,123 @@ exports.handler = async (event) => {
 
 Enter the following command to create a new Lambda function:
 
-{{< command >}}
-$ zip function.zip index.js
-$ awslocal lambda create-function \
+```bash
+zip function.zip index.js
+awslocal lambda create-function \
     --function-name localstack-lambda-url-example \
     --runtime nodejs18.x \
     --zip-file fileb://function.zip \
     --handler index.handler \
     --role arn:aws:iam::000000000000:role/lambda-role
-{{< / command >}}
+```
 
-{{< callout "note">}}
+:::note
 To create a predictable URL for the function, you can assign a custom ID by specifying the `_custom_id_` tag on the function itself.
-{{< command >}}
-$ awslocal lambda create-function \
+```bash
+awslocal lambda create-function \
     --function-name localstack-lambda-url-example \
     --runtime nodejs18.x \
     --zip-file fileb://function.zip \
     --handler index.handler \
     --role arn:aws:iam::000000000000:role/lambda-role \
     --tags '{"_custom_id_":"my-custom-subdomain"}'
-{{< / command >}}
+```
 You must specify the `_custom_id_` tag **before** <a href="#create-a-function-url">creating a Function URL</a>.
 After the URL configuration is set up, any modifications to the tag will not affect it.
 LocalStack supports assigning custom IDs to both the `$LATEST` version of the function or to an existing version alias.
-{{< /callout >}}
+:::
 
-{{< callout >}}
+:::note
 In the old Lambda provider, you could create a function with any arbitrary string as the role, such as `r1`.
 However, the new provider requires the role ARN to be in the format `arn:aws:iam::000000000000:role/lambda-role` and validates it using an appropriate regex. However, it currently does not check whether the role exists.
-{{< /callout >}}
+:::
 
 ### Invoke the Function
 
 To invoke the Lambda function, you can use the [`Invoke` API](https://docs.aws.amazon.com/lambda/latest/dg/API_Invoke.html).
 Run the following command to invoke the function:
 
-{{< tabpane text=true persist=false >}}
-  {{% tab header="AWS CLI v1" lang="shell" %}}
-  {{< command >}}
-  $ awslocal lambda invoke --function-name localstack-lambda-url-example \
+<Tabs>
+<TabItem label="AWS CLI v1">
+```bash
+awslocal lambda invoke --function-name localstack-lambda-url-example \
     --payload '{"body": "{\"num1\": \"10\", \"num2\": \"10\"}" }' output.txt
-  {{< /command >}}
-  {{% /tab %}}
-  {{% tab header="AWS CLI v2" lang="shell" %}}
-  {{< command >}}
-  $ awslocal lambda invoke --function-name localstack-lambda-url-example \
+```
+</TabItem>
+<TabItem label="AWS CLI v2">
+```bash
+awslocal lambda invoke --function-name localstack-lambda-url-example \
     --cli-binary-format raw-in-base64-out \
     --payload '{"body": "{\"num1\": \"10\", \"num2\": \"10\"}" }' output.txt
-  {{< /command >}}
-  {{% /tab %}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ### Create a Function URL
 
-{{< callout >}}
+:::note
 [Response streaming](https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html) is currently not supported, so it will still return a synchronous/full response instead.
-{{< /callout >}}
+:::
 
 With the Function URL property, there is now a new way to call a Lambda Function via HTTP API call using the [`CreateFunctionURLConfig` API](https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunctionUrlConfig.html).
 To create a URL for invoking the function, run the following command:
 
-{{< command >}}
-$ awslocal lambda create-function-url-config \
+```bash
+awslocal lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
-{{< / command >}}
+```
 
 This will generate a HTTP URL that can be used to invoke the Lambda function.
 The URL will be in the format `http://<XXXXXXXX>.lambda-url.us-east-1.localhost.localstack.cloud:4566`.
 
-{{< callout "note">}}
+:::note
 As previously mentioned, when a Lambda Function has a `_custom_id_` tag, LocalStack sets this tag's value as the subdomain in the Function's URL.
 
-{{< command >}}
-$ awslocal lambda create-function-url-config \
+```bash
+awslocal lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
+```
+
+The following output would be retrieved:
+
+```json
 {
     "FunctionUrl": "http://my-custom-subdomain.lambda-url.<region>...",
     ....
 }
-{{< / command >}}
+```
 
 In addition, if you pass an an existing version alias as a `Qualifier` to the request, the created URL will combine the custom ID and the alias in the form `<custom-id>-<alias>`.
 
-{{< command >}}
-$ awslocal lambda create-function-url-config \
+```bash
+awslocal lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
     --qualifier test-alias
+```
+
+The following output would be retrieved:
+
+```json
 {
     "FunctionUrl": "http://my-custom-subdomain-test-alias.lambda-url.<region>...",
     ....
 }
-{{< / command >}}
-{{< /callout >}}
+```
+:::
 
 ### Trigger the Lambda function URL
 
 You can now trigger the Lambda function by sending a HTTP POST request to the URL using [curl](https://curl.se/) or your REST HTTP client:
 
-{{< command >}}
-$ curl -X POST \
+```bash
+curl -X POST \
     'http://<XXXXXXXX>.lambda-url.us-east-1.localhost.localstack.cloud:4566/' \
     -H 'Content-Type: application/json' \
     -d '{"num1": "10", "num2": "10"}'
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -170,48 +181,259 @@ The following event sources are supported in LocalStack:
 
 The table below shows feature coverage for all supported event sources for the latest version of LocalStack.
 
-Unlike [API operation coverage]({{< ref "coverage_lambda" >}}), this table illustrates the **functional and behavioural coverage** of LocalStack's Lambda Event Source Mapping implementation.
+Unlike [API operation coverage](), this table illustrates the **functional and behavioural coverage** of LocalStack's Lambda Event Source Mapping implementation.
 
 Where necessary, footnotes are used to provide additional context.
 
-{{< callout >}}
+:::note
 Feature availability and coverage is categorized with the following system:
 - ⭐️ Only Available in LocalStack licensed editions
 - 🟢 Fully Implemented
 - 🟡 Partially Implemented
 - 🟠 Not Implemented
 - ➖ Not Applicable (Not Supported by AWS)
-{{</callout >}}
+:::
 
-| | <th colspan="2" style="text-align:center;">SQS</th> <th colspan="2" style="text-align:center;">Stream</th> <th colspan="2" style="text-align:center;">Kafka ⭐️</th>
-|--------------------------------|-------------------------------------------------|:--------:|:----:|:---------:|:----------:|:----------:|:------------:|
-| **Parameter**                  | **Description**                                 | **Standard** | **FIFO** | **Kinesis** | **DynamoDB** | **Amazon MSK** | **Self-Managed** |
-| BatchSize                      | Batching events by count.                       | 🟢        | 🟢    | 🟢       | 🟢        | 🟢          | 🟢            |
-| *Not Configurable*             | Batch when ≥ 6 MB limit.                        | 🟠        | 🟠    | 🟠       | 🟠        | 🟢          | 🟢            |
-| MaximumBatchingWindowInSeconds | Batch by Time Window.                           | 🟢        | 🟢    | 🟢       | 🟢        | 🟢          | 🟢            |
-| MaximumRetryAttempts           | Discard after N retries.                        | ➖        | ➖    | 🟢       | 🟢        | ➖          | ➖            |
-| MaximumRecordAgeInSeconds      | Discard records older than time `t`.            | ➖        | ➖    | 🟢       | 🟢        | ➖          | ➖            |
-| Enabled                        | Enabling/Disabling.                             | 🟢        | 🟢    | 🟢       | 🟢        | 🟢          | 🟢            |
-| FilterCriteria                 | Filter pattern evaluating. [^1] [^2]            | 🟢        | 🟢    | 🟢       | 🟢        | 🟢          | 🟢            |
-| FunctionResponseTypes          | Enabling ReportBatchItemFailures.               | 🟢        | 🟢    | 🟢       | 🟢        | ➖          | ➖            |
-| BisectBatchOnFunctionError     | Bisect a batch on error and retry.              | ➖        | ➖    | 🟠       | 🟠        | ➖          | ➖            |
-| ScalingConfig                  | The scaling configuration for the event source. | 🟠        | 🟠    | ➖       | ➖        | ➖          | ➖            |
-| ParallelizationFactor          | Parallel batch processing by shard.             | ➖        | ➖    | 🟠       | 🟠        | ➖          | ➖            |
-| DestinationConfig.OnFailure    | SQS Failure Destination.                        | ➖        | ➖    | 🟢       | 🟢        | 🟠          | 🟠            |
-|                                | SNS Failure Destination.                        | ➖        | ➖    | 🟢       | 🟢        | 🟠          | 🟠            |
-|                                | S3 Failure Destination.                         | ➖        | ➖    | 🟢       | 🟢        | 🟠          | 🟠            |
-| DestinationConfig.OnSuccess    | Success Destinations.                           | ➖        | ➖    | ➖       | ➖        | ➖          | ➖            |
-| MetricsConfig                  | CloudWatch metrics.                             | 🟠        | 🟠    | 🟠       | 🟠        | 🟠          | 🟠            |
-| ProvisionedPollerConfig        | Control throughput via min-max limits.          | ➖        | ➖    | ➖       | ➖        | 🟠          | 🟠            |
-| StartingPosition               | Position to start reading from.                 | ➖        | ➖    | 🟢       | 🟢        | 🟢          | 🟢            |
-| StartingPositionTimestamp      | Timestamp to start reading from.                | ➖        | ➖    | 🟢       | ➖        | 🟢          | 🟢            |
-| TumblingWindowInSeconds        | Duration (seconds) of a processing window.      | ➖        | ➖    | 🟠       | 🟠        | ➖          | ➖            |
-| Topics ⭐️                      | Kafka topics to read from.                      | ➖        | ➖    | ➖       | ➖        | 🟢          | 🟢            |
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-64">Parameter</TableHead>
+      <TableHead className="w-96">Description</TableHead>
+      <TableHead colSpan={2} className="text-center">SQS</TableHead>
+      <TableHead colSpan={2} className="text-center">Stream</TableHead>
+      <TableHead colSpan={2} className="text-center">Kafka ⭐️</TableHead>
+    </TableRow>
+    <TableRow>
+      <TableHead></TableHead>
+      <TableHead></TableHead>
+      <TableHead className="text-center">Standard</TableHead>
+      <TableHead className="text-center">FIFO</TableHead>
+      <TableHead className="text-center">Kinesis</TableHead>
+      <TableHead className="text-center">DynamoDB</TableHead>
+      <TableHead className="text-center">Amazon MSK</TableHead>
+      <TableHead className="text-center">Self-Managed</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="font-medium">BatchSize</TableCell>
+      <TableCell>Batching events by count.</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium italic">Not Configurable</TableCell>
+      <TableCell>Batch when ≥ 6 MB limit.</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">MaximumBatchingWindowInSeconds</TableCell>
+      <TableCell>Batch by Time Window.</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">MaximumRetryAttempts</TableCell>
+      <TableCell>Discard after N retries.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">MaximumRecordAgeInSeconds</TableCell>
+      <TableCell>Discard records older than time `t`.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">Enabled</TableCell>
+      <TableCell>Enabling/Disabling.</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">FilterCriteria</TableCell>
+      <TableCell>Filter pattern evaluating. [^1] [^2]</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">FunctionResponseTypes</TableCell>
+      <TableCell>Enabling ReportBatchItemFailures.</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">BisectBatchOnFunctionError</TableCell>
+      <TableCell>Bisect a batch on error and retry.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">ScalingConfig</TableCell>
+      <TableCell>The scaling configuration for the event source.</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">ParallelizationFactor</TableCell>
+      <TableCell>Parallel batch processing by shard.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">DestinationConfig.OnFailure</TableCell>
+      <TableCell>SQS Failure Destination.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium"></TableCell>
+      <TableCell>SNS Failure Destination.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium"></TableCell>
+      <TableCell>S3 Failure Destination.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">DestinationConfig.OnSuccess</TableCell>
+      <TableCell>Success Destinations.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">MetricsConfig</TableCell>
+      <TableCell>CloudWatch metrics.</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">ProvisionedPollerConfig</TableCell>
+      <TableCell>Control throughput via min-max limits.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">StartingPosition</TableCell>
+      <TableCell>Position to start reading from.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">StartingPositionTimestamp</TableCell>
+      <TableCell>Timestamp to start reading from.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">TumblingWindowInSeconds</TableCell>
+      <TableCell>Duration (seconds) of a processing window.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell className="font-medium">Topics ⭐️</TableCell>
+      <TableCell>Kafka topics to read from.</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
 
 [^1]: Read more at [Control which events Lambda sends to your function](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html)
 [^2]: The available Metadata properties may not have full parity with AWS depending on the event source (read more at [Understanding event filtering basics](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics)).
 
-Create a [GitHub issue](https://github.com/localstack/localstack/issues/new/choose) or reach out to [LocalStack support]({{< ref "/getting-started/help-and-support" >}}) if you experience any challenges.
+Create a [GitHub issue](https://github.com/localstack/localstack/issues/new/choose) or reach out to [LocalStack support](/aws/getting-started/help-support) if you experience any challenges.
 
 ## Lambda Layers (Pro)
 
@@ -224,22 +446,22 @@ The Community image also allows creating, updating, and deleting Lambda Layers, 
 To create a Lambda Layer locally, you can use the [`PublishLayerVersion` API](https://docs.aws.amazon.com/lambda/latest/dg/API_PublishLayerVersion.html) in LocalStack.
 Here's a simple example using Python:
 
-{{< command >}}
-$ mkdir -p /tmp/python/
-$ echo 'def util():' > /tmp/python/testlayer.py
-$ echo '  print("Output from Lambda layer util function")' >> /tmp/python/testlayer.py
-$ (cd /tmp; zip -r testlayer.zip python)
-$ LAYER_ARN=$(awslocal lambda publish-layer-version --layer-name layer1 --zip-file fileb:///tmp/testlayer.zip | jq -r .LayerVersionArn)
-{{< / command >}}
+```bash
+mkdir -p /tmp/python/
+echo 'def util():' > /tmp/python/testlayer.py
+echo '  print("Output from Lambda layer util function")' >> /tmp/python/testlayer.py
+(cd /tmp; zip -r testlayer.zip python)
+LAYER_ARN=$(awslocal lambda publish-layer-version --layer-name layer1 --zip-file fileb:///tmp/testlayer.zip | jq -r .LayerVersionArn)
+```
 
 Next, define a Lambda function that uses our layer:
 
-{{< command >}}
-$ echo 'def handler(*args, **kwargs):' > /tmp/testlambda.py
-$ echo '  import testlayer; testlayer.util()' >> /tmp/testlambda.py
-$ echo '  print("Debug output from Lambda function")' >> /tmp/testlambda.py
-$ (cd /tmp; zip testlambda.zip testlambda.py)
-$ awslocal lambda create-function \
+```bash
+echo 'def handler(*args, **kwargs):' > /tmp/testlambda.py
+echo '  import testlayer; testlayer.util()' >> /tmp/testlambda.py
+echo '  print("Debug output from Lambda function")' >> /tmp/testlambda.py
+(cd /tmp; zip testlambda.zip testlambda.py)
+awslocal lambda create-function \
   --function-name func1 \
   --runtime python3.8 \
   --role arn:aws:iam::000000000000:role/lambda-role \
@@ -247,7 +469,7 @@ $ awslocal lambda create-function \
   --timeout 30 \
   --zip-file fileb:///tmp/testlambda.zip \
   --layers $LAYER_ARN
-{{< / command >}}
+```
 
 Here, we've defined a Lambda function called `handler()` that imports the `util()` function from our `layer1` Lambda Layer.
 We then used the [`CreateFunction` API](https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html) to create this Lambda function in LocalStack, specifying the `layer1` Lambda Layer as a dependency.
@@ -269,14 +491,14 @@ This account is managed by LocalStack on AWS.
 
 To grant access to your layer, run the following command:
 
-{{< command >}}
-$ aws lambda add-layer-version-permission \
+```bash
+aws lambda add-layer-version-permission \
   --layer-name test-layer \
   --version-number 1 \
   --statement-id layerAccessFromLocalStack \
   --principal 886468871268 \
   --action lambda:GetLayerVersion
-{{< / command >}}
+```
 
 Replace `test-layer` and `1` with the name and version number of your layer, respectively.
 
@@ -287,13 +509,13 @@ After granting access, the next time you reference the layer in one of your loca
 LocalStack uses a [custom implementation](https://github.com/localstack/lambda-runtime-init/) of the
 [AWS Lambda Runtime Interface Emulator](https://github.com/aws/aws-lambda-runtime-interface-emulator)
 to match the behavior of AWS Lambda as closely as possible while providing additional features
-such as [hot reloading]({{< ref "hot-reloading" >}}).
+such as [hot reloading](/aws/tooling/lambda-tools/hot-reloading).
 We ship our custom implementation as a Golang binary, which gets copied into each Lambda container under `/var/rapid/init`.
 This init binary is used as the entry point for every Lambda container.
 
 Our custom implementation offers additional configuration options,
 but these configurations are primarily intended for LocalStack developers and could change in the future.
-The LocalStack [configuration]({{< ref "configuration" >}}) `LAMBDA_DOCKER_FLAGS` can be used to configure all Lambda containers,
+The LocalStack [configuration](/aws/capabilities/config/configuration) `LAMBDA_DOCKER_FLAGS` can be used to configure all Lambda containers,
 for example `LAMBDA_DOCKER_FLAGS=-e LOCALSTACK_INIT_LOG_LEVEL=debug`.
 Some noteworthy configurations include:
 - `LOCALSTACK_INIT_LOG_LEVEL` defines the log level of the Golang binary.
@@ -309,23 +531,23 @@ The full list of configurations is defined in the Golang function
 LocalStack provides various tools to help you develop, debug, and test your AWS Lambda functions more efficiently.
 
 - **Hot reloading**: With Lambda hot reloading, you can continuously apply code changes to your Lambda functions without needing to redeploy them manually.
-  To learn more about how to use hot reloading with LocalStack, check out our [hot reloading documentation]({{< ref "hot-reloading" >}}).
+  To learn more about how to use hot reloading with LocalStack, check out our [hot reloading documentation](/aws/capabilities/lambda-tools/hot-reloading).
 - **Remote debugging**: LocalStack's remote debugging functionality allows you to attach a debugger to your Lambda function using your preferred IDE.
-  To get started with remote debugging in LocalStack, see our [debugging documentation]({{< ref "debugging" >}}).
+  To get started with remote debugging in LocalStack, see our [debugging documentation](/aws/capabilities/lambda-tools/remote-debugging).
 - **Lambda VS Code Extension**: LocalStack's Lambda VS Code Extension supports deploying and invoking Python Lambda functions through AWS SAM or AWS CloudFormation.
-  To get started with the Lambda VS Code Extension, see our [Lambda VS Code Extension documentation]({{< ref "user-guide/lambda-tools/vscode-extension" >}}).
+  To get started with the Lambda VS Code Extension, see our [Lambda VS Code Extension documentation](/aws/tooling/lambda-tools/vscode-extension).
 - **API for querying Lambda runtimes**: LocalStack offers a metadata API to query the list of Lambda runtimes via `GET http://localhost.localstack.cloud:4566/_aws/lambda/runtimes`.
   It returns the [Supported Runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html) matching AWS parity (i.e., excluding deprecated runtimes) and offers additional filters for `deprecated` runtimes and `all` runtimes (`GET /_aws/lambda/runtimes?filter=all`).
 
 ## Resource Browser
 
-The LocalStack Web Application provides a [Resource Browser]({{< ref "/user-guide/web-application/resource-browser/" >}}) for managing Lambda resources.
+The LocalStack Web Application provides a [Resource Browser](/aws/capabilities/web-app/resource-browser) for managing Lambda resources.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Lambda** under the **Compute** section.
 
 The Resource Browser displays [Functions](https://app.localstack.cloud/resources/lambda/functions) and [Layers](https://app.localstack.cloud/resources/lambda/layers) resources.
 You can click on individual resources to view their details.
 
-<img src="lambda-resource-browser.png" alt="Lambda Resource Browser" title="Lambda Resource Browser" width="900" />
+![Lambda Resource Browser](/images/aws/lambda-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 
@@ -336,16 +558,16 @@ The Resource Browser allows you to perform the following actions:
 
 ## Migrating to Lambda v2
 
-{{< callout >}}
+:::note
 The legacy Lambda implementation has been removed since LocalStack&nbsp;3.0 (Docker `latest` since 2023-11-09).
-{{</callout >}}
+:::
 
 As part of the [LocalStack 2.0 release](https://discuss.localstack.cloud/t/new-lambda-implementation-in-localstack-2-0/258), the Lambda provider has been migrated to `v2` (formerly known as `asf`).
 With the new implementation, the following changes have been introduced:
 
 - To run Lambda functions in LocalStack, mount the Docker socket into the LocalStack container.
   Add the following Docker volume mount to your LocalStack startup configuration: `/var/run/docker.sock:/var/run/docker.sock`.
-  You can find an example of this configuration in our official [`docker-compose.yml` file]({{< ref "/getting-started/installation/#starting-localstack-with-docker-compose" >}}).
+  You can find an example of this configuration in our official [`docker-compose.yml` file](/aws/getting-started/installation/#starting-localstack-with-docker-compose).
 - The `v2` provider discontinues Lambda Executor Modes such as `LAMBDA_EXECUTOR=local`.
   Previously, this mode was used as a fallback when the Docker socket was unavailable in the LocalStack container, but many users unintentionally used it instead of the configured `LAMBDA_EXECUTOR=docker`.
   The new provider now behaves similarly to the old `docker-reuse` executor and does not require such configuration.
@@ -358,7 +580,7 @@ With the new implementation, the following changes have been introduced:
   The ARM containers for compatible runtimes are based on Amazon Linux 2, and ARM-compatible hosts can create functions with the `arm64` architecture.
 - Lambda functions in LocalStack resolve AWS domains, such as `s3.amazonaws.com`, to the LocalStack container.
   This domain resolution is DNS-based and can be disabled by setting `DNS_ADDRESS=0`.
-  For more information, refer to [Transparent Endpoint Injection]({{< ref "user-guide/tools/transparent-endpoint-injection" >}}).
+  For more information, refer to [Transparent Endpoint Injection](/aws/capabilities/networking/transparent-endpoint-injection).
   Previously, LocalStack provided patched AWS SDKs to redirect AWS API calls transparently to LocalStack.
 - The new provider may generate more exceptions due to invalid input.
   For instance, while the old provider accepted arbitrary strings (such as `r1`) as Lambda roles when creating a function, the new provider validates role ARNs using a regular expression that requires them to be in the format `arn:aws:iam::000000000000:role/lambda-role`.
@@ -369,7 +591,7 @@ With the new implementation, the following changes have been introduced:
   The configuration `LAMBDA_SYNCHRONOUS_CREATE=1` can force synchronous function creation, but it is not recommended.
 - LocalStack's Lambda implementation, allows you to customize the Lambda execution environment using the [Lambda Extensions API](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-extensions-api.html).
   This API allows for advanced monitoring, observability, or developer tooling, providing greater control and flexibility over your Lambda functions.
-  Lambda functions can also be run on hosts with [multi-architecture support]({{< ref "/references/arm64-support/#lambda-multi-architecture-support" >}}), allowing you to leverage LocalStack's Lambda API to develop and test Lambda functions with high parity.
+  Lambda functions can also be run on hosts with [multi-architecture support](), allowing you to leverage LocalStack's Lambda API to develop and test Lambda functions with high parity.
 
 The following configuration options from the old provider are discontinued in the new provider:
 
@@ -416,21 +638,27 @@ However, many users inadvertently used the local executor mode instead of the in
 
 If you encounter the following error message, you may be using the local executor mode:
 
-{{< tabpane lang="bash" >}}
-{{< tab header="LocalStack Logs" lang="shell" >}}
+<Tabs>
+<TabItem label="LocalStack Logs">
+```bash
 Lambda 'arn:aws:lambda:us-east-1:000000000000:function:my-function:$LATEST' changed to failed.
 Reason: Docker not available
 ...
 raise DockerNotAvailable("Docker not available")
-{{< /tab >}}
-{{< tab header="AWS CLI" lang="shell" >}}
+```
+</TabItem>
+<TabItem label="AWS CLI">
+```bash
 An error occurred (ResourceConflictException) when calling the Invoke operation (reached max retries: 0): The operation cannot be performed at this time.
 The function is currently in the following state: Failed
-{{< /tab >}}
-{{< tab header="SAM" lang="shell" >}}
+```
+</TabItem>
+<TabItem label="SAM"> 
+```bash
 Error: Failed to create/update the stack: sam-app, Waiter StackCreateComplete failed: Waiter encountered a terminal failure state: For expression "Stacks[].StackStatus" we matched expected path: "CREATE_FAILED" at least once
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 To fix this issue, add the Docker volume mount `/var/run/docker.sock:/var/run/docker.sock` to your LocalStack startup.
 Refer to our [sample `docker-compose.yml` file](https://github.com/localstack/localstack/blob/master/docker-compose.yml) as an example.
@@ -438,21 +666,34 @@ Refer to our [sample `docker-compose.yml` file](https://github.com/localstack/lo
 ### Function in Pending state
 
 If you receive a `ResourceConflictException` when trying to invoke a function, it is currently in a `Pending` state and cannot be executed yet.
-To wait until the function becomes `active`, you can use the following command:
 
-{{< command >}}
-$ awslocal lambda get-function --function-name my-function
+```bash
+awslocal lambda get-function --function-name my-function
+```
+
+The output will be similar to the following:
+
+```bash
 An error occurred (ResourceConflictException) when calling the Invoke operation (reached max retries: 0):
 The operation cannot be performed at this time.
 The function is currently in the following state: Pending
+```
 
-$ awslocal lambda wait function-active-v2 --function-name my-function
-{{< / command >}}
+To wait until the function becomes `active`, you can use the following command:
+
+```bash
+awslocal lambda wait function-active-v2 --function-name my-function
+```
 
 Alternatively, you can check the function state using the [`GetFunction` API](https://docs.aws.amazon.com/lambda/latest/dg/API_GetFunction.html):
 
-{{< command >}}
-$ awslocal lambda get-function --function-name my-function
+```bash
+awslocal lambda get-function --function-name my-function
+```
+
+The output will be similar to the following:
+
+```json
 {
   "Configuration": {
     ...
@@ -463,8 +704,17 @@ $ awslocal lambda get-function --function-name my-function
     ...
   }
 }
+```
 
-$ awslocal lambda get-function --function-name my-function
+When the function is active, the output will be similar to the following:
+
+```bash
+awslocal lambda get-function --function-name my-function
+```
+
+The output will be similar to the following:
+
+```json
 {
   "Configuration": {
     ...
@@ -474,7 +724,7 @@ $ awslocal lambda get-function --function-name my-function
     ...
   }
 }
-{{< / command >}}
+```
 
 If the function is still in the `Pending` state, the output will include a `"State": "Pending"` field and a `"StateReason": "The function is being created."` message.
 Once the function is active, the `"State"` field will change to `"Active"` and the `"LastUpdateStatus"` field will indicate the status of the last update.

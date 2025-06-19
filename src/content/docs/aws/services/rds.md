@@ -1,6 +1,5 @@
 ---
 title: "Relational Database Service (RDS)"
-linkTitle: "Relational Database Service (RDS)"
 description: Get started with Relational Database Service (RDS) on LocalStack
 tags: ["Base"]
 persistence: supported with limitations
@@ -13,15 +12,15 @@ RDS allows you to deploy and manage various relational database engines like MyS
 RDS handles routine database tasks such as provisioning, patching, backup, recovery, and scaling.
 
 LocalStack allows you to use the RDS APIs in your local environment to create and manage RDS clusters and instances for testing & integration purposes.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_rds" >}}), which provides information on the extent of RDS's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of RDS's integration with LocalStack.
 
-{{< callout >}}
+:::note
 We’ve introduced a new native RDS provider in LocalStack and made it the default.
 This replaces Moto-based CRUD operations with a more reliable setup.
 
 RDS state created in version 4.3 or earlier using Cloud Pods or standard persistence will not be compatible with the new provider introduced in version 4.4.
 Recreating the RDS state is recommended for compatibility.
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -42,14 +41,14 @@ To create an RDS cluster, you can use the [`CreateDBCluster`](https://docs.aws.a
 The following command creates a new cluster with the name `db1` and the engine `aurora-postgresql`.
 Instances for the cluster must be added manually.
 
-{{< command >}}
-$ awslocal rds create-db-cluster \
+```bash
+awslocal rds create-db-cluster \
     --db-cluster-identifier db1 \
     --engine aurora-postgresql \
     --database-name test \
     --master-username myuser \
     --master-user-password mypassword
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -67,13 +66,13 @@ You should see the following output:
 
 To add an instance you can run the following command:
 
-{{< command >}}
-$ awslocal rds create-db-instance \
+```bash
+awslocal rds create-db-instance \
     --db-instance-identifier db1-instance \
     --db-cluster-identifier db1 \
     --engine aurora-postgresql \
     --db-instance-class db.t3.large
-{{< / command >}}
+```
 
 ### Create a SecretsManager secret
 
@@ -81,8 +80,8 @@ To create a `SecretsManager` secret, you can use the [`CreateSecret`](https://do
 Before creating the secret, you need to create a JSON file containing the credentials for the database.
 The following command creates a file called `mycreds.json` with the credentials for the database.
 
-{{< command >}}
-$ cat << 'EOF' > mycreds.json
+```bash
+cat << 'EOF' > mycreds.json
 {
     "engine": "aurora-postgresql",
     "username": "myuser",
@@ -92,15 +91,15 @@ $ cat << 'EOF' > mycreds.json
     "port": "4510"
 }
 EOF
-{{< / command >}}
+```
 
 Run the following command to create the secret:
 
-{{< command >}}
-$ awslocal secretsmanager create-secret \
+```bash
+awslocal secretsmanager create-secret \
     --name dbpass \
     --secret-string file://mycreds.json
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -121,13 +120,13 @@ Make sure to replace the `secret-arn` with the ARN from the secret you just crea
 The following command executes a query against the database.
 The query returns the value `123`.
 
-{{< command >}}
-$ awslocal rds-data execute-statement \
+```bash
+awslocal rds-data execute-statement \
     --database test \
     --resource-arn arn:aws:rds:us-east-1:000000000000:cluster:db1 \
     --secret-arn arn:aws:secretsmanager:us-east-1:000000000000:secret:dbpass-cfnAX \
     --include-result-metadata --sql 'SELECT 123'
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -165,9 +164,9 @@ You should see the following output:
 Alternative clients, such as `psql`, can also be employed to interact with the database.
 You can retrieve the hostname and port of your created instance either from the preceding output or by using the [`DescribeDbInstances`](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBInstances.html) API.
 
-{{< command >}}
-$ psql -d test -U test -p 4513 -h localhost -W
-{{< / command >}}
+```bash
+psql -d test -U test -p 4513 -h localhost -W
+```
 
 ## Supported DB engines
 
@@ -185,10 +184,10 @@ It's important to note that the selection of minor versions is not available.
 The latest major version will be installed within the Docker environment.
 If you wish to prevent the installation of customized versions, adjusting the `RDS_PG_CUSTOM_VERSIONS` environment variable to `0` will enforce the use of the default PostgreSQL version 17.
 
-{{< callout >}}
+:::note
 While the [`DescribeDbCluster`](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBClusters.html) and [`DescribeDbInstances`](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBInstances.html) APIs will still reflect the initially defined `engine-version`, the actual installed PostgreSQL engine might differ.
 This can have implications, particularly when employing a Terraform configuration, where unexpected changes should be avoided.
-{{< /callout >}}
+:::
 
 Instances and clusters with the PostgreSQL engine have the capability to both create and restore snapshots.
 
@@ -205,10 +204,10 @@ A MySQL community server will be launched in a new Docker container upon request
 The `engine-version` will serve as the tag for the Docker image, allowing you to freely select the desired MySQL version from those available on the [official MySQL Docker Hub](https://hub.docker.com/_/mysql).
 If you have a specific image in mind, you can also use the environment variable `MYSQL_IMAGE=<my-image:tag>`.
 
-{{< callout >}}
+:::note
 The `arm64` MySQL images are limited to newer versions.
 For more information about availability, check the [MySQL Docker Hub repository](https://hub.docker.com/_/mysql).
-{{< /callout >}}
+:::
 
 It's essential to understand that the `MasterUserPassword` you define for the database cluster/instance will be used as the `MYSQL_ROOT_PASSWORD` environment variable for the `root` user within the MySQL container.
 The user specified in `MasterUserName` will use the same password and will have complete access to the database.
@@ -255,11 +254,11 @@ In this example, you will be able to verify the IAM authentication process for R
 The following command creates a new database instance with the name `mydb` and the engine `postgres`.
 The database will be created with a single instance, which will be used as the master instance.
 
-{{< command >}}
-$ MASTER_USER=hello
-$ MASTER_PW='MyPassw0rd!'
-$ DB_NAME=test
-$ awslocal rds create-db-instance \
+```bash
+MASTER_USER=hello
+MASTER_PW='MyPassw0rd!'
+DB_NAME=test
+awslocal rds create-db-instance \
     --master-username $MASTER_USER \
     --master-user-password $MASTER_PW \
     --db-instance-identifier mydb \
@@ -267,38 +266,38 @@ $ awslocal rds create-db-instance \
     --db-name $DB_NAME \
     --enable-iam-database-authentication \
     --db-instance-class db.t3.small
-{{< / command >}}
+```
 
 ### Connect to the database
 
 You can retrieve the hostname and port of your created instance either from the preceding output or by using the [`DescribeDbInstances`](https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBInstances.html) API.
 Run the following command to retrieve the host and port of the instance:
 
-{{< command >}}
-$ PORT=$(awslocal rds describe-db-instances --db-instance-identifier mydb | jq -r ".DBInstances[0].Endpoint.Port")
-$ HOST=$(awslocal rds describe-db-instances --db-instance-identifier mydb | jq -r ".DBInstances[0].Endpoint.Address")
-{{< / command >}}
+```bash
+PORT=$(awslocal rds describe-db-instances --db-instance-identifier mydb | jq -r ".DBInstances[0].Endpoint.Port")
+HOST=$(awslocal rds describe-db-instances --db-instance-identifier mydb | jq -r ".DBInstances[0].Endpoint.Address")
+```
 
 Next, you can connect to the database using the master username and password:
 
-{{< command >}}
-$ PGPASSWORD=$MASTER_PW psql -d $DB_NAME -U $MASTER_USER -p $PORT -h $HOST -w -c 'CREATE USER myiam WITH LOGIN'
-$ PGPASSWORD=$MASTER_PW psql -d $DB_NAME -U $MASTER_USER -p $PORT -h $HOST -w -c 'GRANT rds_iam TO myiam'
-{{< / command >}}
+```bash
+PGPASSWORD=$MASTER_PW psql -d $DB_NAME -U $MASTER_USER -p $PORT -h $HOST -w -c 'CREATE USER myiam WITH LOGIN'
+PGPASSWORD=$MASTER_PW psql -d $DB_NAME -U $MASTER_USER -p $PORT -h $HOST -w -c 'GRANT rds_iam TO myiam'
+```
 
 ### Create a token
 
 You can create a token for the user you generated using the [`generate-db-auth-token`](https://docs.aws.amazon.com/cli/latest/reference/rds/generate-db-auth-token.html) command:
 
-{{< command >}}
-$ TOKEN=$(awslocal rds generate-db-auth-token --username myiam --hostname $HOST --port $PORT)
-{{< / command >}}
+```bash
+TOKEN=$(awslocal rds generate-db-auth-token --username myiam --hostname $HOST --port $PORT)
+```
 
 You can now connect to the database utilizing the user you generated and the token obtained in the previous step as the password:
 
-{{< command >}}
-$ PGPASSWORD=$TOKEN psql -d $DB_NAME -U myiam -w -p $PORT -h $HOST
-{{< / command >}}
+```bash
+PGPASSWORD=$TOKEN psql -d $DB_NAME -U myiam -w -p $PORT -h $HOST
+```
 
 ## Global Database Support
 
@@ -369,9 +368,7 @@ In addition to the `aws_*` extensions described in the sections above, LocalStac
 The LocalStack Web Application provides a Resource Browser for managing RDS instances and clusters.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **RDS** under the **Database** section.
 
-<img src="rds-resource-browser.png" alt="RDS Resource Browser" title="RDS Resource Browser" width="900" />
-<br>
-<br>
+![RDS Resource Browser](/images/aws/rds-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

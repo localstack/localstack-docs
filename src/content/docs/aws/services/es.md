@@ -1,10 +1,10 @@
 ---
 title: "Elasticsearch Service"
-linkTitle: "Elasticsearch Service"
-description: >
-  Get started with Amazon Elasticsearch Service (ES) on LocalStack
+description: Get started with Amazon Elasticsearch Service (ES) on LocalStack
 tags: ["Free"]
 ---
+
+## Introduction
 
 The Elasticsearch Service in LocalStack lets you create one or more single-node Elasticsearch/OpenSearch cluster that behaves like the [Amazon Elasticsearch Service](https://aws.amazon.com/opensearch-service/the-elk-stack/what-is-elasticsearch/).
 This service is, like its AWS counterpart, heavily linked with the [OpenSearch Service](../opensearch).
@@ -12,14 +12,19 @@ Any cluster created with the Elasticsearch Service will show up in the OpenSearc
 
 ## Creating an Elasticsearch cluster
 
-You can go ahead and use [awslocal]({{< ref "aws-cli.md#localstack-aws-cli-awslocal" >}}) to create a new elasticsearch domain via the `aws es create-elasticsearch-domain` command.
+You can go ahead and use [`awslocal`](https://github.com/localstack/awscli-local) to create a new elasticsearch domain via the `aws es create-elasticsearch-domain` command.
 
-{{< callout >}}
+:::note
 Unless you use the Elasticsearch default version, the first time you create a cluster with a specific version, the Elasticsearch binary is downloaded, which may take a while to download.
-{{< /callout >}}
+:::
 
-{{< command >}}
-$ awslocal es create-elasticsearch-domain --domain-name my-domain
+```bash
+awslocal es create-elasticsearch-domain --domain-name my-domain
+```
+
+The following output would be retrieved:
+
+```json
 {
     "DomainStatus": {
         "DomainId": "000000000000/my-domain",
@@ -49,11 +54,11 @@ $ awslocal es create-elasticsearch-domain --domain-name my-domain
         }
     }
 }
-{{< / command >}}
+```
 
 In the LocalStack log you will see something like the following, where you can see the cluster starting up in the background.
 
-```plaintext
+```bash
 2021-11-08T16:29:28:INFO:localstack.services.es.cluster: starting elasticsearch: /opt/code/localstack/localstack/localstack/infra/elasticsearch/bin/elasticsearch -E http.port=57705 -E http.publish_port=57705 -E transport.port=0 -E network.host=127.0.0.1 -E http.compression=false -E path.data="/var/lib/localstack/lib//elasticsearch/arn:aws:es:us-east-1:000000000000:domain/my-domain/data" -E path.repo="/var/lib/localstack/lib//elasticsearch/arn:aws:es:us-east-1:000000000000:domain/my-domain/backup" -E xpack.ml.enabled=false with env {'ES_JAVA_OPTS': '-Xms200m -Xmx600m', 'ES_TMPDIR': '/var/lib/localstack/lib//elasticsearch/arn:aws:es:us-east-1:000000000000:domain/my-domain/tmp'}
 2021-11-08T16:29:28:INFO:localstack.services.es.cluster: registering an endpoint proxy for http://my-domain.us-east-1.es.localhost.localstack.cloud:4566 => http://127.0.0.1:57705
 2021-11-08T16:29:30:INFO:localstack.services.es.cluster: OpenJDK 64-Bit Server VM warning: Option UseConcMarkSweepGC was deprecated in version 9.0 and will likely be removed in a future release.
@@ -68,10 +73,16 @@ In the LocalStack log you will see something like the following, where you can s
 
 and after some time, you should see that the `Processing` state of the domain is set to `false`:
 
-{{< command >}}
-$ awslocal es describe-elasticsearch-domain --domain-name my-domain | jq ".DomainStatus.Processing"
+```bash
+awslocal es describe-elasticsearch-domain --domain-name my-domain | jq ".DomainStatus.Processing"
+```
+
+The following output would be retrieved:
+
+```bash
 false
-{{< / command >}}
+```
+
 
 ## Interact with the cluster
 
@@ -80,8 +91,13 @@ in this case `http://my-domain.us-east-1.es.localhost.localstack.cloud:4566`.
 
 For example:
 
-{{< command >}}
-$ curl http://my-domain.us-east-1.es.localhost.localstack.cloud:4566
+```bash
+curl http://my-domain.us-east-1.es.localhost.localstack.cloud:4566
+```
+
+The following output would be retrieved:
+
+```json
 {
   "name" : "localstack",
   "cluster_name" : "elasticsearch",
@@ -99,12 +115,17 @@ $ curl http://my-domain.us-east-1.es.localhost.localstack.cloud:4566
   },
   "tagline" : "You Know, for Search"
 }
-{{< / command >}}
+```
 
 Or the health endpoint:
 
-{{< command >}}
-$ curl -s http://my-domain.us-east-1.es.localhost.localstack.cloud:4566/_cluster/health | jq .
+```bash
+curl -s http://my-domain.us-east-1.es.localhost.localstack.cloud:4566/_cluster/health | jq .
+```
+
+The following output would be retrieved:
+
+```json
 {
   "cluster_name": "elasticsearch",
   "status": "green",
@@ -122,7 +143,7 @@ $ curl -s http://my-domain.us-east-1.es.localhost.localstack.cloud:4566/_cluster
   "task_max_waiting_in_queue_millis": 0,
   "active_shards_percent_as_number": 100
 }
-{{< / command >}}
+```
 
 ## Advanced topics
 
@@ -134,7 +155,7 @@ There are three configurable strategies that govern how domain endpoints are cre
 | - | - | - |
 | `domain` | `<domain-name>.<region>.es.localhost.localstack.cloud:4566` | This is the default strategy that uses the `localhost.localstack.cloud` domain to route to your localhost |
 | `path` | `localhost:4566/es/<region>/<domain-name>` | An alternative that can be useful if you cannot resolve LocalStack's localhost domain |
-| `port` | `localhost:<port-from-range>` | Exposes the cluster(s) directly with ports from the [external service port range]({{< ref "external-ports" >}})|
+| `port` | `localhost:<port-from-range>` | Exposes the cluster(s) directly with ports from the [external service port range]()|
 | `off` | | *Deprecated*. This value now reverts to the `port` setting, using a port from the given range instead of `4571` |
 
 Regardless of the service from which the clusters were created, the domain of the cluster always corresponds to the engine type (OpenSearch or Elasticsearch) of the cluster.
@@ -146,17 +167,17 @@ LocalStack allows you to set arbitrary custom endpoints for your clusters in the
 This can be used to overwrite the behavior of the endpoint strategies described above.
 You can also choose custom domains, however it is important to add the edge port (`80`/`443` or by default `4566`).
 
-{{< command >}}
-$ awslocal es create-elasticsearch-domain --domain-name my-domain \
+```bash
+awslocal es create-elasticsearch-domain --domain-name my-domain \
     --elasticsearch-version 7.10 \
     --domain-endpoint-options '{ "CustomEndpoint": "http://localhost:4566/my-custom-endpoint", "CustomEndpointEnabled": true }'
-{{< / command >}}
+```
 
 Once the domain processing is complete, you can access the cluster:
 
-{{< command >}}
-$ curl http://localhost:4566/my-custom-endpoint/_cluster/health
-{{< / command >}}
+```bash
+curl http://localhost:4566/my-custom-endpoint/_cluster/health
+```
 
 ### Re-using a single cluster instance
 
@@ -244,64 +265,78 @@ volumes:
 ```
 
 1. Run docker compose:
-{{< command >}}
-$ docker-compose up -d
-{{< /command >}}
+    ```bash
+    docker-compose up -d
+    ```
 
 2. Create the Elasticsearch domain:
-{{< command >}}
-$ awslocal es create-elasticsearch-domain \
-    --domain-name mylogs-2 \
-    --elasticsearch-version 7.10 \
-    --elasticsearch-cluster-config '{ "InstanceType": "m3.xlarge.elasticsearch", "InstanceCount": 4, "DedicatedMasterEnabled": true, "ZoneAwarenessEnabled": true, "DedicatedMasterType": "m3.xlarge.elasticsearch", "DedicatedMasterCount": 3}'
-{
-    "DomainStatus": {
-        "DomainId": "000000000000/mylogs-2",
-        "DomainName": "mylogs-2",
-        "ARN": "arn:aws:es:us-east-1:000000000000:domain/mylogs-2",
-        "Created": true,
-        "Deleted": false,
-        "Endpoint": "mylogs-2.us-east-1.es.localhost.localstack.cloud:4566",
-        "Processing": true,
-        "ElasticsearchVersion": "7.10",
-        "ElasticsearchClusterConfig": {
-            "InstanceType": "m3.xlarge.elasticsearch",
-            "InstanceCount": 4,
-            "DedicatedMasterEnabled": true,
-            "ZoneAwarenessEnabled": true,
-            "DedicatedMasterType": "m3.xlarge.elasticsearch",
-            "DedicatedMasterCount": 3
-        },
-        "EBSOptions": {
-            "EBSEnabled": true,
-            "VolumeType": "gp2",
-            "VolumeSize": 10,
-            "Iops": 0
-        },
-        "CognitoOptions": {
-            "Enabled": false
+    ```bash
+    awslocal es create-elasticsearch-domain \
+        --domain-name mylogs-2 \
+        --elasticsearch-version 7.10 \
+        --elasticsearch-cluster-config '{ "InstanceType": "m3.xlarge.elasticsearch", "InstanceCount": 4, "DedicatedMasterEnabled": true, "ZoneAwarenessEnabled": true, "DedicatedMasterType": "m3.xlarge.elasticsearch", "DedicatedMasterCount": 3}'
+    ```
+
+    The following output would be retrieved:
+
+    ```json
+    {
+        "DomainStatus": {
+            "DomainId": "000000000000/mylogs-2",
+            "DomainName": "mylogs-2",
+            "ARN": "arn:aws:es:us-east-1:000000000000:domain/mylogs-2",
+            "Created": true,
+            "Deleted": false,
+            "Endpoint": "mylogs-2.us-east-1.es.localhost.localstack.cloud:4566",
+            "Processing": true,
+            "ElasticsearchVersion": "7.10",
+            "ElasticsearchClusterConfig": {
+                "InstanceType": "m3.xlarge.elasticsearch",
+                "InstanceCount": 4,
+                "DedicatedMasterEnabled": true,
+                "ZoneAwarenessEnabled": true,
+                "DedicatedMasterType": "m3.xlarge.elasticsearch",
+                "DedicatedMasterCount": 3
+            },
+            "EBSOptions": {
+                "EBSEnabled": true,
+                "VolumeType": "gp2",
+                "VolumeSize": 10,
+                "Iops": 0
+            },
+            "CognitoOptions": {
+                "Enabled": false
+            }
         }
     }
-}
-{{< /command >}}
+    ```
 
-3. If the `Processing` status is true, it means that the cluster is not yet healthy.
-  You can run `describe-elasticsearch-domain` to receive the status:
-{{< command >}}
-$ awslocal es describe-elasticsearch-domain --domain-name mylogs-2
-{{< /command >}}
+3. If the `Processing` status is true, it means that the cluster is not yet healthy. You can run `describe-elasticsearch-domain` to receive the status:
+    ```bash
+    awslocal es describe-elasticsearch-domain --domain-name mylogs-2
+    ```
 
 4. Check the cluster health endpoint and create indices:
-{{< command >}}
-$ curl mylogs-2.us-east-1.es.localhost.localstack.cloud:4566/_cluster/health
-{"cluster_name":"es-docker-cluster","status":"green","timed_out":false,"number_of_nodes":1,"number_of_data_nodes":1,"active_primary_shards":0,"active_shards":0,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}[~]
-{{< /command >}}
+    ```bash
+    curl mylogs-2.us-east-1.es.localhost.localstack.cloud:4566/_cluster/health
+    ```
+
+    The following output would be retrieved:
+
+    ```bash
+    {"cluster_name":"es-docker-cluster","status":"green","timed_out":false,"number_of_nodes":1,"number_of_data_nodes":1,"active_primary_shards":0,"active_shards":0,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}[~]
+    ```
 
 5. Create an example index:
-{{< command >}}
-$ curl -X PUT mylogs-2.us-east-1.es.localhost.localstack.cloud:4566/my-index
-{"acknowledged":true,"shards_acknowledged":true,"index":"my-index"}
-{{< /command >}}
+    ```bash
+    curl -X PUT mylogs-2.us-east-1.es.localhost.localstack.cloud:4566/my-index
+    ```
+
+    The following output would be retrieved:
+
+    ```bash
+    {"acknowledged":true,"shards_acknowledged":true,"index":"my-index"}
+    ```
 
 ## Differences to AWS
 

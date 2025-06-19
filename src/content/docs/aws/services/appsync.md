@@ -1,6 +1,5 @@
 ---
 title: "AppSync"
-linkTitle: "AppSync"
 description: Get started with AppSync on LocalStack
 tags: ["Ultimate"]
 ---
@@ -11,7 +10,7 @@ AppSync is a managed service provided by Amazon Web Services (AWS) that enables 
 AppSync allows you to define your data models and business logic using a declarative approach, and connect to various data sources, including other AWS services, relational databases, and custom data sources.
 
 LocalStack allows you to use the AppSync APIs in your local environment to connect your applications and services to data and events.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_appsync" >}}), which provides information on the extent of AppSync's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of AppSync's integration with LocalStack.
 
 ## Getting started
 
@@ -25,20 +24,20 @@ We will demonstrate how to create an AppSync API with a DynamoDB data source usi
 You can create a DynamoDB table using the [`CreateTable`](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_CreateTable.html) API.
 Execute the following command to create a table named `DynamoDBNotesTable` with a primary key named `NoteId`:
 
-{{< command >}}
-$ awslocal dynamodb create-table \
+```bash
+awslocal dynamodb create-table \
     --table-name DynamoDBNotesTable \
     --attribute-definitions AttributeName=NoteId,AttributeType=S \
     --key-schema AttributeName=NoteId,KeyType=HASH \
     --billing-mode PAY_PER_REQUEST
-{{< /command >}}
+```
 
 After the table is created, you can use the [`ListTables`](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_ListTables.html) API.
 Run the following command to list all tables in your running LocalStack container:
 
-{{< command >}}
-$ awslocal dynamodb list-tables
-{{< /command >}}
+```bash
+awslocal dynamodb list-tables
+```
 
 The following output would be retrieved:
 
@@ -55,11 +54,11 @@ The following output would be retrieved:
 You can create a GraphQL API using the [`CreateGraphqlApi`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateGraphqlApi.html) API.
 Execute the following command to create a GraphQL API named `NotesApi`:
 
-{{< command >}}
-$ awslocal appsync create-graphql-api \
+```bash
+awslocal appsync create-graphql-api \
     --name NotesApi \
     --authentication-type API_KEY
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -83,10 +82,10 @@ The following output would be retrieved:
 You can now create an API key for your GraphQL API using the [`CreateApiKey`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateApiKey.html) API.
 Execute the following command to create an API key for your GraphQL API:
 
-{{< command >}}
-$ awslocal appsync create-api-key \
+```bash
+awslocal appsync create-api-key \
     --api-id 014d18d0c2b149ee8b66f39173
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -130,11 +129,11 @@ type Schema {
 You can start the schema creation process using the [`StartSchemaCreation`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_StartSchemaCreation.html) API.
 Execute the following command to start the schema creation process:
 
-{{< command >}}
-$ awslocal appsync start-schema-creation \
+```bash
+awslocal appsync start-schema-creation \
     --api-id 014d18d0c2b149ee8b66f39173 \
     --definition file://schema.graphql
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -149,13 +148,13 @@ The following output would be retrieved:
 You can create a data source using the [`CreateDataSource`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateDataSource.html) API.
 Execute the following command to create a data source named `DynamoDBNotesTable`:
 
-{{< command >}}
-$ awslocal appsync create-data-source \
+```bash
+awslocal appsync create-data-source \
     --name AppSyncDB \
     --api-id 014d18d0c2b149ee8b66f39173 \
     --type AMAZON_DYNAMODB \
     --dynamodb-config tableName=DynamoDBNotesTable,awsRegion=us-east-1
-{{< /command >}}
+  ```
 
 The following output would be retrieved:
 
@@ -179,27 +178,27 @@ You can create a resolver using the [`CreateResolver`](https://github.com/locals
 You can create a custom `request-mapping-template.vtl` and `response-mapping-template.vtl` file to use as a mapping template to use for requests and responses respectively.
 Execute the following command to create a VTL resolver attached to the `PaginatedNotes.notes` field:
 
-{{< command >}}
-$ awslocal appsync create-resolver \
+```bash
+awslocal appsync create-resolver \
     --api-id 014d18d0c2b149ee8b66f39173 \
     --type Query \
     --field PaginatedNotes.notes \
     --data-source-name AppSyncDB \
     --request-mapping-template file://request-mapping-template.vtl \
     --response-mapping-template file://response-mapping-template.vtl
-{{< /command >}}
+```
 
 ## Custom GraphQL API IDs
 
 You can employ a pre-defined ID during the creation of GraphQL APIs by utilizing the special tag `_custom_id_`.
 For example, the following command will create a GraphQL API with the ID `faceb00c`:
 
-{{< command >}}
-$ awslocal appsync create-graphql-api \
+```bash
+awslocal appsync create-graphql-api \
     --name my-api \
     --authentication-type API_KEY \
     --tags _custom_id_=faceb00c
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -261,7 +260,7 @@ See the AWS documentation for [`evaluate-mapping-template`](https://awscli.amazo
 
 ### VTL resolver templates
 
-{{< command >}}
+```bash
 awslocal appsync evaluate-mapping-template \
     --template '$ctx.result' \
     --context '{"result":"ok"}'
@@ -271,30 +270,33 @@ awslocal appsync evaluate-mapping-template \
     "logs": []
 }
 </disable-copy>
-{{< / command >}}
+```
 
 ### JavaScript resolvers
 
-{{< command >}}
+```bash
 awslocal appsync evaluate-code \
     --runtime name=APPSYNC_JS,runtimeVersion=1.0.0 \
     --function request \
     --code 'export function request(ctx) { return ctx.result; }; export function response(ctx) {};' \
     --context '{"result": "ok"}'
-<disable-copy>
+```
+
+The following output would be retrieved:
+
+```bash
 {
     "evaluationResult": "ok",
     "logs": []
 }
-</disable-copy>
-{{< / command >}}
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing AppSync APIs, Data Sources, Schema, Query, Types, Resolvers, Functions and API keys.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **AppSync** under the **App Integration** section.
 
-<img src="appsync-resource-browser.png" alt="AppSync Resource Browser" title="AppSync Resource Browser" width="900" />
+![AppSync Resource Browser](/images/aws/appsync-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

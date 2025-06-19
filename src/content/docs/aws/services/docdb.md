@@ -1,6 +1,5 @@
 ---
 title: "DocumentDB (DocDB)"
-linkTitle: "DocumentDB (DocDB)"
 tags: ["Ultimate"]
 description: Get started with AWS DocumentDB on LocalStack
 ---
@@ -11,17 +10,21 @@ DocumentDB is a fully managed, non-relational database service that supports Mon
 DocumentDB is compatible with MongoDB, meaning you can use the same MongoDB drivers, applications, and tools to run, manage, and scale workloads on DocumentDB without having to worry about managing the underlying infrastructure.
 
 LocalStack allows you to use the DocumentDB APIs to create and manage DocumentDB clusters and instances.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_docdb" >}}), which provides information on the extent of DocumentDB's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of DocumentDB's integration with LocalStack.
 
 ## Getting started
 
 To create a new DocumentDB cluster we use the `create-db-cluster` command as follows:
 
-{{< command >}}
-$ awslocal docdb create-db-cluster --db-cluster-identifier test-docdb-cluster --engine docdb
-{{< /command >}}
+```bash
+awslocal docdb create-db-cluster \
+  --db-cluster-identifier test-docdb-cluster \
+  --engine docdb
+```
 
-```yaml
+The output will be similar to the following:
+
+```bash
 {
   "DBCluster": {
     "DBClusterIdentifier": "test-docdb-cluster",
@@ -63,12 +66,17 @@ created.
 As we did not specify a `MasterUsername` or `MasterUserPassword` for the creation of the database, the mongo-db will not set any credentials when starting the docker container.
 To create a new database, we can use the `create-db-instance` command, like in this example:
 
-{{< command >}}
-$ awslocal docdb create-db-instance --db-instance-identifier test-company \
---db-instance-class db.r5.large --engine docdb --db-cluster-identifier test-docdb-cluster
-{{< /command >}}
+```bash
+awslocal docdb create-db-instance \
+  --db-instance-identifier test-company \
+  --db-instance-class db.r5.large \
+  --engine docdb \
+  --db-cluster-identifier test-docdb-cluster
+```
 
-```yaml
+The output will be similar to the following:
+
+```bash
 {
   "DBInstance": {
     "DBInstanceIdentifier": "test-docdb-instance",
@@ -114,11 +122,15 @@ Some noticeable fields:
   .
 
 To obtain detailed information about the cluster, we use the `describe-db-cluster` command:
-{{< command >}}
-$ awslocal docdb describe-db-clusters --db-cluster-identifier test-docdb-cluster
-{{< /command >}}
 
-```yaml
+```bash
+awslocal docdb describe-db-clusters \
+  --db-cluster-identifier test-docdb-cluster
+```
+
+The output will be similar to the following:
+
+```bash
 {
   "DBClusters": [
     {
@@ -158,22 +170,19 @@ Interacting with the databases is done using `mongosh`, which is an official com
 It is designed to provide a modern and enhanced user experience for interacting with MongoDB
 databases.
 
-{{< command >}}
+```bash
+mongosh mongodb://localhost:39045
+```
 
-$ mongosh mongodb://localhost:39045
+The output will be similar to the following:
+
+```bash
 Current Mongosh Log ID:    64a70b795697bcd4865e1b9a
 Connecting to:        mongodb://localhost:
 39045/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.1
 Using MongoDB:        6.0.7
 Using Mongosh:        1.10.1
-
-For mongosh info see: https://docs.mongodb.com/mongodb-shell/
-
-------
-
-test>
-
-{{< /command >}}
+```
 
 This command will default to accessing the `test` database that was created with the cluster.
 Notice the port, `39045`,
@@ -181,27 +190,15 @@ which is the cluster port that appears in the aforementioned description.
 
 To work with a specific database, the command is:
 
-{{< command >}}
-$ mongosh mongodb://localhost:39045/test-company
-Current Mongosh Log ID:    64a71916fae7fdeeb8b43a73
-Connecting to:        mongodb://localhost:
-39045/test-company?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.1
-Using MongoDB:        6.0.7
-Using Mongosh:        1.10.1
-
-For mongosh info see: https://docs.mongodb.com/mongodb-shell/
-
-------
-test-company>
-
-{{< /command >}}
+```bash
+mongosh mongodb://localhost:39045/test-company
+```
 
 From here on we can manipulate collections
 using [the JavaScript methods provided](https://www.mongodb.com/docs/manual/reference/method/)
 by `mongosh`:
 
-{{< command >}}
-
+```bash
 test-company> db.createCollection("employees")
 { ok: 1 }
 test-company> db.createCollection("customers")
@@ -210,20 +207,19 @@ test-company> show collections
 customers
 employees
 test-company> exit
-
-{{< /command >}}
+```
 
 For more information on how to use MongoDB with `mongosh` please refer to
 the [MongoDB documentation](https://www.mongodb.com/docs/).
 
 ### Connect to DocumentDB using Node.js Lambda
 
-{{< callout >}}
+:::note
 You need to set `DOCDB_PROXY_CONTAINER=1` when starting LocalStack to be able to use the returned `Endpoint`, which will be correctly resolved automatically.
 
 The flag `DOCDB_PROXY_CONTAINER=1` changes the default behavior and the container will be started as proxied container.
-Meaning a port from the [pre-defined port]({{< ref "/references/external-ports" >}}) range will be chosen, and when using lambda, you can use `localhost.localstack.cloud` to connect to the instance.
-{{< /callout >}}
+Meaning a port from the [pre-defined port]() range will be chosen, and when using lambda, you can use `localhost.localstack.cloud` to connect to the instance.
+:::
 
 In this sample we will use a Node.js lambda function to connect to a DocumentDB.
 For the mongo-db connection we will use the `mongodb` lib.
@@ -235,12 +231,14 @@ We included a snippet at the very end.
 #### Create the DocDB Cluster with a username and password
 
 We assume you have a `MasterUsername` and `MasterUserPassword` set for DocDB e.g:
-{{< command >}}
-$ awslocal docdb create-db-cluster --db-cluster-identifier test-docdb \
+
+```bash
+awslocal docdb create-db-cluster \
+  --db-cluster-identifier test-docdb \
    --engine docdb \
    --master-user-password S3cretPwd! \
    --master-username someuser
-{{< /command >}}
+```
 
 #### Prepare the lambda function
 
@@ -248,16 +246,16 @@ First, we create the zip required for the lambda function with the mongodb depen
 You will need [`npm`](https://docs.npmjs.com/) in order to install the dependencies.
 In your terminal run:
 
-{{< command >}}
-$ mkdir resources
-$ cd resources
-$ mkdir node_modules
-$ npm install mongodb@6.3.0
-{{< /command >}}
+```bash
+mkdir resources
+cd resources
+mkdir node_modules
+npm install mongodb@6.3.0
+```
 
 Next, copy the following code into a new file named `index.js` in the `resources` folder:
 
-{{< command >}}
+```javascript
 const AWS = require('aws-sdk');
 const RDS = AWS.RDS;
 const { MongoClient } = require('mongodb');
@@ -305,35 +303,40 @@ exports.handler = async (event) => {
     };
   }
 };
-{{< /command >}}
+```
 
 Now, you can zip the entire.
 Make sure you are inside `resources` directory and run:
-{{< command >}}
-$ zip -r function.zip .
-{{< /command >}}
+
+```bash
+zip -r function.zip .
+```
 
 Finally, we can create the `lambda` function using `awslocal`:
-{{< command >}}
-$ awslocal lambda create-function \
+
+```bash
+awslocal lambda create-function \
   --function-name MyNodeLambda \
   --runtime nodejs16.x \
   --role arn:aws:iam::000000000000:role/lambda-role \
   --handler index.handler \
   --zip-file fileb://function.zip \
   --environment Variables="{DOCDB_CLUSTER_ID=test-docdb,DOCDB_SECRET=S3cretPwd!}"
-{{< /command >}}
+```
 
 You can invoke the lambda by calling:
-{{< command >}}
-$ awslocal lambda invoke --function-name MyNodeLambda outfile
-{{< /command >}}
+
+```bash
+awslocal lambda invoke \
+  --function-name MyNodeLambda \
+  outfile
+```
 
 The `outfile` contains the returned value, e.g.:
 
-```yaml
+```json
 {"statusCode":200,"body":"{\"_id\":\"6560a21ca7771a02ef128c72\",\"key\":\"value\"}"}
-````
+```
 
 #### Use Secret To Connect to DocDB
 
@@ -343,7 +346,7 @@ Secrets follow a [well-defined pattern](https://docs.aws.amazon.com/secretsmanag
 For the lambda function, you can pass the secret arn as `SECRET_NAME`.
 In the lambda, you can then retrieve the secret details like this:
 
-{{< command >}}
+```javascript
 const AWS = require('aws-sdk');
 const { MongoClient } = require('mongodb');
 
@@ -390,17 +393,14 @@ exports.handler = async (event) => {
     };
   }
 };
-
-{{< /command >}}
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing DocumentDB instances and clusters.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **DocumentDB** under the **Database** section.
 
-<img src="docdb-resource-browser.png" alt="DocumentDB Resource Browser" title="DocumentDB Resource Browser" width="900" />
-<br>
-<br>
+![DocumentDB Resource Browser](/images/aws/docdb-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

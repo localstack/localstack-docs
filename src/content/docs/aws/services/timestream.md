@@ -1,6 +1,5 @@
 ---
 title: "Timestream"
-linkTitle: "Timestream"
 description: Get started with Timestream on LocalStack
 tags: ["Ultimate"]
 persistence: supported
@@ -15,7 +14,7 @@ LocalStack contains basic support for Timestream time series databases, includin
 * Writing records to tables
 * Querying timeseries data from tables
 
-The supported APIs are available on our API Coverage Page ([Timestream-Query]({{< ref "coverage_timestream-query" >}})/[Timestream-Write]({{< ref "coverage_timestream-write" >}})), which provides information on the extent of Timestream integration with LocalStack.
+The supported APIs are available on our API Coverage Page ([Timestream-Query]()/[Timestream-Write](), which provides information on the extent of Timestream integration with LocalStack.
 
 ## Getting Started
 
@@ -23,22 +22,28 @@ The following example illustrates the basic operations, using the [`awslocal`](h
 
 First, we create a test database and table:
 
-{{< command >}}
-$ awslocal timestream-write create-database --database-name testDB
-$ awslocal timestream-write create-table --database-name testDB --table-name testTable
-{{</ command >}}
+```bash
+awslocal timestream-write create-database --database-name testDB
+awslocal timestream-write create-table --database-name testDB --table-name testTable
+```
 
 We can then add a few records with a timestamp, measure name, and value to the table:
 
-{{< command >}}
-$ awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"60","TimeUnit":"SECONDS","Time":"1636986409"}]'
-$ awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"80","TimeUnit":"SECONDS","Time":"1636986412"}]'
-$ awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"70","TimeUnit":"SECONDS","Time":"1636986414"}]'
-{{</ command >}}
+```bash
+awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"60","TimeUnit":"SECONDS","Time":"1636986409"}]'
+awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"80","TimeUnit":"SECONDS","Time":"1636986412"}]'
+awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"70","TimeUnit":"SECONDS","Time":"1636986414"}]'
+```
 
 Finally, we can run a query to retrieve the timeseries data (or aggregate values) from the table:
-{{< command >}}
-$ awslocal timestream-query query --query-string "SELECT CREATE_TIME_SERIES(time, measure_value::double) as cpu FROM testDB.timeStreamTable WHERE measure_name='cpu'"
+
+```bash
+awslocal timestream-query query --query-string "SELECT CREATE_TIME_SERIES(time, measure_value::double) as cpu FROM testDB.timeStreamTable WHERE measure_name='cpu'"
+```
+
+The following output would be retrieved:
+
+```bash
 {
   "Rows": [{
     "Data": [{
@@ -49,16 +54,14 @@ $ awslocal timestream-query query --query-string "SELECT CREATE_TIME_SERIES(time
         }
     },
 ...
-{{</ command >}}
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing Timestream databases.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Timestream** under the **Database** section.
 
-<img src="timestream-resource-browser.png" alt="Timestream Resource Browser" title="Timestream Resource Browser" width="900" />
-<br>
-<br>
+![Timestream Resource Browser](/images/aws/timestream-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 
@@ -70,6 +73,6 @@ The Resource Browser allows you to perform the following actions:
 
 ## Current Limitations
 
-LocalStack's Timestream implementation is under active development and only supports a limited set of operations, please refer to the API Coverage pages for an up-to-date list of implemented and tested functions within [Timestream-Query]({{< ref "coverage_timestream-query" >}}) and [Timestream-Write]({{< ref "coverage_timestream-write" >}}).
+LocalStack's Timestream implementation is under active development and only supports a limited set of operations, please refer to the API Coverage pages for an up-to-date list of implemented and tested functions within [Timestream-Query]() and [Timestream-Write]().
 
 If you have a usecase that uses Timestream but doesn't work with our implementation yet, we encourage you to [get in touch](https://localstack.cloud/contact/), so we can streamline any operations you rely on.

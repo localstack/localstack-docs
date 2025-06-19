@@ -1,8 +1,6 @@
 ---
-title: "Fault Injection Service (FIS)"
-linkTitle: "Fault Injection Service (FIS)"
-description: >
-  Get started with Fault Injection Service (FIS) on LocalStack
+title: Fault Injection Service (FIS)
+description: Get started with Fault Injection Service (FIS) on LocalStack
 tags: ["Ultimate"]
 ---
 
@@ -13,11 +11,11 @@ FIS simulates faults such as resource unavailability and service errors to asses
 The full list of such possible fault injections is available in the [AWS docs](https://docs.aws.amazon.com/fis/latest/userguide/fis-actions-reference.html).
 
 LocalStack allows you to use the FIS APIs in your local environment to introduce faults in other services, in order to check how your setup behaves when parts of it stop working locally.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_fis" >}}), which provides information on the extent of FIS API's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of FIS API's integration with LocalStack.
 
-{{< callout "tip" >}}
-LocalStack also features its own powerful chaos engineering tool, [Chaos API]({{< ref "chaos-api" >}}).
-{{< /callout >}}
+:::note
+LocalStack also features its own powerful chaos engineering tool, [Chaos API](/aws/capabilities/chaos-engineering/chaos-api).
+:::
 
 ## Concepts
 
@@ -30,10 +28,10 @@ FIS defines the following elements:
 Together this is termed as an Experiment.
 After the designated time, running experiments restore systems to their original state and cease introducing faults.
 
-{{< callout "note" >}}
+:::note
 FIS experiment emulation is part of LocalStack Enterprise.
 If you'd like to try it out, please [contact us](https://www.localstack.cloud/demo).
-{{< /callout >}}
+:::
 
 FIS actions can be categorized into two main types:
 
@@ -89,9 +87,9 @@ Nonetheless, they are obligatory fields according to AWS specifications and must
 
 Run the following command to create an FIS experiment template using the configuration file we just created:
 
-{{< command >}}
-$ awslocal fis create-experiment-template --cli-input-json file://create-experiment.json
-{{< /command >}}
+```bash
+awslocal fis create-experiment-template --cli-input-json file://create-experiment.json
+```
 
 The following output would be retrieved:
 
@@ -132,24 +130,27 @@ The following output would be retrieved:
 
 You can list all the templates you have created using the [`ListExperimentTemplates`](https://docs.aws.amazon.com/fis/latest/APIReference/API_ListExperimentTemplates.html):
 
-{{< command >}}
-$ awslocal fis list-experiment-templates
-{{< /command >}}
+```bash
+awslocal fis list-experiment-templates
+```
 
 ### Starting the experiment
 
 Now let us start an EC2 instance that will match the criteria we specified in the experiment template.
 
-{{< command >}}
-$ awslocal ec2 run-instances --image-id ami-024f768332f0 --count 1 --tag-specifications '{"ResourceType": "instance", "Tags": [{"Key": "foo", "Value": "bar"}]}'
-{{< /command >}}
+```bash
+awslocal ec2 run-instances \
+    --image-id ami-024f768332f0 \
+    --count 1 \
+    --tag-specifications '{"ResourceType": "instance", "Tags": [{"Key": "foo", "Value": "bar"}]}'
+```
 
 You can start the experiment using the [`StartExperiment`](https://docs.aws.amazon.com/fis/latest/APIReference/API_StartExperiment.html).
 Run the following command and specify the ID of the experiment template you created earlier:
 
-{{< command >}}
-$ awslocal fis start-experiment --experiment-template-id ad16589a-4a91-4aee-88df-c33446605882
-{{< /command >}}
+```bash
+awslocal fis start-experiment --experiment-template-id ad16589a-4a91-4aee-88df-c33446605882
+```
 
 The following output would be retrieved:
 
@@ -194,25 +195,28 @@ The following output would be retrieved:
 You can use the [`ListExperiments`](https://docs.aws.amazon.com/fis/latest/APIReference/API_ListExperiments.html) to check the status of your experiment.
 Run the following command:
 
-{{< command >}}
-$ awslocal fis list-experiments
-{{< /command >}}
+```bash
+awslocal fis list-experiments
+```
 
 You can fetch the details of your experiment using the [`GetExperiment`](https://docs.aws.amazon.com/fis/latest/APIReference/API_GetExperiment.html) API.
 Run the following command and specify the ID of the experiment you created earlier:
 
-{{< command >}}
-$ awslocal fis get-experiment --id efee7c02-8733-4d7c-9628-1b60bbec9759
-{{< /command >}}
+```bash
+awslocal fis get-experiment --id efee7c02-8733-4d7c-9628-1b60bbec9759
+```
 
 ### Verifying the outcome
 
 You can now test that the experiment is working as expected by trying to obtain the state of the EC2 instance using [`DescribeInstanceStatus`](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstanceStatus.html).
 Run the following command:
 
-{{< command >}}
-$ awslocal ec2 describe-instance-status --instance-ids i-3c40b52ab72f99c63 --output json --query InstanceStatuses[0].InstanceState
-{{< /command >}}
+```bash
+awslocal ec2 describe-instance-status \
+    --instance-ids i-3c40b52ab72f99c63 \
+    --output json \
+    --query InstanceStatuses[0].InstanceState
+```
 
 If everything happened as expected, the following output would be retrieved:
 

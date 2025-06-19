@@ -1,6 +1,5 @@
 ---
 title: "MemoryDB for Redis"
-linkTitle: "MemoryDB for Redis"
 tags: ["Ultimate"]
 description: Get started with MemoryDB on LocalStack
 ---
@@ -11,7 +10,7 @@ MemoryDB is a fully managed, Redis-compatible, in-memory database tailored for w
 It streamlines the deployment and management of in-memory databases within the AWS cloud environment, acting as a replacement for using a cache in front of a database for improved durability and performance.
 
 LocalStack provides support for the main MemoryDB APIs surrounding cluster creation, allowing developers to utilize the MemoryDB functionalities in their local development environment.
-The supported APIs are available on our [API Coverage Page]({{< ref "coverage_memorydb" >}}), which provides information on the extent of MemoryDB's integration with LocalStack.
+The supported APIs are available on our [API Coverage Page](), which provides information on the extent of MemoryDB's integration with LocalStack.
 
 ## Getting started
 
@@ -25,42 +24,46 @@ We will demonstrate how you can create a MemoryDB cluster and connect to it.
 You can create a MemoryDB cluster using the [`CreateCluster`](https://docs.aws.amazon.com/memorydb/latest/APIReference/API_CreateCluster.html) API.
 Run the following command to create a cluster:
 
-{{< command >}}
-$ awslocal memorydb create-cluster \
+```bash
+awslocal memorydb create-cluster \
   --cluster-name my-redis-cluster \
   --node-type db.t4g.small \
   --acl-name open-access
-{{< /command>}}
+```
 
 Once it becomes available, you will be able to use the cluster endpoint for Redis operations.
 Run the following command to retrieve the cluster endpoint using the [`DescribeClusters`](https://docs.aws.amazon.com/memorydb/latest/APIReference/API_DescribeClusters.html) API:
 
-{{< command >}}
-$ awslocal memorydb describe-clusters --query "Clusters[0].ClusterEndpoint"
+```bash
+awslocal memorydb describe-clusters --query "Clusters[0].ClusterEndpoint"
+```
+
+The output will be similar to the following:
+
+```json
 {
   "Address": "127.0.0.1",
   "Port": 36739
 }
-{{< /command >}}
+```
 
-The cache cluster uses a random port of the [external service port range]({{< ref "external-ports" >}}) in regular execution and a port between 36739 and 46738 in container mode.
+The cache cluster uses a random port of the [external service port range]() in regular execution and a port between 36739 and 46738 in container mode.
 Use this port number to connect to the Redis instance using the `redis-cli` command line tool:
 
-{{< command >}}
-$ redis-cli -p 4510 ping
+```bash
+redis-cli -p 4510 ping
 PONG
-$ redis-cli -p 4510 set foo bar
+redis-cli -p 4510 set foo bar
 OK
-$ redis-cli -p 4510 get foo
+redis-cli -p 4510 get foo
 "bar"
-{{< / command >}}
+```
 
 You can also check the cluster configuration using the [`cluster nodes`](https://redis.io/commands/cluster-nodes) command:
 
-{{< command >}}
-$ redis-cli -c -p 4510 cluster nodes
-...
-{{< / command >}}
+```bash
+redis-cli -c -p 4510 cluster nodes
+```
 
 ## Container mode
 

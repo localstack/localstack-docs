@@ -1,6 +1,5 @@
 ---
 title: "Route 53"
-linkTitle: "Route 53"
 description: Get started with Route 53 on LocalStack
 persistence: supported
 tags: ["Free"]
@@ -14,14 +13,14 @@ In addition to basic DNS functionality, Route 53 offers advanced features like h
 Route 53 integrates seamlessly with other AWS services, such as route traffic to CloudFront distributions, S3 buckets configured for static website hosting, EC2 instances, and more.
 
 LocalStack allows you to use the Route53 APIs in your local environment to create hosted zones and to manage DNS entries.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_route53" >}}), which provides information on the extent of Route53's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Route53's integration with LocalStack.
 LocalStack also integrates with its DNS server to respond to DNS queries with these domains.
 
-{{< callout "note">}}
+:::note
 LocalStack CLI does not publish port `53` anymore by default.
 Use the CLI flag `--host-dns` to expose the port on the host.
 This would be required if you want to reach out to Route53 domain names from your host machine, using the LocalStack DNS server.
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -35,12 +34,12 @@ We will demonstrate how to create a hosted zone and query the DNS record with th
 You can created a hosted zone for `example.com` using the [`CreateHostedZone`](https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateHostedZone.html) API.
 Run the following command:
 
-{{< command >}}
-$ zone_id=$(awslocal route53 create-hosted-zone \
+```bash
+zone_id=$(awslocal route53 create-hosted-zone \
     --name example.com \
     --caller-reference r1 | jq -r '.HostedZone.Id')
-$ echo $zone_id
-{{< / command >}}
+echo $zone_id
+```
 
 The following output would be retrieved:
 
@@ -53,11 +52,11 @@ The following output would be retrieved:
 You can now change the resource record sets for the hosted zone `example.com` using the [`ChangeResourceRecordSets`](https://docs.aws.amazon.com/Route53/latest/APIReference/API_ChangeResourceRecordSets.html) API.
 Run the following command:
 
-{{< command >}}
-$ awslocal route53 change-resource-record-sets \
+```bash
+awslocal route53 change-resource-record-sets \
     --hosted-zone-id $zone_id \
     --change-batch 'Changes=[{Action=CREATE,ResourceRecordSet={Name=test.example.com,Type=A,ResourceRecords=[{Value=1.2.3.4}]}}]'
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -73,19 +72,19 @@ The following output would be retrieved:
 
 ## DNS resolution
 
-LocalStack Pro supports the ability to respond to DNS queries for your Route53 domain names, with our [integrated DNS server]({{< ref "user-guide/tools/dns-server" >}}).
+LocalStack Pro supports the ability to respond to DNS queries for your Route53 domain names, with our [integrated DNS server](/aws/tooling/dns-server).
 
-{{< callout >}}
-To follow the example below you must [configure your system DNS to use the LocalStack DNS server]({{< ref "user-guide/tools/dns-server#system-dns-configuration" >}}).
-{{< /callout >}}
+:::note
+To follow the example below you must [configure your system DNS to use the LocalStack DNS server](/aws/tooling/dns-server#system-dns-configuration).
+:::
 
 ### Query a DNS record
 
 You can query the DNS record using `dig` via the built-in DNS server by running the following command:
 
-{{< command >}}
-$ dig @localhost test.example.com
-{{< / command >}}
+```bash
+dig @localhost test.example.com
+```
 
 The following output would be retrieved:
 
@@ -101,7 +100,7 @@ test.example.com.       300     IN      A       1.2.3.4
 
 The DNS name `localhost.localstack.cloud`, along with its subdomains like `mybucket.s3.localhost.localstack.cloud`, serves an internal routing purpose within LocalStack.
 It facilitates communication between a LocalStack compute environment (such as a Lambda function) and the LocalStack APIs, as well as your containerised applications with the LocalStack APIs.
-For example configurations, see the [Network Troubleshooting guide]({{< ref "references/network-troubleshooting/endpoint-url/#from-your-container" >}}).
+For example configurations, see the [Network Troubleshooting guide]().
 
 For most use-cases, the default configuration of the internal LocalStack DNS name requires no modification.
 It functions seamlessly in typical scenarios.
@@ -115,12 +114,12 @@ This can be accomplished using Route53.
 Create a hosted zone for the domain `localhost.localstack.cloud` using the [`CreateHostedZone` API](https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateHostedZone.html) API.
 Run the following command:
 
-{{< command >}}
-$ zone_id=$(awslocal route53 create-hosted-zone \
+```bash
+zone_id=$(awslocal route53 create-hosted-zone \
     --name localhost.localstack.cloud \
     --caller-reference r1 | jq -r .HostedZone.Id)
-$ echo $zone_id
-{{< / command >}}
+echo $zone_id
+```
 
 The following output would be retrieved:
 
@@ -131,11 +130,11 @@ The following output would be retrieved:
 You can now use the [`ChangeResourceRecordSets`](https://docs.aws.amazon.com/Route53/latest/APIReference/API_ChangeResourceRecordSets.html) API to create a record set for the domain `localhost.localstack.cloud` using the `zone_id` retrieved in the previous step.
 Run the following command to accomplish this:
 
-{{< command >}}
-$ awslocal route53 change-resource-record-sets \
+```bash
+awslocal route53 change-resource-record-sets \
     --hosted-zone-id $zone_id \
     --change-batch '{"Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"localhost.localstack.cloud","Type":"A","ResourceRecords":[{"Value":"5.6.7.8"}]}},{"Action":"CREATE","ResourceRecordSet":{"Name":"*.localhost.localstack.cloud","Type":"A","ResourceRecords":[{"Value":"5.6.7.8"}]}}]}'
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -151,10 +150,10 @@ The following output would be retrieved:
 
 You can now verify that the DNS name `localhost.localstack.cloud` and its subdomains resolve to the IP address:
 
-{{< command >}}
-$ dig @127.0.0.1 bucket1.s3.localhost.localstack.cloud
-$ dig @127.0.0.1 localhost.localstack.cloud
-{{< / command >}}
+```bash
+dig @127.0.0.1 bucket1.s3.localhost.localstack.cloud
+dig @127.0.0.1 localhost.localstack.cloud
+```
 
 The following output would be retrieved:
 
@@ -176,7 +175,7 @@ localhost.localstack.cloud. 300 IN      A       5.6.7.8
 The LocalStack Web Application provides a Route53 for creating hosted zones and to manage DNS entries.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Route53** under the **Analytics** section.
 
-<img src="route53-resource-browser.png" alt="Route53 Resource Browser" title="Route53 Resource Browser" width="900" />
+![Route53 Resource Browser](/images/aws/route53-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

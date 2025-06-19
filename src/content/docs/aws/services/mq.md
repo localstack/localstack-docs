@@ -1,6 +1,5 @@
 ---
 title: "MQ"
-linkTitle: "MQ"
 description: Get started with MQ on LocalStack
 tags: ["Base"]
 ---
@@ -12,7 +11,7 @@ It facilitates the exchange of messages between various components of distribute
 AWS MQ supports popular messaging protocols like MQTT, AMQP, and STOMP, making it suitable for a wide range of messaging use cases.
 
 LocalStack allows you to use the MQ APIs to implement pub/sub messaging, request/response patterns, or distributed event-driven architectures in your local environment.
-The supported APIs are available on our [API Coverage Page]({{< ref "coverage_mq" >}}), which provides information on the extent of MQ integration with LocalStack.
+The supported APIs are available on our [API Coverage Page](), which provides information on the extent of MQ integration with LocalStack.
 
 ## Getting started
 
@@ -26,8 +25,8 @@ We will demonstrate how to create an MQ broker and send a message to a sample qu
 You can create a broker using the [`CreateBroker`](https://docs.aws.amazon.com/amazon-mq/latest/api-reference/brokers.html#brokerspost) API.
 Run the following command to create a broker named `test-broker` with the following configuration:
 
-{{< command >}}
-$ awslocal mq create-broker \
+```bash
+awslocal mq create-broker \
     --broker-name test-broker \
     --deployment-mode SINGLE_INSTANCE \
     --engine-type ACTIVEMQ \
@@ -36,22 +35,29 @@ $ awslocal mq create-broker \
     --auto-minor-version-upgrade \
     --publicly-accessible \
     --users='{"ConsoleAccess": true, "Groups": ["testgroup"],"Password": "QXwV*$iUM9USHnVv&!^7s3c@", "Username": "admin"}'
-<disable-copy>
+```
+
+The output will be similar to the following:
+
+```json
 {
     "BrokerArn": "arn:aws:mq:us-east-1:000000000000:broker:test-broker:b-f503abb7-66bc-47fb-b1a9-8d8c51ef6545",
     "BrokerId": "b-f503abb7-66bc-47fb-b1a9-8d8c51ef6545"
 }
-</disable-copy>
-{{< / command >}}
+```
 
 ### Describe the broker
 
 You can use the [`DescribeBroker`](https://docs.aws.amazon.com/amazon-mq/latest/api-reference/brokers.html#brokersget) API to get more detailed information about the broker.
 Run the following command to get information about the broker we created above:
 
-{{< command >}}
-$ awslocal mq describe-broker --broker-id
-<disable-copy>
+```bash
+awslocal mq describe-broker --broker-id
+```
+
+The output will be similar to the following:
+
+```json
 b-f503abb7-66bc-47fb-b1a9-8d8c51ef6545
 {
     "BrokerArn": "arn:aws:mq:us-east-1:000000000000:broker:test-broker:b-f503abb7-66bc-47fb-b1a9-8d8c51ef6545",
@@ -73,26 +79,23 @@ b-f503abb7-66bc-47fb-b1a9-8d8c51ef6545
     "HostInstanceType": "mq.t2.micro",
     "Tags": {}
 }
-</disable-copy>
-{{< / command >}}
+```
 
 ### Send a message
 
 Now that the broker is actively listening, we can use curl to send a message to a sample queue.
 Run the following command to send a message to the `orders.input` queue:
 
-{{< command >}}
-$ curl -XPOST -d "body=message" http://admin:admin@localhost:4513/api/message\?destination\=queue://orders.input
-{{< / command >}}
+```bash
+curl -XPOST -d "body=message" http://admin:admin@localhost:4513/api/message\?destination\=queue://orders.input
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing MQ brokers.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **MQ** under the **App Integration** section.
 
-<img src="mq-resource-browser.png" alt="MQ Resource Browser" title="MQ Resource Browser" width="900" />
-<br>
-<br>
+![MQ Resource Browser](/images/aws/mq-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

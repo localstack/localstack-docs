@@ -1,10 +1,10 @@
 ---
 title: CodeBuild
-linkTitle: CodeBuild
-description: >
-  Get started with CodeBuild on LocalStack
+description: Get started with CodeBuild on LocalStack
 tags: ["Base"]
 ---
+
+import { FileTree } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -12,7 +12,7 @@ AWS CodeBuild is a fully managed continuous integration service that compiles so
 It is part of the [AWS Developer Tools suite](https://aws.amazon.com/products/developer-tools/) and integrates with other AWS services to provide an end-to-end development pipeline.
 
 LocalStack supports the emulation of most of the CodeBuild operations.
-The supported operations are listed on the [API coverage page]({{< ref "coverage_codebuild" >}}).
+The supported operations are listed on the [API coverage page]().
 
 AWS CodeBuild emulation is powered by the [AWS CodeBuild agent](https://docs.aws.amazon.com/codebuild/latest/userguide/use-codebuild-agent.html).
 
@@ -28,17 +28,17 @@ In the first step, we have to create the project that we want to build with AWS 
 
 In an empty directory, we need to re-create the following structure:
 
-```bash
-root-directory-name
-├── pom.xml
-└── src
-    ├── main
-    │   └── java
-    │       └── MessageUtil.java
-    └── test
-        └── java
-            └── TestMessageUtil.java
-```
+<FileTree>
+- root-directory-name
+  - pom.xml
+  - src
+    - main
+      - java
+        - MessageUtil.java
+    - test
+      - java
+        - TestMessageUtil.java
+</FileTree>
 
 Let us walk through these files.
 `MessageUtil.java` contains the entire logic of this small application.
@@ -175,30 +175,23 @@ Now we have to create two S3 buckets:
 
 Create the buckets with the following commands:
 
-{{< command >}}
-$ awslocal s3 mb s3://codebuild-demo-input
-<disable-copy>
-make_bucket: codebuild-demo-input
-</disable-copy>
-{{< /command >}}
-
-{{< command >}}
-$ awslocal s3 mb s3://codebuild-demo-output
-<disable-copy>
-make_bucket: codebuild-demo-output
-{{< /command >}}
+```bash
+awslocal s3 mb s3://codebuild-demo-input
+awslocal s3 mb s3://codebuild-demo-output
+```
 
 Finally, zip the content of the source code directory and upload it to the created source bucket.
 With a UNIX system, you can simply use the `zip` utility:
-{{< command >}}
-$ zip -r MessageUtil.zip <source-directory>
-{{< /command >}}
+
+```bash
+zip -r MessageUtil.zip <source-directory>
+```
 
 Then, upload `MessageUtil.zip` to the `codebuild-demo-input` bucket with the following command:
 
-{{< command >}}
-$ awslocal s3 cp MessageUtil.zip s3://codebuild-demo-input
-{{< /command >}}
+```bash
+awslocal s3 cp MessageUtil.zip s3://codebuild-demo-input
+```
 
 ### Configuring IAM
 
@@ -221,9 +214,10 @@ Create a `create-role.json` file with following content:
 ```
 
 Then, run the following command to create the necessary IAM role:
-{{< command >}}
-$ awslocal iam create-role --role-name CodeBuildServiceRole --assume-role-policy-document file://create-role.json
-{{< /command >}}
+
+```bash
+awslocal iam create-role --role-name CodeBuildServiceRole --assume-role-policy-document file://create-role.json
+```
 
 From the command's response, keep note of the role ARN:
 it will be needed to create the CodeBuild project later on.
@@ -285,9 +279,12 @@ Create a `put-role-policy.json` file with the following content:
 
 Finally, assign the policy to the role with the following command:
 
-{{< command >}}
-$ awslocal put-role-policy --role-name CodeBuildServiceRole --policy-name CodeBuildServiceRolePolicy --policy-document file://put-role-policy.json
-{{< /command >}}
+```bash
+awslocal put-role-policy \
+    --role-name CodeBuildServiceRole \
+    --policy-name CodeBuildServiceRolePolicy \
+    --policy-document file://put-role-policy.json
+```
 
 ### Create the build project
 
@@ -296,9 +293,9 @@ We now need to create a build project, containing all the information about how 
 You can use the CLI to generate the skeleton of the `CreateBuild` request, which you can later modify.
 Save the output of the following command to a file named `create-project.json`.
 
-{{< command >}}
-$ awslocal codebuild create-project --generate-cli-skeleton
-{{< /command >}}
+```bash
+awslocal codebuild create-project --generate-cli-skeleton
+```
 
 From the generated file, change the source and the artifact location to match the S3 bucket names you just created.
 Similarly, fill in the ARN of the CodeBuild service role.
@@ -325,24 +322,24 @@ Similarly, fill in the ARN of the CodeBuild service role.
 
 Now create the project with the following command:
 
-{{< command >}}
-$ awslocal codebuild create-project --cli-input-json file://create-project.json
-{{< /command >}}
+```bash
+awslocal codebuild create-project --cli-input-json file://create-project.json
+```
 
 You have now created a CodeBuild project called `codebuild-demo-project` that uses the S3 buckets you just created as source and artifact.
 
-{{< callout >}}
+:::note
 LocalStack does not allow to customize the build environment.
 Depending on the host architecture, the build will be executed an Amazon Linux container, version `3.0.x` and `5.0.x`, respectively for the ARM and the x86 architecture.
-{{< /callout >}}
+:::
 
 ### Run the build
 
 In this final step, you can now execute your build with the following command:
 
-{{< command >}}
-$ awslocal codebuild start-build --project-name codebuild-demo-project
-{{< /command >}}
+```bash
+awslocal codebuild start-build --project-name codebuild-demo-project
+```
 
 Make note of the `id` information given in output, since it can be used to query the status of the build.
 If you inspect the running containers (e.g., with the `docker ps -a` command), you will notice a container with the `localstack-codebuild` prefix (followed by the build ID), which CodeBuild started to execute the build.
@@ -350,24 +347,24 @@ This container will be responsible to start a Docker compose stack that executes
 
 As said, you can inspect the status of the build with the following command:
 
-{{< command >}}
-$ awslocal codebuild batch-get-builds --ids <build-id>
-{{< /command >}}
+```bash
+awslocal codebuild batch-get-builds --ids <build-id>
+```
 
 The command returns a list of builds.
 A build has a `buildStatus` attribute that will be set to `SUCCEEDED` if the build correctly terminates.
 
-{{< callout >}}
+:::note
 Each build goes through different phases, each of them having a start and end time, as well as a status.
 LocalStack does not provided such granular information.
 Currently, it reports only the final status of the build.
-{{< /callout >}}
+:::
 
 Once the build is completed, you can verify that the JAR artifact has been uploaded to the correct S3 bucket with the following command:
 
-{{< command >}}
-$ awslocal s3 ls://codebuild-demo-output
-{{< /command >}}
+```bash
+awslocal s3 ls s3://codebuild-demo-output
+```
 
 ## Limitations
 

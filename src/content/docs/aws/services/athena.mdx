@@ -1,9 +1,10 @@
 ---
 title: "Athena"
-linkTitle: "Athena"
 description: Get started with Athena on LocalStack
 tags: ["Ultimate"]
 ---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -12,7 +13,7 @@ Athena allows users to create ad-hoc queries to perform data analysis, filter, a
 It supports various file formats, such as JSON, Parquet, and CSV, making it compatible with a wide range of data sources.
 
 LocalStack allows you to configure the Athena APIs with a Hive metastore that can connect to the S3 API and query your data directly in your local environment.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_athena" >}}), which provides information on the extent of Athena's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Athena's integration with LocalStack.
 
 ## Getting started
 
@@ -21,44 +22,44 @@ This guide is designed for users new to Athena and assumes basic knowledge of th
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an Athena table and run a query against it in addition to reading the results with the AWS CLI.
 
-{{< callout >}}
+:::note
 To utilize the Athena API, LocalStack will download additional dependencies.
 This involves getting a Docker image of around 1.5GB, containing Presto, Hive, and other tools.
 These components are retrieved automatically when you initiate the service.
 To ensure a smooth initial setup, ensure you're connected to a stable internet connection while fetching these components for the first time.
-{{< /callout >}}
+:::
 
 ### Create an S3 bucket
 
 You can create an S3 bucket using the [`mb`](https://docs.aws.amazon.com/cli/latest/reference/s3/mb.html) command.
 Run the following command to create a bucket named `athena-bucket`:
 
-{{< command >}}
-$ awslocal s3 mb s3://athena-bucket
-{{< / command >}}
+```bash
+awslocal s3 mb s3://athena-bucket
+```
 
 You can create some sample data using the following commands:
 
-{{< command >}}
-$ echo "Name,Service" > data.csv
-$ echo "LocalStack,Athena" >> data.csv
-{{< / command >}}
+```bash
+echo "Name,Service" > data.csv
+echo "LocalStack,Athena" >> data.csv
+```
 
 You can upload the data to your bucket using the [`cp`](https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html) command:
 
-{{< command >}}
-$ awslocal s3 cp data.csv s3://athena-bucket/data/
-{{< / command >}}
+```bash
+awslocal s3 cp data.csv s3://athena-bucket/data/
+```
 
 ### Create an Athena table
 
 You can create an Athena table using the [`CreateTable`](https://docs.aws.amazon.com/athena/latest/APIReference/API_CreateTable.html) API
 Run the following command to create a table named `athena_table`:
 
-{{< command >}}
-$ awslocal athena start-query-execution \
+```bash
+awslocal athena start-query-execution \
     --query-string "create external table tbl01 (name STRING, surname STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION 's3://athena-bucket/data/';" --result-configuration "OutputLocation=s3://athena-bucket/output/"
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -71,9 +72,9 @@ The following output would be retrieved:
 You can retrieve information about the query execution using the [`GetQueryExecution`](https://docs.aws.amazon.com/athena/latest/APIReference/API_GetQueryExecution.html) API.
 Run the following command:
 
-{{< command >}}
-$ awslocal athena get-query-execution --query-execution-id 593acab7
-{{< / command >}}
+```bash
+awslocal athena get-query-execution --query-execution-id 593acab7
+```
 
 Replace `593acab7` with the `QueryExecutionId` returned by the [`StartQueryExecution`](https://docs.aws.amazon.com/athena/latest/APIReference/API_StartQueryExecution.html) API.
 
@@ -82,27 +83,27 @@ Replace `593acab7` with the `QueryExecutionId` returned by the [`StartQueryExecu
 You can get the output of the query using the [`GetQueryResults`](https://docs.aws.amazon.com/athena/latest/APIReference/API_GetQueryResults.html) API.
 Run the following command:
 
-{{< command >}}
-$ awslocal athena get-query-results --query-execution-id 593acab7
-{{< / command >}}
+```bash
+awslocal athena get-query-results --query-execution-id 593acab7
+```
 
 You can now read the data from the `tbl01` table and retrieve the data from S3 that was mentioned in your table creation statement.
 Run the following command:
 
-{{< command >}}
-$ awslocal athena start-query-execution \
+```bash
+awslocal athena start-query-execution \
     --query-string "select * from tbl01;" --result-configuration "OutputLocation=s3://athena-bucket/output/"
-{{< / command >}}
+```
 
 You can retrieve the execution details similarly using the [`GetQueryExecution`](https://docs.aws.amazon.com/athena/latest/APIReference/API_GetQueryExecution.html) API using the `QueryExecutionId` returned by the previous step.
 
 You can copy the `ResultConfiguration` from the output and use it to retrieve the results of the query.
 Run the following command:
 
-{{< command >}}
-$ awslocal cp s3://athena-bucket/output/593acab7.csv .
-$ cat 593acab7.csv
-{{< / command >}}
+```bash
+awslocal cp s3://athena-bucket/output/593acab7.csv .
+cat 593acab7.csv
+```
 
 Replace `593acab7.csv` with the path to the file that was present in the `ResultConfiguration` of the previous step.
 You can also use the [`GetQueryResults`](https://docs.aws.amazon.com/athena/latest/APIReference/API_GetQueryResults.html) API to retrieve the results of the query.
@@ -117,34 +118,37 @@ The Delta Lake files used in this sample are available in a public S3 bucket und
 For your convenience, we have prepared the test files in a downloadable ZIP file [here](https://localstack-assets.s3.amazonaws.com/aws-sample-athena-delta-lake.zip).
 We start by downloading and extracting this ZIP file:
 
-{{< command >}}
-$ mkdir /tmp/delta-lake-sample; cd /tmp/delta-lake-sample
-$ wget https://localstack-assets.s3.amazonaws.com/aws-sample-athena-delta-lake.zip
-$ unzip aws-sample-athena-delta-lake.zip; rm aws-sample-athena-delta-lake.zip
-{{< / command >}}
+```bash
+mkdir /tmp/delta-lake-sample; cd /tmp/delta-lake-sample
+wget https://localstack-assets.s3.amazonaws.com/aws-sample-athena-delta-lake.zip
+unzip aws-sample-athena-delta-lake.zip; rm aws-sample-athena-delta-lake.zip
+```
 
 We can then create an S3 bucket in LocalStack using the [`awslocal`](https://github.com/localstack/awscli-local) command line, and upload the files to the bucket:
-{{< command >}}
-$ awslocal s3 mb s3://test
-$ awslocal s3 sync /tmp/delta-lake-sample s3://test
-{{< / command >}}
+
+```bash
+awslocal s3 mb s3://test
+awslocal s3 sync /tmp/delta-lake-sample s3://test
+```
 
 Next, we create the table definitions in Athena:
-{{< command >}}
-$ awslocal athena start-query-execution \
+
+```bash
+awslocal athena start-query-execution \
     --query-string "CREATE EXTERNAL TABLE test (product_id string, product_name string, \
     price bigint, currency string, category string, updated_at double) \
     LOCATION 's3://test/' TBLPROPERTIES ('table_type'='DELTA')"
-{{< / command >}}
+```
 
 Please note that this query may take some time to finish executing.
 You can observe the output in the LocalStack container (ideally with `DEBUG=1` enabled) to follow the steps of the query execution.
 
 Finally, we can now run a `SELECT` query to extract data from the Delta Lake table we've just created:
-{{< command >}}
-$ queryId=$(awslocal athena start-query-execution --query-string "SELECT * from deltalake.default.test" | jq -r .QueryExecutionId)
-$ awslocal athena get-query-results --query-execution-id $queryId
-{{< / command >}}
+
+```bash
+queryId=$(awslocal athena start-query-execution --query-string "SELECT * from deltalake.default.test" | jq -r .QueryExecutionId)
+awslocal athena get-query-results --query-execution-id $queryId
+```
 
 The query should yield a result similar to the output below:
 
@@ -175,9 +179,9 @@ The query should yield a result similar to the output below:
 ...
 ```
 
-{{< callout >}}
+:::note
 The `SELECT` statement above currently requires us to prefix the database/table name with `deltalake.` - this will be further improved in a future iteration, for better parity with AWS.
-{{< /callout >}}
+:::
 
 ## Iceberg Tables
 
@@ -210,8 +214,10 @@ s3://mybucket/prefix/temp/
 You can configure the Athena service in LocalStack with various clients, such as [PyAthena](https://github.com/laughingman7743/PyAthena/), [awswrangler](https://github.com/aws/aws-sdk-pandas), among others!
 Here are small snippets to get you started:
 
-{{< tabpane lang="python" >}}
-{{< tab header="PyAthena" lang="python" >}}
+<Tabs>
+<TabItem label="PyAthena">
+
+```python
 from pyathena import connect
 
 conn = connect(
@@ -223,8 +229,13 @@ cursor = conn.cursor()
 
 cursor.execute("SELECT 1,2,3 AS test")
 print(cursor.fetchall())
-{{< /tab >}}
-{{< tab header="awswrangler" lang="python" >}}
+```
+
+</TabItem>
+
+<TabItem label="awswrangler">
+
+```python
 import awswrangler as wr
 import pandas as pd
 
@@ -238,15 +249,16 @@ wr.config.s3_endpoint_url = ENDPOINT
 wr.catalog.create_database(DATABASE)
 df = wr.athena.read_sql_query("SELECT 1 AS col1, 2 AS col2, 3 AS col3", database=DATABASE)
 print(df)
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for Athena query execution, writing SQL queries, and visualizing query results.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Athena** under the **Analytics** section.
 
-<img src="athena-resource-browser.png" alt="Athena Resource Browser" title="Athena Resource Browser" width="900" />
+![Athena Resource Browser](/images/aws/athena-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

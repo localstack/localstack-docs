@@ -1,6 +1,5 @@
 ---
 title: Batch
-linkTitle: Batch
 description: Get started with Batch on LocalStack
 tags: ["Ultimate"]
 ---
@@ -11,7 +10,7 @@ Batch is a cloud-based service provided by Amazon Web Services (AWS) that simpli
 Batch allows you to efficiently process large volumes of data and run batch jobs without the need to manage and provision underlying compute resources.
 
 LocalStack allows you to use the Batch APIs to automate and scale computational tasks in your local environment while handling batch workloads.
-The supported APIs are available on our [API Coverage Page]({{< ref "coverage_batch" >}}), which provides information on the extent of Batch integration with LocalStack.
+The supported APIs are available on our [API Coverage Page](), which provides information on the extent of Batch integration with LocalStack.
 
 ## Getting started
 
@@ -30,15 +29,15 @@ We will demonstrate how you create and run a Batch job by following these steps:
 
 You can create a role using the [`CreateRole`](https://docs.aws.amazon.com/cli/latest/reference/iam/create-role.html) API.
 For LocalStack, the service role simply needs to exist.
-However, when [enforcing IAM policies]({{< ref "user-guide/aws/iam#enforcing-iam-policies" >}}), it is necessary that the policy is valid.
+However, when [enforcing IAM policies](/aws/services/iam/#enforcing-iam-policies), it is necessary that the policy is valid.
 
 Run the following command to create a role with an empty policy document:
 
-{{< command >}}
-$ awslocal iam create-role \
+```bash
+awslocal iam create-role \
     --role-name myrole  \
     --assume-role-policy-document "{}"
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -60,12 +59,12 @@ You should see the following output:
 You can use the [`CreateComputeEnvironment`](https://docs.aws.amazon.com/cli/latest/reference/batch/create-compute-environment.html) API to create a compute environment.
 Run the following command using the role ARN above (`arn:aws:iam::000000000000:role/myrole`), to create the compute environment:
 
-{{< command >}}
-$ awslocal batch create-compute-environment \
+```bash
+awslocal batch create-compute-environment \
     --compute-environment-name myenv \
     --type UNMANAGED \
     --service-role <role-arn>
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -76,19 +75,19 @@ You should see the following output:
 }
 ```
 
-{{< callout >}}
+:::note
 While an unmanaged compute environment has been specified, there is no need to provision any compute resources for this setup to function.
 Your tasks will run independently in new Docker containers, alongside the LocalStack container.
-{{< /callout >}}
+:::
 
 ### Create a job queue
 
 You can fetch the ARN using the [`DescribeComputeEnvironments`](https://docs.aws.amazon.com/cli/latest/reference/batch/describe-compute-environments.html) API.
 Run the following command to fetch the ARN of the compute environment:
 
-{{< command >}}
-$ awslocal batch describe-compute-environments --compute-environments myenv
-{{< / command >}}
+```bash
+awslocal batch describe-compute-environments --compute-environments myenv
+```
 
 You should see the following output:
 
@@ -111,13 +110,13 @@ You should see the following output:
 You can use the ARN to create the job queue using [`CreateJobQueue`](https://docs.aws.amazon.com/cli/latest/reference/batch/create-job-queue.html) API.
 Run the following command to create the job queue:
 
-{{< command >}}
-$ awslocal batch create-job-queue \
+```bash
+awslocal batch create-job-queue \
     --job-queue-name myqueue \
     --priority 1 \
     --compute-environment-order order=0,computeEnvironment=arn:aws:batch:us-east-1:000000000000:compute-environment/myenv \
     --state ENABLED
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -136,12 +135,12 @@ It's important to note that you can override this command when submitting the jo
 
 Run the following command to create the job definition using the [`RegisterJobDefinition`](https://docs.aws.amazon.com/cli/latest/reference/batch/register-job-definition.html) API:
 
-{{< command >}}
-$ awslocal batch register-job-definition \
+```bash
+awslocal batch register-job-definition \
     --job-definition-name myjobdefn \
     --type container \
     --container-properties '{"image":"busybox","vcpus":1,"memory":128,"command":["sleep","30"]}'
-{{< / command >}}
+```
 
 You should see the following output:
 
@@ -156,13 +155,13 @@ You should see the following output:
 If you want to pass arguments to the command as [parameters](https://docs.aws.amazon.com/batch/latest/userguide/job_definition_parameters.html#parameters), you can use the `Ref::` declaration to set placeholders for parameter substitution.
 This allows the dynamic passing of values at runtime for specific job definitions.
 
-{{< command >}}
-$  awslocal batch register-job-definition \
+```bash
+awslocal batch register-job-definition \
     --job-definition-name myjobdefn \
     --type container \
     --parameters '{"time":"10"}' \
     --container-properties '{"image":"busybox","vcpus":1,"memory":128,"command":["sleep","Ref::time"]}'
-{{< / command >}}
+```
 
 ### Submit a job to the job queue
 
@@ -172,13 +171,13 @@ This command simulates work being done in the container.
 
 Run the following command to submit a job to the job queue using the [`SubmitJob`](https://docs.aws.amazon.com/cli/latest/reference/batch/submit-job.html) API:
 
-{{< command >}}
-$ awslocal batch submit-job \
+```bash
+awslocal batch submit-job \
     --job-name myjob \
     --job-queue myqueue \
     --job-definition myjobdefn \
     --container-overrides '{"command":["sh", "-c", "sleep 5; pwd"]}'
-{{< / command >}}
+```
 
 You should see the following output:
 

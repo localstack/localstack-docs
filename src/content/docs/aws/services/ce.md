@@ -1,8 +1,6 @@
 ---
 title: "Cost Explorer"
-linkTitle: "Cost Explorer"
-description: >
-  Get started with Cost Explorer on LocalStack
+description: Get started with Cost Explorer on LocalStack
 tags: ["Ultimate"]
 ---
 
@@ -13,7 +11,7 @@ Cost Explorer offers options to filter and group data by dimensions such as serv
 With Cost Explorer, you can forecast costs, track budget progress, and set up alerts to receive notifications when spending exceeds predefined thresholds.
 
 LocalStack allows you to use the Cost Explorer APIs in your local environment to create and manage cost category definition, cost anomaly monitors & subscriptions.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_ce" >}}), which provides information on the extent of Cost Explorer's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Cost Explorer's integration with LocalStack.
 
 ## Getting started
 
@@ -27,10 +25,10 @@ We will demonstrate how to mock the Cost Explorer APIs with the AWS CLI.
 You can create a Cost Category definition using the [`CreateCostCategoryDefinition`](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_CreateCostCategoryDefinition.html)) API.
 The following example creates a Cost Category definition using an empty rule condition of type "REGULAR":
 
-{{< command >}}
-$ awslocal ce create-cost-category-definition --name test \
+```bash
+awslocal ce create-cost-category-definition --name test \
     --rule-version "CostCategoryExpression.v1" --rules '[{"Value": "test", "Rule": {}, "Type": "REGULAR"}]'
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -43,10 +41,10 @@ The following output would be retrieved:
 You can describe the Cost Category definition using the [`DescribeCostCategoryDefinition`](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_DescribeCostCategoryDefinition.html) API.
 Run the following command:
 
-{{< command >}}
-$ awslocal ce describe-cost-category-definition \
+```bash
+awslocal ce describe-cost-category-definition \
     --cost-category-arn arn:aws:ce::000000000000:costcategory/test
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -72,8 +70,8 @@ The following output would be retrieved:
 You can add an alert subscription to a cost anomaly detection monitor to define subscribers using the [`CreateAnomalySubscription`](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_CreateAnomalySubscription.html) API.
 The following example creates a cost anomaly subscription:
 
-{{< command >}}
-$ awslocal ce create-anomaly-subscription --anomaly-subscription '{
+```bash
+awslocal ce create-anomaly-subscription --anomaly-subscription '{
     "AccountId": "12345",
     "SubscriptionName": "sub1",
     "Frequency": "DAILY",
@@ -81,7 +79,7 @@ $ awslocal ce create-anomaly-subscription --anomaly-subscription '{
     "Subscribers": [],
     "Threshold": 111
 }'
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -94,9 +92,9 @@ The following output would be retrieved:
 You can retrieve the cost anomaly subscriptions using the [`GetAnomalySubscriptions`](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetAnomalySubscriptions.html) API.
 Run the following command:
 
-{{< command >}}
-$ awslocal ce get-anomaly-subscriptions
-{{< /command >}}
+```bash
+awslocal ce get-anomaly-subscriptions
+```
 
 The following output would be retrieved:
 
@@ -121,12 +119,12 @@ The following output would be retrieved:
 You can create a new cost anomaly detection subscription with the requested type and monitor specification using the [`CreateAnomalyMonitor`](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_CreateAnomalyMonitor.html) API.
 The following example creates a cost anomaly monitor:
 
-{{< command >}}
-$ awslocal ce create-anomaly-monitor --anomaly-monitor '{
+```bash
+awslocal ce create-anomaly-monitor --anomaly-monitor '{
     "MonitorName": "mon5463",
     "MonitorType": "DIMENSIONAL"
 }'
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -139,9 +137,9 @@ The following output would be retrieved:
 You can retrieve the cost anomaly monitors using the [`GetAnomalyMonitors`](https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetAnomalyMonitors.html) API.
 Run the following command:
 
-{{< command >}}
-$ awslocal ce get-anomaly-monitors
-{{< /command >}}
+```bash
+awslocal ce get-anomaly-monitors
+```
 
 The following output would be retrieved:
 
@@ -162,8 +160,7 @@ The following output would be retrieved:
 The LocalStack Web Application provides a Resource Browser for managing cost category definitions for the Cost Explorer service.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the Resources section, and then clicking on **Cost Explorer** under the **Cloud Financial Management** section.
 
-<img src="cost-explorer-resource-browser.png" alt="Cost Explorer Resource Browser" title="Cost Explorer Resource Browser" width="900" />
-<br><br>
+![Cost Explorer Resource Browser](/images/aws/cost-explorer-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

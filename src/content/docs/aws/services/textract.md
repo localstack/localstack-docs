@@ -1,6 +1,5 @@
 ---
 title: "Textract"
-linkTitle: "Textract"
 description: Get started with Textract on LocalStack
 tags: ["Ultimate"]
 persistence: supported
@@ -10,7 +9,7 @@ Textract is a machine learning service that automatically extracts text, forms, 
 It simplifies the process of extracting valuable information from a variety of document types, enabling applications to quickly analyze and understand document content.
 
 LocalStack allows you to mock Textract APIs in your local environment.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_textract" >}}), providing details on the extent of Textract's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), providing details on the extent of Textract's integration with LocalStack.
 
 ## Getting started
 
@@ -24,10 +23,10 @@ We will demonstrate how to perform basic Textract operations, such as mocking te
 You can use the [`DetectDocumentText`](https://docs.aws.amazon.com/textract/latest/dg/API_DetectDocumentText.html) API to identify and extract text from a document.
 Execute the following command:
 
-{{< command >}}
-$ awslocal textract detect-document-text \
+```bash
+awslocal textract detect-document-text \
     --document '{"S3Object":{"Bucket":"your-bucket","Name":"your-document"}}'
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -48,10 +47,10 @@ The following output would be retrieved:
 You can use the [`StartDocumentTextDetection`](https://docs.aws.amazon.com/textract/latest/dg/API_StartDocumentTextDetection.html) API to asynchronously detect text in a document.
 Execute the following command:
 
-{{< command >}}
-$ awslocal textract start-document-text-detection \
+```bash
+awslocal textract start-document-text-detection \
         --document-location '{"S3Object":{"Bucket":"bucket","Name":"document"}}'
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -68,10 +67,10 @@ Save the `JobId` value to use in the next command.
 You can use the [`GetDocumentTextDetection`](https://docs.aws.amazon.com/textract/latest/dg/API_GetDocumentTextDetection.html) API to retrieve the results of a document text detection job.
 Execute the following command:
 
-{{< command >}}
-$ awslocal textract get-document-text-detection \
+```bash
+awslocal textract get-document-text-detection \
     --job-id "501d7251-1249-41e0-a0b3-898064bfc506"
-{{< /command >}}
+```
 
 Replace `501d7251-1249-41e0-a0b3-898064bfc506` with the `JobId` value retrieved from the previous command.
 The following output would be retrieved:

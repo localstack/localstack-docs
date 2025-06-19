@@ -1,6 +1,5 @@
 ---
 title: "Lake Formation"
-linkTitle: "Lake Formation"
 description: Get started with Lake Formation on LocalStack
 tags: ["Ultimate"]
 ---
@@ -11,7 +10,7 @@ Lake Formation is a managed service that allows users to build, secure, and mana
 Lake Formation allows users to define and enforce fine-grained access controls, manage metadata, and discover and share data across multiple data sources.
 
 LocalStack allows you to use the Lake Formation APIs in your local environment to register resources, grant permissions, and list resources and permissions.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_lakeformation" >}}), which provides information on the extent of Lake Formation's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Lake Formation's integration with LocalStack.
 
 ## Getting started
 
@@ -24,9 +23,9 @@ We will demonstrate how to register an S3 bucket as a resource in Lake Formation
 
 Create a new S3 bucket named `test-bucket` using the `mb` command:
 
-{{< command >}}
-$ awslocal s3 mb s3://test-bucket
-{{</ command >}}
+```bash
+awslocal s3 mb s3://test-bucket
+```
 
 You can now register the S3 bucket as a resource in Lake Formation using the [`RegisterResource`](https://docs.aws.amazon.com/lake-formation/latest/dg/API_RegisterResource.html) API.
 Create a file named `input.json` with the following content:
@@ -40,19 +39,19 @@ Create a file named `input.json` with the following content:
 
 Run the following command to register the resource:
 
-{{< command >}}
+```bash
 awslocal lakeformation register-resource \
     --cli-input-json file://input.json
-{{</ command >}}
+```
 
 ### List resources
 
 You can list the registered resources using the [`ListResources`](https://docs.aws.amazon.com/lake-formation/latest/dg/API_ListResources.html) API.
 Execute the following command to list the resources:
 
-{{< command >}}
+```bash
 awslocal lakeformation list-resources
-{{</ command >}}
+```
 
 The following output is displayed:
 
@@ -94,16 +93,16 @@ Create a file named `permissions.json` with the following content:
 
 Run the following command to grant permissions:
 
-{{< command >}}
-$ awslocal lakeformation grant-permissions \
+```bash
+awslocal lakeformation grant-permissions \
     --cli-input-json file://check.json
-{{</ command >}}
+```
 
 ### List permissions
 
 You can list the permissions granted to a user or group using the [`ListPermissions`](https://docs.aws.amazon.com/lake-formation/latest/dg/API_ListPermissions.html) API.
 Execute the following command to list the permissions:
 
-{{< command >}}
-$ awslocal lakeformation list-permissions
-{{</ command >}}
+```bash
+awslocal lakeformation list-permissions
+```

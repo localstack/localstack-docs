@@ -1,6 +1,5 @@
 ---
 title: "Elastic Container Service (ECS)"
-linkTitle: "Elastic Container Service (ECS)"
 tags: ["Base"]
 description: Get started with Elastic Container Service (ECS) on LocalStack
 persistence: supported
@@ -13,7 +12,7 @@ It allows you to run, stop, and manage Docker containers on a cluster.
 ECS eliminates the need for you to install, operate, and scale your own cluster management infrastructure.
 
 LocalStack allows you to use the ECS APIs in your local environment to create & manage ECS clusters, tasks, and services.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_ecs" >}}), which provides information on the extent of ECS's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of ECS's integration with LocalStack.
 
 ## Getting Started
 
@@ -24,16 +23,20 @@ We will demonstrate how to create an ECS service using the AWS CLI
 
 ### Create a cluster
 
-{{< callout >}}
+:::note
 By default, the **ECS Fargate** launch type is assumed, i.e., the local Docker engine is used for deployment of applications, and there is no need to create and manage EC2 virtual machines to run the containers.
-{{< /callout >}}
+:::
 
 ECS tasks and services run on a cluster.
 Execute the following command to create an ECS cluster named `mycluster`:
 
-{{< command >}}
-$ awslocal ecs create-cluster --cluster-name mycluster
-<disable-copy>
+```bash
+awslocal ecs create-cluster --cluster-name mycluster
+```
+
+The output will be:
+
+```json
 {
     "cluster": {
         "clusterArn": "arn:aws:ecs:us-east-1:000000000000:cluster/mycluster",
@@ -51,8 +54,7 @@ $ awslocal ecs create-cluster --cluster-name mycluster
         ]
     }
 }
-</disable-copy>
-{{< / command >}}
+```
 
 ### Create a task definition
 
@@ -90,9 +92,13 @@ To create a task definition that runs an `ubuntu` container forever (by running 
 
 and then run the following command:
 
-{{< command >}}
-$ awslocal ecs register-task-definition --cli-input-json file://task_definition.json
-<disable-copy>
+```bash
+awslocal ecs register-task-definition --cli-input-json file://task_definition.json
+```
+
+The output will be:
+
+```json
 {
     "taskDefinition": {
         "taskDefinitionArn": "arn:aws:ecs:us-east-1:000000000000:task-definition/myfamily:1",
@@ -136,8 +142,7 @@ $ awslocal ecs register-task-definition --cli-input-json file://task_definition.
         "registeredAt": 1713364207.068659
     }
 }
-</disable-copy>
-{{< / command >}}
+```
 
 Task definitions are immutable, and are identified by their `family` field, and calling `register-task-definition` again with the same `family` value creates a new _version_ of a task definition.
 
@@ -149,9 +154,13 @@ Finally we launch an ECS service using the task definition above.
 This will create a number of containers in replica mode meaning they are distributed over the nodes of the cluster, or in the case of Fargate, over availability zones within the region of the cluster.
 To create a service, execute the following command:
 
-{{< command >}}
-$ awslocal ecs create-service --service-name myservice --cluster mycluster --task-definition myfamily --desired-count 1
-<disable-copy>
+```bash
+awslocal ecs create-service --service-name myservice --cluster mycluster --task-definition myfamily --desired-count 1
+```
+
+The output will be:
+
+```json
 {
     "service": {
         "serviceArn": "arn:aws:ecs:us-east-1:000000000000:service/mycluster/myservice",
@@ -196,8 +205,7 @@ $ awslocal ecs create-service --service-name myservice --cluster mycluster --tas
         "createdBy": "arn:aws:iam::000000000000:user/test"
     }
 }
-</disable-copy>
-{{< / command >}}
+```
 
 You should see a new docker container has been created, using the `ubuntu:latest` image, and running the infinite loop command:
 
@@ -212,9 +220,13 @@ CONTAINER ID   IMAGE                       COMMAND                  CREATED     
 
 To access the generated logs from the container, run the following command:
 
-{{< command >}}
+```bash
 awslocal logs filter-log-events --log-group-name myloggroup --query 'events[].message'
-<disable-copy>
+```
+
+The output will be:
+
+```json
 $ awslocal logs filter-log-events --log-group-name myloggroup | head -n 20
 {
     "events": [
@@ -236,10 +248,9 @@ $ awslocal logs filter-log-events --log-group-name myloggroup | head -n 20
             "logStreamName": "myprefix/ls-ecs-mycluster-75f0515e-0364-4ee5-9828-19026140c91a-0-a1afaa9d/75f0515e-0364-4ee5-9828-19026140c91a",
             "timestamp": 1713364216505,
             "message": "running",
-</disable-copy>
-{{< / command >}}
+```
 
-See our [CloudWatch Logs user guide]({{< ref "user-guide/aws/logs" >}}) for more details.
+See our [CloudWatch Logs user guide](/aws/services/cloudwatchlogs) for more details.
 
 ## LocalStack ECS behavior
 
@@ -250,7 +261,7 @@ If your ECS containers depend on LocalStack services, your ECS task network shou
 If you are running LocalStack through a `docker run` command, do not forget to enable the communication from the container to the Docker Engine API.
 You can provide the access by adding the following option `-v /var/run/docker.sock:/var/run/docker.sock`.
 
-For more information regarding the configuration of LocalStack, please check the [LocalStack configuration]({{< ref "configuration" >}}) section.
+For more information regarding the configuration of LocalStack, please check the [LocalStack configuration](/aws/capabilities/config/configuration) section.
 
 ## Remote debugging
 
@@ -261,7 +272,7 @@ Or if you are working with a single container, you can set `ECS_DOCKER_FLAGS="-p
 ## Mounting local directories for ECS tasks
 
 In some cases, it can be useful to mount code from the host filesystem into the ECS container.
-For example, to enable a quick debugging loop where you can test changes without having to build and redeploy the task's Docker image each time - similar to the [Lambda Hot Reloading]({{< ref "hot-reloading" >}}) feature in LocalStack.
+For example, to enable a quick debugging loop where you can test changes without having to build and redeploy the task's Docker image each time - similar to the [Lambda Hot Reloading](/aws/services/lambda#hot-reloading) feature in LocalStack.
 
 In order to leverage code mounting, we can use the ECS bind mounts feature, which is covered in the [AWS Bind mounts documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/bind-mounts.html).
 
@@ -336,14 +347,14 @@ services:
       - ~/.docker/config.json:/config.json:ro
 ```
 
-Alternatively, you can download the image from the private registry before using it or employ an [Initialization Hook]({{< ref "/references/init-hooks" >}}) to install the Docker client and use these credentials to download the image.
+Alternatively, you can download the image from the private registry before using it or employ an [Initialization Hook](/aws/capabilities/config/initalization-hooks) to install the Docker client and use these credentials to download the image.
 
 ## Firelens for ECS Tasks
 
-{{< callout >}}
+:::note
 Firelens emulation is currently available as part of the **LocalStack Enterprise** plan.
 If you'd like to try it out, please [contact us](https://www.localstack.cloud/demo) to request access.
-{{< /callout >}}
+:::
 
 LocalStack's ECS emulation supports custom log routing via FireLens.
 FireLens allows the ECS service to manage the configuration of the logging driver of application containers, and to create the proper configuration for the `fluentbit`/`fluentd` logging layer.
@@ -356,9 +367,7 @@ Additionally, you cannot use ECS on Kubernetes with FireLens.
 The LocalStack Web Application provides a Resource Browser for managing ECS clusters & task definitions.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **ECS** under the **Compute** section.
 
-<img src="ecs-resource-browser.png" alt="ECS Resource Browser" title="ECS Resource Browser" width="900" />
-<br>
-<br>
+![ECS Resource Browser](/images/aws/ecs-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

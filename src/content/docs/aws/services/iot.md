@@ -1,9 +1,7 @@
 ---
 title: "IoT"
-linkTitle: "IoT"
 tags: ["Base"]
-description: >
-  Get started with AWS IoT on LocalStack
+description: Get started with AWS IoT on LocalStack
 ---
 
 ## Introduction
@@ -12,7 +10,7 @@ AWS IoT provides cloud services to manage IoT devices and integrate them with ot
 
 LocalStack supports IoT Core, IoT Data, IoT Analytics.
 Common operations for creating and updating things, groups, policies, certificates and other entities are implemented with full CloudFormation support.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_iot" >}}).
+The supported APIs are available on our [API coverage page]().
 
 LocalStack ships a [Message Queuing Telemetry Transport (MQTT)](https://mqtt.org/) broker powered by [Eclipse Mosquitto](https://mosquitto.org/) which supports both pure MQTT and MQTT-over-WSS (WebSockets Secure) protocols.
 
@@ -24,42 +22,45 @@ Start LocalStack using your preferred method.
 
 To retrieve the MQTT endpoint, use the [`DescribeEndpoint`](https://docs.aws.amazon.com/iot/latest/apireference/API_DescribeEndpoint.html) operation.
 
-{{< command >}}
-$ awslocal iot describe-endpoint
-<disable-copy>
+```bash
+awslocal iot describe-endpoint
+```
+
+You can see an output similar to the following:
+
+```bash
 {
     "endpointAddress": "000000000000.iot.eu-central-1.localhost.localstack.cloud:4510"
 }
-</disable-copy>
-{{< / command >}}
+```
 
-{{< callout "tip" >}}
+:::note
 LocalStack lazy-loads services by default.
 The MQTT broker may not be automatically available on a fresh launch of LocalStack.
 You can make a `DescribeEndpoint` call to start the broker and identify the port.
-{{< /callout >}}
+:::
 
 This endpoint can then be used with any MQTT client to publish and subscribe to topics.
 In this example, we will use the [Hive MQTT CLI](https://hivemq.github.io/mqtt-cli/docs/installation/).
 
 Run the following command to subscribe to an MQTT topic.
 
-{{< command >}}
-$ mqtt subscribe \
+```bash
+mqtt subscribe \
         --host 000000000000.iot.eu-central-1.localhost.localstack.cloud \
         --port 4510 \
         --topic climate
-{{< /command >}}
+```
 
 In a separate terminal session, publish a message to this topic.
 
-{{< command >}}
-$ mqtt publish \
+```bash
+mqtt publish \
         --host 000000000000.iot.eu-central-1.localhost.localstack.cloud \
         --port 4510 \
         --topic climate \
         -m "temperature=30°C;humidity=60%"
-{{< /command >}}
+```
 
 This message will be pushed to all subscribers of this topic, including the one in the first terminal session.
 
@@ -68,10 +69,10 @@ This message will be pushed to all subscribers of this topic, including the one 
 LocalStack IoT maintains its own root certificate authority which is regenerated at every run.
 The root CA certificate can be retrieved from <http://localhost.localstack.cloud:4566/_aws/iot/LocalStackIoTRootCA.pem>.
 
-{{< callout "tip" >}}
+:::note
 AWS provides its root CA certificate at <https://www.amazontrust.com/repository/AmazonRootCA1.pem>.
 [This section](https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html#server-authentication-certs) contains information about CA certificates.
-{{< /callout >}}
+:::
 
 When connecting to the endpoints, you will need to provide this root CA certificate for authentication.
 This is illustrated below with Python [AWS IoT SDK](https://docs.aws.amazon.com/iot/latest/developerguide/iot-sdks.html),
@@ -168,10 +169,10 @@ Currently the `principalIdentifier` and `sessionIdentifier` fields in event payl
 
 LocalStack can publish the [registry events](https://docs.aws.amazon.com/iot/latest/developerguide/registry-events.html), if [you enable it](https://docs.aws.amazon.com/iot/latest/developerguide/iot-events.html#iot-events-enable).
 
-{{< command >}}
-$ awslocal iot update-event-configurations \
-        --event-configurations '{"THING":{"Enabled": true}}'
-{{< / command >}}
+```bash
+awslocal iot update-event-configurations \
+    --event-configurations '{"THING":{"Enabled": true}}'
+```
 
 You can then subscribe or use topic rules on the follow topics:
 

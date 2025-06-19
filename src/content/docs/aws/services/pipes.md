@@ -1,6 +1,5 @@
 ---
 title: "EventBridge Pipes"
-linkTitle: "EventBridge Pipes"
 description: Get started with EventBridge Pipes on LocalStack
 tags: ["Free"]
 persistence: supported with limitations
@@ -16,12 +15,12 @@ In contrast, EventBridge Event Bus offers a one-to-many integration where an eve
 LocalStack allows you to use the Pipes APIs in your local environment to create Pipes with SQS queues and Kinesis streams as source and target.
 You can also filter events using EventBridge event patterns and enrich events using Lambda.
 
-The supported APIs are available on our [API coverage page]({{< ref "coverage_pipes" >}}), which provides information on the extent of Pipe's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Pipe's integration with LocalStack.
 
-{{< callout >}}
+:::note
 The implementation of EventBridge Pipes is currently in **preview** stage and under active development.
 If you would like support for more APIs or report bugs, please make an issue on [GitHub](https://github.com/localstack/localstack/issues/new/choose).
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -35,29 +34,29 @@ We will demonstrate how to create a Pipe with SQS queues as source and target, a
 Create two SQS queues that will be used as source and target for the Pipe.
 Run the following command to create a queue using the [`CreateQueue`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_CreateQueue.html) API:
 
-{{< command >}}
-$ awslocal sqs create-queue --queue-name source-queue
-$ awslocal sqs create-queue --queue-name target-queue
-{{< /command >}}
+```bash
+awslocal sqs create-queue --queue-name source-queue
+awslocal sqs create-queue --queue-name target-queue
+```
 
 You can fetch their queue ARNs using the [`GetQueueAttributes`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_GetQueueAttributes.html) API:
 
-{{< command >}}
-$ SOURCE_QUEUE_ARN=$(awslocal sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/source-queue --attribute-names QueueArn --output text)
-$ TARGET_QUEUE_ARN=$(awslocal sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/target-queue --attribute-names QueueArn --output text)
-{{< /command >}}
+```bash
+SOURCE_QUEUE_ARN=$(awslocal sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/source-queue --attribute-names QueueArn --output text)
+TARGET_QUEUE_ARN=$(awslocal sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/target-queue --attribute-names QueueArn --output text)
+```
 
 ### Create a Pipe
 
 You can now create a Pipe, using the [`CreatePipe`](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_CreatePipe.html) API.
 Run the following command, by specifying the source and target queue ARNs we created earlier:
 
-{{< command >}}
-$ awslocal pipes create-pipe --name sample-pipe \
+```bash
+awslocal pipes create-pipe --name sample-pipe \
         --source $SOURCE_QUEUE_ARN \
         --target $TARGET_QUEUE_ARN \
         --role-arn arn:aws:iam::000000000000:role/pipes-role
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -76,9 +75,9 @@ The following output would be retrieved:
 
 You can use the [`DescribePipe`](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_DescribePipe.html) API to get information about the Pipe:
 
-{{< command >}}
-$ awslocal pipes describe-pipe --name sample-pipe
-{{< /command >}}
+```bash
+awslocal pipes describe-pipe --name sample-pipe
+```
 
 The following output would be retrieved:
 
@@ -110,29 +109,27 @@ The following output would be retrieved:
 You can now send events to the source queue, which will be routed to the target queue.
 Run the following command to send an event to the source queue:
 
-{{< command >}}
-$ awslocal sqs send-message \
+```bash
+awslocal sqs send-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/source-queue \
     --message-body "message-1"
-{{< /command >}}
+```
 
 ### Receive events from the target queue
 
 You can fetch the message from the target queue using the [`ReceiveMessage`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html) API:
 
-{{< command >}}
-$ awslocal sqs receive-message \
+```bash
+awslocal sqs receive-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/target-queue
-{{< /command >}}
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing EventBridge Pipes.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **EventBridge Pipes** under the **App Integration** section.
 
-<img src="pipes-resource-browser.png" alt="EventBridge Pipes Resource Browser" title="EventBridge Pipes Resource Browser" width="900" />
-<br>
-<br>
+![EventBridge Pipes Resource Browser](/images/aws/pipes-resource-browser.png)
 
 The Resource Browser for EventBridge Pipes in LocalStack allows you to perform the following actions:
 

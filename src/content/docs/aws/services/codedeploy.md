@@ -1,8 +1,6 @@
 ---
 title: CodeDeploy
-linkTitle: CodeDeploy
-description: >
-  Get started with CodeDeploy on LocalStack
+description: Get started with CodeDeploy on LocalStack
 tags: ["Ultimate"]
 ---
 
@@ -13,7 +11,7 @@ On AWS, it supports deployments to Amazon EC2 instances, on-premises instances, 
 Furthermore, based on the target it is also possible to use an in-place deployment or a blue/green deployment.
 
 LocalStack supports a mocking of CodeDeploy API operations.
-The supported operations are listed on the [API coverage page]({{< ref "coverage_codedeploy" >}}).
+The supported operations are listed on the [API coverage page]().
 
 ## Getting Started
 
@@ -28,20 +26,27 @@ Start LocalStack using your preferred method.
 An application is a CodeDeploy construct that uniquely identifies your targetted application.
 Create an application with the [CreateApplication](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateApplication.html) operation:
 
-{{< command >}}
-$ awslocal deploy create-application --application-name hello --compute-platform Server
-<disable-copy>
+```bash
+awslocal deploy create-application --application-name hello --compute-platform Server
+```
+
+The output will be similar to the following:
+
+```json
 {
     "applicationId": "063714b6-f438-4b90-bacb-ce04af7f5e83"
 }
-</disable-copy>
-{{< /command >}}
+```
 
 Make note of the application name, which can be used with other operations such as [GetApplication](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetApplication.html), [UpdateApplication](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_UpdateApplication.html) and [DeleteApplication](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_DeleteApplication.html).
 
-{{< command >}}
-$ awslocal deploy get-application --application-name hello
-<disable-copy>
+```bash
+awslocal deploy get-application --application-name hello
+```
+
+The output will be similar to the following:
+
+```json
 {
     "application": {
         "applicationId": "063714b6-f438-4b90-bacb-ce04af7f5e83",
@@ -50,21 +55,23 @@ $ awslocal deploy get-application --application-name hello
         "computePlatform": "Server"
     }
 }
-</disable-copy>
-{{< /command >}}
+```
 
 You can list all application using [ListApplications](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListApplications.html).
 
-{{< command >}}
-$ awslocal deploy list-applications
-<disable-copy>
+```bash
+awslocal deploy list-applications
+```
+
+The output will be similar to the following:
+
+```json
 {
     "applications": [
         "hello"
     ]
 }
-</disable-copy>
-{{< /command >}}
+```
 
 ### Deployment configuration
 
@@ -72,35 +79,45 @@ A deployment configuration consists of rules for deployment along with success a
 
 Create a deployment configuration using [CreateDeploymentConfig](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeploymentConfig.html):
 
-{{< command >}}
-$ awslocal deploy create-deployment-config --deployment-config-name hello-conf \
+```bash
+awslocal deploy create-deployment-config --deployment-config-name hello-conf \
     --compute-platform Server  \
     --minimum-healthy-hosts '{"type": "HOST_COUNT", "value": 1}'
-<disable-copy>
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deploymentConfigId": "0327ce0a-4637-4884-8899-49af7b9423b6"
 }
-</disable-copy>
-{{< /command >}}
+```
 
 [ListDeploymentConfigs](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeploymentConfigs.html) can be used to list all available configs:
 
-{{< command >}}
-$ awslocal deploy list-deployment-configs
-<disable-copy>
+```bash
+awslocal deploy list-deployment-configs
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deploymentConfigsList": [
         "hello-conf"
     ]
 }
-</disable-copy>
-{{< /command >}}
+```
 
 Use [GetDeploymentConfig](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeploymentConfig.html) and [DeleteDeploymentConfig](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_DeleteDeploymentConfig.html) to manage deployment configurations.
 
-{{< command >}}
-$ awslocal deploy get-deployment-config --deployment-config-name hello-conf
-<disable-copy>
+```bash
+awslocal deploy get-deployment-config --deployment-config-name hello-conf
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deploymentConfigInfo": {
         "deploymentConfigId": "0327ce0a-4637-4884-8899-49af7b9423b6",
@@ -113,40 +130,61 @@ $ awslocal deploy get-deployment-config --deployment-config-name hello-conf
         "computePlatform": "Server"
     }
 }
-</disable-copy>
-{{< /command >}}
+```
 
 ### Deployment groups
 
-Deployment groups can be managed with [CreateDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeploymentGroup.html), [ListDeploymentGroups](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeploymentGroups.html), [UpdateDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_UpdateDeploymentGroup.html), [GetDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeploymentGroup.html) and [DeleteDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_DeleteDeploymentGroup.html).
+Deployment groups can be managed with:
 
-{{< command >}}
-$ awslocal deploy create-deployment-group \
+- [CreateDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeploymentGroup.html)
+- [ListDeploymentGroups](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeploymentGroups.html)
+- [UpdateDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_UpdateDeploymentGroup.html)
+- [GetDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeploymentGroup.html)
+- [DeleteDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_DeleteDeploymentGroup.html)
+
+Create a deployment group with [CreateDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeploymentGroup.html):
+
+```bash
+awslocal deploy create-deployment-group \
     --application-name hello \
     --service-role-arn arn:aws:iam::000000000000:role/role \
     --deployment-group-name hello-group
-<disable-copy>
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deploymentGroupId": "09506586-9ba9-4005-a1be-840407abb39d"
 }
-</disable-copy>
-{{< /command >}}
+```
 
-{{< command >}}
-$ awslocal deploy list-deployment-groups --application-name hello
-<disable-copy>
+List all deployment groups for an application with [ListDeploymentGroups](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeploymentGroups.html):
+
+```bash
+awslocal deploy list-deployment-groups --application-name hello
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deploymentGroups": [
         "hello-group"
     ]
 }
-</disable-copy>
-{{< /command >}}
+```
 
-{{< command >}}
-$ awslocal deploy get-deployment-group --application-name hello \
+Get a deployment group with [GetDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeploymentGroup.html):
+
+```bash
+awslocal deploy get-deployment-group --application-name hello \
     --deployment-group-name hello-group
-<disable-copy>
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deploymentGroupInfo": {
         "applicationName": "hello",
@@ -165,39 +203,58 @@ $ awslocal deploy get-deployment-group --application-name hello \
         "terminationHookEnabled": false
     }
 }
-</disable-copy>
-{{< /command >}}
+```
 
 ### Deployments
 
-Operations related to deployment management are: [CreateDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html), [GetDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeployment.html), [ListDeployments](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeployments.html).
+Operations related to deployment management are:
 
-{{< command >}}
-$ awslocal deploy create-deployment \
+- [CreateDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html)
+- [GetDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeployment.html)
+- [ListDeployments](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeployments.html)
+
+Create a deployment with [CreateDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html):
+
+```bash
+awslocal deploy create-deployment \
     --application-name hello \
     --deployment-group-name hello-group \
     --revision '{"revisionType": "S3", "s3Location": {"bucket": "placeholder", "key": "placeholder", "bundleType": "tar"}}'
-<disable-copy>
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deploymentId": "d-TU3TNCSTO"
 }
-</disable-copy>
-{{< /command >}}
+```
 
-{{< command >}}
-$ awslocal deploy list-deployments
-<disable-copy>
+List all deployments for an application with [ListDeployments](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeployments.html):
+
+```bash
+awslocal deploy list-deployments
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deployments": [
         "d-TU3TNCSTO"
     ]
 }
-</disable-copy>
-{{< /command >}}
+```
 
-{{< command >}}
-$ awslocal deploy get-deployment --deployment-id d-TU3TNCSTO
-<disable-copy>
+Get a deployment with [GetDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeployment.html):
+
+```bash
+awslocal deploy get-deployment --deployment-id d-TU3TNCSTO
+```
+
+The output will be similar to the following:
+
+```json
 {
     "deploymentInfo": {
         "applicationName": "hello",
@@ -227,24 +284,30 @@ $ awslocal deploy get-deployment --deployment-id d-TU3TNCSTO
         "computePlatform": "Server"
     }
 }
-</disable-copy>
-{{< /command >}}
+```
 
-Furthermore, [ContinueDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_StopDeployment.html) and [StopDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_StopDeployment.html) can be used to control the deployment flows.
+Furthermore, [ContinueDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_StopDeployment.html) and [StopDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_StopDeployment.html) can be used to control the deployment flows:
 
-{{< command >}}
-$ awslocal deploy continue-deployment --deployment-id d-TU3TNCSTO
-{{< /command >}}
+Continue a deployment with [ContinueDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_StopDeployment.html):
 
-{{< command >}}
-$ awslocal deploy stop-deployment --deployment-id d-TU3TNCSTO
-<disable-copy>
+```bash
+awslocal deploy continue-deployment --deployment-id d-TU3TNCSTO
+```
+
+Stop a deployment with [StopDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_StopDeployment.html):
+
+```bash
+awslocal deploy stop-deployment --deployment-id d-TU3TNCSTO
+```
+
+The output will be similar to the following:
+
+```json
 {
     "status": "Succeeded",
     "statusMessage": "Mock deployment stopped"
 }
-</disable-copy>
-{{< /command >}}
+```
 
 ## Limitations
 

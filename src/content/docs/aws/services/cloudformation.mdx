@@ -1,10 +1,11 @@
 ---
 title: "CloudFormation"
-linkTitle: "CloudFormation"
 description: Get started with Cloudformation on LocalStack
 persistence: supported with limitations
 tags: ["Free"]
 ---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -14,7 +15,7 @@ With CloudFormation, you can use JSON or YAML templates to define your desired i
 You can specify resources, their configurations, dependencies, and relationships in these templates.
 
 LocalStack supports CloudFormation, allowing you to use the CloudFormation APIs in your local environment to declaratively define your architecture on the AWS, including resources such as S3 Buckets, Lambda Functions, and much more.
-The [API coverage page]({{< ref "coverage_cloudformation" >}}) and [feature coverage](#feature-coverage) provides information on the extent of CloudFormation's integration with LocalStack.
+The [API coverage page]() and [feature coverage](#feature-coverage) provides information on the extent of CloudFormation's integration with LocalStack.
 
 ## Getting started
 
@@ -29,15 +30,18 @@ CloudFormation stack is a collection of AWS resources that you can create, updat
 Stacks are defined using JSON or YAML templates.
 Use the following code snippet and save the content in either `cfn-quickstart-stack.yaml` or `cfn-quickstart-stack.json`, depending on your preferred format.
 
-{{< tabpane >}}
-{{< tab header="YAML" lang="yaml" >}}
+<Tabs>
+<TabItem label="YAML">
+```yaml
 Resources:
   LocalBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: cfn-quickstart-bucket
-{{< /tab >}}
-{{< tab header="JSON" lang="json" >}}
+```
+</TabItem>
+<TabItem label="JSON">
+```json
 {
   "Resources": {
     "LocalBucket": {
@@ -48,8 +52,9 @@ Resources:
     }
   }
 }
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ### Deploy the CloudFormation Stack
 
@@ -57,36 +62,35 @@ You can deploy the CloudFormation stack using the AWS CLI with the [`deploy`](ht
 The `deploy` command creates and updates CloudFormation stacks.
 Run the following command to deploy the stack:
 
-{{< command >}}
-$ awslocal cloudformation deploy \
+```bash
+awslocal cloudformation deploy \
     --stack-name cfn-quickstart-stack \
     --template-file "./cfn-quickstart-stack.yaml"
-{{< / command >}}
+```
 
 You can verify that the stack was created successfully by listing the S3 buckets in your LocalStack container using the [`ListBucket` API](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-buckets.html).
 Run the following command to list the buckets:
 
-{{< command >}}
-$ awslocal s3api list-buckets
-{{< / command >}}
+```bash
+awslocal s3api list-buckets
+```
 
 ### Delete the CloudFormation Stack
 
 You can delete the CloudFormation stack using the [`delete-stack`](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/delete-stack.html) command.
 Run the following command to delete the stack along with all the resources created by the stack:
 
-{{< command >}}
-$ awslocal cloudformation delete-stack \
+```bash
+awslocal cloudformation delete-stack \
     --stack-name cfn-quickstart-stack
-{{< / command >}}
+```
 
 ## Local User-Interface
 
 You can also utilize LocalStack's local CloudFormation user-interface to deploy and manage your CloudFormation stacks using public templates.
 You can access the user-interface at [`localhost:4566/_localstack/cloudformation/deploy`](http://localhost:4566/_localstack/cloudformation/deploy).
 
-<img src="localstack-cloudformation-local-user-interface.png" alt="Local CloudFormation UI in LocalStack" title="Local CloudFormation UI in LocalStack" width="900" />
-<br><br>
+![Local CloudFormation UI in LocalStack](/images/aws/localstack-cloudformation-local-user-interface.png)
 
 You can utilize the CloudFormation user interface to provide an existing CloudFormation template URL, input the necessary parameters, and initiate the deployment directly from your browser.
 Let's proceed with an example template to deploy a CloudFormation stack.
@@ -101,7 +105,7 @@ Upon submission, the stack deployment will be triggered, and a result message wi
 The LocalStack Web Application provides a Resource Browser for managing CloudFormation stacks to manage your AWS resources locally.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **CloudFormation** under the **Management/Governance** section.
 
-<img src="cloudformation-resource-browser.png" alt="CloudFormation Resource Browser" title="CloudFormation Resource Browser" width="900" />
+![CloudFormation Resource Browser](/images/aws/cloudformation-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 
@@ -115,16 +119,16 @@ The Resource Browser allows you to perform the following actions:
 The following code snippets and sample applications provide practical examples of how to use CloudFormation in LocalStack for various use cases:
 
 - [Serverless Container-based APIs with Amazon ECS & API Gateway](https://github.com/localstack/serverless-api-ecs-apigateway-sample)
-- [Deploying containers on ECS clusters using ECR and Fargate]({{< ref "/tutorials/ecs-ecr-container-app" >}})
+- [Deploying containers on ECS clusters using ECR and Fargate]()
 - [Messaging Processing application with SQS, DynamoDB, and Fargate](https://github.com/localstack/sqs-fargate-ddb-cdk-go)
 
 ## Feature coverage
 
-{{< callout "tip" >}}
+:::note
 We are continually enhancing our CloudFormation feature coverage by consistently introducing new resource types.
 Your feature requests assist us in determining the priority of resource additions.
 Feel free to contribute by [creating a new GitHub issue](https://github.com/localstack/localstack/issues/new?assignees=&labels=feature-request&template=feature-request.yml&title=feature+request%3A+%3Ctitle%3E).
-{{< /callout >}}
+:::
 
 ### Features
 
@@ -145,17 +149,17 @@ Feel free to contribute by [creating a new GitHub issue](https://github.com/loca
 | StackSets           | Partial                                         |
 | Intrinsic Functions | Partial                                         |
 
-{{< callout >}}
+:::note
 Currently, support for `UPDATE` operations on resources is limited.
 Prefer stack re-creation over stack update at this time.
-{{< /callout >}}
+:::
 
-{{< callout >}}
+:::note
 Currently, support for `NoEcho` parameters is limited.
 Parameters will be masked only in the `Parameters` section of responses to `DescribeStacks` and `DescribeChangeSets` requests.
 This might expose sensitive information.
 Please exercise caution when using parameters with `NoEcho`.
-{{< /callout >}}
+:::
 
 ### Intrinsic Functions
 
@@ -179,9 +183,9 @@ Please exercise caution when using parameters with `NoEcho`.
 
 ### Resources
 
-{{< callout >}}
+:::note
 When utilizing the Community image, any resources within the stack that are not supported will be disregarded and won't be deployed.
-{{< /callout >}}
+:::
 
 #### Community image
 

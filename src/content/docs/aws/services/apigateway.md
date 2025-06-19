@@ -1,6 +1,5 @@
 ---
 title: "API Gateway"
-linkTitle: "API Gateway"
 description: Get started with API Gateway on LocalStack
 tags: ["Free", "Base"]
 persistence: supported
@@ -15,7 +14,7 @@ API Gateway supports standard HTTP methods such as `GET`, `POST`, `PUT`, `PATCH`
 LocalStack supports API Gateway V1 (REST API) in the Free plan, and API Gateway V2 (HTTP, Management and WebSocket API) in the Base plan.
 LocalStack allows you to use the API Gateway APIs to create, deploy, and manage APIs on your local machine to invoke those exposed API endpoints.
 
-The supported APIs are available on the API coverage page for [API Gateway V1]({{< ref "coverage_apigateway" >}}) & [API Gateway V2]({{< ref "coverage_apigatewayv2" >}}), which provides information on the extent of API Gateway's integration with LocalStack.
+The supported APIs are available on the API coverage page for [API Gateway V1]() & [API Gateway V2](), which provides information on the extent of API Gateway's integration with LocalStack.
 
 ## Getting started
 
@@ -50,16 +49,16 @@ The above code defines a function named `apiHandler` that returns a response wit
 Zip the file and upload it to LocalStack using the `awslocal` CLI.
 Run the following command:
 
-{{< command >}}
-$ zip function.zip lambda.js
-$ awslocal lambda create-function \
+```bash
+zip function.zip lambda.js
+awslocal lambda create-function \
   --function-name apigw-lambda \
   --runtime nodejs16.x \
   --handler lambda.apiHandler \
   --memory-size 128 \
   --zip-file fileb://function.zip \
   --role arn:aws:iam::111111111111:role/apigw
-{{< /command >}}
+```
 
 This creates a new Lambda function named `apigw-lambda` with the code you specified.
 
@@ -68,9 +67,9 @@ This creates a new Lambda function named `apigw-lambda` with the code you specif
 We will use the API Gateway's [`CreateRestApi`](https://docs.aws.amazon.com/apigateway/latest/api/API_CreateRestApi.html) API to create a new REST API.
 Here's an example command:
 
-{{< command >}}
-$ awslocal apigateway create-rest-api --name 'API Gateway Lambda integration'
-{{< /command >}}
+```bash
+awslocal apigateway create-rest-api --name 'API Gateway Lambda integration'
+```
 
 This creates a new REST API named `API Gateway Lambda integration`.
 The above command returns the following response:
@@ -97,9 +96,9 @@ You'll need this ID for the next step.
 
 Use the REST API ID generated in the previous step to fetch the resources for the API, using the [`GetResources`](https://docs.aws.amazon.com/apigateway/latest/api/API_GetResources.html) API:
 
-{{< command >}}
-$ awslocal apigateway get-resources --rest-api-id <REST_API_ID>
-{{< /command >}}
+```bash
+awslocal apigateway get-resources --rest-api-id <REST_API_ID>
+```
 
 The above command returns the following response:
 
@@ -122,12 +121,12 @@ You'll need this ID for the next step.
 Create a new resource for the API using the [`CreateResource`](https://docs.aws.amazon.com/apigateway/latest/api/API_CreateResource.html) API.
 Use the ID of the resource returned in the previous step as the parent ID:
 
-{{< command >}}
-$ awslocal apigateway create-resource \
+```bash
+awslocal apigateway create-resource \
   --rest-api-id <REST_API_ID> \
   --parent-id <PARENT_ID> \
   --path-part "{somethingId}"
-{{< /command >}}
+```
 
 The above command returns the following response:
 
@@ -148,14 +147,14 @@ You'll need this Resource ID for the next step.
 Add a `GET` method to the resource using the [`PutMethod`](https://docs.aws.amazon.com/apigateway/latest/api/API_PutMethod.html) API.
 Use the ID of the resource returned in the previous step as the Resource ID:
 
-{{< command >}}
+```bash
 awslocal apigateway put-method \
   --rest-api-id <REST_API_ID> \
   --resource-id <RESOURCE_ID> \
   --http-method GET \
   --request-parameters "method.request.path.somethingId=true" \
   --authorization-type "NONE"
-{{< /command >}}
+```
 
 The above command returns the following response:
 
@@ -172,8 +171,8 @@ The above command returns the following response:
 
 Now, create a new integration for the method using the [`PutIntegration`](https://docs.aws.amazon.com/apigateway/latest/api/API_PutIntegration.html) API.
 
-{{< command >}}
-$ awslocal apigateway put-integration \
+```bash
+awslocal apigateway put-integration \
   --rest-api-id <REST_API_ID> \
   --resource-id <RESOURCE_ID> \
   --http-method GET \
@@ -181,7 +180,7 @@ $ awslocal apigateway put-integration \
   --integration-http-method POST \
   --uri arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000000:function:apigw-lambda/invocations \
   --passthrough-behavior WHEN_NO_MATCH
-{{< /command >}}
+```
 
 The above command integrates the `GET` method with the Lambda function created in the first step.
 We can now proceed with the deployment before invoking the API.
@@ -190,37 +189,46 @@ We can now proceed with the deployment before invoking the API.
 
 Create a new deployment for the API using the [`CreateDeployment`](https://docs.aws.amazon.com/apigateway/latest/api/API_CreateDeployment.html) API:
 
-{{< command >}}
-$ awslocal apigateway create-deployment \
+```bash
+awslocal apigateway create-deployment \
   --rest-api-id <REST_API_ID> \
   --stage-name dev
-{{< /command >}}
+```
 
 Your API is now ready to be invoked.
 You can use [curl](https://curl.se/) or any HTTP REST client to invoke the API endpoint:
 
-{{< command >}}
-$ curl -X GET http://<REST_API_ID>.execute-api.localhost.localstack.cloud:4566/dev/test
+```bash
+curl -X GET http://<REST_API_ID>.execute-api.localhost.localstack.cloud:4566/dev/test
+```
 
+The response would be:
+
+```json
 {"message":"Hello World"}
-{{< /command >}}
+```
 
-You can also use our [alternative URL format]({{< ref "#alternative-url-format" >}})  in case of DNS issues:
-{{< command >}}
-$ curl -X GET http://localhost:4566/_aws/execute-api/<REST_API_ID>/dev/test
+You can also use our [alternative URL format](#alternative-url-format) in case of DNS issues:
 
+```bash
+curl -X GET http://localhost:4566/_aws/execute-api/<REST_API_ID>/dev/test
+```
+
+The response would be:
+
+```json
 {"message":"Hello World"}
-{{< /command >}}
+```
 
 ## New API Gateway implementation
 
-{{< callout >}}
+:::note
 The new API Gateway implementation for both v1 (REST API) and v2 (HTTP API), introduced in [LocalStack 3.8.0](https://blog.localstack.cloud/localstack-release-v-3-8-0/#new-api-gateway-provider), is now the default in 4.0.
 If you were using the `PROVIDER_OVERRIDE_APIGATEWAY=next_gen` flag, please remove it as it is no longer required.
 
 The legacy provider (`PROVIDER_OVERRIDE_APIGATEWAY=legacy`) is temporarily available but deprecated and will be removed in the next major release.
 We strongly recommend migrating to the new implementation.
-{{< /callout >}}
+:::
 
 We're entirely reworked how REST and HTTP APIs are invoked, to closely match the behavior on AWS.
 This new implementation has improved parity on several key areas:
@@ -320,15 +328,13 @@ http://localhost:4566/_aws/execute-api/0v1p6q6/local/my/path1
 
 This format is sometimes used in case of local DNS issues.
 
-{{< callout >}}
-
+:::note
 If you are using LocalStack 4.0, the following `_user_request_` format is deprecated, and you should use the format above.
 
 ```shell
 http://localhost:4566/restapis/<apiId>/<stageName>/_user_request_/<path>
 ```
-
-{{< / callout >}}
+:::
 
 ### WebSocket APIs (Pro)
 
@@ -350,8 +356,13 @@ functions:
 Upon deployment of the Serverless project, LocalStack creates a new API Gateway V2 endpoint.
 To retrieve the list of APIs and verify the WebSocket endpoint, you can use the `awslocal` CLI:
 
-{{< command >}}
-$ awslocal apigatewayv2 get-apis
+```bash
+awslocal apigatewayv2 get-apis
+```
+
+The response would be:
+
+```json
 {
     "Items": [{
         "ApiEndpoint": "ws://localhost:4510",
@@ -359,7 +370,7 @@ $ awslocal apigatewayv2 get-apis
         ...
     }]
 }
-{{< / command >}}
+```
 
 In the above example, the WebSocket endpoint is `ws://localhost:4510`.
 Assuming your Serverless project contains a simple Lambda `handler.js` like this:
@@ -375,12 +386,12 @@ You can send a message to the WebSocket at `ws://localhost:4510` and the same me
 To push data from a backend service to the WebSocket connection, you can use the [Amazon API Gateway Management API](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/apigatewaymanagementapi/index.html).
 In LocalStack, use the following CLI command (replace `<connectionId>` with your WebSocket connection ID):
 
-{{< command >}}
-$ awslocal apigatewaymanagementapi \
+```bash
+awslocal apigatewaymanagementapi \
   post-to-connection \
   --connection-id '<connectionId>' \
   --data '{"msg": "Hi"}'
-{{< / command >}}
+```
 
 ## Custom IDs for API Gateway resources via tags
 
@@ -390,18 +401,23 @@ This can be useful to ensure a static endpoint URL for your API, simplifying tes
 To assign a custom ID to an API Gateway REST API, use the `create-rest-api` command with the `tags={"_custom_id_":"myid123"}` parameter.
 The following example assigns the custom ID `"myid123"` to the API:
 
-{{< command >}}
-$ awslocal apigateway create-rest-api --name my-api --tags '{"_custom_id_":"myid123"}'
+```bash
+awslocal apigateway create-rest-api --name my-api --tags '{"_custom_id_":"myid123"}'
+```
+
+The response would be:
+
+```json
 {
     "id": "myid123",
     ....
 }
-{{< / command >}}
+```
 
 You can also configure the protocol type, the possible values being `HTTP` and `WEBSOCKET`:
 
-{{< command >}}
-$ awslocal apigatewayv2 create-api \
+```bash
+awslocal apigatewayv2 create-api \
   --name=my-api \
   --protocol-type=HTTP --tags="_custom_id_=my-api"
 {
@@ -413,12 +429,12 @@ $ awslocal apigatewayv2 create-api \
         "_custom_id_": "my-api"
     }
 }
-{{< / command >}}
+```
 
-{{< callout >}}
+:::note
 Setting the API Gateway ID via `_custom_id_` works only on the creation of the resource, but not on update in LocalStack.
 Ensure that you set the `_custom_id_` tag on creation of the resource.
-{{< /callout >}}
+:::
 
 ## Custom Domain Names with API Gateway (Pro)
 
@@ -430,14 +446,15 @@ Assuming your custom domain is set up as `test.example.com` to point to your RES
 
 You should include the `Host` header with the custom domain name in your request, so you don't need to set up any custom DNS to resolve to LocalStack.
 
-{{< command >}}
-$ curl -H 'Host: test.example.com' http://localhost:4566/base-path
-{{< / command >}}
+```bash
+curl -H 'Host: test.example.com' http://localhost:4566/base-path
+```
 
 The request above will be equivalent to the following request:
-{{< command >}}
-$ curl http://<your-api-id>.execute-api.localhost.localstack.cloud:4566/dev/
-{{< / command >}}
+
+```bash
+curl http://<your-api-id>.execute-api.localhost.localstack.cloud:4566/dev/
+```
 
 ## API Gateway Resource Browser
 
@@ -447,7 +464,7 @@ You can access the Resource Browser by opening the LocalStack Web Application in
 The Resource Browser displays [API Gateway V1](https://app.localstack.cloud/resources/gateway/v1) and [API Gateway V2](https://app.localstack.cloud/resources/gateway/v2) resources.
 You can click on individual resources to view their details.
 
-<img src="api-gateway-resource-browser.png" alt="API Gateway Resource Browser" title="API Gateway Resource Browser" width="900" />
+![API Gateway Resource Browser](/images/aws/api-gateway-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

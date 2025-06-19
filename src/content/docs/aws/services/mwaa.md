@@ -1,8 +1,6 @@
 ---
 title: "Managed Workflows for Apache Airflow (MWAA)"
-linkTitle: "Managed Workflows for Apache Airflow (MWAA)"
-description: >
-    Get started with Managed Workflows for Apache Airflow (MWAA) on LocalStack
+description: Get started with Managed Workflows for Apache Airflow (MWAA) on LocalStack
 tags: ["Ultimate"]
 ---
 
@@ -12,7 +10,7 @@ Managed Workflows for Apache Airflow (MWAA) is a fully managed service by AWS th
 MWAA leverages the familiar Airflow features and integrations while integrating with S3, Glue, Redshift, Lambda, and other AWS services to build data pipelines and orchestrate data processing workflows in the cloud.
 
 LocalStack allows you to use the MWAA APIs in your local environment to allow the setup and operation of data pipelines.
-The supported APIs are available on the [API coverage page]({{< ref "coverage_mwaa" >}}).
+The supported APIs are available on the [API coverage page]().
 
 ## Getting started
 
@@ -26,34 +24,34 @@ We will demonstrate how to create an Airflow environment and access the Airflow 
 Create a S3 bucket that will be used for Airflow resources.
 Run the following command to create a bucket using the [`mb`](https://docs.aws.amazon.com/cli/latest/reference/s3/mb.html) command.
 
-{{< command >}}
-$ awslocal s3 mb s3://my-mwaa-bucket
-{{< /command >}}
+```bash
+awslocal s3 mb s3://my-mwaa-bucket
+```
 
 ### Create an Airflow environment
 
 You can now create an Airflow environment, using the [`CreateEnvironment`](https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html) API.
 Run the following command, by specifying the bucket ARN we created earlier:
 
-{{< command >}}
-$ awslocal mwaa create-environment --dag-s3-path /dags \
+```bash
+awslocal mwaa create-environment --dag-s3-path /dags \
         --execution-role-arn arn:aws:iam::000000000000:role/airflow-role \
         --network-configuration {} \
         --source-bucket-arn arn:aws:s3:::my-mwaa-bucket \
         --airflow-version 2.10.1 \
         --airflow-configuration-options agent.code=007,agent.name=bond \
         --name my-mwaa-env
-{{< /command >}}
+```
 
 ### Access the Airflow UI
 
 The Airflow UI can be accessed via the URL in the `WebserverUrl` attribute of the response of the `GetEnvironment` operation.
 The username and password are always set to `localstack`.
 
-{{< command >}}
-$ awslocal mwaa get-environment --name my-mwaa-env --query Environment.WebserverUrl
+```bash
+awslocal mwaa get-environment --name my-mwaa-env --query Environment.WebserverUrl
 "http://localhost.localstack.cloud:4510"
-{{< /command >}}
+```
 
 LocalStack also prints this information in the logs:
 
@@ -91,12 +89,12 @@ Just upload your DAGs to the designated S3 bucket path, configured by the `DagS3
 
 For example, the command below uploads a sample DAG named `sample_dag.py` to your S3 bucket named `my-mwaa-bucket`:
 
-{{< command >}}
-$ awslocal s3 cp sample_dag.py s3://my-mwaa-bucket/dags
-{{< /command >}}
+```bash
+awslocal s3 cp sample_dag.py s3://my-mwaa-bucket/dags
+```
 
 LocalStack syncs new and changed objects in the S3 bucket to the Airflow container every 30 seconds.
-The polling interval can be changed using the [`MWAA_S3_POLL_INTERVAL`]({{< ref "configuration#mwaa" >}}) config option.
+The polling interval can be changed using the [`MWAA_S3_POLL_INTERVAL`](/aws/capabilities/config/configuration/#mwaa) config option.
 
 ## Installing custom plugins
 
@@ -105,9 +103,9 @@ LocalStack seamlessly supports plugins packaged according to [AWS specifications
 
 To integrate your custom plugins into the MWAA environment, upload the packaged `plugins.zip` file to the designated S3 bucket path:
 
-{{< command >}}
-$ awslocal s3 cp plugins.zip s3://my-mwaa-bucket/plugins.zip
-{{< /command >}}
+```bash
+awslocal s3 cp plugins.zip s3://my-mwaa-bucket/plugins.zip
+```
 
 ## Installing Python dependencies
 
@@ -124,9 +122,9 @@ botocore==1.20.54
 Once you have your `requirements.txt` file ready, upload it to the designated S3 bucket, configured for use by the MWAA environment.
 Make sure to upload the file to `/requirements.txt` in the bucket:
 
-{{< command >}}
-$ awslocal s3 cp requirements.txt s3://my-mwaa-bucket/requirements.txt
-{{< /command >}}
+```bash
+awslocal s3 cp requirements.txt s3://my-mwaa-bucket/requirements.txt
+```
 
 After the upload, the environment will be automatically updated, and your Apache Airflow setup will be equipped with the new dependencies.
 It is important to note that, unlike [AWS](https://docs.aws.amazon.com/mwaa/latest/userguide/connections-packages.html), LocalStack does not install any provider packages by default.
@@ -143,9 +141,7 @@ This information must be explicitly passed in operators, hooks, and sensors.
 The LocalStack Web Application provides a Resource Browser for managing MWAA Environments.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **MWAA** under the **App Integration** section.
 
-<p>
-<img src="mwaa-resource-browser.png" alt="MWAA Resource Browser" title="MWAA Resource Browser" width="900" />
-</p>
+![MWAA Resource Browser](/images/aws/mwaa-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

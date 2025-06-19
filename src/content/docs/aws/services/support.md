@@ -1,6 +1,5 @@
 ---
 title: "Support"
-linkTitle: "Support"
 description: Get started with Support on LocalStack
 persistence: supported
 tags: ["Free"]
@@ -14,12 +13,12 @@ You can further automate your support workflow using various AWS services, such 
 
 LocalStack allows you to use the Support APIs in your local environment to create and manage new cases, while testing your configurations locally.
 LocalStack provides a mock implementation via a mock Support Center provided by [Moto](https://docs.getmoto.org/en/latest/docs/services/support.html), and does not create real cases in the AWS.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_support" >}}), which provides information on the extent of Support API's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Support API's integration with LocalStack.
 
-{{< callout >}}
-For technical support with LocalStack, you can reach out through our [support channels]({{< ref "help-and-support" >}}).
+:::note
+For technical support with LocalStack, you can reach out through our [support channels](/aws/getting-started/help-support).
 It's important to note that LocalStack doesn't offer a programmatic interface to create support cases, and this documentation is only intended to demonstrate how you can use and mock the AWS Support APIs in your local environment.
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -33,13 +32,13 @@ We will demonstrate how you can create a case in the mock Support Center using t
 To create a support case, you can use the [`CreateCase`](https://docs.aws.amazon.com/goto/WebAPI/support-2013-04-15/CreateCase) API.
 The following example creates a case with the subject "Test case" and the description "This is a test case" in the category "General guidance".
 
-{{< command >}}
-$ awslocal support create-case \
+```bash
+awslocal support create-case \
     --subject "Test case" \
     --service-code "general-guidance" \
     --category-code "general-guidance" \
     --communication-body "This is a test case"
-{{< / command >}}
+```
 
 The following output would be retrieved:
 
@@ -54,9 +53,9 @@ The following output would be retrieved:
 To list all support cases, you can use the [`DescribeCases`](https://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeCases.html) API.
 The following example lists all cases in the category "General guidance".
 
-{{< command >}}
-$ awslocal support describe-cases
-{{< / command >}}
+```bash
+awslocal support describe-cases
+```
 
 The following output would be retrieved:
 
@@ -89,10 +88,10 @@ The following output would be retrieved:
 To resolve a support case, you can use the [`ResolveCase`](https://docs.aws.amazon.com/goto/WebAPI/support-2013-04-15/ResolveCase) API.
 The following example resolves the case created in the previous step.
 
-{{< command >}}
-$ awslocal support resolve-case \
+```bash
+awslocal support resolve-case \
     --case-id "case-12345678910-2020-kEa16f90bJE766J4"
-{{< / command >}}
+```
 
 Replace the case ID with the ID of the case you want to resolve.
 The following output would be retrieved:

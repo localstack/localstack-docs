@@ -1,8 +1,6 @@
 ---
 title: "Simple Workflow Service (SWF)"
-linkTitle: "Simple Workflow Service (SWF)"
-description: >
-  Get started with Simple Workflow Service (SWF) on LocalStack
+description: Get started with Simple Workflow Service (SWF) on LocalStack
 tags: ["Free"]
 ---
 
@@ -13,7 +11,7 @@ SWF allows you to define workflows in a way that's separate from the actual appl
 SWF also provides a programming framework to design, coordinate, and execute workflows that involve multiple tasks, steps, and decision points.
 
 LocalStack allows you to use the SWF APIs in your local environment to monitor and manage workflow design, task coordination, activity implementation, and error handling.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_swf" >}}), which provides information on the extent of SWF's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of SWF's integration with LocalStack.
 
 ## Getting started
 
@@ -27,19 +25,19 @@ We will demonstrate how to register an SWF domain and workflow using the AWS CLI
 You can register an SWF domain using the [`RegisterDomain`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_RegisterDomain.html) API.
 Execute the following command to register a domain named `test-domain`:
 
-{{< command >}}
-$ awslocal swf register-domain \
+```bash
+awslocal swf register-domain \
     --name test-domain \
     --workflow-execution-retention-period-in-days 1
-{{< /command >}}
+```
 
 You can use the [`DescribeDomain`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_DescribeDomain.html) API to verify that the domain was registered successfully.
 Run the following command to describe the `test-domain` domain:
 
-{{< command >}}
-$ awslocal swf describe-domain \
+```bash
+awslocal swf describe-domain \
     --name test-domain
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -61,31 +59,31 @@ The following output would be retrieved:
 You can list all registered domains using the [`ListDomains`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html) API.
 Run the following command to list all registered domains:
 
-{{< command >}}
-$ awslocal swf list-domains --registration-status REGISTERED
-{{< /command >}}
+```bash
+awslocal swf list-domains --registration-status REGISTERED
+```
 
 To deprecate a domain, use the [`DeprecateDomain`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_DeprecateDomain.html) API.
 Run the following command to deprecate the `test-domain` domain:
 
-{{< command >}}
-$ awslocal swf deprecate-domain \
+```bash
+awslocal swf deprecate-domain \
     --name test-domain
-{{< /command >}}
+```
 
 You can now list the deprecated domains using the `--registration-status DEPRECATED` flag:
 
-{{< command >}}
-$ awslocal swf list-domains --registration-status DEPRECATED
-{{< /command >}}
+```bash
+awslocal swf list-domains --registration-status DEPRECATED
+```
 
 ### Registering a workflow
 
 You can register a workflow using the [`RegisterWorkflowType`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_RegisterWorkflowType.html) API.
 Execute the following command to register a workflow named `test-workflow`:
 
-{{< command >}}
-$ awslocal swf register-workflow-type \
+```bash
+awslocal swf register-workflow-type \
     --domain test-domain \
     --name test-workflow \
     --default-task-list name=test-task-list \
@@ -93,16 +91,16 @@ $ awslocal swf register-workflow-type \
     --default-execution-start-to-close-timeout 60 \
     --default-child-policy TERMINATE \
     --workflow-version "1.0"
-{{< /command >}}
+```
 
 You can use the [`DescribeWorkflowType`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_DescribeWorkflowType.html) API to verify that the workflow was registered successfully.
 Run the following command to describe the `test-workflow` workflow:
 
-{{< command >}}
-$ awslocal swf describe-workflow-type \
+```bash
+awslocal swf describe-workflow-type \
     --domain test-domain \
     --workflow-type name=test-workflow,version=1.0
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -132,8 +130,8 @@ The following output would be retrieved:
 You can register an activity using the [`RegisterActivityType`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_RegisterActivityType.html) API.
 Execute the following command to register an activity named `test-activity`:
 
-{{< command >}}
-$ awslocal swf register-activity-type \
+```bash
+awslocal swf register-activity-type \
     --domain test-domain \
     --name test-activity \
     --default-task-list name=test-task-list \
@@ -142,16 +140,16 @@ $ awslocal swf register-activity-type \
     --default-task-schedule-to-start-timeout 30 \
     --default-task-schedule-to-close-timeout 30 \
     --activity-version "1.0"
-{{< /command >}}
+```
 
 You can use the [`DescribeActivityType`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_DescribeActivityType.html) API to verify that the activity was registered successfully.
 Run the following command to describe the `test-activity` activity:
 
-{{< command >}}
-$ awslocal swf describe-activity-type \
+```bash
+awslocal swf describe-activity-type \
     --domain test-domain \
     --activity-type name=test-activity,version=1.0
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -182,14 +180,14 @@ The following output would be retrieved:
 You can start a workflow execution using the [`StartWorkflowExecution`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_StartWorkflowExecution.html) API.
 Execute the following command to start a workflow execution for the `test-workflow` workflow:
 
-{{< command >}}
-$ awslocal swf start-workflow-execution \
+```bash
+awslocal swf start-workflow-execution \
     --domain test-domain \
     --workflow-type name=test-workflow,version=1.0 \
     --workflow-id test-workflow-id \
     --task-list name=test-task-list \
     --input '{"foo": "bar"}'
-{{< /command >}}
+```
 
 The following output would be retrieved:
 

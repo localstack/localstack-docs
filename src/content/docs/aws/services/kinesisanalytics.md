@@ -1,15 +1,13 @@
 ---
 title: "Kinesis Data Analytics for SQL Applications"
-linkTitle: "Kinesis Data Analytics for SQL Applications"
-description: >
-  Get started with Kinesis Data Analytics for SQL Applications on LocalStack
+description: Get started with Kinesis Data Analytics for SQL Applications on LocalStack
 tags: ["Ultimate"]
 ---
 
-{{< callout "warning" >}}
+:::danger
 Amazon Kinesis Data Analytics for SQL Applications will be [retired on 27 January 2026](https://docs.aws.amazon.com/kinesisanalytics/latest/dev/discontinuation.html).
 It will be removed from LocalStack soon after this date.
-{{< /callout >}}
+:::
 
 ## Introduction
 
@@ -17,7 +15,7 @@ Kinesis Data Analytics for SQL Applications is a service offered by Amazon Web S
 It allows you to apply transformations, filtering, and enrichment to streaming data using standard SQL syntax.
 
 LocalStack allows you to use the Kinesis Data Analytics APIs in your local environment.
-The supported APIs is available on our [API coverage page]({{< ref "coverage_kinesisanalytics" >}}).
+The supported APIs is available on our [API coverage page]().
 
 ## Getting started
 
@@ -30,10 +28,10 @@ We will demonstrate how to create a Kinesis Analytics application using AWS CLI.
 
 You can create a Kinesis Analytics application using the [`CreateApplication`](https://docs.aws.amazon.com/kinesisanalytics/latest/APIReference/API_CreateApplication.html) API by running the following command:
 
-{{< command >}}
-$ awslocal kinesisanalytics create-application \
+```bash
+awslocal kinesisanalytics create-application \
     --application-name test-analytics-app
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -51,10 +49,10 @@ The following output would be retrieved:
 
 You can describe the application using the [`DescribeApplication`](https://docs.aws.amazon.com/kinesisanalytics/latest/APIReference/API_DescribeApplication.html) API by running the following command:
 
-{{< command >}}
-$ awslocal kinesisanalytics describe-application \
+```bash
+awslocal kinesisanalytics describe-application \
     --application-name test-analytics-app
-{{< /command >}}
+```
 
 The following output would be retrieved:
 
@@ -78,18 +76,18 @@ The following output would be retrieved:
 
 Add tags to the application using the [`TagResource`](https://docs.aws.amazon.com/kinesisanalytics/latest/APIReference/API_TagResource.html) API by running the following command:
 
-{{< command >}}
-$ awslocal kinesisanalytics tag-resource \
+```bash
+awslocal kinesisanalytics tag-resource \
     --resource-arn arn:aws:kinesisanalytics:us-east-1:000000000000:application/test-analytics-app \
     --tags Key=test,Value=test
-{{< /command >}}
+```
 
 You can list the tags for the application using the [`ListTagsForResource`](https://docs.aws.amazon.com/kinesisanalytics/latest/APIReference/API_ListTagsForResource.html) API by running the following command:
 
-{{< command >}}
-$ awslocal kinesisanalytics list-tags-for-resource \
+```bash
+awslocal kinesisanalytics list-tags-for-resource \
     --resource-arn arn:aws:kinesisanalytics:us-east-1:000000000000:application/test-analytics-app
-{{< /command >}}
+```
 
 The following output would be retrieved:
 

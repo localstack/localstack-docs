@@ -1,8 +1,6 @@
 ---
 title: CodePipeline
-linkTitle: CodePipeline
-description: >
-  Get started with CodePipeline on LocalStack
+description: Get started with CodePipeline on LocalStack
 tags: ["Ultimate"]
 ---
 
@@ -13,7 +11,7 @@ CodePipeline can be used to create automated pipelines that handle the build, te
 
 LocalStack comes with a bespoke execution engine that can be used to create, manage, and execute pipelines.
 It supports a variety of actions that integrate with S3, CodeBuild, CodeConnections, and more.
-The available operations can be found on the [API coverage]({{< ref "coverage_codepipeline" >}}) page.
+The available operations can be found on the [API coverage]() page.
 
 ## Getting started
 
@@ -26,38 +24,32 @@ Start LocalStack using your preferred method.
 
 Begin by creating the S3 buckets that will serve as the source and target.
 
-{{< command >}}
-$ awslocal s3 mb s3://source-bucket
-$ awslocal s3 mb s3://target-bucket
-{{< / command >}}
+```bash
+awslocal s3 mb s3://source-bucket
+awslocal s3 mb s3://target-bucket
+```
 
 It is important to note the CodePipeline requires source S3 buckets to have versioning enabled.
 This can be done using the S3 [`PutBucketVersioning`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketVersioning.html) operation.
 
-{{< command >}}
-$ awslocal s3api put-bucket-versioning \
+```bash
+awslocal s3api put-bucket-versioning \
     --bucket source-bucket \
     --versioning-configuration Status=Enabled
-{{< /command >}}
+```
 
 Now create a placeholder file that will flow through the pipeline and upload it to the source bucket.
 
-{{< command >}}
-$ echo "Hello LocalStack!" > file
-{{< /command >}}
-
-{{< command >}}
-$ awslocal s3 cp file s3://source-bucket
-<disable-copy>
-upload: ./file to s3://source-bucket/file
-</disable-copy>
-{{< /command >}}
+```bash
+echo "Hello LocalStack!" > file
+awslocal s3 cp file s3://source-bucket
+```
 
 Pipelines also require an artifact store, which is also an S3 bucket that is used as intermediate storage.
 
-{{< command >}}
-$ awslocal s3 mb s3://artifact-store-bucket
-{{< / command >}}
+```bash
+awslocal s3 mb s3://artifact-store-bucket
+```
 
 ### Configure IAM
 
@@ -83,12 +75,11 @@ Create the role and make note of the role ARN:
 }
 ```
 
-{{< command >}}
-$ awslocal iam create-role --role-name role --assume-role-policy-document file://role.json | jq .Role.Arn
-<disable-copy>
-"arn:aws:iam::000000000000:role/role"
-</disable-copy>
-{{< /command >}}
+Create the role with the following command:
+
+```bash
+awslocal iam create-role --role-name role --assume-role-policy-document file://role.json | jq .Role.Arn
+```
 
 Now add a permissions policy to this role that permits read and write access to S3.
 
@@ -111,9 +102,9 @@ Now add a permissions policy to this role that permits read and write access to 
 The permissions in the above example policy are relatively broad.
 You might want to use a more focused policy for better security on production systems.
 
-{{< command >}}
-$ awslocal iam put-role-policy --role-name role --policy-name policy --policy-document file://policy.json
-{{< /command >}}
+```bash
+awslocal iam put-role-policy --role-name role --policy-name policy --policy-document file://policy.json
+```
 
 ### Create pipeline
 
@@ -199,9 +190,9 @@ These correspond to the resources we created earlier.
 
 Create the pipeline using the following command:
 
-{{< command >}}
-$ awslocal codepipeline create-pipeline --pipeline file://./declaration.json
-{{< /command >}}
+```bash
+awslocal codepipeline create-pipeline --pipeline file://./declaration.json
+```
 
 ### Verify pipeline execution
 
@@ -210,9 +201,13 @@ A 'pipeline execution' is an instance of a pipeline in a running or finished sta
 The [`CreatePipeline`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_CreatePipeline.html) operation we ran earlier started a pipeline execution.
 This can be confirmed using:
 
-{{< command >}}
-$ awslocal codepipeline list-pipeline-executions --pipeline-name pipeline
-<disable-copy>
+```bash
+awslocal codepipeline list-pipeline-executions --pipeline-name pipeline
+```
+
+The output will be similar to the following:
+
+```json
 {
     "pipelineExecutionSummaries": [
         {
@@ -227,8 +222,7 @@ $ awslocal codepipeline list-pipeline-executions --pipeline-name pipeline
         }
     ]
 }
-</disable-copy>
-{{< /command >}}
+```
 
 Note the `trigger.triggerType` field specifies what initiated the pipeline execution.
 Currently in LocalStack, only two triggers are implemented: `CreatePipeline` and `StartPipelineExecution`.
@@ -236,30 +230,34 @@ Currently in LocalStack, only two triggers are implemented: `CreatePipeline` and
 The above pipeline execution was successful.
 This means that we can retrieve the `output-file` object from the `target-bucket` S3 bucket.
 
-{{< command >}}
-$ awslocal s3 cp s3://target-bucket/output-file output-file
-<disable-copy>
-download: s3://target-bucket/output-file to ./output-file
-</disable-copy>
-{{< /command >}}
+```bash
+awslocal s3 cp s3://target-bucket/output-file output-file
+```
 
 To verify that it is the same file as the original input:
 
-{{< command >}}
-$ cat output-file
-<disable-copy>
+```bash
+cat output-file
+```
+
+The output will be:
+
+```text
 Hello LocalStack!
-</disable-copy>
-{{< /command >}}
+```
 
 ### Examine action executions
 
 Using the [`ListActionExecutions`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_ListPipelineExecutions.html), detailed information about each action execution such as inputs and outputs can be retrieved.
 This is useful when debugging the pipeline.
 
-{{< command >}}
-$ awslocal codepipeline list-action-executions --pipeline-name pipeline
-<disable-copy>
+```bash
+awslocal codepipeline list-action-executions --pipeline-name pipeline
+```
+
+The output will be similar to the following:
+
+```json
 {
     "actionExecutionDetails": [
         {
@@ -315,27 +313,31 @@ $ awslocal codepipeline list-action-executions --pipeline-name pipeline
             "stageName": "stage1",
             "actionName": "action1",
             ...
-</disable-copy>
-{{< /command >}}
+```
 
-{{< callout >}}
+:::note
 LocalStack does not use the same logic to generate external execution IDs as AWS so there may be minor discrepancies.
 The same is true for status and error messages produced by actions.
-{{< /callout >}}
+:::
 
 ## Pipelines
 
-The operations [CreatePipeline](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_CreatePipeline.html), [GetPipeline](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_GetPipeline.html), [UpdatePipeline](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_UpdatePipeline.html), [ListPipelines](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_ListPipelines.html), [DeletePipeline](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_DeletePipeline.html) are used to manage pipeline declarations.
+The operations [`CreatePipeline`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_CreatePipeline.html), [`GetPipeline`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_GetPipeline.html), [`UpdatePipeline`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_UpdatePipeline.html), [`ListPipelines`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_ListPipelines.html), [`DeletePipeline`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_DeletePipeline.html) are used to manage pipeline declarations.
 
 LocalStack supports emulation for V1 pipelines.
 V2 pipelines are only created as mocks.
 
-{{< callout "tip" >}}
+:::note
 Emulation for V2 pipelines is not supported.
 Make sure that the pipeline type is explicitly set in the declaration.
-{{< /callout >}}
+:::
 
-Pipeline executions can be managed with [`StartPipelineExecution`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_StartPipelineExecution.html), [`GetPipelineExecution`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_GetPipelineExecution.html), [`ListPipelineExecutions`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_ListPipelineExecutions.html) and [`StopPipelineExecutions`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_StopPipelineExecution.html).
+Pipeline executions can be managed with:
+
+- [`StartPipelineExecution`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_StartPipelineExecution.html)
+- [`GetPipelineExecution`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_GetPipelineExecution.html)
+- [`ListPipelineExecutions`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_ListPipelineExecutions.html)
+- [`StopPipelineExecutions`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_StopPipelineExecution.html)
 
 When stopping pipeline executions with `StopPipelineExecution`, the stop and abandon method is not supported.
 Setting the `abandon` flag will have no impact.
@@ -345,15 +347,26 @@ Action executions can be inspected using the [`ListActionExecutions`](https://do
 
 ### Tagging pipelines
 
-Pipelines resources can be [tagged](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-tag.html) using the [`TagResource`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_TagResource.html), [`UntagResource`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_UntagResource.html) and [`ListTagsForResource`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_ListTagsForResource.html) operations.
+Pipelines resources can be [tagged](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-tag.html) using the following operations:
 
-{{< command >}}
-$ awslocal codepipeline tag-resource \
+- [`TagResource`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_TagResource.html)
+- [`UntagResource`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_UntagResource.html)
+- [`ListTagsForResource`](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_ListTagsForResource.html)
+
+Tag the pipeline with the following command:
+
+```bash
+awslocal codepipeline tag-resource \
     --resource-arn arn:aws:codepipeline:eu-central-1:000000000000:pipeline \
     --tags key=purpose,value=tutorial
 
-$ awslocal codepipeline list-tags-for-resource \
+awslocal codepipeline list-tags-for-resource \
     --resource-arn arn:aws:codepipeline:eu-central-1:000000000000:pipeline
+```
+
+The output will be similar to the following:
+
+```json
 {
     "tags": [
         {
@@ -362,11 +375,15 @@ $ awslocal codepipeline list-tags-for-resource \
         }
     ]
 }
+```
 
-$ awslocal codepipeline untag-resource \
+Untag the pipeline with the following command:
+
+```bash
+awslocal codepipeline untag-resource \
     --resource-arn arn:aws:codepipeline:eu-central-1:000000000000:pipeline \
     --tag-keys purpose
-{{< /command >}}
+```
 
 ## Variables
 
@@ -375,9 +392,9 @@ CodePipeline on LocalStack supports [variables](https://docs.aws.amazon.com/code
 Actions produce output variables which can be referenced in the configuration of subsequent actions.
 Make note that only when the action defines a namespace, its output variables are availabe to downstream actions.
 
-{{< callout "tip" >}}
+:::note
 If an action does not use a namespace, its output variables are not available to downstream actions.
-{{< /callout >}}
+:::
 
 CodePipeline's variable placeholder syntax is as follows:
 
@@ -394,6 +411,11 @@ You can use [`runOrder`](https://docs.aws.amazon.com/codepipeline/latest/usergui
 The supported actions in LocalStack CodePipeline are listed below.
 Using an unsupported action will make the pipeline fail.
 If you would like support for more actions, please [raise a feature request](https://github.com/localstack/localstack/issues/new/choose).
+
+### CloudFormation Deploy
+
+The [CloudFormation Deploy](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html) action executes a CloudFormation stack.
+It supports the following modes: `CREATE_UPDATE`, `CHANGE_SET_REPLACE`, `CHANGE_SET_EXECUTE`
 
 ### CodeBuild Source and Test
 
@@ -421,6 +443,10 @@ It will only update the running ECS service with a new task definition and wait 
 
 The [ECS Deploy](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-ECS.html) action creates a revision of a task definition based on an already deployed ECS service.
 
+### Lambda Invoke
+
+The [Lambda Invoke](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-Lambda.html) action is used to execute a Lambda function in a pipeline.
+
 ### Manual Approval
 
 The Manual Approval action can be included in the pipeline declaration but it will only function as a no-op.
@@ -438,6 +464,7 @@ The [S3 Source](https://docs.aws.amazon.com/codepipeline/latest/userguide/action
 - Emulation for [V2 pipeline types](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types-planning.html) is not supported.
   They will be created as mocks only.
 - [Rollbacks and stage retries](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-stages.html) are not available.
+- [Custom actions](https://docs.aws.amazon.com/codepipeline/latest/userguide/actions-create-custom-action.html) and associated operations (AcknowledgeJob, GetJobDetails, PollForJobs, etc.) are not supported.
 - [Triggers](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-triggers.html) are not implemented.
   Pipelines are executed only when [CreatePipeline](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_CreatePipeline.html) and [StartPipelineExecution](https://docs.aws.amazon.com/codepipeline/latest/APIReference/API_StartPipelineExecution.html) are invoked.
 - [Execution mode behaviours](https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works.html#concepts-how-it-works-executions) are not implemented.

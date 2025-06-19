@@ -1,6 +1,5 @@
 ---
-title: "Glacier"
-linkTitle: "Glacier"
+title: Glacier
 description: Get started with S3 Glacier on LocalStack
 tags: ["Ultimate"]
 persistence: supported
@@ -16,7 +15,7 @@ Glacier uses Jobs to retrieve the data in an Archive or list the inventory of a 
 
 LocalStack allows you to use the Glacier APIs in your local environment to manage Vaults and Archives.
 You can use the Glacier API to configure and set up vaults where you can store archives and manage them.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_glacier" >}}), which provides information on the extent of Glacier's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Glacier's integration with LocalStack.
 
 ## Getting started
 
@@ -30,16 +29,16 @@ We will demonstrate how to create a vault, upload an archive, initiate a job to 
 You can create a vault using the [`CreateVault`](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-vault-put.html) API.
 Run the follow command to create a Glacier Vault named `sample-vault`.
 
-{{< command >}}
-$ awslocal glacier create-vault --vault-name sample-vault --account-id -
-{{< /command >}}
+```bash
+awslocal glacier create-vault --vault-name sample-vault --account-id -
+```
 
 You can get the details from your vault using the [`DescribeVault`](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-vault-get.html) API.
 Run the following command to describe your vault.
 
-{{< command >}}
-$ awslocal glacier describe-vault --vault-name sample-vault --account-id -
-{{< /command >}}
+```bash
+awslocal glacier describe-vault --vault-name sample-vault --account-id -
+```
 
 On successful creation of the Glacier vault, you will see the following output:
 
@@ -60,9 +59,9 @@ You can upload an archive or an individual file to a vault using the [`UploadArc
 Download a random image from the internet and save it as `image.jpg`.
 Run the following command to upload the file to your Glacier vault:
 
-{{< command >}}
-$ awslocal glacier upload-archive --vault-name sample-vault --account-id - --body image.jpg
-{{< /command >}}
+```bash
+awslocal glacier upload-archive --vault-name sample-vault --account-id - --body image.jpg
+```
 
 On successful upload of the Glacier archive, you will see the following output:
 
@@ -79,9 +78,13 @@ On successful upload of the Glacier archive, you will see the following output:
 You can initiate the retrieval of an archive from a vault using the [`InitiateJob`](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-initiate-job-post.html) API.
 
 To download an archive, you will need to initiate an `archive-retrieval` job first to make the Archive available for download.
-{{< command >}}
-$ awslocal glacier initiate-job --vault-name sample-vault  --account-id - --job-parameters '{"Type":"archive-retrieval","ArchiveId":"d41d8cd98f00b204e9800998ecf8427e"}'
-{{< /command >}}
+
+```bash
+awslocal glacier initiate-job \
+    --vault-name sample-vault  \
+    --account-id - \
+    --job-parameters '{"Type":"archive-retrieval","ArchiveId":"d41d8cd98f00b204e9800998ecf8427e"}'
+```
 
 On successful execution of the job, you will see the following output:
 
@@ -96,9 +99,9 @@ On successful execution of the job, you will see the following output:
 
 You can list the current and previous processes, called Jobs, to monitor the requests sent to the Glacier API using the [`ListJobs`](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-jobs-get.html) API.
 
-{{< command >}}
-$ awslocal glacier list-jobs --vault-name sample-vault --account-id -
-{{< /command >}}
+```bash
+awslocal glacier list-jobs --vault-name sample-vault --account-id -
+```
 
 On successful execution of the command, you will see the following output:
 
@@ -130,22 +133,30 @@ The data download process can be verified through the previous `ListJobs` call t
 Once the `ArchiveRetrieval` Job is complete, the data can be downloaded.
 You can use the `JobId` of the Job to download your archive with the following command:
 
-{{< command >}}
-$ awslocal glacier get-job-output --vault-name sample-vault --account-id - --job-id 25CEOTJ7ZUR5Q7YY0B1O55AE4C3L1502EOHWMNY10IIYEBWEQB73D23S8BVYO9RTRTPLRK2LJLUCCRM52GDV87C9A4JW my-archive.jpg
-{{< /command >}}
+```bash
+awslocal glacier get-job-output \
+    --vault-name sample-vault \
+    --account-id - \
+    --job-id 25CEOTJ7ZUR5Q7YY0B1O55AE4C3L1502EOHWMNY10IIYEBWEQB73D23S8BVYO9RTRTPLRK2LJLUCCRM52GDV87C9A4JW \
+    my-archive.jpg
+```
 
-{{< callout >}}
+:::danger
 Please not that currently, this operation is only mocked, and will create an empty file named `my-archive.jpg`, not containing the contents of your archive.
-{{< /callout >}}
+:::
 
 ### Retrieve the inventory information
 
 You can also initiate the retrieval of the inventory of a vault using the same [`InitiateJob`](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-initiate-job-post.html) API.
 
 Initiate a job of the specified type to get the details of the individual inventory items inside a Vault using the `initiate-job` command:
-{{< command >}}
-$ awslocal glacier initiate-job --vault-name sample-vault  --account-id - --job-parameters '{"Type":"inventory-retrieval","ArchiveId":"d41d8cd98f00b204e9800998ecf8427e"}'
-{{< /command >}}
+
+```bash
+awslocal glacier initiate-job \
+    --vault-name sample-vault  \
+    --account-id - \
+    --job-parameters '{"Type":"inventory-retrieval","ArchiveId":"d41d8cd98f00b204e9800998ecf8427e"}'
+```
 
 On successful execution of the command, you will see the following output:
 
@@ -157,10 +168,14 @@ On successful execution of the command, you will see the following output:
 ```
 
 In the same fashion as the archive retrieval, you can now download the result of the inventory retrieval job using `GetJobOutput` using the `JobId` from the result of the previous command:
-{{< command >}}
-$ awslocal glacier get-job-output \
-   --vault-name sample-vault --account-id - --job-id P5972CSWFR803BHX48OD1A7JWNBFJUMYVWCMZWY55ZJPIJMG1XWFV9ISZPZH1X3LBF0UV3UG6ORETM0EHE5R86Z47B1F inventory.json
-{{< /command >}}
+
+```bash
+awslocal glacier get-job-output \
+    --vault-name sample-vault \
+    --account-id - \
+    --job-id P5972CSWFR803BHX48OD1A7JWNBFJUMYVWCMZWY55ZJPIJMG1XWFV9ISZPZH1X3LBF0UV3UG6ORETM0EHE5R86Z47B1F \
+    inventory.json
+```
 
 Inspecting the content of the `inventory.json` file, we can find an inventory of the vault:
 
@@ -186,16 +201,21 @@ You can delete a Glacier archive using the [`DeleteArchive`](https://docs.aws.am
 
 Run the following command to delete the previously created archive:
 
-{{< command >}}
-$ awslocal glacier delete-archive \
-      --vault-name sample-vault --account-id - --archive-id d41d8cd98f00b204e9800998ecf8427e
-{{< /command >}}
+```bash
+awslocal glacier delete-archive \
+    --vault-name sample-vault \
+    --account-id - \
+    --archive-id d41d8cd98f00b204e9800998ecf8427e
+```
 
 ### Delete a vault
 
 You can delete a Glacier vault with the [`DeleteVault`](https://docs.aws.amazon.com/amazonglacier/latest/dev/api-vault-delete.html) API.
 
 Run the following command to delete the vault:
-{{< command >}}
-$ awslocal glacier delete-vault --vault-name sample-vault --account-id -
-{{< /command >}}
+
+```bash
+awslocal glacier delete-vault \
+    --vault-name sample-vault \
+    --account-id -
+```

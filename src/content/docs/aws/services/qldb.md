@@ -5,10 +5,10 @@ tags: ["Ultimate"]
 description: Get started with Quantum Ledger Database (QLDB) on LocalStack
 ---
 
-{{< callout "warning" >}}
+:::danger
 Amazon QLDB will be [retired on 31 July 2025](https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html).
 It will be removed from LocalStack soon after this date.
-{{< /callout >}}
+:::
 
 ## Introduction
 
@@ -22,7 +22,7 @@ and scalable
 way to maintain a complete and verifiable history of data changes over time.
 
 LocalStack allows you to use the QLDB APIs in your local environment to create and manage ledgers.
-The supported APIs are available on the [API coverage page]({{< ref "/references/coverage/coverage_qldb/index.md" >}} "QLDB service coverage page"), which provides information on the extent of QLDB's integration with LocalStack.
+The supported APIs are available on the [API coverage page](), which provides information on the extent of QLDB's integration with LocalStack.
 
 ## Getting started
 
@@ -54,9 +54,11 @@ the [Releases](https://github.com/awslabs/amazon-qldb-shell/releases) section of
 QLDB provides ledger databases, which are centralized, immutable, and cryptographically verifiable
 journals of transactions.
 
-{{< command >}}
-$ awslocal qldb create-ledger --name vehicle-registration --permissions-mode ALLOW_ALL
-{{< / command >}}
+```bash
+awslocal qldb create-ledger --name vehicle-registration --permissions-mode ALLOW_ALL
+```
+
+The output will be similar to the following:
 
 ```bash
 {
@@ -69,7 +71,7 @@ $ awslocal qldb create-ledger --name vehicle-registration --permissions-mode ALL
 }
 ```
 
-{{< callout >}}
+:::note
 
 - Permissions mode – the following options are available in AWS:
 
@@ -89,13 +91,13 @@ To allow PartiQL
 commands, you must create IAM permissions policies for specific table resources and PartiQL actions,
 in addition to
 the `SendCommand` API permission for the ledger.
-{{< /callout >}}
+:::
 
 The following command can be used directly to write PartiQL statements against a QLDB ledger:
 
-{{< command >}}
-$ qldb --qldb-session-endpoint http://localhost:4566 --ledger vehicle-registration
-{{< / command >}}
+```bash
+qldb --qldb-session-endpoint http://localhost:4566 --ledger vehicle-registration
+```
 
 The user can continue from here to create tables, populate and interrogate them.
 
@@ -104,9 +106,11 @@ The user can continue from here to create tables, populate and interrogate them.
 PartiQL is a query language designed for processing structured data, allowing you to perform
 various data manipulation tasks using familiar SQL-like syntax.
 
-{{< command >}}
+```bash
 qldb> CREATE TABLE VehicleRegistration
-{{< / command >}}
+```
+
+The output will be:
 
 ```bash
 {
@@ -131,7 +135,7 @@ qldb> CREATE TABLE VehicleRegistration
 The `VehicleRegistration` table was created.
 Now it's time to add some items:
 
-{{< command >}}
+```bash
 qldb> INSERT INTO VehicleRegistration VALUE
 {
     'VIN' : 'KM8SRDHF6EU074761',
@@ -149,7 +153,9 @@ qldb> INSERT INTO VehicleRegistration VALUE
     'ValidFromDate' : `2017-09-14T`,
     'ValidToDate' : `2020-06-25T`
 }
-{{< / command >}}
+```
+
+The output will be:
 
 ```bash
 {
@@ -162,9 +168,11 @@ documentId: "3TYR9BamzyqHWBjYOfHegE"
 
 The table can be interrogated based on the inserted registration number:
 
-{{< command >}}
+```bash
 qldb> SELECT * FROM VehicleRegistration WHERE RegNum=1722
-{{< / command >}}
+```
+
+The output will be:
 
 ```bash
 {
@@ -193,9 +201,10 @@ queries.
 Supposed the vehicle is sold and changes owners, this information needs to be updated with a new
 person ID.
 
-{{< command >}}
+```bash
 qldb> UPDATE VehicleRegistration AS r SET r.Owners.PrimaryOwner.PersonId = '112233445566NO' WHERE r.VIN = 'KM8SRDHF6EU074761'
-{{< / command >}}
+```
+
 The command will return the updated document ID.
 
 ```bash
@@ -206,9 +215,12 @@ The command will return the updated document ID.
 ```
 
 The next step is to check on the updates made to the `PersonId` field of the `PrimaryOwner`:
-{{< command >}}
+
+```bash
 qldb> SELECT r.Owners FROM VehicleRegistration AS r WHERE r.VIN = 'KM8SRDHF6EU074761'
-{{< / command >}}
+```
+
+The output will be:
 
 ```bash
 {
@@ -236,9 +248,11 @@ You can see all revisions of a document that you inserted, updated, and deleted 
 built-in History function.
 First the unique `id` of the document must be found.
 
-{{< command >}}
+```bash
 qldb> SELECT r_id FROM VehicleRegistration AS r BY r_id WHERE r.VIN = 'KM8SRDHF6EU074761'
-{{< / command >}}
+```
+
+The output will be:
 
 ```bash
 {
@@ -250,9 +264,11 @@ r_id: "3TYR9BamzyqHWBjYOfHegE"
 
 Then, the `id` is used to query the history function.
 
-{{< command >}}
+```bash
 qldb> SELECT h.data.VIN, h.data.City, h.data.Owners FROM history(VehicleRegistration) AS h WHERE h.metadata.id = '3TYR9BamzyqHWBjYOfHegE'
-{{< / command >}}
+```
+
+The output will be:
 
 ```bash
 {
@@ -298,9 +314,11 @@ Unused ledgers can be deleted.
 You'll notice that directly running the following command will lead
 to an error message.
 
-{{< command >}}
-$ awslocal qldb delete-ledger --name vehicle-registration
-{{< / command >}}
+```bash
+awslocal qldb delete-ledger --name vehicle-registration
+```
+
+The output will be:
 
 ```bash
 An error occurred (ResourcePreconditionNotMetException) when calling the DeleteLedger operation: Preventing deletion 
@@ -309,9 +327,11 @@ of ledger vehicle-registration with DeletionProtection enabled
 
 This can be adjusted using the `update-ledger` command in the AWS CLI to remove the deletion protection of the ledger:
 
-{{< command >}}
-$ awslocal qldb update-ledger --name vehicle-registration --no-deletion-protection
-{{< / command >}}
+```bash
+awslocal qldb update-ledger --name vehicle-registration --no-deletion-protection
+```
+
+The output will be:
 
 ```bash
 {
@@ -330,9 +350,7 @@ Now the `delete-ledger` command can be repeated without errors.
 The LocalStack Web Application provides a Resource Browser for managing QLDB ledgers.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **QLDB** under the **Database** section.
 
-<img src="qldb-resource-browser.png" alt="QLDB Resource Browser" title="QLDB Resource Browser" width="900" />
-<br>
-<br>
+![QLDB Resource Browser](/images/aws/qldb-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

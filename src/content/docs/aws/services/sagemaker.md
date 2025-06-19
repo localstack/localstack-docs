@@ -1,6 +1,5 @@
 ---
 title: "SageMaker"
-linkTitle: "SageMaker"
 description: Get started with SageMaker on LocalStack
 tags: ["Ultimate"]
 ---
@@ -11,13 +10,13 @@ Amazon SageMaker is a fully managed service provided by Amazon Web Services (AWS
 It streamlines the machine learning development process, reduces the time and effort required to build and deploy models, and offers the scalability and flexibility needed for large-scale machine learning projects in the AWS cloud.
 
 LocalStack provides a local version of the SageMaker API, which allows running jobs to create machine learning models (e.g., using PyTorch) and to deploy them.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_sagemaker" >}}), which provides information on the extent of Sagemaker's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Sagemaker's integration with LocalStack.
 
-{{< callout >}}
+:::note
 LocalStack supports custom-built models in SageMaker.
 You can push your Docker image to LocalStack's Elastic Container Registry (ECR) and use it in SageMaker.
 LocalStack will use the local ECR image to create a SageMaker model.
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -29,46 +28,46 @@ We will demonstrate an application illustrating running a machine learning job u
 - Creates a SageMaker Endpoint for accessing the model
 - Invokes the endpoint directly on the container via Boto3
 
-{{< callout >}}
+:::note
 SageMaker is a fairly comprehensive API for now.
 Currently a subset of the functionality is provided locally, but new features are being added on a regular basis.
-{{< /callout >}}
+:::
 
 ### Download the sample application
 
 You can download the sample application from [GitHub](https://github.com/localstack/localstack-pro-samples/tree/master/sagemaker-inference) or by running the following commands:
 
-{{< command >}}
-$ mkdir localstack-samples && cd localstack-samples
-$ git init
-$ git remote add origin -f git@github.com:localstack/localstack-pro-samples.git
-$ git config core.sparseCheckout true
-$ echo sagemaker-inference >> .git/info/sparse-checkout
-$ git pull origin master
-{{< /command >}}
+```bash
+mkdir localstack-samples && cd localstack-samples
+git init
+git remote add origin -f git@github.com:localstack/localstack-pro-samples.git
+git config core.sparseCheckout true
+echo sagemaker-inference >> .git/info/sparse-checkout
+git pull origin master
+```
 
 ### Set up the environment
 
 After downloading the sample application, you can set up your Docker Client to pull the AWS Deep Learning images by running the following command:
 
-{{< command >}}
-$ aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 763104351884.dkr.ecr.us-east-1.amazonaws.com
-{{< /command >}}
+```bash
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 763104351884.dkr.ecr.us-east-1.amazonaws.com
+```
 
 Since the images are quite large (several gigabytes), it's a good idea to pull the images using Docker in advance.
 
-{{< command >}}
-$ docker pull 763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:1.5.0-cpu-py3
-{{< /command >}}
+```bash
+docker pull 763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:1.5.0-cpu-py3
+```
 
 ### Run the sample application
 
 Start your LocalStack container using your preferred method.
 Run the sample application by executing the following command:
 
-{{< command >}}
-$ python3 main.,py
-{{< /command >}}
+```bash
+python3 main.py
+```
 
 You should see the following output:
 
@@ -92,19 +91,19 @@ You can also invoke a serverless endpoint, by navigating to `main.py` and uncomm
 
 ## Resource Browser
 
-The LocalStack Web Application provides a [Resource Browser]({{< ref "resource-browser" >}}) for managing Lambda resources.
+The LocalStack Web Application provides a [Resource Browser](/aws/capabilities/web-app/resource-browser) for managing Sagemaker resources.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Sagemaker** under the **Compute** section.
 
 The Resource Browser displays Models, Endpoint Configurations and Endpoint.
 You can click on individual resources to view their details.
 
-<img src="sagemaker-resource-browser.png" alt="Sagemaker Resource Browser" title="Lambda Resource Browser" width="900" />
+![Sagemaker Resource Browser](/images/aws/sagemaker-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 
 - **Create and Remove Models**: You can remove existing model and create a new model with the required configuration
 
-  <img src="sagemaker-create-model.png" alt="Sagemaker Resource Browser" title="Lambda Resource Browser" width="900" />
+  ![Sagemaker Create Model](/images/aws/sagemaker-create-model.png)
 
 - **Endpoint Configurations & Endpoints**: You can create endpoints from the resource browser that hosts your deployed machine learning model.
   You can also create endpoint configuration that specifies the type and number of instances that will be used to serve your model on an endpoint.

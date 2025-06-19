@@ -1,6 +1,5 @@
 ---
 title: Glue
-linkTitle: Glue
 description: Get started with Glue on LocalStack
 tags: ["Ultimate"]
 ---
@@ -10,9 +9,9 @@ tags: ["Ultimate"]
 The Glue API in LocalStack Pro allows you to run ETL (Extract-Transform-Load) jobs locally, maintaining table metadata in the local Glue data catalog, and using the Spark ecosystem (PySpark/Scala) to run data processing workflows.
 
 LocalStack allows you to use the Glue APIs in your local environment.
-The supported APIs are available on our [API coverage page](/references/coverage/coverage_glue/), which provides information on the extent of Glue's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Glue's integration with LocalStack.
 
-{{< callout >}}
+:::note
 LocalStack now includes a container-based Glue Job executor, enabling Glue jobs to run within a Docker environment.
 Previously, LocalStack relied on a pre-packaged binary that included Spark and other required components.
 The new executor leverages the `aws-glue-libs` Docker image, provides better production parity, faster startup times, and more reliable execution.
@@ -27,7 +26,7 @@ Key enhancements include:
 
 To use it, set `GLUE_JOB_EXECUTOR=docker` and `GLUE_JOB_EXECUTOR_PROVIDER=v2` in your LocalStack configuration.
 The new executor additionally deprecates older versions of Glue (`0.9`, `1.0`, `2.0`).
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -36,20 +35,20 @@ This guide is designed for users new to Glue and assumes basic knowledge of the 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create databases and table metadata in Glue, run Glue ETL jobs, import databases from Athena, and run Glue Crawlers with the AWS CLI.
 
-{{< callout >}}
-In order to run Glue jobs, some additional dependencies have to be fetched from the network, including a Docker image of apprx.
-1.5GB which includes Spark, Presto, Hive and other tools.
+:::note
+In order to run Glue jobs, some additional dependencies have to be fetched from the network, including a Docker image of approximately 1.5GB which includes Spark, Presto, Hive and other tools.
 These dependencies are automatically fetched when you start up the service, so please make sure you're on a decent internet connection when pulling the dependencies for the first time.
-{{< /callout >}}
+:::
 
 ### Creating Databases and Table Metadata
 
 The commands below illustrate the creation of some very basic entries (databases, tables) in the Glue data catalog:
-{{< command >}}
-$ awslocal glue create-database --database-input '{"Name":"db1"}'
-$ awslocal glue create-table --database db1 --table-input '{"Name":"table1"}'
-$ awslocal glue get-tables --database db1
-{{< /command >}}
+
+```bash
+awslocal glue create-database --database-input '{"Name":"db1"}'
+awslocal glue create-table --database db1 --table-input '{"Name":"table1"}'
+awslocal glue get-tables --database db1
+```
 
 You should see the following output:
 
@@ -87,27 +86,32 @@ if __name__ == '__main__':
 ```
 
 You can now copy the script to an S3 bucket:
-{{< command >}}
-$ awslocal s3 mb s3://glue-test
-$ awslocal s3 cp job.py s3://glue-test/job.py
-{{< / command >}}
+
+```bash
+awslocal s3 mb s3://glue-test
+awslocal s3 cp job.py s3://glue-test/job.py
+```
 
 Next, you can create a job definition:
 
-{{< command >}}
-$ awslocal glue create-job --name job1 --role arn:aws:iam::000000000000:role/glue-role \
-  --command '{"Name": "pythonshell", "ScriptLocation": "s3://glue-test/job.py"}'
-{{< / command >}}
+```bash
+awslocal glue create-job \
+    --name job1 \
+    --role arn:aws:iam::000000000000:role/glue-role \
+    --command '{"Name": "pythonshell", "ScriptLocation": "s3://glue-test/job.py"}'
+```
 
 You can finally start the job execution:
 
-{{< command >}}
-$ awslocal glue start-job-run --job-name job1
-{{< / command >}}
+```bash
+awslocal glue start-job-run --job-name job1
+```
+
 The returned `JobRunId` can be used to query the status job the job execution, until it becomes `SUCCEEDED`:
-{{< command >}}
-$ awslocal glue get-job-run --job-name job1 --run-id <JobRunId>
-{{< / command >}}
+
+```bash
+awslocal glue get-job-run --job-name job1 --run-id <JobRunId>
+```
 
 You should see the following output:
 
@@ -136,16 +140,17 @@ CREATE EXTERNAL TABLE db2.table2 (a1 Date, a2 STRING, a3 INT) LOCATION 's3://tes
 ```
 
 Then this command will import these DB/table definitions into the Glue data catalog:
-{{< command >}}
-$ awslocal glue import-catalog-to-glue
-{{< /command >}}
+
+```bash
+awslocal glue import-catalog-to-glue
+```
 
 Afterwards, the databases and tables will be available in Glue.
 You can query the databases with the `get-databases` operation:
 
-{{< command >}}
-$ awslocal glue get-databases
-{{< /command >}}
+```bash
+awslocal glue get-databases
+```
 
 You should see the following output:
 
@@ -166,9 +171,11 @@ You should see the following output:
 ```
 
 And you can query the databases with the `get-databases` operation:
-{{< command >}}
-$ awslocal glue get-tables --database-name db2
-{{< / command >}}
+
+```bash
+awslocal glue get-tables --database-name db2
+```
+
 You should see the following output:
 
 ```json
@@ -203,28 +210,33 @@ The example below illustrates crawling tables and partition metadata from S3 buc
 
 You can first create an S3 bucket with a couple of items:
 
-{{< command >}}
-$ awslocal s3 mb s3://test
-$ printf "1, 2, 3, 4\n5, 6, 7, 8" > /tmp/file.csv
-$ awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Jan/day=1/file.csv
-$ awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Jan/day=2/file.csv
-$ awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Feb/day=1/file.csv
-$ awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Feb/day=2/file.csv
-{{< / command >}}
+```bash
+awslocal s3 mb s3://test
+printf "1, 2, 3, 4\n5, 6, 7, 8" > /tmp/file.csv
+awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Jan/day=1/file.csv
+awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Jan/day=2/file.csv
+awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Feb/day=1/file.csv
+awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Feb/day=2/file.csv
+```
 
 You can then create and trigger the crawler:
 
-{{< command >}}
-$ awslocal glue create-database --database-input '{"Name":"db1"}'
-$ awslocal glue create-crawler --name c1 --database-name db1 --role arn:aws:iam::000000000000:role/glue-role --targets '{"S3Targets": [{"Path": "s3://test/table1"}]}'
-$ awslocal glue start-crawler --name c1
-{{< / command >}}
+```bash
+awslocal glue create-database --database-input '{"Name":"db1"}'
+awslocal glue create-crawler \
+    --name c1 \
+    --database-name db1 \
+    --role arn:aws:iam::000000000000:role/glue-role \
+    --targets '{"S3Targets": [{"Path": "s3://test/table1"}]}'
+awslocal glue start-crawler --name c1
+```
 
 Finally, you can query the table metadata that has been created by the crawler:
 
-{{< command >}}
-$ awslocal glue get-tables --database-name db1
-{{< / command >}}
+```bash
+awslocal glue get-tables --database-name db1
+```
+
 You should see the following output:
 
 ```json
@@ -237,9 +249,11 @@ You should see the following output:
 ```
 
 You can also query the created table partitions:
-{{< command >}}
-$ awslocal glue get-partitions --database-name db1 --table-name table1
-{{< / command >}}
+
+```bash
+awslocal glue get-partitions --database-name db1 --table-name table1
+```
+
 You should see the following output:
 
 ```json
@@ -257,9 +271,16 @@ When using JDBC crawlers, you can point your crawler towards a Redshift database
 
 Below is a rough outline of the steps required to get the integration for the JDBC crawler working.
 You can first create the local Redshift cluster via:
-{{< command >}}
-$ awslocal redshift create-cluster --cluster-identifier c1 --node-type dc1.large --master-username test --master-user-password test --db-name db1
-{{< / command >}}
+
+```bash
+awslocal redshift create-cluster \
+    --cluster-identifier c1 \
+    --node-type dc1.large \
+    --master-username test \
+    --master-user-password test \
+    --db-name db1
+```
+
 The output of this command contains the endpoint address of the created Redshift database:
 
 ```json
@@ -275,18 +296,23 @@ Then you can use any JDBC or Postgres client to create a table `mytable1` in the
 
 Next, you're creating the Glue database, the JDBC connection, as well as the crawler:
 
-{{< command >}}
-$ awslocal glue create-database --database-input '{"Name":"gluedb1"}'
-$ awslocal glue create-connection --connection-input \
+```bash
+awslocal glue create-database --database-input '{"Name":"gluedb1"}'
+awslocal glue create-connection --connection-input \
     {"Name":"conn1","ConnectionType":"JDBC","ConnectionProperties":{"USERNAME":"test","PASSWORD":"test","JDBC_CONNECTION_URL":"jdbc:redshift://localhost.localstack.cloud:4510/db1"}}'
-$ awslocal glue create-crawler --name c1 --database-name gluedb1 --role arn:aws:iam::000000000000:role/glue-role --targets '{"JdbcTargets":[{"ConnectionName":"conn1","Path":"db1/%/mytable1"}]}'
-$ awslocal glue start-crawler --name c1
-{{< / command >}}
+awslocal glue create-crawler \
+    --name c1 \
+    --database-name gluedb1 \
+    --role arn:aws:iam::000000000000:role/glue-role \
+    --targets '{"JdbcTargets":[{"ConnectionName":"conn1","Path":"db1/%/mytable1"}]}'
+awslocal glue start-crawler --name c1
+```
 
 Once the crawler has started, you have to wait until the `State` turns to `READY` when querying the current state:
-{{< command >}}
-$ awslocal glue get-crawler --name c1
-{{< /command >}}
+
+```bash
+awslocal glue get-crawler --name c1
+```
 
 Once the crawler has finished running and is back in `READY` state, the Glue table within the `gluedb1` DB should have been populated and can be queried via the API.
 
@@ -296,21 +322,27 @@ The Glue Schema Registry allows you to centrally discover, control, and evolve d
 With the Schema Registry, you can manage and enforce schemas and schema compatibilities in your streaming applications.
 It integrates nicely with [Managed Streaming for Kafka (MSK)](../managed-streaming-for-kafka).
 
-{{< callout >}}
+:::note
 Currently, LocalStack supports the AVRO dataformat for the Glue Schema Registry.
 Support for other dataformats will be added in the future.
-{{< /callout >}}
+:::
 
 You can create a schema registry with the following command:
-{{< command >}}
-$ awslocal glue create-registry --registry-name demo-registry
-{{< /command >}}
+
+```bash
+awslocal glue create-registry --registry-name demo-registry
+```
 
 You can create a schema in the newly created registry with the `create-schema` command:
-{{< command >}}
-$ awslocal glue create-schema --schema-name demo-schema --registry-id RegistryName=demo-registry --data-format AVRO --compatibility FORWARD \
-  --schema-definition '{"type":"record","namespace":"Demo","name":"Person","fields":[{"name":"Name","type":"string"}]}'
-{{< /command >}}
+
+```bash
+awslocal glue create-schema --schema-name demo-schema \
+    --registry-id RegistryName=demo-registry \
+    --data-format AVRO \
+    --compatibility FORWARD \
+    --schema-definition '{"type":"record","namespace":"Demo","name":"Person","fields":[{"name":"Name","type":"string"}]}'
+```
+
 You should see the following output:
 
 ```json
@@ -331,10 +363,12 @@ You should see the following output:
 ```
 
 Once the schema has been created, you can create a new version:
-{{< command >}}
-$ awslocal glue register-schema-version --schema-id SchemaName=demo-schema,RegistryName=demo-registry \
-  --schema-definition '{"type":"record","namespace":"Demo","name":"Person","fields":[{"name":"Name","type":"string"}, {"name":"Address","type":"string"}]}'
-{{< /command >}}
+
+```bash
+awslocal glue register-schema-version \
+    --schema-id SchemaName=demo-schema,RegistryName=demo-registry \
+    --schema-definition '{"type":"record","namespace":"Demo","name":"Person","fields":[{"name":"Name","type":"string"}, {"name":"Address","type":"string"}]}'
+```
 
 You should see the following output:
 
@@ -352,9 +386,9 @@ You can find a more advanced sample in our [localstack-pro-samples repository on
 
 LocalStack Glue supports [Delta Lake](https://delta.io), an open-source storage framework that extends Parquet data files with a file-based transaction log for ACID transactions and scalable metadata handling.
 
-{{< callout >}}
+:::note
 Please note that Delta Lake tables are only [supported for Glue versions `3.0` and `4.0`](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-format-delta-lake.html).
-{{< /callout >}}
+:::
 
 To illustrate this feature, we take a closer look at a Glue sample job that creates a Delta Lake table, puts some data into it, and then queries data from the table.
 
@@ -390,18 +424,16 @@ print("SQL result:", result.toJSON().collect())
 
 You can now run the following commands to create and start the Glue job:
 
-{{< command >}}
-$ awslocal s3 mb s3://test
-$ awslocal s3 cp job.py s3://test/job.py
-$ awslocal glue create-job --name job1 --role arn:aws:iam::000000000000:role/test \
-  --glue-version 4.0 --command '{"Name": "pythonshell", "ScriptLocation": "s3://test/job.py"}'
-$ awslocal glue start-job-run --job-name job1
-<disable-copy>
-{
-    "JobRunId": "c9471f40"
-}
-</disable-copy>
-{{< / command >}}
+```bash
+awslocal s3 mb s3://test
+awslocal s3 cp job.py s3://test/job.py
+awslocal glue create-job --name job1 --role arn:aws:iam::000000000000:role/test \
+    --glue-version 4.0 \
+    --command '{"Name": "pythonshell", "ScriptLocation": "s3://test/job.py"}'
+awslocal glue start-job-run --job-name job1
+```
+
+Retrieve the job run ID from the output of the `start-job-run` command.
 
 The execution of the Glue job can take a few moments - once the job has finished executing, you should see a log line with the query results in the LocalStack container logs, similar to the output below:
 
@@ -411,20 +443,20 @@ SQL result: ['{"name":"test1","key":123}', '{"name":"test2","key":456}']
 ```
 
 In order to see the logs above, make sure to enable `DEBUG=1` in the LocalStack container environment.
-Alternatively, you can also retrieve the job logs programmatically via the CloudWatch Logs API - for example, using the job run ID `c9471f40` from above:
-{{< command >}}
-$ awslocal logs get-log-events --log-group-name /aws-glue/jobs/logs-v2 --log-stream-name c9471f40
-<disable-copy>
-{ "events": [ ... ] }
-</disable-copy>
-{{< / command >}}
+Alternatively, you can also retrieve the job logs programmatically via the CloudWatch Logs API - for example, using the job run ID from the above command.
+
+```bash
+awslocal logs get-log-events \
+    --log-group-name /aws-glue/jobs/logs-v2 \
+    --log-stream-name <JobRunId>
+```
 
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for Glue.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Glue** under the **Analytics** section.
 
-<img src="glue-resource-browser.png" alt="Glue Resource Browser" title="Glue Resource Browser" width="900" />
+![Glue Resource Browser](/images/aws/glue-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 
@@ -437,12 +469,6 @@ The Resource Browser allows you to perform the following actions:
 - **Manage Schemas**: Create, view, and delete Schemas in your Glue catalog by clicking on the **Schemas** tab.
 
 ## Examples
-
-The following Developer Hub applications are using Glue:
-{{< applications service_filter="glu">}}
-
-The following tutorials are using Glue:
-{{< tutorials "/tutorials/schema-evolution-glue-msk">}}
 
 The following code snippets and sample applications provide practical examples of how to use Glue in LocalStack for various use cases:
 

@@ -1,6 +1,5 @@
 ---
 title: "EventBridge Scheduler"
-linkTitle: "EventBridge Scheduler"
 description: Get started with EventBridge Scheduler on LocalStack
 tags: ["Free"]
 ---
@@ -12,7 +11,7 @@ You can use EventBridge Scheduler to create schedules that run at a specific tim
 You can also use EventBridge Scheduler to create schedules that run within a flexible time window.
 
 LocalStack allows you to use the Scheduler APIs in your local environment to create and run schedules.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_scheduler" >}}), which provides information on the extent of EventBridge Scheduler's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of EventBridge Scheduler's integration with LocalStack.
 
 ## Getting started
 
@@ -26,18 +25,18 @@ We will demonstrate how you can create a new schedule, list all schedules, and t
 You can create a new SQS queue using the [`CreateQueue`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_CreateQueue.html) API.
 Run the following command to create a new SQS queue:
 
-{{< command >}}
-$ awslocal sqs create-queue --queue-name local-notifications
-{{< /command >}}
+```bash
+awslocal sqs create-queue --queue-name local-notifications
+```
 
 You can fetch the Queue ARN using the [`GetQueueAttributes`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_GetQueueAttributes.html) API.
 Run the following command to fetch the Queue ARN by specifying the Queue URL:
 
-{{< command >}}
-$ awslocal sqs get-queue-attributes \
+```bash
+awslocal sqs get-queue-attributes \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/local-notifications \
     --attribute-names All
-{{< /command >}}
+```
 
 Save the Queue ARN for later use.
 
@@ -46,13 +45,13 @@ Save the Queue ARN for later use.
 You can create a new schedule using the [`CreateSchedule`](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_CreateSchedule.html) API.
 Run the following command to create a new schedule:
 
-{{< command >}}
-$ awslocal scheduler create-schedule \
+```bash
+awslocal scheduler create-schedule \
     --name sqs-templated-schedule \
     --schedule-expression 'rate(5 minutes)' \
     --target '{"RoleArn": "arn:aws:iam::000000000000:role/schedule-role", "Arn":"arn:aws:sqs:us-east-1:000000000000:local-notifications", "Input": "test" }' \
     --flexible-time-window '{ "Mode": "OFF"}'
-{{< /command >}}
+```
 
 The following output is displayed:
 
@@ -67,9 +66,9 @@ The following output is displayed:
 You can list all schedules using the [`ListSchedules`](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_ListSchedules.html) API.
 Run the following command to list all schedules:
 
-{{< command >}}
-$ awslocal scheduler list-schedules
-{{< /command >}}
+```bash
+awslocal scheduler list-schedules
+```
 
 The following output is displayed:
 
@@ -96,19 +95,18 @@ The following output is displayed:
 You can tag a schedule using the [`TagResource`](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_TagResource.html) API.
 Run the following command to tag a schedule:
 
-{{< command >}}
-$ awslocal scheduler tag-resource \
+```bash
+awslocal scheduler tag-resource \
     --resource-arn arn:aws:scheduler:us-east-1:000000000000:schedule/default/sqs-templated-schedule \
     --tags Key=Name,Value=Test
-{{< /command >}}
+```
 
 You can view the tags associated with a schedule using the [`ListTagsForResource`](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_ListTagsForResource.html) API.
 Run the following command to list the tags associated with a schedule:
 
-{{< command >}}
-$ awslocal scheduler list-tags-for-resource \
-    --resource-arn arn:aws:scheduler:us-east-1:000000000000:schedule/default/sqs-templated-schedule
-{{< /command >}}
+```bash
+awslocal scheduler list-tags-for-resource \
+    --resource-arn arn:aws:scheduler:us-east-1:00000000
 
 The following output is displayed:
 

@@ -2,8 +2,7 @@
 title: "Transfer"
 linkTitle: "Transfer"
 tags: ["Ultimate"]
-description: >
-  Get started with Amazon Transfer on LocalStack
+description: Get started with Transfer on LocalStack
 ---
 
 ## Introduction

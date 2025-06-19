@@ -1,6 +1,5 @@
 ---
 title: "ElastiCache"
-linkTitle: "ElastiCache"
 tags: ["Base"]
 description: Get started with AWS ElastiCache on LocalStack
 persistence: supported
@@ -15,7 +14,7 @@ It supports popular open-source caching engines like Redis and Memcached (LocalS
 providing a means to efficiently store and retrieve frequently accessed data with minimal latency.
 
 LocalStack supports ElastiCache via the Pro offering, allowing you to use the ElastiCache APIs in your local environment.
-The supported APIs are available on our [API Coverage Page]({{< ref "references/coverage/coverage_elasticache" >}}),
+The supported APIs are available on our [API Coverage Page](),
 which provides information on the extent of ElastiCache integration with LocalStack.
 
 ## Getting started
@@ -26,82 +25,87 @@ This guide is designed for users new to ElastiCache and assumes basic knowledge 
 
 After starting LocalStack Pro, you can create a cluster with the following command.
 
-{{< command >}}
-$ awslocal elasticache create-cache-cluster \
+```bash
+awslocal elasticache create-cache-cluster \
   --cache-cluster-id my-redis-cluster \
   --cache-node-type cache.t2.micro \
   --engine redis \
   --num-cache-nodes 1
-{{< /command>}}
+```
 
 Wait for it to be available, then you can use the cluster endpoint for Redis operations.
 
-{{< command >}}
-$ awslocal elasticache describe-cache-clusters --show-cache-node-info --query "CacheClusters[0].CacheNodes[0].Endpoint"
+```bash
+awslocal elasticache describe-cache-clusters --show-cache-node-info --query "CacheClusters[0].CacheNodes[0].Endpoint"
+```
+
+The output will be:
+
+```json
 {
   "Address": "localhost.localstack.cloud",
   "Port": 4510
 }
-{{< /command >}}
+```
 
-The cache cluster uses a random port of the [external service port range]({{< ref "external-ports" >}}).
+The cache cluster uses a random port of the [external service port range]().
 Use this port number to connect to the Redis instance like so:
 
-{{< command >}}
-$ redis-cli -p 4510 ping
+```bash
+redis-cli -p 4510 ping
 PONG
-$ redis-cli -p 4510 set foo bar
+redis-cli -p 4510 set foo bar
 OK
-$ redis-cli -p 4510 get foo
+redis-cli -p 4510 get foo
 "bar"
-{{< / command >}}
+```
 
 ### Replication groups in non-cluster mode
 
-{{< command >}}
-$ awslocal elasticache create-replication-group \
+```bash
+awslocal elasticache create-replication-group \
   --replication-group-id my-redis-replication-group \
   --replication-group-description 'my replication group' \
   --engine redis \
   --cache-node-type cache.t2.micro \
   --num-cache-clusters 3
-{{< /command >}}
+```
 
 Wait for it to be available.
 When running the following command, you should see one node group when running:
 
-{{< command >}}
-$ awslocal elasticache describe-replication-groups --replication-group-id my-redis-replication-group
-{{< /command >}}
+```bash
+awslocal elasticache describe-replication-groups --replication-group-id my-redis-replication-group
+```
 
 To retrieve the primary endpoint:
 
-{{< command >}}
-$ awslocal elasticache describe-replication-groups --replication-group-id my-redis-replication-group \
+```bash
+awslocal elasticache describe-replication-groups --replication-group-id my-redis-replication-group \
   --query "ReplicationGroups[0].NodeGroups[0].PrimaryEndpoint"
-{{< /command >}}
+```
 
 ### Replication groups in cluster mode
 
 The cluster mode is enabled by using `--num-node-groups` and `--replicas-per-node-group`:
 
-{{< command >}}
-$ awslocal elasticache create-replication-group \
+```bash
+awslocal elasticache create-replication-group \
   --engine redis \
   --replication-group-id my-clustered-redis-replication-group \
   --replication-group-description 'my clustered replication group' \
   --cache-node-type cache.t2.micro \
   --num-node-groups 2 \
   --replicas-per-node-group 2
-{{< /command >}}
+```
 
 Note that the group nodes do not have a primary endpoint.
 Instead they have a `ConfigurationEndpoint`, which you can connect to using `redis-cli -c` where `-c` is for cluster mode.
 
-{{< command >}}
-$ awslocal elasticache describe-replication-groups --replication-group-id my-clustered-redis-replication-group \
+```bash
+awslocal elasticache describe-replication-groups --replication-group-id my-clustered-redis-replication-group \
     --query "ReplicationGroups[0].ConfigurationEndpoint"
-{{< /command >}}
+```
 
 ## Container mode
 
@@ -119,11 +123,11 @@ You can access the Resource Browser by opening the LocalStack Web Application in
 In the ElastiCache resource browser you can:
 
 * List and remove existing cache clusters
-  {{< img src="elasticache-resource-browser-list.png" alt="Create a ElastiCache cluster in the resource browser" >}}
+  ![List existing cache clusters](/images/aws/elasticache-resource-browser-list.png)
 * View details of cache clusters
-  {{< img src="elasticache-resource-browser-show.png" alt="Create a ElastiCache cluster in the resource browser" >}}
+  ![View details of cache clusters](/images/aws/elasticache-resource-browser-show.png)
 * Create new cache clusters
-  {{< img src="elasticache-resource-browser-create.png" alt="Create a ElastiCache cluster in the resource browser" >}}
+  ![Create a ElastiCache cluster in the resource browser](/images/aws/elasticache-resource-browser-create.png)
 
 ## Current Limitations
 

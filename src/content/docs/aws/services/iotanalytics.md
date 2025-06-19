@@ -1,14 +1,13 @@
 ---
 title: "IoT Analytics"
-linkTitle: "IoT Analytics"
 tags: ["Ultimate"]
 description: Get started with IoT Analytics on LocalStack
 ---
 
-{{< callout "warning" >}}
+:::danger
 IoT Analytics will be [retired on 15 December 2025](https://docs.aws.amazon.com/iotanalytics/latest/userguide/iotanalytics-end-of-support.html).
 It will be removed from LocalStack soon after this date.
-{{< /callout >}}
+:::
 
 ## Introduction
 
@@ -16,7 +15,7 @@ IoT Analytics is a managed service that enables you to collect, store, process, 
 It provides a set of tools to build IoT applications without having to manage the underlying infrastructure.
 
 LocalStack allows you to use the IoT Analytics APIs to create and manage channels, data stores, and pipelines in your local environment.
-The supported APIs are available on our [API Coverage Page]({{< ref "coverage_iotanalytics" >}}), which provides information on the extent of IoT Analytics integration with LocalStack.
+The supported APIs are available on our [API Coverage Page](), which provides information on the extent of IoT Analytics integration with LocalStack.
 
 ## Getting started
 
@@ -30,15 +29,15 @@ We will demonstrate how to create a channel, data store, and pipeline within IoT
 You can create a channel using the [`CreateChannel`](https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_CreateChannel.html) API.
 Run the following command to create a channel named `mychannel`:
 
-{{< command >}}
-$ awslocal iotanalytics create-channel --channel-name mychannel
-{{< /command >}}
+```bash
+awslocal iotanalytics create-channel --channel-name mychannel
+```
 
 You can use the [`DescribeChannel`](https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DescribeChannel.html) API to check the status of the channel:
 
-{{< command >}}
-$ awslocal iotanalytics describe-channel --channel-name mychannel
-{{< /command >}}
+```bash
+awslocal iotanalytics describe-channel --channel-name mychannel
+```
 
 The following output is displayed:
 
@@ -56,15 +55,15 @@ The following output is displayed:
 You can create a data store using the [`CreateDatastore`](https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_CreateDatastore.html) API.
 Run the following command to create a data store named `mydatastore`:
 
-{{< command >}}
-$ awslocal iotanalytics create-datastore --datastore-name mydatastore
-{{< /command >}}
+```bash
+awslocal iotanalytics create-datastore --datastore-name mydatastore
+```
 
 You can use the [`DescribeDatastore`](https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DescribeDatastore.html) API to check the status of the data store:
 
-{{< command >}}
-$ awslocal iotanalytics describe-datastore --datastore-name mydatastore
-{{< /command >}}
+```bash
+awslocal iotanalytics describe-datastore --datastore-name mydatastore
+```
 
 The following output is displayed:
 
@@ -82,9 +81,9 @@ The following output is displayed:
 You can create a pipeline using the [`CreatePipeline`](https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_CreatePipeline.html) API.
 Run the following command to create a pipeline named `mypipeline`:
 
-{{< command >}}
-$ awslocal iotanalytics create-pipeline --cli-input-json file://mypipeline.json
-{{< /command >}}
+```bash
+awslocal iotanalytics create-pipeline --cli-input-json file://mypipeline.json
+```
 
 The `mypipeline.json` file contains the following content:
 
@@ -111,9 +110,9 @@ The `mypipeline.json` file contains the following content:
 
 You can use the [`DescribePipeline`](https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_DescribePipeline.html) API to check the status of the pipeline:
 
-{{< command >}}
-$ awslocal iotanalytics describe-pipeline  --pipeline-name mypipeline
-{{< /command >}}
+```bash
+awslocal iotanalytics describe-pipeline  --pipeline-name mypipeline
+```
 
 The following output is displayed:
 

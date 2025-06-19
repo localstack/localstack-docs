@@ -1,6 +1,5 @@
 ---
 title: "Key Management Service (KMS)"
-linkTitle: "Key Management Service (KMS)"
 description: Get started with Key Management Service (KMS) on LocalStack
 persistence: supported
 tags: ["Free"]
@@ -14,7 +13,7 @@ KMS allows you to create, delete, list, and update aliases, friendly names for y
 You can check [the official AWS documentation](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html) to understand the basic terms and concepts used in the KMS.
 
 LocalStack allows you to use the KMS APIs in your local environment to create, edit, and view symmetric and asymmetric KMS keys, including HMAC keys.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_kms" >}}), which provides information on the extent of KMS's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of KMS's integration with LocalStack.
 
 ## Getting started
 
@@ -28,24 +27,24 @@ We will demonstrate how to create a simple symmetric encryption key and use it t
 To generate a new key within the KMS, you can use the [`CreateKey`](https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html) API.
 Execute the following command to create a new key:
 
-{{< command >}}
-$ awslocal kms create-key
-{{</ command >}}
+```bash
+awslocal kms create-key
+```
 
 By default, this command generates a symmetric encryption key, eliminating the need for any additional arguments.
 You can take a look at the `KeyId` of the freshly generated key in the output, and save it for future use.
 
 In case the key ID is misplaced, it is possible to retrieve a comprehensive list of IDs and [Amazon Resource Names](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) (ARNs) for all available keys through the following command:
 
-{{< command >}}
-$ awslocal kms list-keys
-{{</ command >}}
+```bash
+awslocal kms list-keys
+```
 
 Additionally, if needed, you can obtain extensive details about a specific key by providing its key ID or ARN using the subsequent command:
 
-{{< command >}}
-$ awslocal kms describe-key --key-id <KEY_ID>
-{{</ command >}}
+```bash
+awslocal kms describe-key --key-id <KEY_ID>
+```
 
 ### Encrypt the data
 
@@ -54,14 +53,14 @@ For instance, let's consider encrypting "_some important stuff_".
 To do so, you can use the [`Encrypt`](https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html) API.
 Execute the following command to encrypt the data:
 
-{{< command >}}
-$ awslocal kms encrypt \
+```bash
+awslocal kms encrypt \
       --key-id 010a4301-4205-4df8-ae52-4c2895d47326 \
       --plaintext "some important stuff" \
       --output text \
       --query CiphertextBlob \
   | base64 --decode > my_encrypted_data
-{{</ command >}}
+```
 
 You will notice that a new file named `my_encrypted_data` has been created in your current directory.
 This file contains the encrypted data, which can be decrypted using the same key.
@@ -74,13 +73,13 @@ However, with asymmetric keys the `KEY_ID` has to be specified.
 
 Execute the following command to decrypt the data:
 
-{{< command >}}
-$ awslocal kms decrypt \
+```bash
+awslocal kms decrypt \
       --ciphertext-blob fileb://my_encrypted_data \
       --output text \
       --query Plaintext \
   | base64 --decode
-{{</ command >}}
+```
 
 Similar to the previous `Encrypt` operation, to retrieve the actual data, it's necessary to decode the Base64-encoded output.
 To achieve this, employ the `output` and `query` parameters along with the `base64` tool as before.
@@ -95,9 +94,8 @@ some important stuff
 The LocalStack Web Application provides a Resource Browser for managing KMS keys.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **KMS** under the **Security Identity Compliance** section.
 
-<img src="kms-resource-browser.png" alt="KMS Resource Browser" title="KMS Resource Browser" width="900" />
-<br>
-<br>
+![KMS Resource Browser](/images/aws/kms-resource-browser.png)
+
 The Resource Browser allows you to perform the following actions:
 
 - **Create Key**: Create a new KMS key by specifying the **Policy**, **Key Usage**, **Tags**, **Multi Region**, **Customer Master Key Spec**, and more.
@@ -113,9 +111,9 @@ This can be useful to pre-seed a test environment and use a static `KeyId` for y
 
 Below is a simple example to create a key with a custom `KeyId` (note that the `KeyId` should have the format of a UUID):
 
-{{< command >}}
-$ awslocal kms create-key --tags '[{"TagKey":"_custom_id_","TagValue":"00000000-0000-0000-0000-000000000001"}]'
-{{< / command >}}
+```bash
+awslocal kms create-key --tags '[{"TagKey":"_custom_id_","TagValue":"00000000-0000-0000-0000-000000000001"}]'
+```
 
 The following output will be displayed:
 
@@ -135,21 +133,32 @@ This can be useful to pre-seed a development environment so values encrypted wit
 
 Here is an example of using custom key material with the value being base64 encoded:
 
-{{< command >}}
-$ echo 'dGhpc2lzYXNlY3VyZWtleQ==' | base64 -d
-<disable-copy>
+```bash
+echo 'dGhpc2lzYXNlY3VyZWtleQ==' | base64 -d
+```
+
+The following output will be displayed:
+
+```text
 thisisasecurekey
-</disable-copy>
-$ awslocal kms create-key --tags '[{"TagKey":"_custom_key_material_","TagValue":"dGhpc2lzYXNlY3VyZWtleQ=="}]'
-<disable-copy>
+```
+
+You can create a key with custom key material using the following command:
+
+```bash
+awslocal kms create-key --tags '[{"TagKey":"_custom_key_material_","TagValue":"dGhpc2lzYXNlY3VyZWtleQ=="}]'
+```
+
+The following output will be displayed:
+
+```json
 {
     "KeyMetadata": {
         "AWSAccountId": "000000000000",
         "KeyId": "00000000-0000-0000-0000-000000000001",
     ....
 }
-</disable-copy>
-{{< / command >}}
+```
 
 ## Current Limitations
 

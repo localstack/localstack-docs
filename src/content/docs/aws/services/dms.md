@@ -1,6 +1,5 @@
 ---
 title: "Database Migration Service (DMS)"
-linkTitle: "Database Migration Service (DMS)"
 description: Get started with Database Migration Service (DMS) on LocalStack
 tags: ["Ultimate"]
 ---
@@ -11,12 +10,12 @@ AWS Database Migration Service provides migration solution from databases, data 
 The migration can be homogeneous (source and target have the same type), but often times is heterogeneous as it supports migration from various sources to various targets (self-hosted and AWS services).
 
 LocalStack only supports selected use cases for DMS at the moment.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_dms" >}}), which provides information on the extent of DMS integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of DMS integration with LocalStack.
 
-{{< callout "note">}}
+:::note
 DMS is in a preview state, supporting only [selected use cases](#supported-use-cases).
 You need to set the env `ENABLE_DMS=1` in order to activate it.
-{{< /callout >}}
+:::
 
 ## Getting started
 
@@ -29,13 +28,13 @@ You can run a DMS sample showcasing MariaDB source and Kinesis target from our [
 
 To follow the sample, simply clone the repository:
 
-```sh
+```bash
 git clone https://github.com/localstack-samples/sample-dms-kinesis-rds-mariadb.git
 ```
 
 Next, start LocalStack (there is a docker-compose included, setting the `ENABLE_DMS=1` flag):
 
-```sh
+```bash
 export LOCALSTACK_AUTH_TOKEN=<your-auth-token> # this must be a enterprise license token
 docker-compose up
 ```
@@ -53,7 +52,7 @@ make run
 
 You will then see some log output, indicating the status of the ongoing replication:
 
-```sh
+```bash
 ************
 STARTING FULL LOAD FLOW
 ************
@@ -147,8 +146,7 @@ The LocalStack Web Application provides a Resource Browser for managing:
 
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Database Migration Service** under the **Migration and transfer** section.
 
-<img src="dms-resource-browser.png" alt="DMS Resource Browser" title="Cognito Resource Browser" width="900" />
-<br><br>
+![DMS Resource Browser](/images/aws/dms-resource-browser.png)
 
 The Resource Browser supports CRD (Create, Read, Delete) operations on DMS resources.
 
@@ -176,7 +174,7 @@ The Resource Browser supports CRD (Create, Read, Delete) operations on DMS resou
 For RDS MariaDB and RDS MySQL it is not yet possible to set custom db-parameters.
 In order to make those databases work with `cdc` migration for DMS, some default db-parameters are changed upon start if the `ENABLE_DMS=1` flag is set:
 
-```sh
+```bash
 binlog_checksum=NONE
 binlog_row_image=FULL
 binlog_format=ROW

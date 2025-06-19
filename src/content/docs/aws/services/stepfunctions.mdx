@@ -1,9 +1,7 @@
 ---
 title: "Step Functions"
-linkTitle: "Step Functions"
 tags: ["Free"]
-description: >
-    Get started with Step Functions on LocalStack
+description: Get started with Step Functions on LocalStack
 ---
 
 ## Introduction
@@ -13,7 +11,7 @@ It provides a JSON-based structured language called Amazon States Language (ASL)
 Thus making it easier to build and maintain complex and distributed applications.
 
 LocalStack allows you to use the Step Functions APIs in your local environment to create, execute, update, and delete state machines locally.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_stepfunctions" >}}), which provides information on the extent of Step Function's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of Step Function's integration with LocalStack.
 
 ## Getting started
 
@@ -28,8 +26,8 @@ You can create a state machine using the [`CreateStateMachine`](https://docs.aws
 The API requires the name of the state machine, the state machine definition, and the role ARN that the state machine will assume to call AWS services.
 Run the following command to create a state machine:
 
-{{< command >}}
-$ awslocal stepfunctions create-state-machine \
+```bash
+awslocal stepfunctions create-state-machine \
     --name "CreateAndListBuckets" \
     --definition '{
         "Comment": "Create bucket and list buckets",
@@ -51,7 +49,7 @@ $ awslocal stepfunctions create-state-machine \
         }
     }' \
     --role-arn "arn:aws:iam::000000000000:role/stepfunctions-role"
-{{< /command >}}
+```
 
 The output of the above command is the ARN of the state machine:
 
@@ -68,10 +66,10 @@ You can execute the state machine using the [`StartExecution`](https://docs.aws.
 The API requires the state machine's ARN and the state machine's input.
 Run the following command to execute the state machine:
 
-{{< command >}}
-$ awslocal stepfunctions start-execution \
+```bash
+awslocal stepfunctions start-execution \
     --state-machine-arn "arn:aws:states:us-east-1:000000000000:stateMachine:CreateAndListBuckets"
-{{< /command >}}
+```
 
 The output of the above command is the execution ARN:
 
@@ -87,10 +85,10 @@ The output of the above command is the execution ARN:
 To check the status of the execution, you can use the [`DescribeExecution`](https://docs.aws.amazon.com/step-functions/latest/apireference/API_DescribeExecution.html) API.
 Run the following command to describe the execution:
 
-{{< command >}}
-$ awslocal stepfunctions describe-execution \
+```bash
+awslocal stepfunctions describe-execution \
         --execution-arn "arn:aws:states:us-east-1:000000000000:execution:CreateAndListBuckets:bf7d2138-e96f-42d1-b1f9-41f0c1c7bc3e"
-{{< /command >}}
+```
 
 Replace the `execution-arn` with the ARN of the execution you want to describe.
 
@@ -161,10 +159,10 @@ LocalStack can also serve as a drop-in replacement for [AWS Step Functions Local
 It supports test cases with mocked Task states and maintains compatibility with existing Step Functions Local configurations.
 This functionality is extended in LocalStack by providing access to the latest Step Functions features such as [JSONata and Variables](https://blog.localstack.cloud/aws-step-functions-made-easy/), as well as the ability to enable both mocked and emulated service interactions emulated by LocalStack.
 
-{{< callout >}}
+:::note
 LocalStack does not validate response formats.
 Ensure the payload structure in the mocked responses matches what the real service expects.
-{{< /callout >}}
+:::
 
 ### Identify a State Machine for Mocked Integrations
 
@@ -287,9 +285,9 @@ In the example above:
 - `Return`: Simulates a successful response by returning a predefined payload.  
 - `Throw`: Simulates a failure by returning an `Error` and an optional `Cause`.
 
-{{< callout >}}
+:::note
 Each entry must have **either** `Return` or `Throw`, but cannot have both.
-{{< /callout >}}
+:::
 
 Here is a complete example of the `MockedResponses` section:
 
@@ -390,12 +388,17 @@ Set the `SFN_MOCK_CONFIG` environment variable to the path of your mock configur
 
 If you're running LocalStack in Docker, mount the file and pass the variable as shown below:
 
-{{< tabpane >}}
-{{< tab header="LocalStack CLI" lang="shell" >}}
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Tabs>
+<TabItem label="LocalStack CLI">
+```bash
 LOCALSTACK_SFN_MOCK_CONFIG=/tmp/MockConfigFile.json \
 localstack start --volume /path/to/MockConfigFile.json:/tmp/MockConfigFile.json
-{{< /tab >}}
-{{< tab header="Docker Compose" lang="yaml" >}}
+```
+</TabItem>
+<TabItem label="Docker Compose"> 
+```yaml
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -411,8 +414,9 @@ services:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./MockConfigFile.json:/tmp/MockConfigFile.json"
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ### Run Test Cases with Mocked Integrations
 
@@ -420,12 +424,12 @@ Create the state machine to match the name defined in the mock configuration fil
 
 In this example, create the `LambdaSQSIntegration` state machine using:
 
-{{< command >}}
-$ awslocal stepfunctions create-state-machine \
+```bash
+awslocal stepfunctions create-state-machine \
     --definition file://LambdaSQSIntegration.json \
     --name "LambdaSQSIntegration" \
     --role-arn "arn:aws:iam::000000000000:role/service-role/testrole"
-{{< /command >}}
+```
 
 After the state machine is created and correctly named, you can run test cases defined in the mock configuration file using the [`StartExecution`](https://docs.aws.amazon.com/step-functions/latest/apireference/API_StartExecution.html) API.
 
@@ -435,22 +439,22 @@ This tells LocalStack to apply the corresponding mocked responses from the confi
 
 For example, to run the `BaseCase` test case:
 
-{{< command >}}
-$ awslocal stepfunctions start-execution \
+```bash
+awslocal stepfunctions start-execution \
     --state-machine arn:aws:states:us-east-1:000000000000:stateMachine:LambdaSQSIntegration#BaseCase \
     --input '{"name": "John", "surname": "smith"}' \
     --name "MockExecutionBaseCase"
-{{< /command >}}
+```
 
 During execution, any state mapped in the mock config will use the predefined response.  
 States without mock entries invoke the actual emulated service as usual.
 
 You can inspect the execution using the [`DescribeExecution`](https://docs.aws.amazon.com/step-functions/latest/apireference/API_DescribeExecution.html) API:
 
-{{< command >}}
-$ awslocal stepfunctions describe-execution \
+```bash
+awslocal stepfunctions describe-execution \
     --execution-arn "arn:aws:states:us-east-1:000000000000:execution:LambdaSQSIntegration:MockExecutionBaseCase"
-{{< /command >}}
+```
 
 The sample output shows the execution details, including the state machine ARN, execution ARN, status, start and stop dates, input, and output:
 
@@ -475,10 +479,10 @@ The sample output shows the execution details, including the state machine ARN, 
 
 You can also use the [`GetExecutionHistory`](https://docs.aws.amazon.com/step-functions/latest/apireference/API_GetExecutionHistory.html) API to retrieve the execution history, including the events and their details.
 
-{{< command >}}
-$ awslocal stepfunctions get-execution-history \
+```bash
+awslocal stepfunctions get-execution-history \
     --execution-arn "arn:aws:states:us-east-1:000000000000:execution:LambdaSQSIntegration:MockExecutionBaseCase"
-{{< /command >}}
+```
 
 This will return the full execution history, including entries that indicate how mocked responses were applied to Lambda and SQS states.
 
@@ -522,9 +526,7 @@ The LocalStack Web Application includes a **Resource Browser** for managing Step
 
 To access it, open the LocalStack Web UI in your browser, navigate to the **Resource Browser** section, and click **Step Functions** under **App Integration**.
 
-<img src="stepfunctions-resource-browser.png" alt="Step Functions Resource Browser" title="Step Functions Resource Browser" width="900" />
-<br>
-<br>
+![Step Functions Resource Browser](/images/aws/stepfunctions-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 

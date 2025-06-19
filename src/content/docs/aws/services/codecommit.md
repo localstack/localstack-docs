@@ -1,15 +1,14 @@
 ---
 title: "CodeCommit"
-linkTitle: "CodeCommit"
 description: Get started with CodeCommit on LocalStack
 tags: ["Base"]
 persistence: supported
 ---
 
-{{< callout "note" >}}
+:::danger
 AWS has discontinued new feature development for CodeCommit effective [25 July 2024](https://aws.amazon.com/blogs/devops/how-to-migrate-your-aws-codecommit-repository-to-another-git-provider/).
 However, LocalStack will continue making parity improvements.
-{{< /callout >}}
+:::
 
 ## Introduction
 
@@ -19,7 +18,7 @@ You can also use standard Git commands or CodeCommit APIs (using AWS CLI or SDKs
 CodeCommit also uses identity-based policies, which can be attached to IAM users, groups, and roles, ensuring secure and granular access control.
 
 LocalStack allows you to use the CodeCommit APIs in your local environment to create new repositories, push your commits, and manage the repositories.
-The supported APIs are available on our [API coverage page]({{< ref "coverage_codecommit" >}}), which provides information on the extent of CodeCommit's integration with LocalStack.
+The supported APIs are available on our [API coverage page](), which provides information on the extent of CodeCommit's integration with LocalStack.
 
 ## Getting started
 
@@ -35,12 +34,12 @@ You need to specify the repository name, repository description, and tags.
 
 Run the following command to create a new repository named `localstack-repo`:
 
-{{< command >}}
+```bash
 $ awslocal codecommit create-repository \
     --repository-name localstack-repo \
     --repository-description "A demo repository to showcase LocalStack's CodeCommit" \
     --tags Team=LocalStack
-{{< /command >}}
+```
 
 If successful, the command will return the following output:
 
@@ -67,9 +66,9 @@ The repository URL is the `cloneUrlHttp` value returned by the `CreateRepository
 
 Run the following command to clone the repository to a local directory named `localstack-repo`:
 
-{{< command >}}
-$ git clone git://localhost:4510/localstack-repo
-{{< /command >}}
+```bash
+git clone git://localhost:4510/localstack-repo
+```
 
 You will notice that the repository is empty.
 This is because we have not pushed any commits to the repository yet.
@@ -83,11 +82,11 @@ Then, you can use [`git commit`](https://git-scm.com/docs/git-commit) to commit 
 
 Run the following command to push the file to the repository:
 
-{{< command >}}
-$ git add README.md
-$ git commit -m "Add README.md"
-$ git push
-{{< /command >}}
+```bash
+git add README.md
+git commit -m "Add README.md"
+git push
+```
 
 If successful, this command returns output similar to the following:
 
@@ -102,7 +101,7 @@ To git://localhost:4510/localstack-repo
 The LocalStack Web Application provides a Resource Browser for managing CodeCommit repositories.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resource Browser** section, and then clicking on **CodeCommit** under the **Developer Tools** section.
 
-<img src="codecommit-resource-browser.png" alt="CodeCommit Resource Browser" title="CodeCommit Resource Browser" width="900" />
+![CodeCommit Resource Browser](/images/aws/codecommit-resource-browser.png)
 
 The Resource Browser allows you to perform the following actions:
 
