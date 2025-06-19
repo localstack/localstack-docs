@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import { TutorialsShowcase } from './tutorials/TutorialsShowcase';
+
+// Import data for filters
+import services from '../data/developerhub/services.json';
+import platforms from '../data/developerhub/platforms.json';
+import deployments from '../data/developerhub/deployments.json';
+
+const allTutorials = await getCollection('docs', ({ id }) => {
+  return id.startsWith('aws/tutorials/') && !id.includes('/index');
+});
+
+const tutorialData = allTutorials.map(tutorial => {
+  const title = tutorial.data.title || 'Unknown Tutorial';
+  const description = tutorial.data.description || `Tutorial: ${title}`;
+  const slug = tutorial.slug ? tutorial.slug.replace('aws/tutorials/', '') : '';
+  
+  return {
+    title,
+    description,
+    slug,
+    leadimage: tutorial.data.leadimage,
+    services: tutorial.data.services || [],
+    platform: tutorial.data.platform || [],
+    deployment: tutorial.data.deployment || [],
+    pro: tutorial.data.pro || false,
+  };
+});
+---
+
+<TutorialsShowcase
+  tutorials={tutorialData}
+  services={services}
+  platforms={platforms}
+  deployments={deployments}
+  client:load
+/> 
