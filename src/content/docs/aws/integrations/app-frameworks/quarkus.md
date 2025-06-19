@@ -140,7 +140,7 @@ All the other configuration properties can be overridden at runtime.
 | `quarkus.aws.devservices.localstack.additional-services."additional-services".service-name` | string                 | `localstack`                         |
 | `quarkus.aws.devservices.localstack.additional-services."additional-services".container-properties` | `Map<String,String>`  |                                      |
 
-{{< callout >}}
+:::note
 - If `quarkus.aws.devservices.localstack.additional-services."additional-services".enabled` is set to `true` and the endpoint-override is not configured, LocalStack will be started and utilized instead of the provided configuration.
   For all services excluding Cognito, LocalStack will function as the core cloud emulator.
    In the case of Cognito, the emulation/mocking will be done by Moto.
@@ -155,7 +155,7 @@ All the other configuration properties can be overridden at runtime.
   Otherwise, it creates a new container with the `quarkus-dev-service-localstack` label set to the specified value.
   In test mode, Dev Services groups services with the same service-name value into a single container instance.
   This property is useful when there's a requirement for multiple shared LocalStack instances.
-{{< /callout >}}
+:::
 
 ### Specific configuration
 
