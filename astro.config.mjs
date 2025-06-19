@@ -66,7 +66,7 @@ export default defineConfig({
             },
             {
               label: 'Local AWS Services',
-              slug: 'aws/aws-services',
+              slug: 'aws/services',
             },
             {
               label: 'Sample Apps',
