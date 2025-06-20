@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import { SearchableAwsServices } from './SearchableAwsServices.tsx';
+
+const allServices = await getCollection('docs', ({ id }) => {
+  return id.startsWith('aws/services/') && !id.includes('/index');
+});
+
+const sortedServices = allServices.sort((a, b) => {
+  const titleA = a.data.title || a.data.linkTitle || '';
+  const titleB = b.data.title || b.data.linkTitle || '';
+  return titleA.localeCompare(titleB);
+});
+
+const serviceData = sortedServices.map(service => {
+  const title = service.data.title || service.data.linkTitle || 'Unknown Service';
+  const description = service.data.description || `Implementation details for ${title} API`;
+  
+  const href = `/${service.id}`;
+  
+  return {
+    title,
+    description,
+    href
+  };
+});
+---
+
+<SearchableAwsServices services={serviceData} client:load /> 
