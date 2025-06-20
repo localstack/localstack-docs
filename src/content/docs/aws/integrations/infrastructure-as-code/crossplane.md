@@ -39,19 +39,23 @@ The installation may take a few minutes.
 In parallel, we can install the `crossplane` command-line tool.
 ```bash
 curl -sL https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh | bash
-{/* <disable-copy>...</disable-copy> */} {/* mdx-disabled */}
 sudo mv crossplane /usr/local/bin
 ```
 To confirm that the installation was successful, we can run these commands, which should yield output similar to the following:
 ```bash
 crossplane version
-{/* <disable-copy>Client Version: v1.17.0 */} {/* mdx-disabled */}
-Server Version: v1.17.0</disable-copy>
+```
+```bash title="Output"
+Client Version: v1.17.0
+Server Version: v1.17.0
+```
 
+```bash
 kubectl get crds | grep crossplane
-{/* <disable-copy>compositions.apiextensions.crossplane.io                     2023-09-03T11:30:36Z */} {/* mdx-disabled */}
+```
+```bash title="Output"
+compositions.apiextensions.crossplane.io                     2023-09-03T11:30:36Z
 configurations.pkg.crossplane.io                             2023-09-03T11:30:36Z
-...</disable-copy>
 ```
 
 ### Installing the Crossplane AWS Provider
@@ -87,12 +91,13 @@ EOF
 
 After some time, the providers should get into healthy state, which can be confirmed via `kubectl get providers`:
 ```bash
-{/* kubectl get providers<disable-copy> */} {/* mdx-disabled */}
+kubectl get providers
+```
+```bash title="Output"
 NAME                          INSTALLED   HEALTHY   PACKAGE                                               AGE
 upbound-provider-family-aws   True        True      xpkg.upbound.io/upbound/provider-family-aws:v0.40.0   2m
 provider-aws-s3               True        True      xpkg.upbound.io/upbound/provider-aws-s3:v0.40.0       2m
 provider-aws-sqs              True        True      xpkg.upbound.io/upbound/provider-aws-sqs:v0.40.0      2m
-</disable-copy>
 ```
 
 Next, we install a secret to define the test credentials for the AWS provider:
@@ -139,12 +144,10 @@ EOF
 ```
 
 :::note
-
 The endpoint `http://host.docker.internal:4566` in the listing above assumes that you are running Kubernetes in the local Docker engine, and that LocalStack is up and running and available on default port `4566`.
 :::
 
 :::note
-
 The Crossplane AWS provider currently requires us to specify the list of `services` for which the local `endpoint` is used as the target URL.
 Please make sure to extend this list accordingly if you're working with additional LocalStack services.
 :::
@@ -169,18 +172,20 @@ EOF
 If everything is wired up correctly, you should now see some activity in the LocalStack log outputs, where Crossplane starts deploying the S3 bucket against LocalStack.
 After some time, the bucket should be transitioning into `ready` state within Crossplane:
 ```bash
-{/* kubectl get buckets<disable-copy> */} {/* mdx-disabled */}
+kubectl get buckets
+```
+```bash
 NAME                     READY   SYNCED   EXTERNAL-NAME            AGE
 crossplane-test-bucket   True    True     crossplane-test-bucket   30s
-</disable-copy>
 ```
 
 ...
 and the bucket it should also be visible when querying the local S3 buckets in LocalStack via [`awslocal`](https://github.com/localstack/awscli-local):
 ```bash
-{/* awslocal s3 ls<disable-copy> */} {/* mdx-disabled */}
+awslocal s3 ls
+```
+```bash title="Output"
 2023-09-03 15:18:47 crossplane-test-bucket
-</disable-copy>
 ```
 
 We can repeat the same exercise for creating a local SQS queue named `crossplane-test-queue`:
@@ -199,22 +204,24 @@ EOF
 
 After some time, the queue should transition into `ready` state in Crossplane:
 ```bash
-{/* kubectl get queues<disable-copy> */} {/* mdx-disabled */}
+kubectl get queues
+```
+```bash title="Output"
 NAME                    READY   SYNCED   EXTERNAL-NAME                                                         AGE
 crossplane-test-queue   True    True     http://host.docker.internal:4566/000000000000/crossplane-test-queue   40s
-</disable-copy>
 ```
 
-...
-and the queue should be visible when listing the SQS queues in LocalStack:
+...and the queue should be visible when listing the SQS queues in LocalStack:
 ```bash
-{/* awslocal sqs list-queues<disable-copy> */} {/* mdx-disabled */}
+awslocal sqs list-queues
+```
+
+```bash title="Output"
 {
     "QueueUrls": [
         "http://localhost:4566/000000000000/crossplane-test-queue"
     ]
 }
-</disable-copy>
 ```
 
 ### Summary

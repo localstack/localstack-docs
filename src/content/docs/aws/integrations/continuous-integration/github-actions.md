@@ -98,7 +98,7 @@ You can preserve your AWS infrastructure with Localstack in various ways.
 ...
 ```
 
-Find more information about cloud pods [here](/user-guide/state-management/cloud-pods/).
+Find more information about cloud pods [here](/aws/capabilities/state-management/cloud-pods).
 
 #### Ephemeral Instance (Preview)
 
@@ -137,7 +137,7 @@ jobs:
           preview-cmd: bin/deploy.sh
 ```
 
-Find out more about ephemeral instances [here](/user-guide/cloud-sandbox/).
+Find out more about ephemeral instances [here](/aws/capabilities/cloud-sandbox/ephemeral-instances).
 
 #### Artifact
 
@@ -168,7 +168,7 @@ Find out more about ephemeral instances [here](/user-guide/cloud-sandbox/).
 ...
 ```
 
-More information about state import and export [here](/user-guide/state-management/export-import-state).
+More information about state import and export [here](/aws/capabilities/state-management/export-import-state).
 
 ## Current Limitations
 

@@ -98,18 +98,3 @@ Our focus for this year will be on resolving issues related to the `UPDATE` supp
 By default, stacks with validated certificates may not be deployed using the `local` lambda executor.
 This originates from the way how CDK ensures the certificate is ready - it creates a single-file lambda function with a single dependency on `aws-sdk` which is usually preinstalled and available globally in lambda runtime.
 When this lambda is executed locally from the `/tmp` folder, the package can not be discovered by Node due to the way how Node package resolution works.
-
-## Other resources
-
-[Hot-reloading Lambda functions with CDK](/aws/tooling/lambda-tools/hot-reloading#aws-cloud-development-kit-cdk-configuration) {/*TODO: #aws-cloud-development-kit-cdk-configuration does not exist in the current docs either */}
-
-## External resources
-
-* [aws-cdk-local](https://github.com/localstack/aws-cdk-local)
-* [AWS CDK API reference](https://docs.aws.amazon.com/cdk/api/latest/docs/aws-construct-library.html)
-* [AWS CDK Developer Guide](https://docs.aws.amazon.com/cdk/latest/guide/home.html)
-
-## Community resources
-
-* https://blog.dennisokeeffe.com/blog/2021-08-07-using-the-aws-cdk-with-localstack-and-aws-cdk-local
-* https://www.youtube.com/watch?v=3_sqr0G9zb0

@@ -129,7 +129,7 @@ To stop LocalStack and remove locally created resources, use:
 localstack stop
 ```
 
-LocalStack is ephemeral and doesn't persist data across restarts. It runs inside a Docker container, and once it’s stopped, all locally created resources are automatically removed. In a future release of the Snowflake emulator, we will provide proper persistence and integration with our [Cloud Pods](https://docs.localstack.cloud/user-guide/state-management/cloud-pods/) feature as well.
+LocalStack is ephemeral and doesn't persist data across restarts. It runs inside a Docker container, and once it’s stopped, all locally created resources are automatically removed. In a future release of the Snowflake emulator, we will provide proper persistence and integration with our [Cloud Pods](https://docs.localstack.cloud/aws/capabilities/state-management/cloud-pods) feature as well.
 
 ## Next steps
 

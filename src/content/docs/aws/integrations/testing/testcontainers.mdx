@@ -99,7 +99,7 @@ using var client = new AmazonS3Client(config);
 ```
 </TabItem>
 <TabItem label="Go">
-```go
+```go showLineNumbers
 func s3Client(ctx context.Context, l *localstack.LocalStackContainer) (*s3.Client, error) {
     // the Testcontainers Docker provider is used to get the host of the Docker daemon
     provider, err := testcontainers.NewDockerProvider()
@@ -150,8 +150,10 @@ S3Client s3 = S3Client.builder()
     .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(localstack.getAccessKey(), localstack.getSecretKey())))
     .region(Region.of(localstack.getRegion()))
     .build();
+```
 </TabItem>
-{{< tab header="NodeJS (typescript)" lang="typescript">}}
+<TabItem label="NodeJS (typescript)">
+```typescript
 const awsConfig = {
       endpoint: localstack.getConnectionUri(),
       credentials: {
@@ -183,7 +185,6 @@ The Testcontainer can be created like this:
 public LocalStackContainer localstack = new LocalStackContainer(DockerImageName("localstack/localstack:2.0.0"))
                                                     .withExposedPorts(4510, 4511, 4512, 4513, 4514) // the port can have any value between 4510-4559, but LS starts from 4510
                                                     .withEnv("LOCALSTACK_AUTH_TOKEN", auth_token); // add your Auth Token here
-
 ```
 
 To find the exposed port which you can use to connect to the instance:

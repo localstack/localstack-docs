@@ -123,4 +123,4 @@ If the IAM policies are not correctly enforced, you will get an unsuccessful res
 
 ## Feature coverage
 
-The feature coverage is documented in the [IAM coverage documentation](/aws/services/iam#aws-api-coverage).
+The feature coverage is documented in the [IAM coverage documentation]().

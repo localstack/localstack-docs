@@ -12,7 +12,6 @@ sidebar:
 CodeBuild allows you to define your build project, set the source code location, and handles the building and testing, while supporting various programming languages, build tools, and runtime environments.
 LocalStack supports CodeBuild out of the box and can be easily integrated into your pipeline to run your tests against a cloud emulator.
 
-{/* TODO: this was an alert before, title=Requirement, change container or remove TODO */}  
 :::note
 LocalStack depends on the Docker socket to emulate your infrastructure.
 To enable it, update your project by ticking **Environment > Additional Configuration > Privileged > Enable this flag if you want to build Docker Images or want your builds to get elevated privileges**.
@@ -57,7 +56,7 @@ phases:
 
 ### Configuration
 
-Get know more about the LocalStack [config options](/references/configuration/).
+Get know more about the LocalStack [config options](/aws/capabilities/config/configuration).
 
 #### Native Runner
 
@@ -171,7 +170,7 @@ artifact:
 
 #### Cloud Pods
 
-Find more information about cloud pods [here](/user-guide/state-management/cloud-pods/).
+Find more information about cloud pods [here](/aws/capabilities/state-management/cloud-pods).
 
 ##### Native Runner
 
@@ -238,11 +237,11 @@ phases:
       ...
 ```
 
-Find out more about [ephemeral instances](/user-guide/cloud-sandbox/).
+Find out more about [ephemeral instances](/aws/capabilities/cloud-sandbox/ephemeral-instances).
 
 #### Artifact
 
-Find out more about [state management](/user-guide/state-management/export-import-state/).
+Find out more about [state management](/aws/capabilities/state-management/export-import-state/).
 
 ```yml
 ...
@@ -275,7 +274,7 @@ To use previously stored artifacts as inputs, set them as a source in the projec
 
 #### Cache
 
-Additional information about [state export and import](/user-guide/state-management/export-import-state/).
+Additional information about [state export and import](/aws/capabilities/state-management/export-import-state/).
 
 ##### Native Runner
 

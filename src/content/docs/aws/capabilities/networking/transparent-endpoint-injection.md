@@ -58,7 +58,7 @@ If Transparent Endpoint Injection is _not_ used, the AWS SDK within Lambda funct
 Transparent Endpoint Injection is only available in LocalStack Pro.
 
 Alternatively, specific AWS endpoints can be resolved to AWS while continuing to use Transparent Endpoint Injection.
-Refer to the [DNS server configuration](/aws/tooling/dns-server#configuration) for skipping selected domain name patterns.
+Refer to the [DNS server configuration](/aws/tooling/dns-server#system-dns-configuration) for skipping selected domain name patterns.
 
 :::danger
 Use this configuration with caution because we generally do not recommend connecting to real AWS from within LocalStack.
