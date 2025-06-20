@@ -1,32 +1,46 @@
 ---
 import { getCollection } from 'astro:content';
 import { TutorialsShowcase } from './tutorials/TutorialsShowcase';
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
 
 // Import data for filters
 import services from '../data/developerhub/services.json';
 import platforms from '../data/developerhub/platforms.json';
 import deployments from '../data/developerhub/deployments.json';
 
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/images/aws/tutorials/*.{jpeg,jpg,png,gif}'
+);
+
 const allTutorials = await getCollection('docs', ({ id }) => {
   return id.startsWith('aws/tutorials/') && !id.includes('/index');
 });
 
-const tutorialData = allTutorials.map(tutorial => {
-  const title = tutorial.data.title || 'Unknown Tutorial';
-  const description = tutorial.data.description || `Tutorial: ${title}`;
-  const slug = tutorial.id; // Use id instead of slug for proper path
-  
-  return {
-    title,
-    description,
-    slug,
-    leadimage: tutorial.data.leadimage,
-    services: tutorial.data.services || [],
-    platform: tutorial.data.platform || [],
-    deployment: tutorial.data.deployment || [],
-    pro: tutorial.data.pro || false,
-  };
-});
+const tutorialData = await Promise.all(
+  allTutorials.map(async (tutorial) => {
+    const title = tutorial.data.title || 'Unknown Tutorial';
+    const description = tutorial.data.description || `Tutorial: ${title}`;
+    const slug = tutorial.id; // Use id instead of slug for proper path
+    const imagePath = `/src/assets/images/aws/tutorials/${tutorial.data.leadimage}`;
+    const optimizedLeadImage = await getImage({
+      src: images[imagePath](),
+      format: 'png',
+      width: 330,
+    });
+
+    return {
+      title,
+      description,
+      slug,
+      leadimage: optimizedLeadImage.src,
+      services: tutorial.data.services || [],
+      platform: tutorial.data.platform || [],
+      deployment: tutorial.data.deployment || [],
+      pro: tutorial.data.pro || false,
+    };
+  })
+);
 ---
 
 <TutorialsShowcase
@@ -35,4 +49,4 @@ const tutorialData = allTutorials.map(tutorial => {
   platforms={platforms}
   deployments={deployments}
   client:load
-/> 
+/>
