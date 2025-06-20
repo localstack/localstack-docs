@@ -37,6 +37,21 @@ export default defineConfig({
       title: 'Docs',
       favicon: '/images/favicons/favicon.ico',
       customCss: ['./src/styles/global.css'],
+      head: [
+        {
+          tag: 'script',
+          attrs: {
+            async: true,
+            src: 'https://widget.kapa.ai/kapa-widget.bundle.js',
+            'data-website-id': '3dfbd0ac-9e56-4664-8315-032e17917ab6',
+            'data-project-name': 'LocalStack',
+            'data-project-color': '#281763',
+            'data-project-logo': 'https://avatars.githubusercontent.com/u/28732122?s=280&v=4',
+            'data-user-analytics-fingerprint-enabled': 'true',
+            'data-modal-disclaimer': 'This is a custom LocalStack LLM to help you find the information you need by searching across all LocalStack documentation. Give it a try and let us know what you think!',
+          },
+        },
+      ],
       social: [
         {
           icon: 'github',
