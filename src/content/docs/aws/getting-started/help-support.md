@@ -43,7 +43,7 @@ At the moment, we only provide support in `English`, as we are an international 
 | ---------- | ------------------------------------------------------------------------------- |
 | Hobby      | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
 | Starter    | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
-| Teams      | [**Priority Support**](/aws/getting-started/help-support//#priority-support)    |
+| Teams      | [**Priority Support**](/aws/getting-started/help-support/#priority-support)    |
 | Enterprise | [**Enterprise Support**](/aws/getting-started/help-support/#enterprise-support) |
 
 ## Support features

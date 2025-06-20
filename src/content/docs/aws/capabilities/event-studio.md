@@ -89,7 +89,7 @@ This is essential for effectively debugging complex event-driven architectures.
 The following services are supported on Event Studio:
 
 - [S3](https://docs.localstack.cloud/user-guide/aws/s3/)
-- [SQS](https://docs.localstack.cloud/user-guide/aws/sqs/)
+- [SQS](https://docs.localstack.cloud/user-guide/aws/services/sqs/)
 - [SNS](https://docs.localstack.cloud/user-guide/aws/sns/)
 - [DynamoDB](https://docs.localstack.cloud/user-guide/aws/dynamodb/)
 - [Lambda](https://docs.localstack.cloud/user-guide/aws/lambda/)

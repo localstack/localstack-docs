@@ -38,7 +38,7 @@ To add a badge to your README that links to the Cloud Pod Launchpad, you can inc
 You need to include the `url_of_your_pod` as the `url` query parameter in the URL.
 For instance, if your Cloud Pod is hosted within the same repository, simply use the URL that directs to the raw Cloud Pod file.
 
-Additionally, you can utilize the [Link Generator](#creating-your-sharable-link) to generate a shareable link for your pod and copy the corresponding markdown snippet for your repository.
+Additionally, you can utilize the [Link Generator](#creating-your-shareable-link) to generate a shareable link for your pod and copy the corresponding markdown snippet for your repository.
 Check out a proper example <a href="https://github.com/localstack/cloud-pod-badge" target="_blank">on th Cloud Pod badge GitHub repository</a>.
 
 ## Troubleshooting common problems
