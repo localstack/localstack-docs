@@ -193,7 +193,7 @@ During these sessions, our support engineers can directly observe and diagnose t
 
 ### Enterprise support
 
-To learn more about the support available to **Enterprise** plan users, refer to the [Enterprise Support](/aws/pro/enterprise-support/) page.
+To learn more about the support available to **Enterprise** plan users, refer to the [Enterprise Support](/aws/enterprise/enterprise-support/) page.
 
 ## Support Business Hours
 
