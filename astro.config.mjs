@@ -2,6 +2,7 @@
 import { defineConfig, envField } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
+import starlightDocSearch from '@astrojs/starlight-docsearch';
 
 import markdoc from '@astrojs/markdoc';
 
@@ -64,6 +65,11 @@ export default defineConfig({
           multiSidebar: {
             switcherStyle: 'dropdown',
           },
+        }),
+        starlightDocSearch({
+          appId: 'XBW1JU7CW5',
+          apiKey: '6b0341e2f50196d328d088dbb5cd6166',
+          indexName: 'localstack',
         }),
       ],
       sidebar: [
