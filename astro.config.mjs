@@ -48,9 +48,19 @@ export default defineConfig({
           multiSidebar: {
             switcherStyle: 'dropdown',
           },
+          navLinks: {
+            leading: { useSidebarLabelled: 'TopNav' },
+          },
         }),
       ],
       sidebar: [
+        {
+          label: 'TopNav',
+          items: [
+            { label: 'Get Started', link: '/aws/getting-started/quickstart/' },
+            { label: 'Local AWS Services', link: '/aws/aws-services/' },
+          ],
+        },
         {
           label: 'AWS',
           collapsed: true,
