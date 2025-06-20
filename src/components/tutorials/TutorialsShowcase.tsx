@@ -34,7 +34,7 @@ const TutorialCard: React.FC<{
   const imagePath = tutorial.leadimage ? `/images/aws/${tutorial.leadimage}` : '/images/aws/banner.png';
   
   return (
-    <div className="tutorial-card">
+    <a href={`/${tutorial.slug}/`} className="tutorial-card">
       <div className="card-image">
         <img src={tutorial.leadimage} alt={tutorial.title} loading="lazy" />
         <div className="card-badges">
@@ -60,16 +60,9 @@ const TutorialCard: React.FC<{
               <div className="service-more">+{tutorial.services.length - 8}</div>
             )}
           </div>
-          
-          <a 
-            href={`/${tutorial.slug}/`}
-            className="card-link"
-          >
-            Read Tutorial →
-          </a>
         </div>
       </div>
-    </div>
+    </a>
   );
 };
 
@@ -302,11 +295,21 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           border-radius: 0.75rem;
           overflow: hidden;
           transition: transform 0.2s ease, box-shadow 0.2s ease;
+          text-decoration: none;
+          color: inherit;
+          display: block;
+          cursor: pointer;
         }
 
         .tutorial-card:hover {
           transform: translateY(-2px);
           box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+          border-color: var(--sl-color-accent);
+        }
+
+        .tutorial-card:focus {
+          outline: 2px solid var(--sl-color-accent);
+          outline-offset: 2px;
         }
 
         .card-image {
@@ -406,24 +409,6 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           border-radius: 0.25rem;
           font-size: 0.75rem;
           color: var(--sl-color-gray-3);
-        }
-
-        .card-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: white;
-          text-decoration: none;
-          font-weight: 500;
-          font-size: 0.875rem;
-          padding: 0.5rem 0.75rem;
-          border-radius: 0.375rem;
-          transition: all 0.2s ease;
-          white-space: nowrap;
-        }
-
-        .card-link:hover {
-          color: var(--sl-color-accent);
         }
 
         /* No Results */
