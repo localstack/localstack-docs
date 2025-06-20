@@ -36,7 +36,7 @@ const TutorialCard: React.FC<{
   return (
     <div className="tutorial-card">
       <div className="card-image">
-        <img src={imagePath} alt={tutorial.title} loading="lazy" />
+        <img src={tutorial.leadimage} alt={tutorial.title} loading="lazy" />
         <div className="card-badges">
           {tutorial.pro && <span className="pro-badge">Pro</span>}
         </div>
