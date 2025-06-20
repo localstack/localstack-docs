@@ -1,5 +1,5 @@
-import React from "react";
-import data from "@/data/replicator/coverage.json";
+import React from 'react';
+import data from '@/data/replicator/coverage.json';
 import {
   Table,
   TableHeader,
@@ -7,35 +7,46 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   useReactTable,
   getCoreRowModel,
   flexRender,
-} from "@tanstack/react-table";
-import type { ColumnDef } from "@tanstack/react-table";
+} from '@tanstack/react-table';
+import type { ColumnDef, ColumnSizingState } from '@tanstack/react-table';
+import { useTableColumnSizing } from '@/hooks/useTableColumnSizing';
+import { useState } from 'react';
 
 const coverage = Object.values(data);
 
 const columns: ColumnDef<any>[] = [
   {
-    accessorKey: "resource_type",
-    header: () => "Resource Type",
+    accessorKey: 'resource_type',
+    header: () => 'Resource Type',
     cell: ({ row }) => row.original.resource_type,
+    size: 150,
+    minSize: 120,
+    maxSize: 200,
   },
   {
-    accessorKey: "service",
-    header: () => "Service",
+    accessorKey: 'service',
+    header: () => 'Service',
     cell: ({ row }) => row.original.service,
+    size: 120,
+    minSize: 100,
+    maxSize: 150,
   },
   {
-    accessorKey: "identifier",
-    header: () => "Identifier",
+    accessorKey: 'identifier',
+    header: () => 'Identifier',
     cell: ({ row }) => row.original.identifier,
+    size: 150,
+    minSize: 120,
+    maxSize: 200,
   },
   {
-    accessorKey: "policy_statements",
-    header: () => "Required Actions",
+    accessorKey: 'policy_statements',
+    header: () => 'Required Actions',
     cell: ({ row }) => (
       <>
         {row.original.policy_statements.map((s: string, i: number) => (
@@ -43,37 +54,97 @@ const columns: ColumnDef<any>[] = [
         ))}
       </>
     ),
+    size: 300,
+    minSize: 200,
+    maxSize: 500,
   },
   {
-    id: "arn_support",
-    header: () => "Arn Support",
-    cell: () => "✔️",
+    id: 'arn_support',
+    header: () => 'Arn Support',
+    cell: () => '✔️',
+    size: 100,
+    minSize: 80,
+    maxSize: 120,
   },
 ];
 
-export default function PersistenceCoverage() {
+export default function ReplicatorCoverage() {
+  // Use the reusable hook for column sizing
+  const { columnSizing, setColumnSizing } = useTableColumnSizing(columns);
+
   const table = useReactTable({
     data: coverage,
     columns,
+    state: {
+      columnSizing,
+    },
+    onColumnSizingChange: setColumnSizing,
+    columnResizeMode: 'onChange',
     getCoreRowModel: getCoreRowModel(),
     debugTable: false,
   });
 
+  // For testing purposes, we can log the column sizing state
+  // console.log('Column sizing state:', columnSizing);
+
+  // Add CSS for resizer
+  const resizerStyle = `
+    .resizer {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 5px;
+      background: rgba(0, 0, 0, 0.1);
+      cursor: col-resize;
+      user-select: none;
+      touch-action: none;
+    }
+    .resizer.isResizing {
+      background: rgba(0, 0, 0, 0.2);
+      opacity: 1;
+    }
+    @media (hover: hover) {
+      .resizer {
+        opacity: 0;
+      }
+      *:hover > .resizer {
+        opacity: 1;
+      }
+    }
+  `;
+
   return (
     <div className="w-full">
-      <div className="rounded-md border">
-        <Table>
+      <style>{resizerStyle}</style>
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="table-fixed w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  const meta = header.column.columnDef.meta as { className?: string } | undefined;
+                  const meta = header.column.columnDef.meta as
+                    | { className?: string }
+                    | undefined;
                   return (
                     <TableHead
                       key={header.id}
-                      className={meta?.className || ""}
+                      className={meta?.className || ''}
+                      style={{ width: header.getSize() }}
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {header.column.getCanResize() && (
+                        <div
+                          onMouseDown={header.getResizeHandler()}
+                          onTouchStart={header.getResizeHandler()}
+                          className={`resizer ${
+                            header.column.getIsResizing() ? 'isResizing' : ''
+                          }`}
+                        ></div>
+                      )}
                     </TableHead>
                   );
                 })}
@@ -84,13 +155,19 @@ export default function PersistenceCoverage() {
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
-                  const meta = cell.column.columnDef.meta as { className?: string } | undefined;
+                  const meta = cell.column.columnDef.meta as
+                    | { className?: string }
+                    | undefined;
                   return (
                     <TableCell
                       key={cell.id}
                       className={meta?.className || undefined}
+                      style={{ width: cell.column.getSize() }}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   );
                 })}
@@ -101,4 +178,11 @@ export default function PersistenceCoverage() {
       </div>
     </div>
   );
-} 
+}
+
+// Testing instructions:
+// 1. Verify that the table expands to 100% width of its container
+// 2. Check that columns maintain their widths during pagination
+// 3. Test with different viewport sizes to ensure responsive behavior
+// 4. Try resizing columns to ensure the resize functionality works
+// 5. Verify that content in cells is properly displayed with ellipsis for overflow
