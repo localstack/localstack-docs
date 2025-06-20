@@ -2,6 +2,8 @@
 import { defineConfig, envField } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
+import starlightDocSearch from '@astrojs/starlight-docsearch';
+import starlightLinksValidator from 'starlight-links-validator'
 
 import markdoc from '@astrojs/markdoc';
 
@@ -34,16 +36,61 @@ export default defineConfig({
 
   integrations: [
     starlight({
-      title: 'LocalStack Docs',
+      title: 'Docs',
+      favicon: '/images/favicons/favicon.ico',
       customCss: ['./src/styles/global.css'],
+      head: [
+        {
+          tag: 'script',
+          attrs: {
+            type: 'text/javascript',
+            id: 'hs-script-loader',
+            async: true,
+            defer: true,
+            src: '//js-eu1.hs-scripts.com/26596507.js',
+          },
+        },
+        {
+          tag: 'script',
+          attrs: {
+            async: true,
+            src: 'https://widget.kapa.ai/kapa-widget.bundle.js',
+            'data-website-id': '3dfbd0ac-9e56-4664-8315-032e17917ab6',
+            'data-project-name': 'LocalStack',
+            'data-project-color': '#281763',
+            'data-project-logo': 'https://avatars.githubusercontent.com/u/28732122?s=280&v=4',
+            'data-user-analytics-fingerprint-enabled': 'true',
+            'data-modal-disclaimer': 'This is a custom LocalStack LLM to help you find the information you need by searching across all LocalStack documentation. Give it a try and let us know what you think!',
+          },
+        },
+      ],
       social: [
         {
           icon: 'github',
           label: 'GitHub',
-          href: 'https://github.com/withastro/starlight',
+          href: 'https://github.com/localstack/localstack',
+        },
+        {
+          icon: 'linkedin',
+          label: 'LinkedIn',
+          href: 'https://www.linkedin.com/company/localstack-cloud/',
+        },
+        {
+          icon: 'youtube',
+          label: 'YouTube',
+          href: 'https://www.youtube.com/@localstack',
         },
       ],
+      logo: {
+        light: './src/assets/Logo_Light.svg',
+        dark: './src/assets/Logo_Dark.svg',
+        alt: 'LocalStack',
+      },
       plugins: [
+        starlightLinksValidator({
+          errorOnRelativeLinks: false,
+          errorOnLocalLinks: false,
+        }),
         starlightUtils({
           multiSidebar: {
             switcherStyle: 'dropdown',
@@ -51,6 +98,11 @@ export default defineConfig({
           navLinks: {
             leading: { useSidebarLabelled: 'TopNav' },
           },
+        }),
+        starlightDocSearch({
+          appId: 'XBW1JU7CW5',
+          apiKey: '6b0341e2f50196d328d088dbb5cd6166',
+          indexName: 'localstack',
         }),
       ],
       sidebar: [
@@ -76,7 +128,7 @@ export default defineConfig({
             },
             {
               label: 'Local AWS Services',
-              slug: 'aws/aws-services',
+              slug: 'aws/services',
             },
             {
               label: 'Sample Apps',

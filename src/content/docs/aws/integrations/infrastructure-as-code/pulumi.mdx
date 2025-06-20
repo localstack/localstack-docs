@@ -6,6 +6,8 @@ sidebar:
     order: 2
 ---
 
+import { FileTree } from "@astrojs/starlight/components";
+
 ## Introduction
 
 Pulumi's SDK for infrastructure-as-code allows you to create, deploy, and manage AWS containers, serverless functions, and other infrastructure using popular programming languages.
@@ -22,7 +24,6 @@ This guide will show you how to set up local AWS resources using both the `pulum
 ## `pulumilocal` wrapper script
 
 :::note
-
 `pulumi-local` currently does not support the `aws-native` package as it relies on the AWS Cloud Control API.
 For additional information, refer to the [GitHub issue](https://github.com/localstack/localstack/issues/11523).
 :::
@@ -43,7 +44,6 @@ export PULUMI_BACKEND_URL=file://`pwd`/myproj
 ```
 
 :::note
-
 For further options please consult the official documentation on available  [environment variables](https://www.pulumi.com/docs/cli/environment-variables/) and [local backend](https://www.pulumi.com/docs/concepts/state/#local-filesystem).
 :::
 
@@ -59,10 +59,10 @@ You can now use the `pulumilocal` command to interact with your Pulumi project.
 
 ```bash
 pulumilocal --help
-{/* <disable-copy> */} {/* mdx-disabled */}
+```
+```bash title="Output"
 Pulumi - Modern Infrastructure as Code
 ...
-<disable-copy>
 ```
 
 ### Create a new Pulumi project
@@ -75,7 +75,6 @@ pulumilocal new aws-typescript -y -s lsdev --cwd myproj
 ```
 
 :::tip
-
 The `--cwd` option is unnecessary if you're already in the project directory.
 :::
 
@@ -142,24 +141,22 @@ Installing dependencies...
 
 This will create the following directory structure.
 
-```bash
-tree -L 1
-.
-├── index.ts
-├── node_modules
-├── package.json
-├── package-lock.json
-├── Pulumi.dev.yaml
-├── Pulumi.yaml
-└── tsconfig.json
-```
+<FileTree>
+- index.ts
+- node_modules
+- package.json
+- package-lock.json
+- Pulumi.dev.yaml
+- Pulumi.yaml
+- tsconfig.json
+</FileTree>
 
 ### Configure the stack
 
 Modify your stack configuration in `Pulumi.dev.yaml` to include endpoints for AWS services pointing to `http://localhost:4566`.
 However, these endpoints may change depending on the AWS plugin version you are using.
 
-```yaml
+```yaml showLineNumbers
 config:
   aws:accessKey: test
   aws:s3UsePathStyle: "true"

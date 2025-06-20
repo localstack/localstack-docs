@@ -13,7 +13,6 @@ In this guide, you will learn how to use LocalStack to test
 your serverless applications powered by Spring Cloud Function framework.
 
 :::note
-
 Some features and services described in this document may not work properly on aarch64, including Apple's M1 silicon.
 :::
 
@@ -119,8 +118,7 @@ To that end, we use the "Shadow Jar" plugin.
 
 Here's our final `build.gradle`:
 
-{/* {{< highlight gradle "linenos=table" >}} */} {/* mdx-disabled */} {/* TODO: packing this into a bash block for now */}
-```gradle
+```groovy showLineNumbers=true
 plugins {
   id "java"
   id "org.jetbrains.kotlin.jvm" version '1.5.31'
@@ -198,7 +196,6 @@ shadowJar {
 
 assemble.dependsOn shadowJar
 ```
-{/* {{< / highlight >}} */} {/* mdx-disabled */}
 
 Please note that we will be using `org.localstack.sampleproject` as a
 working namespace, and `org.localstack.sampleproject.Application` as an
@@ -258,9 +255,7 @@ org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
 Now our application needs an entry-class, the one we referenced earlier.
 Let's add it under `src/main/kotlin/org/localstack/sampleproject/Application.kt`.
 
-{/* {{< highlight kotlin "linenos=table" >}} */} {/* mdx-disabled */}
-{/* TODO: packing this into a java block for now */}
-```java
+```kotlin showLineNumbers
 package org.localstack.sampleproject
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -272,7 +267,6 @@ fun main(args: Array<String>) {
     // Do nothing unless you use a custom runtime
 }
 ```
-{/*{{< / highlight >}}*/}
 
 ### Configure Jackson
 
@@ -281,9 +275,8 @@ The easiest way to get started with JSON is to use the Jackson library.
 Let's configure it by creating a new configuration class `JacksonConfiguration.kt` under
 `src/main/kotlin/org/localstack/sampleproject/config`:
 
-{/*{{< highlight kotlin "linenos=table" >}}*/}
 
-```java
+```kotlin
 package org.localstack.sampleproject.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -315,7 +308,6 @@ class JacksonConfiguration {
     }
 }
 ```
-{/*{{< / highlight >}}*/}
 
 In applications where you need support for multiple formats or a format
 different from JSON (for example, SOAP/XML applications) simply use multiple
@@ -329,7 +321,7 @@ Let's create a small logging utility to simplify interactions with the logger
 
 {/*{{< highlight kotlin "linenos=table" >}}*/}
 {/* TODO: packing this into a java block for now */}
-```java
+```kotlin
 package org.localstack.sampleproject.util
 
 import org.apache.logging.log4j.LogManager
@@ -354,9 +346,7 @@ Your application may even support multiple protocols with different request/resp
 
 Let's define utility functions to to build  API gateway responses:
 
-{/*{{< highlight kotlin "linenos=table" >}}*/}
-{/* TODO: packing this into a java block for now */}
-```java
+```kotlin showLineNumbers
 package org.localstack.sampleproject.util
 
 import org.springframework.messaging.Message
@@ -379,13 +369,10 @@ fun <T>buildJsonResponse(data: T, code: Int = 200): Message<T> {
 fun buildJsonErrorResponse(message: String, code: Int = 500) =
     buildJsonResponse(ResponseError(message), code)
 ```
-{/*{{< / highlight >}}*/}
 
 And now a utility function to process API Gateway requests:
 
-{/*{{< highlight kotlin "linenos=table" >}}*/}
-{/* TODO: packing this into a java block for now */}
-```java
+```kotlin showLineNumbers
 package org.localstack.sampleproject.util
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
@@ -410,7 +397,6 @@ fun <T>apiGatewayFunction(
     }
 }
 ```
-{/*{{< / highlight >}}*/}
 
 ### Creating a sample Model / DTO
 
@@ -418,9 +404,7 @@ To transfer data from requests into something more meaningful than JSON strings
 (and back) you will be using a lot of Models and Data Transfer Objects (DTOs).
 It's time to define our first one.
 
-{/*{{< highlight kotlin "linenos=table" >}}*/}
-{/* TODO: packing this into a java block for now */}
-```java
+```kotlin showLineNumbers
 package org.localstack.sampleproject.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -433,16 +417,13 @@ data class SampleModel(
     val jsonIgnoredProperty: String? = null,
 )
 ```
-{/*{{< / highlight >}}*/}
 
 ### Creating Rest API endpoints
 
 Let's add our first endpoints to simulate CRUD operations on previously
 defined `SampleModel`:
 
-{/*{{< highlight kotlin "linenos=table" >}}*/}
-{/* TODO: packing this into a java block for now */}
-```java
+```kotlin showLineNumbers
 package org.localstack.sampleproject.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -485,7 +466,6 @@ class SampleApi(private val objectMapper: ObjectMapper) {
 }
 
 ```
-{/*{{< / highlight >}}*/}
 
 Note how we used Spring's dependency injection to inject `ObjectMapper` Bean we
 configured earlier.
@@ -496,9 +476,7 @@ We know Java's cold start is always a pain.
 To minimize this pain, we will try to define a pre-warming endpoint within the Rest API.
 By invoking this function every 5-10 mins we can make sure Rest API lambda is always kept in a pre-warmed state.
 
-{/*{{< highlight kotlin "linenos=table" >}}*/}
-{/* TODO: packing this into a java block for now */}
-```java
+```kotlin showLineNumbers
 package org.localstack.sampleproject.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -518,7 +496,6 @@ class ScheduleApi(private val objectMapper: ObjectMapper) {
 }
 
 ```
-{/*{{< / highlight >}}*/}
 
 Now you can add a scheduled event to the Rest API lambda function with the following synthetic payload (to simulate API gateway request).
 This way, you can define any other scheduled events, but we recommend using pure lambda functions.
@@ -541,9 +518,7 @@ We can still define pure lambda functions, DynamoDB stream handlers, and so on.
 
 Below you can find a little example of few lambda functions grouped in `LambdaApi` class.
 
-{/*{{< highlight kotlin "linenos=table" >}}*/}
-{/* TODO: packing this into a java block for now */}
-```java
+```kotlin showLineNumbers
 package org.localstack.sampleproject.api
 
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent
@@ -584,7 +559,6 @@ class LambdaApi : SpringBootStreamHandler() {
 }
 
 ```
-{/*{{< / highlight >}}*/}
 
 As you can see from the example above, we are using `SpringBootStreamHandler`
 class as a base that takes care of the application bootstrapping process and
@@ -732,7 +706,7 @@ class ApplicationStack(parent: Construct, name: String) : Stack(parent, name) {
 ```
 </TabItem>
 <TabItem label="Terraform">
-```
+```hcl
 variable "STAGE" {
     type    = string
     default = "local"
@@ -885,7 +859,7 @@ resource "aws_lambda_function" "exampleFunctionTwo" {
 </Tabs>
 ## Testing, Debugging and Hot Reloading
 
-Please read our [Lambda Tools](/content/en/tools/lambda-tools/_index.md)
+Please read our [Lambda Tools](/aws/tooling/lambda-tools)
 documentation to learn more about testing, debugging, and hot reloading
 for JVM Lambda functions.
 

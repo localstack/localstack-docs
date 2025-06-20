@@ -35,4 +35,4 @@ The Snowflake emulator supports the following features:
 
 Integrating the Snowflake emulator into your existing CI/CD pipeline allows you to run integration tests and identify issues early, reducing surprises during production deployment.
 
-Check our [SQL Functions Coverage](/snowflake/sql-functions) and [Feature Coverage](/snowflake/coverage-features) pages for a comprehensive list of supported features.
+Check our [SQL Functions Coverage](/snowflake/sql-functions) and [Feature Coverage](/snowflake/features) pages for a comprehensive list of supported features.

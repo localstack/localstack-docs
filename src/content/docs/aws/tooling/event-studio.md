@@ -93,4 +93,4 @@ The following services are supported on Event Studio:
 - [SNS](/aws/services/sns/)
 - [DynamoDB](/aws/services/dynamodb/)
 - [Lambda](/aws/services/lambda/)
-- [EventBridge](/aws/services//events/)
+- [EventBridge](/aws/services/events/)

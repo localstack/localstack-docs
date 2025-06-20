@@ -66,33 +66,45 @@ You can verify that the resources were created successfully by running the follo
 
 ```bash
 localstack logs
-{/* <disable-copy> */} {/* mdx-disabled */}
+```
+
+```bash title="Output"
 2023-10-14T15:31:08.852  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS s3.CreateBucket => 200
 2023-10-14T15:31:09.356  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS sqs.CreateQueue => 200
 2023-10-14T15:31:12.920  INFO --- [   asgi_gw_0] botocore.credentials       : Found credentials in environment variables.
 2023-10-14T15:31:13.332  INFO --- [   asgi_gw_0] localstack.utils.bootstrap : Execution of "require" took 2028.25ms
 2023-10-14T15:31:13.712  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS dynamodb.CreateTable => 200
-</disable-copy>
+```
+
+```bash
 awslocal s3 ls
-<disable-copy>
+```
+```bash title="Output"
 2023-10-14 21:01:08 my-bucket
-</disable-copy>
+```
+
+```bash
 awslocal sqs list-queues
-<disable-copy>
+```
+
+```bash title="Output"
 {
     "QueueUrls": [
         "http://localhost:4566/000000000000/my-queue"
     ]
 }
-</disable-copy>
+```
+
+```bash
 awslocal dynamodb list-tables
-<disable-copy>
+```
+
+```bash title="Output"
 {
     "TableNames": [
         "my-table"
     ]
 }
-</disable-copy>
 ```
 
 ### Configure Former2
@@ -102,7 +114,6 @@ Open the [**Credentials**](https://former2.com/#section-setup-credentials) tab a
 For LocalStack, you can just configure the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables as `test` and `test`, respectively.
 
 ![Enter test credentials on Former2 Dashboard](/images/aws/former2-credentials.png)
-<br></br>
 
 Click on [**Continue to Parameters**](https://former2.com/#section-setup-parameters) and include your own CloudFormation stack parameters by adding them below.
 Click on [**Continue to Settings**](https://former2.com/#section-setup-settings) and navigate to **Custom Endpoints**.
@@ -110,7 +121,6 @@ Toggle the **Use LocalStack Endpoint** switch to enable the LocalStack endpoint 
 Click on [**Go to Dashboard**](https://former2.com/#section-dashboard) to complete the setup.
 
 ![LocalStack endpoint toggle on Former2 Dashboard](/images/aws/former2-localstack-endpoint.png)
-<br></br>
 
 You can now click on **Scan Account** button on the top-right corner of the dashboard to scan your LocalStack instance for resources.
 Once the scan is complete, you can select the resources you want to generate IaC outputs for.
@@ -120,12 +130,10 @@ Once the scan is complete, you can select the resources you want to generate IaC
 Navigate to [S3](https://former2.com/#section-storage-s3), [DynamoDB](https://former2.com/#section-database-dynamodb), and [SQS](https://former2.com/#section-applicationintegration-sqs) to verify that the resources you created earlier are listed.
 
 ![S3 Console on Former2 Dashboard](/images/aws/former2-s3.png)
-<br></br>
 
 You can select the resources you want to generate IaC outputs for and click on **Add Selected**.
 Finally, you can click on **Generate** on the top-left corner of the dashboard to generate the IaC outputs.
 
 ![CloudFormation Output on Former2 Dashboard](/images/aws/former2-cloudformation-output.png)
-<br></br>
 
 You can also choose to generate the IaC outputs in a different format by clicking on the various options available on the left-hand side of the dashboard.

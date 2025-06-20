@@ -51,10 +51,11 @@ After installation, you can use the `tflocal` command, which has the same interf
 
 ```bash
 tflocal --help
-{/* <disable-copy> */} {/* mdx-disabled */}
+```
+
+```bash title="Output"
 Usage: terraform [global options] <subcommand> [args]
 ...
-<disable-copy>
 ```
 
 ### Deploy the Terraform configuration
@@ -88,7 +89,6 @@ tflocal apply
 | `AWS_ACCESS_KEY_ID`      | `test` (`accountId`: 000000000000)   | AWS Access Key ID to use for multi-account setups |
 
 :::note
-
 While using `CUSTOMIZE_ACCESS_KEY`, following cases are taking precedence over each other from top to bottom:
 1. If the `AWS_ACCESS_KEY_ID` environment variable is set.
 2. If `access_key` is configured in the Terraform AWS provider.
@@ -144,9 +144,9 @@ Furthermore, it's necessary to configure the individual services to use LocalSta
 For S3, this configuration resembles the following snippet, where we've chosen to use the virtual hosted-style endpoint:
 
 ```hcl
-  endpoints {
-    s3             = "http://s3.localhost.localstack.cloud:4566"
-  }
+endpoints {
+  s3             = "http://s3.localhost.localstack.cloud:4566"
+}
 ```
 
 :::note
@@ -226,7 +226,6 @@ provider "aws" {
 ```
 
 :::note
-
 To heuristically detect whether your Terraform configuration should be deployed against LocalStack, you can use the following snippet:
 
 ```hcl
@@ -414,6 +413,7 @@ Note: You can always add providers using 'cdktf provider add' later on
 <TabItem label="Python">
 ```python
  $ pipenv install cdktf-cdktf-provider-aws
+```
 </TabItem>
 <TabItem label="TypeScript">
 ```javascript
@@ -524,14 +524,15 @@ OpenTofu is an open-source fork of Terraform acting as a drop-in replacement for
 
 ```bash
 TF_CMD=tofu tflocal --help
-<disable-copy>
+```
+
+```bash title="Output"
 Usage: tofu [global options] <subcommand> [args]
 
 The available commands for execution are listed below.
 The primary workflow commands are given first, followed by
 less common or more advanced commands.
 ...
-</disable-copy>
 ```
 
 ## Terragrunt
