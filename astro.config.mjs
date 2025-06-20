@@ -43,6 +43,16 @@ export default defineConfig({
         {
           tag: 'script',
           attrs: {
+            type: 'text/javascript',
+            id: 'hs-script-loader',
+            async: true,
+            defer: true,
+            src: '//js-eu1.hs-scripts.com/26596507.js',
+          },
+        },
+        {
+          tag: 'script',
+          attrs: {
             async: true,
             src: 'https://widget.kapa.ai/kapa-widget.bundle.js',
             'data-website-id': '3dfbd0ac-9e56-4664-8315-032e17917ab6',
