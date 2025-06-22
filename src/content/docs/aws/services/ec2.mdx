@@ -103,9 +103,7 @@ Run the following command to fetch the Security Group ID:
 awslocal ec2 describe-security-groups
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 {
     "SecurityGroups": [
         {
@@ -152,9 +150,7 @@ Run the following command to open the LocalStack logs:
 localstack logs
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f will be accessible via SSH at: 127.0.0.1:12862, 172.17.0.4:22
 2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f port mappings (container -> host): {'8000/tcp': 29043, '22/tcp': 12862}
 ```
@@ -168,9 +164,7 @@ curl 172.17.0.4:8000
 curl 127.0.0.1:29043
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -334,7 +328,7 @@ awslocal ec2 describe-security-groups --group-names default
 
 The port mapping details are provided in the logs when the instance starts up.
 
-```bash
+```bash title="Output"
 2022-12-20T19:43:44.544  INFO  Instance i-1d6327abf04e31be6 port mappings (container -> host): {'8080/tcp': 51747, '22/tcp': 55705}
 ```
 
@@ -379,9 +373,7 @@ Once the instance is successfully started and initialized, we can first determin
 docker ps
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 CONTAINER ID   IMAGE                  PORTS           NAMES
 5c60cf72d84a   ...:ami-ff0fea8310f3   19419->22/tcp   localstack-ec2...
 ```
@@ -392,9 +384,7 @@ You can then list the contents of the mounted filesystem `/ebs-mounted`, which s
 docker exec 5c60cf72d84a ls /ebs-mounted
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 my-test-file
 ```
 
@@ -484,9 +474,7 @@ To check CPU support for virtualization, run:
 kvm-ok
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 INFO: /dev/kvm exists
 KVM acceleration can be used
 ```
@@ -558,9 +546,7 @@ You may need run the following command to make sure the image is registered with
 virsh pool-refresh default
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 Pool default refreshed
 ```
 
@@ -570,9 +556,7 @@ You can then list the images with:
 virsh vol-list --pool default
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
  Name                                    Path
 --------------------------------------------------------------------------------------------------------
  ami-1234abcd                            /var/lib/libvirt/images/ami-1234abcd
@@ -610,9 +594,7 @@ To connect to the graphical display of the instance, first obtain the VNC addres
 virsh vncdisplay <instance ID>
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 127.0.0.1:0
 ```
 
@@ -638,7 +620,7 @@ Use the following configuration at `/etc/docker/daemon.json` on the host machine
 
 Then restart the Docker daemon:
 
-```bash
+```bash title="Output"
 sudo systemctl restart docker
 ```
 

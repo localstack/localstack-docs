@@ -41,9 +41,7 @@ awslocal iam create-role \
     --assume-role-policy-document "{}"
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 {
     "Role": {
         "Path": "/",
@@ -68,9 +66,7 @@ awslocal batch create-compute-environment \
     --service-role <role-arn>
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 {
     "computeEnvironmentName": "myenv",
     "computeEnvironmentArn": "arn:aws:batch:us-east-1:000000000000:compute-environment/myenv"
@@ -91,9 +87,7 @@ Run the following command to fetch the ARN of the compute environment:
 awslocal batch describe-compute-environments --compute-environments myenv
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 {
     "computeEnvironments": [
         {
@@ -120,9 +114,7 @@ awslocal batch create-job-queue \
     --state ENABLED
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 {
     "jobQueueName": "myqueue",
     "jobQueueArn": "arn:aws:batch:us-east-1:000000000000:job-queue/myqueue"
@@ -144,9 +136,7 @@ awslocal batch register-job-definition \
     --container-properties '{"image":"busybox","vcpus":1,"memory":128,"command":["sleep","30"]}'
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 {
     "jobDefinitionName": "myjobdefn",
     "jobDefinitionArn": "arn:aws:batch:us-east-1:000000000000:job-definition/myjobdefn:1",
@@ -181,9 +171,7 @@ awslocal batch submit-job \
     --container-overrides '{"command":["sh", "-c", "sleep 5; pwd"]}'
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 {
     "jobName": "myjob",
     "jobId": "23027eb6-cce0-4365-a412-36917a2dfd03"

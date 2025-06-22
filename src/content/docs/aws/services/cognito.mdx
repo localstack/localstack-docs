@@ -32,9 +32,7 @@ The following command creates a user pool named `test`:
 awslocal cognito-idp create-user-pool --pool-name test
 ```
 
-You can see an output similar to the following:
-
-```json
+```bash title="Output"
 "UserPool": {
         "Id": "us-east-1_fd924693e9b04f549f989283123a29c2",
         "Name": "test",
@@ -100,9 +98,7 @@ Run the following command to create a user pool with a predefined ID:
 awslocal cognito-idp create-user-pool --pool-name p1 --user-pool-tags "_custom_id_=us-east-1_myid123"
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "UserPool": {
         "Id": "myid123",
@@ -116,9 +112,7 @@ You also have the possibility to create a Cognito user pool client with a predef
 awslocal cognito-idp create-user-pool-client --user-pool-id us-east-1_myid123 --client-name _custom_id_:myclient123
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "UserPoolClient": {
         "UserPoolId": "us-east-1_myid123",
@@ -140,9 +134,7 @@ awslocal cognito-idp sign-up \
   --user-attributes Name=email,Value=<your.email@address.com>
 ```
 
-You can see an output similar to the following:
-
-```json
+```bash title="Output"
 {
     "UserConfirmed": false,
     "UserSub": "5fdbe1d5-7901-4fee-9d1d-518103789c94"
@@ -175,9 +167,7 @@ Run the following command to use the [`ListUsers`](https://docs.aws.amazon.com/c
 awslocal cognito-idp list-users --user-pool-id $pool_id
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "Users": [
         {
@@ -224,9 +214,7 @@ To access the JSON Web Key Sets (JWKS) configuration for each user pool, you can
 curl 'http://localhost:4566/<pool_id>/.well-known/jwks.json'
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {"keys": [{"kty": "RSA", "alg": "RS256", "use": "sig", "kid": "test-key", "n": "k6lrbEH..."]}
 ```
 
@@ -355,9 +343,7 @@ curl \
   'http://localhost:4566/_aws/cognito-idp/oauth2/token'
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {"access_token": "eyJ0eXAi…lKaHx44Q", "expires_in": 86400, "token_type": "Bearer", "refresh_token": "e3f08304", "id_token": "eyJ0eXAi…ADTXv5mA"}
 ```
 

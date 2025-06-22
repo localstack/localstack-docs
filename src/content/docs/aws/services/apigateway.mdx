@@ -74,9 +74,8 @@ awslocal apigateway create-rest-api --name 'API Gateway Lambda integration'
 ```
 
 This creates a new REST API named `API Gateway Lambda integration`.
-The above command returns the following response:
 
-```json
+```bash title="Output"
 {
     "id": "cor3o5oeci",
     "name": "API Gateway Lambda integration",
@@ -102,9 +101,7 @@ Use the REST API ID generated in the previous step to fetch the resources for th
 awslocal apigateway get-resources --rest-api-id <REST_API_ID>
 ```
 
-The above command returns the following response:
-
-```json
+```bash title="Output"
 {
     "items": [
         {
@@ -130,9 +127,7 @@ awslocal apigateway create-resource \
   --path-part "{somethingId}"
 ```
 
-The above command returns the following response:
-
-```json
+```bash title="Output"
 {
     "id": "zzcvcf56ar",
     "parentId": "u53af9hm83",
@@ -158,9 +153,7 @@ awslocal apigateway put-method \
   --authorization-type "NONE"
 ```
 
-The above command returns the following response:
-
-```json
+```bash title="Output"
 {
     "httpMethod": "GET",
     "authorizationType": "NONE",
@@ -204,9 +197,7 @@ You can use [curl](https://curl.se/) or any HTTP REST client to invoke the API e
 curl -X GET http://<REST_API_ID>.execute-api.localhost.localstack.cloud:4566/dev/test
 ```
 
-The response would be:
-
-```json
+```bash title="Output"
 {"message":"Hello World"}
 ```
 
@@ -216,9 +207,7 @@ You can also use our [alternative URL format](#alternative-url-format) in case o
 curl -X GET http://localhost:4566/_aws/execute-api/<REST_API_ID>/dev/test
 ```
 
-The response would be:
-
-```json
+```bash title="Output"
 {"message":"Hello World"}
 ```
 
@@ -362,9 +351,7 @@ To retrieve the list of APIs and verify the WebSocket endpoint, you can use the 
 awslocal apigatewayv2 get-apis
 ```
 
-The response would be:
-
-```json
+```bash title="Output"
 {
     "Items": [{
         "ApiEndpoint": "ws://localhost:4510",
@@ -407,9 +394,7 @@ The following example assigns the custom ID `"myid123"` to the API:
 awslocal apigateway create-rest-api --name my-api --tags '{"_custom_id_":"myid123"}'
 ```
 
-The response would be:
-
-```json
+```bash title="Output"
 {
     "id": "myid123",
     ....

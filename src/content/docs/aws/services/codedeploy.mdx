@@ -32,9 +32,7 @@ Create an application with the [CreateApplication](https://docs.aws.amazon.com/c
 awslocal deploy create-application --application-name hello --compute-platform Server
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "applicationId": "063714b6-f438-4b90-bacb-ce04af7f5e83"
 }
@@ -46,9 +44,7 @@ Make note of the application name, which can be used with other operations such 
 awslocal deploy get-application --application-name hello
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "application": {
         "applicationId": "063714b6-f438-4b90-bacb-ce04af7f5e83",
@@ -65,9 +61,7 @@ You can list all application using [ListApplications](https://docs.aws.amazon.co
 awslocal deploy list-applications
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "applications": [
         "hello"
@@ -87,9 +81,7 @@ awslocal deploy create-deployment-config --deployment-config-name hello-conf \
     --minimum-healthy-hosts '{"type": "HOST_COUNT", "value": 1}'
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deploymentConfigId": "0327ce0a-4637-4884-8899-49af7b9423b6"
 }
@@ -101,9 +93,7 @@ The output will be similar to the following:
 awslocal deploy list-deployment-configs
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deploymentConfigsList": [
         "hello-conf"
@@ -117,9 +107,7 @@ Use [GetDeploymentConfig](https://docs.aws.amazon.com/codedeploy/latest/APIRefer
 awslocal deploy get-deployment-config --deployment-config-name hello-conf
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deploymentConfigInfo": {
         "deploymentConfigId": "0327ce0a-4637-4884-8899-49af7b9423b6",
@@ -153,9 +141,7 @@ awslocal deploy create-deployment-group \
     --deployment-group-name hello-group
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deploymentGroupId": "09506586-9ba9-4005-a1be-840407abb39d"
 }
@@ -167,9 +153,7 @@ List all deployment groups for an application with [ListDeploymentGroups](https:
 awslocal deploy list-deployment-groups --application-name hello
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deploymentGroups": [
         "hello-group"
@@ -184,9 +168,7 @@ awslocal deploy get-deployment-group --application-name hello \
     --deployment-group-name hello-group
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deploymentGroupInfo": {
         "applicationName": "hello",
@@ -224,9 +206,7 @@ awslocal deploy create-deployment \
     --revision '{"revisionType": "S3", "s3Location": {"bucket": "placeholder", "key": "placeholder", "bundleType": "tar"}}'
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deploymentId": "d-TU3TNCSTO"
 }
@@ -238,9 +218,7 @@ List all deployments for an application with [ListDeployments](https://docs.aws.
 awslocal deploy list-deployments
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deployments": [
         "d-TU3TNCSTO"
@@ -254,9 +232,7 @@ Get a deployment with [GetDeployment](https://docs.aws.amazon.com/codedeploy/lat
 awslocal deploy get-deployment --deployment-id d-TU3TNCSTO
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "deploymentInfo": {
         "applicationName": "hello",
@@ -302,9 +278,7 @@ Stop a deployment with [StopDeployment](https://docs.aws.amazon.com/codedeploy/l
 awslocal deploy stop-deployment --deployment-id d-TU3TNCSTO
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "status": "Succeeded",
     "statusMessage": "Mock deployment stopped"
