@@ -59,7 +59,7 @@ session.sql("use schema credit_bank.public").collect()
 print(session.sql("select current_warehouse(), current_database(), current_schema(), current_user(), current_role()").collect())
 ```
 
-The following output is displayed:
+
 
 ```bash 
 [Row(?COLUMN?='TEST', CURRENT_DATABASE='CREDIT_BANK', CURRENT_SCHEMA='public', ?COLUMN?='TEST', GET_CURRENT_ROLE='PUBLIC')]
@@ -82,7 +82,7 @@ credit_df = session.table("CREDIT_FILES")
 credit_df.schema
 ```
 
-The following output is displayed:
+
 
 ```bash
 StructType([StructField('CREDIT_REQUEST_ID', LongType(), nullable=True), StructField('CREDIT_AMOUNT', LongType(), nullable=True), StructField('CREDIT_DURATION', LongType(), nullable=True), StructField('PURPOSE', StringType(), nullable=True), StructField('INSTALLMENT_COMMITMENT', LongType(), nullable=True), StructField('OTHER_PARTIES', StringType(), nullable=True), StructField('CREDIT_STANDING', StringType(), nullable=True), StructField('CREDIT_SCORE', LongType(), nullable=True), StructField('CHECKING_BALANCE', LongType(), nullable=True), StructField('SAVINGS_BALANCE', LongType(), nullable=True), StructField('EXISTING_CREDITS', LongType(), nullable=True), StructField('ASSETS', StringType(), nullable=True), StructField('HOUSING', StringType(), nullable=True), StructField('QUALIFICATION', StringType(), nullable=True), StructField('JOB_HISTORY', LongType(), nullable=True), StructField('AGE', LongType(), nullable=True), StructField('SEX', StringType(), nullable=True), StructField('MARITAL_STATUS', StringType(), nullable=True), StructField('NUM_DEPENDENTS', LongType(), nullable=True), StructField('RESIDENCE_SINCE', LongType(), nullable=True), StructField('OTHER_PAYMENT_PLANS', StringType(), nullable=True)])
@@ -97,7 +97,7 @@ credit_req_df = session.table("CREDIT_REQUESTS")
 credit_req_df.schema
 ```
 
-The following output is displayed:
+
 
 ```bash
 StructType([StructField('CREDIT_REQUEST_ID', LongType(), nullable=True), StructField('CREDIT_AMOUNT', LongType(), nullable=True), StructField('CREDIT_DURATION', LongType(), nullable=True), StructField('PURPOSE', StringType(), nullable=True), StructField('INSTALLMENT_COMMITMENT', LongType(), nullable=True), StructField('OTHER_PARTIES', StringType(), nullable=True), StructField('CREDIT_SCORE', LongType(), nullable=True), StructField('CHECKING_BALANCE', LongType(), nullable=True), StructField('SAVINGS_BALANCE', LongType(), nullable=True), StructField('EXISTING_CREDITS', LongType(), nullable=True), StructField('ASSETS', StringType(), nullable=True), StructField('HOUSING', StringType(), nullable=True), StructField('QUALIFICATION', StringType(), nullable=True), StructField('JOB_HISTORY', LongType(), nullable=True), StructField('AGE', LongType(), nullable=True), StructField('SEX', StringType(), nullable=True), StructField('MARITAL_STATUS', StringType(), nullable=True), StructField('NUM_DEPENDENTS', LongType(), nullable=True), StructField('RESIDENCE_SINCE', LongType(), nullable=True), StructField('OTHER_PAYMENT_PLANS', StringType(), nullable=True)])
@@ -123,7 +123,7 @@ You can also visualize the numeric features and categorical features. For exampl
 credit_df.toPandas().hist(figsize=(15,15))
 ```
 
-The following output is displayed:
+
 <br><br>
 
 ![credit_df_hist](/images/snowflake/credit_df_hist.png)
@@ -152,7 +152,7 @@ sns.stripplot(y="PURPOSE", x="CREDIT_AMOUNT", data=df, hue='CREDIT_STANDING', ji
 plt.show()
 ```
 
-The following output is displayed:
+
 <br><br>
 
 ![credit_df_cat](/images/snowflake/credit_df_cat.png)

@@ -40,9 +40,7 @@ Run the following command to list your S3 buckets:
 awslocal s3api list-buckets
 ```
 
-On successful creation of the S3 bucket, you will see the following output:
-
-```bash
+```bash title="Output"
 {
     "Buckets": [
         {
@@ -80,7 +78,7 @@ awslocal s3api list-objects \
 
 If your image has been uploaded successfully, you will see the following output:
 
-```bash
+```bash title="Output"
 {
     "Contents": [
         {
@@ -104,9 +102,7 @@ Run the following command to upload a file named `index.html` to your S3 bucket:
 awslocal s3api put-object --bucket sample-bucket --key index.html --body index.html
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "ETag": "\"d41d8cd98f00b204e9800998ecf8427e\""
 }
@@ -176,9 +172,7 @@ Run the following command on your terminal to create your S3 bucket:
 awslocal s3api create-bucket --bucket cors-bucket
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "Location": "/cors-bucket"
 }
@@ -187,7 +181,7 @@ The following output would be retrieved:
 Next, create a JSON file with the CORS configuration.
 The file should have the following format:
 
-```json
+```json title="cors-config.json"
 {
   "CORSRules": [
     {
@@ -223,7 +217,7 @@ Your S3 bucket is configured to allow cross-origin resource sharing, and if you 
 However, if you try to access your bucket from [LocalStack Web Application](https://app.localstack.cloud), you'll see errors, and your bucket won't be accessible anymore.
 We can edit the JSON file `cors-config.json` you created earlier with the following configuration and save it:
 
-```json
+```json title="cors-config.json"
 {
   "CORSRules": [
     {

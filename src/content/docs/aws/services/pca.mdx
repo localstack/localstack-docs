@@ -40,9 +40,7 @@ awslocal acm-pca create-certificate-authority \
      --certificate-authority-type "ROOT"
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "CertificateAuthorityArn": "arn:aws:acm-pca:eu-central-1:000000000000:certificate-authority/0b20353f-ce7a-4de4-9b82-e06903a893ff"
 }
@@ -58,9 +56,7 @@ awslocal acm-pca describe-certificate-authority \
     --certificate-authority-arn arn:aws:acm-pca:eu-central-1:000000000000:certificate-authority/0b20353f-ce7a-4de4-9b82-e06903a893ff
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "CertificateAuthority": {
         "Arn": "arn:aws:acm-pca:eu-central-1:000000000000:certificate-authority/0b20353f-ce7a-4de4-9b82-e06903a893ff",
@@ -113,9 +109,7 @@ awslocal acm-pca issue-certificate \
     --certificate-authority-arn arn:aws:acm-pca:eu-central-1:000000000000:certificate-authority/0b20353f-ce7a-4de4-9b82-e06903a893ff
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "CertificateArn": "arn:aws:acm-pca:eu-central-1:000000000000:certificate-authority/0b20353f-ce7a-4de4-9b82-e06903a893ff/certificate/17ef7bbf3cc6471ba3ef0707119b8392"
 }
@@ -134,8 +128,6 @@ awslocal acm-pca get-certificate \
     --output text | tee cert.pem
 ```
 
-The output will be similar to the following:
-
 ```bash
 awslocal acm-pca import-certificate-authority-certificate \
      --certificate-authority-arn arn:aws:acm-pca:eu-central-1:000000000000:certificate-authority/0b20353f-ce7a-4de4-9b82-e06903a893ff \
@@ -152,9 +144,7 @@ awslocal acm-pca describe-certificate-authority \
     --output text
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 ACTIVE
 ```
 
@@ -180,9 +170,7 @@ It should resemble the illustrated output.
 openssl req -in local-csr.pem -text -noout
 ```
 
-The output will be similar to the following:
-
-```bash
+```bash title="Output"
 Certificate Request:
     Data:
         Version: 1 (0x0)
@@ -231,9 +219,7 @@ In the following command, `local-cert.pem` refers to the end-entity certificate 
 openssl verify -CAfile cert.pem local-cert.pem
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 local-cert.pem: OK
 ```
 
@@ -258,9 +244,7 @@ awslocal acm-pca list-tags \
     --max-results 10
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "Tags": [
         {

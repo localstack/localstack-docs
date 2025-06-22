@@ -39,9 +39,7 @@ Run the following command to list all queues in your account:
 awslocal sqs list-queues
 ```
 
-You will see the following output:
-
-```json
+```bash title="Output"
 {
     "QueueUrls": [
         "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue"
@@ -74,9 +72,8 @@ awslocal sqs send-message \
 ```
 
 It will return the MD5 hash of the Message Body and a Message ID.
-You will see output similar to the following:
 
-```json
+```bash title="Output"
 {
     "MD5OfMessageBody": "b10a8db164e0754105b7a99be72e3fe5",
     "MessageId": "92612c02-4879-47db-92f6-40bf2b341c07"
@@ -123,15 +120,14 @@ Here's an end-to-end example of how to use message move tasks to test DLQ redriv
 
 First, create three queues.
 One will serve as original input queue, one as DLQ, and the third as target for DLQ redrive.
+
 ```bash
 awslocal sqs create-queue --queue-name input-queue
 awslocal sqs create-queue --queue-name dead-letter-queue
 awslocal sqs create-queue --queue-name recovery-queue
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
     "QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue"
 }
@@ -193,9 +189,7 @@ awslocal sqs list-message-move-tasks \
     --source-arn arn:aws:sqs:us-east-1:000000000000:dead-letter-queue
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
     "Results": [
         {
@@ -213,7 +207,11 @@ The following output is displayed:
 Receiving messages from the recovery queue should now show us the original message:
 
 ```bash
-$ awslocal sqs receive-message --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/recovery-queue
+awslocal sqs receive-message \
+    --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/recovery-queue
+```
+
+```bash title="Output"
 {
     "Messages": [
         {
@@ -239,9 +237,7 @@ For instance, you can use a basic [curl](https://curl.se/) command to send a `Se
 curl "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue?Action=SendMessage&MessageBody=hello%2Fworld"
 ```
 
-You will see the following output:
-
-```xml
+```xml title="Output"
 <?xml version='1.0' encoding='utf-8'?>
 <SendMessageResponse
  xmlns="http://queue.amazonaws.com/doc/2012-11-05/">
@@ -266,7 +262,7 @@ curl -H "Accept: application/json" "http://sqs.us-east-1.localhost.localstack.cl
 
 The response will be in JSON format:
 
-```json
+```bash title="Output"
 {
  "SendMessageResponse": {
   "SendMessageResult": {
@@ -426,7 +422,7 @@ print(response.text)  # outputs the response XML
 
 An example response is shown below:
 
-```xml
+```xml title="Output"  
 <?xml version='1.0' encoding='utf-8'?>
 <ReceiveMessageResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/">
     <ReceiveMessageResult>
@@ -507,7 +503,7 @@ print(response.text)  # outputs the response XML
 
 An example response is shown below:
 
-```json
+```bash title="Output"
 {
   "ReceiveMessageResponse": {
     "ReceiveMessageResult": {
@@ -592,7 +588,7 @@ print(response)
 
 An example response is shown below:
 
-```json
+```bash title="Output"
 {
     "Messages": [
         {
@@ -650,7 +646,7 @@ print(response.text)
 This will also include messages that currently have an active visibility timeout or were delayed and are not actually in the queue yet.
 Here's an example:
 
-```json
+```bash title="Output"
 [
     {
         "MessageId": "1c4187cc-f2c9-4f1c-9702-4a3bfaaa4817",

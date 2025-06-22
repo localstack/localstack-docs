@@ -76,9 +76,7 @@ You can verify that the cluster is up and running by checking the cluster health
 curl -s http://my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/_cluster/health | jq .
 ```
 
-The following output will be visible on your terminal:
-
-```json
+```bash title="Output"
 {
   "cluster_name": "opensearch",
   "status": "green",
@@ -173,7 +171,7 @@ IAM support is also not yet available.
 A secure OpenSearch domain can be spawned with this example CLI input.
 Save it in a file named `opensearch_domain.json`.
 
-```json
+```json title="opensearch_domain.json"
 {
     "DomainName": "secure-domain",
     "ClusterConfig": {
@@ -220,9 +218,7 @@ Once the domain setup is complete (`Processing: false`), the cluster can only be
 curl -u 'admin:really-secure-passwordAa!1' http://secure-domain.us-east-1.opensearch.localhost.localstack.cloud:4566/_cluster/health
 ```
 
-The following output will be visible on your terminal:
-
-```json
+```bash title="Output"
 {"cluster_name":"opensearch","status":"green",...}
 ```
 

@@ -60,9 +60,7 @@ journals of transactions.
 awslocal qldb create-ledger --name vehicle-registration --permissions-mode ALLOW_ALL
 ```
 
-The output will be similar to the following:
-
-```bash
+```bash title="Output"
 {
     "Name": "vehicle-registration",
     "Arn": "arn:aws:qldb:us-east-1:000000000000:ledger/vehicle-registration",
@@ -112,9 +110,7 @@ various data manipulation tasks using familiar SQL-like syntax.
 qldb> CREATE TABLE VehicleRegistration
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"  
 {
     information_schema: {
       user_tables: [
@@ -157,9 +153,7 @@ qldb> INSERT INTO VehicleRegistration VALUE
 }
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 {
 documentId: "3TYR9BamzyqHWBjYOfHegE"
 }
@@ -174,9 +168,7 @@ The table can be interrogated based on the inserted registration number:
 qldb> SELECT * FROM VehicleRegistration WHERE RegNum=1722
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 {
     'VIN' : 'KM8SRDHF6EU074761',
     'RegNum' : 1722,
@@ -209,7 +201,7 @@ qldb> UPDATE VehicleRegistration AS r SET r.Owners.PrimaryOwner.PersonId = '1122
 
 The command will return the updated document ID.
 
-```bash
+```bash title="Output"
 {
   documentId: "3TYR9BamzyqHWBjYOfHegE"
 }
@@ -222,9 +214,7 @@ The next step is to check on the updates made to the `PersonId` field of the `Pr
 qldb> SELECT r.Owners FROM VehicleRegistration AS r WHERE r.VIN = 'KM8SRDHF6EU074761'
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 {
     Owners: {
         PrimaryOwner: {
@@ -254,9 +244,7 @@ First the unique `id` of the document must be found.
 qldb> SELECT r_id FROM VehicleRegistration AS r BY r_id WHERE r.VIN = 'KM8SRDHF6EU074761'
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 {
 r_id: "3TYR9BamzyqHWBjYOfHegE"
 }
@@ -270,9 +258,7 @@ Then, the `id` is used to query the history function.
 qldb> SELECT h.data.VIN, h.data.City, h.data.Owners FROM history(VehicleRegistration) AS h WHERE h.metadata.id = '3TYR9BamzyqHWBjYOfHegE'
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 {
   VIN: "KM8SRDHF6EU074761",
   City: "Kent",
@@ -320,9 +306,7 @@ to an error message.
 awslocal qldb delete-ledger --name vehicle-registration
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 An error occurred (ResourcePreconditionNotMetException) when calling the DeleteLedger operation: Preventing deletion 
 of ledger vehicle-registration with DeletionProtection enabled
 ```
@@ -333,9 +317,7 @@ This can be adjusted using the `update-ledger` command in the AWS CLI to remove 
 awslocal qldb update-ledger --name vehicle-registration --no-deletion-protection
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 {
   "Name": "vehicle-registration",
   "Arn": "arn:aws:qldb:us-east-1:000000000000:ledger/vehicle-registration",

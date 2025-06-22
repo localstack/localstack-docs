@@ -37,9 +37,7 @@ Fetch the default VPC's security group ID using the following command:
 awslocal ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID --query 'Subnets[].SubnetId'
 ```
 
-You should see the following output:
-
-```bash
+```bash title="Output"
 [
     "subnet-bdd58a47",
     "subnet-957d6ba6",
@@ -56,9 +54,7 @@ Choose two subnets from the list above and fetch the CIDR block of the subnets w
 awslocal ec2 describe-subnets --subnet-ids subnet-957d6ba6 --query 'Subnets[*].CidrBlock'
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 [
     "172.31.16.0/20"
 ]
@@ -70,9 +66,7 @@ Similarly, fetch the CIDR block of the subnet `subnet-bdd58a47`:
 awslocal ec2 describe-subnets --subnet-ids subnet-bdd58a47 --query 'Subnets[*].CidrBlock'
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 [
     "172.31.0.0/20"
 ]
@@ -87,9 +81,7 @@ awslocal ec2 describe-security-groups \
     --query 'SecurityGroups[0].GroupId'
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 sg-39936e572e797b360
 ```
 
@@ -134,9 +126,7 @@ awslocal route53resolver create-resolver-endpoint \
     --cli-input-json file://create-outbound-resolver-endpoint.json
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "ResolverEndpoint": {
         "Id": "rslvr-out-5d61abaff9de06b99",
@@ -166,9 +156,7 @@ Run the following command:
 awslocal route53resolver list-resolver-endpoints
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "ResolverEndpoints": [
         {

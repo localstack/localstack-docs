@@ -38,9 +38,7 @@ awslocal pinpoint create-app \
     --create-application-request Name=ExampleCorp,tags={"Stack"="Test"}
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "ApplicationResponse": {
         "Arn": "arn:aws:mobiletargeting:us-east-1:000000000000:apps/4487a55ac6fb4a2699a1b90727c978e7",
@@ -60,9 +58,7 @@ Execute the following command:
 awslocal pinpoint get-apps
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "ApplicationsResponse": {
         "Item": [
@@ -88,9 +84,7 @@ awslocal pinpoint list-tags-for-resource \
 ```
 
 Replace the `resource-arn` with the ARN of the application you created earlier.
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "TagsModel": {
         "tags": {
@@ -127,9 +121,7 @@ awslocal pinpoint send-otp-message \
     }'
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "MessageResponse": {
         "ApplicationId": "fff5a801e01643c18a13a763e22a8fbf"
@@ -143,9 +135,7 @@ You can use the debug endpoint `/_aws/pinpoint/<application_id>/<reference_id>` 
 curl http://localhost:4566/_aws/pinpoint/fff5a801e01643c18a13a763e22a8fbf/liftoffcampaign | jq .
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
   "AllowedAttempts": 3,
   "BrandName": "LocalStack Community",
@@ -163,7 +153,7 @@ The output will be similar to the following:
 
 The OTP code is also printed in an `INFO` level message in the LocalStack log output:
 
-```text
+```bash title="Output"
 2024-10-17T11:08:24.044 INFO : OTP for application ID fff5a801e01643c18a13a763e22a8fbf reference ID liftoffcampaign: 655745
 ```
 
@@ -179,9 +169,7 @@ awslocal pinpoint verify-otp-message \
   }'
 ```
 
-The output will be similar to the following:
-
-```json
+```bash title="Output"
 {
     "VerificationResponse": {
         "Valid": true

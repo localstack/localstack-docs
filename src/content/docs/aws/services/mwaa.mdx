@@ -51,13 +51,15 @@ The Airflow UI can be accessed via the URL in the `WebserverUrl` attribute of th
 The username and password are always set to `localstack`.
 
 ```bash
-awslocal mwaa get-environment --name my-mwaa-env --query Environment.WebserverUrl
-"http://localhost.localstack.cloud:4510"
+awslocal mwaa get-environment \
+        --name my-mwaa-env \
+        --query Environment.WebserverUrl \
+        "http://localhost.localstack.cloud:4510"
 ```
 
 LocalStack also prints this information in the logs:
 
-```bash
+```bash title="Output" 
 2024-03-06T14:54:47.070  INFO --- [functhread10] l.services.mwaa.provider   : Airflow environment 'my-mwaa-env' available at http://localhost.localstack.cloud:4510 with username 'localstack' and password 'localstack'
 ```
 

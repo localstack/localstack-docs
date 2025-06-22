@@ -86,7 +86,7 @@ for msg in messages:
     print("Message Body:", msg.get("Body"))
 ```
 
-The following output is displayed:
+
 
 ```bash
 Message Body: {"event": "event-0", "message": "message-0"}
@@ -132,7 +132,7 @@ for msg in messages:
 client.discard_ses_messages()
 ```
 
-The following output is displayed:
+
 
 ```bash
 Message ID: khqzljuixhpnpejl-mnlhgajk-ebch-zfxq-orit-qgexxjlrkipo-ywgvwr
@@ -171,7 +171,7 @@ client.delete_pod(pod_name=POD_NAME)
 print(f"Pod '{POD_NAME}' deleted.")
 ```
 
-The following output is displayed:
+
 
 ```bash
 Pods: cloudpods=[PodListCloudpodsInner(max_version=1, pod_name='check-pod', last_change=None)]
@@ -215,7 +215,7 @@ except Exception as exc:
     print("Error after state reset:", error_code)
 ```
 
-The following output is displayed:
+
 
 ```bash
 Queue URL before reset: http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/test-queue
@@ -249,7 +249,7 @@ rules = client.delete_fault_rules(fault_rules=[rule])
 print("Rules after deleting S3 rule:", [(r.region, r.service) for r in rules])
 ```
 
-The following output is displayed:
+
 
 ```bash
 Added S3 rule: [('us-east-1', 's3')]

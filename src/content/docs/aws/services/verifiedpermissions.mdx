@@ -33,9 +33,7 @@ awslocal verifiedpermissions create-policy-store \
   --description "A local Policy Store"
 ```
 
-The above command returns the following response:
-
-```json
+```bash title="Output"
 {
     "policyStoreId": "q5PCScu9qo4aswMVc0owNN",
     "arn": "arn:aws:verifiedpermissions::000000000000:policy-store/q5PCScu9qo4aswMVc0owNN",
@@ -78,7 +76,7 @@ Replace the policy store ID with the ID of the policy store you created previous
 
 You should see the following output:
 
-```json
+```bash title="Output"
 {
     "policyStoreId": "q5PCScu9qo4aswMVc0owNN",
     "policyId": "MfsIseJDeZsr5WUm3tB4FX",
@@ -108,7 +106,7 @@ You should see the following output:
 We can now make use of the Policy Store and the Policy to start authorizing requests.
 To authorize a request using Verified Permissions, use the [`IsAuthorized`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html) API.
 
-```bash
+```bash title="Output"
 awslocal verifiedpermissions is-authorized \
   --policy-store-id q5PCScu9qo4aswMVc0owNN \
   --principal entityType=User,entityId=alice \
@@ -118,7 +116,7 @@ awslocal verifiedpermissions is-authorized \
 
 You should get the following output, indicating that your request was allowed:
 
-```json
+```bash title="Output"
 {
     "decision": "ALLOW",
     "determiningPolicies": [

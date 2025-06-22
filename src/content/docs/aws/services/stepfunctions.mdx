@@ -53,9 +53,7 @@ awslocal stepfunctions create-state-machine \
     --role-arn "arn:aws:iam::000000000000:role/stepfunctions-role"
 ```
 
-The output of the above command is the ARN of the state machine:
-
-```json
+```bash title="Output"
 {
     "stateMachineArn": "arn:aws:states:us-east-1:000000000000:stateMachine:CreateAndListBuckets",
     "creationDate": 1714643996.18017
@@ -73,9 +71,7 @@ awslocal stepfunctions start-execution \
     --state-machine-arn "arn:aws:states:us-east-1:000000000000:stateMachine:CreateAndListBuckets"
 ```
 
-The output of the above command is the execution ARN:
-
-```json
+```bash title="Output"
 {
     "executionArn": "arn:aws:states:us-east-1:000000000000:execution:CreateAndListBuckets:bf7d2138-e96f-42d1-b1f9-41f0c1c7bc3e",
     "startDate": 1714644089.748442
@@ -94,9 +90,7 @@ awslocal stepfunctions describe-execution \
 
 Replace the `execution-arn` with the ARN of the execution you want to describe.
 
-The output of the above command is the execution status:
-
-```json
+```bash title="Output"
 {
     "executionArn": "arn:aws:states:us-east-1:000000000000:execution:CreateAndListBuckets:bf7d2138-e96f-42d1-b1f9-41f0c1c7bc3e",
     "stateMachineArn": "arn:aws:states:us-east-1:000000000000:stateMachine:CreateAndListBuckets",
@@ -173,7 +167,7 @@ The first step is to select the state machine where mocked responses should be a
 
 In this example, we'll use a state machine named `LambdaSQSIntegration`, defined as follows:
 
-```json
+```json title="LambdaSQSIntegration.json"
 {
   "Comment": "This state machine is called: LambdaSQSIntegration",
   "QueryLanguage": "JSONata",
@@ -458,8 +452,6 @@ awslocal stepfunctions describe-execution \
     --execution-arn "arn:aws:states:us-east-1:000000000000:execution:LambdaSQSIntegration:MockExecutionBaseCase"
 ```
 
-The sample output shows the execution details, including the state machine ARN, execution ARN, status, start and stop dates, input, and output:
-
 ```json
 {
     "executionArn": "arn:aws:states:us-east-1:000000000000:execution:LambdaSQSIntegration:MockExecutionBaseCase",
@@ -488,7 +480,7 @@ awslocal stepfunctions get-execution-history \
 
 This will return the full execution history, including entries that indicate how mocked responses were applied to Lambda and SQS states.
 
-```json
+```bash title="Output"
 ...
 {
     "timestamp": "...",

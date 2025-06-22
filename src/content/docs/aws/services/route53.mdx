@@ -43,9 +43,7 @@ zone_id=$(awslocal route53 create-hosted-zone \
 echo $zone_id
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 /hostedzone/WBCZ6F10CWV9J1G
 ```
 
@@ -60,9 +58,7 @@ awslocal route53 change-resource-record-sets \
     --change-batch 'Changes=[{Action=CREATE,ResourceRecordSet={Name=test.example.com,Type=A,ResourceRecords=[{Value=1.2.3.4}]}}]'
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "ChangeInfo": {
         "Id": "/change/C2682N5HXP0BZ4",
@@ -88,9 +84,7 @@ You can query the DNS record using `dig` via the built-in DNS server by running 
 dig @localhost test.example.com
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 ;; QUESTION SECTION:
 ;test.example.com.              IN      A
 
@@ -123,9 +117,7 @@ zone_id=$(awslocal route53 create-hosted-zone \
 echo $zone_id
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 /hostedzone/3NF6SEGOB5EBHS1
 ```
 
@@ -138,9 +130,7 @@ awslocal route53 change-resource-record-sets \
     --change-batch '{"Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"localhost.localstack.cloud","Type":"A","ResourceRecords":[{"Value":"5.6.7.8"}]}},{"Action":"CREATE","ResourceRecordSet":{"Name":"*.localhost.localstack.cloud","Type":"A","ResourceRecords":[{"Value":"5.6.7.8"}]}}]}'
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 {
     "ChangeInfo": {
         "Id": "/change/C2682N5HXP0BZ4",
@@ -157,9 +147,7 @@ dig @127.0.0.1 bucket1.s3.localhost.localstack.cloud
 dig @127.0.0.1 localhost.localstack.cloud
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 ...
 ;; ANSWER SECTION:
 bucket1.s3.localhost.localstack.cloud. 300 IN A 127.0.0.1

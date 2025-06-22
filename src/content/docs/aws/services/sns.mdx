@@ -102,9 +102,7 @@ First we need to ensure we create an SQS queue named `my-queue`:
 awslocal sqs create-queue --queue-name my-queue
 ```
 
-The following output is displayed:
-
-```bash
+```bash title="Output"
 {
     "QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue"
 }
@@ -119,9 +117,7 @@ awslocal sns subscribe \
     --notification-endpoint "arn:aws:sqs:us-east-1:000000000000:my-queue"
 ```
 
-The following output is displayed:
-
-```bash
+```bash title="Output"
 {
     "SubscriptionArn": "arn:aws:sns:us-east-1:000000000000:localstack-topic:636e2a73-0dda-4e09-9fdf-77f113d0edd8"
 }
@@ -143,9 +139,7 @@ awslocal sqs receive-message \
     --queue-url "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue"
 ```
 
-The following output is displayed:
-
-```bash
+```bash title="Output"
 {
     "Messages": [
         {
@@ -166,9 +160,7 @@ Run the following command to list all the SNS subscriptions:
 awslocal sns list-subscriptions
 ```
 
-The following output is displayed:
-
-```bash
+```bash title="Output"
 {
     "Subscriptions": [
         {
@@ -228,9 +220,7 @@ awslocal sns create-platform-application \
     --attributes {}
 ```
 
-An example response is shown below:
-
-```json
+```bash title="Output"
 {
     "PlatformApplicationArn": "arn:aws:sns:us-east-1:000000000000:app/APNS/app-test"
 }
@@ -244,9 +234,9 @@ awslocal sns create-platform-endpoint \
     --token my-fake-token
 ```
 
-The following output is displayed:
 
-```json
+
+```bash title="Output"
 {
     "EndpointArn": "arn:aws:sns:us-east-1:000000000000:endpoint/APNS/app-test/c25f353e-856b-4b02-a725-6bde35e6e944"
 }
@@ -261,9 +251,9 @@ awslocal sns publish \
     --message-structure json
 ```
 
-The following output is displayed:
 
-```json
+
+```bash title="Output"
 {
     "MessageId": "ed501a7a-caab-45aa-a941-2fcc64b5c227"
 }
@@ -275,9 +265,9 @@ Retrieve the messages published to the platform endpoint using [curl](https://cu
 curl "http://localhost:4566/_aws/sns/platform-endpoint-messages" | jq .
 ```
 
-The following output is displayed:
 
-```json
+
+```bash title="Output"
 {
   "platform_endpoint_messages": {
     "arn:aws:sns:us-east-1:000000000000:endpoint/APNS/app-test/c25f353e-856b-4b02-a725-6bde35e6e944": [
@@ -307,9 +297,9 @@ We can now check that the messages have been properly deleted:
 curl "http://localhost:4566/_aws/sns/platform-endpoint-messages" | jq .
 ```
 
-The following output is displayed:
 
-```json
+
+```bash title="Output"
 {
   "platform_endpoint_messages": {},
   "region": "us-east-1"
@@ -350,9 +340,7 @@ awslocal sns publish \
     --message "Hello World!"
 ```
 
-An example response is shown below:
-
-```json
+```bash title="Output"
 {
     "MessageId": "9ce56934-dcc4-45f5-ba40-13691329fc67"
 }
@@ -364,9 +352,7 @@ Retrieve the message published using [curl](https://curl.se/) and [jq](https://j
 curl "http://localhost:4566/_aws/sns/sms-messages" | jq .
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
   "sms_messages": {
     "+123123123": [
@@ -400,9 +386,7 @@ We can now check that the messages have been properly deleted:
 curl "http://localhost:4566/_aws/sns/sms-messages" | jq .
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
   "sms_messages": {},
   "region": "us-east-1"
@@ -445,9 +429,7 @@ Create an SNS topic, and create a subscription to a external HTTP SNS integratio
 awslocal sns create-topic --name "test-external-integration"
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
     "TopicArn": "arn:aws:sns:us-east-1:000000000000:test-external-integration"
 }
@@ -463,9 +445,7 @@ awslocal sns subscribe \
     --return-subscription-arn
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
     "SubscriptionArn": "arn:aws:sns:us-east-1:000000000000:test-external-integration:c3ab47f3-b964-461d-84eb-903d8765b0c8"
 }
@@ -479,9 +459,7 @@ awslocal sns get-subscription-attributes \
     --subscription-arn "arn:aws:sns:us-east-1:000000000000:test-external-integration:c3ab47f3-b964-461d-84eb-903d8765b0c8"
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
     "Attributes": {
         "TopicArn": "arn:aws:sns:us-east-1:000000000000:test-external-integration",
@@ -502,7 +480,7 @@ To manually confirm the subscription, we will fetch its token with our developer
 curl "http://localhost:4566/_aws/sns/subscription-tokens/arn:aws:sns:us-east-1:000000000000:test-external-integration:c3ab47f3-b964-461d-84eb-903d8765b0c8" | jq .
 ```
 
-The following output is displayed:
+
 
 ```json
 {
@@ -519,9 +497,7 @@ awslocal sns confirm-subscription \
     --token 75732d656173742d312f3b875fb03b875fb03b875fb03b875fb03b875fb03b87
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
     "SubscriptionArn": "arn:aws:sns:us-east-1:000000000000:test-external-integration:c3ab47f3-b964-461d-84eb-903d8765b0c8"
 }
@@ -534,9 +510,7 @@ awslocal sns get-subscription-attributes \
     --subscription-arn "arn:aws:sns:us-east-1:000000000000:test-external-integration:c3ab47f3-b964-461d-84eb-903d8765b0c8"
 ```
 
-The following output is displayed:
-
-```json
+```bash title="Output"
 {
     "Attributes": {
         "TopicArn": "arn:aws:sns:us-east-1:000000000000:test-external-integration",
