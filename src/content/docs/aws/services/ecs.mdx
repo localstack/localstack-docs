@@ -36,9 +36,7 @@ Execute the following command to create an ECS cluster named `mycluster`:
 awslocal ecs create-cluster --cluster-name mycluster
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "cluster": {
         "clusterArn": "arn:aws:ecs:us-east-1:000000000000:cluster/mycluster",
@@ -98,9 +96,7 @@ and then run the following command:
 awslocal ecs register-task-definition --cli-input-json file://task_definition.json
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "taskDefinition": {
         "taskDefinitionArn": "arn:aws:ecs:us-east-1:000000000000:task-definition/myfamily:1",
@@ -160,9 +156,7 @@ To create a service, execute the following command:
 awslocal ecs create-service --service-name myservice --cluster mycluster --task-definition myfamily --desired-count 1
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "service": {
         "serviceArn": "arn:aws:ecs:us-east-1:000000000000:service/mycluster/myservice",
@@ -226,10 +220,7 @@ To access the generated logs from the container, run the following command:
 awslocal logs filter-log-events --log-group-name myloggroup --query 'events[].message'
 ```
 
-The output will be:
-
-```json
-$ awslocal logs filter-log-events --log-group-name myloggroup | head -n 20
+```bash title="Output"
 {
     "events": [
         {

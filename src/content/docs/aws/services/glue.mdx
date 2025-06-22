@@ -52,9 +52,7 @@ awslocal glue create-table --database db1 --table-input '{"Name":"table1"}'
 awslocal glue get-tables --database db1
 ```
 
-You should see the following output:
-
-```json
+```bash title="Output"
 {
     "TableList": [
         {
@@ -115,9 +113,7 @@ The returned `JobRunId` can be used to query the status job the job execution, u
 awslocal glue get-job-run --job-name job1 --run-id <JobRunId>
 ```
 
-You should see the following output:
-
-```json
+```bash title="Output"
 {
     "JobRun": {
         "Id": "733b76d0",
@@ -154,9 +150,7 @@ You can query the databases with the `get-databases` operation:
 awslocal glue get-databases
 ```
 
-You should see the following output:
-
-```json
+```bash title="Output"
 {
     "DatabaseList": [
         ...
@@ -178,9 +172,7 @@ And you can query the databases with the `get-databases` operation:
 awslocal glue get-tables --database-name db2
 ```
 
-You should see the following output:
-
-```json
+```bash title="Output"
 {
     "TableList": [
         {
@@ -239,9 +231,7 @@ Finally, you can query the table metadata that has been created by the crawler:
 awslocal glue get-tables --database-name db1
 ```
 
-You should see the following output:
-
-```json
+```bash title="Output"
 {
     "TableList": [{
         "Name": "table1",
@@ -256,9 +246,7 @@ You can also query the created table partitions:
 awslocal glue get-partitions --database-name db1 --table-name table1
 ```
 
-You should see the following output:
-
-```json
+```bash title="Output"
 {
     "Partitions": [{
         "Values": ["2021", "Jan", "1"],
@@ -285,7 +273,7 @@ awslocal redshift create-cluster \
 
 The output of this command contains the endpoint address of the created Redshift database:
 
-```json
+```bash title="Output"
 ...
     "Endpoint": {
         "Address": "localhost.localstack.cloud",
@@ -345,9 +333,7 @@ awslocal glue create-schema --schema-name demo-schema \
     --schema-definition '{"type":"record","namespace":"Demo","name":"Person","fields":[{"name":"Name","type":"string"}]}'
 ```
 
-You should see the following output:
-
-```json
+```bash title="Output"
 {
     "RegistryName": "demo-registry",
     "RegistryArn": "arn:aws:glue:us-east-1:000000000000:file-registry/demo-registry",
@@ -372,9 +358,7 @@ awslocal glue register-schema-version \
     --schema-definition '{"type":"record","namespace":"Demo","name":"Person","fields":[{"name":"Name","type":"string"}, {"name":"Address","type":"string"}]}'
 ```
 
-You should see the following output:
-
-```json
+```bash title="Output"
 {
     "SchemaVersionId": "ee38732b-b299-430d-a88b-4c429d9e1208",
     "VersionNumber": 2,
@@ -439,7 +423,7 @@ Retrieve the job run ID from the output of the `start-job-run` command.
 
 The execution of the Glue job can take a few moments - once the job has finished executing, you should see a log line with the query results in the LocalStack container logs, similar to the output below:
 
-```text
+```bash title="Output"
 2023-10-17 12:59:20,088 INFO scheduler.DAGScheduler: Job 15 finished: collect at /private/tmp/script-90e5371e.py:28, took 0,158257 s
 SQL result: ['{"name":"test1","key":123}', '{"name":"test2","key":456}']
 ```

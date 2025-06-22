@@ -24,9 +24,7 @@ Unless you use the Elasticsearch default version, the first time you create a cl
 awslocal es create-elasticsearch-domain --domain-name my-domain
 ```
 
-The following output would be retrieved:
-
-```json
+```bash title="Output"
 {
     "DomainStatus": {
         "DomainId": "000000000000/my-domain",
@@ -79,9 +77,7 @@ and after some time, you should see that the `Processing` state of the domain is
 awslocal es describe-elasticsearch-domain --domain-name my-domain | jq ".DomainStatus.Processing"
 ```
 
-The following output would be retrieved:
-
-```bash
+```bash title="Output"
 false
 ```
 
@@ -97,9 +93,7 @@ For example:
 curl http://my-domain.us-east-1.es.localhost.localstack.cloud:4566
 ```
 
-The following output would be retrieved:
-
-```json
+```bash title="Output"
 {
   "name" : "localstack",
   "cluster_name" : "elasticsearch",
@@ -125,9 +119,7 @@ Or the health endpoint:
 curl -s http://my-domain.us-east-1.es.localhost.localstack.cloud:4566/_cluster/health | jq .
 ```
 
-The following output would be retrieved:
-
-```json
+```bash title="Output"
 {
   "cluster_name": "elasticsearch",
   "status": "green",
@@ -177,7 +169,7 @@ awslocal es create-elasticsearch-domain --domain-name my-domain \
 
 Once the domain processing is complete, you can access the cluster:
 
-```bash
+```bash title="Output"
 curl http://localhost:4566/my-custom-endpoint/_cluster/health
 ```
 
@@ -279,9 +271,7 @@ volumes:
         --elasticsearch-cluster-config '{ "InstanceType": "m3.xlarge.elasticsearch", "InstanceCount": 4, "DedicatedMasterEnabled": true, "ZoneAwarenessEnabled": true, "DedicatedMasterType": "m3.xlarge.elasticsearch", "DedicatedMasterCount": 3}'
     ```
 
-    The following output would be retrieved:
-
-    ```json
+    ```bash title="Output"
     {
         "DomainStatus": {
             "DomainId": "000000000000/mylogs-2",
@@ -323,9 +313,7 @@ volumes:
     curl mylogs-2.us-east-1.es.localhost.localstack.cloud:4566/_cluster/health
     ```
 
-    The following output would be retrieved:
-
-    ```bash
+    ```bash title="Output"
     {"cluster_name":"es-docker-cluster","status":"green","timed_out":false,"number_of_nodes":1,"number_of_data_nodes":1,"active_primary_shards":0,"active_shards":0,"relocating_shards":0,"initializing_shards":0,"unassigned_shards":0,"delayed_unassigned_shards":0,"number_of_pending_tasks":0,"number_of_in_flight_fetch":0,"task_max_waiting_in_queue_millis":0,"active_shards_percent_as_number":100.0}[~]
     ```
 
@@ -334,9 +322,7 @@ volumes:
     curl -X PUT mylogs-2.us-east-1.es.localhost.localstack.cloud:4566/my-index
     ```
 
-    The following output would be retrieved:
-
-    ```bash
+    ```bash title="Output"
     {"acknowledged":true,"shards_acknowledged":true,"index":"my-index"}
     ```
 

@@ -39,9 +39,7 @@ awslocal eks create-cluster \
   --resources-vpc-config "{}"
 ```
 
-You can see an output similar to the following:
-
-```bash
+```bash title="Output"
 {
     "cluster": {
         "name": "cluster1",
@@ -71,9 +69,7 @@ You can use the `docker` CLI to check that some containers have been created:
 docker ps
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 CONTAINER ID   IMAGE                          COMMAND                  CREATED          STATUS          PORTS                                           NAMES
 ...
 b335f7f089e4   rancher/k3d-proxy:5.0.1-rc.1   "/bin/sh -c nginx-pr…"   1 minute ago   Up 1 minute   0.0.0.0:8081->80/tcp, 0.0.0.0:44959->6443/tcp   k3d-cluster1-serverlb
@@ -88,9 +84,7 @@ Run the following command:
 awslocal eks describe-cluster --name cluster1
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "cluster": {
         "name": "cluster1",
@@ -145,9 +139,7 @@ Run the following command:
 awslocal ecr create-repository --repository-name "fancier-nginx"
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "repository": {
         "repositoryArn": "arn:aws:ecr:us-east-1:000000000000:repository/fancier-nginx",
@@ -194,9 +186,7 @@ awslocal eks update-kubeconfig --name cluster1 && \
     kubectl config use-context arn:aws:eks:us-east-1:000000000000:cluster/cluster1
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 ...
 Added new context arn:aws:eks:us-east-1:000000000000:cluster/cluster1 to /home/localstack/.kube/config
 Switched to context "arn:aws:eks:us-east-1:000000000000:cluster/cluster1".
@@ -239,7 +229,7 @@ kubectl describe pod fancier-nginx
 
 In the events, we can see that the pull from ECR was successful:
 
-```bash
+```bash title="Output"
   Normal  Pulled     10s   kubelet            Successfully pulled image "000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/fancier-nginx:latest" in 2.412775896s
 ```
 
@@ -300,9 +290,7 @@ You will be able to send a request to `nginx` via the load balancer port `8081` 
 curl http://localhost:8081/test123
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 <html>
 ...
 <hr><center>nginx/1.21.6</center>
@@ -379,9 +367,7 @@ You can create an EKS Cluster configuration using the following command:
 awslocal eks create-cluster --name cluster1 --role-arn arn:aws:iam::000000000000:role/eks-role --resources-vpc-config '{}'
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "cluster": {
         "name": "cluster1",
@@ -400,9 +386,7 @@ And check that it was created with:
 awslocal eks list-clusters
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "clusters": [
         "cluster1"
@@ -487,9 +471,7 @@ This host-based routing mechanism ensures that each service is uniquely identifi
 curl http://eks-service-1.localhost.localstack.cloud:8081/v1
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 ... [output of service 1]
 ```
 
@@ -497,9 +479,7 @@ The output will be:
 curl http://eks-service-2.localhost.localstack.cloud:8081/v1
 ```
 
-The output will be:
-
-```bash
+```bash title="Output"
 ... [output of service 2]
 ```
 
@@ -528,9 +508,7 @@ awslocal eks create-cluster \
   --tags '{"_volume_mount_":"/path/on/host:/path/on/node"}'
 ```
 
-The output will be:
-
-```json
+```bash title="Output"
 {
     "cluster": {
         "name": "cluster1",

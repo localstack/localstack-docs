@@ -42,9 +42,7 @@ Run the following command to describe your vault.
 awslocal glacier describe-vault --vault-name sample-vault --account-id -
 ```
 
-On successful creation of the Glacier vault, you will see the following output:
-
-```bash
+```bash title="Output"
 {
     "VaultARN": "arn:aws:glacier:us-east-1:000000000000:vaults/sample-vault",
     "VaultName": "sample-vault",
@@ -65,9 +63,7 @@ Run the following command to upload the file to your Glacier vault:
 awslocal glacier upload-archive --vault-name sample-vault --account-id - --body image.jpg
 ```
 
-On successful upload of the Glacier archive, you will see the following output:
-
-```bash
+```bash title="Output"
 {
     "location": "/000000000000/vaults/sample-vault/archives/d41d8cd98f00b204e9800998ecf8427e",
     "checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -88,9 +84,7 @@ awslocal glacier initiate-job \
     --job-parameters '{"Type":"archive-retrieval","ArchiveId":"d41d8cd98f00b204e9800998ecf8427e"}'
 ```
 
-On successful execution of the job, you will see the following output:
-
-```bash
+```bash title="Output"
 {
     "location": "//vaults/sample-vault/jobs/25CEOTJ7ZUR5Q7YY0B1O55AE4C3L1502EOHWMNY10IIYEBWEQB73D23S8BVYO9RTRTPLRK2LJLUCCRM52GDV87C9A4JW",
     "jobId": "25CEOTJ7ZUR5Q7YY0B1O55AE4C3L1502EOHWMNY10IIYEBWEQB73D23S8BVYO9RTRTPLRK2LJLUCCRM52GDV87C9A4JW"
@@ -105,9 +99,7 @@ You can list the current and previous processes, called Jobs, to monitor the req
 awslocal glacier list-jobs --vault-name sample-vault --account-id -
 ```
 
-On successful execution of the command, you will see the following output:
-
-```bash
+```bash title="Output"
 {
     "JobList": [
         {
@@ -160,9 +152,7 @@ awslocal glacier initiate-job \
     --job-parameters '{"Type":"inventory-retrieval","ArchiveId":"d41d8cd98f00b204e9800998ecf8427e"}'
 ```
 
-On successful execution of the command, you will see the following output:
-
-```bash
+```bash title="Output"
 {
     "location": "//vaults/sample-vault/jobs/P5972CSWFR803BHX48OD1A7JWNBFJUMYVWCMZWY55ZJPIJMG1XWFV9ISZPZH1X3LBF0UV3UG6ORETM0EHE5R86Z47B1F",
     "jobId": "P5972CSWFR803BHX48OD1A7JWNBFJUMYVWCMZWY55ZJPIJMG1XWFV9ISZPZH1X3LBF0UV3UG6ORETM0EHE5R86Z47B1F"
@@ -181,7 +171,7 @@ awslocal glacier get-job-output \
 
 Inspecting the content of the `inventory.json` file, we can find an inventory of the vault:
 
-```json
+```json title="inventory.json"
 {
   "VaultARN": "arn:aws:glacier:us-east-1:000000000000:vaults/sample-vault",
   "InventoryDate": "2023-09-11T17:20:48.000Z",
