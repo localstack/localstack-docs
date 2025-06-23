@@ -24,7 +24,7 @@ The data is only used to provide you with insights into the usage of LocalStack 
 
 ![Stack Insights](/images/aws/stack-insights-getting-started.png)
 
-To start using this feature, log in to your [LocalStack account](https://app.localstack.cloud/) and start a [LocalStack instance on your local machine]({{< ref "getting-started/auth-token" >}}).
+To start using this feature, log in to your [LocalStack account](https://app.localstack.cloud/) and start a [LocalStack instance on your local machine](/aws/getting-started/auth-token).
 The system will start making your events accessible on the [Stack Insights dashboard](https://app.localstack.cloud/stacks).
 
 Click on the Stack widget to see:
