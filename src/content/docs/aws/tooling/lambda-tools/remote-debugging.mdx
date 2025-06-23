@@ -6,6 +6,8 @@ sidebar:
     order: 3
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 # Overview
 
 This guide covers remote debugging of Lambda functions with the IDEs [Visual Studio Code](https://code.visualstudio.com/) and [IntelliJ IDEA](https://www.jetbrains.com/idea/).
@@ -21,17 +23,17 @@ More examples and tooling support for local Lambda debugging (including support 
 * [Lambda Debug Mode (preview)](#lambda-debug-mode-preview)
 * [Resources](#resources)
 
-{{< callout tip >}}
+:::note
 Due to the ports published by the Lambda container for the debugger, it is currently only possible to debug one Lambda function at a time.
-For advanced debugging scenarios, such as those requiring multiple ports, refer to [Lambda Debug Mode (preview)]({{< relref "debugging#lambda-debug-mode-preview" >}}) section.
-{{< /callout >}}
+For advanced debugging scenarios, such as those requiring multiple ports, refer to [Lambda Debug Mode (preview)](#lambda-debug-mode-preview) section.
+:::
 
 ## Debugging Python lambdas
 
 Lambda functions debugging used to be a difficult task.
 LocalStack changes that
 with the same local code mounting functionality that also helps you
-to [iterate quickly over your function code]({{< ref "user-guide/lambda-tools" >}}).
+to [iterate quickly over your function code](/aws/tooling/lambda-tools/hot-reloading).
 
 For a simple working example of this feature, you can refer to
 [our samples](https://github.com/localstack/localstack-pro-samples/tree/master/lambda-mounting-and-debugging).
@@ -41,11 +43,11 @@ There, the necessary code fragments for enabling debugging are already present.
 
 #### Configure LocalStack for VS Code remote Python debugging
 
-First, make sure that LocalStack is started with the following configuration (see the [Configuration docs]({{< ref "configuration#lambda" >}}) for more information):
+First, make sure that LocalStack is started with the following configuration (see the [Configuration docs](/aws/capabilities/config/configuration#lambda) for more information):
 
-{{< command >}}
-$ LAMBDA_DOCKER_FLAGS='-p 19891:19891' localstack start
-{{< /command >}}
+```bash
+LAMBDA_DOCKER_FLAGS='-p 19891:19891' localstack start
+```
 
 #### Preparing your code
 
@@ -116,7 +118,7 @@ Make sure to set a breakpoint in the Lambda handler code first, which can then l
 
 The screenshot below shows the triggered breakpoint with our `'Hello from LocalStack!'` in the variable inspection view:
 
-<!-- ![Visual Studio Code debugging](vscode-debugging-py-1.png) -->
+![Visual Studio Code debugging](/images/aws/vscode-debugging-py-1.png)
 
 #### Current Limitations
 
@@ -137,7 +139,7 @@ You can [follow the steps in the official docs](https://www.jetbrains.com/help/p
 * Add path mapping with your project files on the host and map it to the remote directory `/var/task`.
 * Copy the `pip install` command, and make sure to install the correct `pydevd-pycharm` version for your PyCharm IDE.
 
-<!-- ![PyCharm Professional Remote Debugging Configuration](pycharm_remote_debugging.png) -->
+![PyCharm Professional Remote Debugging Configuration](/images/aws/pycharm_remote_debugging.png)
 
 #### Preparing your code
 
@@ -171,7 +173,7 @@ def wait_for_debug_client():
 In the next step we create our function.
 In order to debug the function in PyCharm set a breakpoint in your function, run the Remote Debug configuration and then invoke the function.
 
-<!-- ![PyCharm Professional debugging](pycharm_lambda_debugging.png) -->
+![PyCharm Professional debugging](/images/aws/pycharm_lambda_debugging.png)
 
 ### Creating the Lambda function
 
@@ -183,34 +185,34 @@ To create the Lambda function, you just need to take care of two things:
 
 So, in our [example](https://github.com/localstack/localstack-pro-samples/tree/master/lambda-mounting-and-debugging), this would be:
 
-{{< command >}}
-$ awslocal lambda create-function --function-name my-cool-local-function \
+```bash
+awslocal lambda create-function --function-name my-cool-local-function \
     --code S3Bucket="hot-reload",S3Key="$(pwd)/" \
     --handler handler.handler \
     --runtime python3.8 \
     --timeout 150 \
     --role arn:aws:iam::000000000000:role/lambda-role
-{{< /command >}}
+```
 
 We can quickly verify that it works by invoking it with a simple payload:
 
-{{< tabpane text=true persist=false >}}
-{{% tab header="AWS CLI v1" lang="shell" %}}
-{{< command >}}
-$ awslocal lambda invoke --function-name my-cool-local-function \
+<Tabs>
+<TabItem label="AWS CLI v1">
+```bash
+awslocal lambda invoke --function-name my-cool-local-function \
     --payload '{"message": "Hello from LocalStack!"}' \
     output.txt
-{{< /command >}}
-{{% /tab %}}
-{{% tab header="AWS CLI v2" lang="shell" %}}
-{{< command >}}
-$ awslocal lambda invoke --function-name my-cool-local-function \
+```
+</TabItem>
+<TabItem label="AWS CLI v2">
+```bash
+awslocal lambda invoke --function-name my-cool-local-function \
     --cli-binary-format raw-in-base64-out \
     --payload '{"message": "Hello from LocalStack!"}' \
     output.txt
-{{< /command >}}
-{{% /tab %}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ## Debugging JVM lambdas
 
@@ -231,15 +233,15 @@ services:
 
 When creating your Lambda function, set the `_JAVA_OPTIONS` environment variable like so:
 
-{{< command >}}
-$ awslocal lambda create-function --function-name debugfunc \
---zip-file fileb://java-handler.zip \
---handler myindex.handler \
---runtime java8.al2 \
---timeout 150 \
---role arn:aws:iam::000000000000:role/lambda-role \
---environment '{"Variables": {"_JAVA_OPTIONS": "-Xshare:off -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5050"}}'
-{{< /command >}}
+```bash
+awslocal lambda create-function --function-name debugfunc \
+    --zip-file fileb://java-handler.zip \
+    --handler myindex.handler \
+    --runtime java8.al2 \
+    --timeout 150 \
+    --role arn:aws:iam::000000000000:role/lambda-role \
+    --environment '{"Variables": {"_JAVA_OPTIONS": "-Xshare:off -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=0.0.0.0:5050"}}'
+```
 
 Note the `suspend=y` option here, it will delay code execution until the debugger is attached to the debugger server.
 If you want to change that, simply switch to `suspend=n`.
@@ -256,13 +258,13 @@ the following content:
 while [[ -z $(docker ps | grep :5050) ]]; do sleep 1; done
 ```
 
-<!-- ![Run/Debug Configurations](inteliji-debugging-jvm-1.png) -->
+![Run/Debug Configurations](/images/aws/inteliji-debugging-jvm-1.png)
 
 This shell script should simplify the process a bit since the debugger server is not immediately available (only once Lambda container is up).
 
 Then create a new `Remote JVM Debug` configuration and use the script from above as a `Before launch` target:
 
-<!-- ![Run/Debug Configurations](inteliji-debugging-jvm-2.png) -->
+![Run/Debug Configurations](/images/aws/inteliji-debugging-jvm-2.png)
 
 Now to debug your Lambda function, simply click on the `Debug` icon with `Remote JVM on LS Debug` configuration selected, and then invoke your Lambda function.
 
@@ -391,36 +393,37 @@ exports.handler = async (event) => {
 ```
 
 Create the lambda function using:
-{{< command >}}
-$ awslocal lambda create-function --function-name func1 \
+
+```bash
+awslocal lambda create-function --function-name func1 \
     --code S3Bucket="hot-reload",S3Key="$(pwd)/" \
     --handler myindex.handler \
     --runtime nodejs14.x \
     --timeout 150 \
     --role arn:aws:iam::000000000000:role/lambda-role
-{{< /command >}}
+```
 
 Now to debug your lambda function, click on the `Debug` icon with
 `Attach to Remote Node.js` configuration selected, and then invoke your
 lambda function:
 
-{{< tabpane text=true persist=false >}}
-{{% tab header="AWS CLI v1" lang="shell" %}}
-{{< command >}}
-$ awslocal lambda invoke --function-name func1 \
+<Tabs>
+<TabItem label="AWS CLI v1">
+```bash
+awslocal lambda invoke --function-name func1 \
     --payload '{"hello":"world"}' \
     output.txt
-{{< /command >}}
-{{% /tab %}}
-{{% tab header="AWS CLI v2" lang="shell" %}}
-{{< command >}}
-$ awslocal lambda invoke --function-name func1 \
+```
+</TabItem>
+<TabItem label="AWS CLI v2">
+```bash
+awslocal lambda invoke --function-name func1 \
     --cli-binary-format raw-in-base64-out \
     --payload '{"hello":"world"}' \
     output.txt
-{{< /command >}}
-{{% /tab %}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ## Lambda Debug Mode (Preview)
 
@@ -437,11 +440,11 @@ giving developers ample time to connect remote debuggers and inspect the functio
 
 To enable Lambda Debug Mode, set the `LAMBDA_DEBUG_MODE` environment variable as shown below:
 
-{{< command >}}
+```bash
 LAMBDA_DEBUG_MODE=1 \
 LAMBDA_DOCKER_FLAGS='-p 19891:19891' \
 localstack start
-{{< /command >}}
+```
 
 When enabled, Lambda Debug Mode automatically adjusts timeouts to accommodate debugging needs:
 * **Lambda Container Startup Timeout**: Provides additional time for debugger connection during container creation.
@@ -457,13 +460,16 @@ Manually setting `LAMBDA_DOCKER_FLAGS` is unnecessary when using this configurat
 
 Here is an example of mounting a `debug_config.yaml` in your LocalStack container to start your Debug Mode:
 
-{{< tabpane >}}
-{{< tab header="LocalStack CLI" lang="shell" >}}
+<Tabs>
+<TabItem label="LocalStack CLI">
+```bash
 LOCALSTACK_LAMBDA_DEBUG_MODE=1 \
 LOCALSTACK_LAMBDA_DEBUG_MODE_CONFIG_PATH=/tmp/debug_config.yaml \
 localstack start --volume /path/to/debug-config.yaml:/tmp/lambda_debug_mode_config.yaml
-{{< /tab >}}
-{{< tab header="Docker Compose" lang="yaml" >}}
+```
+</TabItem>
+<TabItem label="Docker Compose">
+```yaml
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -481,8 +487,9 @@ services:
       - "./debug_config.yaml:/tmp/debug_config.yaml"
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 Any change to the configuration file on your local filesystem would be automatically picked by the LocalStack container.
 After debugging a Lambda function, its associated container will automatically stop.
