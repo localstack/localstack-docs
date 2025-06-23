@@ -6,6 +6,8 @@ sidebar:
     order: 2
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 ## Introduction
 
 Hot reloading (formerly known as hot swapping) continuously applies code changes to Lambda functions without manual redeployment.
@@ -14,13 +16,13 @@ Quickly iterating over Lambda function code can be quite cumbersome, as you need
 LocalStack enables fast feedback cycles during development by automatically reloading your function code.
 Pro users can also hot-reload Lambda layers.
 
-{{< callout >}}
+:::note
 The magic S3 bucket name changed from `__local__` to `hot-reload` in LocalStack v2.0.
 Please change your deployment configuration accordingly because the old value is an invalid bucket name.
 The configuration `BUCKET_MARKER_LOCAL` is still supported.
 
-More information about the new Lambda provider is available under [Lambda providers]({{< ref "user-guide/aws/lambda" >}}).
-{{< /callout >}}
+More information about the new Lambda provider is available under [Lambda providers](/aws/services/lambda).
+:::
 
 ## Hot Reloading Behavior
 
@@ -42,7 +44,7 @@ MacOS may prompt you to grant Docker access to your target folders.
 **Layer limit with hot reloading for layers:**
 When hot reloading is active for a Lambda layer (Pro), the function can use at most one layer.
 
-{{< callout >}}
+:::note
 Configuring the file sharing mechanism in Rancher Desktop or Colima distributions is necessary to enable hot reloading for Lambda.
 
 * For Rancher Desktop it is required to set the configuration `LAMBDA_DOCKER_FLAGS=-e LOCALSTACK_FILE_WATCHER_STRATEGY=polling`.
@@ -50,7 +52,7 @@ Configuring the file sharing mechanism in Rancher Desktop or Colima distribution
 
 More information about this behavior can be found in the following [GitHub issue.](https://github.com/localstack/localstack/issues/11415#issuecomment-2341140998)
 
-{{< /callout >}}
+:::
 
 ## Application Configuration Examples
 
@@ -70,9 +72,10 @@ First, create a watchman wrapper by using
 [one of our examples](https://github.com/localstack/localstack-pro-samples/tree/master/sample-archive/spring-cloud-function-microservice/bin/watchman.sh)
 
 Don't forget to adjust permissions:
-{{< command >}}
-$ chmod +x bin/watchman.sh
-{{< / command >}}
+
+```bash
+chmod +x bin/watchman.sh
+```
 
 Now configure your build tool to unzip the FatJar to some folder, which will be
 then mounted to LocalStack.
@@ -90,9 +93,9 @@ buildHot.dependsOn shadowJar
 
 Now run the following command to start watching your project in a hot-reloading mode:
 
-{{< command >}}
-$ bin/watchman.sh src "./gradlew buildHot"
-{{< / command >}}
+```bash
+bin/watchman.sh src "./gradlew buildHot"
+```
 
 Please note that you still need to configure your deployment tool to use
 local code mounting.
@@ -107,10 +110,10 @@ We will show you how you can do this with a simple example function, taken direc
 You can check out that code, or use your own lambda functions to follow along.
 To use the example just do:
 
-{{< command >}}
-$ cd /tmp
-$ git clone git@github.com:awsdocs/aws-doc-sdk-examples.git
-{{< / command >}}
+```bash
+cd /tmp
+git clone git@github.com:awsdocs/aws-doc-sdk-examples.git
+```
 
 #### Creating the Lambda Function
 
@@ -123,39 +126,39 @@ To create the Lambda function, you just need to take care of two things:
 
 So, using the AWS example, this would be:
 
-{{< command >}}
+```bash
 $ awslocal lambda create-function --function-name my-cool-local-function \
     --code S3Bucket="hot-reload",S3Key="/tmp/aws-doc-sdk-examples/python/example_code/lambda" \
     --handler lambda_handler_basic.lambda_handler \
     --runtime python3.8 \
     --role arn:aws:iam::000000000000:role/lambda-role
-{{< / command >}}
+```
 
 You can also check out some of our [Deployment Configuration Examples](#deployment-configuration-examples).
 
 We can also quickly make sure that it works by invoking it with a simple payload:
 
-{{< tabpane text=true persist=false >}}
-{{% tab header="AWS CLI v1" lang="shell" %}}
-{{< command >}}
-$ awslocal lambda invoke --function-name my-cool-local-function \
+<Tabs>
+<TabItem label="AWS CLI v1">
+```bash
+awslocal lambda invoke --function-name my-cool-local-function \
     --payload '{"action": "increment", "number": 3}' \
     output.txt
-{{< /command >}}
-{{% /tab %}}
-{{% tab header="AWS CLI v2" lang="shell" %}}
-{{< command >}}
-$ awslocal lambda invoke --function-name my-cool-local-function \
+```
+</TabItem>
+<TabItem label="AWS CLI v2">
+```bash
+awslocal lambda invoke --function-name my-cool-local-function \
     --cli-binary-format raw-in-base64-out \
     --payload '{"action": "increment", "number": 3}' \
     output.txt
-{{< /command >}}
-{{% /tab %}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 The invocation returns itself returns:
 
-```json
+```bash title="Output"
 {
     "StatusCode": 200,
     "LogResult": "",
@@ -165,7 +168,7 @@ The invocation returns itself returns:
 
 and `output.txt` contains:
 
-```json
+```text
 {"result":4}
 ```
 
@@ -261,15 +264,15 @@ We will check-out a simple example to create a simple `Hello World!` Lambda func
 
 Create a new Node.js project with `npm` or an alternative package manager:
 
-{{< command >}}
-$ npm init -y
-{{< / command >}}
+```bash
+npm init -y
+```
 
 Install the the [@types/aws-lambda](https://www.npmjs.com/package/@types/aws-lambda) and [esbuild](https://esbuild.github.io/) packages in your Node.js project:
 
-{{< command >}}
-$ npm install -D @types/aws-lambda esbuild
-{{< / command >}}
+```bash
+npm install -D @types/aws-lambda esbuild
+```
 
 Create a new file named `index.ts`.
 Add the following code to the new file:
@@ -291,7 +294,7 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
 
 Add a build script to your `package.json` file:
 
-```json
+```json title="package.json"
 "scripts": {
     "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js --watch"
   },
@@ -301,9 +304,9 @@ The build script will use `esbuild` to bundle and minify the TypeScript code int
 
 You can now run the build script to create the `dist/index.js` file:
 
-{{< command >}}
-$ npm run build
-{{< / command >}}
+```bash
+npm run build
+```
 
 ##### Creating the Lambda Function with ESbuild
 
@@ -316,40 +319,40 @@ To create the Lambda function, you need to take care of two things:
 
 Create the Lambda Function using the `awslocal` CLI:
 
-{{< command >}}
-$ awslocal lambda create-function \
+```bash
+awslocal lambda create-function \
     --function-name hello-world \
     --runtime "nodejs16.x" \
     --role arn:aws:iam::123456789012:role/lambda-ex \
     --code S3Bucket="hot-reload",S3Key="/absolute/path/to/dist" \
     --handler index.handler
-{{< / command >}}
+```
 
 You can quickly make sure that it works by invoking it with a simple payload:
 
-{{< tabpane text=true persist=false >}}
-{{% tab header="AWS CLI v1" lang="shell" %}}
-{{< command >}}
-$ awslocal lambda invoke \
+<Tabs>
+<TabItem label="AWS CLI v1">
+```bash
+awslocal lambda invoke \
     --function-name hello-world \
     --payload '{"action": "test"}' \
     output.txt
-{{< /command >}}
-{{% /tab %}}
-{{% tab header="AWS CLI v2" lang="shell" %}}
-{{< command >}}
-$ awslocal lambda invoke \
+```
+</TabItem>
+<TabItem label="AWS CLI v2">
+```bash
+awslocal lambda invoke \
     --function-name hello-world \
     --cli-binary-format raw-in-base64-out \
     --payload '{"action": "test"}' \
     output.txt
-{{< /command >}}
-{{% /tab %}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 The invocation returns itself returns:
 
-```sh
+```bash title="Output"
 {
     "StatusCode": 200,
     "ExecutedVersion": "$LATEST"
@@ -358,7 +361,7 @@ The invocation returns itself returns:
 
 The `output.txt` file contains the following:
 
-```sh
+```text
 {"statusCode":200,"body":"{\"message\":\"Hello World!\"}"}
 ```
 
@@ -370,7 +373,7 @@ Change the `Hello World!` message to `Hello LocalStack!` and run `npm run build`
 Trigger the Lambda once again.
 You will see the following in the `output.txt` file:
 
-```sh
+```text
 {"statusCode":200,"body":"{\"message\":\"Hello LocalStack!\"}"}
 ```
 
@@ -379,25 +382,25 @@ You will see the following in the `output.txt` file:
 In this example, you can use our public [Webpack example](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-hot-reloading/lambda-typescript-webpack) to create a simple Lambda function using TypeScript and Webpack.
 To use the example, run the following commands:
 
-{{< command >}}
-$ cd /tmp
-$ git clone https://github.com/localstack-samples/localstack-pro-samples.git
-$ cd lambda-hot-reloading/lambda-typescript-webpack
-{{< / command >}}
+```bash
+cd /tmp
+git clone https://github.com/localstack-samples/localstack-pro-samples.git
+cd lambda-hot-reloading/lambda-typescript-webpack
+```
 
 ##### Setting up the build
 
 Before you can build the Lambda function, you need to install the dependencies:
 
-{{< command >}}
-$ yarn install
-{{< / command >}}
+```bash
+yarn install
+```
 
 Next, you can build the Lambda function:
 
-{{< command >}}
-$ yarn run build
-{{< / command >}}
+```bash
+yarn run build
+```
 
 The `build` script in the `package.json` file uses Nodemon to watch for changes in the `src` directory and rebuild the Lambda.
 This is enabled using the [`nodemon-webpack-plugin`](https://www.npmjs.com/package/nodemon-webpack-plugin)  plugin, which has been pre-configured in the `webpack.config.js`  file.
@@ -406,34 +409,32 @@ This is enabled using the [`nodemon-webpack-plugin`](https://www.npmjs.com/packa
 
 You can now create the Lambda function using the `awslocal` CLI:
 
-{{< command >}}
-$ awslocal lambda create-function \
+```bash
+awslocal lambda create-function \
     --function-name localstack-example \
     --runtime nodejs18.x \
     --role arn:aws:iam::000000000000:role/lambda-ex \
     --code S3Bucket="hot-reload",S3Key="/absolute/path/to/dist" \
     --handler api.default
-{{< / command >}}
+```
 
 Additionally, you can create a Lambda Function URL with the following command:
 
-{{< command >}}
-$ function_url=$(awslocal lambda create-function-url-config \
+```bash
+function_url=$(awslocal lambda create-function-url-config \
     --function-name localstack-example \
     --auth-type NONE | jq -r '.FunctionUrl')
-{{< / command >}}
+```
 
 ##### Trigger the Hot Reload
 
 Before triggering the Lambda function, you can check the current response by running the following command:
 
-{{< command >}}
-$ curl -X GET "$function_url"
-{{< / command >}}
-
-The response should be:
-
 ```bash
+curl -X GET "$function_url"
+```
+
+```bash title="Output"
 {"error":"Only JSON payloads are accepted"}
 ```
 
@@ -442,7 +443,7 @@ Save the file and run the last `curl` command again.
 
 The output should now be:
 
-```bash
+```bash title="Output"
 {"error":"Only JSON payload is accepted"}
 ```
 
@@ -450,8 +451,9 @@ You can now see that the changes are applied without redeploying the Lambda func
 
 ## Deployment Configuration Examples
 
-{{< tabpane lang="YAML" >}}
-{{< tab header="Serverless Framework" lang="YAML" >}}
+<Tabs>
+<TabItem label="Serverless Framework">
+```yaml
 custom:
   localstack:
     ...
@@ -472,8 +474,10 @@ custom:
       - testing
     lambda:
       mountCode: ${self:custom.stages.${opt:stage}.mountCode}
-{{< /tab >}}
-{{< tab header="AWS Cloud Development Kit (CDK)" lang="Kotlin" >}}
+```
+</TabItem>
+<TabItem label="AWS Cloud Development Kit (CDK)">
+```kotlin
 package org.localstack.cdkstack
 
 import java.util.UUID
@@ -514,8 +518,10 @@ class ApplicationStack(parent: Construct, name: String) : Stack(parent, name) {
         return Code.fromAsset(JAR_PATH)
     }
 }
-{{< /tab >}}
-{{< tab header="Terraform" lang="HCL" >}}
+```
+</TabItem>
+<TabItem label="Terraform">
+```hcl
 variable "STAGE" {
     type    = string
     default = "local"
@@ -594,25 +600,32 @@ null : var.JAR_PATH
         }
     }
 }
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 You can then pass `LAMBDA_MOUNT_CWD` as an environment variable to your deployment tool.
 
-{{< tabpane lang="bash" >}}
-{{< tab header="Serverless Framework" lang="shell" >}}
+<Tabs>
+<TabItem label="Serverless Framework">
+```bash
 LAMBDA_MOUNT_CWD=$(pwd)/build/hot serverless deploy --stage local
-{{< /tab >}}
-{{< tab header="AWS Cloud Development Kit (CDK)" lang="shell" >}}
+```
+</TabItem>
+<TabItem label="AWS Cloud Development Kit (CDK)">
+```bash
 STAGE=local && LAMBDA_MOUNT_CWD=$(pwd)/build/hot &&
   cdklocal bootstrap aws://000000000000/$(AWS_REGION) && \
   cdklocal deploy
-{{< /tab >}}
-{{< tab header="Terraform" lang="shell" >}}
+```
+</TabItem>
+<TabItem label="Terraform">
+```bash
 terraform init && \
   terraform apply -var "STAGE=local" -var "LAMBDA_MOUNT_CWD=$(pwd)/build/hot"
-{{< /tab >}}
-{{< /tabpane >}}
+```
+</TabItem>
+</Tabs>
 
 ## Share deployment configuration between different machines
 
@@ -625,13 +638,13 @@ These used environment variables have to be set inside the LocalStack container.
 
 Please note that the final path, after substituting the placeholders for their values, has to be an absolute path.
 
-{{< callout >}}
+:::note
 Please make sure the placeholder is not substituted by your shell before being sent to LocalStack.
 This is mostly relevant when using the AWS CLI to create a function.
 Please use string quotation marks which prevent parameter expansion in your shell.
 
 For bash, please use single quotes `'` instead of double quotes `"` to make sure the placeholder does not get expanded before being sent to LocalStack.
-{{< /callout >}}
+:::
 
 ### Example
 
@@ -658,14 +671,14 @@ This will set a `HOST_LAMBDA_DIR` environment variable to the current working di
 Please note that this environment variable name is arbitrary - you can use any you want, but need to refer to that variable in your templates or commands to deploy your function correctly.
 You can then deploy a hot-reloading function with the following command:
 
-{{< command >}}
-$ awslocal lambda create-function \
+```bash
+awslocal lambda create-function \
   --function-name test-function \
   --code S3Bucket=hot-reload,S3Key='$HOST_LAMBDA_DIR/src' \
   --handler handler.handler \
   --runtime python3.12 \
   --role 'arn:aws:iam::000000000000:role/lambda-ex'
-{{< / command >}}
+```
 
 Please note the single quotes `'` which prevent our shell to replace `$HOST_LAMBDA_DIR` before the function is created.
 
@@ -689,7 +702,7 @@ To set up Lambda Hot Reloading via the LocalStack Web Application:
 LocalStack will automatically set up the magic S3 bucket and the S3 key pointing to your specified file path.
 Changes to your Lambda code locally will be reflected immediately upon saving.
 
-<img src="hot-reload-lambda-web-app.png" alt="Setting Hot Reload on Web App" title="Setting Hot Reload on Web App" width="800px" />
+![Setting Hot Reload on Web App](/images/aws/hot-reload-lambda-web-app.png)
 
 ## Useful Links
 
