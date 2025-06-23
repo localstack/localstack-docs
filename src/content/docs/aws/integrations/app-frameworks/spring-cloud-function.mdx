@@ -118,7 +118,7 @@ To that end, we use the "Shadow Jar" plugin.
 
 Here's our final `build.gradle`:
 
-```groovy showLineNumbers=true
+```groovy showLineNumbers=true title="build.gradle"
 plugins {
   id "java"
   id "org.jetbrains.kotlin.jvm" version '1.5.31'
@@ -210,7 +210,7 @@ In this project, we are following
 [official documentation](https://docs.aws.amazon.com/lambda/latest/dg/java-logging.html#java-wt-logging-using-log4j2.8)
 to setup up `src/main/resources/log4j2.xml` content.
 
-```xml
+```xml title="log4j2.xml"
 ?xml version="1.0" encoding="UTF-8"?>
 <Configuration packages="com.amazonaws.services.lambda.runtime.log4j2.LambdaAppender">
     <Appenders>
@@ -246,7 +246,7 @@ spring.cloud.function.scan.packages=org.localstack.sampleproject.api
 Once configured, you can use `FunctionInvoker` as a handler for your Rest API lambda function.
 It will automatically pick up the configuration we have just set.
 
-```java
+```java title="FunctionInvoker.kt"
 org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
 ```
 
@@ -276,7 +276,7 @@ Let's configure it by creating a new configuration class `JacksonConfiguration.k
 `src/main/kotlin/org/localstack/sampleproject/config`:
 
 
-```kotlin
+```kotlin title="JacksonConfiguration.kt"
 package org.localstack.sampleproject.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -319,9 +319,7 @@ implementations.
 
 Let's create a small logging utility to simplify interactions with the logger
 
-{/*{{< highlight kotlin "linenos=table" >}}*/}
-{/* TODO: packing this into a java block for now */}
-```kotlin
+```kotlin title="Logger.kt"
 package org.localstack.sampleproject.util
 
 import org.apache.logging.log4j.LogManager
@@ -331,7 +329,6 @@ open class Logger {
     val LOGGER: Logger = LogManager.getLogger(javaClass.enclosingClass)
 }
 ```
-{/*{{< / highlight >}}*/}
 
 ### Add Request/Response utilities
 
@@ -404,7 +401,7 @@ To transfer data from requests into something more meaningful than JSON strings
 (and back) you will be using a lot of Models and Data Transfer Objects (DTOs).
 It's time to define our first one.
 
-```kotlin showLineNumbers
+```kotlin showLineNumbers title="SampleModel.kt"    
 package org.localstack.sampleproject.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -423,7 +420,7 @@ data class SampleModel(
 Let's add our first endpoints to simulate CRUD operations on previously
 defined `SampleModel`:
 
-```kotlin showLineNumbers
+```kotlin showLineNumbers title="SampleApi.kt"
 package org.localstack.sampleproject.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -476,7 +473,7 @@ We know Java's cold start is always a pain.
 To minimize this pain, we will try to define a pre-warming endpoint within the Rest API.
 By invoking this function every 5-10 mins we can make sure Rest API lambda is always kept in a pre-warmed state.
 
-```kotlin showLineNumbers
+```kotlin showLineNumbers title="ScheduleApi.kt"
 package org.localstack.sampleproject.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -518,7 +515,7 @@ We can still define pure lambda functions, DynamoDB stream handlers, and so on.
 
 Below you can find a little example of few lambda functions grouped in `LambdaApi` class.
 
-```kotlin showLineNumbers
+```kotlin showLineNumbers title="LambdaApi.kt"
 package org.localstack.sampleproject.api
 
 import com.amazonaws.services.lambda.runtime.events.DynamodbEvent
@@ -631,7 +628,7 @@ functions:
 ```
 </TabItem>
 <TabItem label="AWS CDK">
-```java
+```java title="ApplicationStack.kt"
 package org.localstack.cdkstack
 
 import java.util.UUID
@@ -706,7 +703,7 @@ class ApplicationStack(parent: Construct, name: String) : Stack(parent, name) {
 ```
 </TabItem>
 <TabItem label="Terraform">
-```hcl
+```hcl title="variables.tf"
 variable "STAGE" {
     type    = string
     default = "local"

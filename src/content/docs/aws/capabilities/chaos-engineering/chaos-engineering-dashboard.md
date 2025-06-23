@@ -10,7 +10,7 @@ sidebar:
 
 The Chaos Engineering Dashboard in LocalStack offers streamlined testing for cloud applications, enabling you to simulate server errors, service outages, regional disruptions, and network latency with ease, ensuring your app is ready for real-world challenges.
 
-The dashboard uses [LocalStack Chaos API]({{< ref "chaos-api" >}}) under the hood to offer a set of customizable templates that can be seamlessly integrated into any automation workflows.
+The dashboard uses [LocalStack Chaos API](/aws/capabilities/chaos-engineering/chaos-api) under the hood to offer a set of customizable templates that can be seamlessly integrated into any automation workflows.
 
 ![chaos engineering dashboard](/images/aws/chaos-engineering-dashboard.png)
 
