@@ -27,6 +27,7 @@ jobs:
       - name: Set up system wide dependencies
         run: |
           sudo apt-get install jq
+
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
         with:
@@ -51,6 +52,7 @@ jobs:
           mkdir -p resources
           (git diff --name-only origin/replicator-coverage-updates src/data/replicator/coverage.json 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'main' }} src/data/replicator/coverage.json 2>/dev/null) | tee resources/diff-check.log
           echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> $GITHUB_OUTPUT
+          cat resources/diff-check.log
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v7
