@@ -1,6 +1,6 @@
 ---
 title: Iceberg Tables
-description: This is a dummy description.
+description: Get started with Iceberg Tables in LocalStack for Snowflake
 ---
 
 ## Introduction

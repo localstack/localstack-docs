@@ -1,6 +1,6 @@
 ---
 title: Enterprise Support
-description: This is a dummy description
+description: This page describes the support options available for LocalStack Enterprise customers.
 template: doc
 sidebar:
     order: 6

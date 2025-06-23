@@ -1,6 +1,6 @@
 ---
 title: SQL Functions Coverage
-description: This is a dummy description
+description: Overview of the implemented Snowflake SQL functions in LocalStack
 template: doc
 ---
 

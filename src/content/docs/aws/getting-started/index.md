@@ -1,6 +1,6 @@
 ---
 title: Overview
-description: This is a dummy description
+description: This section describes how to get started with LocalStack using a variety of options, and provides details on how LocalStack can be configured to fit the needs of a local cloud sandbox for development, testing, and experimentation.
 template: doc
 sidebar:
     order: 1

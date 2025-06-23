@@ -1,6 +1,6 @@
 ---
 title: Accessing a resource created by LocalStack
-description: This is a dummy description
+description: This guide will explore different scenarios and provide detailed instructions on accessing resources created by LocalStack under different scenarios.
 template: doc
 sidebar:
     order: 6
