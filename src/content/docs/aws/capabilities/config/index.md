@@ -4,4 +4,8 @@ description: This section describes the configuration options available for Loca
 template: doc
 ---
 
-# Config 
+This section describes the configuration options, internal mechanisms, and other LocalStack-specific features that are available to users. The following figure shows an overview of the covered topics:
+
+
+
+![Understanding LocalStack configuration](/images/aws/understanding-localstack-overview.png)

@@ -5,6 +5,3 @@ template: doc
 sidebar:
     order: 1
 ---
-
-# Networking 
-

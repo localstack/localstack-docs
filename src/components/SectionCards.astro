@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import { SectionCards as SectionCardsReact } from './SectionCards.tsx';
+
+interface Props {
+  basePath: string;
+  title?: string;
+  customTitles?: Record<string, string>;
+}
+
+const { basePath, title, customTitles = {} } = Astro.props;
+
+// Get only index files from immediate subdirectories
+const allSections = await getCollection('docs', ({ id }) => {
+  // Must start with the base path
+  if (!id.startsWith(basePath)) {
+    return false;
+  }
+  
+  // Get the path after the base path
+  const relativePath = id.substring(basePath.length);
+  
+  // Split into parts and filter out empty strings
+  const pathParts = relativePath.split('/').filter(part => part !== '');
+  
+  // For index files, we should have exactly 1 part: [subdirectory]
+  // because index files get the ID of their parent directory in Astro
+  if (pathParts.length === 1) {
+    const subdirectory = pathParts[0];
+    
+    // These are the known subdirectories with index files
+    const validSubdirectories = [
+      'web-app',
+      'config', 
+      'cloud-sandbox',
+      'networking',
+      'state-management',
+      'chaos-engineering',
+      'security-testing'
+    ];
+    
+
+    
+    return validSubdirectories.includes(subdirectory);
+  }
+  
+  return false;
+});
+
+const sortedSections = allSections.sort((a, b) => {
+  const titleA = a.data.title || a.data.linkTitle || '';
+  const titleB = b.data.title || b.data.linkTitle || '';
+  return titleA.localeCompare(titleB);
+});
+
+const sectionData = sortedSections.map(section => {
+  // Extract the subdirectory name from the section ID
+  const relativePath = section.id.substring(basePath.length);
+  const subdirectory = relativePath.split('/').filter(part => part !== '')[0];
+  
+  // Use custom title if provided, otherwise fall back to the section title
+  const sectionTitle = customTitles[subdirectory] || section.data.title || section.data.linkTitle || 'Unknown Section';
+  const description = section.data.description || `Learn more about ${sectionTitle}`;
+  
+  const href = `/${section.id}`;
+  
+  return {
+    title: sectionTitle,
+    description,
+    href
+  };
+});
+
+
+---
+
+<SectionCardsReact 
+  sections={sectionData} 
+  title={title}
+  client:load 
+/> 
