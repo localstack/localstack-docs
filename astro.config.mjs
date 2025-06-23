@@ -335,7 +335,7 @@ export default defineConfig({
             },
             {
               label: 'Enterprise',
-              autogenerate: { directory: '/aws/pro' },
+              autogenerate: { directory: '/aws/enterprise' },
               collapsed: true,
             },
             {
