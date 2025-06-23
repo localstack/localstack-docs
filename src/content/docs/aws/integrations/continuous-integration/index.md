@@ -1,6 +1,6 @@
 ---
 title: Overview
-description: Run LocalStack in your CI environment to test your application against a high-fidelity cloud emulator.
+description: Use LocalStack in your CI environment to run tests against your AWS infrastructure in a high-fidelity cloud emulator.
 template: doc
 sidebar:
     order: 1
