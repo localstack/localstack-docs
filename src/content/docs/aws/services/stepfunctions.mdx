@@ -28,7 +28,7 @@ You can create a state machine using the [`CreateStateMachine`](https://docs.aws
 The API requires the name of the state machine, the state machine definition, and the role ARN that the state machine will assume to call AWS services.
 Run the following command to create a state machine:
 
-```bash
+```bash lineNumbers
 awslocal stepfunctions create-state-machine \
     --name "CreateAndListBuckets" \
     --definition '{
@@ -167,7 +167,7 @@ The first step is to select the state machine where mocked responses should be a
 
 In this example, we'll use a state machine named `LambdaSQSIntegration`, defined as follows:
 
-```json title="LambdaSQSIntegration.json"
+```json title="LambdaSQSIntegration.json" lineNumbers
 {
   "Comment": "This state machine is called: LambdaSQSIntegration",
   "QueryLanguage": "JSONata",
@@ -223,7 +223,7 @@ This section specifies the Step Functions state machines to mock, along with the
 
 Each test case maps state names to `ResponseID`s defined in the `MockedResponses` section.
 
-```json
+```json lineNumbers
 "StateMachines": {
   "<StateMachineName>": {
     "TestCases": {
@@ -247,7 +247,7 @@ At runtime, if a test case is selected, the state uses the mocked response (if d
 
 Below is a complete example of the `StateMachines` section:
 
-```json
+```json lineNumbers
 "LambdaSQSIntegration": {
   "TestCases": {
     "LambdaRetryCase": {
@@ -264,7 +264,7 @@ This section defines mocked responses for Task states.
 
 Each `ResponseID` includes one or more step keys and defines either a `Return` value or a `Throw` error.
 
-```json
+```json lineNumbers
 "MockedResponses": {
   "<ResponseID>": {
     "<step-key>": { "Return": ... },
@@ -287,7 +287,7 @@ Each entry must have **either** `Return` or `Throw`, but cannot have both.
 
 Here is a complete example of the `MockedResponses` section:
 
-```json
+```json lineNumbers
 "MockedLambdaStateRetry": {
   "0": {
     "Throw": {
@@ -314,7 +314,7 @@ Here is a complete example of the `MockedResponses` section:
 
 The `MockConfigFile.json` below is used to test the `LambdaSQSIntegration` state machine defined earlier.
 
-```json
+```json lineNumbers
 {
   "StateMachines":{
     "LambdaSQSIntegration":{
@@ -394,7 +394,7 @@ localstack start --volume /path/to/MockConfigFile.json:/tmp/MockConfigFile.json
 ```
 </TabItem>
 <TabItem label="Docker Compose"> 
-```yaml
+```yaml lineNumbers
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -452,7 +452,7 @@ awslocal stepfunctions describe-execution \
     --execution-arn "arn:aws:states:us-east-1:000000000000:execution:LambdaSQSIntegration:MockExecutionBaseCase"
 ```
 
-```json
+```json lineNumbers
 {
     "executionArn": "arn:aws:states:us-east-1:000000000000:execution:LambdaSQSIntegration:MockExecutionBaseCase",
     "stateMachineArn": "arn:aws:states:us-east-1:000000000000:stateMachine:LambdaSQSIntegration",
