@@ -1,0 +1,64 @@
+---
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+
+// Get the current page route
+const route = Astro.locals.starlightRoute;
+const isAwsServicePage = route.id.startsWith('aws/services/') && !route.id.includes('/index');
+const tags = route.entry?.data?.tags || [];
+
+// Find pricing tags
+const pricingTags = tags.filter(tag => 
+  ['Free', 'Base', 'Ultimate'].includes(tag)
+);
+---
+
+<Default />
+
+{isAwsServicePage && pricingTags.length > 0 && (
+  <div class="pricing-badges">
+    {pricingTags.map(tag => (
+      <span class={`pricing-badge pricing-badge-${tag.toLowerCase()}`}>
+        {tag}
+      </span>
+    ))}
+  </div>
+)}
+
+<style>
+  .pricing-badges {
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pricing-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .pricing-badge-free {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  .pricing-badge-base {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+  }
+
+  .pricing-badge-ultimate {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+  }
+</style> 

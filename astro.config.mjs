@@ -40,7 +40,7 @@ export default defineConfig({
       favicon: '/images/favicons/favicon.ico',
       customCss: ['./src/styles/global.css'],
       components: {
-        TwoColumnContent: './src/components/ContentWithPricing.astro',
+        PageTitle: './src/components/PageTitleWithPricing.astro',
       },
       head: [
         {
