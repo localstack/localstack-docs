@@ -16,13 +16,13 @@ You can find the [example Docker Compose](docker-compose.yml) file which contain
 
 1. Run Docker Compose:
 
-```bash
+```bash showLineNumbers
 docker-compose up -d
 ```
 
 2. Create the Lambda function:
 
-```bash
+```bash showLineNumbers
 awslocal lambda create-function \
     --function-name fun1 \
     --handler lambda.handler \
@@ -54,7 +54,7 @@ awslocal lambda create-function \
 
 3. Create an example secret:
 
-```bash
+```bash showLineNumbers
 awslocal secretsmanager create-secret --name localstack
 {
     "ARN": "arn:aws:secretsmanager:us-east-1:000000000000:secret:localstack-TDIuI",
@@ -65,14 +65,14 @@ awslocal secretsmanager create-secret --name localstack
 
 4. Create an example Kafka topic:
 
-```bash
+```bash showLineNumbers
 docker exec -ti kafka kafka-topics --zookeeper zookeeper:2181 --create --replication-factor 1 --partitions 1 --topic t1
 Created topic t1.
 ```
 
 5. Create the event source mapping to your local kafka cluster:
 
-```bash
+```bash showLineNumbers
 awslocal lambda create-event-source-mapping \
     --topics t1 \
     --source-access-configuration Type=SASL_SCRAM_512_AUTH,URI=arn:aws:secretsmanager:us-east-1:000000000000:secret:localstack-TDIuI \

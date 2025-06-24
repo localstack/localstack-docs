@@ -25,7 +25,7 @@ CodeBuild has the capability to use LocalStack's GitHub Action.
 
 #### Native Runner
 
-```yml
+```yml showLineNumbers
 version: 0.2
 ...
 phases:
@@ -39,7 +39,7 @@ phases:
 
 #### GitHub Actions Runner
 
-```yml
+```yml showLineNumbers
 version: 0.2
 
 phases:
@@ -60,7 +60,7 @@ Get know more about the LocalStack [config options](/aws/capabilities/config/con
 
 #### Native Runner
 
-```yml
+```yml showLineNumbers
 version: 0.2
 
 env:
@@ -73,7 +73,7 @@ phases:
 
 #### GitHub Actions Runner
 
-```yml
+```yml showLineNumbers
 version: 0.2
 
 env:
@@ -111,7 +111,7 @@ Navigate to the buildspec file and change the Docker image to `public.ecr.aws/lo
 
 #### Native Runner
 
-```yaml
+```yaml showLineNumbers
 ...
 phases:
   pre_build:
@@ -123,7 +123,7 @@ phases:
 
 #### GitHub Actions Runner
 
-```yml
+```yml showLineNumbers
 ...
 phases:
   pre_build:
@@ -140,7 +140,7 @@ phases:
 
 ### Dump LocalStack logs
 
-```yaml
+```yaml showLineNumbers
 ...
 artifacts:
   files:
@@ -174,7 +174,7 @@ Find more information about cloud pods [here](/aws/capabilities/state-management
 
 ##### Native Runner
 
-```yml
+```yml showLineNumbers
 ...
 phases:
   pre_build:
@@ -189,7 +189,7 @@ phases:
 
 ##### GitHub Actions Runner
 
-```yml
+```yml showLineNumbers
 ...
 phases:
   pre_build:
@@ -214,7 +214,7 @@ phases:
 
 #### Ephemeral Instances (Preview)
 
-```yml
+```yml showLineNumbers
 ...
 phases:
   pre_build:
@@ -243,7 +243,7 @@ Find out more about [ephemeral instances](/aws/capabilities/cloud-sandbox/epheme
 
 Find out more about [state management](/aws/capabilities/state-management/export-import-state/).
 
-```yml
+```yml showLineNumbers
 ...
 phases:
   pre_build:
@@ -259,7 +259,7 @@ artifact:
 
 Alternatively save as a secondary artifact:
 
-```yml
+```yml showLineNumbers
 ...
 artifact:
   ...
@@ -278,7 +278,7 @@ Additional information about [state export and import](/aws/capabilities/state-m
 
 ##### Native Runner
 
-```yml
+```yml showLineNumbers
 ...
 phases:
   pre_build:
@@ -295,7 +295,7 @@ cache:
 
 ##### GitHub Actions Runner
 
-```yml
+```yml showLineNumbers
 ...
 phases:
   pre_build:

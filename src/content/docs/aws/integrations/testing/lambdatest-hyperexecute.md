@@ -28,7 +28,7 @@ To get started with HyperExecute, you need to fulfill the following prerequisite
 
 Create a new file named `he.yml` in the root directory of your project and add the following content:
 
-```yaml
+```yaml showLineNumbers
 version: "0.1"
 runson: linux
 autosplit: true
@@ -58,7 +58,7 @@ Subsequently, you need to add your LocalStack Auth Token to your HyperExecute Po
 
 To enable test execution on HyperExecute, you need to add the following content to your GitHub Actions workflow file:
 
-```yaml
+```yaml showLineNumbers
 version: "0.1"
 runson: linux
 ...
@@ -98,7 +98,7 @@ You can find your access key in the HyperExecute Portal.
 In this example, we will use GitHub Actions to run the tests in the CI pipeline.
 To do so, you need to add the following content to your GitHub Actions workflow file in `.github/workflows/main.yml`:
 
-```yaml
+```yaml showLineNumbers
 name: Running tests on HyperExecute
 
 on:

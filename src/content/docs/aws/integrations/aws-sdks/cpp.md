@@ -15,7 +15,7 @@ which is the preferred way of integrating the C++ SDK with LocalStack.
 
 Consider the following example, which creates an SQS queue, sends a message to it, then receives the same message via the SDK:
 
-```cpp
+```cpp showLineNumbers
 #include <iostream>
 #include <aws/core/Aws.h>
 #include <aws/core/utils/logging/LogLevel.h>

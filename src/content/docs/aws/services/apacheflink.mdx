@@ -80,7 +80,7 @@ Without the proper permissions policy and role, this example application will no
 
 Create an IAM role for the running MSF application to assume.
 
-```json
+```json showLineNumbers
 # role.json
 {
     "Version": "2012-10-17",
@@ -100,7 +100,7 @@ awslocal iam create-role --role-name msaf-role --assume-role-policy-document fil
 
 Next create add a permissions policy to this role that permits read and write access to S3.
 
-```json
+```json showLineNumbers
 # policy.json
 {
     "Version": "2012-10-17",
@@ -124,7 +124,7 @@ Now, when the running MSF application assumes this role, it will have the necess
 
 With all prerequisite resources in place, the Flink application can now be created and started.
 
-```bash
+```bash showLineNumbers
 awslocal kinesisanalyticsv2 create-application \
     --application-name msaf-app \
     --runtime-environment FLINK-1_20 \
@@ -171,7 +171,7 @@ There are following prerequisites for CloudWatch Logs integration:
 
 To add a logging option:
 
-```bash
+```bash showLineNumbers
 awslocal kinesisanalyticsv2 add-application-cloud-watch-logging-option \
     --application-name msaf-app \
     --cloud-watch-logging-option '{"LogStreamARN": "arn:aws:logs:us-east-1:000000000000:log-group:msaf-log-group:log-stream:msaf-log-stream"}'

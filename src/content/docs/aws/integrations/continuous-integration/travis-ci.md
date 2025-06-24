@@ -19,7 +19,7 @@ When you want to integrate LocalStack into your job configuration, you just have
 
 The following example Travis CI job config (`.travis.yaml`) executes these steps, creates a new S3 bucket, and prints a nice message in the end:
 
-```yaml
+```yaml showLineNumbers
 language: python
 
 services:
@@ -56,7 +56,7 @@ To configure this in Travis CI, go to the project settings (`More options` → `
 
 Here is an example workflow:
 
-```yaml
+```yaml showLineNumbers
 before_install:
   # Install the LocalStack CLI and awslocal
   - python -m pip install localstack awscli-local[ver1]

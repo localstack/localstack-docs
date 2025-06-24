@@ -169,7 +169,7 @@ awslocal sns subscribe \
 
 #### Create the Presign Lambda
 
-```bash
+```bash showLineNumbers
 (cd lambdas/presign; rm -f lambda.zip; zip lambda.zip handler.py)
 awslocal lambda create-function \
     --function-name presign \
@@ -187,7 +187,7 @@ $ awslocal lambda create-function-url-config \
 
 #### Create the Image List Lambda
 
-```bash
+```bash showLineNumbers
 (cd lambdas/list; rm -f lambda.zip; zip lambda.zip handler.py)
 awslocal lambda create-function \
     --function-name list \
@@ -207,7 +207,7 @@ $ awslocal lambda create-function-url-config \
 
 <Tabs>
   <TabItem label="macOS">
-    ```bash
+    ```bash showLineNumbers
     cd lambdas/resize
     rm -rf libs lambda.zip
     docker run --platform linux/x86_64 -v "$PWD":/var/task "public.ecr.aws/sam/build-python3.11" /bin/sh -c "pip install -r requirements.txt -t libs; exit"
@@ -218,7 +218,7 @@ $ awslocal lambda create-function-url-config \
     ```
   </TabItem>
   <TabItem label="Linux">
-    ```bash
+    ```bash showLineNumbers
     cd lambdas/resize
     rm -rf package lambda.zip
     mkdir package
@@ -230,7 +230,7 @@ $ awslocal lambda create-function-url-config \
     ```
   </TabItem>
   <TabItem label="Windows">
-    ```bash
+    ```bash showLineNumbers
     cd lambdas/resize
     rm -rf package lambda.zip
     mkdir package
@@ -245,7 +245,7 @@ $ awslocal lambda create-function-url-config \
 
 #### Create the Image Resizer Lambda
 
-```bash
+```bash showLineNumbers
 awslocal lambda create-function \
     --function-name resize \
     --runtime python3.11 \

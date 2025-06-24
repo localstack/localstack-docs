@@ -12,7 +12,7 @@ This page contains easily customisable snippets to show you how to manage LocalS
 
 ### Start up Localstack
 
-```yaml
+```yaml showLineNumbers
 - name: Start LocalStack
   uses: LocalStack/setup-localstack@v0.2.2
   with:
@@ -25,7 +25,7 @@ This page contains easily customisable snippets to show you how to manage LocalS
 To set LocalStack configuration options, you can use the `configuration` input parameter.
 For example, to set the `DEBUG` configuration option, you can use the following configuration:
 
-```yml
+```yml showLineNumbers
 - name: Start LocalStack
   uses: LocalStack/setup-localstack@v0.2.2
   with:
@@ -50,7 +50,7 @@ Click **Add secret** to save your secret.
 
 You can then use our [`setup-localstack`](https://github.com/localstack/setup-localstack) GitHub Action to start your LocalStack container, with the `LOCALSTACK_AUTH_TOKEN` environment variable:
 
-```yaml
+```yaml showLineNumbers
 - name: Start LocalStack
   uses: LocalStack/setup-localstack@v0.2.3
   with:
@@ -63,7 +63,7 @@ You can then use our [`setup-localstack`](https://github.com/localstack/setup-lo
 
 ### Dump Localstack logs
 
-```yaml
+```yaml showLineNumbers
 - name: Show localstack logs
   run: |
     localstack logs | tee localstack.log
@@ -75,7 +75,7 @@ You can preserve your AWS infrastructure with Localstack in various ways.
 
 #### Cloud Pods
 
-```yaml
+```yaml showLineNumbers
 ...
 # Localstack is up and running already
 - name: Load the Cloud Pod 
@@ -106,7 +106,7 @@ Our Github Action contains the prebuilt functionality to spin up an ephemeral in
 
 First you need to deploy the preview:
 
-```yaml
+```yaml showLineNumbers
 name: Create PR Preview
 
 on:
@@ -141,7 +141,7 @@ Find out more about ephemeral instances [here](/aws/capabilities/cloud-sandbox/e
 
 #### Artifact
 
-```yaml
+```yaml showLineNumbers
 ...
 - name: Start LocalStack and Load State
   uses: LocalStack/setup-localstack@v0.2.2
