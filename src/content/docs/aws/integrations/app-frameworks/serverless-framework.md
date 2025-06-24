@@ -26,7 +26,7 @@ This guide assumes that you have the following tools installed.
 It also assumes that you already have a Serverless app set up consisting of a couple of Lambda functions and a `serverless.yml` file similar to the following.
 An example Serverless app integrated with LocalStack can be found here: <a href="https://github.com/localstack/serverless-python-rest-api-with-dynamodb"><i class="fab fa-github"></i>  Simple REST API using the Serverless Framework and LocalStack</a>
 
-```yaml showLineNumbers
+```yaml showshowLineNumbers
 service: my-service
 
 frameworkVersion: ">=1.1.0 <=2.50.0"
@@ -115,7 +115,7 @@ Hence, you need to configure the Lambda functions to use the `AWS_ENDPOINT_URL` 
 In Python, this may look something like.
 The code detects if it is running in LocalStack by checking if the `AWS_ENDPOINT_URL` variable exists and then configures the endpoint URL accordingly.
 
-```python showLineNumbers
+```python showshowLineNumbers
 ...
 if 'AWS_ENDPOINT_URL' in os.environ:
     dynamodb = boto3.resource('dynamodb', endpoint_url=os.environ['AWS_ENDPOINT_URL'])
@@ -182,7 +182,7 @@ Use the displayed endpoint `http://localhost:4566/restapis/XXXXXXXXXX/local/_use
 
 serverless-localstack supports a feature for lambda functions that allows local code mounting:
 
-```yaml showLineNumbers
+```yaml showshowLineNumbers
 # serverless.yml
 
 custom:

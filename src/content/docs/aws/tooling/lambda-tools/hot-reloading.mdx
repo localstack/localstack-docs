@@ -227,7 +227,7 @@ First, create a watchman wrapper by using
 
 After that, you can use the following `Makefile` snippet, or implement another shell script to prepare the codebase for hot reloading:
 
-```make lineNumbers
+```make showLineNumbers
 BUILD_FOLDER ?= build
 PROJECT_MODULE_NAME = my_project_module
 
@@ -277,7 +277,7 @@ npm install -D @types/aws-lambda esbuild
 Create a new file named `index.ts`.
 Add the following code to the new file:
 
-```ts lineNumbers
+```ts showLineNumbers
 import { Context, APIGatewayProxyResult, APIGatewayEvent } from 'aws-lambda';
 
 export const handler = async (event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> => {
@@ -453,7 +453,7 @@ You can now see that the changes are applied without redeploying the Lambda func
 
 <Tabs>
 <TabItem label="Serverless Framework">
-```yaml lineNumbers
+```yaml showLineNumbers
 custom:
   localstack:
     ...
@@ -477,7 +477,7 @@ custom:
 ```
 </TabItem>
 <TabItem label="AWS Cloud Development Kit (CDK)">
-```kotlin lineNumbers
+```kotlin showLineNumbers
 package org.localstack.cdkstack
 
 import java.util.UUID
@@ -521,7 +521,7 @@ class ApplicationStack(parent: Construct, name: String) : Stack(parent, name) {
 ```
 </TabItem>
 <TabItem label="Terraform">
-```hcl lineNumbers
+```hcl showLineNumbers
 variable "STAGE" {
     type    = string
     default = "local"
@@ -650,7 +650,7 @@ For bash, please use single quotes `'` instead of double quotes `"` to make sure
 
 In order to make use of the environment variable placeholders, you can inject them into the LocalStack container, for example using the following `docker-compose.yml` file.
 
-```yaml lineNumbers
+```yaml showLineNumbers
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"

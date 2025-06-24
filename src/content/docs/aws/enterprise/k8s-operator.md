@@ -22,7 +22,7 @@ kubectl apply -f https://raw.githubusercontent.com/localstack/localstack-k8s-ope
 
 You can then deploy a LocalStack instance by storing the following file content as `localstack.yml` and applying it against the cluster via `kubectl apply -f localstack.yml`.
 
-```bash showLineNumbers
+```bash showshowLineNumbers
 apiVersion: api.localstack.cloud/v1alpha1
 kind: LocalStack
 metadata:

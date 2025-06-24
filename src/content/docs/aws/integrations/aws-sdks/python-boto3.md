@@ -11,7 +11,7 @@ sidebar:
 You can easily create a `boto3` client that interacts with your LocalStack instance.
 The example below creates a `boto3` client that lists all available Lambda functions:
 
-```python showLineNumbers
+```python showshowLineNumbers
 import boto3
 
 endpoint_url = "http://localhost.localstack.cloud:4566"

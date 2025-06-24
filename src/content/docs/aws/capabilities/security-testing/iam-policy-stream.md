@@ -57,7 +57,7 @@ awslocal sns create-topic --name test-topic
 In the other tab, the required policy will be generated.
 This policy can then be attached to an IAM role, enabling it to create the resource.
 
-```bash showLineNumbers
+```bash showshowLineNumbers
 Attached to identity: "arn:aws:iam::000000000000:root"
 
 Policy:

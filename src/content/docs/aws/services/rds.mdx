@@ -329,7 +329,7 @@ The [`aws_s3` extension](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/
 
 In the SQL code snippet below, we are loading the `aws_s3` extension, then use the `table_import_from_s3(..)` function to populate the data in a table `table1` from a CSV file `test.csv` stored in a local S3 bucket `mybucket1`:
 
-```sql lineNumbers
+```sql showLineNumbers
 CREATE EXTENSION IF NOT EXISTS aws_s3 CASCADE;
 SELECT aws_s3.table_import_from_s3(
     'table1', 'c1, c2, c3', '(format csv)',
@@ -339,7 +339,7 @@ SELECT aws_s3.table_import_from_s3(
 
 Analogously, we can use the `query_export_to_s3(..)` extension function to export data from a table `table2` into a CSV file `test.csv` in local S3 bucket `mybucket2`:
 
-```sql lineNumbers
+```sql showLineNumbers
 CREATE EXTENSION IF NOT EXISTS aws_s3 CASCADE;
 SELECT aws_s3.query_export_to_s3(
     'SELECT * FROM table2',

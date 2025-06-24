@@ -14,7 +14,7 @@ The [AWS SDK for Ruby](https://aws.amazon.com/sdk-for-ruby/), like other AWS SDK
 
 Here is an example of how to create a S3 bucket with the AWS configuration endpoint set to LocalStack:
 
-```ruby showLineNumbers
+```ruby showshowLineNumbers
 require "aws-sdk-s3"
 
 # Wraps Amazon S3 bucket actions.
@@ -89,7 +89,7 @@ The S3 service endpoint differs slightly from the other service endpoints becaus
 
 For alternative AWS services, you can use the following configuration:
 
-```ruby showLineNumbers
+```ruby showshowLineNumbers
 region = "us-east-2"
 Aws.config.update(
     endpoint:  'http://localhost:4566', # update with localstack endpoint

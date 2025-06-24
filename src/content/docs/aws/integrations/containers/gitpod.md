@@ -23,7 +23,7 @@ To configure LocalStack on Gitpod, you would need to set up a `.gitpod.yml` on t
 The file configures your workspace and the environment that you would like to use.
 You can find more information on the [Gitpod documentation](https://www.gitpod.io/docs/config-gitpod-file/).
 
-```yaml showLineNumbers
+```yaml showshowLineNumbers
 tasks:
   - name: start-localstack
     env:

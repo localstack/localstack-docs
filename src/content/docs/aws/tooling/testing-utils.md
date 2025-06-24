@@ -23,7 +23,7 @@ pip install localstack-utils
 
 ### Usage
 
-```python lineNumbers
+```python showLineNumbers
 import time
 import boto3
 import unittest

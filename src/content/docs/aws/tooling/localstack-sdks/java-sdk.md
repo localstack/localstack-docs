@@ -25,7 +25,7 @@ This SDK is still in a preview phase, and will be subject to fast and breaking c
 The best way to use the LocalStack SDK for Java in your project is to consume it from Maven Central.
 You can use Maven to import the entire SDK into your project.
 
-```xml lineNumbers
+```xml showLineNumbers
 <dependency>
     <groupId>cloud.localstack</groupId>
     <artifactId>localstack-sdk</artifactId>
@@ -50,7 +50,7 @@ For instance, let us imagine the case in which you want to add a fault rule for 
 You first need to use the `FaultRuleRequest` class to build a fault rule request.
 Then, you need to pass such a request object to the `addFaultRules` method of a created `ChaosClient`.
 
-```java lineNumbers
+```java showLineNumbers
 import cloud.localstack.sdk.chaos.ChaosClient;
 import cloud.localstack.sdk.chaos.requests.FaultRuleRequest;
 
@@ -63,7 +63,7 @@ As a second example, let us look at the necessary code to save and load a Cloud 
 Similarly to the `ChaosClient`, the `PodsClient` exposes two functions, `savePod` and `loadPod`, which expect a `SavePodRequest` and a `LoadPodRequest`, respectively.
 The resulting code is the following:
 
-```java lineNumbers
+```java showLineNumbers
 import cloud.localstack.sdk.pods.PodsClient;
 import cloud.localstack.sdk.pods.requests.LoadPodRequest;
 import cloud.localstack.sdk.pods.requests.SavePodRequest;

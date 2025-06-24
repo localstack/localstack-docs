@@ -56,7 +56,7 @@ inside the Lambda function code.
 In general, all you need is the following code
 fragment placed inside your handler code:
 
-```python lineNumbers
+```python showLineNumbers
 import debugpy
 debugpy.listen(("0.0.0.0", 19891))
 debugpy.wait_for_client()  # blocks execution until client is attached
@@ -65,7 +65,7 @@ debugpy.wait_for_client()  # blocks execution until client is attached
 For extra convenience, you can use the `wait_for_debug_client` function from our example.
 It implements the above-mentioned start of the debug server and also adds an automatic cancellation of the wait task if the debug client (i.e. VSCode) doesn't connect.
 
-```python lineNumbers
+```python showLineNumbers
 def wait_for_debug_client(timeout=15):
     """Utility function to enable debugging with Visual Studio Code"""
     import time, threading
@@ -89,7 +89,7 @@ def wait_for_debug_client(timeout=15):
 
 For attaching the debug server from Visual Studio Code, you need to add a run configuration.
 
-```json lineNumbers
+```json showLineNumbers
 {
     "version": "0.2.0",
     "configurations": [
@@ -287,7 +287,7 @@ Make sure you installed the following extensions:
 
 Add a new task by creating/modifying the `.vscode/tasks.json` file:
 
-```json lineNumbers
+```json showLineNumbers
 {
     "version": "2.0.0",
     "tasks": [
@@ -303,7 +303,7 @@ Add a new task by creating/modifying the `.vscode/tasks.json` file:
 Create a new `launch.json` file or edit an existing one from the `Run and Debug` tab,
 then add the following configuration:
 
-```json lineNumbers
+```json showLineNumbers
 {
     "version": "0.2.0",
     "configurations": [
@@ -330,7 +330,7 @@ lambda function.
 
 Set the `LAMBDA_DOCKER_FLAGS` to enable the debugger using `NODE_OPTIONS`:
 
-```yaml lineNumbers
+```yaml showLineNumbers
 #docker-compose.yml
 
 services:
@@ -345,7 +345,7 @@ services:
 
 Add a new task by creating/modifying the `.vscode/tasks.json` file:
 
-```json lineNumbers
+```json showLineNumbers
 {
     "version": "2.0.0",
     "tasks": [
@@ -361,7 +361,7 @@ Add a new task by creating/modifying the `.vscode/tasks.json` file:
 Create a new `launch.json` file or edit an existing one from the `Run and Debug` tab,
 then add the following configuration:
 
-```json lineNumbers
+```json showLineNumbers
 {
     "version": "0.2.0",
     "configurations": [
@@ -381,7 +381,7 @@ then add the following configuration:
 
 A simple example of a Node.js lambda, `myindex.js` could look like this:
 
-```js lineNumbers
+```js showLineNumbers
 exports.handler = async (event) => {
     console.log(event);
     const response = {
@@ -469,7 +469,7 @@ localstack start --volume /path/to/debug-config.yaml:/tmp/lambda_debug_mode_conf
 ```
 </TabItem>
 <TabItem label="Docker Compose">
-```yaml lineNumbers
+```yaml showLineNumbers
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -500,7 +500,7 @@ for each specific Lambda function ARN.
 #### Example: Basic Debugging Configuration
 This example configures Lambda Debug Mode to use port 19891 for the remote debugger.
 
-```yaml lineNumbers
+```yaml showLineNumbers
 functions:
   arn:aws:lambda:eu-central-1:000000000000:function:func-one:
     debug-port: 19891
@@ -510,7 +510,7 @@ functions:
 In this example, the automatic timeout handling feature is disabled for the specified Lambda function,
 enforcing the predefined timeouts instead.
 
-```yaml lineNumbers
+```yaml showLineNumbers
 functions:
   arn:aws:lambda:eu-central-1:000000000000:function:func-one:
     debug-port: 19891
@@ -522,7 +522,7 @@ functions:
 Specifying an unqualified Lambda ARN in the configuration is equivalent to specifying the ARN
 with the `$LATEST` version qualifier.
 
-```yaml lineNumbers
+```yaml showLineNumbers
 functions:
   arn:aws:lambda:eu-central-1:000000000000:function:func-one:$LATEST:
     debug-port: 19891
@@ -534,7 +534,7 @@ To debug multiple Lambda functions simultaneously, assign a different debug port
 Note that this configuration affects the container's internal debugger port as well, so the debugger
 port must be set accordingly.
 
-```yaml lineNumbers
+```yaml showLineNumbers
 functions:
   arn:aws:lambda:eu-central-1:000000000000:function:func-one:
     debug-port: 19891
@@ -546,7 +546,7 @@ functions:
 
 You can also debug different versions of the same Lambda function by assigning unique ports to each version.
 
-```yaml lineNumbers
+```yaml showLineNumbers
 functions:
   arn:aws:lambda:eu-central-1:000000000000:function:func-one:1:
     debug-port: 19891

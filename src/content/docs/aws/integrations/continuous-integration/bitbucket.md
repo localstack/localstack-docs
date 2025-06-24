@@ -22,7 +22,7 @@ When you want to integrate LocalStack into your job configuration, you just have
 
 The following example BitBucket Pipeline configuration (`bitbucket-pipelines.yaml`) executes these steps, creates a new S3 bucket, and queries the list of S3 buckets:
 
-```yaml showLineNumbers
+```yaml showshowLineNumbers
 image: python:3.9
 
 definitions:
@@ -69,7 +69,7 @@ To add a CI Auth Token to your BitBucket Pipeline:
 
 Navigate to your BitBucket Pipeline and add the following lines to the `bitbucket-pipelines.yaml` file:
 
-```yaml showLineNumbers
+```yaml showshowLineNumbers
 pipelines:
   default:
     - step:

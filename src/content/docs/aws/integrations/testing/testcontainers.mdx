@@ -39,7 +39,7 @@ go get github.com/testcontainers/testcontainers-go/modules/localstack
 ```
 </TabItem>
 <TabItem label="Java (Maven)">
-```java showLineNumbers
+```java showshowLineNumbers
 <dependency>
     <groupId>org.testcontainers</groupId>
     <artifactId>localstack</artifactId>
@@ -64,7 +64,7 @@ npm i @testcontainers/localstack
 
 <Tabs>
 <TabItem label=".NET">
-```csharp showLineNumbers
+```csharp showshowLineNumbers
 var localStackContainer = new LocalStackBuilder().Build();
 
 await localStackContainer.StartAsync()
@@ -92,14 +92,14 @@ const localstack = new LocalstackContainer("localstack/localstack:3").start()
 
 <Tabs>
 <TabItem label=".NET">
-```csharp showLineNumbers
+```csharp showshowLineNumbers
 var config = new AmazonS3Config();
 config.ServiceURL = localStackContainer.GetConnectionString();
 using var client = new AmazonS3Client(config);
 ```
 </TabItem>
 <TabItem label="Go">
-```go showLineNumbers
+```go showshowLineNumbers
 func s3Client(ctx context.Context, l *localstack.LocalStackContainer) (*s3.Client, error) {
     // the Testcontainers Docker provider is used to get the host of the Docker daemon
     provider, err := testcontainers.NewDockerProvider()
@@ -144,7 +144,7 @@ func s3Client(ctx context.Context, l *localstack.LocalStackContainer) (*s3.Clien
 ```
 </TabItem>
 <TabItem label="Java">
-```java showLineNumbers
+```java showshowLineNumbers
 S3Client s3 = S3Client.builder()
     .endpointOverride(localstack.getEndpoint())
     .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(localstack.getAccessKey(), localstack.getSecretKey())))
@@ -153,7 +153,7 @@ S3Client s3 = S3Client.builder()
 ```
 </TabItem>
 <TabItem label="NodeJS (typescript)">
-```typescript showLineNumbers
+```typescript showshowLineNumbers
 const awsConfig = {
       endpoint: localstack.getConnectionUri(),
       credentials: {

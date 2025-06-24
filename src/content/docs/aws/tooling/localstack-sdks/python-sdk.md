@@ -43,7 +43,7 @@ Using the SDK in Python is straightforward: developers can import the relevant m
 
 The following code snippet shows how to set up an SQS client, create a queue, send messages, and retrieve them to test local SQS interactions using LocalStack.
 
-```python lineNumbers
+```python showLineNumbers
 import json
 import boto3
 import localstack.sdk.aws
@@ -88,7 +88,7 @@ for msg in messages:
 
 
 
-```bash lineNumbers
+```bash showLineNumbers
 Message Body: {"event": "event-0", "message": "message-0"}
 Message Body: {"event": "event-1", "message": "message-1"}
 Message Body: {"event": "event-2", "message": "message-2"}
@@ -100,7 +100,7 @@ Message Body: {"event": "event-4", "message": "message-4"}
 
 The following code snippet verifies an email address, sends a raw email, retrieves the message ID, and discards all SES messages afterward.
 
-```python lineNumbers
+```python showLineNumbers
 import boto3
 import localstack.sdk.aws
 
@@ -148,7 +148,7 @@ Cloud Pods is a feature that enables storing and managing snapshots of the curre
 This code snippet shows listing available pods, saving a new pod, loading it, and then deleting it.
 You need to set your `LOCALSTACK_AUTH_TOKEN` in your terminal session before running the snippet.
 
-```python lineNumbers
+```python showLineNumbers
 from localstack.sdk.pods import PodsClient
 
 POD_NAME = "ls-cloud-pod"
@@ -184,7 +184,7 @@ Pod 'ls-cloud-pod' deleted.
 
 The following example demonstrates how to reset the current cloud state using LocalStack’s `StateClient`.
 
-```python lineNumbers
+```python showLineNumbers
 import boto3
 from localstack.sdk.state import StateClient
 
@@ -228,7 +228,7 @@ Error after state reset: AWS.SimpleQueueService.NonExistentQueue
 LocalStack’s Chaos API enables fault injection to simulate issues in AWS services.
 This example shows how to add a fault rule for the S3 service, retrieve and display the rule, and finally delete it to return to normal operations.
 
-```python lineNumbers
+```python showLineNumbers
 import localstack.sdk.chaos
 from localstack.sdk.models import FaultRule
 
