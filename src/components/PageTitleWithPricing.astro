@@ -6,19 +6,31 @@ const route = Astro.locals.starlightRoute;
 const isAwsServicePage = route.id.startsWith('aws/services/') && !route.id.includes('/index');
 const tags = route.entry?.data?.tags || [];
 
-// Find pricing tags
 const pricingTags = tags.filter(tag => 
   ['Free', 'Base', 'Ultimate'].includes(tag)
 );
+
+const getAvailablePlans = (plans) => {
+  if (plans.includes('Free')) {
+    return ['Free', 'Base', 'Ultimate'];
+  } else if (plans.includes('Base')) {
+    return ['Base', 'Ultimate'];
+  } else if (plans.includes('Ultimate')) {
+    return ['Ultimate'];
+  }
+  return plans;
+};
+
+const availablePlans = getAvailablePlans(pricingTags);
 ---
 
 <Default />
 
-{isAwsServicePage && pricingTags.length > 0 && (
+{isAwsServicePage && availablePlans.length > 0 && (
   <div class="pricing-badges">
-    {pricingTags.map(tag => (
-      <span class={`pricing-badge pricing-badge-${tag.toLowerCase()}`}>
-        {tag}
+    {availablePlans.map(plan => (
+      <span class={`pricing-badge pricing-badge-${plan.toLowerCase()}`}>
+        {plan}
       </span>
     ))}
   </div>
