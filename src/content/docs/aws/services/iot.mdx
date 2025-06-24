@@ -79,7 +79,7 @@ AWS provides its root CA certificate at [`https://www.amazontrust.com/repository
 When connecting to the endpoints, you will need to provide this root CA certificate for authentication.
 This is illustrated below with Python [AWS IoT SDK](https://docs.aws.amazon.com/iot/latest/developerguide/iot-sdks.html),
 
-```py
+```py showLineNumbers
 import awscrt
 import boto3
 from awsiot import mqtt_connection_builder
@@ -127,7 +127,7 @@ For details on how ALPN works with AWS, see [this page](https://docs.aws.amazon.
 The client certificate and key can be retrieved using `CreateKeysAndCertificate` operation.
 The certificate is signed by the LocalStack root CA.
 
-```py
+```py showLineNumbers
 result = iot_client.create_keys_and_certificate(setAsActive=True)
 
 # Path to file with saved content `result["certificatePem"]`

@@ -307,7 +307,7 @@ To enable HTTPS for your endpoints, you can configure Kubernetes to use SSL/TLS 
 
 The local EKS cluster comes pre-configured with a secret named `ls-secret-tls`, which can be conveniently utilized to define the `tls` section in the ingress configuration:
 
-```yaml
+```yaml showLineNumbers
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -425,7 +425,7 @@ In such cases, path-based routing may not be ideal if you need the services to b
 
 To address this requirement, we recommend utilizing host-based routing rules, as demonstrated in the example below:
 
-```bash
+```bash showLineNumbers
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -532,7 +532,7 @@ As a result, the tag name `__k3d_volume_mount__` is considered deprecated and wi
 After creating your cluster with the `_volume_mount_` tag, you can create your path with volume mounts as usual.
 The configuration for the volume mounts can be set up similar to this:
 
-```yaml
+```yaml showLineNumbers
 apiVersion: v1
 kind: Pod
 metadata:
