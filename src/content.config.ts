@@ -12,6 +12,7 @@ export const collections = {
 				deployment: z.array(z.string()).optional(),
 				pro: z.boolean().optional(),
 				leadimage: z.string().optional(),
+				tags: z.array(z.string()).optional(),
 			}),
 		}),
 	}),
