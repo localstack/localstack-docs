@@ -13,6 +13,7 @@ export const collections = {
 				pro: z.boolean().optional(),
 				leadimage: z.string().optional(),
 				tags: z.array(z.string()).optional(),
+				persistence: z.string().optional(),
 			}),
 		}),
 	}),

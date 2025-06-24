@@ -1,0 +1,78 @@
+---
+// Get the current page route
+const route = Astro.locals.starlightRoute;
+const isAwsServicePage = route.id.startsWith('aws/services/') && !route.id.includes('/index');
+const persistence = route.entry?.data?.persistence || null;
+
+// Determine persistence status and display text
+const getPersistenceInfo = (persistenceValue) => {
+  if (!persistenceValue) {
+    return { status: 'not-supported', text: 'Not Supported' };
+  } else if (persistenceValue === 'supported') {
+    return { status: 'supported', text: 'Supported' };
+  } else if (persistenceValue === 'supported with limitations') {
+    return { status: 'limited', text: 'Limited Support' };
+  } else {
+    return { status: 'not-supported', text: 'Not Supported' };
+  }
+};
+
+const persistenceInfo = getPersistenceInfo(persistence);
+---
+
+{isAwsServicePage && (
+  <div class="persistence-badges">
+    <span class="badge-label">Persistence:</span>
+    <span class={`persistence-badge persistence-badge-${persistenceInfo.status}`}>
+      {persistenceInfo.text}
+    </span>
+  </div>
+)}
+
+<style>
+  .persistence-badges {
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .badge-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-right: 0.25rem;
+  }
+
+  .persistence-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  /* Persistence badge styles */
+  .persistence-badge-supported {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+
+  .persistence-badge-limited {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+  }
+
+  .persistence-badge-not-supported {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+</style> 
