@@ -25,7 +25,7 @@ If the Snowflake driver provides a connection object, you can pass the `account`
 
 Example using the Snowflake Connector for Python:
 
-```python lineNumbers
+```python showLineNumbers
 sf_conn_obj = sf.connect(
     account="your_account",
     # other parameters
@@ -34,7 +34,7 @@ sf_conn_obj = sf.connect(
 
 Example using the NodeJS Driver for Snowflake:
 
-```javascript lineNumbers
+```javascript showLineNumbers
 var connection = snowflake.createConnection({
   account: "your_account",
   // other parameters
