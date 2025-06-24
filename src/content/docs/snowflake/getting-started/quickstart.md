@@ -42,7 +42,7 @@ The response should be:
 
 Create a new Python file named `main.py` and use the following code to connect to the Snowflake emulator:
 
-```python
+```python showLineNumbers
 import snowflake.connector as sf
 
 sf_conn_obj = sf.connect(
@@ -60,7 +60,7 @@ Specify the `host` parameter as `snowflake.localhost.localstack.cloud` and the o
 
 Extend the Python program to insert rows from a list object into the emulated Snowflake table. Create a cursor object and execute the query:
 
-```python
+```python showLineNumbers
 print("1. Insert lot of rows from a list object to Snowflake table")
 print("2. Creating a cursor object")
 sf_cur_obj = sf_conn_obj.cursor()

@@ -17,7 +17,7 @@ This guide is designed for users new to Tasks and assumes basic knowledge of SQL
 
 To create a task, use the `CREATE TASK` statement. The following example demonstrates how to create a task named `test_task` that inserts a record into a table named `sample_table` every minute.
 
-```sql
+```sql showLineNumbers
 CREATE TASK test_task
 WAREHOUSE = 'test'
 SCHEDULE = '1 MINUTE'

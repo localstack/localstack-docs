@@ -33,7 +33,7 @@ awslocal s3 cp file.csv s3://testbucket
 
 You can now create a Storage Integration named `s_example` which will connect Snowflake to your S3 bucket using the following statement:
 
-```sql
+```sql showLineNumbers
 CREATE STORAGE INTEGRATION s_example
     TYPE = EXTERNAL_STAGE 
     ENABLED = TRUE 
@@ -82,7 +82,7 @@ The expected output is:
 
 You can now create an external stage using the following statement:
 
-```sql 
+```sql showLineNumbers
 CREATE STAGE stage_example
     STORAGE_INTEGRATION = s_example
     URL = 's3://testbucket'

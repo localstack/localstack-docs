@@ -25,7 +25,7 @@ This guide shows how to use the Polaris REST catalog to create Iceberg tables in
 
 The following command starts the Polaris catalog container using the `localstack/polaris` Docker image:
 
-```bash
+```bash showLineNumbers
 docker run -d --name polaris-test \
   -p 8181:8181 -p 8182:8182 \
   -e AWS_REGION=us-east-1 \
@@ -48,7 +48,7 @@ curl -X GET http://localhost:8182/health
 
 Set variables and retrieve an access token:
 
-```bash
+```bash showLineNumbers
 REALM="default-realm"
 CLIENT_ID="root"
 CLIENT_SECRET="s3cr3t"
@@ -64,7 +64,7 @@ The `TOKEN` variable will contain the access token.
 
 Create a catalog:
 
-```bash
+```bash showLineNumbers
 curl -s -X POST http://localhost:8181/api/management/v1/catalogs \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -89,7 +89,7 @@ curl -s -X POST http://localhost:8181/api/management/v1/catalogs \
 
 Grant necessary permissions to the catalog:
 
-```bash
+```bash showLineNumbers
 curl -s -X PUT http://localhost:8181/api/management/v1/catalogs/polaris/catalog-roles/catalog_admin/grants \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
@@ -108,7 +108,7 @@ awslocal s3 mb s3://$BUCKET_NAME
 
 In your SQL client, create an external volume using the `CREATE EXTERNAL VOLUME` statement:
 
-```sql
+```sql showLineNumbers
 CREATE EXTERNAL VOLUME polaris_volume
 STORAGE_LOCATIONS = (
   (
@@ -126,7 +126,7 @@ ALLOW_WRITES = TRUE;
 
 Create a catalog integration using the `CREATE CATALOG INTEGRATION` statement:
 
-```sql
+```sql showLineNumbers
 CREATE CATALOG INTEGRATION polaris_catalog
 CATALOG_SOURCE = ICEBERG_REST
 TABLE_FORMAT = ICEBERG
@@ -150,7 +150,7 @@ COMMENT = 'Polaris catalog integration';
 
 Now create the table using the Polaris catalog and volume:
 
-```sql
+```sql showLineNumbers
 CREATE ICEBERG TABLE polaris_iceberg_table (c1 TEXT)
 CATALOG = 'polaris_catalog',
 EXTERNAL_VOLUME = 'polaris_volume',

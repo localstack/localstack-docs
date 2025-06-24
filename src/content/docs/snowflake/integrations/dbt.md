@@ -25,7 +25,7 @@ pip install dbt-snowflake
 
 Create or modify your `profiles.yml` file (typically located in `~/.dbt/profiles.yml`) to include the connection details for the Snowflake emulator:
 
-```yaml
+```yaml showLineNumbers
 localstack_snowflake:
   outputs:
     dev:
@@ -61,7 +61,7 @@ Once configured, you can run standard dbt commands against the Snowflake emulato
 
 Here's a simple example of a dbt model which creates a table with a single row that you can use to test the integration:
 
-```sql
+```sql showLineNumbers
 -- models/example_model.sql
 {{ config(materialized='table') }}
 
@@ -76,7 +76,7 @@ You can test your models using dbt's generic tests.
 
 Add the following to your `models/schema.yml`:
 
-```yaml
+```yaml showLineNumbers
 version: 2
 
 models:
@@ -119,7 +119,7 @@ my_dbt_project/
 
 Example `dbt_project.yml`:
 
-```yaml
+```yaml showLineNumbers
 name: 'my_dbt_project'
 version: '1.0.0'
 config-version: 2

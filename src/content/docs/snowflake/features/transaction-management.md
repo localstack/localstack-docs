@@ -91,7 +91,7 @@ SHOW TRANSACTIONS;
 
 To undo uncommitted changes, use the `ROLLBACK` statement. Subsequent rollbacks have no effect.
 
-```sql 
+```sql showLineNumbers
 BEGIN;
 
 INSERT INTO orders VALUES (3), (4);

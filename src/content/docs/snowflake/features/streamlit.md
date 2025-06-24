@@ -74,7 +74,7 @@ To connect to the Snowflake emulator while developing locally, Streamlit provide
 
 To run the sample against Snowflake emulator, your local `~/.streamlit/secrets.toml` should look like this:
 
-```toml
+```toml showLineNumbers
 [snowpark]
 user = "test"
 password = "test"

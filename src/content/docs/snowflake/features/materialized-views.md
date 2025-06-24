@@ -19,7 +19,7 @@ The following sections guide you through creating materialized views, inserting 
 
 To create a materialized view, use the `CREATE MATERIALIZED VIEW` statement. The following example creates a view `order_view` that selects specific columns from the `orders` table.
 
-```sql 
+```sql showLineNumbers
 CREATE TABLE IF NOT EXISTS orders (
   id INT,
   product TEXT,

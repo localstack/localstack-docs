@@ -36,7 +36,7 @@ The next step is to configure the Snowflake emulator. The Snowflake emulator run
 
 Start Jupyter Notebook and create a new notebook. Add the following code to connect to the Snowflake emulator:
 
-```python
+```python showLineNumbers
 from snowflake.snowpark import *
 from snowflake.snowpark.functions import *
 
@@ -53,7 +53,7 @@ session = Session.builder.configs(connection_parameters).create()
 
 In the above configuration, you can set  `user`,  `password`,  `account`, and  `warehouse`  as  `test`  to avoid passing any production values. You can now run Snowflake SQL queries on your local machine.
 
-```python
+```python showLineNumbers
 session.sql("create or replace database credit_bank").collect()
 session.sql("use schema credit_bank.public").collect()
 print(session.sql("select current_warehouse(), current_database(), current_schema(), current_user(), current_role()").collect())
@@ -61,7 +61,7 @@ print(session.sql("select current_warehouse(), current_database(), current_schem
 
 
 
-```bash 
+```bash showLineNumbers
 [Row(?COLUMN?='TEST', CURRENT_DATABASE='CREDIT_BANK', CURRENT_SCHEMA='public', ?COLUMN?='TEST', GET_CURRENT_ROLE='PUBLIC')]
 ```
 
@@ -74,7 +74,7 @@ You can now create two tables associated with this tutorial:
 
 Run the following code to create the `credit_df` table:
 
-```python
+```python showLineNumbers
 import pandas as pd
 credit_files = pd.read_csv('credit_files.csv')
 session.write_pandas(credit_files,"CREDIT_FILES",auto_create_table='True')
@@ -90,7 +90,7 @@ StructType([StructField('CREDIT_REQUEST_ID', LongType(), nullable=True), StructF
 
 In a similar fashion, you can create the `credit_req_df` table:
 
-```python
+```python showLineNumbers
 credit_requests = pd.read_csv('credit_request.csv')
 session.write_pandas(credit_requests,"CREDIT_REQUESTS",auto_create_table='True')
 credit_req_df = session.table("CREDIT_REQUESTS")
@@ -131,7 +131,7 @@ credit_df.toPandas().hist(figsize=(15,15))
 
 You can also visualize the categorical features of the `credit_df` table:
 
-```python
+```python showLineNumbers
 import matplotlib.pyplot as plt
 import seaborn as sns
 

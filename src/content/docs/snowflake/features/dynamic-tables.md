@@ -37,7 +37,7 @@ The output should be:
 
 You can create a dynamic table using the `CREATE DYNAMIC TABLE` statement. Run the following query to create a dynamic table:
 
-```sql
+```sql showLineNumbers
 CREATE OR REPLACE DYNAMIC TABLE t_12345
     TARGET_LAG = '1 minute' WAREHOUSE = 'test' REFRESH_MODE = auto INITIALIZE = on_create
     AS SELECT id, name FROM example_table_name;

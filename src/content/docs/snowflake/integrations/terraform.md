@@ -17,7 +17,7 @@ In this guide, you will learn how to configure Terraform to interact with the Sn
 
 To use Terraform with the Snowflake emulator, you need to configure the Snowflake provider in your Terraform configuration file. The following example shows how to configure the Snowflake provider:
 
-```hcl
+```hcl showLineNumbers
 terraform {
   required_providers {
     snowflake = {
@@ -48,7 +48,7 @@ export SNOWFLAKE_HOST=snowflake.localhost.localstack.cloud
 
 You can now use Terraform to create Snowflake resources using the Snowflake provider. The following example shows how to create a Snowflake database using Terraform:
 
-```hcl
+```hcl showLineNumbers
 resource "snowflake_database" "example" {
   name                        = "example"
   comment                     = "example database"

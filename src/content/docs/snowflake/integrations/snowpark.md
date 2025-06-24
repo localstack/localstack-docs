@@ -21,7 +21,7 @@ In this getting started guide, we'll use the Snowpark Python library to establis
 
 The Snowflake emulator operates on `snowflake.localhost.localstack.cloud`. To create a Snowpark session in Python, use the following code:
 
-```python
+```python showLineNumbers
 from snowflake.snowpark import *
 from snowflake.snowpark.functions import *
 
@@ -40,7 +40,7 @@ session = Session.builder.configs(connection_parameters).create()
 
 You can create a table named `sample_product_data` and fill the table with some data by executing SQL statements. Add the following Python code to create the table:
 
-```python
+```python showLineNumbers
 session.sql('CREATE OR REPLACE TABLE sample_product_data (id INT, parent_id INT, category_id INT, name VARCHAR, serial_number VARCHAR, key INT, "3rd" INT)').collect()
 [Row(status='Table SAMPLE_PRODUCT_DATA successfully created.')]
 session.sql("""
@@ -109,7 +109,7 @@ The following output should be displayed:
 
 You can perform local transformations on the DataFrame. For example, you can filter rows with the value of 'id' equal to 1:
 
-```python
+```python showLineNumbers
 df = session.table("sample_product_data").filter(col("id") == 1)
 df.show()
 ```
@@ -126,7 +126,7 @@ The following output should be displayed:
 
 Furthermore, you can also select specific columns:
 
-```python
+```python showLineNumbers
 df = session.table("sample_product_data").select(col("id"), col("name"), col("serial_number"))
 df.show()
 ```

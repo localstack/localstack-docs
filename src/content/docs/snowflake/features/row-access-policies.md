@@ -19,7 +19,7 @@ The following sections demonstrate how to create a row access policy, attach it 
 
 Use the `CREATE ROW ACCESS POLICY` statement to define a filter condition. This policy will restrict row visibility based on column values.
 
-```sql
+```sql showLineNumbers
 CREATE OR REPLACE ROW ACCESS POLICY id_filter_policy
 AS (id INT) RETURNS BOOLEAN ->
   id IN (1, 2);
@@ -29,7 +29,7 @@ AS (id INT) RETURNS BOOLEAN ->
 
 Create a table and bind the row access policy to one of its columns using the `WITH ROW ACCESS POLICY` clause.
 
-```sql
+```sql showLineNumbers
 CREATE TABLE accounts (
   id INT
 )
