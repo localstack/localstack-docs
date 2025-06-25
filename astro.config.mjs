@@ -4,6 +4,7 @@ import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import starlightDocSearch from '@astrojs/starlight-docsearch';
 import starlightLinksValidator from 'starlight-links-validator'
+import starlightFullViewMode from 'starlight-fullview-mode'
 
 import markdoc from '@astrojs/markdoc';
 
@@ -94,6 +95,9 @@ export default defineConfig({
         alt: 'LocalStack',
       },
       plugins: [
+        starlightFullViewMode({
+          leftSidebarEnabled: false,
+        }),
         starlightLinksValidator({
           errorOnRelativeLinks: false,
           errorOnLocalLinks: false,
