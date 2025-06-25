@@ -60,7 +60,7 @@ You can navigate to the LocalStack logs to verify that the EC2 instance was crea
 You can now create a Cloud Custodian policy to stop the EC2 instances with the tag `Custodian`.
 Create a file named `custodian.yml` and add the following content:
 
-```yaml
+```yaml showshowLineNumbers
 policies:
   - name: my-first-policy
     resource: aws.ec2

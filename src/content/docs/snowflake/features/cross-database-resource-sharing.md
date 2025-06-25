@@ -19,7 +19,7 @@ In this guide, we'll walk through a series of Snowflake SQL statements to create
 
 Create three databases to represent the three different organizations that will share resources. In this example, we'll create databases for `db_name1`, `db_name2`, and `db_name3`.
 
-```sql
+```sql showLineNumbers
 CREATE DATABASE db_name1_actual;
 CREATE DATABASE db_name2_actual;
 CREATE DATABASE db_name3_actual;
@@ -29,7 +29,7 @@ CREATE DATABASE db_name3_actual;
 
 Create a schema in each database to represent the shared resources. In this example, you can create a schema called `sch` in each database.
 
-```sql
+```sql showLineNumbers
 CREATE SCHEMA db_name1_actual.sch;
 CREATE SCHEMA db_name2_actual.sch;
 CREATE SCHEMA db_name3_actual.sch;
@@ -39,7 +39,7 @@ CREATE SCHEMA db_name3_actual.sch;
 
 Create a table in each schema to represent the shared resources. In this example, you can create a table called `table1` in `db_name1_actual.sch`, `table2` in `db_name2_actual.sch`, and `table3` in `db_name3_actual.sch`.
 
-```sql
+```sql showLineNumbers
 CREATE TABLE db_name1_actual.sch.table1 (id INT);
 CREATE TABLE db_name2_actual.sch.table2 (id INT);
 CREATE TABLE db_name3_actual.sch.table3 (id INT);
@@ -49,7 +49,7 @@ CREATE TABLE db_name3_actual.sch.table3 (id INT);
 
 You can now insert data into the tables to represent the shared resources. In this example, we'll insert a single row into each table.
 
-```sql
+```sql showLineNumbers
 INSERT INTO db_name1_actual.sch.table1 (id) VALUES (1);
 INSERT INTO db_name2_actual.sch.table2 (id) VALUES (2);
 INSERT INTO db_name3_actual.sch.table3 (id) VALUES (3);
@@ -67,7 +67,7 @@ CREATE VIEW db_name1_actual.sch.view1 AS SELECT * FROM db_name1_actual.sch.table
 
 You can creates a secure view `view3` in `db_name3_actual.sch` by joining data from different tables.
 
-```sql
+```sql showLineNumbers
 CREATE SECURE VIEW db_name3_actual.sch.view3 AS
 SELECT view1.id AS View1Id, table2.id AS table2id, table3.id AS table3id
 FROM db_name1_actual.sch.view1 view1, db_name2_actual.sch.table2 table2, db_name3_actual.sch.table3 table3;
@@ -77,7 +77,7 @@ FROM db_name1_actual.sch.view1 view1, db_name2_actual.sch.table2 table2, db_name
 
 You can create a share `s_actual` and grant usage permissions on the `db_name3_actual` database and its schema.
 
-```sql
+```sql showLineNumbers
 CREATE SHARE s_actual;
 GRANT USAGE ON DATABASE db_name3_actual TO SHARE s_actual;
 GRANT USAGE ON SCHEMA db_name3_actual.sch TO SHARE s_actual;

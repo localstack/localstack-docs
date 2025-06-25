@@ -7,6 +7,7 @@ sidebar:
 ---
 
 import { Tabs, TabItem, FileTree } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -298,7 +299,7 @@ AUTO_LOAD_POD=foo-pod localstack start
 ```
 </TabItem>
 <TabItem label="Docker Compose">
-```yaml
+```yaml showshowLineNumbers
 services:
   localstack:
     container_name: "localstack-main"
@@ -352,7 +353,7 @@ LocalStack, upon mounting `init-pods.d` to the appropriate location, will sequen
 
 The docker compose file for correctly mounting `init-pods.d` will look like:
 
-```yaml
+```yaml showshowLineNumbers
 services:
   localstack:
     container_name: "localstack-main"
@@ -498,7 +499,7 @@ With such a configuration, the `foo-pod` Cloud Pod will be loaded from the `bar-
 To properly configure the remote, you need to provide the needed environment variables when starting the LocalStack container.
 For instance, a S3 remote needs a `AWS_ACCESS_KEY` and a `AWS_SECRET_ACCESS_KEY`, as follows:
 
-```yaml
+```yaml showshowLineNumbers
 services:
   localstack:
     container_name: "localstack-main"
@@ -522,7 +523,7 @@ This needs to be done with the `localstack pod remote add ...` command.
 This commands creates a configuration file for the remote in the [LocalStack volume directory](/aws/capabilities/config/filesystem/#localstack-volume-directory).
 :::
 
-## End-to-End Encryption (Enterprise)
+## End-to-End Encryption <Badge text="Enterprise" size="large" />
 
 Cloud Pods artifacts are stored in S3 buckets when using the LocalStack platform as the storage remote.
 By default, Amazon S3 encrypts all objects before saving them on disks, while the opposite operation happens at download time.

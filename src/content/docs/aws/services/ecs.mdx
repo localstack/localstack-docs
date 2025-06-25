@@ -5,6 +5,7 @@ description: Get started with Elastic Container Service (ECS) on LocalStack
 persistence: supported
 ---
 
+import { Badge } from '@astrojs/starlight/components';
 import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
 
 ## Introduction
@@ -61,7 +62,7 @@ awslocal ecs create-cluster --cluster-name mycluster
 Containers within tasks are defined by a task definition that is managed outside of the context of a cluster.
 To create a task definition that runs an `ubuntu` container forever (by running an infinite loop printing "Running" on startup), create the following file as `task_definition.json`:
 
-```json
+```json showshowLineNumbers
 {
   "containerDefinitions": [
     {
@@ -296,7 +297,7 @@ ecs_client.register_task_definition(
 
 The same functionality can be achieved with the AWS CDK following this (Python) example:
 
-```python
+```python showshowLineNumbers
 task_definition = ecs.TaskDefinition(
     ...
     volumes=[
@@ -322,7 +323,7 @@ Your file paths might differ, so check Docker's documentation on [Environment Va
 
 Here is a Docker Compose example:
 
-```yaml
+```yaml showshowLineNumbers
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
@@ -342,12 +343,7 @@ services:
 
 Alternatively, you can download the image from the private registry before using it or employ an [Initialization Hook](/aws/capabilities/config/initialization-hooks) to install the Docker client and use these credentials to download the image.
 
-## Firelens for ECS Tasks
-
-:::note
-Firelens emulation is currently available as part of the **LocalStack Enterprise** plan.
-If you'd like to try it out, please [contact us](https://www.localstack.cloud/demo) to request access.
-:::
+## Firelens for ECS Tasks <Badge text="Enterprise" size="large" />
 
 LocalStack's ECS emulation supports custom log routing via FireLens.
 FireLens allows the ECS service to manage the configuration of the logging driver of application containers, and to create the proper configuration for the `fluentbit`/`fluentd` logging layer.

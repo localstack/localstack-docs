@@ -18,7 +18,7 @@ To authenticate using a username and password, you can set the `user` and `passw
 
 Here's an example of how to connect to the Snowflake emulator using a username and password in a Python script:
 
-```python
+```python showLineNumbers
 import snowflake.connector as sf
 
 sf_conn_obj = sf.connect(
@@ -55,7 +55,7 @@ ALTER USER your_user_name SET RSA_PUBLIC_KEY='<public_key>';
 
 Then authenticate with the private key using the Snowflake client:
 
-```python
+```python showLineNumbers
 import snowflake.connector
 
 conn = snowflake.connector.connect(

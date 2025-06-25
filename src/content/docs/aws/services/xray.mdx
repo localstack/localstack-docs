@@ -42,7 +42,7 @@ You can generates a unique trace ID and constructs a JSON document with trace in
 It then sends this trace segment to the AWS X-Ray API using the    [PutTraceSegments](https://docs.aws.amazon.com/xray/latest/api/API_PutTraceSegments.html) API.
 Run the following commands in your terminal:
 
-```bash
+```bash showLineNumbers
 START_TIME=$(date +%s)
 HEX_TIME=$(printf '%x\n' $START_TIME)
 GUID=$(dd if=/dev/random bs=12 count=1 2>/dev/null | od -An -tx1 | tr -d ' \t\n')
@@ -68,7 +68,7 @@ Sending trace segment to X-Ray API: {"trace_id": "1-6501ee11-056ec85fafff21f648e
 You can now retrieve the trace summaries from the last 10 minutes using the [GetTraceSummaries](https://docs.aws.amazon.com/xray/latest/api/API_GetTraceSummaries.html) API.
 Run the following commands in your terminal:
 
-```bash
+```bash showLineNumbers
 EPOCH=$(date +%s)
 awslocal xray get-trace-summaries --start-time $(($EPOCH-600)) --end-time $(($EPOCH))
 {

@@ -17,7 +17,7 @@ In the Snowflake emulator, you can create JavaScript UDFs to extend the function
 
 You can create a JavaScript UDF using the `CREATE FUNCTION` statement. The following example creates a JavaScript UDF that receives a number as input and adds 5 to it.
 
-```sql
+```sql showLineNumbers
 CREATE OR REPLACE FUNCTION add5(n double)
   RETURNS double
   LANGUAGE JAVASCRIPT
@@ -47,7 +47,7 @@ Start your Snowflake emulator and connect to it using a SQL client to execute th
 
 You can define a Java UDF using the `CREATE FUNCTION` statement and provide the Java source inline with the `AS` clause.
 
-```sql
+```sql showLineNumbers
 CREATE OR REPLACE FUNCTION echo_inline(x VARCHAR)
 RETURNS VARCHAR
 LANGUAGE JAVA
@@ -84,7 +84,7 @@ The result of the query is:
 
 You can also compile your Java code into a `.jar` file, upload it to a Snowflake stage, and reference it using the `IMPORTS` clause.
 
-```sql
+```sql showLineNumbers
 -- Assume the JAR file has been uploaded to @mystage/testfunc.jar
 CREATE OR REPLACE FUNCTION echo_from_jar(x VARCHAR)
 RETURNS VARCHAR
@@ -120,7 +120,7 @@ In the Snowflake emulator, you can create User-Defined Functions (UDFs) in Pytho
 
 You can create a Python UDF using the `CREATE FUNCTION` statement. The following example creates a Python UDF that takes a string as input and returns the string with a prefix.
 
-```sql
+```sql showLineNumbers
 CREATE OR REPLACE FUNCTION sample_func(sample_arg TEXT)
 RETURNS VARCHAR LANGUAGE PYTHON
 RUNTIME_VERSION='3.8' HANDLER='sample_func'

@@ -17,7 +17,7 @@ LocalStack supports CircleCI out of the box and can be easily integrated into yo
 
 #### Default
 
-```yaml
+```yaml showshowLineNumbers
 version: '2.1'
 orbs:
   localstack: localstack/platform@2.2
@@ -36,7 +36,7 @@ workflows:
 
 #### Async
 
-```yaml
+```yaml showshowLineNumbers
 version: '2.1'
 orbs:
   localstack: localstack/platform@2.2
@@ -61,7 +61,7 @@ Read more about the [configuration options](/aws/capabilities/config/configurati
 
 #### Job level
 
-```yaml
+```yaml showshowLineNumbers
 ...
 jobs:
   localstack-test:
@@ -75,7 +75,7 @@ jobs:
 
 #### Shell command
 
-```yaml
+```yaml showshowLineNumbers
 ...
 jobs:
   localstack-test:
@@ -105,7 +105,7 @@ After the above steps, just start up LocalStack using our official orb as usual.
 
 ### Dump LocalStack logs
 
-```yaml
+```yaml showshowLineNumbers
 ...
 jobs:
   localstack-test:
@@ -140,7 +140,7 @@ Update or create the Cloud Pod in it's own project (ie in a separate Infrastruct
 
 _Note: If there is a previously created Cloud Pod which doesn't need updating this step can be skipped._
 
-```yaml
+```yaml showshowLineNumbers
 orbs:
   localstack: localstack/platform@2.2
 ...
@@ -168,7 +168,7 @@ workflows:
 
 In a separate project use the previously created base Cloud Pod as below:
 
-```yaml
+```yaml showshowLineNumbers
 orbs:
   localstack: localstack/platform@2.2
 ...
@@ -196,7 +196,7 @@ To use a dynamically updated Cloud Pod in multiple workflows but in the same pro
 
 Before you are able to use any stored artifacts in your pipeline, you must provide either a valid [project API token](https://circleci.com/docs/managing-api-tokens/#creating-a-project-api-token) or a [personal API token](https://circleci.com/docs/managing-api-tokens/#creating-a-personal-api-token) to CircleCI.
 
-```yaml
+```yaml showshowLineNumbers
 orbs:
   localstack: localstack/platform@2.2
 ...
@@ -275,7 +275,7 @@ Find out more about [Ephemeral Instances](/aws/capabilities/cloud-sandbox/epheme
 
 ##### Same job
 
-```yaml
+```yaml showshowLineNumbers
 orbs:
   localstack: localstack/platform@2.2
 ...
@@ -302,7 +302,7 @@ workflows:
 
 ##### Multiple jobs
 
-```yaml
+```yaml showshowLineNumbers
 ...
 jobs:
   setup-instance:
@@ -350,7 +350,7 @@ workflows:
 
 This strategy persist LocalStack's state between jobs for the current workflow.
 
-```yaml
+```yaml showshowLineNumbers
 ...
 jobs:
   localstack-save-state:
@@ -395,7 +395,7 @@ More information about Localstack's [state import/export](/aws/capabilities/stat
 To preserve state between workflow runs, you can take leverage of CircleCI's caching too.
 This strategy will persist LocalStack's state for every workflow re-runs, but not for different workflows.
 
-```yaml
+```yaml showshowLineNumbers
 ...
 jobs:
   localstack-update-state:

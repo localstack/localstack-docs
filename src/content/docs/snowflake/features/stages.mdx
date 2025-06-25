@@ -30,7 +30,7 @@ CREATE OR REPLACE DATABASE snowflake_tutorials;
 
 Similarly, you can create a table using the `CREATE TABLE` command. In this example, you can create a table called `employees` in `snowflake_tutorials.public`:
 
-```sql
+```sql showLineNumbers
 CREATE OR REPLACE TABLE employees (
    first_name STRING ,
    last_name STRING ,
@@ -96,7 +96,7 @@ awslocal s3 cp employees0*.csv s3://testbucket
 
 In this example, you can create a stage called `my_s3_stage` to load data from an S3 bucket:
 
-```sql
+```sql showLineNumbers
 CREATE STAGE my_s3_stage
 STORAGE_INTEGRATION = s3_int
 URL = 's3://testbucket/'
@@ -105,7 +105,7 @@ FILE_FORMAT = csv;
 
 You can further copy data from the S3 stage to the table using the `COPY INTO` command:
 
-```sql
+```sql showLineNumbers
 COPY INTO mytable
 FROM @my_s3_stage
 PATTERN='.*employees.*.csv';

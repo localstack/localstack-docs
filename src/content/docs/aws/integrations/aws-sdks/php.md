@@ -15,7 +15,7 @@ which is the preferred way of integrating the PHP SDK with LocalStack.
 
 Here is an example of how to create an `S3Client` with the endpoint set to LocalStack.
 
-```php
+```php showshowLineNumbers
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 

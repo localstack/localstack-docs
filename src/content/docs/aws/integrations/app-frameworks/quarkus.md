@@ -30,7 +30,7 @@ The Lambda extension is based on [AWS Java SDK 2.x](https://docs.aws.amazon.com/
 
 Create a new project with the following command:
 
-```bash
+```bash showshowLineNumbers
 mvn io.quarkus.platform:quarkus-maven-plugin:3.6.3:create \
     -DprojectGroupId=org.acme \
     -DprojectArtifactId=amazon-lambda-quickstart \
@@ -72,7 +72,7 @@ Add the following dependencies to the `pom.xml` file:
 
 To configure LocalStack, add the following properties to the `application.properties` file:
 
-```bash
+```bash showshowLineNumbers
 quarkus.lambda.endpoint-override=http://localhost:4566 
 
 quarkus.lambda.aws.region=us-east-1 

@@ -69,7 +69,7 @@ The `samlocal` wrapper will package and deploy the application to LocalStack.
 To debug your Lambda functions in VS Code while using the SAM CLI's `sam local` command alongside other services provided by LocalStack, set up a launch configuration in the `.vscode/launch.json` file.
 Insert the following settings into the file:
 
-```json
+```json showshowLineNumbers
 {
             "type": "aws-sam",
             "request": "direct-invoke",

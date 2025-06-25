@@ -39,7 +39,7 @@ IMAGE_NAME=localstack/snowflake localstack start
 
 To start the Snowflake Docker container using the `docker` CLI, execute the following command:
 
-```bash
+```bash showLineNumbers
 docker run \
     --rm -it \
     -p 127.0.0.1:4566:4566 \
@@ -53,7 +53,7 @@ docker run \
 
 Create a `docker-compose.yml` file with the specified content:
 
-```yaml
+```yaml showLineNumbers
 version: "3.8"
 
 services:

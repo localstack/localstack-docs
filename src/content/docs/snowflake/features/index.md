@@ -2,6 +2,7 @@
 title: "Feature Coverage"
 description: Overview of the implemented Snowflake features in LocalStack
 template: doc
+editUrl: false
 ---
 
 ## Resource Types and Operations

@@ -28,7 +28,7 @@ However we have not included the `iam:PassRole` permission, and we will use the 
 
 Create a policy document named `policy_1.json` and add the following content:
 
-```json
+```json showshowLineNumbers
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -113,7 +113,7 @@ You can incorporate this action into the policy.
 For illustrative purposes, we will keep the example straightforward, using the same wildcard resource.
 Edit the `policy_1.json` file to include the `iam:PassRole` action:
 
-```json
+```json showshowLineNumbers
 {
   "Version": "2012-10-17",
   "Statement": [

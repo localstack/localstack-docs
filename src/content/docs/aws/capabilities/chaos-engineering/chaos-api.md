@@ -49,7 +49,7 @@ When active, rules are evaluated sequentially on every request to LocalStack unt
 
 The schema for the configuration is as follows.
 
-```json
+```json showshowLineNumbers
 [
     {
         "region": "(str) Region name, e.g. 'ap-south-1'. If omitted, all regions are affected.",

@@ -27,7 +27,7 @@ awslocal s3 mb s3://test-bucket
 
 You can create a stage using the `CREATE STAGE` command. The stage is used to define the location of the files that Snowpipe will load into the table.
 
-```sql
+```sql showLineNumbers
 CREATE STAGE test_stage
   URL='s3://test-bucket'
   CREDENTIALS = (
@@ -68,7 +68,7 @@ Retrieve the `notification_channel` value from the output of the `DESC PIPE` que
 
 You can use the [`PutBucketNotificationConfiguration`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketNotificationConfiguration.html) API to create a bucket notification configuration that sends notifications to Snowflake when new files are uploaded to the S3 bucket.
 
-```bash
+```bash showLineNumbers
 awslocal s3api put-bucket-notification-configuration \
     --bucket test-bucket \
     --notification-configuration file://notification.json
@@ -76,7 +76,7 @@ awslocal s3api put-bucket-notification-configuration \
 
 The `notification.json` file should contain the following configuration:
 
-```json
+```json showLineNumbers
 {
   "QueueConfigurations": [
     {

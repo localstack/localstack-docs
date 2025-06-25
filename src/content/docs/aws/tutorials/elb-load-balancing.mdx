@@ -93,7 +93,7 @@ This bucket is responsible for storing the deployment artifacts and ensuring tha
 We have a `serverless.yml` file in the directory to define our Serverless project's configuration, which includes information such as the service name, the provider (AWS in this case), the functions, and example events that trigger those functions.
 To set up the plugins we installed earlier, you need to add the following properties to your `serverless.yml` file:
 
-```yaml
+```yaml showLineNumbers
 service: serverless-elb
 
 frameworkVersion: '3'
@@ -123,7 +123,7 @@ Configure a `deploy` script in your `package.json` file to simplify the deployme
 It lets you run the `serverless deploy` command directly over your local infrastructure.
 Update your `package.json` file to include the following:
 
-```json
+```json showLineNumbers
 {
   "name": "serverless-elb",
   "version": "1.0.0",
@@ -156,7 +156,7 @@ This will execute the `serverless deploy --stage local` command, deploying your 
 Now, let's create two Lambda functions named `hello1` and `hello2` that will run on the Node.js 12.x runtime.
 Open the `handler.js` file and replace the existing code with the following:
 
-```js
+```js showLineNumbers
 'use strict';
 
 module.exports.hello1 = async (event) => {
@@ -194,7 +194,7 @@ It is typically used when you need to include binary content in the response bod
 
 Let us now configure the `serverless.yml` file to create an Application Load Balancer (ALB) and attach the Lambda functions to it.
 
-```yaml
+```yaml showLineNumbers
 service: serverless-elb
 
 provider:
@@ -239,7 +239,7 @@ In this example, both functions are triggered by HTTP GET requests to the `/hell
 Lastly, let's create a VPC, a subnet, an Application Load Balancer, and an HTTP listener on the load balancer that redirects traffic to the target group.
 To do this, add the following resources to your `serverless.yml` file:
 
-```yaml
+```yaml showLineNumbers
 ...
 resources:
   Resources:
@@ -321,7 +321,7 @@ This output confirms the successful deployment of your Serverless service to the
 It also displays information about the deployed Lambda functions (`hello1` and `hello2`).
 You can run the following command to verify that the functions and the load balancers have been deployed:
 
-```bash
+```bash showLineNumbers
 awslocal lambda list-functions
 {
     "Functions": [

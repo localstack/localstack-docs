@@ -19,7 +19,7 @@ The following sections guide you through a simple example of using Streams to tr
 
 The following SQL snippet demonstrates how to create a table named `members` to store the names and fees paid by members of a gym, and a table named `signup` to store the dates when gym members joined.
 
-```sql
+```sql showLineNumbers
 -- Create a table to store the names and fees paid by members of a gym
 CREATE TABLE IF NOT EXISTS members (
   id NUMBER(8) NOT NULL,
@@ -46,7 +46,7 @@ CREATE STREAM IF NOT EXISTS member_check ON TABLE members;
 
 To insert data into the `members` and `signup` tables, use the `INSERT INTO` statement. The following example demonstrates how to insert data into the `members` and `signup` tables.
 
-```sql
+```sql showLineNumbers
 INSERT INTO members (id,name,fee)
 VALUES
 (1,'Joe',0),

@@ -47,7 +47,7 @@ Let us walk through these files.
 It does nothing more than print a salutation message.
 Create a `MessageUtil.java` file and save it into the `src/main/java` directory.
 
-```java
+```java showshowLineNumbers
 public class MessageUtil {
   private String message;
 
@@ -71,7 +71,7 @@ public class MessageUtil {
 Every build needs to be tested.
 Therefore, create the `TestMessageUtil.java` file in the `src/test/java` directory.
 
-```java
+```java showshowLineNumbers
 import org.junit.Test;
 import org.junit.Ignore;
 import static org.junit.Assert.assertEquals;
@@ -101,7 +101,7 @@ This small suite simply verifies that the greeting message is built correctly.
 Finally, we need a `pom.xml` file to instruct Maven about what to build and which artifact needs to be produced.
 Create this file at the root of your directory.
 
-```xml
+```xml showshowLineNumbers
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -140,7 +140,7 @@ A `buildspec` file is a collection of settings and commands, specified in YAML f
 
 Create this `buildspec.yml` file in the root directory.
 
-```yaml
+```yaml showshowLineNumbers
 version: 0.2
 
 phases:
@@ -200,7 +200,7 @@ awslocal s3 cp MessageUtil.zip s3://codebuild-demo-input
 To properly work, AWS CodeBuild needs access to other AWS services, e.g., to retrieve the source code from a S3 bucket.
 Create a `create-role.json` file with following content:
 
-```json
+```json showshowLineNumbers
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -227,7 +227,7 @@ it will be needed to create the CodeBuild project later on.
 Let us now define a policy for the created role.
 Create a `put-role-policy.json` file with the following content:
 
-```json
+```json showshowLineNumbers
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -302,7 +302,7 @@ awslocal codebuild create-project --generate-cli-skeleton
 From the generated file, change the source and the artifact location to match the S3 bucket names you just created.
 Similarly, fill in the ARN of the CodeBuild service role.
 
-```json {hl_lines=[5,9,16]}
+```json {hl_lines=[5,9,16]} showshowLineNumbers
 {
   "name": "codebuild-demo-project",
   "source": {

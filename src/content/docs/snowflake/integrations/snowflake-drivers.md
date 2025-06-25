@@ -19,7 +19,7 @@ pip install snowflake-connector-python
 
 The Snowflake emulator operates on `snowflake.localhost.localstack.cloud` - note that this is a DNS name that resolves to a local IP address (`127.0.0.1`) to make sure the connector interacts with the local APIs. Connect to the emulator using the following Python code:
 
-```python
+```python showLineNumbers
 import snowflake.connector as sf
 
 conn = sf.connect(
@@ -33,7 +33,7 @@ conn = sf.connect(
 
 Subsequently, create a warehouse named `test_warehouse`, a database named `testdb`, and a schema named `testschema` using the Snowflake Connector for Python:
 
-```python
+```python showLineNumbers
 conn.cursor().execute("CREATE WAREHOUSE IF NOT EXISTS test_warehouse")
 conn.cursor().execute("CREATE DATABASE IF NOT EXISTS testdb")
 conn.cursor().execute("USE DATABASE testdb")
@@ -52,7 +52,7 @@ npm install snowflake-sdk
 
 The Snowflake emulator runs on `snowflake.localhost.localstack.cloud`. Connect to the emulator using the following JavaScript code:
 
-```javascript
+```javascript showLineNumbers
 var snowflake = require('snowflake-sdk');
 var connection = snowflake.createConnection({
     username: 'test',
@@ -74,7 +74,7 @@ connection.connect(function(err, conn) {
 
 Execute a query to create a database named `testdb` and verify the results using the following JavaScript code:
 
-```javascript
+```javascript showLineNumbers
 connection.execute({
     sqlText: 'CREATE DATABASE testdb',
     complete: function(err, stmt, rows) {
@@ -102,7 +102,7 @@ The connection string follows the format `username:password@host:port/database?a
 
 Here's an example of how to connect to the Snowflake emulator using Go:
 
-```go
+```go showLineNumbers
 package main
 
 import (

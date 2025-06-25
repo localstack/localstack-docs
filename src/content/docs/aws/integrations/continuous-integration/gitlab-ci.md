@@ -28,7 +28,7 @@ HOSTNAME_EXTERNAL: localhost.localstack.cloud.
 
 #### Service
 
-```yaml
+```yaml showshowLineNumbers
 ...
 variables:
   DOCKER_SOCK: tcp://docker:2375
@@ -46,7 +46,7 @@ services:
 
 #### Container
 
-```yaml
+```yaml showshowLineNumbers
 image: docker:latest
 
 stages:
@@ -87,7 +87,7 @@ After you create the variable, you can use it in the `.gitlab-ci.yml` file.
 However, variables set in the GitLab UI are not automatically passed down to service containers.
 You need to assign them as variables in the UI, and then re-assign them in your `.gitlab-ci.yml`.
 
-```yaml
+```yaml showshowLineNumbers
 ...
 variables:
   LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
@@ -103,7 +103,7 @@ If the CI Auth Token activation fails, LocalStack container will exit with an er
 
 ### Dump Localstack logs
 
-```yaml
+```yaml showshowLineNumbers
 ...
 job:
   variables:
@@ -121,7 +121,7 @@ You can preserve your AWS infrastructure with Localstack in various ways.
 
 #### Artifact
 
-```yaml
+```yaml showshowLineNumbers
 ...
 job:
   before_script:
@@ -140,7 +140,7 @@ More info about Localstack's state export and import [here](/aws/capabilities/st
 
 #### Cache
 
-```yaml
+```yaml showshowLineNumbers
 ...
 job:
   before_script:
@@ -163,7 +163,7 @@ Additional information about state export and import [here](/aws/capabilities/st
 
 #### Cloud Pod
 
-```yaml
+```yaml showshowLineNumbers
 ...
 job:
   before_script:
@@ -178,7 +178,7 @@ Find more information about cloud pods [here](/aws/capabilities/state-management
 
 #### Ephemeral Instance (Preview)
 
-```yaml
+```yaml showshowLineNumbers
 ...
 variables:
   LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN

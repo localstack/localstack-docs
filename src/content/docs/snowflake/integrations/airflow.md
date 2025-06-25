@@ -15,7 +15,7 @@ On this page we outline how to set up the connection between local Airflow and t
 
 In order to create an Airflow environment in local MWAA, we can use the [`awslocal`](https://github.com/localstack/awscli-local) command:
 
-```bash
+```bash showLineNumbers
 awslocal s3 mb s3://my-mwaa-bucket
 awslocal mwaa create-environment --dag-s3-path /dags \
         --execution-role-arn arn:aws:iam::000000000000:role/airflow-role \
@@ -29,7 +29,7 @@ awslocal mwaa create-environment --dag-s3-path /dags \
 
 We can then create a local file `my_dag.py` with the Airflow DAG definition, for example:
 
-```python
+```python showLineNumbers
 import datetime
 import json
 
@@ -85,7 +85,7 @@ The code listings below contain the patch for different Airflow versions - simpl
 
 **Airflow version 2.6.3 and above**:
 
-```python
+```python showLineNumbers
 # ---
 # patch for local Snowflake connection, for Airflow 2.6.3 and above
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
@@ -109,7 +109,7 @@ SnowflakeHook._get_conn_params = _get_conn_params
 
 **Airflow version 2.9.2 and above**:
 
-```python
+```python showLineNumbers
 # ---
 # patch for local Snowflake connection, for Airflow 2.9.2 / 2.10.1
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook

@@ -6,6 +6,7 @@ persistence: supported
 ---
 
 import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+import { Badge } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -30,7 +31,7 @@ The Lambda function will be invoked with a `GET` request and return a response w
 
 Create a new file named `lambda.js` with the following contents:
 
-```javascript
+```javascript showshowLineNumbers
 'use strict'
 
 const apiHandler = (payload, context, callback) => {
@@ -51,7 +52,7 @@ The above code defines a function named `apiHandler` that returns a response wit
 Zip the file and upload it to LocalStack using the `awslocal` CLI.
 Run the following command:
 
-```bash
+```bash showshowLineNumbers
 zip function.zip lambda.js
 awslocal lambda create-function \
   --function-name apigw-lambda \
@@ -120,7 +121,7 @@ You'll need this ID for the next step.
 Create a new resource for the API using the [`CreateResource`](https://docs.aws.amazon.com/apigateway/latest/api/API_CreateResource.html) API.
 Use the ID of the resource returned in the previous step as the parent ID:
 
-```bash
+```bash showshowLineNumbers
 awslocal apigateway create-resource \
   --rest-api-id <REST_API_ID> \
   --parent-id <PARENT_ID> \
@@ -144,7 +145,7 @@ You'll need this Resource ID for the next step.
 Add a `GET` method to the resource using the [`PutMethod`](https://docs.aws.amazon.com/apigateway/latest/api/API_PutMethod.html) API.
 Use the ID of the resource returned in the previous step as the Resource ID:
 
-```bash
+```bash showshowLineNumbers
 awslocal apigateway put-method \
   --rest-api-id <REST_API_ID> \
   --resource-id <RESOURCE_ID> \
@@ -166,7 +167,7 @@ awslocal apigateway put-method \
 
 Now, create a new integration for the method using the [`PutIntegration`](https://docs.aws.amazon.com/apigateway/latest/api/API_PutIntegration.html) API.
 
-```bash
+```bash showshowLineNumbers
 awslocal apigateway put-integration \
   --rest-api-id <REST_API_ID> \
   --resource-id <RESOURCE_ID> \
@@ -256,7 +257,7 @@ LocalStack provides additional features and functionality on top of the official
 
 To demonstrate how to access APIs through LocalStack's local domain name, consider the following Serverless configuration that shows two Lambda functions (`serviceV1` and `serviceV2`) that are connected to an API Gateway v1 (`http` event) and an API Gateway v2 endpoint (`httpApi` event), respectively:
 
-```yaml
+```yaml showshowLineNumbers
 ...
 plugins:
   - serverless-localstack
@@ -327,12 +328,12 @@ http://localhost:4566/restapis/<apiId>/<stageName>/_user_request_/<path>
 ```
 :::
 
-### WebSocket APIs (Pro)
+### WebSocket APIs <Badge text="Pro" size="large" />
 
 WebSocket APIs provide real-time communication channels between a client and a server.
 To use WebSockets in LocalStack, you can define a WebSocket route in your Serverless configuration:
 
-```yaml
+```yaml showshowLineNumbers
 ...
 plugins:
   - serverless-localstack
@@ -403,7 +404,7 @@ awslocal apigateway create-rest-api --name my-api --tags '{"_custom_id_":"myid12
 
 You can also configure the protocol type, the possible values being `HTTP` and `WEBSOCKET`:
 
-```bash
+```bash showshowLineNumbers
 awslocal apigatewayv2 create-api \
   --name=my-api \
   --protocol-type=HTTP --tags="_custom_id_=my-api"
@@ -423,7 +424,7 @@ Setting the API Gateway ID via `_custom_id_` works only on the creation of the r
 Ensure that you set the `_custom_id_` tag on creation of the resource.
 :::
 
-## Custom Domain Names with API Gateway (Pro)
+## Custom Domain Names with API Gateway <Badge text="Pro" size="large" />
 
 You can use custom domain names with API Gateway [REST APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html) and [HTTP APIs](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-custom-domain-names.html).
 

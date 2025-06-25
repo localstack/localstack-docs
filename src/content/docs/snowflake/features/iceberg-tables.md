@@ -27,7 +27,7 @@ $ awslocal s3 mb s3://test-bucket
 
 You can create an external volume using the `CREATE OR REPLACE EXTERNAL VOLUME` statement. The external volume is used to define the location of the files that Iceberg will use to store the table data.
 
-```sql
+```sql showLineNumbers
 CREATE OR REPLACE EXTERNAL VOLUME test_volume
     STORAGE_LOCATIONS = (
     (

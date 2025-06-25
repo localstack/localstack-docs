@@ -86,7 +86,7 @@ The library aims to reduce the boilerplate required to set up LocalStack clients
 
 #### Dependency Injection Approach
 
-```csharp
+```csharp showshowLineNumbers
 public void ConfigureServices(IServiceCollection services)
 {
     // Add framework services.
@@ -104,7 +104,7 @@ var amazonS3Client = serviceProvider.GetRequiredService<IAmazonS3>();
 
 #### Standalone Approach
 
-```csharp
+```csharp showshowLineNumbers
 var sessionOptions = new SessionOptions();
 var configOptions = new ConfigOptions();
 

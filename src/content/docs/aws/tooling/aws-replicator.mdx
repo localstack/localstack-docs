@@ -77,7 +77,7 @@ Follow the [installation instructions](/aws/getting-started/installation/#instal
 To start a replication job, get the ARN of the resource to replicate.
 Then, trigger the job using the command:
 
-```bash
+```bash showLineNumbers
 export LOCALSTACK_AUTH_TOKEN=<auth token>
 export AWS_DEFAULT_REGION=...
 # if required
@@ -101,7 +101,7 @@ localstack replicator start --resource-arn <resource-arn>
 This triggers the replication job.
 The output will look similar to:
 
-```json
+```json showLineNumbers
 {
   "job_id": "50005865-1589-4f6d-a720-c86f5a5dd021",
   "state": "TESTING_CONNECTION",
@@ -125,7 +125,7 @@ The output will look similar to:
 
 To trigger replication via the HTTP API, send a `POST` request to `http://localhost.localstack.cloud:4566/_localstack/replicator/jobs` with the following payload:
 
-```json
+```json showLineNumbers
 {
   "replication_type": "SINGLE_RESOURCE",
   "replication_job_config": {
@@ -160,7 +160,7 @@ $ localstack replicator status <job-id>
 
 This command returns the job status in JSON format, for example:
 
-```json
+```json showLineNumbers
 {
   "job_id": "50005865-1589-4f6d-a720-c86f5a5dd021",
   "state": "SUCCEEDED",
@@ -210,7 +210,7 @@ AWS_PROFILE=ls-sandbox aws ssm put-parameter\
 AWS_PROFILE=ls-sandbox aws ssm get-parameters --names myparam
 ```
 
-```json
+```json showLineNumbers
 {
     "Parameters": [
         {
@@ -235,7 +235,7 @@ Next, we can check that the parameter is not present in LocalStack using `awsloc
 awslocal ssm get-parameters --name myparam
 ```
 
-```json
+```json showLineNumbers
 {
     "Parameters": [],
     "InvalidParameters": [
@@ -258,7 +258,7 @@ LOCALSTACK_AUTH_TOKEN=<ls-auth-token> \
 
 Configured credentials from the AWS CLI
 
-```json
+```json showLineNumbers
 {
   "job_id": "9acdc850-f71b-4474-b138-1668eb8b8396",
   "state": "TESTING_CONNECTION",
@@ -278,7 +278,7 @@ LOCALSTACK_AUTH_TOKEN=<ls-auth-token> \
   localstack replicator status 9acdc850-f71b-4474-b138-1668eb8b8396
 ```
 
-```json
+```json showLineNumbers
 {
   "job_id": "9acdc850-f71b-4474-b138-1668eb8b8396",
   "state": "SUCCEEDED",
@@ -297,7 +297,7 @@ The SSM parameter is now accessible.
 awslocal ssm get-parameters --name myparam --region eu-central-1
 ```
 
-```json
+```json showLineNumbers
 {
     "Parameters": [
         {

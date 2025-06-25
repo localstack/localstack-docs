@@ -28,14 +28,14 @@ The code in this tutorial is available on [GitHub](https://github.com/localstack
 
 Create a new directory for your lambda function and navigate to it:
 
-```bash
+```bash showLineNumbers
 mkdir -p lambda-snowpark
 cd lambda-snowpark
 ```
 
 Create a new file named `handler.py` and add the following code:
 
-```python
+```python showLineNumbers
 import snowflake.connector as sf
 
 def lambda_handler(event, context):
@@ -112,7 +112,7 @@ You can now install the dependencies for your Lambda function. These include:
 
 Run the following command:
 
-```bash
+```bash showLineNumbers
 pip3 install \
 		--platform manylinux2010_x86_64 \
 		--implementation cp \
@@ -125,7 +125,7 @@ pip3 install \
 
 Package the Lambda function and its dependencies into a ZIP file. Run the following command:
 
-```bash
+```bash showLineNumbers
 mkdir -p build
 cp -r libs/* build/
 (cd build && zip -q -r function-py.zip .)
@@ -137,7 +137,7 @@ You have now created a ZIP file named `function-py.zip` that contains the Lambda
 
 Start your LocalStack container in your preferred terminal/shell.
 
-```bash
+```bash showLineNumbers
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
 DEBUG=1 \
   LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=180 \
@@ -151,7 +151,7 @@ DEBUG=1 \
 
 You can now deploy the Lambda function to LocalStack using the `awslocal` CLI. Run the following command:
 
-```bash
+```bash showLineNumbers
 awslocal lambda create-function \
     --function-name localstack-snowflake-lambda-example \
 	--runtime python3.10 \
@@ -163,7 +163,7 @@ awslocal lambda create-function \
 
 After successfully deploying the Lambda function, you will receive a response with the details of the function. You can now invoke the function using the `awslocal` CLI:
 
-```bash
+```bash showLineNumbers
 awslocal lambda invoke --function-name localstack-snowflake-lambda-example \
 	--payload '{"body": "test" }' output.txt
 ```
