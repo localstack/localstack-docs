@@ -2,6 +2,7 @@
 title: Changelog
 description: Changelog for the latest releases of the LocalStack for Snowflake.
 template: doc
+editUrl: false
 ---
 
 ### 1.0.0

@@ -39,6 +39,9 @@ export default defineConfig({
       title: 'Docs',
       favicon: '/images/favicons/favicon.ico',
       customCss: ['./src/styles/global.css'],
+      editLink: {
+        baseUrl: 'https://github.com/localstack/localstack-docs/edit/master/',
+      },
       components: {
         PageTitle: './src/components/PageTitleWithBadges.astro',
       },
