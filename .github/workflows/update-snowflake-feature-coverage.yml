@@ -4,9 +4,6 @@ on:
   schedule:
     # “At 00:00 on Sunday.”
     - cron: "0 0 * * 0"
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
 
 jobs:
@@ -42,8 +39,6 @@ jobs:
           cd localstack-docs
           mv coverage-features.md src/content/docs/snowflake/features/index.md
           mv coverage-functions.md src/content/docs/snowflake/sql-functions.md
-          cat src/content/docs/snowflake/features/index.md
-          cat src/content/docs/snowflake/sql-functions.md
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
