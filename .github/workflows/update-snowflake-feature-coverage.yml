@@ -4,6 +4,9 @@ on:
   schedule:
     # “At 00:00 on Sunday.”
     - cron: "0 0 * * 0"
+  pull_request:
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
@@ -14,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: snowflake-docs
+          path: localstack-docs
 
       - name: Setup Python
         uses: actions/setup-python@v4
