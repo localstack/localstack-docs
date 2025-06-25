@@ -5,6 +5,7 @@ import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import starlightDocSearch from '@astrojs/starlight-docsearch';
 import starlightLinksValidator from 'starlight-links-validator'
 import starlightFullViewMode from 'starlight-fullview-mode'
+import starlightTocOverviewCustomizer from 'starlight-toc-overview-customizer'
 
 import markdoc from '@astrojs/markdoc';
 
@@ -95,6 +96,9 @@ export default defineConfig({
         alt: 'LocalStack',
       },
       plugins: [
+        starlightTocOverviewCustomizer({
+          overviewTitle: "Back to top",
+        }),
         starlightFullViewMode({
           leftSidebarEnabled: false,
         }),
