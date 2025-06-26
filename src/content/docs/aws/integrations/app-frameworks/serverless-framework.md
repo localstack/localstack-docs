@@ -20,7 +20,7 @@ In particular, the setup consists of the following two steps.
 
 This guide assumes that you have the following tools installed.
 
-* LocalStack ([Install](/aws/getting-started/#installation))
+* LocalStack ([Install](/aws/getting-started#installation))
 * Serverless ([Install](https://www.serverless.com/framework/docs/getting-started/))
 
 It also assumes that you already have a Serverless app set up consisting of a couple of Lambda functions and a `serverless.yml` file similar to the following.
