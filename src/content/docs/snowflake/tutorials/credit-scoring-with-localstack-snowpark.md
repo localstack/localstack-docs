@@ -14,7 +14,7 @@ The Jupyter Notebook and the dataset used in this tutorial are available on [Git
 
 ## Prerequisites
 
-- [`localstack` CLI](https://docs.localstack.cloud/getting-started/installation/#localstack-cli) with a [`LOCALSTACK_AUTH_TOKEN`](https://docs.localstack.cloud/getting-started/auth-token/)
+- [`localstack` CLI](/snowflake/getting-started/#localstack-cli) with a [`LOCALSTACK_AUTH_TOKEN`](/aws/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
 - [Snowpark](/snowflake/integrations/snowpark) with other Python libraries
 - [Jupyter Notebook](https://jupyter.org/install#jupyter-notebook)

@@ -14,7 +14,7 @@ Yes, the Snowflake emulator supports the Snowflake v2 SQL API (`/api/v2/*` endpo
 
 ### Why are my Snowflake tests failing?
 
-The Snowflake emulator is in **preview** and may not support all Snowflake features. If your tests are failing, it could be due to the lack of support for certain Snowflake features in the emulator. We recommend checking the [function coverage](https://snowflake.localstack.cloud/references/coverage-functions/) to see the list of supported SQL functions and [feature coverage](https://snowflake.localstack.cloud/references/coverage-features/) to see the list of supported features. If you encounter any issues, you can connect with us for [support](#support-faqs).
+The Snowflake emulator is in **preview** and may not support all Snowflake features. If your tests are failing, it could be due to the lack of support for certain Snowflake features in the emulator. We recommend checking the [function coverage](/snowflake/sql-functions/) to see the list of supported SQL functions and [feature coverage](/snowflake/features/) to see the list of supported features. If you encounter any issues, you can connect with us for [support](#support-faqs).
 
 ### Why does the Snowflake emulator run on `snowflake.localhost.localstack.cloud`?
 
