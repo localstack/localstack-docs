@@ -38,6 +38,8 @@ Furthermore, you can modify this setting later by navigating to the **Configurat
 
 Select the mount point upon the launch of LocalStack's Docker extension.
 
+![Select the mount point upon the launch of LocalStack's Docker extension](/images/aws/localstack-docker-extension-mount-point.png)
+
 ## Features
 
 LocalStack's Docker Extension helps users to manage their LocalStack container with a simple and intuitive user interface through Docker Desktop.
