@@ -2,9 +2,6 @@ name: Update Persistence Docs
 on:
   schedule:
     - cron: 0 5 * * MON
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
     inputs:
         targetBranch:
@@ -33,9 +30,6 @@ jobs:
       - name: Update Coverage Docs with Persistence Coverage
         working-directory: docs
         run: |
-          git branch
-          git log -1
-          ls -la
           cd scripts/persistence
           python3 -m venv .venv
           source .venv/bin/activate
