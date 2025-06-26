@@ -29,7 +29,7 @@ const columns: ColumnDef<any>[] = [
     accessorKey: 'full_name',
     header: () => 'Service',
     cell: ({ row }) => (
-      <a href={`/aws/${row.original.service}`}>{row.original.full_name}</a>
+      <a href={`/aws/services/${row.original.service}`}>{row.original.full_name}</a>
     ),
     enableColumnFilter: true,
     filterFn: (row, columnId, filterValue) => {
