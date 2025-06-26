@@ -10,7 +10,6 @@ from notion.catalog import PersistenceCatalog
 
 token = os.getenv("NOTION_TOKEN")
 markdown_path = "../../src/content/docs/aws/services"
-# markdown_path = "../../content/en/user-guide/aws"
 persistence_path = "../../src/data/persistence"
 persistence_data = os.path.join(persistence_path, "coverage.json")
 
@@ -29,7 +28,7 @@ class CustomYAMLHandler(YAMLHandler):
         from io import StringIO
         stream = StringIO()
         yaml.dump(metadata, stream)
-        return stream.getvalue()
+        return stream.getvalue().rstrip()
 
     def format(self, post, **kwargs):
         """
@@ -116,9 +115,8 @@ def update_frontmatter(statuses: dict):
         if service == "kafka":
             service = "msk"
         
-        _path = os.path.join(markdown_path, service, "index.md")
+        _path = os.path.join(markdown_path, f"{service}.mdx")
         if not os.path.exists(_path):
-            print(f" Can't find index.md file for {service}")
             continue
 
         support_value = values.get("support")
@@ -137,4 +135,4 @@ def update_frontmatter(statuses: dict):
 
 if __name__ == "__main__":
     data = collect_status()
-    # update_frontmatter(statuses=data)
+    update_frontmatter(statuses=data)
