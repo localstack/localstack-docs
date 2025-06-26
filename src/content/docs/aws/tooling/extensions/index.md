@@ -22,7 +22,7 @@ You can use LocalStack Extensions to:
 - Instrumenting AWS requests with additional information before they reach your Lambdas.
 - Logging AWS API calls to custom data backends.
 
-The officially supported [LocalStack Extensions]({/aws/tooling/extensions/official-extensions) can be discovered on our [Extension Library](https://app.localstack.cloud/extensions/library).
+The officially supported LocalStack Extensions can be discovered on our [Official Extensions Library](https://app.localstack.cloud/extensions/library).
 To install and use extensions, you need an active LocalStack license.
 
 :::note

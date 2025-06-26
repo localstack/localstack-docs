@@ -6,13 +6,13 @@ sidebar:
     order: 1
 ---
 
-LocalStack Pro supports [AWS Managed Streaming for Kafka (MSK)](/aws/services/msk) {/*TODO: target doesn't exist yet */}and you can create Kafka clusters directly through the MSK API that will run in LocalStack.
+LocalStack Pro supports [AWS Managed Streaming for Kafka (MSK)](/aws/services/msk) and you can create Kafka clusters directly through the MSK API that will run in LocalStack.
 In some cases, you may want to run your own self-managed Kafka cluster and integrate it with your applications, like triggering Lambdas from a Kafka stream running in your own cluster.
 The Lambda integration with self-managed Kafka clusters is also a LocalStack Pro feature.
 
 ## Running self-managed Kafka
 
-You can find the [example Docker Compose](docker-compose.yml) file which contains a single-noded ZooKeeper and a Kafka cluster and a simple LocalStack setup as well as [Kowl](https://github.com/cloudhut/kowl), an Apache Kafka Web UI.
+You can find the [example Docker Compose](https://github.com/localstack/localstack-docs/blob/master/src/content/docs/aws/integrations/messaging/docker-compose.yml) file which contains a single-noded ZooKeeper and a Kafka cluster and a simple LocalStack setup as well as [Kowl](https://github.com/cloudhut/kowl), an Apache Kafka Web UI.
 
 1. Run Docker Compose:
 

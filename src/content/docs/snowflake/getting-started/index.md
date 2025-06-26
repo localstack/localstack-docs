@@ -18,7 +18,7 @@ docker pull localstack/snowflake
 
 You can start the Snowflake Docker container using the following methods:
 
-1. [`localstack` CLI](https://docs.localstack.cloud/getting-started/installation/#localstack-cli)
+1. [`localstack` CLI](/snowflake/getting-started/#localstack-cli)
 2. [`docker` CLI](https://docs.docker.com/get-docker/)
 2. [Docker Compose](https://docs.docker.com/compose/install/)
 
@@ -118,4 +118,4 @@ If you are encountering network issues and your Snowflake client drivers are una
 
 ## Next steps
 
-Now that the Snowflake emulator is installed, you can use it for developing and testing your Snowflake data pipelines. Refer to our [Quickstart](/aws/getting-started/quickstart) guide to get started.
+Now that the Snowflake emulator is installed, you can use it for developing and testing your Snowflake data pipelines. Refer to our [Quickstart](/snowflake/getting-started/quickstart/) guide to get started.

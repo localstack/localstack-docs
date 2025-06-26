@@ -7,7 +7,7 @@ template: doc
 ## Introduction
 
 By default, the LocalStack CLI starts the LocalStack runtime inside a Docker container.
-Docker may not be available on your system, and a popular alternative is [Podman](https://podman.io/getting-started/) which you can use to run LocalStack.
+Docker may not be available on your system, and a popular alternative is [Podman](https://podman.io/get-started) which you can use to run LocalStack.
 Podman support is still experimental, and the following docs give you an overview of the current state.
 
 From the Podman docs:
@@ -32,7 +32,7 @@ It creates the following links:
 - `/var/run/docker.sock -> /run/podman/podman.sock`
 
 This package is available for some distros:
-- https://archlinux.org/packages/community/x86_64/podman-docker/
+- https://archlinux.org/packages/extra/x86_64/podman-docker/
 - https://packages.ubuntu.com/oracular/podman-docker
 - https://packages.debian.org/sid/podman-docker
 

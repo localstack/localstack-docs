@@ -9,7 +9,7 @@ sidebar:
 ## Introduction
 
 The [AWS Command Line Interface (CLI)](https://aws.amazon.com/cli/) is a unified tool for creating and managing AWS services via a command line interface.
-All CLI commands applicable to services implemented within {/*[LocalStack](references/coverage/) TODO: I couldn't find this page in the new docs*/} can be executed when operating against LocalStack.
+All CLI commands applicable to services implemented within [LocalStack](/aws/integrations/aws-native-tools/aws-cli/) can be executed when operating against LocalStack.
 
 You can use the AWS CLI with LocalStack using either of the following approaches:
 

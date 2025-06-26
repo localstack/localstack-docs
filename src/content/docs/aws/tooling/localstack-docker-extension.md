@@ -36,8 +36,7 @@ Upon the initial launch of the extension, a prompt to select a mount point for t
 Select your username from the drop-down menu.
 Furthermore, you can modify this setting later by navigating to the **Configurations** tab and choosing a different mount point.
 
-![](/images/aws/)
-<img src="localstack-docker-extension-mount-point.png" title="Select the mount point upon the launch of LocalStack's Docker extension" alt="Select the mount point upon the launch of LocalStack's Docker extension" width="800px"  />
+Select the mount point upon the launch of LocalStack's Docker extension.
 
 ## Features
 
