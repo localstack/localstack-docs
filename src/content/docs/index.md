@@ -19,7 +19,7 @@ Whether you're validating IaC templates, running integration tests, or iterating
 [Local AWS Services](/aws/services/)
 
 ### [Explore LocalStack for Snowflake Docs](/snowflake)
-[Getting Started](/snow/getting-started/)
+[Getting Started](/snowflake/getting-started/)
 
 [Snowflake Features](/snowflake/features/)
 
