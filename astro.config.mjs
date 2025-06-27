@@ -109,6 +109,11 @@ export default defineConfig({
           href: 'https://github.com/localstack/localstack',
         },
         {
+          icon: 'slack',
+          label: 'Slack',
+          href: 'https://slack.localstack.cloud',
+        },
+        {
           icon: 'linkedin',
           label: 'LinkedIn',
           href: 'https://www.linkedin.com/company/localstack-cloud/',
@@ -120,9 +125,10 @@ export default defineConfig({
         },
       ],
       logo: {
-        light: './src/assets/Logo_Light.svg',
-        dark: './src/assets/Logo_Dark.svg',
-        alt: 'LocalStack',
+        light: './src/assets/Docs_Logo_Light.svg',
+        dark: './src/assets/Docs_Logo_Dark.svg',
+        alt: 'LocalStack Docs',
+        replacesTitle: true,
       },
       plugins: [
         starlightImageZoom({
