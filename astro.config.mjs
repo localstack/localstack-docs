@@ -376,7 +376,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             {
-              label: 'Introduction',
+              label: 'Welcome',
               slug: 'snowflake',
             },
             {
