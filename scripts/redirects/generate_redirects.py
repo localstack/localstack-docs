@@ -27,9 +27,16 @@ def generate_redirects_file(config_file, output_file):
     
     redirects = []
     
+    skipped_count = 0
+    
     # Process AWS redirects
     if 'aws' in config:
         for redirect in config['aws']:
+            # Skip entries that still have the manual review note
+            if redirect.get('_note') == "MANUALLY REVIEW AND UPDATE new_link":
+                skipped_count += 1
+                continue
+                
             old_path = normalize_path(redirect['old_link'])
             new_path = normalize_path(redirect['new_link'])
             status_code = redirect.get('status_code', 301)
@@ -37,36 +44,29 @@ def generate_redirects_file(config_file, output_file):
             redirects.append(f"{old_path} {new_path} {status_code}")
     
     # Process Snowflake redirects  
-    if 'snowflake' in config:
-        for redirect in config['snowflake']:
-            old_path = normalize_path(redirect['old_link'])
-            new_path = normalize_path(redirect['new_link'])
-            status_code = redirect.get('status_code', 301)
+    # if 'snowflake' in config:
+    #     for redirect in config['snowflake']:
+    #         # Skip entries that still have the manual review note
+    #         if redirect.get('_note') == "MANUALLY REVIEW AND UPDATE new_link":
+    #             skipped_count += 1
+    #             continue
+                
+    #         old_path = normalize_path(redirect['old_link'])
+    #         new_path = normalize_path(redirect['new_link'])
+    #         status_code = redirect.get('status_code', 301)
             
-            redirects.append(f"{old_path} {new_path} {status_code}")
+    #         redirects.append(f"{old_path} {new_path} {status_code}")
     
     # Write to output file
     with open(output_file, 'w') as f:
-        f.write("# LocalStack Docs Redirects\n")
-        f.write("# Generated automatically from redirects_config.json\n\n")
-        
-        # Add static redirects first (CloudFlare recommendation)
-        static_redirects = [r for r in redirects if '*' not in r and ':' not in r]
-        dynamic_redirects = [r for r in redirects if '*' in r or ':' in r]
-        
-        if static_redirects:
-            f.write("# Static redirects\n")
-            for redirect in static_redirects:
-                f.write(f"{redirect}\n")
-        
-        if dynamic_redirects:
-            f.write("\n# Dynamic redirects\n")
-            for redirect in dynamic_redirects:
-                f.write(f"{redirect}\n")
+        for redirect in redirects:
+            f.write(f"{redirect}\n")
     
     print(f"Generated {len(redirects)} redirects in {output_file}")
-    print(f"- Static redirects: {len(static_redirects)}")
-    print(f"- Dynamic redirects: {len(dynamic_redirects)}")
+    
+    if skipped_count > 0:
+        print(f"⚠️  Skipped {skipped_count} entries that still need manual review")
+        print(f"   Remove '_note' field from reviewed entries to include them")
 
 
 def main():
