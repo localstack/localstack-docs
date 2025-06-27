@@ -125,7 +125,7 @@ export default defineConfig({
         },
       ],
       logo: {
-        light: './src/assets/Docs_Logo_Light.svg',
+        light: './src/assets/Docs_logo_Light.svg',
         dark: './src/assets/Docs_Logo_Dark.svg',
         alt: 'LocalStack Docs',
         replacesTitle: true,
