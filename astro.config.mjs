@@ -79,6 +79,16 @@ export default defineConfig({
         {
           tag: 'script',
           attrs: {
+            type: 'text/javascript',
+            id: 'icon-script-loader',
+            async: true,
+            defer: true,
+            src: '/src/assets/icon-loader.js',
+          },
+        },
+        {
+          tag: 'script',
+          attrs: {
             async: true,
             src: 'https://widget.kapa.ai/kapa-widget.bundle.js',
             'data-website-id': '3dfbd0ac-9e56-4664-8315-032e17917ab6',
