@@ -3,10 +3,11 @@ import { defineConfig, envField } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import starlightDocSearch from '@astrojs/starlight-docsearch';
-import starlightLinksValidator from 'starlight-links-validator'
+import starlightLinksValidator from 'starlight-links-validator';
+import starlightImageZoom from 'starlight-image-zoom';
 import sitemap from '@astrojs/sitemap';
-import starlightFullViewMode from 'starlight-fullview-mode'
-import starlightTocOverviewCustomizer from 'starlight-toc-overview-customizer'
+import starlightFullViewMode from 'starlight-fullview-mode';
+import starlightTocOverviewCustomizer from 'starlight-toc-overview-customizer';
 
 import markdoc from '@astrojs/markdoc';
 
@@ -79,9 +80,11 @@ export default defineConfig({
             'data-website-id': '3dfbd0ac-9e56-4664-8315-032e17917ab6',
             'data-project-name': 'LocalStack',
             'data-project-color': '#281763',
-            'data-project-logo': 'https://avatars.githubusercontent.com/u/28732122?s=280&v=4',
+            'data-project-logo':
+              'https://avatars.githubusercontent.com/u/28732122?s=280&v=4',
             'data-user-analytics-fingerprint-enabled': 'true',
-            'data-modal-disclaimer': 'This is a custom LocalStack LLM to help you find the information you need by searching across all LocalStack documentation. Give it a try and let us know what you think!',
+            'data-modal-disclaimer':
+              'This is a custom LocalStack LLM to help you find the information you need by searching across all LocalStack documentation. Give it a try and let us know what you think!',
           },
         },
       ],
@@ -108,8 +111,11 @@ export default defineConfig({
         alt: 'LocalStack',
       },
       plugins: [
+        starlightImageZoom({
+          showCaptions: true,
+        }),
         starlightTocOverviewCustomizer({
-          overviewTitle: "Back to top",
+          overviewTitle: 'Back to top',
         }),
         starlightFullViewMode({
           leftSidebarEnabled: false,
@@ -122,9 +128,6 @@ export default defineConfig({
           multiSidebar: {
             switcherStyle: 'dropdown',
           },
-          navLinks: {
-            leading: { useSidebarLabelled: 'TopNav' },
-          },
         }),
         starlightDocSearch({
           appId: 'XBW1JU7CW5',
@@ -133,13 +136,6 @@ export default defineConfig({
         }),
       ],
       sidebar: [
-        {
-          label: 'TopNav',
-          items: [
-            { label: 'Get Started', link: '/aws/getting-started/quickstart/' },
-            { label: 'Local AWS Services', link: '/aws/aws-services/' },
-          ],
-        },
         {
           label: 'AWS',
           collapsed: true,
