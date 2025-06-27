@@ -13,13 +13,13 @@ Whether you're validating IaC templates, running integration tests, or iterating
 
 ## Choose a product to get started
 
-### [Explore AWS Docs](/docs/aws)  
-[Getting Started with LocalStack for AWS](/aws/getting-started/)
+### [Explore LocalStack for AWS Docs](/docs/aws)  
+[Getting Started](/aws/getting-started/)
 
 [Local AWS Services](/aws/services/)
 
-### [Explore Snowflake Docs](/docs/snowflake)
-[Getting Started with LocalStack for Snow](/snow/getting-started/)
+### [Explore LocalStack for Snowflake Docs](/docs/snowflake)
+[Getting Started](/snow/getting-started/)
 
 [Snowflake Features](/snowflake/features/)
 
