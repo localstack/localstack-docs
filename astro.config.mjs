@@ -132,9 +132,6 @@ export default defineConfig({
           multiSidebar: {
             switcherStyle: 'dropdown',
           },
-          navLinks: {
-            leading: { useSidebarLabelled: 'TopNav' },
-          },
         }),
         starlightDocSearch({
           appId: 'XBW1JU7CW5',
@@ -143,13 +140,6 @@ export default defineConfig({
         }),
       ],
       sidebar: [
-        {
-          label: 'TopNav',
-          items: [
-            { label: 'Get Started', link: '/aws/getting-started/quickstart/' },
-            { label: 'Local AWS Services', link: '/aws/aws-services/' },
-          ],
-        },
         {
           label: 'AWS',
           collapsed: true,
@@ -386,7 +376,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             {
-              label: 'Introduction',
+              label: 'Welcome',
               slug: 'snowflake',
             },
             {

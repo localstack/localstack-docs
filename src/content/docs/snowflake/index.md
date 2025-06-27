@@ -1,9 +1,8 @@
 ---
-title: Introduction
+title: Welcome to LocalStack for Snowflake Docs
 description: LocalStack for Snowflake allows you to develop and test your Snowflake data pipelines entirely on your local machine!
 template: doc
 nav: 1
-label: Introduction
 ---
 
 [LocalStack](https://localstack.cloud/) is a cloud service emulator that runs in a single container on your laptop or in your CI environment.
