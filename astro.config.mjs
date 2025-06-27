@@ -83,7 +83,7 @@ export default defineConfig({
             id: 'icon-script-loader',
             async: true,
             defer: true,
-            src: '/src/assets/icon-loader.js',
+            src: '/js/icon-loader.js',
           },
         },
         {
