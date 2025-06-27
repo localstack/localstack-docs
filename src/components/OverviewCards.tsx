@@ -25,7 +25,11 @@ interface OverviewCardsProps {
 
 export const OverviewCards: React.FC<OverviewCardsProps> = ({ cards }) => {
   return (
-    <div className="service-grid">
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: 'repeat(2, 1fr)', 
+      gap: '2rem' 
+    }}>
       {cards.map((card, index) => (
         <OverviewCard key={index} {...card} />
       ))}
@@ -36,17 +40,18 @@ export const OverviewCards: React.FC<OverviewCardsProps> = ({ cards }) => {
 interface HeroCardProps {
   title: string;
   href?: string;
+  backgroundColor?: string;
 }
 
-const HeroCard: React.FC<HeroCardProps> = ({ title, href = "" }) => {
+const HeroCard: React.FC<HeroCardProps> = ({ title, href = "", backgroundColor = "#0C2DCF" }) => {
   const cardStyle = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '200px',
     padding: '2rem',
-    borderRadius: '0.75rem',
-    background: ' #654fec',
+    borderRadius: '12px',
+    background: backgroundColor,
     color: 'white',
     textDecoration: 'none',
     fontSize: '1.5rem',
@@ -90,7 +95,11 @@ export const HeroCards: React.FC<HeroCardsProps> = ({ cards }) => {
       marginBottom: '3rem' 
     }}>
       {cards.map((card, index) => (
-        <HeroCard key={index} {...card} />
+        <HeroCard 
+          key={index} 
+          {...card} 
+          backgroundColor={index % 2 === 0 ? "#5C1AE2" : "#0C2DCF"}
+        />
       ))}
     </div>
   );
