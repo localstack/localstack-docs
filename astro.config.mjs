@@ -365,6 +365,10 @@ export default defineConfig({
               label: 'Tutorials',
               slug: 'aws/tutorials',
             },
+            {
+              label: 'Changelog',
+              slug: 'aws/changelog',
+            },
           ],
         },
         {
