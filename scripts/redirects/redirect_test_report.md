@@ -1,25 +1,61 @@
 # LocalStack Redirect Test Report
-**Generated:** 2025-06-30 22:36:30
+**Generated:** 2025-06-30 23:32:43
 **Staging URL:** https://redirects.localstack-docs.pages.dev
 
 ## Summary
-- **Total tests:** 370
-- **Passed:** 366 ✅
-- **Failed:** 4 ❌
-- **Success rate:** 98.9%
+- **Total tests:** 400
+- **Passed:** 380 ✅
+- **Failed:** 20 ❌
+- **Success rate:** 95.0%
 
 ## Failed Tests
+### AWS: /academy/localstack-101/what-is-localstack/
+- **Expected:** https://youtu.be/B2EML5L3-tw?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=B2EML5L3-tw&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/B2EML5L3-tw?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=B2EML5L3-tw&feature=youtu.be
+
 ### AWS: /applications/note-taking-application-using-aws-sdk-for-javascript/
 - **Expected:** https://github.com/localstack-samples/aws-sdk-js-notes-app
 - **Got:** https://github.com/localstack-samples/sample-notes-app-dynamodb-lambda-apigateway
 - **Status:** 200
 - **Message:** ❌ Expected: https://github.com/localstack-samples/aws-sdk-js-notes-app, Got: https://github.com/localstack-samples/sample-notes-app-dynamodb-lambda-apigateway
 
+### AWS: /academy/localstack-101/course-overview/
+- **Expected:** https://youtu.be/VLL-BI1AWcc?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=VLL-BI1AWcc&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/VLL-BI1AWcc?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=VLL-BI1AWcc&feature=youtu.be
+
 ### AWS: /applications/serverless-microservices-with-amazon-api-gateway-dynamodb-sqs-and-lambda/
 - **Expected:** https://github.com/localstack-samples/microservices-apigateway-lambda-dynamodb-sqs-sample
 - **Got:** https://github.com/localstack-samples/sample-microservices-apigateway-lambda-dynamodb-sqs
 - **Status:** 200
 - **Message:** ❌ Expected: https://github.com/localstack-samples/microservices-apigateway-lambda-dynamodb-sqs-sample, Got: https://github.com/localstack-samples/sample-microservices-apigateway-lambda-dynamodb-sqs
+
+### AWS: /academy/localstack-deployment/infra-cloudformation/
+- **Expected:** https://youtu.be/K0OgQ5eq588?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=K0OgQ5eq588&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/K0OgQ5eq588?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=K0OgQ5eq588&feature=youtu.be
+
+### AWS: /academy/localstack-deployment/iam-policy-stream/
+- **Expected:** https://youtu.be/TOBLG2Z6xAM?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=TOBLG2Z6xAM&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/TOBLG2Z6xAM?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=TOBLG2Z6xAM&feature=youtu.be
+
+### AWS: /academy/localstack-deployment/ls-integrations/
+- **Expected:** https://youtu.be/YV0Zs6UNI9I
+- **Got:** https://www.youtube.com/watch?v=YV0Zs6UNI9I&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/YV0Zs6UNI9I, Got: https://www.youtube.com/watch?v=YV0Zs6UNI9I&feature=youtu.be
+
+### AWS: /academy/localstack-101/
+- **Expected:** https://youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&si=rKhzdxOJsfO_pgyk
+- **Got:** https://www.youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&si=rKhzdxOJsfO_pgyk
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&si=rKhzdxOJsfO_pgyk, Got: https://www.youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&si=rKhzdxOJsfO_pgyk
 
 ### AWS: /applications/event-driven-architecture-with-amazon-sns-fifo-dynamodb-lambda-and-s3/
 - **Expected:** https://github.com/localstack-samples/event-driven-architecture-with-amazon-sns-fifo
@@ -33,7 +69,73 @@
 - **Status:** 200
 - **Message:** ❌ Expected: https://github.com/localstack-samples/loan-broker-stepfunctions-lambda-app, Got: https://github.com/localstack-samples/sample-loan-broker-stepfunctions-lambda
 
+### AWS: /academy/localstack-101/cloud-pods/
+- **Expected:** https://youtu.be/InqTdSvxuag?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=InqTdSvxuag&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/InqTdSvxuag?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=InqTdSvxuag&feature=youtu.be
+
+### AWS: /academy/localstack-101/why-localstack/
+- **Expected:** https://youtu.be/EDGIBpUpYWU?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=EDGIBpUpYWU&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/EDGIBpUpYWU?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=EDGIBpUpYWU&feature=youtu.be
+
+### AWS: /academy/localstack-deployment/course-overview/
+- **Expected:** https://youtu.be/XDIat6laW28?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=XDIat6laW28&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/XDIat6laW28?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=XDIat6laW28&feature=youtu.be
+
+### AWS: /academy/localstack-deployment/infra-terraform/
+- **Expected:** https://youtu.be/lsF3kewOeBU?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=lsF3kewOeBU&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/lsF3kewOeBU?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=lsF3kewOeBU&feature=youtu.be
+
+### AWS: /academy/localstack-deployment/
+- **Expected:** https://youtube.com/playlist?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&si=R-Ed-JQKOxXP473O
+- **Got:** https://www.youtube.com/playlist?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&si=R-Ed-JQKOxXP473O
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtube.com/playlist?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&si=R-Ed-JQKOxXP473O, Got: https://www.youtube.com/playlist?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&si=R-Ed-JQKOxXP473O
+
+### AWS: /academy/localstack-deployment/deploy-app-ls/
+- **Expected:** https://youtu.be/qIB79b-iw2U?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=qIB79b-iw2U&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/qIB79b-iw2U?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=qIB79b-iw2U&feature=youtu.be
+
+### AWS: /academy/localstack-deployment/github-action-ls/
+- **Expected:** https://youtu.be/XNh8aSaT9v0?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=XNh8aSaT9v0&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/XNh8aSaT9v0?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=XNh8aSaT9v0&feature=youtu.be
+
+### AWS: /academy/localstack-101/web-app-resource-browser/
+- **Expected:** https://youtu.be/SoXtngYp-8k?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=SoXtngYp-8k&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/SoXtngYp-8k?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=SoXtngYp-8k&feature=youtu.be
+
+### AWS: /academy/localstack-101/full-project-demo/
+- **Expected:** https://youtu.be/cQxg3Dnteyc?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=cQxg3Dnteyc&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/cQxg3Dnteyc?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=cQxg3Dnteyc&feature=youtu.be
+
+### AWS: /academy/localstack-deployment/cloud-pods/
+- **Expected:** https://youtu.be/ZJP2xfvwR_g?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Got:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=ZJP2xfvwR_g&feature=youtu.be
+- **Status:** 200
+- **Message:** ❌ Expected: https://youtu.be/ZJP2xfvwR_g?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=ZJP2xfvwR_g&feature=youtu.be
+
 ## All Test Details
+### ✅ AWS: /legal/third-party-software-tools/
+- **Expected:** /aws/legal/third-party-software-tools
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/legal/third-party-software-tools/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
 ### ✅ AWS: /references/coverage/coverage_elb/
 - **Expected:** /aws/services/elb
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/elb/
@@ -76,6 +178,18 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ✅ AWS: /references/licensing/
+- **Expected:** /aws/licensing
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/licensing/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
+### ✅ AWS: /legal/
+- **Expected:** /aws/legal/third-party-software-tools
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/legal/third-party-software-tools/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
 ### ✅ AWS: /references/coverage/coverage_iotwireless/
 - **Expected:** /aws/services/iotwireless
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/iotwireless/
@@ -112,6 +226,12 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-101/what-is-localstack/
+- **Expected:** https://youtu.be/B2EML5L3-tw?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=B2EML5L3-tw&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/B2EML5L3-tw?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=B2EML5L3-tw&feature=youtu.be
+
 ### ✅ AWS: /references/coverage/coverage_xray/
 - **Expected:** /aws/services/xray
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/xray/
@@ -130,6 +250,12 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ✅ AWS: /references/usage-tracking/
+- **Expected:** /aws/capabilities/config/usage-tracking
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/config/usage-tracking/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
 ### ✅ AWS: /user-guide/aws/dms/
 - **Expected:** /aws/services/dms
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/dms/
@@ -145,6 +271,12 @@
 ### ✅ AWS: /applications/search-application-with-lambda-kinesis-firehose-elasticsearch-s3/
 - **Expected:** https://github.com/localstack-samples/sample-fuzzy-movie-search-lambda-kinesis-elasticsearch
 - **Final URL:** https://github.com/localstack-samples/sample-fuzzy-movie-search-lambda-kinesis-elasticsearch
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
+### ✅ AWS: /references/regions-coverage/
+- **Expected:** /aws/capabilities/config/regions-coverage/
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/config/regions-coverage/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
@@ -255,6 +387,12 @@
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/sts/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
+
+### ❌ AWS: /academy/localstack-101/course-overview/
+- **Expected:** https://youtu.be/VLL-BI1AWcc?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=VLL-BI1AWcc&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/VLL-BI1AWcc?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=VLL-BI1AWcc&feature=youtu.be
 
 ### ✅ AWS: /user-guide/aws/iotwireless/
 - **Expected:** /aws/services/iotwireless
@@ -466,9 +604,27 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-deployment/infra-cloudformation/
+- **Expected:** https://youtu.be/K0OgQ5eq588?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=K0OgQ5eq588&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/K0OgQ5eq588?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=K0OgQ5eq588&feature=youtu.be
+
 ### ✅ AWS: /user-guide/cloud-sandbox/
 - **Expected:** /aws/capabilities/cloud-sandbox
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/cloud-sandbox/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
+### ✅ AWS: /user-guide/localstack-enterprise/ci-analytics/
+- **Expected:** /aws/enterprise/ci-analytics
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/enterprise/ci-analytics/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
+### ✅ AWS: /references/changelog/
+- **Expected:** /aws/changelog
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/changelog/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
@@ -493,6 +649,18 @@
 ### ✅ AWS: /references/coverage/coverage_qldb/
 - **Expected:** /aws/services/qldb
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/qldb/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
+### ❌ AWS: /academy/localstack-deployment/iam-policy-stream/
+- **Expected:** https://youtu.be/TOBLG2Z6xAM?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=TOBLG2Z6xAM&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/TOBLG2Z6xAM?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=TOBLG2Z6xAM&feature=youtu.be
+
+### ✅ AWS: /references/cross-account-access/
+- **Expected:** /aws/capabilities/config/cross-account-access
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/config/cross-account-access/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
@@ -537,6 +705,12 @@
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/web-app/ci-keys
 - **Status Code:** 404
 - **Message:** ✅ Redirect successful
+
+### ❌ AWS: /academy/localstack-deployment/ls-integrations/
+- **Expected:** https://youtu.be/YV0Zs6UNI9I
+- **Final URL:** https://www.youtube.com/watch?v=YV0Zs6UNI9I&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/YV0Zs6UNI9I, Got: https://www.youtube.com/watch?v=YV0Zs6UNI9I&feature=youtu.be
 
 ### ✅ AWS: /references/coverage/coverage_appconfigdata/
 - **Expected:** /aws/services/appconfig
@@ -652,6 +826,12 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ✅ AWS: /user-guide/localstack-enterprise/single-sign-on/azure-ad/
+- **Expected:** /aws/enterprise/sso/azure-ad
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/enterprise/sso/azure-ad/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
 ### ✅ AWS: /user-guide/tools/localstack-desktop/
 - **Expected:** /aws/capabilities/web-app/localstack-desktop
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/web-app/localstack-desktop/
@@ -709,6 +889,12 @@
 ### ✅ AWS: /user-guide/aws/lambda/
 - **Expected:** /aws/services/lambda
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/lambda/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
+### ✅ AWS: /references/iam-coverage/
+- **Expected:** /aws/capabilities/security-testing/iam-coverage/
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/security-testing/iam-coverage/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
@@ -945,6 +1131,12 @@
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/servicediscovery/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
+
+### ❌ AWS: /academy/localstack-101/
+- **Expected:** https://youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&si=rKhzdxOJsfO_pgyk
+- **Final URL:** https://www.youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&si=rKhzdxOJsfO_pgyk
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&si=rKhzdxOJsfO_pgyk, Got: https://www.youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&si=rKhzdxOJsfO_pgyk
 
 ### ✅ AWS: /user-guide/aws/xray/
 - **Expected:** /aws/services/xray
@@ -1228,6 +1420,12 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ✅ AWS: /references/arm64-support/
+- **Expected:** /aws/capabilities/config/arm64-support/
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/config/arm64-support/
+- **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
 ### ✅ AWS: /user-guide/aws/shield/
 - **Expected:** /aws/services/shield
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/shield/
@@ -1336,6 +1534,12 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-101/cloud-pods/
+- **Expected:** https://youtu.be/InqTdSvxuag?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=InqTdSvxuag&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/InqTdSvxuag?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=InqTdSvxuag&feature=youtu.be
+
 ### ✅ AWS: /references/coverage/coverage_emr-serverless/
 - **Expected:** /aws/services/emr
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/emr/
@@ -1426,6 +1630,12 @@
 - **Status Code:** 404
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-101/why-localstack/
+- **Expected:** https://youtu.be/EDGIBpUpYWU?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=EDGIBpUpYWU&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/EDGIBpUpYWU?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=EDGIBpUpYWU&feature=youtu.be
+
 ### ✅ AWS: /user-guide/aws/transcribe/
 - **Expected:** /aws/services/transcribe
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/transcribe/
@@ -1498,11 +1708,23 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-deployment/course-overview/
+- **Expected:** https://youtu.be/XDIat6laW28?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=XDIat6laW28&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/XDIat6laW28?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=XDIat6laW28&feature=youtu.be
+
 ### ✅ AWS: /references/coverage/coverage_codepipeline/
 - **Expected:** /aws/services/codepipeline
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/codepipeline/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
+
+### ❌ AWS: /academy/localstack-deployment/infra-terraform/
+- **Expected:** https://youtu.be/lsF3kewOeBU?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=lsF3kewOeBU&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/lsF3kewOeBU?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=lsF3kewOeBU&feature=youtu.be
 
 ### ✅ AWS: /references/network-troubleshooting/
 - **Expected:** /aws/capabilities/networking/
@@ -1576,6 +1798,12 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-deployment/
+- **Expected:** https://youtube.com/playlist?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&si=R-Ed-JQKOxXP473O
+- **Final URL:** https://www.youtube.com/playlist?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&si=R-Ed-JQKOxXP473O
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtube.com/playlist?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&si=R-Ed-JQKOxXP473O, Got: https://www.youtube.com/playlist?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&si=R-Ed-JQKOxXP473O
+
 ### ✅ AWS: /references/coverage/coverage_application-autoscaling/
 - **Expected:** /aws/services/appautoscaling
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/appautoscaling/
@@ -1606,11 +1834,23 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-deployment/deploy-app-ls/
+- **Expected:** https://youtu.be/qIB79b-iw2U?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=qIB79b-iw2U&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/qIB79b-iw2U?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=qIB79b-iw2U&feature=youtu.be
+
 ### ✅ AWS: /user-guide/aws/organizations/
 - **Expected:** /aws/services/organizations
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/services/organizations/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
+
+### ❌ AWS: /academy/localstack-deployment/github-action-ls/
+- **Expected:** https://youtu.be/XNh8aSaT9v0?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=XNh8aSaT9v0&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/XNh8aSaT9v0?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=XNh8aSaT9v0&feature=youtu.be
 
 ### ✅ AWS: /user-guide/aws/sagemaker/
 - **Expected:** /aws/services/sagemaker
@@ -1670,6 +1910,12 @@
 - **Expected:** /aws/tooling/dns-server
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/tooling/dns-server/
 - **Status Code:** 200
+- **Message:** ✅ Redirect successful
+
+### ✅ AWS: /user-guide/chaos-engineering/chaos-application-dashboard/
+- **Expected:** /aws/capabilities/chaos-engineering/chaos-application-dashboard
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/chaos-engineering/chaos-application-dashboard
+- **Status Code:** 404
 - **Message:** ✅ Redirect successful
 
 ### ✅ AWS: /references/coverage/coverage_route53/
@@ -1816,6 +2062,12 @@
 - **Status Code:** 404
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-101/web-app-resource-browser/
+- **Expected:** https://youtu.be/SoXtngYp-8k?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=SoXtngYp-8k&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/SoXtngYp-8k?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=SoXtngYp-8k&feature=youtu.be
+
 ### ✅ AWS: /user-guide/integrations/
 - **Expected:** /aws/integrations/
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/integrations/
@@ -1900,6 +2152,12 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
+### ❌ AWS: /academy/localstack-101/full-project-demo/
+- **Expected:** https://youtu.be/cQxg3Dnteyc?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=cQxg3Dnteyc&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/cQxg3Dnteyc?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0&v=cQxg3Dnteyc&feature=youtu.be
+
 ### ✅ AWS: /applications/full-stack-application-with-aws-lambda-dynamodb-s3-for-shipment-validation/
 - **Expected:** https://github.com/localstack-samples/shipment-list-demo
 - **Final URL:** https://github.com/localstack-samples/shipment-list-demo
@@ -1953,6 +2211,12 @@
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/web-app/stack-overview/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
+
+### ❌ AWS: /academy/localstack-deployment/cloud-pods/
+- **Expected:** https://youtu.be/ZJP2xfvwR_g?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF
+- **Final URL:** https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=ZJP2xfvwR_g&feature=youtu.be
+- **Status Code:** 200
+- **Message:** ❌ Expected: https://youtu.be/ZJP2xfvwR_g?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF, Got: https://www.youtube.com/watch?list=PLTew28KOwGxPdtdW00WNXZLZnstvRQyTF&v=ZJP2xfvwR_g&feature=youtu.be
 
 ### ✅ AWS: /user-guide/aws/appconfig/
 - **Expected:** /aws/services/appconfig
@@ -2030,6 +2294,12 @@
 - **Expected:** /aws/user-guide/tools/localstack-sdk/java
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/user-guide/tools/localstack-sdk/java
 - **Status Code:** 404
+- **Message:** ✅ Redirect successful
+
+### ✅ AWS: /references/network-troubleshooting/readme/
+- **Expected:** /aws/capabilities/networking/
+- **Final URL:** https://redirects.localstack-docs.pages.dev/aws/capabilities/networking/
+- **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
 ### ✅ AWS: /user-guide/aws/codecommit/
@@ -2126,6 +2396,12 @@
 - **Expected:** /aws/integrations/aws-sdks/net/dotnet
 - **Final URL:** https://redirects.localstack-docs.pages.dev/aws/integrations/aws-sdks/net/dotnet
 - **Status Code:** 404
+- **Message:** ✅ Redirect successful
+
+### ✅ AWS: /academy/
+- **Expected:** https://www.youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Final URL:** https://www.youtube.com/playlist?list=PLTew28KOwGxPqbkFiW518eeIfiV495bm0
+- **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
 ### ✅ AWS: /references/coverage/coverage_cloudwatch/
