@@ -1,7 +1,8 @@
 ---
 // Get the current page route
 const route = Astro.locals.starlightRoute;
-const isAwsServicePage = route.id.startsWith('aws/services/') && !route.id.includes('/index');
+const isAwsServicePage =
+  route.id.startsWith('aws/services/') && !route.id.includes('/index');
 const persistence = route.entry?.data?.persistence || null;
 
 // Determine persistence status and display text
@@ -20,14 +21,18 @@ const getPersistenceInfo = (persistenceValue) => {
 const persistenceInfo = getPersistenceInfo(persistence);
 ---
 
-{isAwsServicePage && (
-  <div class="persistence-badges">
-    <span class="badge-label">Persistence:</span>
-    <span class={`persistence-badge persistence-badge-${persistenceInfo.status}`}>
-      {persistenceInfo.text}
-    </span>
-  </div>
-)}
+{
+  isAwsServicePage && (
+    <div class="persistence-badges">
+      <span class="badge-label">Persistence:</span>
+      <span
+        class={`persistence-badge persistence-badge-${persistenceInfo.status}`}
+      >
+        {persistenceInfo.text}
+      </span>
+    </div>
+  )
+}
 
 <style>
   .persistence-badges {
@@ -49,30 +54,28 @@ const persistenceInfo = getPersistenceInfo(persistence);
   .persistence-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 2px;
+    font-family: 'AeonikFono';
+    font-size: 14px;
+    font-size: 14px;
+    font-weight: 400;
     letter-spacing: 0.025em;
   }
 
   /* Persistence badge styles */
   .persistence-badge-supported {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+    background-color: #adfffb;
+    color: #006d65;
   }
 
   .persistence-badge-limited {
-    background-color: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fcd34d;
+    background-color: #e1e3eb;
+    color: #3a3c47;
   }
 
   .persistence-badge-not-supported {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
+    background-color: #f5a89f;
+    color: #690c01;
   }
-</style> 
+</style>

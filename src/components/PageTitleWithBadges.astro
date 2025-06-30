@@ -4,10 +4,11 @@ import PersistenceBadge from './PersistenceBadge.astro';
 
 // Get the current page route
 const route = Astro.locals.starlightRoute;
-const isAwsServicePage = route.id.startsWith('aws/services/') && !route.id.includes('/index');
+const isAwsServicePage =
+  route.id.startsWith('aws/services/') && !route.id.includes('/index');
 const tags = route.entry?.data?.tags || [];
 
-const pricingTags = tags.filter(tag => 
+const pricingTags = tags.filter((tag) =>
   ['Free', 'Base', 'Ultimate'].includes(tag)
 );
 
@@ -27,15 +28,17 @@ const availablePlans = getAvailablePlans(pricingTags);
 
 <Default />
 
-{isAwsServicePage && availablePlans.length > 0 && (
-  <div class="pricing-badges">
-    {availablePlans.map(plan => (
-      <span class={`pricing-badge pricing-badge-${plan.toLowerCase()}`}>
-        {plan}
-      </span>
-    ))}
-  </div>
-)}
+{
+  isAwsServicePage && availablePlans.length > 0 && (
+    <div class="pricing-badges">
+      {availablePlans.map((plan) => (
+        <span class={`pricing-badge pricing-badge-${plan.toLowerCase()}`}>
+          {plan}
+        </span>
+      ))}
+    </div>
+  )
+}
 
 <PersistenceBadge />
 
@@ -51,29 +54,29 @@ const availablePlans = getAvailablePlans(pricingTags);
   .pricing-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
+    padding: 4px 8px;
+    justify-content: center;
+    border-radius: 2px;
+    font-family: 'AeonikFono';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.2px;
   }
 
   .pricing-badge-free {
-    background-color: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
+    background: #e1e3eb;
+    color: #3a3c47;
   }
 
   .pricing-badge-base {
-    background-color: #dbeafe;
+    background-color: #afbcfa;
     color: #1e40af;
-    border: 1px solid #93c5fd;
   }
 
   .pricing-badge-ultimate {
-    background-color: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fcd34d;
+    background-color: #c8aefd;
+    color: #3b05a7;
   }
-</style> 
+</style>
