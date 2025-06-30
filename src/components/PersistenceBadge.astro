@@ -6,7 +6,7 @@ const isAwsServicePage =
 const persistence = route.entry?.data?.persistence || null;
 
 // Determine persistence status and display text
-const getPersistenceInfo = (persistenceValue) => {
+const getPersistenceInfo = (persistenceValue: string | null | undefined) => {
   if (!persistenceValue) {
     return { status: 'not-supported', text: 'Not Supported' };
   } else if (persistenceValue === 'supported') {
@@ -24,7 +24,7 @@ const persistenceInfo = getPersistenceInfo(persistence);
 {
   isAwsServicePage && (
     <div class="persistence-badges">
-      <span class="badge-label">Persistence:</span>
+      <span class="badge-label">Persistence</span>
       <span
         class={`persistence-badge persistence-badge-${persistenceInfo.status}`}
       >
@@ -36,23 +36,39 @@ const persistenceInfo = getPersistenceInfo(persistence);
 
 <style>
   .persistence-badges {
-    margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
+    padding: 0 0 1rem 1rem;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
 
   .badge-label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #6b7280;
-    margin-right: 0.25rem;
+    color: #707385;
+    font-family: 'AeonikFono';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.2px;
+  }
+
+  .badge-label::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url('/src/assets/images/persistence.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 6px;
+    vertical-align: middle;
   }
 
   .persistence-badge {
-    display: inline-flex;
+    display: block;
     align-items: center;
     padding: 4px 8px;
     border-radius: 2px;

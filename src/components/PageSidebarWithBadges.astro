@@ -1,5 +1,5 @@
 ---
-import Default from '@astrojs/starlight/components/PageTitle.astro';
+import Default from '@astrojs/starlight/components/PageSidebar.astro';
 import PersistenceBadge from './PersistenceBadge.astro';
 
 // Get the current page route
@@ -12,7 +12,7 @@ const pricingTags = tags.filter((tag) =>
   ['Free', 'Base', 'Ultimate'].includes(tag)
 );
 
-const getAvailablePlans = (plans) => {
+const getAvailablePlans = (plans: string[]) => {
   if (plans.includes('Free')) {
     return ['Free', 'Base', 'Ultimate'];
   } else if (plans.includes('Base')) {
@@ -31,11 +31,14 @@ const availablePlans = getAvailablePlans(pricingTags);
 {
   isAwsServicePage && availablePlans.length > 0 && (
     <div class="pricing-badges">
-      {availablePlans.map((plan) => (
-        <span class={`pricing-badge pricing-badge-${plan.toLowerCase()}`}>
-          {plan}
-        </span>
-      ))}
+      <span class="pricing-label">Included in Plans</span>
+      <div class="pricing-badges-row">
+        {availablePlans.map((plan: string) => (
+          <span class={`pricing-badge pricing-badge-${plan.toLowerCase()}`}>
+            {plan}
+          </span>
+        ))}
+      </div>
     </div>
   )
 }
@@ -44,11 +47,40 @@ const availablePlans = getAvailablePlans(pricingTags);
 
 <style>
   .pricing-badges {
-    margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
+    padding: 0 0 1rem 1rem;
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0.5rem;
     flex-wrap: wrap;
+  }
+
+  .pricing-badges-row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .pricing-label::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url('/src/assets/images/pricing.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .pricing-label {
+    color: #707385;
+    font-family: 'AeonikFono';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
   }
 
   .pricing-badge {

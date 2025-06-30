@@ -52,7 +52,7 @@ export default defineConfig({
         baseUrl: 'https://github.com/localstack/localstack-docs/edit/master/',
       },
       components: {
-        PageTitle: './src/components/PageTitleWithBadges.astro',
+        PageSidebar: './src/components/PageSidebarWithBadges.astro',
       },
       expressiveCode: {
         styleOverrides: {
