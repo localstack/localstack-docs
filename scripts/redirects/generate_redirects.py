@@ -10,6 +10,23 @@ from urllib.parse import urlparse
 from pathlib import Path
 
 
+def normalize_destination(destination):
+    """
+    Normalize a destination to handle both relative paths and full URLs.
+    - For full URLs (starting with http/https), return as-is
+    - For relative paths, ensure they start with /
+    """
+    # Check if it's a full URL
+    parsed = urlparse(destination)
+    if parsed.scheme in ('http', 'https'):
+        return destination
+    
+    # It's a relative path - ensure it starts with /
+    if not destination.startswith('/'):
+        destination = '/' + destination
+    return destination
+
+
 def normalize_path(path):
     """Normalize a path to ensure it starts with / and handle trailing slashes."""
     if not path.startswith('/'):
@@ -38,24 +55,24 @@ def generate_redirects_file(config_file, output_file):
                 continue
                 
             old_path = normalize_path(redirect['old_link'])
-            new_path = normalize_path(redirect['new_link'])
+            new_destination = normalize_destination(redirect['new_link'])
             status_code = redirect.get('status_code', 301)
             
-            redirects.append(f"{old_path} {new_path} {status_code}")
+            redirects.append(f"{old_path} {new_destination} {status_code}")
     
     # Process Snowflake redirects  
-    # if 'snowflake' in config:
-    #     for redirect in config['snowflake']:
-    #         # Skip entries that still have the manual review note
-    #         if redirect.get('_note') == "MANUALLY REVIEW AND UPDATE new_link":
-    #             skipped_count += 1
-    #             continue
+    if 'snowflake' in config:
+        for redirect in config['snowflake']:
+            # Skip entries that still have the manual review note
+            if redirect.get('_note') == "MANUALLY REVIEW AND UPDATE new_link":
+                skipped_count += 1
+                continue
                 
-    #         old_path = normalize_path(redirect['old_link'])
-    #         new_path = normalize_path(redirect['new_link'])
-    #         status_code = redirect.get('status_code', 301)
+            old_path = normalize_path(redirect['old_link'])
+            new_destination = normalize_destination(redirect['new_link'])
+            status_code = redirect.get('status_code', 301)
             
-    #         redirects.append(f"{old_path} {new_path} {status_code}")
+            redirects.append(f"{old_path} {new_destination} {status_code}")
     
     # Write to output file
     with open(output_file, 'w') as f:
