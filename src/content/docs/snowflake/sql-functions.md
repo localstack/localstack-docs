@@ -1,8 +1,16 @@
+
 ---
-title: SQL Functions Coverage
-description: Overview of the implemented Snowflake SQL functions in LocalStack
-template: doc
+title: "SQL Functions Coverage"
+linkTitle: "SQL Functions Coverage"
+weight: 1
+description: >
+  Overview of the implemented Snowflake SQL functions in LocalStack
+cascade:
+  type: docs
+hide_readingtime: true
 ---
+
+## Overview
 
 This table provides a list of all Snowflake system-defined SQL functions, scalar or table, emulated by LocalStack.
 The content will be updated as additional query features and functions are implemented.
@@ -677,6 +685,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$GET_TAG_ON_CURRENT_TABLE|❓|
 |SYSTEM$GET_TASK_GRAPH_CONFIG|❓|
 |SYSTEM$GLOBAL_ACCOUNT_SET_PARAMETER|❓|
+|SYSTEM$HOLD_PRIVILEGE_ON_ACCOUNT|❓|
 |SYSTEM$INITIATE_MOVE_ORGANIZATION_ACCOUNT|❓|
 |SYSTEM$INTERNAL_STAGES_PUBLIC_ACCESS_STATUS|❓|
 |SYSTEM$IS_APPLICATION_INSTALLED_FROM_SAME_ACCOUNT|❓|
@@ -826,3 +835,4 @@ The content will be updated as additional query features and functions are imple
 |YEAR* / DAY* / WEEK* / MONTH / QUARTER|❓|
 |ZEROIFNULL|✅|
 |ZIPF|❓|
+

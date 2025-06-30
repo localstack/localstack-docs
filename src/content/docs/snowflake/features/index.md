@@ -1,8 +1,13 @@
+
 ---
 title: "Feature Coverage"
-description: Overview of the implemented Snowflake features in LocalStack
-template: doc
-editUrl: false
+linkTitle: "Feature Coverage"
+weight: 1
+description: >
+  Overview of the implemented Snowflake features in LocalStack
+cascade:
+  type: docs
+hide_readingtime: true
 ---
 
 ## Resource Types and Operations
@@ -10,30 +15,31 @@ editUrl: false
 This page provides a list of Snowflake query features (resource types and operations) that are supported in the LocalStack emulator.
 The content will be updated as additional query features and functions are implemented.
 
+
 ### Applications
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**APPLICATION**|✅|✅|✅|✅|✅|
+|**APPLICATION**|❓|❓|❓|❓|❓|
 
 ### Application Packages
 | |ALTER|CREATE|DROP|SHOW|
 |----|----|----|----|----|
-|**APPLICATION PACKAGE**|✅|✅|✅|✅|
+|**APPLICATION PACKAGE**|❓|❓|❓|❓|
 
 ### Catalog Integration
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**CATALOG INTEGRATION**|❓|✅|❓|✅|✅|
+|**CATALOG INTEGRATION**|❓|❓|❓|❓|❓|
 
 ### Databases
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|USE|
 |----|----|----|----|----|----|----|----|
-|**DATABASE**|✅|✅|✅|✅|✅|❓|✅|
+|**DATABASE**|❓|❓|❓|❓|❓|❓|✅|
 
 ### Dynamic Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|----|
-|**DYNAMIC TABLE**|❓|✅|✅|✅|✅|❓|
+|**DYNAMIC TABLE**|❓|❓|❓|❓|❓|❓|
 
 ### External Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
@@ -43,119 +49,120 @@ The content will be updated as additional query features and functions are imple
 ### External Volumes
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|----|
-|**EXTERNAL VOLUME**|✅|✅|✅|✅|✅|❓|
+|**EXTERNAL VOLUME**|❓|❓|❓|❓|❓|❓|
 
 ### File Formats
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**FILE FORMAT**|✅|✅|✅|✅|✅|
+|**FILE FORMAT**|❓|❓|❓|❓|❓|
 
 ### Functions
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**FUNCTION**|✅|✅|✅|✅|✅|
+|**FUNCTION**|❓|❓|❓|❓|❓|
 
 ### Hybrid Tables
 | |CREATE|SHOW|
 |----|----|----|
-|**HYBRID TABLE**|✅|✅|
+|**HYBRID TABLE**|❓|❓|
 
 ### Iceberg Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|----|
-|**ICEBERG TABLE**|❓|✅|❓|✅|❓|❓|
+|**ICEBERG TABLE**|❓|❓|❓|❓|❓|❓|
 
 ### Indexes
 | |CREATE|DROP|SHOW|
 |----|----|----|----|
-|**INDEX**|✅|✅|✅|
+|**INDEX**|❓|❓|❓|
 
 ### Materialized Views
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|TRUNCATE|
 |----|----|----|----|----|----|----|
-|**MATERIALIZED VIEW**|✅|✅|✅|✅|✅|✅|
+|**MATERIALIZED VIEW**|❓|❓|❓|❓|❓|❓|
 
 ### Pipes
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**PIPE**|✅|✅|✅|✅|✅|
+|**PIPE**|❓|❓|❓|❓|❓|
 
 ### Procedures
 | |ALTER|CALL|CALL WITH|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|----|----|
-|**PROCEDURE**|❓|✅|❓|✅|✅|✅|✅|
+|**PROCEDURE**|❓|❓|❓|❓|❓|❓|❓|
 
 ### Roles
 | |ALTER|CREATE|DROP|GRANT|REVOKE|SHOW|USE|
 |----|----|----|----|----|----|----|----|
-|**ROLE**|❓|✅|✅|❓|❓|✅|✅|
+|**ROLE**|❓|❓|❓|❓|❓|❓|❓|
 
 ### Row Access Policies
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**ROW ACCESS POLICY**|✅|✅|✅|✅|✅|
+|**ROW ACCESS POLICY**|❓|❓|❓|❓|❓|
 
 ### Schemas
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|USE|
 |----|----|----|----|----|----|----|----|
-|**SCHEMA**|✅|✅|✅|✅|✅|❓|✅|
+|**SCHEMA**|❓|❓|❓|❓|❓|❓|✅|
 
 ### Sequences
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**SEQUENCE**|✅|✅|✅|✅|✅|
+|**SEQUENCE**|❓|❓|❓|❓|❓|
 
 ### Shares
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**SHARE**|❓|✅|❓|✅|❓|
+|**SHARE**|❓|❓|❓|❓|❓|
 
 ### Stages
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**STAGE**|✅|✅|✅|✅|✅|
+|**STAGE**|❓|❓|❓|❓|❓|
 
 ### Storage Integrations
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**STORAGE INTEGRATION**|❓|✅|✅|✅|✅|
+|**STORAGE INTEGRATION**|❓|❓|❓|❓|❓|
 
 ### Streams
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**STREAM**|✅|✅|✅|✅|✅|
+|**STREAM**|❓|❓|❓|❓|❓|
 
 ### Streamlits
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**STREAMLIT**|✅|✅|✅|✅|✅|
+|**STREAMLIT**|❓|❓|❓|❓|❓|
 
 ### Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|TRUNCATE|UNDROP|
 |----|----|----|----|----|----|----|----|
-|**TABLE**|✅|✅|✅|✅|✅|❓|❓|
+|**TABLE**|❓|✅|✅|✅|❓|❓|❓|
 
 ### Tags
 | |ALTER|CREATE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|
-|**TAG**|✅|✅|✅|✅|❓|
+|**TAG**|❓|❓|❓|❓|❓|
 
 ### Tasks
 | |ALTER|CREATE|DESCRIBE|DROP|EXECUTE|SHOW|
 |----|----|----|----|----|----|----|
-|**TASK**|✅|✅|✅|✅|✅|✅|
+|**TASK**|❓|❓|❓|❓|❓|❓|
 
 ### Users
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**USER**|✅|✅|❓|✅|✅|
+|**USER**|❓|❓|❓|❓|❓|
 
 ### Views
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**VIEW**|✅|✅|✅|✅|✅|
+|**VIEW**|❓|❓|❓|❓|❓|
 
 ### Warehouses
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|USE|
 |----|----|----|----|----|----|----|
-|**WAREHOUSE**|✅|✅|✅|✅|✅|✅|
+|**WAREHOUSE**|❓|❓|❓|❓|❓|❓|
+

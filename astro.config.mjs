@@ -378,12 +378,45 @@ export default defineConfig({
             },
             {
               label: 'Enterprise',
-              autogenerate: { directory: '/aws/enterprise' },
               collapsed: true,
+              items: [
+                {
+                  label: 'Overview',
+                  slug: 'aws/enterprise',
+                },
+                {
+                  label: 'Single Sign-On',
+                  autogenerate: { directory: '/aws/enterprise/sso' },
+                },
+                {
+                  label: 'Kubernetes Operator',
+                  slug: 'aws/enterprise/k8s-operator',
+                },
+                {
+                  label: 'Kubernetes Executor',
+                  slug: 'aws/enterprise/kubernetes-executor',
+                },
+                {
+                  label: 'Enterprise Image',
+                  slug: 'aws/enterprise/enterprise-image',
+                },
+                {
+                  label: 'Enterprise Support',
+                  slug: 'aws/enterprise/enterprise-support',
+                },
+              ],
             },
             {
               label: 'Tutorials',
               slug: 'aws/tutorials',
+            },
+            {
+              label: 'Changelog',
+              slug: 'aws/changelog',
+            },
+            {
+              label: 'Licensing & Tiers',
+              slug: 'aws/licensing',
             },
           ],
         },
