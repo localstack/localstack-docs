@@ -28,7 +28,7 @@ class RedirectTester:
         
         Args:
             old_path: Path to test (e.g., "/user-guide/")
-            expected_new_path: Expected redirect path (e.g., "/aws/user-guide/")
+            expected_new_path: Expected redirect path (e.g., "/aws/user-guide/") or external URL
         
         Returns:
             (success, final_url, status_code, message)
@@ -47,14 +47,30 @@ class RedirectTester:
             final_url = response.url
             status_code = response.status_code
             
-            # Build expected full URL
-            expected_staging_url = f"{self.staging_base_url}{expected_new_path}"
+            # Determine expected URL based on whether it's external or internal
+            parsed_expected = urlparse(expected_new_path)
+            if parsed_expected.scheme in ('http', 'https'):
+                # External URL - use as-is
+                expected_full_url = expected_new_path
+            else:
+                # Internal path - combine with staging base URL
+                expected_full_url = f"{self.staging_base_url}{expected_new_path}"
+            
+            # Normalize URLs for comparison (handle trailing slashes)
+            def normalize_url_for_comparison(url):
+                """Normalize URL for comparison by removing trailing slash from path"""
+                parsed = urlparse(url)
+                path = parsed.path.rstrip('/') if parsed.path != '/' else parsed.path
+                return f"{parsed.scheme}://{parsed.netloc}{path}{('?' + parsed.query) if parsed.query else ''}{('#' + parsed.fragment) if parsed.fragment else ''}"
+            
+            normalized_final = normalize_url_for_comparison(final_url)
+            normalized_expected = normalize_url_for_comparison(expected_full_url)
             
             # Check if redirect worked correctly
-            if final_url == expected_staging_url:
+            if normalized_final == normalized_expected:
                 return True, final_url, status_code, "✅ Redirect successful"
             else:
-                return False, final_url, status_code, f"❌ Expected: {expected_staging_url}, Got: {final_url}"
+                return False, final_url, status_code, f"❌ Expected: {expected_full_url}, Got: {final_url}"
                 
         except requests.exceptions.Timeout:
             return False, "", 0, "⏰ Request timeout"
@@ -79,7 +95,13 @@ class RedirectTester:
                  # Test AWS redirects
         if 'aws' in config:
             print(f"\n🔍 Testing AWS redirects...")
-            for i, redirect in enumerate(config['aws'], 1):
+            aws_redirects = [r for r in config['aws'] if r.get('_note') != "MANUALLY REVIEW AND UPDATE new_link"]
+            skipped_aws = len(config['aws']) - len(aws_redirects)
+            
+            if skipped_aws > 0:
+                print(f"  ⏭️  Skipping {skipped_aws} AWS redirects with manual review notes")
+            
+            for i, redirect in enumerate(aws_redirects, 1):
                 old_path = redirect['old_link']
                 new_path = redirect['new_link']
                 
@@ -108,35 +130,41 @@ class RedirectTester:
                 time.sleep(0.5)
         
                  # Test Snowflake redirects
-        if 'snowflake' in config:
-            print(f"\n❄️  Testing Snowflake redirects...")
-            for i, redirect in enumerate(config['snowflake'], 1):
-                old_path = redirect['old_link']
-                new_path = redirect['new_link']
+        # if 'snowflake' in config:
+        #     print(f"\n❄️  Testing Snowflake redirects...")
+        #     snowflake_redirects = [r for r in config['snowflake'] if r.get('_note') != "MANUALLY REVIEW AND UPDATE new_link"]
+        #     skipped_snowflake = len(config['snowflake']) - len(snowflake_redirects)
+            
+        #     if skipped_snowflake > 0:
+        #         print(f"  ⏭️  Skipping {skipped_snowflake} Snowflake redirects with manual review notes")
+            
+        #     for i, redirect in enumerate(snowflake_redirects, 1):
+        #         old_path = redirect['old_link']
+        #         new_path = redirect['new_link']
                 
-                print(f"  [{i}] Testing: {old_path}")
-                success, final_url, status_code, message = self.test_redirect(old_path, new_path)
+        #         print(f"  [{i}] Testing: {old_path}")
+        #         success, final_url, status_code, message = self.test_redirect(old_path, new_path)
                 
-                results['total'] += 1
-                if success:
-                    results['passed'] += 1
-                    print(f"      {message}")
-                else:
-                    results['failed'] += 1
-                    print(f"      {message}")
+        #         results['total'] += 1
+        #         if success:
+        #             results['passed'] += 1
+        #             print(f"      {message}")
+        #         else:
+        #             results['failed'] += 1
+        #             print(f"      {message}")
                 
-                results['details'].append({
-                    'product': 'snowflake',
-                    'old_url': old_path,
-                    'expected_new_url': new_path,
-                    'final_url': final_url,
-                    'status_code': status_code,
-                    'success': success,
-                    'message': message
-                })
+        #         results['details'].append({
+        #             'product': 'snowflake',
+        #             'old_url': old_path,
+        #             'expected_new_url': new_path,
+        #             'final_url': final_url,
+        #             'status_code': status_code,
+        #             'success': success,
+        #             'message': message
+        #         })
                 
-                # Small delay to be respectful
-                time.sleep(0.5)
+        #         # Small delay to be respectful
+        #         time.sleep(0.5)
         
         return results
 

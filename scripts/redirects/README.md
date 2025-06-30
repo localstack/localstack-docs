@@ -101,7 +101,7 @@ Test your redirects against the staging environment:
 ```bash
 python test_redirects.py \
   --config redirects_config.json \
-  --staging-url "https://a5c92421.localstack-docs.pages.dev" \
+  --staging-url "https://redirects.localstack-docs.pages.dev" \
   --report redirect_test_report.md
 ```
 
