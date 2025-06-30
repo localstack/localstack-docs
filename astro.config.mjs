@@ -54,6 +54,13 @@ export default defineConfig({
       components: {
         PageTitle: './src/components/PageTitleWithBadges.astro',
       },
+      expressiveCode: {
+        styleOverrides: {
+          codeFontFamily: 'AeonikFono, ui-monospace',
+          borderRadius: '0.5rem',
+          codeBackground: '#E1E3EB',
+        },
+      },
       head: [
         {
           tag: 'link',
