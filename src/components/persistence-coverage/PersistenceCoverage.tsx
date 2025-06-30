@@ -112,10 +112,26 @@ export default function PersistenceCoverage() {
             table.getColumn('full_name')?.setFilterValue(e.target.value)
           }
           className="border rounded px-2 py-1 w-full max-w-xs"
+          style={{
+            color: '#707385',
+            fontFamily: 'AeonikFono',
+            fontSize: '14px',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            lineHeight: '24px',
+            letterSpacing: '-0.2px',
+          }}
         />
       </div>
-      <div className="rounded-md border w-full">
-        <Table className="w-full table-fixed">
+      <div className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden">
+        <Table 
+          className="w-full" 
+          style={{
+            borderCollapse: 'collapse',
+            tableLayout: 'fixed',
+            width: '100%',
+          }}
+        >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -124,6 +140,37 @@ export default function PersistenceCoverage() {
                   const meta = header.column.columnDef.meta as
                     | { className?: string }
                     | undefined;
+                  
+                  const getColumnWidth = (columnId: string) => {
+                    switch (columnId) {
+                      case 'full_name':
+                        return '40%';
+                      case 'support':
+                        return '15%';
+                      case 'test_suite':
+                        return '20%';
+                      case 'limitations':
+                        return '25%';
+                      default:
+                        return 'auto';
+                    }
+                  };
+                  
+                  const getMinWidth = (columnId: string) => {
+                    switch (columnId) {
+                      case 'full_name':
+                        return '200px';
+                      case 'support':
+                        return '80px';
+                      case 'test_suite':
+                        return '80px';
+                      case 'limitations':
+                        return '450px';
+                      default:
+                        return '50px';
+                    }
+                  };
+                  
                   return (
                     <TableHead
                       key={header.id}
@@ -132,14 +179,21 @@ export default function PersistenceCoverage() {
                           ? header.column.getToggleSortingHandler()
                           : undefined
                       }
-                      className={
-                        (meta?.className || '') +
-                        (canSort ? ' cursor-pointer select-none' : '')
-                      }
+                      className={canSort ? 'cursor-pointer select-none' : ''}
                       style={{
-                        width: meta?.className?.includes('w-[')
-                          ? meta.className.match(/w-\[(\d+)%\]/)?.[1] + '%'
-                          : 'auto',
+                        width: getColumnWidth(header.id),
+                        minWidth: getMinWidth(header.id),
+                        textAlign: header.id === 'full_name' ? 'left' : 'center',
+                        border: '1px solid #999CAD',
+                        background: '#AFB2C2',
+                        color: '#101114',
+                        fontFamily: 'AeonikFono',
+                        fontSize: '14px',
+                        fontStyle: 'normal',
+                        fontWeight: '500',
+                        lineHeight: '16px',
+                        letterSpacing: '-0.15px',
+                        padding: '12px 8px',
                       }}
                     >
                       {flexRender(
@@ -161,27 +215,71 @@ export default function PersistenceCoverage() {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody style={{
+            color: '#212229',
+            fontFamily: 'AeonikFono',
+            fontSize: '14px',
+            fontStyle: 'normal',
+            fontWeight: '400',
+            lineHeight: '16px',
+            letterSpacing: '-0.15px',
+          }}>
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
                   const meta = cell.column.columnDef.meta as
                     | { className?: string }
                     | undefined;
+                  
+                  const getColumnWidth = (columnId: string) => {
+                    switch (columnId) {
+                      case 'full_name':
+                        return '40%';
+                      case 'support':
+                        return '15%';
+                      case 'test_suite':
+                        return '20%';
+                      case 'limitations':
+                        return '25%';
+                      default:
+                        return 'auto';
+                    }
+                  };
+                  
+                  const getMinWidth = (columnId: string) => {
+                    switch (columnId) {
+                      case 'full_name':
+                        return '200px';
+                      case 'support':
+                        return '80px';
+                      case 'test_suite':
+                        return '120px';
+                      case 'limitations':
+                        return '150px';
+                      default:
+                        return '50px';
+                    }
+                  };
+                  
                   return (
                     <TableCell
                       key={cell.id}
                       className={meta?.className || undefined}
                       style={{
-                        width: meta?.className?.includes('w-[')
-                          ? meta.className.match(/w-\[(\d+)%\]/)?.[1] + '%'
-                          : 'auto',
+                        width: getColumnWidth(cell.column.id),
+                        minWidth: getMinWidth(cell.column.id),
+                        textAlign: cell.column.id === 'full_name' ? 'left' : 'center',
+                        border: '1px solid #999CAD',
+                        padding: '12px 8px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: cell.column.id === 'limitations' ? 'normal' : 'nowrap',
                       }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
-                      )}
+                      ) || '\u00A0'}
                     </TableCell>
                   );
                 })}
@@ -193,6 +291,15 @@ export default function PersistenceCoverage() {
       <div className="flex items-center justify-between mt-4">
         <button
           className="px-3 py-1 border rounded disabled:opacity-50"
+          style={{
+            color: '#707385',
+            fontFamily: 'AeonikFono',
+            fontSize: '14px',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            lineHeight: '24px',
+            letterSpacing: '-0.2px',
+          }}
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -204,6 +311,15 @@ export default function PersistenceCoverage() {
         </span>
         <button
           className="px-3 py-1 border rounded disabled:opacity-50"
+          style={{
+            color: '#707385',
+            fontFamily: 'AeonikFono',
+            fontSize: '14px',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            lineHeight: '24px',
+            letterSpacing: '-0.2px',
+          }}
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >

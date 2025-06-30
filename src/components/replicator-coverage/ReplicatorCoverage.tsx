@@ -117,8 +117,15 @@ export default function ReplicatorCoverage() {
   return (
     <div className="w-full">
       <style>{resizerStyle}</style>
-      <div className="rounded-md border overflow-x-auto">
-        <Table className="table-fixed w-full">
+      <div className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden">
+        <Table 
+          className="w-full" 
+          style={{
+            borderCollapse: 'collapse',
+            tableLayout: 'fixed',
+            width: '100%',
+          }}
+        >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -126,11 +133,43 @@ export default function ReplicatorCoverage() {
                   const meta = header.column.columnDef.meta as
                     | { className?: string }
                     | undefined;
+                  
+                  const getColumnWidth = (columnId: string) => {
+                    switch (columnId) {
+                      case 'resource_type':
+                        return '20%';
+                      case 'service':
+                        return '15%';
+                      case 'identifier':
+                        return '20%';
+                      case 'policy_statements':
+                        return '35%';
+                      case 'arn_support':
+                        return '10%';
+                      default:
+                        return 'auto';
+                    }
+                  };
+                  
                   return (
                     <TableHead
                       key={header.id}
                       className={meta?.className || ''}
-                      style={{ width: header.getSize() }}
+                      style={{ 
+                        width: getColumnWidth(header.id),
+                        position: 'relative',
+                        textAlign: 'center',
+                        border: '1px solid #999CAD',
+                        background: '#AFB2C2',
+                        color: '#101114',
+                        fontFamily: 'AeonikFono',
+                        fontSize: '14px',
+                        fontStyle: 'normal',
+                        fontWeight: '500',
+                        lineHeight: '16px',
+                        letterSpacing: '-0.15px',
+                        padding: '12px 8px',
+                      }}
                     >
                       {flexRender(
                         header.column.columnDef.header,
@@ -151,18 +190,52 @@ export default function ReplicatorCoverage() {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody style={{
+            color: '#212229',
+            fontFamily: 'AeonikFono',
+            fontSize: '14px',
+            fontStyle: 'normal',
+            fontWeight: '400',
+            lineHeight: '16px',
+            letterSpacing: '-0.15px',
+          }}>
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
                   const meta = cell.column.columnDef.meta as
                     | { className?: string }
                     | undefined;
+                  
+                  const getColumnWidth = (columnId: string) => {
+                    switch (columnId) {
+                      case 'resource_type':
+                        return '20%';
+                      case 'service':
+                        return '15%';
+                      case 'identifier':
+                        return '20%';
+                      case 'policy_statements':
+                        return '35%';
+                      case 'arn_support':
+                        return '10%';
+                      default:
+                        return 'auto';
+                    }
+                  };
+                  
                   return (
                     <TableCell
                       key={cell.id}
                       className={meta?.className || undefined}
-                      style={{ width: cell.column.getSize() }}
+                      style={{ 
+                        width: getColumnWidth(cell.column.id),
+                        textAlign: 'center',
+                        border: '1px solid #999CAD',
+                        padding: '12px 8px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: cell.column.id === 'policy_statements' ? 'normal' : 'nowrap',
+                      }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
