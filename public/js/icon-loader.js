@@ -16,6 +16,7 @@
     Tutorials: 'book-icon',
     Changelog: 'change-icon',
     'SQL Functions': 'sql-icon',
+    'Licensing & Tiers': 'pricing-icon',
   };
 
   // Function to add classes to navigation elements based on text content
