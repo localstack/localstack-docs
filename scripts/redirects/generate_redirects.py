@@ -61,18 +61,18 @@ def generate_redirects_file(config_file, output_file):
             redirects.append(f"{old_path} {new_destination} {status_code}")
     
     # Process Snowflake redirects  
-    if 'snowflake' in config:
-        for redirect in config['snowflake']:
-            # Skip entries that still have the manual review note
-            if redirect.get('_note') == "MANUALLY REVIEW AND UPDATE new_link":
-                skipped_count += 1
-                continue
+    # if 'snowflake' in config:
+    #     for redirect in config['snowflake']:
+    #         # Skip entries that still have the manual review note
+    #         if redirect.get('_note') == "MANUALLY REVIEW AND UPDATE new_link":
+    #             skipped_count += 1
+    #             continue
                 
-            old_path = normalize_path(redirect['old_link'])
-            new_destination = normalize_destination(redirect['new_link'])
-            status_code = redirect.get('status_code', 301)
+    #         old_path = normalize_path(redirect['old_link'])
+    #         new_destination = normalize_destination(redirect['new_link'])
+    #         status_code = redirect.get('status_code', 301)
             
-            redirects.append(f"{old_path} {new_destination} {status_code}")
+    #         redirects.append(f"{old_path} {new_destination} {status_code}")
     
     # Write to output file
     with open(output_file, 'w') as f:
