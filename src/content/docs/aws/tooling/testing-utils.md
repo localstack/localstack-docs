@@ -2,7 +2,7 @@
 title: Testing Utils
 description: Tools to simplify application testing on LocalStack.
 template: doc
-
+tags: ["Free"]
 nav: 
 ---
 

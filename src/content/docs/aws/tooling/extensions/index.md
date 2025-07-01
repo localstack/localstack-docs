@@ -4,6 +4,7 @@ description: Use LocalStack Extensions to customize and extend your local develo
 template: doc
 sidebar:
     order: 1
+tags: ["Base"]
 ---
 
 

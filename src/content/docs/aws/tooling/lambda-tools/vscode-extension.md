@@ -4,6 +4,7 @@ description: Deploy and invoke Lambda functions in LocalStack directly from VSCo
 template: doc
 sidebar:
     order: 4
+tags: ["Free"]
 ---
 
 ## Introduction 

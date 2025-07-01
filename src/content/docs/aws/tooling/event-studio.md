@@ -2,6 +2,7 @@
 title: Event Studio
 description: Event Studio allows you to record, trace, debug and replay any events exchanged between AWS services.
 template: doc
+tags: ["Base"]
 ---
 
 ## Introduction

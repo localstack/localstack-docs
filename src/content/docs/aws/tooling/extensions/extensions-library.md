@@ -4,6 +4,7 @@ description: Extend LocalStack by adding new services and features as extensions
 template: doc
 sidebar:
     order: 5
+tags: ["Base"]
 ---
 
 ## Introduction
