@@ -37,7 +37,12 @@ const ApplicationCard: React.FC<{
   deployments: Record<string, string>;
 }> = ({ app, services, platforms, deployments }) => {
   return (
-    <div className="app-card">
+    <a 
+      href={app.url} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="app-card"
+    >
       <div className="card-image">
         <img src={app.teaser} alt={app.title} loading="lazy" />
         <div className="card-badges">
@@ -65,17 +70,12 @@ const ApplicationCard: React.FC<{
             )}
           </div>
           
-          <a 
-            href={app.url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="card-link"
-          >
+          <span className="card-link">
             View Project →
-          </a>
+          </span>
         </div>
       </div>
-    </div>
+    </a>
   );
 };
 
@@ -335,6 +335,9 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           display: flex;
           flex-direction: column;
           height: 100%;
+          text-decoration: none;
+          color: inherit;
+          cursor: pointer;
         }
 
         .app-card:hover {
@@ -457,7 +460,6 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           align-items: center;
           gap: 0.5rem;
           color: var(--sl-color-white);
-          text-decoration: none;
           font-weight: 500;
           font-size: 0.875rem;
           padding: 0.5rem 0.75rem;
@@ -466,7 +468,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           white-space: nowrap;
         }
 
-        .card-link:hover {
+        .app-card:hover .card-link {
           color: var(--sl-color-accent);
         }
 
