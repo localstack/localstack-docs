@@ -7,10 +7,15 @@ const isSnowflakePage = route.id.startsWith('snowflake/');
 const tags = route.entry?.data?.tags || [];
 
 const pricingTags = tags.filter(tag => 
-  ['Free', 'Base', 'Ultimate'].includes(tag)
+  ['Free', 'Base', 'Ultimate', 'Enterprise'].includes(tag)
 );
 
 const getAvailablePlans = (plans, isSnowflake) => {
+  // Enterprise takes precedence over all other plans
+  if (plans.includes('Enterprise')) {
+    return ['Enterprise'];
+  }
+  
   // Snowflake only has Base plan
   if (isSnowflake) {
     return plans.length > 0 ? ['Base'] : [];
@@ -78,5 +83,11 @@ const availablePlans = getAvailablePlans(pricingTags, isSnowflakePage);
     background-color: #fef3c7;
     color: #92400e;
     border: 1px solid #fcd34d;
+  }
+
+  .pricing-badge-enterprise {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+    border: 1px solid #c4b5fd;
   }
 </style> 
