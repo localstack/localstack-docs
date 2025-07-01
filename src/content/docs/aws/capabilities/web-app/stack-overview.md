@@ -4,6 +4,7 @@ description: Stack Overview reflects the current state of your LocalStack enviro
 template: doc
 sidebar:
     order: 8
+tags: ["Base"]
 ---
 
 ## Introduction

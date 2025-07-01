@@ -4,6 +4,7 @@ description: The Resource Browser allows you to view and manage your local AWS r
 template: doc
 sidebar:
     order: 5
+tags: ["Free"]
 ---
 
 ## Introduction

@@ -4,6 +4,7 @@ description: A Workspace is the base organizational unit in the LocalStack Web A
 template: doc
 sidebar:
     order: 3
+tags: ["Base"]
 ---
 
 ## Introduction

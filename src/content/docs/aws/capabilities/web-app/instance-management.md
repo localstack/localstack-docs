@@ -4,6 +4,7 @@ description: Instance Management allows you to view and manage your LocalStack i
 template: doc
 sidebar:
     order: 6
+tags: ["Free"]
 ---
 
 ## Introduction

@@ -2,6 +2,7 @@
 title: Launchpad
 description: Get started with Cloud Pods Launchpad to share and inject Cloud Pods into your LocalStack instance via a URL.
 template: doc
+tags: ["Ultimate"]
 sidebar:
     order: 5
 ---

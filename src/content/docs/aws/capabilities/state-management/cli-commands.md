@@ -2,6 +2,7 @@
 title: CLI commands
 description: Reference guide for LocalStack Cloud Pods CLI commands and how to get started on using them.
 template: doc
+tags: ["Ultimate"]
 sidebar:
     order: 6
 ---
