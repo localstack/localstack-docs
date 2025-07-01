@@ -390,6 +390,7 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           align-items: center;
           justify-content: center;
           transition: all 0.2s ease;
+          margin-top: 0;
         }
 
         .service-icon:hover {
