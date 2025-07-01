@@ -4,6 +4,7 @@ description: Custom K8s operator that offers LocalStack emulator as a native res
 template: doc
 sidebar:
     order: 5
+tags: ["Enterprise"]
 ---
 
 ## Introduction

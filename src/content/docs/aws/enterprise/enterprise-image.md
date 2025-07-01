@@ -4,6 +4,7 @@ description: Custom LocalStack Enterprise image for offline or air-gapped enviro
 template: doc
 sidebar:
     order: 2
+tags: ["Enterprise"]
 ---
 
 ## Introduction

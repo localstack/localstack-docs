@@ -4,6 +4,7 @@ description: Configuring Kubernetes Executor for compute services in LocalStack 
 template: doc
 sidebar:
     order: 4
+tags: ["Enterprise"]
 ---
 
 ## Introduction
