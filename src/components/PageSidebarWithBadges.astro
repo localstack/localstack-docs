@@ -4,15 +4,23 @@ import PersistenceBadge from './PersistenceBadge.astro';
 
 // Get the current page route
 const route = Astro.locals.starlightRoute;
-const isAwsServicePage =
-  route.id.startsWith('aws/services/') && !route.id.includes('/index');
+const isSnowflakePage = route.id.startsWith('snowflake/');
 const tags = route.entry?.data?.tags || [];
 
 const pricingTags = tags.filter((tag) =>
-  ['Free', 'Base', 'Ultimate'].includes(tag)
+  ['Free', 'Base', 'Ultimate', 'Enterprise'].includes(tag)
 );
 
-const getAvailablePlans = (plans: string[]) => {
+const getAvailablePlans = (plans: string[], isSnowflake: boolean) => {
+  // Enterprise takes precedence over all other plans
+  if (plans.includes('Enterprise')) {
+    return ['Enterprise'];
+  }
+  // Snowflake only has Base plan
+  if (isSnowflake) {
+    return plans.length > 0 ? ['Base'] : [];
+  }
+  // AWS has Free, Base, Ultimate
   if (plans.includes('Free')) {
     return ['Free', 'Base', 'Ultimate'];
   } else if (plans.includes('Base')) {
@@ -23,13 +31,13 @@ const getAvailablePlans = (plans: string[]) => {
   return plans;
 };
 
-const availablePlans = getAvailablePlans(pricingTags);
+const availablePlans = getAvailablePlans(pricingTags, isSnowflakePage);
 ---
 
 <Default />
 
 {
-  isAwsServicePage && availablePlans.length > 0 && (
+  availablePlans.length > 0 && (
     <div class="pricing-badges">
       <span class="pricing-label">Included in Plans</span>
       <div class="pricing-badges-row">
@@ -109,6 +117,11 @@ const availablePlans = getAvailablePlans(pricingTags);
 
   .pricing-badge-ultimate {
     background-color: #c8aefd;
+    color: #3b05a7;
+  }
+
+  .pricing-badge-enterprise {
+    background: linear-gradient(103deg, #c8aefd 13.4%, #afbcfa 86.6%);
     color: #3b05a7;
   }
 </style>
