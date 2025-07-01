@@ -4,6 +4,7 @@ description: Create an Application Preview to deploy your application changes in
 template: doc
 sidebar:
     order: 3
+tags: ["Base"]
 ---
 
 ## Introduction

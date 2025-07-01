@@ -4,6 +4,7 @@ description: Use Fault Injection Service to simulate faults in your infrastructu
 template: doc
 sidebar:
     order: 2
+tags: ["Ultimate"]
 ---
 
 The [Fault Injection Service (FIS)](https://aws.amazon.com/fis/) is a fully managed service by AWS designed to help you improve the resilience of your applications by simulating real-world outages and operational issues.
