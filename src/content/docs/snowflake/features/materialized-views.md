@@ -1,6 +1,7 @@
 ---
 title: "Materialized Views"
 description: Get started with Materialized Views in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

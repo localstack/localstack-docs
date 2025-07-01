@@ -1,6 +1,7 @@
 ---
 title: User Interface
 description: Get started with LocalStack for Snowflake Web User Interface
+tags: ["Base"]
 ---
 
 ## Introduction

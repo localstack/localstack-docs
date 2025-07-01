@@ -1,6 +1,7 @@
 ---
 title: "Native Apps"
 description: Get started with Native Apps in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

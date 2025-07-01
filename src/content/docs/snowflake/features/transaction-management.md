@@ -1,6 +1,7 @@
 ---
 title: "Transaction Management"
 description: Get started with Transaction Management in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

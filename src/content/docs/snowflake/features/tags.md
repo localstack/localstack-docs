@@ -1,6 +1,7 @@
 ---
 title: Tags
 description: Get started with Tags in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

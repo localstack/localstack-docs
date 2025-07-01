@@ -1,6 +1,7 @@
 ---
 title: "Row Access Policies"
 description: Get started with Row Access Policies in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

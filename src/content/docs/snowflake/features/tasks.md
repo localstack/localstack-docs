@@ -1,6 +1,7 @@
 ---
 title: Tasks
 description: Get started with Tasks in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

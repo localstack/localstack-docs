@@ -1,6 +1,7 @@
 ---
 title: Clones
 description: Get started with Clones in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

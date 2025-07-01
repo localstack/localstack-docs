@@ -1,6 +1,7 @@
 ---
 title: Storage Integrations
 description: Get started with Storage Integrations in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

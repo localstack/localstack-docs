@@ -1,6 +1,7 @@
 ---
 title: Streams
 description: Get started with Streams in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction
