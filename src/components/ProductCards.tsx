@@ -35,6 +35,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         flexDirection: 'column',
         alignItems: 'stretch',
         minWidth: 0,
+        height: '100%',
+        marginTop: '0',
       }}
     >
       <h3
@@ -146,7 +148,7 @@ export function ProductCards() {
         gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
         gap: '2rem',
         marginBottom: '3rem',
-        alignItems: 'stretch',
+        alignItems: 'start',
       }}
     >
       {cards.map((card, idx) => (

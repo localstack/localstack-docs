@@ -186,7 +186,7 @@ export default function PersistenceCoverage() {
                         textAlign: header.id === 'full_name' ? 'left' : 'center',
                         border: '1px solid #999CAD',
                         background: '#AFB2C2',
-                        color: '#101114',
+                        color: 'var(--sl-color-gray-1)',
                         fontFamily: 'AeonikFono',
                         fontSize: '14px',
                         fontStyle: 'normal',
@@ -216,13 +216,13 @@ export default function PersistenceCoverage() {
             ))}
           </TableHeader>
           <TableBody style={{
-            color: '#212229',
             fontFamily: 'AeonikFono',
             fontSize: '14px',
             fontStyle: 'normal',
             fontWeight: '400',
             lineHeight: '16px',
             letterSpacing: '-0.15px',
+            color: 'var(--sl-color-gray-1)',
           }}>
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
