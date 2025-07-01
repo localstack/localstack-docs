@@ -332,6 +332,9 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           overflow: hidden;
           transition: transform 0.2s ease, box-shadow 0.2s ease;
           margin-top: 0;
+          display: flex;
+          flex-direction: column;
+          height: 100%;
         }
 
         .app-card:hover {
@@ -383,6 +386,9 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         .card-content {
           padding: 1.25rem;
+          display: flex;
+          flex-direction: column;
+          flex: 1;
         }
 
         .card-title {
@@ -405,6 +411,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           justify-content: space-between;
           align-items: center;
           gap: 1rem;
+          margin-top: auto;
         }
 
         .service-icons {
@@ -449,7 +456,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          color: white;
+          color: var(--sl-color-white);
           text-decoration: none;
           font-weight: 500;
           font-size: 0.875rem;
