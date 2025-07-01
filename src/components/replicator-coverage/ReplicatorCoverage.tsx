@@ -161,7 +161,7 @@ export default function ReplicatorCoverage() {
                         textAlign: 'center',
                         border: '1px solid #999CAD',
                         background: '#AFB2C2',
-                        color: '#101114',
+                        color: 'var(--sl-color-gray-1)',
                         fontFamily: 'AeonikFono',
                         fontSize: '14px',
                         fontStyle: 'normal',
@@ -191,7 +191,7 @@ export default function ReplicatorCoverage() {
             ))}
           </TableHeader>
           <TableBody style={{
-            color: '#212229',
+            color: 'var(--sl-color-gray-1)',
             fontFamily: 'AeonikFono',
             fontSize: '14px',
             fontStyle: 'normal',
