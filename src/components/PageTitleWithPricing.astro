@@ -3,14 +3,20 @@ import Default from '@astrojs/starlight/components/PageTitle.astro';
 
 // Get the current page route
 const route = Astro.locals.starlightRoute;
-const isAwsServicePage = route.id.startsWith('aws/services/') && !route.id.includes('/index');
+const isSnowflakePage = route.id.startsWith('snowflake/');
 const tags = route.entry?.data?.tags || [];
 
 const pricingTags = tags.filter(tag => 
   ['Free', 'Base', 'Ultimate'].includes(tag)
 );
 
-const getAvailablePlans = (plans) => {
+const getAvailablePlans = (plans, isSnowflake) => {
+  // Snowflake only has Base plan
+  if (isSnowflake) {
+    return plans.length > 0 ? ['Base'] : [];
+  }
+  
+  // AWS has Free, Base, Ultimate
   if (plans.includes('Free')) {
     return ['Free', 'Base', 'Ultimate'];
   } else if (plans.includes('Base')) {
@@ -21,12 +27,12 @@ const getAvailablePlans = (plans) => {
   return plans;
 };
 
-const availablePlans = getAvailablePlans(pricingTags);
+const availablePlans = getAvailablePlans(pricingTags, isSnowflakePage);
 ---
 
 <Default />
 
-{isAwsServicePage && availablePlans.length > 0 && (
+{availablePlans.length > 0 && (
   <div class="pricing-badges">
     {availablePlans.map(plan => (
       <span class={`pricing-badge pricing-badge-${plan.toLowerCase()}`}>

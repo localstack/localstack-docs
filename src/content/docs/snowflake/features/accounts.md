@@ -1,6 +1,7 @@
 ---
 title: Accounts
 description: Get started with Accounts in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction
