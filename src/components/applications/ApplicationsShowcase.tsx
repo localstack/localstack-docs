@@ -197,15 +197,23 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         /* Top Bar */
         .top-bar {
-          display: flex;
-          gap: 1rem;
-          align-items: center;
           margin-bottom: 1.5rem;
           padding: 1rem;
           background: var(--sl-color-bg-sidebar);
           border: 1px solid var(--sl-color-gray-6);
           border-radius: 0.5rem;
+        }
+
+        .top-bar-row {
+          display: flex;
+          gap: 1rem;
+          align-items: flex-start;
           flex-wrap: wrap;
+          margin-bottom: 1rem;
+        }
+
+        .top-bar-row:last-child {
+          margin-bottom: 0;
         }
 
         .search-container {
@@ -222,6 +230,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           background: var(--sl-color-bg);
           color: var(--sl-color-white);
           font-size: 0.875rem;
+          margin-top: 0;
         }
 
         .search-input:focus {
@@ -258,6 +267,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           color: var(--sl-color-white);
           font-size: 0.875rem;
           min-width: 140px;
+          margin-top: 0;
         }
 
         .filter-select:focus {
@@ -273,6 +283,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           color: var(--sl-color-white);
           cursor: pointer;
           white-space: nowrap;
+          margin-top: 0.375rem;
         }
 
         .sort-select {
@@ -488,7 +499,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
             padding: 0 0.75rem;
           }
 
-          .top-bar {
+          .top-bar-row {
             flex-direction: column;
             align-items: stretch;
           }
@@ -521,96 +532,100 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
       
       <div className="applications-showcase">
         <div className="top-bar">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search applications..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="search-clear">
-                ×
+          <div className="top-bar-row">
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Search applications..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+              {searchTerm && (
+                <button onClick={() => setSearchTerm('')} className="search-clear">
+                  ×
+                </button>
+              )}
+            </div>
+            
+            <select 
+              value={filters.services[0] || ''} 
+              onChange={(e) => e.target.value ? toggleFilter('services', e.target.value) : null}
+              className="filter-select"
+            >
+              <option value="">Services</option>
+              {uniqueServices.map((service) => (
+                <option key={service} value={service}>
+                  {services[service] || service}
+                </option>
+              ))}
+            </select>
+
+            <select 
+              value={filters.platforms[0] || ''} 
+              onChange={(e) => e.target.value ? toggleFilter('platforms', e.target.value) : null}
+              className="filter-select"
+            >
+              <option value="">Languages</option>
+              {uniquePlatforms.map((platform) => (
+                <option key={platform} value={platform}>
+                  {platforms[platform] || platform}
+                </option>
+              ))}
+            </select>
+
+            <select 
+              value={filters.deployments[0] || ''} 
+              onChange={(e) => e.target.value ? toggleFilter('deployments', e.target.value) : null}
+              className="filter-select"
+            >
+              <option value="">Deployment</option>
+              {uniqueDeployments.map((deployment) => (
+                <option key={deployment} value={deployment}>
+                  {deployments[deployment] || deployment}
+                </option>
+              ))}
+            </select>
+
+            <select 
+              value={filters.complexities[0] || ''} 
+              onChange={(e) => e.target.value ? toggleFilter('complexities', e.target.value) : null}
+              className="filter-select"
+            >
+              <option value="">Complexity</option>
+              {uniqueComplexities.map((complexity) => (
+                <option key={complexity} value={complexity}>
+                  {complexities.data[complexity] || complexity}
+                </option>
+              ))}
+            </select>
+
+            <label className="pro-toggle">
+              <input
+                type="checkbox"
+                checked={filters.showProOnly}
+                onChange={(e) => setFilters(prev => ({ ...prev, showProOnly: e.target.checked }))}
+              />
+              Pro Only
+            </label>
+
+            {hasActiveFilters && (
+              <button onClick={clearAllFilters} className="clear-filters">
+                Clear
               </button>
             )}
           </div>
-          
-          <select 
-            value={filters.services[0] || ''} 
-            onChange={(e) => e.target.value ? toggleFilter('services', e.target.value) : null}
-            className="filter-select"
-          >
-            <option value="">Services</option>
-            {uniqueServices.map((service) => (
-              <option key={service} value={service}>
-                {services[service] || service}
-              </option>
-            ))}
-          </select>
 
-          <select 
-            value={filters.platforms[0] || ''} 
-            onChange={(e) => e.target.value ? toggleFilter('platforms', e.target.value) : null}
-            className="filter-select"
-          >
-            <option value="">Languages</option>
-            {uniquePlatforms.map((platform) => (
-              <option key={platform} value={platform}>
-                {platforms[platform] || platform}
-              </option>
-            ))}
-          </select>
-
-          <select 
-            value={filters.deployments[0] || ''} 
-            onChange={(e) => e.target.value ? toggleFilter('deployments', e.target.value) : null}
-            className="filter-select"
-          >
-            <option value="">Deployment</option>
-            {uniqueDeployments.map((deployment) => (
-              <option key={deployment} value={deployment}>
-                {deployments[deployment] || deployment}
-              </option>
-            ))}
-          </select>
-
-          <select 
-            value={filters.complexities[0] || ''} 
-            onChange={(e) => e.target.value ? toggleFilter('complexities', e.target.value) : null}
-            className="filter-select"
-          >
-            <option value="">Complexity</option>
-            {uniqueComplexities.map((complexity) => (
-              <option key={complexity} value={complexity}>
-                {complexities.data[complexity] || complexity}
-              </option>
-            ))}
-          </select>
-
-          <label className="pro-toggle">
-            <input
-              type="checkbox"
-              checked={filters.showProOnly}
-              onChange={(e) => setFilters(prev => ({ ...prev, showProOnly: e.target.checked }))}
-            />
-            Pro Only
-          </label>
-          
-          <select 
-            value={sortBy} 
-            onChange={(e) => setSortBy(e.target.value as 'title' | 'complexity')}
-            className="sort-select"
-          >
-            <option value="title">A-Z</option>
-            <option value="complexity">By Complexity</option>
-          </select>
-
-          {hasActiveFilters && (
-            <button onClick={clearAllFilters} className="clear-filters">
-              Clear
-            </button>
-          )}
+          <div className="top-bar-row">
+            <select 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value as 'title' | 'complexity')}
+              className="sort-select"
+            >
+              <option value="title">A-Z</option>
+              <option value="complexity">By Complexity</option>
+            </select>
+          </div>
         </div>
 
         <div className="results-info">
