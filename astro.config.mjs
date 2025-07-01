@@ -57,7 +57,7 @@ export default defineConfig({
       expressiveCode: {
         themes: ['one-light', 'one-dark-pro'],
         styleOverrides: {
-          codeFontFamily: 'AeonikFono, ui-monospace',
+          codeFontFamily: 'AeonikMono, ui-monospace',
           borderRadius: '0.5rem',
         },
       },
