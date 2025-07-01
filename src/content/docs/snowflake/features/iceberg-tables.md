@@ -1,6 +1,7 @@
 ---
 title: Iceberg Tables
 description: Get started with Iceberg Tables in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

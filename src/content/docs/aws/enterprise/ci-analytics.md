@@ -2,6 +2,7 @@
 title: "CI Analytics"
 description: Get insights into your continuous integration (CI) builds with LocalStack CI Analytics
 pagefind: false
+tags: ["Enterprise"]
 ---
 
 ## Introduction

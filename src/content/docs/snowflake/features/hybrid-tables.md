@@ -1,6 +1,7 @@
 ---
 title: Hybrid Tables
 description: Get started with Hybrid Tables in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

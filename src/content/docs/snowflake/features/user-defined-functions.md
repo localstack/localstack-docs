@@ -1,6 +1,7 @@
 ---
 title: User-Defined Functions
 description: Get started with User-Defined Functions in Node.js, Java & Python with LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

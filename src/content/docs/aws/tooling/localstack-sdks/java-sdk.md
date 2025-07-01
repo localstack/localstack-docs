@@ -4,6 +4,7 @@ description: Use the LocalStack SDK for Java.
 template: doc
 sidebar:
     order: 2
+tags: ["Free"]
 ---
 
 ## Introduction

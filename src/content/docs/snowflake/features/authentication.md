@@ -1,6 +1,7 @@
 ---
 title: Authentication
-description: Get started with authentication in Snowflake.
+description: Get started with authentication in Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

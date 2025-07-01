@@ -1,6 +1,7 @@
 ---
 title: "Polaris Catalog"
 description: Get started with Polaris Catalog in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

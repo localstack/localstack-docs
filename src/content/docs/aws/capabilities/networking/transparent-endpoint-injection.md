@@ -2,6 +2,7 @@
 title: Transparent endpoint injection
 description: Transparently resolve your AWS calls to LocalStack
 template: doc
+tags: ["Base"]
 sidebar:
     order: 4
 ---

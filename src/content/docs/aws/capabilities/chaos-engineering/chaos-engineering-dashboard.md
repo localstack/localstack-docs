@@ -4,6 +4,7 @@ description: Chaos Engineering Dashboard allows users to run chaos experiments w
 template: doc
 sidebar:
     order: 4
+tags: ["Ultimate"]
 ---
 
 ## Introduction

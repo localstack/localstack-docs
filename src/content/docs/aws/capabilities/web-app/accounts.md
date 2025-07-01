@@ -3,6 +3,7 @@ title: Accounts
 description: A LocalStack account is required to access features in the Web Application, and to access any of our offerings.
 sidebar:
     order: 2
+tags: ["Free"]
 ---
 
 ## Introduction

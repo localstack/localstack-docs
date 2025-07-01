@@ -4,6 +4,7 @@ description: Get started with LocalStack extensions by installing and using the 
 template: doc
 sidebar:
     order: 2
+tags: ["Base"]
 ---
 
 ## Introduction

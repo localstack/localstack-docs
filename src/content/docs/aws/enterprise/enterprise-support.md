@@ -4,6 +4,7 @@ description: This page describes the support options available for LocalStack En
 template: doc
 sidebar:
     order: 6
+tags: ["Enterprise"]
 ---
 
 ## Introduction

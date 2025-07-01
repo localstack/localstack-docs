@@ -4,6 +4,7 @@ description: Invite new users and manage a user's license and legacy API key.
 template: doc
 sidebar:
     order: 4
+tags: ["Base"]
 ---
 
 ## Introduction

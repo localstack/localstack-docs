@@ -4,6 +4,7 @@ description: Stack Insights enable users to report AWS API usage telemetry of Lo
 template: doc
 sidebar:
     order: 7
+tags: ["Base"]
 ---
 
 ## Introduction

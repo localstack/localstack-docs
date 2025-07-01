@@ -1,6 +1,7 @@
 ---
 title: Streamlit
 description: Get started with Streamlit in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

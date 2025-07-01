@@ -1,6 +1,7 @@
 ---
 title: Dynamic Tables
 description: Get started with Dynamic Tables in LocalStack for Snowflake
+tags: ["Base"]
 ---
 
 ## Introduction

@@ -4,6 +4,7 @@ description: Create an Application Preview to deploy your application changes in
 template: doc
 sidebar:
     order: 3
+tags: ["Base"]
 ---
 
 ## Introduction
@@ -110,4 +111,4 @@ preview-cmd: |
 
 ## Examples
 
-- [Creating ephemeral application previews with LocalStack and GitHub Actions]() and the [example repository](https://github.com/localstack-samples/sample-notes-app-dynamodb-lambda-apigateway)
+- [Creating ephemeral application previews with LocalStack and GitHub Actions](/aws/tutorials/ephemeral-application-previews/) and the [example repository](https://github.com/localstack-samples/sample-notes-app-dynamodb-lambda-apigateway)
