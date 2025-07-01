@@ -174,7 +174,7 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
         .top-bar {
           display: flex;
           gap: 1rem;
-          align-items: center;
+          align-items: flex-start;
           margin-bottom: 1.5rem;
           padding: 1rem;
           background: var(--sl-color-bg-sidebar);
@@ -187,6 +187,9 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           position: relative;
           flex: 1;
           min-width: 300px;
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 0;
         }
 
         .search-input {
@@ -197,6 +200,8 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           background: var(--sl-color-bg);
           color: var(--sl-color-white);
           font-size: 0.875rem;
+          height: 3rem;
+          box-sizing: border-box;
         }
 
         .search-input:focus {
@@ -233,6 +238,9 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           color: var(--sl-color-white);
           font-size: 0.875rem;
           min-width: 140px;
+          height: 3rem;
+          box-sizing: border-box;
+          margin-top: 0;
         }
 
         .filter-select:focus {
@@ -248,6 +256,15 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           color: var(--sl-color-white);
           cursor: pointer;
           white-space: nowrap;
+          height: 3rem;
+          padding: 0 0.5rem;
+          margin-top: 0;
+        }
+
+        .pro-toggle input[type="checkbox"] {
+          margin: 0;
+          width: 1rem;
+          height: 1rem;
         }
 
         .sort-select {
@@ -258,6 +275,9 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           color: var(--sl-color-white);
           font-size: 0.875rem;
           min-width: 120px;
+          height: 3rem;
+          box-sizing: border-box;
+          margin-top: 0;
         }
 
         .clear-filters {
@@ -297,8 +317,10 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           transition: transform 0.2s ease, box-shadow 0.2s ease;
           text-decoration: none;
           color: inherit;
-          display: block;
+          display: flex;
+          flex-direction: column;
           cursor: pointer;
+          height: 100%;
         }
 
         .tutorial-card:hover {
@@ -346,6 +368,9 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
 
         .card-content {
           padding: 1.25rem;
+          display: flex;
+          flex-direction: column;
+          flex: 1;
         }
 
         .card-title {
@@ -365,6 +390,7 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          flex: 1;
         }
 
         .card-footer {
@@ -372,6 +398,7 @@ export const TutorialsShowcase: React.FC<TutorialsShowcaseProps> = ({
           justify-content: space-between;
           align-items: center;
           gap: 1rem;
+          margin-top: auto;
         }
 
         .service-icons {
