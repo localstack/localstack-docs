@@ -55,16 +55,10 @@ export default defineConfig({
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
       },
       expressiveCode: {
-        themes: ['github-light', 'github-dark'],
+        themes: ['one-light', 'one-dark-pro'],
         styleOverrides: {
           codeFontFamily: 'AeonikFono, ui-monospace',
           borderRadius: '0.5rem',
-          codeBackground: '#E1E3EB',
-          frames: {
-            terminalBackground: '#E1E3EB',
-            terminalTitlebarBackground: '#c0c2c7',
-            terminalTitlebarDotsOpacity: 0.5,
-          },
         },
       },
       head: [
