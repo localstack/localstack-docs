@@ -23,7 +23,7 @@ Before you begin, pull the Snowflake emulator image (`localstack/snowflake`) and
 
 ```bash
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-IMAGE_NAME=localstack/snowflake:latest localstack start
+localstack start --stack snowflake
 ```
 
 Check the emulator's availability by running:

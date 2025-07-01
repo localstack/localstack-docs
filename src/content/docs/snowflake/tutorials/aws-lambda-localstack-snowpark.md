@@ -140,9 +140,8 @@ Start your LocalStack container in your preferred terminal/shell.
 ```bash showLineNumbers
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
 DEBUG=1 \
-  LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=180 \
-  IMAGE_NAME=localstack/snowflake \
-  localstack start
+LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=180 \
+localstack start --stack snowflake
 ```
 
 > The `DEBUG=1` environment variable is set to enable debug logs. It would allow you to see the SQL queries executed by the Lambda function. The `LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT` environment variable is set to increase the Lambda function's timeout to 180 seconds.
