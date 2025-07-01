@@ -320,6 +320,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           border-radius: 0.75rem;
           overflow: hidden;
           transition: transform 0.2s ease, box-shadow 0.2s ease;
+          margin-top: 0;
         }
 
         .app-card:hover {
@@ -411,6 +412,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           align-items: center;
           justify-content: center;
           transition: all 0.2s ease;
+          margin-top: 0;
         }
 
         .service-icon:hover {
