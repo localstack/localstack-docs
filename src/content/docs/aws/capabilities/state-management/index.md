@@ -6,24 +6,19 @@ sidebar:
     order: 1
 ---
 
-State Management in LocalStack allows you to save and load the state of your LocalStack instance.
-LocalStack is ephemeral in nature, so when you stop and restart your LocalStack instance, all the data is lost.
-With State Management, you can save the state of your LocalStack instance and load it back when you restart your LocalStack instance.
+LocalStack is designed to be ephemeral by default, meaning all state is lost when the container stops. State Management gives you tools to persist, reuse, and share the state of your LocalStack instance across sessions or teams. This is useful for preloading test data, debugging workflows, or collaborating with teammates.
 
-State Management in LocalStack encompasses the following features:
+LocalStack supports three ways to manage and reuse state:
 
-* [**Cloud Pods**](/aws/capabilities/state-management/cloud-pods): Cloud Pods are persistent state snapshots of your LocalStack instance that can easily be shared, stored, versioned, and restored.
-* [**Export & Import State**](/aws/capabilities/state-management/export-import-state): Export and import the state of your LocalStack instance on your local machine as a local file.
-* [**Persistence**](/aws/capabilities/state-management/persistence): Persist the state of your LocalStack instance on your local machine using a configuration variable.
+* [**Cloud Pods**](/aws/capabilities/state-management/cloud-pods): Shareable, versioned snapshots of your LocalStack instance that can be stored, restored, and synced via the LocalStack platform.
 
-Anything that is inside a LocalStack container constitutes the "state.” The "state" can either be persisted on your local
-machine and be loaded at startup (persistence), exported anytime as a single local file (state export), or stored on the LocalStack platform (cloud pods).
-The underlying mechanisms of all three solutions are similar, but the layout obviously differs.
-We can observe how using state
-locally and Cloud Pods are very similar, as they look like `local` and `remote` versions of the same bundle.
-To get a better understanding of how
-these three features differ, they can be illustrated as following:
+* [**Export & Import State**](/aws/capabilities/state-management/export-import-state): Save your instance state to a local file and reload it manually as needed.
+
+* [**Persistence**](/aws/capabilities/state-management/persistence): Automatically save and reload state locally by enabling a configuration flag.
+
+Internally, all three approaches manage the same container state. They just differ in how the state is stored and reused (local vs remote, manual vs automated). 
+
+The diagram below helps compare these options at a glance.
 
 ![The difference between persistence, local state and Cloud Pods.](/images/aws/persistence-pods-remote.png)
 
-State Management is an essential feature that supports various use-cases, such as pre-seeding your fresh LocalStack instance with data, sharing your LocalStack instance's state with your team, fostering collaboration, and more.

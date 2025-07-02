@@ -6,9 +6,11 @@ pagefind: false
 
 ## Introduction
 
-This page documents the release notes for official LocalStack major and minor releases since LocalStack v1.0.0.
-If you are looking for information about nightly releases, preview features, or experimental features, pull the [latest Docker image]().
-The changelog is updated with every release.
+Browse release notes for official LocalStack major and minor releases since LocalStack v1.0.0.
+If you are looking for information about nightly releases, preview features, or experimental features, pull the [latest Docker image](https://hub.docker.com/r/localstack/localstack).
+
+Our  changelog is updated with every release.
+
 Updates that affect only LocalStack Web Application or features in preview or limited release may not be reflected.
 
 ## Features under Development

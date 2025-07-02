@@ -6,4 +6,6 @@ sidebar:
     order: 1
 ---
 
-[LocalStack Web Application](https://app.localstack.cloud/) is a web-based user interface that allows you to manage your LocalStack account and all aspects of the LocalStack platform, including licenses and subscription, and additional features like the resource browser, extensions, Stack Insights, Cloud Pods, CI analytics and more.
+The [LocalStack Web Application](https://app.localstack.cloud/)provides a visual interface for managing your LocalStack account and platform features.
+
+From here, you can handle subscriptions and licenses, explore your local cloud environment with the Resource Browser, enable powerful features like Cloud Pods and Extensions, view Stack Insights, track CI analytics, and more. All in one place.

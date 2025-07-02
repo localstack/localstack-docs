@@ -5,6 +5,8 @@ template: doc
 editUrl: false
 ---
 
+The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
+
 ### 1.0.0
 - Add support for `SHOW/ALTER FUNCTION`
 - Fix incompatibilities with GO driver and SnowSQL client

@@ -6,11 +6,10 @@ sidebar:
     order: 1
 ---
 
-## Introduction
+Security Testing in LocalStack allows you to enforce and validate IAM policies in a local environment that closely mirrors real AWS behavior. This helps you catch misconfigurations, uncover missing permissions, and confidently test access control logic.
 
-Security Testing in LocalStack enables you to enforce your IAM permissions allowing you to test your security policies and create a more realistic environment that more closely resembles the real AWS.
-Security Testing in LocalStack encompasses the following features:
+LocalStack supports the following security testing features:
 
-- Enforce IAM policies & permissions in your setup to test your application security.
-- Retrieve IAM policy engine logs to gain visibility into the policy evaluation.
-- Discover appropriate permissions using IAM policy streams to fix logical errors.
+- Enforce IAM policies to simulate realistic permission boundaries in your application
+- Retrieve Policy engine logs for debugging and understanding how policies are evaluated
+- Apply IAM policy streams to discover required permissions and resolve access issues efficiently

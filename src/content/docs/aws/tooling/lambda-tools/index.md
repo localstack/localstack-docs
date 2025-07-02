@@ -6,12 +6,12 @@ sidebar:
     order: 1
 ---
 
-Lambda Tools by LocalStack offers a suite of utilities to streamline the development of Lambda functions on your local machine.
-LocalStack's Lambda emulation enables you to develop, deploy, and test your functions in a local environment, removing the need for deployment on AWS, while integrating with other AWS services.
-These tools aim to enhance the developer experience by providing quicker feedback cycles.
+LocalStack’s Lambda Tools offer a set of utilities to streamline the local development, testing, and debugging of AWS Lambda functions. Emulating Lambda behavior on your machine lets you skip cloud deployments and iterate faster in a fully local environment.
 
-With Lambda Tools, you can:
+These tools are designed to shorten feedback loops and improve the developer experience with features like:
 
-- Debug your Lambda function directly from your IDE by attaching a debugger, allowing for breakpoint setting, variable inspection, and code execution.
-- Implement hot reload configurations to automatically update your Lambda function whenever code changes are made, eliminating the need for repeated redeployments.
-- Directly deploy and invoke Lambda functions from VSCode utilizing the LocalStack VSCode extension, leveraging Serverless Application Model (SAM) or CloudFormation.
+- **IDE debugging**: Attach a debugger to your running Lambda function, set breakpoints, inspect variables, and step through code
+
+- **Hot reload**: Automatically apply code changes without needing to redeploy the function, enabling rapid iteration
+
+- **VSCode integration**: Use the LocalStack VSCode extension to deploy and invoke Lambda functions directly from your editor using SAM or CloudFormation templates.

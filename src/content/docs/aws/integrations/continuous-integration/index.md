@@ -6,12 +6,15 @@ sidebar:
     order: 1
 ---
 
-LocalStack enables organizations to automate their application testing and integration process through DevOps practices, such as continuous integration (CI).
-To meet your organizational needs, LocalStack lets you move away from complicated AWS testing and staging environments by enabling a key component of testing and delivering cloud-native applications.
+LocalStack makes it easy to integrate cloud-native testing into your CI pipelines, without the complexity of managing real AWS environments. Running fully local AWS emulation inside your CI jobs lets you automate application testing, catch issues earlier, and ship with confidence.
 
-You can easily integrate LocalStack with your existing CI platform.
-We provide native plugins for CircleCI and a generic driver for any other CI platform you might use.
-This enables you to incorporate LocalStack's local AWS cloud emulation in your CI pipelines, use advanced features like Cloud Pods and CI analytics, and run your test & integration suite before pushing to production.
+LocalStack supports:
+
+- Native integration with platforms like CircleCI
+- A generic CI driver for other CI/CD systems
+- Advanced features like Cloud Pods and CI analytics to track performance and test coverage
+
+With LocalStack in your CI pipeline, you can eliminate slow and costly staging environments while ensuring realistic, high-fidelity cloud testing before deploying to production.
 
 ## Hypothetical CI workflow
 

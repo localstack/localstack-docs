@@ -8,13 +8,14 @@ sidebar:
 
 ## Introduction
 
-LocalStack Cloud Sandbox allow you to run an LocalStack instance in the cloud.
-LocalStack Cloud Sandbox encompasses the following features:
+LocalStack Cloud Sandbox lets you deploy a fully functional LocalStack instance in the cloud instead of running it locally. This enables new workflows for testing, previewing, and collaboration across teams.
 
-- Deploy LocalStack as an ephemeral instance for dev&test loops without running it locally.
-- Create easy previews by enabling preview-per-PR type workflows for application change.
-- Facilitate collaboration by allowing developers to test features on the same environment.
+Key use cases include:
+
+- Running ephemeral instances locally for dev/test loops in CI
+- Generating on-demand preview environments by enabling preview-per-PR type workflows
+- Facilitate collaboration by sharing a consistent testing environment for all developers
 
 :::note
-Cloud Sandbox is offered as a **preview** feature and is under active development.
+The Cloud Sandbox feature is currently in **preview** and under active development.
 :::

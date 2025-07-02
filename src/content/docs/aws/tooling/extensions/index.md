@@ -7,26 +7,23 @@ sidebar:
 tags: ["Base"]
 ---
 
-
 ![LocalStack Extensions](/images/aws/localstack-extensions-header.png)
 
-LocalStack Extensions allow developers to extend and customize LocalStack.
-Extensions are a feature of our paid offering.
-LocalStack Extensions enable you to start custom services with LocalStack in the same container, while leveraging the existing features in the ecosystem.
-
-Developers can add new services, extend existing services, and even add custom functionality.
-The Extensions API allows developers to easily plug in their own custom logic and services into the LocalStack container.
+LocalStack Extensions let you customize and extend LocalStack’s core functionality by running additional logic and services inside the same container. This feature is available in our paid offering, and is ideal for teams that want deeper control over how LocalStack behaves during development or testing.
 
 You can use LocalStack Extensions to:
 
-- Starting custom services together with LocalStack in the same container (see our [Cloudflare Workers Extension](https://localstack.cloud/blog/2023-06-26-develop-your-cloudflare-workers-aws-apps-locally-with-localstack-miniflare/)).
-- Instrumenting AWS requests with additional information before they reach your Lambdas.
-- Logging AWS API calls to custom data backends.
+- Start custom services alongside LocalStack in the same container (see our [Cloudflare Workers Extension](https://localstack.cloud/blog/2023-06-26-develop-your-cloudflare-workers-aws-apps-locally-with-localstack-miniflare/))
 
-The officially supported LocalStack Extensions can be discovered on our [Official Extensions Library](https://app.localstack.cloud/extensions/library).
-To install and use extensions, you need an active LocalStack license.
+- Intercept AWS requests with additional information before they reach your Lambda functions
+
+- Log API calls to custom external backends or monitoring systems
+
+The Extensions API makes it easy to integrate your own logic or extend existing services, all within LocalStack’s runtime.
+
+Officially supported extensions are available in our [Official Extensions Library](https://app.localstack.cloud/extensions/library). To install and use extensions, you'll need an active LocalStack license.
 
 :::note
-The feature and the API are currently in a preview stage and may be subject to change.
+The feature and the API are currently in preview stage and may be subject to change.
 Please report any issues or feature requests on [LocalStack Extension's GitHub repository](https://github.com/localstack/localstack-extensions).
 :::
