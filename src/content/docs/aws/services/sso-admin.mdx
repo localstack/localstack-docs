@@ -1,0 +1,86 @@
+---
+title: "SSO Admin"
+description: Get started with SSO Admin on LocalStack
+persistence: supported
+tags: ["Free"]
+---
+
+import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+
+## Introduction
+
+SSO Admin is a service provided by Amazon Web Services (AWS) that enables you to manage your AWS Single Sign-On (AWS SSO) resources.
+It allows you to create, update, and delete AWS SSO resources such as directories, groups, and users.
+
+LocalStack provides a mock implementation of the SSO Admin API that allows you to create and manage your AWS SSO resources.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of SSO Admin's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to SSO Admin and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+
+Start your LocalStack container using your preferred method.
+We will demonstrate how to create a permission set, add tags to a permission set, and list permission sets.
+
+### Create a permission set
+
+You can create a permission set using the [`CreatePermissionSet`](https://docs.aws.amazon.com/sso-admin/latest/APIReference/API_CreatePermissionSet.html) API.
+
+```bash
+awslocal sso-admin create-permission-set \
+    --name my-permission-set \
+    --description "My permission set" \
+    --instance-arn arn:aws:sso:::instance/d-1234567890 \
+    --tags Key=Name,Value=my-permission-set
+```
+
+```bash title="Output"
+{
+    "PermissionSet": {
+        "CreatedDate": "2025-07-02T12:15:33.352631+05:30",
+        "Description": "My permission set",
+        "Name": "my-permission-set",
+        "PermissionSetArn": "arn:aws:sso:::instance/d-1234567890/ps-lm0rshcjz3tikab8",
+        "SessionDuration": 3600
+    }
+}
+```
+
+### List permission sets
+
+You can list permission sets using the [`ListPermissionSets`](https://docs.aws.amazon.com/sso-admin/latest/APIReference/API_ListPermissionSets.html) API.
+
+```bash
+awslocal sso-admin list-permission-sets --instance-arn arn:aws:sso:::instance/d-1234567890
+```
+
+```bash title="Output"
+{
+    "PermissionSets": [
+        "arn:aws:sso:::instance/d-1234567890/ps-lm0rshcjz3tikab8"
+    ]
+}
+```
+
+### List tags for a permission set
+
+You can list tags for a permission set using the [`ListTagsForResource`](https://docs.aws.amazon.com/sso-admin/latest/APIReference/API_ListTagsForResource.html) API.
+
+```bash
+awslocal sso-admin list-tags-for-resource --resource-arn arn:aws:sso:::instance/d-1234567890/ps-lm0rshcjz3tikab8 --instance-arn arn:aws:sso:::instance/d-1234567890
+```
+
+```bash title="Output"
+{
+    "Tags": [
+        {
+            "Key": "Name",
+            "Value": "my-permission-set"
+        }
+    ]
+}
+```
+
+## API Coverage
+
+<FeatureCoverage service="sso-admin" client:load />
