@@ -1,0 +1,95 @@
+---
+title: "CodeConnections"
+description: Get started with CodeConnections on LocalStack
+tags: ["Base"]
+---
+
+## Introduction
+
+CodeConnections is a service provided by Amazon Web Services (AWS) that enables you to connect your code repositories to your AWS resources.
+It allows you to create connections to your code repositories and use them to access your AWS resources.
+
+LocalStack provides a mock implementation of the CodeConnections API that allows you to create and manage connections to your code repositories.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of CodeConnections's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to CodeConnections and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+
+Start your LocalStack container using your preferred method.
+We will demonstrate how to create a connection to a code repository using the CodeConnections API.
+
+### Create a connection
+
+You can create a connection to a code repository using the [`CreateConnection`](https://docs.aws.amazon.com/codeconnections/latest/APIReference/API_CreateConnection.html) API.
+
+```bash
+awslocal codeconnections create-connection \
+    --connection-name my-connection
+```
+
+You should see the connection in the output.
+
+```bash title="Output"
+{
+    "ConnectionArn": "arn:aws:codeconnections:us-east-1:000000000000:connection/my-connection"
+}
+```
+
+### List connections
+
+You can list connections using the [`ListConnections`](https://docs.aws.amazon.com/codeconnections/latest/APIReference/API_ListConnections.html) API.
+
+```bash
+awslocal codeconnections list-connections
+```
+
+```bash title="Output"
+{
+    "Connections": [
+        {
+            "ConnectionName": "my-connection",
+            "ConnectionArn": "arn:aws:codeconnections:us-east-1:000000000000:connection/023ff7e3",
+            "ProviderType": "GitHub",
+            "OwnerAccountId": "000000000000",
+            "ConnectionStatus": "AVAILABLE"
+        }
+    ]
+}
+```
+
+### Get a connection
+
+You can get a connection using the [`GetConnection`](https://docs.aws.amazon.com/codeconnections/latest/APIReference/API_GetConnection.html) API.
+
+```bash
+awslocal codeconnections get-connection --connection-arn arn:aws:codeconnections:us-east-1:000000000000:connection/023ff7e3
+```
+
+Replace the `connection-arn` with the ARN of the connection you want to get.
+
+```bash title="Output"
+{
+    "Connection": {
+        "ConnectionName": "my-connection",
+        "ConnectionArn": "arn:aws:codeconnections:us-east-1:000000000000:connection/023ff7e3",
+        "ProviderType": "GitHub",
+        "OwnerAccountId": "000000000000",
+        "ConnectionStatus": "AVAILABLE"
+    }
+}
+```
+
+### Delete a connection
+
+You can delete a connection using the [`DeleteConnection`](https://docs.aws.amazon.com/codeconnections/latest/APIReference/API_DeleteConnection.html) API.
+
+```bash
+awslocal codeconnections delete-connection --connection-arn arn:aws:codeconnections:us-east-1:000000000000:connection/023ff7e3
+```
+
+Replace the `connection-arn` with the ARN of the connection you want to delete.
+
+## API Coverage
+
+<FeatureCoverage service="codeconnections" client:load />
