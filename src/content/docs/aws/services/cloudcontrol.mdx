@@ -1,0 +1,95 @@
+---
+title: "Cloud Control"
+description: Get started with Cloud Control on LocalStack
+tags: ["Base"]
+---
+
+## Introduction
+
+Cloud Control API allows you to create, read, update, delete, and list (CRUD-L) resources in AWS. 
+Cloud Control API provides a standardized interface provision and access these resources in a programmatic way.
+
+LocalStack allows you to use the Cloud Control API in your local environment to interact with your emulated resources.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Cloud Control's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Cloud Control and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+
+Start your LocalStack container using your preferred method.
+We will demonstrate how to get and list resources using the Cloud Control API.
+
+### List resources
+
+You can list resources using the [`ListResources`](https://docs.aws.amazon.com/cloudcontrolapi/latest/APIReference/API_ListResources.html) API.
+
+Create an S3 bucket using the following command:
+
+```bash
+awslocal s3 mb s3://my-bucket
+```
+
+List the resources using the following command:
+
+```bash
+awslocal cloudcontrol list-resources --type-name AWS::S3::Bucket
+```
+
+You should see the S3 bucket in the output.
+
+```bash title="Output"
+{
+    "ResourceDescriptions": [
+        {
+            "Identifier": "my-bucket",
+            "Properties": "{\"BucketName\":\"my-bucket\"}"
+        }
+    ],
+    "TypeName": "AWS::S3::Bucket"
+}
+```
+
+### Get a resource
+
+You can get a resource using the [`GetResource`](https://docs.aws.amazon.com/cloudcontrolapi/latest/APIReference/API_GetResource.html) API.
+
+```bash
+awslocal cloudcontrol get-resource --type-name AWS::S3::Bucket --identifier my-bucket
+```
+
+```bash title="Output"
+{
+    "TypeName": "AWS::S3::Bucket",
+    "ResourceDescription": {
+        "Identifier": "my-bucket",
+        "Properties": "{\"BucketName\":\"my-bucket\"}"
+    }
+}
+```
+
+## Supported Resources
+
+The following resources are supported by Cloud Control:
+
+1. [`AWS::ApiGateway::RestApi`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html)
+2. [`AWS::CloudFormation::Stack`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudformation-stack.html)
+3. [`AWS::DynamoDB::Table`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html)
+4. [`AWS::EC2::VPC`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html)
+5. [`AWS::Events::EventBus`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-events-eventbus.html)
+6. [`AWS::IAM::Group`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html)
+7. [`AWS::IAM::Role`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html)
+8. [`AWS::IAM::User`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html)
+9. [`AWS::Lambda::Function`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html)
+10. [`AWS::S3::Bucket`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-s3-bucket.html)
+11. [`AWS::SES::EmailIdentity`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ses-emailidentity.html)
+12. [`AWS::SNS::Topic`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html)
+13. [`AWS::SQS::Queue`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html)
+14. [`AWS::SSM::Parameter`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ssm-parameter.html)
+15. [`AWS::SecretsManager::Secret`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-secretsmanager-secret.html)
+16. [`AWS::StepFunctions::StateMachine`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-stepfunctions-statemachine.html)
+17. [`AWS::CloudFront::Distribution`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloudfront-distribution.html)
+18. [`AWS::Pipes::Pipe`](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-pipes-pi
+
+## API Coverage
+
+<FeatureCoverage service="cloudcontrol" client:load />
