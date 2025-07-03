@@ -53,6 +53,7 @@ export default defineConfig({
       },
       components: {
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
+        Head: './src/components/CustomHead.astro',
       },
       expressiveCode: {
         themes: ['one-light', 'one-dark-pro'],
