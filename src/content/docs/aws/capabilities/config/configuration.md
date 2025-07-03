@@ -221,6 +221,14 @@ Also see [OpenSearch configuration variables](#opensearch) which are used to man
 | - | - | - |
 | `PROVIDER_OVERRIDE_EVENTS` | `legacy`\|`v2` (default) | The [new EventBridge provider](https://discuss.localstack.cloud/t/introducing-eventbridge-v2-in-localstack/946) is active by default since LocalStack 4.0. |
 
+### Glue
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `GLUE_JOB_EXECUTOR_PROVIDER` | `v1` (default) \| `v2` | Feature flag to switch between the old and new Glue job executor providers. |
+| `GLUE_JOB_EXECUTOR` | `docker` (default) \| `kubernetes` | Whether to run Glue jobs when LocalStack is deployed on Kubernetes. Jobs are run as pods in the Kubernetes cluster. |
+| `DOCKER_GLOBAL_IMAGE_PREFIX` | | Specify custom images for Glue jobs by configuring their custom image repository. |
+
 ### IAM
 
 | Variable | Example Values | Description |

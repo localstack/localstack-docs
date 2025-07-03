@@ -64,6 +64,7 @@ You can run the following services on Kubernetes clusters using the LocalStack E
 
 - [DocumentDB](/aws/services/docdb)
 - [MWAA](/aws/services/docdb)
+- [Glue](/aws/services/glue) (requires setting `GLUE_JOB_EXECUTOR_PROVIDER` to `v2`)
 - [RDS](/aws/services/rds)  ([MySQL](/aws/services/rds/#mysql-engine)  &  [MSSQL](/aws/services/rds/#microsoft-sql-server-engine))
 
 To use Kubernetes as the runtime backend, set the `CONTAINER_RUNTIME` configuration variable to `kubernetes`.
