@@ -31,10 +31,11 @@ which can be released as patch version because we are committed to make LocalSta
 
 | Version  | Release Date       | Release Notes                                                                                      |
 |----------|--------------------|----------------------------------------------------------------------------------------------------|
-| `v4.5.0` | June 5, 2025      | [v4.5.0](https://blog.localstack.cloud/localstack-release-v-4-5-0/)                                |
-| `v4.4.0` | May 8, 2025      | [v4.4.0](https://blog.localstack.cloud/localstack-release-v-4-4-0/)                                |
-| `v4.3.0` | March 27, 2025      | [v4.3.0](https://blog.localstack.cloud/localstack-release-v-4-3-0/)                                |
-| `v4.2.0` | February 27, 2025     | [v4.2.0](https://blog.localstack.cloud/localstack-release-v-4-2-0/)                                |
+| `v4.6.0` | July 3, 2025       | [v4.6.0](https://blog.localstack.cloud/localstack-for-aws-release-v-4-6-0/)                        |
+| `v4.5.0` | June 5, 2025       | [v4.5.0](https://blog.localstack.cloud/localstack-release-v-4-5-0/)                                |
+| `v4.4.0` | May 8, 2025        | [v4.4.0](https://blog.localstack.cloud/localstack-release-v-4-4-0/)                                |
+| `v4.3.0` | March 27, 2025     | [v4.3.0](https://blog.localstack.cloud/localstack-release-v-4-3-0/)                                |
+| `v4.2.0` | February 27, 2025  | [v4.2.0](https://blog.localstack.cloud/localstack-release-v-4-2-0/)                                |
 | `v4.1.0` | January 30, 2025   | [v4.1.0](https://blog.localstack.cloud/localstack-release-v-4-1-0/)                                |
 | `v4.0.0` | November 21, 2024  | [v4.0.0](https://blog.localstack.cloud/announcing-localstack-40-general-availability/)             |
 | `v3.8.0` | October 3, 2024    | [v3.8.0](https://blog.localstack.cloud/localstack-release-v-3-8-0/)                                |
