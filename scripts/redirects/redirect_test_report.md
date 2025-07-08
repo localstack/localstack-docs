@@ -1019,8 +1019,8 @@
 - **Message:** ✅ Redirect successful
 
 ### ✅ AWS: /contributing/
-- **Expected:** https://github.com/localstack/localstack/blob/master/docs/CONTRIBUTING.md
-- **Final URL:** https://github.com/localstack/localstack/blob/master/docs/CONTRIBUTING.md
+- **Expected:** https://github.com/localstack/localstack/blob/main/docs/CONTRIBUTING.md
+- **Final URL:** https://github.com/localstack/localstack/blob/main/docs/CONTRIBUTING.md
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
