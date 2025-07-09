@@ -1,0 +1,164 @@
+---
+import Default from '@astrojs/starlight/components/Head.astro';
+---
+
+<Default {...Astro.props} />
+
+<script is:inline>
+  // Wait for both DocSearch and Kapa to be loaded
+  function waitForDocSearchAndKapa() {
+    if (typeof window !== 'undefined' && window.Kapa) {
+      initializeKapaDocSearchIntegration();
+    } else {
+      // Retry after a short delay
+      setTimeout(waitForDocSearchAndKapa, 100);
+    }
+  }
+
+  function initializeKapaDocSearchIntegration() {
+    // Wait for DocSearch to be initialized
+    const observeDocSearch = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && node.classList?.contains('DocSearch-Modal')) {
+              addKapaButtonToDocSearch();
+            }
+          });
+        }
+      });
+    });
+
+    // Start observing the document body for DocSearch modal
+    observeDocSearch.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // Also check if DocSearch is already present
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        setTimeout(addKapaButtonToDocSearch, 100);
+      }
+    });
+
+    // Listen for DocSearch button clicks
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.DocSearch-Button')) {
+        setTimeout(addKapaButtonToDocSearch, 100);
+      }
+    });
+  }
+
+  function addKapaButtonToDocSearch() {
+    const docSearchModal = document.querySelector('.DocSearch-Modal');
+    if (!docSearchModal) return;
+
+    // Check if Kapa button already exists
+    if (docSearchModal.querySelector('.kapa-ask-ai-button')) return;
+
+    const searchInput = docSearchModal.querySelector('.DocSearch-Input');
+    if (!searchInput) return;
+
+    // Create the Ask AI button
+    const kapaButton = document.createElement('button');
+    kapaButton.className = 'kapa-ask-ai-button';
+    kapaButton.style.cssText = `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin: 12px 16px;
+      padding: 12px 16px;
+      background-color: rgba(109, 60, 232, 0.1);
+      border: 1px solid rgba(109, 60, 232, 0.2);
+      border-radius: 8px;
+      font-size: 14px;
+      color: #6d3ce8;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      font-family: inherit;
+      font-weight: 600;
+    `;
+
+    kapaButton.addEventListener('mouseenter', () => {
+      kapaButton.style.backgroundColor = 'rgba(109, 60, 232, 0.15)';
+      kapaButton.style.borderColor = 'rgba(109, 60, 232, 0.3)';
+      kapaButton.style.transform = 'translateY(-1px)';
+      kapaButton.style.boxShadow = '0 2px 5px rgba(109, 60, 232, 0.1)';
+    });
+
+    kapaButton.addEventListener('mouseleave', () => {
+      kapaButton.style.backgroundColor = 'rgba(109, 60, 232, 0.1)';
+      kapaButton.style.borderColor = 'rgba(109, 60, 232, 0.2)';
+      kapaButton.style.transform = 'translateY(0)';
+      kapaButton.style.boxShadow = 'none';
+    });
+
+    kapaButton.addEventListener('mousedown', () => {
+      kapaButton.style.backgroundColor = 'rgba(109, 60, 232, 0.2)';
+      kapaButton.style.transform = 'translateY(0)';
+    });
+
+    // Function to update button text based on current query
+    function updateButtonText() {
+      const query = searchInput.value.trim();
+      kapaButton.textContent = query 
+        ? `Ask AI about "${query}"`
+        : 'Ask AI';
+    }
+
+    // Initial button text
+    updateButtonText();
+
+    // Update button text when user types
+    searchInput.addEventListener('input', updateButtonText);
+
+    // Handle button click
+    kapaButton.addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      
+      // Close DocSearch modal first
+      const closeButton = docSearchModal.querySelector('.DocSearch-Cancel');
+      if (closeButton) {
+        closeButton.click();
+      }
+      
+      // Open Kapa with the query
+      if (window.Kapa) {
+        if (query) {
+          window.Kapa.open({ query, submit: true });
+        } else {
+          window.Kapa.open();
+        }
+      }
+    });
+
+    // Find the best place to insert the button
+    const docSearchDropdown = docSearchModal.querySelector('.DocSearch-Dropdown');
+    const docSearchHelp = docSearchModal.querySelector('.DocSearch-Help');
+    
+    if (docSearchDropdown) {
+      // Insert before the dropdown content
+      docSearchDropdown.insertBefore(kapaButton, docSearchDropdown.firstChild);
+    } else if (docSearchHelp) {
+      // Insert before the help section
+      docSearchHelp.parentNode.insertBefore(kapaButton, docSearchHelp);
+    } else {
+      // Fallback: insert at the end of the modal
+      const modalContent = docSearchModal.querySelector('.DocSearch-Container');
+      if (modalContent) {
+        modalContent.appendChild(kapaButton);
+      }
+    }
+  }
+
+  // Initialize when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', waitForDocSearchAndKapa);
+  } else {
+    waitForDocSearchAndKapa();
+  }
+</script> 
