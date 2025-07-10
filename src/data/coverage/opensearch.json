@@ -128,7 +128,7 @@
         "availability": "community",
         "internal_test_suite": true,
         "external_test_suite": true,
-        "terraform_test_suite": false,
+        "terraform_test_suite": true,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": ""
@@ -212,7 +212,7 @@
         "availability": "community",
         "internal_test_suite": true,
         "external_test_suite": true,
-        "terraform_test_suite": false,
+        "terraform_test_suite": true,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": ""
@@ -272,7 +272,7 @@
         "availability": "community",
         "internal_test_suite": true,
         "external_test_suite": true,
-        "terraform_test_suite": false,
+        "terraform_test_suite": true,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": ""
@@ -307,8 +307,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": false,
-        "terraform_test_suite": false,
+        "external_test_suite": true,
+        "terraform_test_suite": true,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": ""
@@ -488,7 +488,7 @@
         "availability": "community",
         "internal_test_suite": true,
         "external_test_suite": true,
-        "terraform_test_suite": false,
+        "terraform_test_suite": true,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": ""
@@ -679,8 +679,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": false,
-        "terraform_test_suite": false,
+        "external_test_suite": true,
+        "terraform_test_suite": true,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": ""
@@ -847,10 +847,10 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": false,
-        "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "external_test_suite": true,
+        "terraform_test_suite": true,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": ""
       }
     },
@@ -950,7 +950,7 @@
             "test": "test_domain_with_alternative_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..DomainStatus.AccessPolicies', '$..DomainStatus.AdvancedOptions.override_main_response_version', '$..DomainStatus.AdvancedSecurityOptions.AnonymousAuthEnabled', '$..DomainStatus.AutoTuneOptions.State', '$..DomainStatus.AutoTuneOptions.UseOffPeakWindow', '$..DomainStatus.ChangeProgressDetails', '$..DomainStatus.ClusterConfig.DedicatedMasterCount', '$..DomainStatus.ClusterConfig.InstanceCount', '$..DomainStatus.ClusterConfig.MultiAZWithStandbyEnabled', '$..DomainStatus.ClusterConfig.ZoneAwarenessConfig', '$..DomainStatus.ClusterConfig.ZoneAwarenessEnabled', '$..DomainStatus.EBSOptions.VolumeSize', '$..DomainStatus.Endpoint', '$..DomainStatus.OffPeakWindowOptions', '$..DomainStatus.ServiceSoftwareOptions.CurrentVersion', '$..DomainStatus.SoftwareUpdateOptions']",
+            "snapshot_skipped": "['$..DomainStatus.AIMLOptions', '$..DomainStatus.AdvancedSecurityOptions.AnonymousAuthEnabled', '$..DomainStatus.AutoTuneOptions.State', '$..DomainStatus.AutoTuneOptions.UseOffPeakWindow', '$..DomainStatus.ChangeProgressDetails', '$..DomainStatus.ClusterConfig.MultiAZWithStandbyEnabled', '$..DomainStatus.ClusterConfig.ZoneAwarenessConfig', '$..DomainStatus.DomainEndpointOptions.TLSSecurityPolicy', '$..DomainStatus.IPAddressType', '$..DomainStatus.IdentityCenterOptions', '$..DomainStatus.ModifyingProperties', '$..DomainStatus.OffPeakWindowOptions', '$..DomainStatus.ServiceSoftwareOptions.CurrentVersion', '$..DomainStatus.SoftwareUpdateOptions']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1010,6 +1010,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_domain_lifecycle",
+            "test": "test_domain_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AIMLOptions', '$..AccessPolicies.Status.State', '$..AccessPolicies.Status.UpdateVersion', '$..AdvancedOptions.Status.UpdateVersion', '$..AdvancedSecurityOptions..AnonymousAuthEnabled', '$..AdvancedSecurityOptions.Status.UpdateVersion', '$..AutoTuneOptions..State', '$..AutoTuneOptions..UseOffPeakWindow', '$..AutoTuneOptions.Options.DesiredState', '$..AutoTuneOptions.Status.UpdateVersion', '$..ChangeProgressDetails', '$..ClusterConfig..DedicatedMasterCount', '$..ClusterConfig..DedicatedMasterEnabled', '$..ClusterConfig..DedicatedMasterType', '$..ClusterConfig..MultiAZWithStandbyEnabled', '$..ClusterConfig.Options.ColdStorageOptions', '$..ClusterConfig.Options.WarmEnabled', '$..ClusterConfig.Status.UpdateVersion', '$..CognitoOptions.Status.UpdateVersion', '$..DomainEndpointOptions..TLSSecurityPolicy', '$..DomainEndpointOptions.Status.UpdateVersion', '$..EBSOptions.Options.VolumeSize', '$..EBSOptions.Status.UpdateVersion', '$..EncryptionAtRestOptions.Status.UpdateVersion', '$..Endpoint', '$..EngineVersion.Status.UpdateVersion', '$..IPAddressType', '$..IdentityCenterOptions', '$..LogPublishingOptions.Status.UpdateVersion', '$..ModifyingProperties', '$..NodeToNodeEncryptionOptions.Status.UpdateVersion', '$..OffPeakWindowOptions', '$..ServiceSoftwareOptions.CurrentVersion', '$..SnapshotOptions.Options.AutomatedSnapshotStartHour', '$..SnapshotOptions.Status.UpdateVersion', '$..SoftwareUpdateOptions', '$..VPCOptions.Status.UpdateVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       },
@@ -1068,16 +1078,6 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_create_domain",
-            "test": "test_create_domain",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_create_existing_domain_causes_exception",
@@ -1284,7 +1284,7 @@
             "test": "test_domain_with_alternative_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..DomainStatus.AccessPolicies', '$..DomainStatus.AdvancedOptions.override_main_response_version', '$..DomainStatus.AdvancedSecurityOptions.AnonymousAuthEnabled', '$..DomainStatus.AutoTuneOptions.State', '$..DomainStatus.AutoTuneOptions.UseOffPeakWindow', '$..DomainStatus.ChangeProgressDetails', '$..DomainStatus.ClusterConfig.DedicatedMasterCount', '$..DomainStatus.ClusterConfig.InstanceCount', '$..DomainStatus.ClusterConfig.MultiAZWithStandbyEnabled', '$..DomainStatus.ClusterConfig.ZoneAwarenessConfig', '$..DomainStatus.ClusterConfig.ZoneAwarenessEnabled', '$..DomainStatus.EBSOptions.VolumeSize', '$..DomainStatus.Endpoint', '$..DomainStatus.OffPeakWindowOptions', '$..DomainStatus.ServiceSoftwareOptions.CurrentVersion', '$..DomainStatus.SoftwareUpdateOptions']",
+            "snapshot_skipped": "['$..DomainStatus.AIMLOptions', '$..DomainStatus.AdvancedSecurityOptions.AnonymousAuthEnabled', '$..DomainStatus.AutoTuneOptions.State', '$..DomainStatus.AutoTuneOptions.UseOffPeakWindow', '$..DomainStatus.ChangeProgressDetails', '$..DomainStatus.ClusterConfig.MultiAZWithStandbyEnabled', '$..DomainStatus.ClusterConfig.ZoneAwarenessConfig', '$..DomainStatus.DomainEndpointOptions.TLSSecurityPolicy', '$..DomainStatus.IPAddressType', '$..DomainStatus.IdentityCenterOptions', '$..DomainStatus.ModifyingProperties', '$..DomainStatus.OffPeakWindowOptions', '$..DomainStatus.ServiceSoftwareOptions.CurrentVersion', '$..DomainStatus.SoftwareUpdateOptions']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1330,16 +1330,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_create_domain",
-            "test": "test_create_domain",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_create_existing_domain_causes_exception",
             "test": "test_create_existing_domain_causes_exception",
             "response": "200",
@@ -1367,6 +1357,16 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_domain_lifecycle",
+            "test": "test_domain_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AIMLOptions', '$..AccessPolicies.Status.State', '$..AccessPolicies.Status.UpdateVersion', '$..AdvancedOptions.Status.UpdateVersion', '$..AdvancedSecurityOptions..AnonymousAuthEnabled', '$..AdvancedSecurityOptions.Status.UpdateVersion', '$..AutoTuneOptions..State', '$..AutoTuneOptions..UseOffPeakWindow', '$..AutoTuneOptions.Options.DesiredState', '$..AutoTuneOptions.Status.UpdateVersion', '$..ChangeProgressDetails', '$..ClusterConfig..DedicatedMasterCount', '$..ClusterConfig..DedicatedMasterEnabled', '$..ClusterConfig..DedicatedMasterType', '$..ClusterConfig..MultiAZWithStandbyEnabled', '$..ClusterConfig.Options.ColdStorageOptions', '$..ClusterConfig.Options.WarmEnabled', '$..ClusterConfig.Status.UpdateVersion', '$..CognitoOptions.Status.UpdateVersion', '$..DomainEndpointOptions..TLSSecurityPolicy', '$..DomainEndpointOptions.Status.UpdateVersion', '$..EBSOptions.Options.VolumeSize', '$..EBSOptions.Status.UpdateVersion', '$..EncryptionAtRestOptions.Status.UpdateVersion', '$..Endpoint', '$..EngineVersion.Status.UpdateVersion', '$..IPAddressType', '$..IdentityCenterOptions', '$..LogPublishingOptions.Status.UpdateVersion', '$..ModifyingProperties', '$..NodeToNodeEncryptionOptions.Status.UpdateVersion', '$..OffPeakWindowOptions', '$..ServiceSoftwareOptions.CurrentVersion', '$..SnapshotOptions.Options.AutomatedSnapshotStartHour', '$..SnapshotOptions.Status.UpdateVersion', '$..SoftwareUpdateOptions', '$..VPCOptions.Status.UpdateVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -1498,6 +1498,16 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_domain_lifecycle",
+            "test": "test_domain_lifecycle",
+            "response": "409",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..AIMLOptions', '$..AccessPolicies.Status.State', '$..AccessPolicies.Status.UpdateVersion', '$..AdvancedOptions.Status.UpdateVersion', '$..AdvancedSecurityOptions..AnonymousAuthEnabled', '$..AdvancedSecurityOptions.Status.UpdateVersion', '$..AutoTuneOptions..State', '$..AutoTuneOptions..UseOffPeakWindow', '$..AutoTuneOptions.Options.DesiredState', '$..AutoTuneOptions.Status.UpdateVersion', '$..ChangeProgressDetails', '$..ClusterConfig..DedicatedMasterCount', '$..ClusterConfig..DedicatedMasterEnabled', '$..ClusterConfig..DedicatedMasterType', '$..ClusterConfig..MultiAZWithStandbyEnabled', '$..ClusterConfig.Options.ColdStorageOptions', '$..ClusterConfig.Options.WarmEnabled', '$..ClusterConfig.Status.UpdateVersion', '$..CognitoOptions.Status.UpdateVersion', '$..DomainEndpointOptions..TLSSecurityPolicy', '$..DomainEndpointOptions.Status.UpdateVersion', '$..EBSOptions.Options.VolumeSize', '$..EBSOptions.Status.UpdateVersion', '$..EncryptionAtRestOptions.Status.UpdateVersion', '$..Endpoint', '$..EngineVersion.Status.UpdateVersion', '$..IPAddressType', '$..IdentityCenterOptions', '$..LogPublishingOptions.Status.UpdateVersion', '$..ModifyingProperties', '$..NodeToNodeEncryptionOptions.Status.UpdateVersion', '$..OffPeakWindowOptions', '$..ServiceSoftwareOptions.CurrentVersion', '$..SnapshotOptions.Options.AutomatedSnapshotStartHour', '$..SnapshotOptions.Status.UpdateVersion', '$..SoftwareUpdateOptions', '$..VPCOptions.Status.UpdateVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       }
@@ -1530,7 +1540,7 @@
             "test": "test_domain_with_alternative_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..DomainStatus.AccessPolicies', '$..DomainStatus.AdvancedOptions.override_main_response_version', '$..DomainStatus.AdvancedSecurityOptions.AnonymousAuthEnabled', '$..DomainStatus.AutoTuneOptions.State', '$..DomainStatus.AutoTuneOptions.UseOffPeakWindow', '$..DomainStatus.ChangeProgressDetails', '$..DomainStatus.ClusterConfig.DedicatedMasterCount', '$..DomainStatus.ClusterConfig.InstanceCount', '$..DomainStatus.ClusterConfig.MultiAZWithStandbyEnabled', '$..DomainStatus.ClusterConfig.ZoneAwarenessConfig', '$..DomainStatus.ClusterConfig.ZoneAwarenessEnabled', '$..DomainStatus.EBSOptions.VolumeSize', '$..DomainStatus.Endpoint', '$..DomainStatus.OffPeakWindowOptions', '$..DomainStatus.ServiceSoftwareOptions.CurrentVersion', '$..DomainStatus.SoftwareUpdateOptions']",
+            "snapshot_skipped": "['$..DomainStatus.AIMLOptions', '$..DomainStatus.AdvancedSecurityOptions.AnonymousAuthEnabled', '$..DomainStatus.AutoTuneOptions.State', '$..DomainStatus.AutoTuneOptions.UseOffPeakWindow', '$..DomainStatus.ChangeProgressDetails', '$..DomainStatus.ClusterConfig.MultiAZWithStandbyEnabled', '$..DomainStatus.ClusterConfig.ZoneAwarenessConfig', '$..DomainStatus.DomainEndpointOptions.TLSSecurityPolicy', '$..DomainStatus.IPAddressType', '$..DomainStatus.IdentityCenterOptions', '$..DomainStatus.ModifyingProperties', '$..DomainStatus.OffPeakWindowOptions', '$..DomainStatus.ServiceSoftwareOptions.CurrentVersion', '$..DomainStatus.SoftwareUpdateOptions']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1540,7 +1550,7 @@
             "test": "test_domain_with_alternative_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..DomainStatus.AccessPolicies', '$..DomainStatus.AdvancedOptions.override_main_response_version', '$..DomainStatus.AdvancedSecurityOptions.AnonymousAuthEnabled', '$..DomainStatus.AutoTuneOptions.State', '$..DomainStatus.AutoTuneOptions.UseOffPeakWindow', '$..DomainStatus.ChangeProgressDetails', '$..DomainStatus.ClusterConfig.DedicatedMasterCount', '$..DomainStatus.ClusterConfig.InstanceCount', '$..DomainStatus.ClusterConfig.MultiAZWithStandbyEnabled', '$..DomainStatus.ClusterConfig.ZoneAwarenessConfig', '$..DomainStatus.ClusterConfig.ZoneAwarenessEnabled', '$..DomainStatus.EBSOptions.VolumeSize', '$..DomainStatus.Endpoint', '$..DomainStatus.OffPeakWindowOptions', '$..DomainStatus.ServiceSoftwareOptions.CurrentVersion', '$..DomainStatus.SoftwareUpdateOptions']",
+            "snapshot_skipped": "['$..DomainStatus.AIMLOptions', '$..DomainStatus.AdvancedSecurityOptions.AnonymousAuthEnabled', '$..DomainStatus.AutoTuneOptions.State', '$..DomainStatus.AutoTuneOptions.UseOffPeakWindow', '$..DomainStatus.ChangeProgressDetails', '$..DomainStatus.ClusterConfig.MultiAZWithStandbyEnabled', '$..DomainStatus.ClusterConfig.ZoneAwarenessConfig', '$..DomainStatus.DomainEndpointOptions.TLSSecurityPolicy', '$..DomainStatus.IPAddressType', '$..DomainStatus.IdentityCenterOptions', '$..DomainStatus.ModifyingProperties', '$..DomainStatus.OffPeakWindowOptions', '$..DomainStatus.ServiceSoftwareOptions.CurrentVersion', '$..DomainStatus.SoftwareUpdateOptions']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1586,16 +1596,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_create_domain",
-            "test": "test_create_domain",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_create_existing_domain_causes_exception",
             "test": "test_create_existing_domain_causes_exception",
             "response": "200",
@@ -1623,6 +1623,16 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_domain_lifecycle",
+            "test": "test_domain_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AIMLOptions', '$..AccessPolicies.Status.State', '$..AccessPolicies.Status.UpdateVersion', '$..AdvancedOptions.Status.UpdateVersion', '$..AdvancedSecurityOptions..AnonymousAuthEnabled', '$..AdvancedSecurityOptions.Status.UpdateVersion', '$..AutoTuneOptions..State', '$..AutoTuneOptions..UseOffPeakWindow', '$..AutoTuneOptions.Options.DesiredState', '$..AutoTuneOptions.Status.UpdateVersion', '$..ChangeProgressDetails', '$..ClusterConfig..DedicatedMasterCount', '$..ClusterConfig..DedicatedMasterEnabled', '$..ClusterConfig..DedicatedMasterType', '$..ClusterConfig..MultiAZWithStandbyEnabled', '$..ClusterConfig.Options.ColdStorageOptions', '$..ClusterConfig.Options.WarmEnabled', '$..ClusterConfig.Status.UpdateVersion', '$..CognitoOptions.Status.UpdateVersion', '$..DomainEndpointOptions..TLSSecurityPolicy', '$..DomainEndpointOptions.Status.UpdateVersion', '$..EBSOptions.Options.VolumeSize', '$..EBSOptions.Status.UpdateVersion', '$..EncryptionAtRestOptions.Status.UpdateVersion', '$..Endpoint', '$..EngineVersion.Status.UpdateVersion', '$..IPAddressType', '$..IdentityCenterOptions', '$..LogPublishingOptions.Status.UpdateVersion', '$..ModifyingProperties', '$..NodeToNodeEncryptionOptions.Status.UpdateVersion', '$..OffPeakWindowOptions', '$..ServiceSoftwareOptions.CurrentVersion', '$..SnapshotOptions.Options.AutomatedSnapshotStartHour', '$..SnapshotOptions.Status.UpdateVersion', '$..SoftwareUpdateOptions', '$..VPCOptions.Status.UpdateVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -1930,13 +1940,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_create_domain",
-            "test": "test_create_domain",
+            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_domain_lifecycle",
+            "test": "test_domain_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "snapshot_skipped": "['$..AIMLOptions', '$..AccessPolicies.Status.State', '$..AccessPolicies.Status.UpdateVersion', '$..AdvancedOptions.Status.UpdateVersion', '$..AdvancedSecurityOptions..AnonymousAuthEnabled', '$..AdvancedSecurityOptions.Status.UpdateVersion', '$..AutoTuneOptions..State', '$..AutoTuneOptions..UseOffPeakWindow', '$..AutoTuneOptions.Options.DesiredState', '$..AutoTuneOptions.Status.UpdateVersion', '$..ChangeProgressDetails', '$..ClusterConfig..DedicatedMasterCount', '$..ClusterConfig..DedicatedMasterEnabled', '$..ClusterConfig..DedicatedMasterType', '$..ClusterConfig..MultiAZWithStandbyEnabled', '$..ClusterConfig.Options.ColdStorageOptions', '$..ClusterConfig.Options.WarmEnabled', '$..ClusterConfig.Status.UpdateVersion', '$..CognitoOptions.Status.UpdateVersion', '$..DomainEndpointOptions..TLSSecurityPolicy', '$..DomainEndpointOptions.Status.UpdateVersion', '$..EBSOptions.Options.VolumeSize', '$..EBSOptions.Status.UpdateVersion', '$..EncryptionAtRestOptions.Status.UpdateVersion', '$..Endpoint', '$..EngineVersion.Status.UpdateVersion', '$..IPAddressType', '$..IdentityCenterOptions', '$..LogPublishingOptions.Status.UpdateVersion', '$..ModifyingProperties', '$..NodeToNodeEncryptionOptions.Status.UpdateVersion', '$..OffPeakWindowOptions', '$..ServiceSoftwareOptions.CurrentVersion', '$..SnapshotOptions.Options.AutomatedSnapshotStartHour', '$..SnapshotOptions.Status.UpdateVersion', '$..SoftwareUpdateOptions', '$..VPCOptions.Status.UpdateVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -2011,6 +2021,20 @@
       }
     },
     "UpdateDomainConfig": {
+      "AccessPolicies, DomainName": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/opensearch/test_opensearch.py::TestOpensearchProvider::test_domain_lifecycle",
+            "test": "test_domain_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AIMLOptions', '$..AccessPolicies.Status.State', '$..AccessPolicies.Status.UpdateVersion', '$..AdvancedOptions.Status.UpdateVersion', '$..AdvancedSecurityOptions..AnonymousAuthEnabled', '$..AdvancedSecurityOptions.Status.UpdateVersion', '$..AutoTuneOptions..State', '$..AutoTuneOptions..UseOffPeakWindow', '$..AutoTuneOptions.Options.DesiredState', '$..AutoTuneOptions.Status.UpdateVersion', '$..ChangeProgressDetails', '$..ClusterConfig..DedicatedMasterCount', '$..ClusterConfig..DedicatedMasterEnabled', '$..ClusterConfig..DedicatedMasterType', '$..ClusterConfig..MultiAZWithStandbyEnabled', '$..ClusterConfig.Options.ColdStorageOptions', '$..ClusterConfig.Options.WarmEnabled', '$..ClusterConfig.Status.UpdateVersion', '$..CognitoOptions.Status.UpdateVersion', '$..DomainEndpointOptions..TLSSecurityPolicy', '$..DomainEndpointOptions.Status.UpdateVersion', '$..EBSOptions.Options.VolumeSize', '$..EBSOptions.Status.UpdateVersion', '$..EncryptionAtRestOptions.Status.UpdateVersion', '$..Endpoint', '$..EngineVersion.Status.UpdateVersion', '$..IPAddressType', '$..IdentityCenterOptions', '$..LogPublishingOptions.Status.UpdateVersion', '$..ModifyingProperties', '$..NodeToNodeEncryptionOptions.Status.UpdateVersion', '$..OffPeakWindowOptions', '$..ServiceSoftwareOptions.CurrentVersion', '$..SnapshotOptions.Options.AutomatedSnapshotStartHour', '$..SnapshotOptions.Status.UpdateVersion', '$..SoftwareUpdateOptions', '$..VPCOptions.Status.UpdateVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "ClusterConfig, DomainName": {
         "ls_community": [
           {
