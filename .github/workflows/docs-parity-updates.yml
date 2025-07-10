@@ -9,9 +9,6 @@ on:
           required: false
           type: string
           default: 'master'
-  pull_request:
-    branches:
-      - master
 
 jobs:
   update-parity-coverage-docs:
@@ -23,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
           path: docs
-          # ref: ${{ github.event.inputs.targetBranch || 'master' }}
+          ref: ${{ github.event.inputs.targetBranch || 'master' }}
 
       - name: Set up system wide dependencies
         run: |
@@ -109,9 +106,36 @@ jobs:
       - name: Create Parity Coverage Docs
         working-directory: docs
         run: |
-          ls -la
           python3 -m scripts.create_data_coverage -i target/metrics-implementation-details -r target/metrics-raw -o target/updated_coverage -s src/data/coverage/service_display_name.json
-          # Move the resulting markdown file to the docs repo
-          # cp -r target/updated_coverage/md/* content/en/references/coverage && rm -R target/updated_coverage/md/
           mv -f target/updated_coverage/data/*.json src/data/coverage
-          git status
+     
+      - name: Check for changes
+        id: check-for-changes
+        working-directory: docs
+        run: |
+          # Check if there are changed files and store the result in resources/diff-check.log
+          # Check against the PR branch if it exists, otherwise against the master
+          # Store the result in resources/diff-check.log and store the diff count in the GitHub Action output "diff-count"
+          mkdir -p resources
+          (git diff --name-only origin/parity-coverage-auto-updates data/coverage/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'master' }} src/data/coverage/ 2>/dev/null) | tee -a resources/diff-check.log
+          echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Read PR markdown template
+        if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+        id: template
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: docs/.github/bot_templates/PARITY_COVERAGE_DOCS_PR.md
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+        with:
+          path: docs
+          title: "Update Parity Coverage Docs"
+          body: "${{ steps.template.outputs.content }}"
+          branch: "parity-coverage-auto-updates"
+          author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          commit-message: "update generated parity coverage docs"
+          token: ${{ secrets.PRO_ACCESS_TOKEN }}
