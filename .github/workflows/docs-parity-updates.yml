@@ -1,0 +1,107 @@
+name: Update Parity Docs
+
+on:
+  schedule:
+    - cron: 0 5 * * MON
+  workflow_dispatch:
+    inputs:
+        targetBranch:
+          required: false
+          type: string
+          default: 'master'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  update-parity-coverage-docs:
+    name: Update Parity Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: docs
+          ref: ${{ github.event.inputs.targetBranch || 'master' }}
+
+      - name: Set up system wide dependencies
+        run: |
+          sudo apt-get install jq wget
+
+      - name: Set up Python 3.11
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download scripts from meta repository
+        run: |
+          curl -o /tmp/get_latest_github_metrics.sh -L https://raw.githubusercontent.com/localstack/meta/main/scripts/get_latest_github_metrics.sh -H 'Accept: application/vnd.github.v3.raw'
+          chmod +x /tmp/get_latest_github_metrics.sh
+
+      - name: Download metrics data from Moto Integration test pipeline (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-moto-test-coverage 
+          ARTIFACT_ID: test-metrics
+          WORKFLOW: moto-integration-tests
+          PREFIX_ARTIFACT: moto-integration-test
+          FILTER_SUCCESS: 0
+
+      - name: Download metrics data from Terraform Integration test pipeline (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-terraform-test 
+          ARTIFACT_ID: test-metrics
+          WORKFLOW: "Terraform Tests"
+          FILTER_SUCCESS: 0
+
+      - name: Download metrics data from Pro pipeline (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-ext
+          ARTIFACT_ID: parity-metric-ext-raw-*
+          WORKFLOW: "AWS / Build, Test, Push" 
+          PREFIX_ARTIFACT: pro-integration-test
+      
+      - name: Download coverage (capture-notimplemented) data from Pro pipeline (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-ext
+          ARTIFACT_ID: capture-notimplemented-pro 
+          WORKFLOW: "AWS / Build, Test, Push" 
+          RESOURCE_FOLDER: "metrics-implementation-details"
+
+      - name: Download metrics data from Community pipeline (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack
+          ARTIFACT_ID: parity-metric-raw-amd*
+          WORKFLOW: "AWS / Build, Test, Push"
+          PREFIX_ARTIFACT: community-integration-test
+
+      - name: Download coverage (capture-notimplemented) data from Community pipeline (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack
+          ARTIFACT_ID: capture-notimplemented
+          WORKFLOW: "AWS / Build, Test, Push"
+          RESOURCE_FOLDER: "metrics-implementation-details/community"
