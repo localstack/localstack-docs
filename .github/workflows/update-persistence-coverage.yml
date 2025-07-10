@@ -48,7 +48,7 @@ jobs:
           mkdir -p resources
           (git diff --name-only origin/persistence-auto-updates src/data/persistence/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'master' }} src/data/persistence/ 2>/dev/null) | tee -a resources/diff-check.log
           echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> $GITHUB_OUTPUT
-          cat cat resources/diff-check.log
+          cat resources/diff-check.log
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v7
