@@ -27,17 +27,28 @@ The native EventBridge provider, introduced in [LocalStack 3.5.0](https://discus
 This guide is designed for users new to EventBridge and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
 
 Start your LocalStack container using your preferred method.
-We will demonstrate creating an EventBridge rule to run a Lambda function on a schedule.
+We will demonstrate creating an EventBridge rule to run a Lambda function when a custom event is published to an event bus.
+
+### Create an EventBridge Bus
+
+First, create a custom EventBridge bus using the [`CreateEventBus`](https://docs.aws.amazon.com/cli/latest/reference/events/create-event-bus.html) API:
+
+```bash
+awslocal events create-event-bus \
+    --name my-custom-bus
+```
+
+While you can always use the default event bridge bus automatically available and configured for your account in any region, custom event buses are much more commonly used in practice and provide better organization for your events.
 
 ### Create a Lambda Function
 
 To create a new Lambda function, create a new file called `index.js` with the following code:
 
-```js showshowLineNumbers
+```js showLineNumbers
 'use strict';
 
 exports.handler = (event, context, callback) => {
-    console.log('LogScheduledEvent');
+    console.log('LogEventBridgeEvent');
     console.log('Received event:', JSON.stringify(event, null, 2));
     callback(null, 'Finished');
 };
@@ -64,22 +75,27 @@ Run the following command to create a new EventBridge rule using the [`PutRule`]
 
 ```bash
 awslocal events put-rule \
-    --name my-scheduled-rule \
-    --schedule-expression 'rate(2 minutes)'
+    --name my-custom-rule \
+    --event-bus-name my-custom-bus \
+    --event-pattern '{"source":["my-source"],"detail-type":["my-detail-type"]}' \
+    --state ENABLED
 ```
 
-In the above command, we have specified a schedule expression of `rate(2 minutes)`, which will run the rule every two minutes.
-It means that the Lambda function will be invoked every two minutes.
+In the above command, we have specified an event pattern that will match events with:
+- `source` field equal to `my-source`
+- `detail-type` field equal to `my-detail-type`
 
-Next, grant the EventBridge service principal (`events.amazonaws.com`) permission to run the rule, using the [`AddPermission`](https://docs.aws.amazon.com/cli/latest/reference/events/add-permission.html) API:
+This rule will trigger whenever an event matching this pattern is published to the custom event bus.
+
+Next, grant the EventBridge service principal (`events.amazonaws.com`) permission to run the rule, using the [`AddPermission`](https://docs.aws.amazon.com/cli/latest/reference/lambda/add-permission.html) API:
 
 ```bash
 awslocal lambda add-permission \
     --function-name events-example \
-    --statement-id my-scheduled-event \
+    --statement-id my-custom-event \
     --action 'lambda:InvokeFunction' \
     --principal events.amazonaws.com \
-    --source-arn arn:aws:events:us-east-1:000000000000:rule/my-scheduled-rule
+    --source-arn arn:aws:events:us-east-1:000000000000:rule/my-custom-bus/my-custom-rule
 ```
 
 ### Add the Lambda Function as a Target
@@ -99,14 +115,25 @@ Finally, add the Lambda function as a target to the EventBridge rule using the [
 
 ```bash
 awslocal events put-targets \
-    --rule my-scheduled-rule \
+    --rule my-custom-rule \
+    --event-bus-name my-custom-bus \
     --targets file://targets.json
 ```
+
+### Send an Event to Trigger the Lambda
+
+Now, send an event that matches the rule pattern to trigger the Lambda function using the [`PutEvents`](https://docs.aws.amazon.com/cli/latest/reference/events/put-events.html) API:
+
+```bash
+awslocal events put-events \
+    --entries '[{"Source": "my-source", "DetailType": "my-detail-type", "Detail": "{\"key\": \"value\"}", "EventBusName": "my-custom-bus"}]'
+```
+
+This event will match the pattern we defined in the rule and should trigger the Lambda function immediately.
 
 ### Verify the Lambda invocation
 
 You can verify the Lambda invocation by checking the CloudWatch logs.
-However, wait at least 2 minutes after running the last command before checking the logs.
 
 Run the following command to list the CloudWatch log groups:
 
