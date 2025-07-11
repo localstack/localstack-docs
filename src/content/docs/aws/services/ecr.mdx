@@ -136,6 +136,25 @@ awslocal ecr list-images --repository-name localstack-ecr-repository
 }
 ```
 
+## Endpoint Strategy
+
+The `ECR_ENDPOINT_STRATEGY` configuration variable in LocalStack determines how the endpoints for ECR repositories are constructed. The different values for `ECR_ENDPOINT_STRATEGY` are:
+
+- `ECR_ENDPOINT_STRATEGY=domain`: Uses a domain-based approach for the repository URIs. In this case, the URI includes the AWS account ID and the region, similar to how it would appear in a real AWS environment.
+   For example:
+   ```bash
+   "repositoryUri": "000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/lambda-ecr-repo"
+   ```
+   This mimics the structure of real AWS ECR URIs, which can help ensure compatibility with tools and scripts that expect this format.
+- `ECR_ENDPOINT_STRATEGY=off`: This strategy disables the domain-based structure and uses a simpler, direct approach. The repository URI is more straightforward and does not include the account ID or region.
+   For example:
+   ```bash
+   "repositoryUri": "localhost.localstack.cloud:4510/lambda-ecr-repo"
+   ```
+   This can simplify configurations and reduce potential issues with domain resolution.
+
+If you are experiencing issues with domain name resolution or formatting, switching from `domain` to `off` will likely resolve the problem by simplifying the repository URI and avoiding potential complications.
+
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing ECR repositories and images.
