@@ -108,6 +108,46 @@ export default defineConfig({
               'This is a custom LocalStack LLM to help you find the information you need by searching across all LocalStack documentation. Give it a try and let us know what you think!',
           },
         },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'icon',
+            href: '/images/favicons/favicon-32x32.png',
+            sizes: '32x32',
+          },
+        },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'icon',
+            href: '/images/favicons/android-chrome-192x192.png',
+            sizes: '192x192',
+          },
+        },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'icon',
+            href: '/images/favicons/android-chrome-512x512.png',
+            sizes: '512x512',
+          },
+        },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'icon',
+            href: '/images/favicons/apple-touch-icon.png',
+            sizes: '180x180',
+          },
+        },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'icon',
+            href: '/images/favicons/apple-touch-icon.png',
+            sizes: '180x180',
+          },
+        },
       ],
       social: [
         {
