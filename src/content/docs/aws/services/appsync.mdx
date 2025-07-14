@@ -8,13 +8,15 @@ import FeatureCoverage from "../../../../components/feature-coverage/FeatureCove
 
 ## Introduction
 
-AppSync is a managed service provided by Amazon Web Services (AWS) that enables you to create serverless GraphQL APIs to query databases, microservices, and other APIs.
-AppSync allows you to define your data models and business logic using a declarative approach, and connect to various data sources, including other AWS services, relational databases, and custom data sources.
+AWS AppSync is a fully managed API management service that connects applications to events, data, and AI models.
 
 LocalStack allows you to use the AppSync APIs in your local environment to connect your applications and services to data and events.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of AppSync's integration with LocalStack.
 
-## Getting started
+## Getting started with GraphQL API
+
+Create serverless GraphQL APIs to query databases, microservices, and other APIs.
+AppSync allows you to define your data models and business logic using a declarative approach, and connect to various data sources, including other AWS services, relational databases, and custom data sources.
 
 This guide is designed for users new to AppSync and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
 
@@ -178,6 +180,195 @@ awslocal appsync create-resolver \
     --data-source-name AppSyncDB \
     --request-mapping-template file://request-mapping-template.vtl \
     --response-mapping-template file://response-mapping-template.vtl
+```
+
+## Getting started with Events API
+
+Create a fully managed WebSocket API that lets you subscribe to channels and broadcast events to subscribers.
+
+### Create an Events API
+
+You can create an Events API using the [CreateApi](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateApi.html) API. The following command will create an Events API with the name `my-api`. 
+Note the `apiId`, `dns.REALTIME` and `dns.HTTP` in the outputs as it will be reused as `<api-id>`, `<realtime-domain>` and `<http-domain>` for the remainder of this example.
+
+```bash
+awslocal appsync create-api \
+    --name my-api \
+    --event-config '{
+        "authProviders":[{"authType": "API_KEY"}],
+        "connectionAuthModes":[{"authType": "API_KEY"}],
+        "defaultSubscribeAuthModes":[{"authType": "API_KEY"}],
+        "defaultPublishAuthModes":[{"authType": "API_KEY"}]
+    }'
+```
+
+```bash title="Output"
+{
+    "api": {
+        "apiId": "<api-id>",
+        "name": "my-api",
+        "tags": {},
+        "dns": {
+            "REALTIME": "<endpoint-id>.appsync-realtime-api.ca-west-1.amazonaws.com",
+            "HTTP": "<endpoint-id>.appsync-api.ca-west-1.amazonaws.com"
+        },
+        "apiArn": "arn:aws:appsync:us-east-1:000000000000:apis/<api-id>",
+        "created": "2025-07-14T11:38:32.594000-06:00",
+        "eventConfig": {...}
+    }
+}
+```
+
+### Create a channelNamespace
+
+You can create an `channelNamespace` using the [CreateChannelNamespace](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateChannelNamespace.html) API. At least one `channelNamespace` is required in order to subscribe and publish to it.
+
+```bash
+awslocal appsync create-channel-namespace \
+    --api-id <api-id> \
+    --name "default"
+```
+
+```bash title="Output"
+{
+    "channelNamespace": {
+        "apiId": "<api-id>",
+        "name": "default",
+        "tags": {},
+        "channelNamespaceArn": "arn:aws:appsync:us-east-1:000000000000:apis/<api-id>/channelNamespace/default",
+        "created": "2025-07-14T11:39:44.554000-06:00",
+        "lastModified": "2025-07-14T11:39:44.554000-06:00",
+        "handlerConfigs": {}
+    }
+}
+
+```
+
+### Create an Api Key
+
+You can create an Api Key using the [CreateApiKey](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateApiKey.html) API. The Api Key is used to authenticate Websocket connections and authorize `publish` and `subscribe` events. Note you Api Key id as it will be referenced as `<api-key-id>` in this example.
+
+
+```bash
+awslocal appsync create-api-key --api-id <api-id>
+```
+
+```bash title="Output"
+{
+    "apiKey": {
+        "id": "<api-key-id>",
+        "expires": 1753117200,
+        "deletes": 1758301200
+    }
+}
+```
+
+### Connect Via WebSocket
+
+This example will use `wscat` to create a WebSocket connection. From there, we will create a subscription and show an example of how to publish via WebSocket and HTTP. If you do not have it installed, it can be installed as a `npm` global package with the following command.
+
+```bash
+npm install -g wscat
+```
+
+Export to your shell all of the required configuration. Note that we are base64 encoding the headers in a url safe manner.
+
+```bash
+export HTTP_DOMAIN=<http-domain>
+export REALTIME_DOMAIN=<realtime-domain>
+export API_KEY=<api-key-id>
+export HEADER="{\"host\":\"$HTTP_DOMAIN\", \"x-api-key\":\"$API_KEY\"}"
+export HEADER=`echo "$HEADER" | base64 | tr '+/' '-_' | tr -d '\n='`
+```
+
+Using `wscat` you can now connect to your api. Note that we are sending the base64 encoded header map as subprotocol.
+
+```bash
+wscat \
+    -s "header-$HEADER" \
+    -s "aws-appsync-event-ws" \
+    -c "ws://$REALTIME_DOMAIN/event/realtime"
+```
+
+```bash title="Output"
+Connected (press CTRL+C to quit)
+> |
+```
+
+### Subscribe to a channel
+
+Once connected a `subscribe` event containing the following keys can be sent: `type`, `id`, `channel` and `authorization`.
+The connection `id` is later reused when receiving events from this subscription and when sending an `unsubscribe` event.
+
+```
+{"type": "subscribe", "channel": "/default/*", "id": "1234567890", "authorization": { "x-api-key": "<api-key-id>"}}
+```
+
+```bash title="Output"
+< {"id":"1234567890","type":"subscribe_success"}
+```
+
+### Publish via WebSocket
+
+Once subscribed, a `publish` event can be sent. Note that the subscription create to listen to every sub-channel of `default` via `/default/*` so publish event sent to `/default/race` or `/default/race/formulaOne` would be received by the subscriber, but events published to root `/default`, in this case would not be received.
+
+A `subscribe` event contains the following keys: `type`, `channel`, `events` and `authorization`. Note that `events` must be a list of JSON string.
+
+```
+{"type": "publish", "channel": "/default/race", "events": ["{\"team\": \"McLaren\"}"], "authorization": {"x-api-key": "<api-key-id>"}, "id": "000"}
+```
+
+The `publish_success` event is received first followed by the published event
+
+```bash title="Output"
+< {"id":"000","type":"publish_success","successful":[{"identifier":"7e77f331-bf1b-4e42-9c9e-6e7c34dcf7f2","index":0}],"failed":[]}
+< {"id":"1234567890","type":"data","event":"{\"team\": \"McLaren\"}"}
+```
+
+### Publish via HTTP
+
+Create a file named `publishEvent.json` with and paste within the following content.
+
+```json
+{
+    "channel": "default/channel",
+    "events": [
+        "{\"event_1\":\"data_1\"}",
+        "{\"event_2\":\"data_2\"}"
+    ]
+}
+```
+
+In a separate terminal from your WebSocket connection, make a `POST` request containing a `publish` event can be sent to the http endpoint.
+
+```bash
+curl -X POST "http://${HTTP_DOMAIN}/event" \
+    -d @publishEvent.json \
+    -H "x-api-key: ${API_KEY}" \
+    -H "content-type: application/json"
+```
+
+```bash title="Output"
+{
+    "failed": [],
+    "successful": [
+        {
+            "identifier": "1260cde1-a50c-410d-9eee-9932eb32511d",
+            "index": 0
+        },
+        {
+            "identifier": "5f4e1897-9295-4ac0-a6fd-185736e48744",
+            "index": 1
+        }
+    ]
+}
+```
+
+In your terminal with the WebSocket Connection, you can now see the 2 new events
+
+```bash title="Output"
+< {"id":"1234567890","type":"data","event":"{\"event_1\":\"data_1\"}"}
+< {"id":"1234567890","type":"data","event":"{\"event_2\":\"data_2\"}"}
 ```
 
 ## Custom GraphQL API IDs
