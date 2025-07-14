@@ -371,10 +371,12 @@ In your terminal with the WebSocket Connection, you can now see the 2 new events
 < {"id":"1234567890","type":"data","event":"{\"event_2\":\"data_2\"}"}
 ```
 
-## Custom GraphQL API IDs
+## Shared configuration
 
-You can employ a pre-defined ID during the creation of GraphQL APIs by utilizing the special tag `_custom_id_`.
-For example, the following command will create a GraphQL API with the ID `faceb00c`:
+### Custom API IDs
+
+You can employ a pre-defined ID during the creation of AppSync APIs by utilizing the special tag `_custom_id_`.
+For example, the following command will create a GraphQL API with the ID `faceb00c`. `--tags` can also be passed when creating an Events API, and both the API id and the endpoint id will use the provided id.
 
 ```bash
 awslocal appsync create-graphql-api \
@@ -401,19 +403,21 @@ awslocal appsync create-graphql-api \
 }
 ```
 
-## GraphQL Data sources
+### Data sources
 
 LocalStack supports the following data source types types and services:
 
-| Resolver Type         | Description                                                            |
-| --------------------- | ---------------------------------------------------------------------- |
-| `AMAZON_DYNAMODB`     | Provides access to DynamoDB tables.                                    |
-| `RELATIONAL_DATABASE` | Provides access to RDS database tables.                                |
-| `AWS_LAMBDA`          | Allows retrieval of data from Lambda function invocations.             |
-| `HTTP`                | Enables calling HTTP endpoints to fetch data.                          |
-| `NONE`                | Used for pass-through resolver mapping templates returning input data. |
+| Resolver Type             | Description                                                            |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `AMAZON_DYNAMODB`         | Provides access to DynamoDB tables.                                    |
+| `RELATIONAL_DATABASE`     | Provides access to RDS database tables.                                |
+| `AWS_LAMBDA`              | Allows retrieval of data from Lambda function invocations.             |
+| `HTTP`                    | Enables calling HTTP endpoints to fetch data.                          |
+| `NONE` (GraphQL API Only) | Used for pass-through resolver mapping templates returning input data. |
 
-## GraphQL resolvers
+## GraphQL APIs
+
+### Resolvers
 
 LocalStack's AppSync offers support for both unit and pipeline resolvers, as detailed in the [AWS resolvers documentation](https://docs.aws.amazon.com/appsync/latest/devguide/resolver-components.html).
 Unit resolvers consist of request and response mapping templates, facilitating the transformation of requests to and from data sources.
@@ -421,7 +425,8 @@ Unit resolvers consist of request and response mapping templates, facilitating t
 Pipeline resolvers, on the other hand, invoke AppSync functions that wraps the AppSync data sources.
 Unit resolvers are written in the Velocity templating language (VTL), while pipeline resolvers can be written in either VTL or JavaScript.
 
-## Configuring GraphQL Endpoints
+
+### Configuring Endpoints
 
 There are three configurable strategies that govern how GraphQL API endpoints are created.
 The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment variable.
@@ -432,11 +437,22 @@ The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment v
 | `path`   | `localhost:4566/appsync-api/<api-id>/graphql`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
 | `legacy` | `localhost:4566/graphql/<api-id>`                    | This strategy represents the old endpoint format, which is currently the default but will eventually be phased out. |
 
-## Resolver evaluation endpoints
+## Events APIs
 
-LocalStack supports the resolver evaluation endpoints: [`EvaluateCode`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_EvaluateCode.html) and [`EvaluateMappingTemplate`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_EvaluateMappingTemplate.html).
+### Endpoints
 
-Resolver code can be either passed in as a string, or from a file with the `file://` prefix for the `--template/--code` arguments.
+We are registering 2 type of endpoints that you can use to target you Events API. The examples represent the HTTP endpoint with `appsync-api` but the same is true for REALTIME endpoint with `appsync-realtime-api`. Note that unlike for GraphQL APIs, Events API endpoint is isn't the same as the api id.
+
+| Value    | Format                                                 | Description                                                                                         |
+|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| `domain` | `<endpoint-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, uses the `localhost.localstack.cloud` domain to route to your localhost. |
+| `path`   | `localhost:4566/_aws/appsync-api/<endpoint-id>`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
+
+## Evaluation endpoints
+
+LocalStack supports code evaluation endpoints: [`EvaluateCode`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_EvaluateCode.html) and [`EvaluateMappingTemplate`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_EvaluateMappingTemplate.html).
+
+Code can be either passed in as a string, or from a file with the `file://` prefix for the `--template/--code` arguments.
 See the AWS documentation for [`evaluate-mapping-template`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/appsync/evaluate-mapping-template.html) and [`evaluate-code`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/appsync/evaluate-code.html) for more details.
 
 ### VTL resolver templates
@@ -454,13 +470,13 @@ awslocal appsync evaluate-mapping-template \
 }
 ```
 
-### JavaScript resolvers
+### JavaScript code evaluation
 
 ```bash
 awslocal appsync evaluate-code \
     --runtime name=APPSYNC_JS,runtimeVersion=1.0.0 \
     --function request \
-    --code 'export function request(ctx) { return ctx.result; }; export function response(ctx) {};' \
+    --code 'export function request(ctx) { return ctx.result; } export function response(ctx) {}' \
     --context '{"result": "ok"}'
 ```
 
@@ -472,6 +488,8 @@ awslocal appsync evaluate-code \
 ```
 
 ## Resource Browser
+
+### GraphQL API
 
 The LocalStack Web Application provides a Resource Browser for managing AppSync APIs, Data Sources, Schema, Query, Types, Resolvers, Functions and API keys.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **AppSync** under the **App Integration** section.
@@ -498,6 +516,10 @@ The Resource Browser allows you to perform the following actions:
   Click on **Attach Resolver** to attach a resolver to a field, by providing the field name, data source name, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
 - **Create Function**: Click on the GraphQL API name and click **Functions**.
   Click on **Create Function** to create a function, by providing a name for the function, data source name, and Function Version, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
+
+### Event API
+
+TBA
 
 ## Examples
 
