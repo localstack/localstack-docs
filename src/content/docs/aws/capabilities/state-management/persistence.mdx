@@ -160,3 +160,16 @@ When LocalStack saves snapshots, it has to lock the particular service to avoid 
 That means that, while a snapshot for a particular service is created, all requests to the service are blocked.
 Depending on what you are building, you may find this behavior is slowing down your application.
 In most cases, the `ON_SHUTDOWN` save strategy should solve this problem.
+
+import PersistenceCoverage from '../../../../../components/persistence-coverage/PersistenceCoverage.tsx';
+
+## Persistence Coverage Overview
+
+<PersistenceCoverage client:load />
+
+### Terminology
+
+- **Persistence Test Suite**: tested by LocalStack's internal persistence test suite.
+To test persistence, we use an approach similar to snapshot parity test:
+we first record API responses from LocalStack, we then reset and restore the snapshotted state,
+and finally verify that the same API responses matches with the initial ones.
