@@ -28,6 +28,7 @@ Options that affect the core Snowflake emulator functionality.
 | `SF_CSV_IMPORT_MAX_ROWS` | `50000` (default) | Maximum number of rows to import from CSV files into tables |
 | `SF_DEFAULT_USER` | `test` (default) | Specify the default user to be used by the Snowflake emulator. |
 | `SF_DEFAULT_PASSWORD` | `test` (default) | Specify the default password to be used by the Snowflake emulator. |
+| `SF_PROXY_PRIVATE_KEY` | | Specify the private key to be used by the Snowflake emulator. |
 
 ## CLI
 
