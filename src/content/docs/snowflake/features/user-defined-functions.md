@@ -140,3 +140,20 @@ SELECT sample_func('foobar');
 ```
 
 The result of the query is `echo: foobar`.
+
+## Secure Functions
+
+ Secure UDFs are user-defined functions that protect sensitive information and prevent unauthorized users from viewing function definitions, underlying data, or implementation details.
+
+LocalStack supports Secure UDFs, allowing you to tests sensitive data privacy & security controls. To create a Secure UDF, you need to use the `SECURE` keyword in the `CREATE FUNCTION` statement.
+
+```sql
+CREATE OR REPLACE FUNCTION secure_func(x VARCHAR)
+RETURNS VARCHAR
+LANGUAGE PYTHON
+RUNTIME_VERSION='3.8' HANDLER='secure_func'
+AS $$
+def secure_func(i):
+    return 'echo: ' + i
+$$;
+```
