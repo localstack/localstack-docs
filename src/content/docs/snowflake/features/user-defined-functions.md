@@ -148,7 +148,7 @@ The result of the query is `echo: foobar`.
 LocalStack supports Secure UDFs, allowing you to tests sensitive data privacy & security controls. To create a Secure UDF, you need to use the `SECURE` keyword in the `CREATE FUNCTION` statement.
 
 ```sql
-CREATE OR REPLACE FUNCTION secure_func(x VARCHAR)
+CREATE OR REPLACE SECURE FUNCTION secure_func(x VARCHAR)
 RETURNS VARCHAR
 LANGUAGE PYTHON
 RUNTIME_VERSION='3.8' HANDLER='secure_func'
