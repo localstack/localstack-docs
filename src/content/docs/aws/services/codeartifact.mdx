@@ -271,8 +271,6 @@ For more information about the authorization token created with the login comman
 
 You can configure npm with your CodeArtifact repository without the `awslocal codeartifact login` command by manually updating the npm configuration.
 
-#### To configure npm without using the login command
-
 1. In a command line, fetch a CodeArtifact authorization token and store it in an environment variable.
   npm will use this token to authenticate with your CodeArtifact repository.
 
@@ -284,44 +282,44 @@ You can configure npm with your CodeArtifact repository without the `awslocal co
   Your repository endpoint is used to point npm to your repository to install or publish packages.
 
     ```bash
-    awslocal codeartifact get-repository-endpoint --domain demo-domain --repository demo-repo --format npm
+    awslocal codeartifact get-repository-endpoint --domain demo-domain --repository demo-repo --format npm --output text
     ```
 
     The following URL is an example repository endpoint.
 
     ```text
-    http://demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud/npm/demo-repo/
+    http://demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud:4566/npm/demo-repo/
     ```
 
 3. Use the `npm config set` command to set the registry to your CodeArtifact repository.
   Replace the URL with the repository endpoint URL from the previous step.
 
     ```bash
-    npm config set registry http://demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud/npm/demo-repo/
+    npm config set registry http://demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud:4566/npm/demo-repo/
     ```
 
 4. Use the `npm config set` command to add your authorization token to your npm configuration.
 
     ```bash
-    npm config set //demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud/:_authToken=${CODEARTIFACT_AUTH_TOKEN}
+    npm config set //demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud:4566/:_authToken=${CODEARTIFACT_AUTH_TOKEN}
     ```
 
 :::note
 **For npm 6 or lower:** To make npm always pass the auth token to CodeArtifact, even for GET requests, set the always-auth configuration variable with npm config set.
 
 ```bash
-npm config set //demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud/:always-auth=true
+npm config set //demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud:4566/:always-auth=true
 ```
 :::
 
-#### Example npm configuration file (`.npmrc`)
+### Example npm configuration file
 
 The following is an example `.npmrc` file after following the preceding instructions to set the CodeArtifact registry endpoint, add an authentication token, and configure `always-auth`.
 
 ```text
-registry=http://demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud/npm/demo-repo/
-//demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud/:_authToken=eyJ2ZX...
-//demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud/:always-auth=true
+registry=http://demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud:4566/npm/demo-repo/
+//demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud:4566/:_authToken=eyJ2ZX...
+//demo-domain-000000000000.d.codeartifact.eu-central-1.localhost.localstack.cloud:4566/:always-auth=true
 ```
 
 ## Current Limitations
