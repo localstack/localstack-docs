@@ -23,6 +23,7 @@ Options that affect the core Snowflake emulator functionality.
 | `DEBUG`  | `0` (default) \| `1` | Flag to increase log level and print more verbose logs (useful for troubleshooting issues)                  |
 | `SF_LOG` | `trace`              | Specify the log level. Currently overrides the `DEBUG` configuration. `trace` for detailed request/response |
 | `SF_S3_ENDPOINT` | `s3.localhost.localstack.cloud:4566` (default) | Specify the S3 endpoint to use for the Snowflake emulator. |
+| `SF_AWS_ENDPOINT_URL` | `localhost:4566` (default) | AWS services endpoint to connect to for other AWS services (SQS, SNS, etc.) from Snowflake
 | `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM` | `*.s3.amazonaws.com` (example) | List of domain names that should NOT be resolved to the LocalStack container, but instead always forwarded to the upstream resolver (S3 for example). this would be required when importing data into a stage from an external S3 bucket on the real AWS cloud. Comma-separated list of Python-flavored regex patterns. |
 | `SF_HOSTNAME_REGEX` | `snowflake\..+` (default) | Allows you to customize the hostname used for matching the Snowflake API routes in the HTTP router. If not set, then it matches on any hostnames that contain a `snowflake.*` subdomain (e.g., `snowflake.localhost.localstack.cloud`). |
 | `SF_CSV_IMPORT_MAX_ROWS` | `50000` (default) | Maximum number of rows to import from CSV files into tables |
