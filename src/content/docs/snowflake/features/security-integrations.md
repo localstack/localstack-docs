@@ -82,15 +82,6 @@ You can display the Security Integrations using the `SHOW SECURITY INTEGRATIONS`
 SHOW SECURITY INTEGRATIONS LIKE 'my_oauth_integration';
 ```
 
-The output should be:
-
-```sql
-created_on             |name                |type          |category|enabled|comment|
------------------------+--------------------+--------------+--------+-------+-------+
-1970-01-01 05:30:00.000|MY_OAUTH_INTEGRATION|OAUTH - CUSTOM|SECURITY|false  |       |
-```
-
-
 ### Drop Security Integration
 
 You can drop the Security Integration using the `DROP SECURITY INTEGRATION` statement:
