@@ -14,7 +14,7 @@ Yes, the LocalStack for Snowflake supports the Snowflake v2 SQL API (`/api/v2/*`
 
 ### Why are my Snowflake tests failing?
 
-The LocalStack for Snowflake is in **preview** and may not support all Snowflake features. If your tests are failing, it could be due to the lack of support for certain Snowflake features in the emulator. We recommend checking the [function coverage](/snowflake/sql-functions/) to see the list of supported SQL functions and [feature coverage](/snowflake/features/) to see the list of supported features. If you encounter any issues, you can connect with us for [support](#support-faqs).
+LocalStack for Snowflake is now GA. If your tests are failing, it could be due to a lack of support for certain Snowflake features. We recommend checking the [function coverage](/snowflake/sql-functions/) to see the list of supported SQL functions and [feature coverage](/snowflake/features/) to see the list of supported features. If you encounter any issues, you can connect with us for [support](#support-faqs).
 
 ### Why does the LocalStack for Snowflake run on `snowflake.localhost.localstack.cloud`?
 
