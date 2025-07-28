@@ -12,6 +12,8 @@ The methods that we support thus far are:
 - `snowflake.execute()`
 - `snowflake.createStatement()`
 - `statement.execute()`
+- `resultSet.next()`
+- `resultSet.getColumnValue()`
 
 ## Getting started
 
