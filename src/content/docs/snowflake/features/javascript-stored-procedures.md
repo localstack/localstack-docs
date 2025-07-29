@@ -21,7 +21,7 @@ This guide is designed for users new to JavaScript Stored Procedures and assumes
 
 ## Creating a simple JavaScript procedure
 
-You can declare JavaScript procedures like this:
+The following is a simple JavaScript procedure that makes use of some of the most important methods of Snowflake JavasScript Procedures API:
 
 ```javascript showLineNumbers
 CREATE OR REPLACE PROCEDURE minimal_proc()
