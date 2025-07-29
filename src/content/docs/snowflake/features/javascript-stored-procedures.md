@@ -19,7 +19,7 @@ The methods that we support thus far are:
 
 This guide is designed for users new to JavaScript Stored Procedures and assumes basic knowledge of JavaScript and Snowflake. Start LocalStack for Snowflake and execute [Snowflake stored procedures in JavaScript](https://docs.snowflake.com/en/developer-guide/stored-procedure/stored-procedures-api#object-snowflake). 
 
-## Declare JavaScript procedures
+## Creating a simple JavaScript procedure
 
 You can declare JavaScript procedures like this:
 
