@@ -24,13 +24,20 @@ This guide is designed for users new to JavaScript Stored Procedures and assumes
 The following is a simple JavaScript procedure that makes use of some of the most important methods of Snowflake JavasScript Procedures API:
 
 ```javascript showLineNumbers
-CREATE OR REPLACE PROCEDURE minimal_proc()
+CREATE OR REPLACE PROCEDURE greeting_procedure()
 RETURNS STRING
 LANGUAGE JAVASCRIPT
 AS
 $$
     var stmt = snowflake.createStatement({sqlText: "SELECT 'hello world'"});
     var rs = stmt.execute();
-    ...
+    
+    var result = "";
+    if (rs.next()) {
+        result = rs.getColumnValue(1);
+    }
+    
+    return result;
 $$;
+
 ```
