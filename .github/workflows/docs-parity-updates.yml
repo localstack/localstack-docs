@@ -8,7 +8,7 @@ on:
         targetBranch:
           required: false
           type: string
-          default: 'master'
+          default: 'main'
 
 jobs:
   update-parity-coverage-docs:
@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
           path: docs
-          ref: ${{ github.event.inputs.targetBranch || 'master' }}
+          ref: ${{ github.event.inputs.targetBranch || 'main' }}
 
       - name: Set up system wide dependencies
         run: |
@@ -114,10 +114,10 @@ jobs:
         working-directory: docs
         run: |
           # Check if there are changed files and store the result in resources/diff-check.log
-          # Check against the PR branch if it exists, otherwise against the master
+          # Check against the PR branch if it exists, otherwise against the main
           # Store the result in resources/diff-check.log and store the diff count in the GitHub Action output "diff-count"
           mkdir -p resources
-          (git diff --name-only origin/parity-coverage-auto-updates data/coverage/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'master' }} src/data/coverage/ 2>/dev/null) | tee -a resources/diff-check.log
+          (git diff --name-only origin/parity-coverage-auto-updates data/coverage/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'main' }} src/data/coverage/ 2>/dev/null) | tee -a resources/diff-check.log
           echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> $GITHUB_OUTPUT
 
       - name: Read PR markdown template
