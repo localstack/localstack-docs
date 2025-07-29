@@ -38,3 +38,4 @@ $$
     rs.next();
     return rs.getColumnValue(1);
 $$;
+```
