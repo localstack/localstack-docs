@@ -6,13 +6,13 @@ tags: ["Base"]
 
 ## Introduction
 
-The [Snowflake REST Database API](https://docs.snowflake.com/en/developer-guide/snowflake-rest-api/snowflake-rest-api) provides REST API endpoints that allow you to manage database schemas and tables in Snowflake databases. Snowflake REST APIs let you use the programming language of your choice to build your integrations.  
+The [Snowflake REST API](https://docs.snowflake.com/en/developer-guide/snowflake-rest-api/snowflake-rest-api) provides REST API endpoints that allow you to manage schemas and tables in Snowflake. Snowflake REST APIs let you use the programming language of your choice to build your integrations.  
 
-LocalStack for Snowflake supports REST API Database endpoints that let you manage your Snowflake databases locally. You can create a database, list your databases, or fetch a specific one.
+LocalStack for Snowflake supports REST API endpoints that let you manage your Snowflake data locally. 
 
-## Supported Snowflake REST Database API endpoints 
+## Supported Snowflake REST API endpoints 
 
-LocalStack for Snowflake supports the following REST API endpoints to manage your Snowflake databases locally:
+LocalStack for Snowflake supports the following REST API endpoints to manage your Snowflake data locally:
 
 
 | Supported Endpoint                                           | Description                                 |
