@@ -49,7 +49,7 @@ export default defineConfig({
         './src/styles/custom.css',
       ],
       editLink: {
-        baseUrl: 'https://github.com/localstack/localstack-docs/edit/master/',
+        baseUrl: 'https://github.com/localstack/localstack-docs/edit/main/',
       },
       components: {
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
