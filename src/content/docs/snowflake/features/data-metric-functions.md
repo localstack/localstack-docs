@@ -22,9 +22,9 @@ In this guide, you will learn how to:
 - Run them manually or on a schedule
 - Query results from the DMF state table
 
-### 1. Create a Table with DMF Support
+### 1. Create a Data Metric Function
 
-Run the following query to create a table with Data Metric Functions:
+Run the following query to create your Data Metric Function:
 
 ```sql
 CREATE OR REPLACE FUNCTION check_values(ARG_T TABLE(c1 STRING))
@@ -35,7 +35,19 @@ $$
 $$;
 ```
 
-### 2. Add a Metric Schedule to a Table 
+### 2. Create a Table
+
+Run the following query to create your table:
+
+``` sql
+CREATE TABLE customers (
+    id NUMBER,
+    name STRING,
+    email STRING
+);
+```
+
+### 3. Add a Metric Schedule to a Table 
 
 Run the following query to add a metric to your table:
 
@@ -44,16 +56,16 @@ ALTER TABLE customers
   SET DATA_METRIC_SCHEDULE = 'TRIGGER_ON_CHANGES';
 ```
 
-### 3. Attach a DMF to a Column
+### 4. Attach a DMF to a Column
 
-Run the following query to attach Data Metric Functions to a specific column:
+Run the following query to attach Data Metric Functions to a specific column in your table:
 
 ``` sql
 ALTER TABLE customers
   ADD DATA METRIC FUNCTION check_values ON (email);
 ```
 
-### 4. Run a DMF Manually
+### 5. Run a DMF Manually
 
 Run the following query to manually run Data Metric Functions in your table:
 
@@ -61,7 +73,7 @@ Run the following query to manually run Data Metric Functions in your table:
 SELECT check_values(SELECT * FROM customers);
 ```
 
-### 5. Query Results from the DMF
+### 6. Query Results from the DMF
 
 Run the following query to see the results of the Data Metric Functions in your table:
 
