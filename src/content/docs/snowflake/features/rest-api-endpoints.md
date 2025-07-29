@@ -19,4 +19,4 @@ LocalStack for Snowflake supports the following REST API endpoints to manage you
 |---------------------------------------------------|---------------------------------------------|
 | `POST /api/v2/databases`                          | Creates a database.                         |
 | `GET /api/v2/databases`                           | Lists accessible databases.                 |
-| `GET /api/v2/databases/<name>`                    | Fetche a specific database.                   |
+| `GET /api/v2/databases/<name>`                    | Fetch a specific database.                   |
