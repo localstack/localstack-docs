@@ -8,7 +8,7 @@ tags: ["Base"]
 
 Snowflake [Data Metric Functions (DMFs)](https://docs.snowflake.com/en/user-guide/data-quality-intro) lets you monitor the freshness, completeness, and quality of your data by attaching system or user-defined metrics to tables and columns.
 
-LocalStack for Snowflake supports you to add a metric schedule to table (enable functions in a table), attach DMFs to table column, run the DMFs manually once, and get results from DMFs locally.
+LocalStack for Snowflake supports you to add a metric schedule to table (enable functions in a table), attach DMFs to table column, run the DMFs manually, and get results from DMFs.
 
 ## Getting started
 
