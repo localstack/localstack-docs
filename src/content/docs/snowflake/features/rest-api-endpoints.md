@@ -1,5 +1,5 @@
 ---
-title: REST API Endpoints
+title: REST API
 description: Get started with REST API Endpoints in LocalStack for Snowflake
 tags: ["Base"]
 ---
