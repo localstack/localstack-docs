@@ -28,20 +28,13 @@ In LocalStack for Snowflake, you can create JavaScript Stored Procedures to defi
 The following is a simple JavaScript procedure that makes use of some of the most important methods of Snowflake JavasScript Procedures API:
 
 ```javascript showLineNumbers
-CREATE OR REPLACE PROCEDURE greeting_procedure()
+CREATE OR REPLACE PROCEDURE minimal_proc()
 RETURNS STRING
 LANGUAGE JAVASCRIPT
 AS
 $$
     var stmt = snowflake.createStatement({sqlText: "SELECT 'hello world'"});
     var rs = stmt.execute();
-    
-    var result = "";
-    if (rs.next()) {
-        result = rs.getColumnValue(1);
-    }
-    
-    return result;
+    rs.next();
+    return rs.getColumnValue(1);
 $$;
-
-```
