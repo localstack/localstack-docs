@@ -196,27 +196,6 @@ awslocal appsync create-resolver \
     --response-mapping-template file://response-mapping-template.vtl
 ```
 
-### Resolvers
-
-LocalStack's AppSync offers support for both unit and pipeline resolvers, as detailed in the [AWS resolvers documentation](https://docs.aws.amazon.com/appsync/latest/devguide/resolver-components.html).
-Unit resolvers consist of request and response mapping templates, facilitating the transformation of requests to and from data sources.
-
-Pipeline resolvers, on the other hand, invoke AppSync functions that wraps the AppSync data sources.
-Unit resolvers are written in the Velocity templating language (VTL), while pipeline resolvers can be written in either VTL or JavaScript.
-
-
-### Configuring GraphQL endpoints
-
-There are three configurable strategies that govern how GraphQL API endpoints are created.
-The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment variable.
-
-| Value    | Format                                                 | Description                                                                                         |
-|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| `domain` | `<api-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, slated to be the future default, uses the `localhost.localstack.cloud` domain to route to your localhost. |
-| `path`   | `localhost:4566/appsync-api/<api-id>/graphql`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
-| `legacy` | `localhost:4566/graphql/<api-id>`                    | This strategy represents the old endpoint format, which is currently the default but will eventually be phased out. |
-
-
 ### Events API
 
 Create a fully managed WebSocket API that lets you subscribe to channels and broadcast events to subscribers.
@@ -406,20 +385,6 @@ In your terminal with the WebSocket Connection, you can now see the 2 new events
 < {"id":"1234567890","type":"data","event":"{\"event_2\":\"data_2\"}"}
 ```
 
-### Event handlers
-
-LocalStack supports configuring [code handlers](https://docs.aws.amazon.com/appsync/latest/eventapi/runtime-reference-overview.html) for your channel namespace. Code handlers can be configured with or without [data sources](#data-sources).
-
-### Configuring Event endpoints
-
-We are registering 2 type of endpoints that you can use to target you Events API. The examples represent the HTTP endpoint with `appsync-api` but the same is true for REALTIME endpoint with `appsync-realtime-api`. Note that unlike for GraphQL APIs, Events API endpoint is isn't the same as the API ID.
-
-| Value    | Format                                                 | Description                                                                                         |
-|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| `domain` | `<endpoint-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, uses the `localhost.localstack.cloud` domain to route to your localhost. |
-| `path`   | `localhost:4566/_aws/appsync-api/<endpoint-id>`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
-
-
 ## Shared configurations
 
 ### Custom API IDs
@@ -463,6 +428,41 @@ LocalStack supports the following data source types types and services:
 | `AWS_LAMBDA`              | Allows retrieval of data from Lambda function invocations.             |
 | `HTTP`                    | Enables calling HTTP endpoints to fetch data.                          |
 | `NONE` (GraphQL API Only) | Used for pass-through resolver mapping templates returning input data. |
+
+
+## GraphQL resolvers
+
+LocalStack's AppSync offers support for both unit and pipeline resolvers, as detailed in the [AWS resolvers documentation](https://docs.aws.amazon.com/appsync/latest/devguide/resolver-components.html).
+Unit resolvers consist of request and response mapping templates, facilitating the transformation of requests to and from data sources.
+
+Pipeline resolvers, on the other hand, invoke AppSync functions that wraps the AppSync data sources.
+Unit resolvers are written in the Velocity templating language (VTL), while pipeline resolvers can be written in either VTL or JavaScript.
+
+
+## Configuring GraphQL endpoints
+
+There are three configurable strategies that govern how GraphQL API endpoints are created.
+The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment variable.
+
+| Value    | Format                                                 | Description                                                                                         |
+|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| `domain` | `<api-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, slated to be the future default, uses the `localhost.localstack.cloud` domain to route to your localhost. |
+| `path`   | `localhost:4566/appsync-api/<api-id>/graphql`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
+| `legacy` | `localhost:4566/graphql/<api-id>`                    | This strategy represents the old endpoint format, which is currently the default but will eventually be phased out. |
+
+
+## Event handlers
+
+LocalStack supports configuring [code handlers](https://docs.aws.amazon.com/appsync/latest/eventapi/runtime-reference-overview.html) for your channel namespace. Code handlers can be configured with or without [data sources](#data-sources).
+
+## Configuring Event endpoints
+
+We are registering 2 type of endpoints that you can use to target you Events API. The examples represent the HTTP endpoint with `appsync-api` but the same is true for REALTIME endpoint with `appsync-realtime-api`. Note that unlike for GraphQL APIs, Events API endpoint is isn't the same as the API ID.
+
+| Value    | Format                                                 | Description                                                                                         |
+|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| `domain` | `<endpoint-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, uses the `localhost.localstack.cloud` domain to route to your localhost. |
+| `path`   | `localhost:4566/_aws/appsync-api/<endpoint-id>`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
 
 
 ## Evaluation endpoints
