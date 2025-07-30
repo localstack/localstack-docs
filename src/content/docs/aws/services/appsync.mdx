@@ -13,7 +13,21 @@ AWS AppSync is a fully managed API management service that connects applications
 LocalStack allows you to use the AppSync APIs in your local environment to connect your applications and services to data and events.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of AppSync's integration with LocalStack.
 
-## Getting started with GraphQL API
+## Getting Started
+
+This guide is designed for users new to **AppSync** in LocalStack, and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+
+LocalStack supports two primary ways to work with AppSync:
+
+* **GraphQL**: use schemas and resolvers to interact with data sources like DynamoDB.
+* **Events API**: enable sending real-time event data to subscribed clients.
+
+Start your LocalStack container using your preferred method, then jump into the section that matches your use case:
+
+* [GraphQL API](#graphql-api): build query-based APIs with schema-first design.
+* [Events API](#events-api): build with publish/subscribe style, real-time messaging.
+
+### GraphQL API
 
 Create serverless GraphQL APIs to query databases, microservices, and other APIs.
 AppSync allows you to define your data models and business logic using a declarative approach, and connect to various data sources, including other AWS services, relational databases, and custom data sources.
@@ -23,7 +37,7 @@ This guide is designed for users new to AppSync and assumes basic knowledge of t
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an AppSync API with a DynamoDB data source using the AWS CLI.
 
-### Create a DynamoDB table
+#### 1. Create a DynamoDB table
 
 You can create a DynamoDB table using the [`CreateTable`](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_CreateTable.html) API.
 Execute the following command to create a table named `DynamoDBNotesTable` with a primary key named `NoteId`:
@@ -51,7 +65,7 @@ awslocal dynamodb list-tables
 }
 ```
 
-### Create a GraphQL API
+#### 2. Create a GraphQL API
 
 You can create a GraphQL API using the [`CreateGraphqlApi`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateGraphqlApi.html) API.
 Execute the following command to create a GraphQL API named `NotesApi`:
@@ -96,7 +110,7 @@ awslocal appsync create-api-key \
 }
 ```
 
-### Create a GraphQL schema
+#### 3. Create a GraphQL schema
 
 Create a file named `schema.graphql` with the following content:
 
@@ -139,7 +153,7 @@ awslocal appsync start-schema-creation \
 }
 ```
 
-### Create a data source
+#### 4. Create a data source
 
 You can create a data source using the [`CreateDataSource`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateDataSource.html) API.
 Execute the following command to create a data source named `DynamoDBNotesTable`:
@@ -166,7 +180,7 @@ awslocal appsync create-data-source \
 }
 ```
 
-### Create a resolver
+#### 5. Create a resolver
 
 You can create a resolver using the [`CreateResolver`](https://github.com/localstack/docs/pull/782) API.
 You can create a custom `request-mapping-template.vtl` and `response-mapping-template.vtl` file to use as a mapping template to use for requests and responses respectively.
@@ -182,11 +196,11 @@ awslocal appsync create-resolver \
     --response-mapping-template file://response-mapping-template.vtl
 ```
 
-## Getting started with Events API
+### Events API
 
 Create a fully managed WebSocket API that lets you subscribe to channels and broadcast events to subscribers.
 
-### Create an Events API
+#### 1. Create an Events API
 
 You can create an Events API using the [CreateApi](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateApi.html) API. The following command will create an Events API with the name `my-api`. 
 Note the `apiId`, `dns.REALTIME` and `dns.HTTP` in the outputs as it will be reused as `<api-id>`, `<realtime-domain>` and `<http-domain>` for the remainder of this example.
@@ -219,7 +233,7 @@ awslocal appsync create-api \
 }
 ```
 
-### Create a channelNamespace
+#### 2. Create a `channelNamespace`
 
 You can create an `channelNamespace` using the [CreateChannelNamespace](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateChannelNamespace.html) API. At least one `channelNamespace` is required in order to subscribe and publish to it.
 
@@ -244,7 +258,7 @@ awslocal appsync create-channel-namespace \
 
 ```
 
-### Create an Api Key
+#### 3. Create an API Key
 
 You can create an Api Key using the [CreateApiKey](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateApiKey.html) API. The Api Key is used to authenticate Websocket connections and authorize `publish` and `subscribe` events. Note you Api Key id as it will be referenced as `<api-key-id>` in this example.
 
@@ -263,7 +277,7 @@ awslocal appsync create-api-key --api-id <api-id>
 }
 ```
 
-### Connect Via WebSocket
+#### 4. Connect via WebSocket
 
 This example will use `wscat` to create a WebSocket connection. From there, we will create a subscription and show an example of how to publish via WebSocket and HTTP. If you do not have it installed, it can be installed as a `npm` global package with the following command.
 
@@ -295,7 +309,7 @@ Connected (press CTRL+C to quit)
 > |
 ```
 
-### Subscribe to a channel
+#### 5. Subscribe to a channel
 
 Once connected a `subscribe` event containing the following keys can be sent: `type`, `id`, `channel` and `authorization`.
 The connection `id` is later reused when receiving events from this subscription and when sending an `unsubscribe` event.
@@ -308,7 +322,7 @@ The connection `id` is later reused when receiving events from this subscription
 < {"id":"1234567890","type":"subscribe_success"}
 ```
 
-### Publish via WebSocket
+#### 6. Publish via WebSocket
 
 Once subscribed, a `publish` event can be sent. Note that the subscription create to listen to every sub-channel of `default` via `/default/*` so publish event sent to `/default/race` or `/default/race/formulaOne` would be received by the subscriber, but events published to root `/default`, in this case would not be received.
 
@@ -325,7 +339,7 @@ The `publish_success` event is received first followed by the published event
 < {"id":"1234567890","type":"data","event":"{\"team\": \"McLaren\"}"}
 ```
 
-### Publish via HTTP
+#### 7. Publish via HTTP
 
 Create a file named `publishEvent.json` with and paste within the following content.
 
@@ -371,7 +385,7 @@ In your terminal with the WebSocket Connection, you can now see the 2 new events
 < {"id":"1234567890","type":"data","event":"{\"event_2\":\"data_2\"}"}
 ```
 
-## Shared configuration
+## Shared configurations
 
 ### Custom API IDs
 
@@ -426,7 +440,7 @@ Pipeline resolvers, on the other hand, invoke AppSync functions that wraps the A
 Unit resolvers are written in the Velocity templating language (VTL), while pipeline resolvers can be written in either VTL or JavaScript.
 
 
-### Configuring Endpoints
+### Configuring GraphQL endpoints
 
 There are three configurable strategies that govern how GraphQL API endpoints are created.
 The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment variable.
@@ -443,9 +457,9 @@ The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment v
 
 LocalStack supports configuring [code handlers](https://docs.aws.amazon.com/appsync/latest/eventapi/runtime-reference-overview.html) for your channel namespace. Code handlers can be configured with or without [data sources](#data-sources).
 
-### Endpoints
+### Configuring Event endpoints
 
-We are registering 2 type of endpoints that you can use to target you Events API. The examples represent the HTTP endpoint with `appsync-api` but the same is true for REALTIME endpoint with `appsync-realtime-api`. Note that unlike for GraphQL APIs, Events API endpoint is isn't the same as the api id.
+We are registering 2 type of endpoints that you can use to target you Events API. The examples represent the HTTP endpoint with `appsync-api` but the same is true for REALTIME endpoint with `appsync-realtime-api`. Note that unlike for GraphQL APIs, Events API endpoint is isn't the same as the API ID.
 
 | Value    | Format                                                 | Description                                                                                         |
 |----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
@@ -521,9 +535,11 @@ The Resource Browser allows you to perform the following actions:
 - **Create Function**: Click on the GraphQL API name and click **Functions**.
   Click on **Create Function** to create a function, by providing a name for the function, data source name, and Function Version, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
 
-### Event API
+### Events API
 
-TBA
+:::note
+Resource Browser support for Events APIs is not available yet.
+:::
 
 ## Examples
 
