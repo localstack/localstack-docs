@@ -1,5 +1,5 @@
 ---
-title: "MemoryDB for Redis"
+title: "MemoryDB"
 tags: ["Ultimate"]
 description: Get started with MemoryDB on LocalStack
 ---
@@ -8,8 +8,9 @@ import FeatureCoverage from "../../../../components/feature-coverage/FeatureCove
 
 ## Introduction
 
-MemoryDB is a fully managed, Redis-compatible, in-memory database tailored for workloads demanding ultra-fast, primary database functionality.
-It streamlines the deployment and management of in-memory databases within the AWS cloud environment, acting as a replacement for using a cache in front of a database for improved durability and performance.
+MemoryDB is a fully managed, in-memory database service designed for ultra-fast, primary database use cases. Compatible with both Valkey and Redis OSS, it improves performance and durability.
+
+Built for the AWS cloud environment, MemoryDB simplifies the deployment and operation of in-memory databases, acting as a replacement for using a cache in front of a database. 
 
 LocalStack provides support for the main MemoryDB APIs surrounding cluster creation, allowing developers to utilize the MemoryDB functionalities in their local development environment.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of MemoryDB's integration with LocalStack.
@@ -72,9 +73,40 @@ This approach directs LocalStack to launch Redis instances in distinct container
 Additionally, container mode is beneficial for independently examining the logs of each Redis instance.
 To activate this, set the `REDIS_CONTAINER_MODE` configuration variable to `1`.
 
+
+## Valkey Engine 
+
+LocalStack offers the additional option to use Valkey as an alternative to Redis in MemoryDB. 
+
+To enable full Valkey emulation: 
+
+1. Start LocalStack with Valkey support enabled by setting the environment variable, `REDIS_CONTAINER_MODE=1`
+2. Create a cluster with the Valkey engine by including the `--engine valkey` flag in your API call:
+
+```bash
+awslocal memorydb create-cluster \
+  --cluster-name my-valkey-cluster \
+  --node-type db.t4g.small \
+  --acl-name open-access \
+  --engine valkey
+```
+
+Valkey support includes:
+
+- The ability to specify `valkey` as the engine when creating ElastiCache replication groups and MemoryDB clusters.
+
+- Automatic mapping of each engine to a default supported version (Redis `7.2.10`, Valkey `7.2.10`), ensuring DockerHub compatibility.
+
+- Support for the `Engine` and `EngineVersion` fields in the `CreateReplicationGroup` and `CreateCluster` APIs, which now recognize and handle `valkey`.
+
+::: note
+A Valkey cluster can only be started when [container mode](/aws/services/memorydb/#container-mode) is enabled. 
+::: 
+
 ## Current Limitations
 
 LocalStack's emulation support for MemoryDB primarily focuses on the creation and termination of Redis servers in cluster mode.
+
 Essential resources for running a cluster, such as parameter groups, security groups, and subnet groups, are mocked but have no effect on the Redis servers' operation.
 
 LocalStack currently doesn't support MemoryDB snapshots, failovers, users/passwords, service updates, replication scaling, SSL, migrations, service integration (like CloudWatch/Kinesis log delivery, SNS notifications) or tests.
