@@ -8,7 +8,7 @@ import FeatureCoverage from "../../../../components/feature-coverage/FeatureCove
 
 ## Introduction
 
-MemoryDB is a fully managed, in-memory database service designed for ultra-fast, primary database use cases. Compatible with both Valkey and Redis OSS, it improves performance and durability.
+Amazon MemoryDB is a fully managed, in-memory database service designed for ultra-fast, primary database use cases. Compatible with both Valkey and Redis OSS, it improves performance and durability.
 
 Built for the AWS cloud environment, MemoryDB simplifies the deployment and operation of in-memory databases, acting as a replacement for using a cache in front of a database. 
 
@@ -76,7 +76,7 @@ To activate this, set the `REDIS_CONTAINER_MODE` configuration variable to `1`.
 
 ## Valkey Engine 
 
-LocalStack offers the additional option to use Valkey as an alternative to Redis in MemoryDB. 
+LocalStack offers the additional option to use Valkey as an alternative to Redis in Amazon MemoryDB. 
 
 To enable full Valkey emulation: 
 
@@ -93,11 +93,11 @@ awslocal memorydb create-cluster \
 
 Valkey support includes:
 
-- The ability to specify `valkey` as the engine when creating ElastiCache replication groups and MemoryDB clusters.
+- The ability to specify `valkey` as the engine when creating Amazon MemoryDB clusters.
 
 - Automatic mapping of each engine to a default supported version (Redis `7.2.10`, Valkey `7.2.10`), ensuring DockerHub compatibility.
 
-- Support for the `Engine` and `EngineVersion` fields in the `CreateReplicationGroup` and `CreateCluster` APIs, which now recognize and handle `valkey`.
+- Support for the `Engine` and `EngineVersion` fields in the `CreateCluster` API, which now recognize and handle `valkey`.
 
 ::: note
 A Valkey cluster can only be started when [container mode](/aws/services/memorydb/#container-mode) is enabled. 
