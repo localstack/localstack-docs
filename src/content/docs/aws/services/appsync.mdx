@@ -13,21 +13,20 @@ AWS AppSync is a fully managed API management service that connects applications
 LocalStack allows you to use the AppSync APIs in your local environment to connect your applications and services to data and events.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of AppSync's integration with LocalStack.
 
-## Getting Started
-
 This guide is designed for users new to **AppSync** in LocalStack, and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
 
-LocalStack supports two primary ways to work with AppSync:
-
-* **GraphQL**: use schemas and resolvers to interact with data sources like DynamoDB.
-* **Events API**: enable sending real-time event data to subscribed clients.
+LocalStack supports two primary ways to work with AppSync, GraphQL and Events API. 
 
 Start your LocalStack container using your preferred method, then jump into the section that matches your use case:
 
 * [GraphQL API](#graphql-api): build query-based APIs with schema-first design.
 * [Events API](#events-api): build with publish/subscribe style, real-time messaging.
 
-### GraphQL API
+## GraphQL API
+
+Use schemas and resolvers to interact with data sources like DynamoDB.
+
+### Getting Started
 
 Create serverless GraphQL APIs to query databases, microservices, and other APIs.
 AppSync allows you to define your data models and business logic using a declarative approach, and connect to various data sources, including other AWS services, relational databases, and custom data sources.
@@ -196,7 +195,61 @@ awslocal appsync create-resolver \
     --response-mapping-template file://response-mapping-template.vtl
 ```
 
-### Events API
+### GraphQL resolvers
+
+LocalStack's AppSync offers support for both unit and pipeline resolvers, as detailed in the [AWS resolvers documentation](https://docs.aws.amazon.com/appsync/latest/devguide/resolver-components.html).
+Unit resolvers consist of request and response mapping templates, facilitating the transformation of requests to and from data sources.
+
+Pipeline resolvers, on the other hand, invoke AppSync functions that wraps the AppSync data sources.
+Unit resolvers are written in the Velocity templating language (VTL), while pipeline resolvers can be written in either VTL or JavaScript.
+
+
+### Configuring GraphQL endpoints
+
+There are three configurable strategies that govern how GraphQL API endpoints are created.
+The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment variable.
+
+| Value    | Format                                                 | Description                                                                                         |
+|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| `domain` | `<api-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, slated to be the future default, uses the `localhost.localstack.cloud` domain to route to your localhost. |
+| `path`   | `localhost:4566/appsync-api/<api-id>/graphql`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
+| `legacy` | `localhost:4566/graphql/<api-id>`                    | This strategy represents the old endpoint format, which is currently the default but will eventually be phased out. |
+
+
+### GraphQL Resource Browser
+
+The LocalStack Web Application provides a Resource Browser for managing AppSync APIs, Data Sources, Schema, Query, Types, Resolvers, Functions and API keys.
+You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **AppSync** under the **App Integration** section.
+
+![AppSync Resource Browser](/images/aws/appsync-resource-browser.png)
+
+The Resource Browser allows you to perform the following actions:
+
+- **Create API**: Create a new GraphQL API by clicking **Create API** and providing a name for the API, Authentication Type, and optional tags among other parameters.
+- **Edit API**: Click on the GraphQL API name and click **Edit API** to edit the GraphQL API, by updating the parameters before clicking **Submit**.
+- **Create Data Source**: Click on the GraphQL API name and click **Data Source**.
+  Click on **Create Data Source** to create a new data source for the GraphQL API, by providing a name for the data source, data source type, and Service Role ARN before clicking **Submit**.
+- **Edit Data Source**: Click on the GraphQL API name and click **Data Source**.
+  Click on the data source name and click **Edit Data Source** to edit the data source, by updating the parameters before clicking **Submit**.
+- **Create Types**: Click on the GraphQL API name and click **Types**.
+  Click on **Create Type** to create a type definition, in GraphQL Schema Definition Language (SDL) format, before clicking **Submit**.
+- **Create API Key**: Click on the GraphQL API name and click **API Keys**.
+  Click on **Create API Key** to create an API key for the GraphQL API, by providing a description for the API key and its expiration time before clicking **Submit**.
+- **View and edit Schema**: Click on the GraphQL API name and click **Schema**.
+  You can view the GraphQL schema, and edit the GraphQL schema, in GraphQL Schema Definition Language (SDL) format, before clicking **Update**.
+- **Query**: Click on the GraphQL API name and click **Query**.
+  You can query the GraphQL API by providing the GraphQL query and variables, including the operation and API key, before clicking **Execute**.
+- **Attach Resolver**: Click on the GraphQL API name and click **Resolvers**.
+  Click on **Attach Resolver** to attach a resolver to a field, by providing the field name, data source name, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
+- **Create Function**: Click on the GraphQL API name and click **Functions**.
+  Click on **Create Function** to create a function, by providing a name for the function, data source name, and Function Version, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
+
+
+## Events API
+
+Enable sending real-time event data to subscribed clients.
+
+### Getting Started
 
 Create a fully managed WebSocket API that lets you subscribe to channels and broadcast events to subscribers.
 
@@ -385,6 +438,28 @@ In your terminal with the WebSocket Connection, you can now see the 2 new events
 < {"id":"1234567890","type":"data","event":"{\"event_2\":\"data_2\"}"}
 ```
 
+
+### Event code handlers
+
+LocalStack supports configuring [code handlers](https://docs.aws.amazon.com/appsync/latest/eventapi/runtime-reference-overview.html) for your [channel namespace](#2-create-a-channelnamespace). Code handlers can be configured with or without [data sources](#data-sources).
+
+### Configuring Event endpoints
+
+We are registering 2 type of endpoints that you can use to target you Events API. The examples represent the HTTP endpoint with `appsync-api` but the same is true for REALTIME endpoint with `appsync-realtime-api`. Note that unlike for GraphQL APIs, Events API endpoint is isn't the same as the API ID.
+
+| Value    | Format                                                 | Description                                                                                         |
+|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| `domain` | `<endpoint-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, uses the `localhost.localstack.cloud` domain to route to your localhost. |
+| `path`   | `localhost:4566/_aws/appsync-api/<endpoint-id>`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
+
+
+### Events Resource Browser
+
+:::note
+Resource Browser support for Events APIs is not available yet.
+:::
+
+
 ## Shared configurations
 
 ### Custom API IDs
@@ -430,41 +505,6 @@ LocalStack supports the following data source types types and services:
 | `NONE` (GraphQL API Only) | Used for pass-through resolver mapping templates returning input data. |
 
 
-## GraphQL resolvers
-
-LocalStack's AppSync offers support for both unit and pipeline resolvers, as detailed in the [AWS resolvers documentation](https://docs.aws.amazon.com/appsync/latest/devguide/resolver-components.html).
-Unit resolvers consist of request and response mapping templates, facilitating the transformation of requests to and from data sources.
-
-Pipeline resolvers, on the other hand, invoke AppSync functions that wraps the AppSync data sources.
-Unit resolvers are written in the Velocity templating language (VTL), while pipeline resolvers can be written in either VTL or JavaScript.
-
-
-## Configuring GraphQL endpoints
-
-There are three configurable strategies that govern how GraphQL API endpoints are created.
-The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment variable.
-
-| Value    | Format                                                 | Description                                                                                         |
-|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| `domain` | `<api-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, slated to be the future default, uses the `localhost.localstack.cloud` domain to route to your localhost. |
-| `path`   | `localhost:4566/appsync-api/<api-id>/graphql`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
-| `legacy` | `localhost:4566/graphql/<api-id>`                    | This strategy represents the old endpoint format, which is currently the default but will eventually be phased out. |
-
-
-## Event handlers
-
-LocalStack supports configuring [code handlers](https://docs.aws.amazon.com/appsync/latest/eventapi/runtime-reference-overview.html) for your [channel namespace](#2-create-a-channelnamespace). Code handlers can be configured with or without [data sources](#data-sources).
-
-## Configuring Event endpoints
-
-We are registering 2 type of endpoints that you can use to target you Events API. The examples represent the HTTP endpoint with `appsync-api` but the same is true for REALTIME endpoint with `appsync-realtime-api`. Note that unlike for GraphQL APIs, Events API endpoint is isn't the same as the API ID.
-
-| Value    | Format                                                 | Description                                                                                         |
-|----------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| `domain` | `<endpoint-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, uses the `localhost.localstack.cloud` domain to route to your localhost. |
-| `path`   | `localhost:4566/_aws/appsync-api/<endpoint-id>`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
-
-
 ## Evaluation endpoints
 
 LocalStack supports code evaluation endpoints: [`EvaluateCode`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_EvaluateCode.html) and [`EvaluateMappingTemplate`](https://docs.aws.amazon.com/appsync/latest/APIReference/API_EvaluateMappingTemplate.html).
@@ -504,41 +544,6 @@ awslocal appsync evaluate-code \
 }
 ```
 
-## Resource Browser
-
-### GraphQL API
-
-The LocalStack Web Application provides a Resource Browser for managing AppSync APIs, Data Sources, Schema, Query, Types, Resolvers, Functions and API keys.
-You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **AppSync** under the **App Integration** section.
-
-![AppSync Resource Browser](/images/aws/appsync-resource-browser.png)
-
-The Resource Browser allows you to perform the following actions:
-
-- **Create API**: Create a new GraphQL API by clicking **Create API** and providing a name for the API, Authentication Type, and optional tags among other parameters.
-- **Edit API**: Click on the GraphQL API name and click **Edit API** to edit the GraphQL API, by updating the parameters before clicking **Submit**.
-- **Create Data Source**: Click on the GraphQL API name and click **Data Source**.
-  Click on **Create Data Source** to create a new data source for the GraphQL API, by providing a name for the data source, data source type, and Service Role ARN before clicking **Submit**.
-- **Edit Data Source**: Click on the GraphQL API name and click **Data Source**.
-  Click on the data source name and click **Edit Data Source** to edit the data source, by updating the parameters before clicking **Submit**.
-- **Create Types**: Click on the GraphQL API name and click **Types**.
-  Click on **Create Type** to create a type definition, in GraphQL Schema Definition Language (SDL) format, before clicking **Submit**.
-- **Create API Key**: Click on the GraphQL API name and click **API Keys**.
-  Click on **Create API Key** to create an API key for the GraphQL API, by providing a description for the API key and its expiration time before clicking **Submit**.
-- **View and edit Schema**: Click on the GraphQL API name and click **Schema**.
-  You can view the GraphQL schema, and edit the GraphQL schema, in GraphQL Schema Definition Language (SDL) format, before clicking **Update**.
-- **Query**: Click on the GraphQL API name and click **Query**.
-  You can query the GraphQL API by providing the GraphQL query and variables, including the operation and API key, before clicking **Execute**.
-- **Attach Resolver**: Click on the GraphQL API name and click **Resolvers**.
-  Click on **Attach Resolver** to attach a resolver to a field, by providing the field name, data source name, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
-- **Create Function**: Click on the GraphQL API name and click **Functions**.
-  Click on **Create Function** to create a function, by providing a name for the function, data source name, and Function Version, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
-
-### Events API
-
-:::note
-Resource Browser support for Events APIs is not available yet.
-:::
 
 ## Examples
 
