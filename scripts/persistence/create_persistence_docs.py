@@ -73,6 +73,10 @@ def collect_status() -> dict:
     catalog_db = PersistenceCatalog(notion_client=notion_client)
     statuses = {}
     for item in catalog_db:
+        # skip services that are not implemented
+        if not item.implemented:
+            continue
+        
         # we do not want some services to be mentioned in the docs (for instance, not yet released)
         if item.exclude:
             continue
