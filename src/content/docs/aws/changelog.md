@@ -31,6 +31,7 @@ which can be released as patch version because we are committed to make LocalSta
 
 | Version  | Release Date       | Release Notes                                                                                      |
 |----------|--------------------|----------------------------------------------------------------------------------------------------|
+| `v4.7.0` | July 31, 2025      | [v4.7.0](https://blog.localstack.cloud/localstack-for-aws-release-v-4-7-0/)                        |
 | `v4.6.0` | July 3, 2025       | [v4.6.0](https://blog.localstack.cloud/localstack-for-aws-release-v-4-6-0/)                        |
 | `v4.5.0` | June 5, 2025       | [v4.5.0](https://blog.localstack.cloud/localstack-release-v-4-5-0/)                                |
 | `v4.4.0` | May 8, 2025        | [v4.4.0](https://blog.localstack.cloud/localstack-release-v-4-4-0/)                                |
