@@ -39,12 +39,17 @@ jobs:
           cd localstack-docs
           mv coverage-features.md src/content/docs/snowflake/features/index.md
           mv coverage-functions.md src/content/docs/snowflake/sql-functions.md
-
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v9
+      
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
         with:
-          author_name: 'LocalStack Bot'
-          author_email: localstack-bot@users.noreply.github.com
-          message: 'Updated function coverage docs'
-          cwd: localstack-docs
-          add: 'src/content/'
+          path: docs
+          title: "Update function coverage documentation"
+          body: "Automated update of snowflake feature coverage docs"
+          branch: "snowflake-feature-coverage-updates"
+          author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          commit-message: "automated update of snowflake feature coverage docs"
+          token: ${{ secrets.PRO_ACCESS_TOKEN }}
+          reviewers: hovaesco, harshcasper
