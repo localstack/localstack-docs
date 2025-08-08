@@ -7,8 +7,6 @@ sidebar:
 tags: ["Base"]
 ---
 
-![LocalStack Extensions](/images/aws/localstack-extensions-header.png)
-
 LocalStack Extensions let you customize and extend LocalStack’s core functionality by running additional logic and services inside the same container. This feature is available in our paid offering, and is ideal for teams that want deeper control over how LocalStack behaves during development or testing.
 
 You can use LocalStack Extensions to:
@@ -22,6 +20,12 @@ You can use LocalStack Extensions to:
 The Extensions API makes it easy to integrate your own logic or extend existing services, all within LocalStack’s runtime.
 
 Officially supported extensions are available in our [Official Extensions Library](https://app.localstack.cloud/extensions/library). To install and use extensions, you'll need an active LocalStack license.
+
+:::tip
+Want to try out a common LocalStack extension?
+
+Our [MailHog tutorial](/aws/tooling/extensions/mailhog) teaches you how to install and use the official MailHog extension. It’s a quick way to explore how extensions work in LocalStack.
+:::
 
 :::note
 The feature and the API are currently in preview stage and may be subject to change.
