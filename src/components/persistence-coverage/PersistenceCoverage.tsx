@@ -96,7 +96,7 @@ export default function PersistenceCoverage() {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     debugTable: false,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageSize: 12 } },
   });
 
   return (

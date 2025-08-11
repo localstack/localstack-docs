@@ -7,7 +7,7 @@ on:
         targetBranch:
           required: false
           type: string
-          default: 'master'
+          default: 'main'
 
 jobs:
   update-persistence-docs:
@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
           path: docs
-          ref: ${{ github.event.inputs.targetBranch || 'master' }}
+          ref: ${{ github.event.inputs.targetBranch || 'main' }}
 
       - name: Set up Python 3.11
         id: setup-python
@@ -46,7 +46,7 @@ jobs:
           # Check against the PR branch if it exists, otherwise against the main
           # Store the result in resources/diff-check.log and store the diff count in the GitHub Action output "diff-count"
           mkdir -p resources
-          (git diff --name-only origin/persistence-auto-updates src/data/persistence/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'master' }} src/data/persistence/ 2>/dev/null) | tee -a resources/diff-check.log
+          (git diff --name-only origin/persistence-auto-updates src/data/persistence/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'main' }} src/data/persistence/ 2>/dev/null) | tee -a resources/diff-check.log
           echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> $GITHUB_OUTPUT
           cat resources/diff-check.log
 

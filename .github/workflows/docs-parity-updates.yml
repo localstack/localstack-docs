@@ -8,7 +8,7 @@ on:
         targetBranch:
           required: false
           type: string
-          default: 'master'
+          default: 'main'
 
 jobs:
   update-parity-coverage-docs:
@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
           path: docs
-          ref: ${{ github.event.inputs.targetBranch || 'master' }}
+          ref: ${{ github.event.inputs.targetBranch || 'main' }}
 
       - name: Set up system wide dependencies
         run: |
@@ -65,27 +65,27 @@ jobs:
 
       - name: Download metrics data from Pro pipeline (GitHub)
         working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target master
+        run: /tmp/get_latest_github_metrics.sh ./target main
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-ext
+          REPOSITORY_NAME: localstack-pro
           ARTIFACT_ID: parity-metric-ext-raw-*
           WORKFLOW: "AWS / Build, Test, Push" 
           PREFIX_ARTIFACT: pro-integration-test
       
       - name: Download coverage (capture-notimplemented) data from Pro pipeline (GitHub)
         working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target master
+        run: /tmp/get_latest_github_metrics.sh ./target main
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-ext
+          REPOSITORY_NAME: localstack-pro
           ARTIFACT_ID: capture-notimplemented-pro 
           WORKFLOW: "AWS / Build, Test, Push" 
           RESOURCE_FOLDER: "metrics-implementation-details"
 
       - name: Download metrics data from Community pipeline (GitHub)
         working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target master
+        run: /tmp/get_latest_github_metrics.sh ./target main
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
           REPOSITORY_NAME: localstack
@@ -95,7 +95,7 @@ jobs:
 
       - name: Download coverage (capture-notimplemented) data from Community pipeline (GitHub)
         working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target master
+        run: /tmp/get_latest_github_metrics.sh ./target main
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
           REPOSITORY_NAME: localstack
@@ -114,10 +114,10 @@ jobs:
         working-directory: docs
         run: |
           # Check if there are changed files and store the result in resources/diff-check.log
-          # Check against the PR branch if it exists, otherwise against the master
+          # Check against the PR branch if it exists, otherwise against the main
           # Store the result in resources/diff-check.log and store the diff count in the GitHub Action output "diff-count"
           mkdir -p resources
-          (git diff --name-only origin/parity-coverage-auto-updates data/coverage/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'master' }} src/data/coverage/ 2>/dev/null) | tee -a resources/diff-check.log
+          (git diff --name-only origin/parity-coverage-auto-updates data/coverage/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'main' }} src/data/coverage/ 2>/dev/null) | tee -a resources/diff-check.log
           echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> $GITHUB_OUTPUT
 
       - name: Read PR markdown template

@@ -69,7 +69,7 @@ icacls.exe key.pem /inheritance:r
 If you already have an SSH public key that you wish to use, such as the one located in your home directory at `~/.ssh/id_rsa.pub`, you can import it instead.
 
 ```bash
-awslocal ec2 import-key-pair --key-name my-key --public-key-material file://~/.ssh/id_rsa.pub
+awslocal ec2 import-key-pair --key-name my-key --public-key-material "$(cat ~/.ssh/id_rsa.pub)"
 ```
 
 If you only have the SSH private key, a public key can be generated using the following command, and then imported:

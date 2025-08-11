@@ -84,13 +84,30 @@
       addIconClassesToNavigation();
     },
   };
-})();
 
-/* const leftNavSelect = document.querySelector('select.astro-oojz3yon');
-if (leftNavSelect) {
-  leftNavSelect.addEventListener('change', (event) => {
-    console.log('leftNavSelect changed');
-    window.LocalStackIconLoader.refresh();
-  });
-}
-*/
+  function handleDropdownNavigation() {
+    const leftNavSelect = document.querySelector('select.astro-oojz3yon');
+    if (leftNavSelect) {
+      leftNavSelect.addEventListener('change', (event) => {
+        const selectedValue = event.target.value;
+        console.log('Dropdown changed to:', selectedValue);
+        
+        if (selectedValue === 'AWS') {
+          window.location.href = '/aws/';
+        } else if (selectedValue === 'Snowflake') {
+          window.location.href = '/snowflake/';
+        }
+        
+        setTimeout(() => {
+          window.LocalStackIconLoader.refresh();
+        }, 100);
+      });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', handleDropdownNavigation);
+  } else {
+    handleDropdownNavigation();
+  }
+  setTimeout(handleDropdownNavigation, 500);
+})();

@@ -23,6 +23,7 @@ class PersistenceServiceItem(Page):
     secondary_owner = PeopleProperty("Secondary Owner(s)")
     limitations = Text("Limitations (synced with docs)")
     exclude = Checkbox("Exclude from docs")
+    implemented = Checkbox("Implemented")
 
 
 class PersistenceCatalog(Database[PersistenceServiceItem]):

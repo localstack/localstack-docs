@@ -49,7 +49,7 @@ export default defineConfig({
         './src/styles/custom.css',
       ],
       editLink: {
-        baseUrl: 'https://github.com/localstack/localstack-docs/edit/master/',
+        baseUrl: 'https://github.com/localstack/localstack-docs/edit/main/',
       },
       components: {
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
@@ -200,6 +200,9 @@ export default defineConfig({
           appId: 'XBW1JU7CW5',
           apiKey: '6b0341e2f50196d328d088dbb5cd6166',
           indexName: 'localstack',
+          searchParameters: {
+            facets: ['lvl0'],
+          },
         }),
       ],
       sidebar: [

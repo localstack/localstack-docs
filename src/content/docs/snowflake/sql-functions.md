@@ -29,8 +29,10 @@ The content will be updated as additional query features and functions are imple
 |AI_COMPLETE|❓|
 |AI_EMBED|❓|
 |AI_FILTER|❓|
+|AI_SENTIMENT|❓|
 |AI_SIMILARITY|❓|
 |AI_SUMMARIZE_AGG|❓|
+|AI_TRANSCRIBE|❓|
 |ALERT_HISTORY|❓|
 |ALL_USER_NAMES|❓|
 |ANY_VALUE|✅|
@@ -100,7 +102,7 @@ The content will be updated as additional query features and functions are imple
 |BASE64_DECODE_BINARY|❓|
 |BASE64_DECODE_STRING|❓|
 |BASE64_ENCODE|❓|
-|[ NOT ] BETWEEN|❓|
+|[ NOT ] BETWEEN|✅|
 |BIT_LENGTH|❓|
 |BITAND|✅|
 |BITAND_AGG|❓|
@@ -141,7 +143,7 @@ The content will be updated as additional query features and functions are imple
 |COMPLETE (SNOWFLAKE.CORTEX)|❓|
 |COMPLETE_TASK_GRAPHS|❓|
 |COMPRESS|❓|
-|CONCAT, |||✅|
+|CONCAT, \|\||✅|
 |CONCAT_WS|❓|
 |CONDITIONAL_CHANGE_EVENT|❓|
 |CONDITIONAL_TRUE_EVENT|❓|
@@ -184,8 +186,10 @@ The content will be updated as additional query features and functions are imple
 |CURRENT_USER|✅|
 |CURRENT_VERSION|✅|
 |CURRENT_WAREHOUSE|✅|
+|DATA_METRIC_FUNCTION_EXPECTATIONS|❓|
 |DATA_METRIC_FUNCTION_REFERENCES|❓|
-|DATA_QUALITY_MONITORING_RESULTS|❓|
+|DATA_QUALITY_MONITORING_EXPECTATION_STATUS|❓|
+|DATA_QUALITY_MONITORING_RESULTS|✅|
 |DATA_TRANSFER_HISTORY|❓|
 |DATABASE_REFRESH_HISTORY|❓|
 |DATABASE_REFRESH_PROGRESS, DATABASE_REFRESH_PROGRESS_BY_JOB|❓|
@@ -235,7 +239,7 @@ The content will be updated as additional query features and functions are imple
 |EMBED_TEXT_1024 (SNOWFLAKE.CORTEX)|❓|
 |ENCRYPT|❓|
 |ENCRYPT_RAW|❓|
-|ENDSWITH|❓|
+|ENDSWITH|✅|
 |ENTITY_SENTIMENT (SNOWFLAKE.CORTEX)|❓|
 |EQUAL_NULL|✅|
 |ESTIMATE_REMAINING_DP_AGGREGATES|❓|
@@ -280,6 +284,7 @@ The content will be updated as additional query features and functions are imple
 |GET_CONTACTS|❓|
 |GET_DDL|❓|
 |GET_IGNORE_CASE|❓|
+|GET_JOB_HISTORY|❓|
 |GET_LINEAGE (SNOWFLAKE.CORE)|❓|
 |GET_OBJECT_REFERENCES|❓|
 |GET_PATH, :|✅|
@@ -328,7 +333,7 @@ The content will be updated as additional query features and functions are imple
 |H3_UNCOMPACT_CELLS_STRINGS|❓|
 |HASH|✅|
 |HASH_AGG|❓|
-|HAVERSINE|❓|
+|HAVERSINE|✅|
 |HEX_DECODE_BINARY|❓|
 |HEX_DECODE_STRING|❓|
 |HEX_ENCODE|❓|
@@ -345,15 +350,15 @@ The content will be updated as additional query features and functions are imple
 |IFNULL|✅|
 |[ NOT ] ILIKE|❓|
 |ILIKE ANY|❓|
-|[ NOT ] IN|❓|
+|[ NOT ] IN|✅|
 |INFER_SCHEMA|✅|
 |INITCAP|✅|
 |INSERT|✅|
-|INTEGRATION|❓|
+|INTEGRATION|✅|
 |INVOKER_ROLE|❓|
 |INVOKER_SHARE|❓|
 |IS [ NOT ] DISTINCT FROM|❓|
-|IS [ NOT ] NULL|❓|
+|IS [ NOT ] NULL|✅|
 |IS_<object_type>|❓|
 |IS_APPLICATION_ROLE_IN_SESSION|❓|
 |IS_ARRAY|✅|
@@ -389,7 +394,7 @@ The content will be updated as additional query features and functions are imple
 |LEAST_IGNORE_NULLS|✅|
 |LEFT|❓|
 |LENGTH, LEN|✅|
-|[ NOT ] LIKE|❓|
+|[ NOT ] LIKE|✅|
 |LIKE ALL|❓|
 |LIKE ANY|❓|
 |LISTAGG|✅|
@@ -412,7 +417,7 @@ The content will be updated as additional query features and functions are imple
 |MATERIALIZED_VIEW_REFRESH_HISTORY|❓|
 |MAX|✅|
 |MAX_BY|✅|
-|MD5, MD5_HEX|❓|
+|MD5, MD5_HEX|✅|
 |MD5_BINARY|❓|
 |MD5_NUMBER — Obsoleted|❓|
 |MD5_NUMBER_LOWER64|❓|
@@ -464,7 +469,7 @@ The content will be updated as additional query features and functions are imple
 |PREVIOUS_DAY|❓|
 |PROMPT function|❓|
 |QUERY_ACCELERATION_HISTORY|❓|
-|QUERY_HISTORY, QUERY_HISTORY_BY_*|❓|
+|QUERY_HISTORY, QUERY_HISTORY_BY_*|✅|
 |RADIANS|✅|
 |RANDOM|✅|
 |RANDSTR|✅|
@@ -500,7 +505,7 @@ The content will be updated as additional query features and functions are imple
 |REVERSE|✅|
 |RIGHT|✅|
 |[ NOT ] RLIKE|❓|
-|ROUND|❓|
+|ROUND|✅|
 |ROW_NUMBER|✅|
 |RPAD|❓|
 |RTRIM|✅|
@@ -527,8 +532,14 @@ The content will be updated as additional query features and functions are imple
 |SOUNDEX|❓|
 |SOUNDEX_P123|❓|
 |SPACE|❓|
+|<service_name>!SPCS_CANCEL_JOB|❓|
+|<service_name>!SPCS_GET_EVENTS|❓|
+|<service_name>!SPCS_GET_LOGS|❓|
+|<service_name>!SPCS_GET_METRICS|❓|
+|<service_name>!SPCS_WAIT_FOR|❓|
 |SPLIT|✅|
 |SPLIT_PART|❓|
+|SPLIT_TEXT_MARKDOWN_HEADER (SNOWFLAKE.CORTEX)|❓|
 |SPLIT_TEXT_RECURSIVE_CHARACTER (SNOWFLAKE.CORTEX)|❓|
 |SPLIT_TO_TABLE|❓|
 |SQRT|✅|
@@ -594,17 +605,17 @@ The content will be updated as additional query features and functions are imple
 |ST_YMIN|❓|
 |STAGE_DIRECTORY_FILE_REGISTRATION_HISTORY|❓|
 |STAGE_STORAGE_USAGE_HISTORY|❓|
-|STARTSWITH|❓|
+|STARTSWITH|✅|
 |STDDEV, STDDEV_SAMP|❓|
 |STDDEV_POP|❓|
 |STRIP_NULL_VALUE|❓|
 |STRTOK|❓|
 |STRTOK_SPLIT_TO_TABLE|❓|
 |STRTOK_TO_ARRAY|❓|
-|SUBSTR, SUBSTRING|❓|
+|SUBSTR, SUBSTRING|✅|
 |SUM|✅|
 |SUMMARIZE (SNOWFLAKE.CORTEX)|❓|
-|SYSDATE|❓|
+|SYSDATE|✅|
 |SYSTEM$ABORT_SESSION|❓|
 |SYSTEM$ABORT_TRANSACTION|❓|
 |SYSTEM$ADD_EVENT (for Snowflake Scripting)|❓|
@@ -623,6 +634,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$BLOCK_INTERNAL_STAGES_PUBLIC_ACCESS|❓|
 |SYSTEM$CANCEL_ALL_QUERIES|✅|
 |SYSTEM$CANCEL_QUERY|❓|
+|SYSTEM$CATALOG_LINK_STATUS|❓|
 |SYSTEM$CLEANUP_DATABASE_ROLE_GRANTS|❓|
 |SYSTEM$CLIENT_VERSION_INFO|✅|
 |SYSTEM$CLUSTERING_DEPTH|❓|
@@ -642,13 +654,16 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$DISABLE_DATABASE_REPLICATION|❓|
 |SYSTEM$DISABLE_GLOBAL_DATA_SHARING_FOR_ACCOUNT|❓|
 |SYSTEM$DISABLE_PREVIEW_ACCESS|❓|
+|SYSTEM$DISABLE_PRIVATELINK_ACCESS_ONLY|❓|
 |SYSTEM$ENABLE_BEHAVIOR_CHANGE_BUNDLE|❓|
 |SYSTEM$ENABLE_GLOBAL_DATA_SHARING_FOR_ACCOUNT|❓|
 |SYSTEM$ENABLE_PREVIEW_ACCESS|❓|
 |SYSTEM$END_DEBUG_APPLICATION|❓|
+|SYSTEM$ENFORCE_PRIVATELINK_ACCESS_ONLY|❓|
 |SYSTEM$ESTIMATE_AUTOMATIC_CLUSTERING_COSTS|❓|
 |SYSTEM$ESTIMATE_QUERY_ACCELERATION|❓|
 |SYSTEM$ESTIMATE_SEARCH_OPTIMIZATION_COSTS|❓|
+|SYSTEM$EVALUATE_DATA_QUALITY_EXPECTATIONS|❓|
 |SYSTEM$EXPLAIN_JSON_TO_TEXT|❓|
 |SYSTEM$EXPLAIN_PLAN_JSON|❓|
 |SYSTEM$EXTERNAL_TABLE_PIPE_STATUS|❓|
@@ -712,6 +727,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$PIPE_STATUS|❓|
 |SYSTEM$PROVISION_PRIVATELINK_ENDPOINT|❓|
 |SYSTEM$QUERY_REFERENCE|❓|
+|SYSTEM$READ_YAML_FROM_SEMANTIC_VIEW|❓|
 |SYSTEM$REFERENCE|❓|
 |SYSTEM$REGISTER_CMK_INFO|❓|
 |SYSTEM$REGISTER_PRIVATELINK_ENDPOINT|❓|
@@ -734,6 +750,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$SHOW_EVENT_SHARING_ACCOUNTS|❓|
 |SYSTEM$SHOW_MOVE_ORGANIZATION_ACCOUNT_STATUS|❓|
 |SYSTEM$SHOW_OAUTH_CLIENT_SECRETS|❓|
+|SYSTEM$SHOW_SENSITIVE_DATA_MONITORED_ENTITIES|❓|
 |SYSTEM$SNOWPIPE_STREAMING_UPDATE_CHANNEL_OFFSET_TOKEN|❓|
 |SYSTEM$START_OAUTH_FLOW|❓|
 |SYSTEM$START_USER_EMAIL_VERIFICATION|❓|
@@ -801,7 +818,7 @@ The content will be updated as additional query features and functions are imple
 |TRUNCATE, TRUNC|✅|
 |TRY_BASE64_DECODE_BINARY|❓|
 |TRY_BASE64_DECODE_STRING|❓|
-|TRY_CAST|❓|
+|TRY_CAST|✅|
 |TRY_COMPLETE (SNOWFLAKE.CORTEX)|❓|
 |TRY_DECRYPT|❓|
 |TRY_DECRYPT_RAW|❓|
@@ -819,7 +836,7 @@ The content will be updated as additional query features and functions are imple
 |TRY_TO_TIME|✅|
 |TRY_TO_TIMESTAMP, TRY_TO_TIMESTAMP_*|✅|
 |TYPEOF|❓|
-|UNICODE|❓|
+|UNICODE|✅|
 |UNIFORM|❓|
 |UPPER|✅|
 |UUID_STRING|✅|

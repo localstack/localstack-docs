@@ -7,6 +7,36 @@ editUrl: false
 
 The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
 
+### 1.1.0
+- Add support for functions: `ROUND`, `SYSDATE`, `STARTSWITH`, `ENDSWITH`, `MD5`, `SUBSTR`, `HAVERSINE`, `LAST_DAY`, `TRY_CAST`, `TRUNCATE`, `PERCENT_RANK`, `SYSTEM$TASK_DEPENDENTS_ENABLE`
+- Implement `TRY_*` conversion functions
+- Add number formatting parameter to `TO_DOUBLE` and `TO_DECIMAL`
+- Add initial support for data metric functions (DMFs)
+- Add `SF_AWS_ENDPOINT_URL` config var to make AWS endpoint configurable
+- `TIME` and `TIMESTAMP` processing improvements
+- Add initial CRUD support for compute pools
+- Add support for `OR REPLACE` on `CREATE STREAM` statements
+- Add support for `IF NOT EXISTS` on `CREATE TASK` statements
+- Enhance GROUP BY over aggregate columns
+- Add initial CRUD support for security integrations
+- Handle if exists when dropping tags
+- Enhance account name handling
+- Add timezone, fractional seconds formatting to `TO_CHAR`
+- Enhance parity for sorting VARIANT-encoded values
+- Add initial support for streams on `CHANGE_TRACKING` tables
+- Enhance parity for subqueries with column aliases
+- Add support for dict bindings with named query parameters
+- Boost performance of multi-statement queries
+- Implement support for more database endpoints in REST API
+- Fix encoding of numeric NaN
+- Enhance storage integration statements
+- Added support for `IN` clause in `SHOW INDEXES` queries
+- Enhance parity for result encoding of async queries
+- Add support for using `on_error=continue` used in `COPY INTO` statements
+- Add `LIMIT` support for `SHOW DATABASES`
+- Enhance parity for type casts on results returned from `FLATTEN`
+- Enhance parsing of nested variable assignments
+
 ### 1.0.1
 - Implementation and migration to the new type system
 - Enhance persistence support for storing/reloading native apps
