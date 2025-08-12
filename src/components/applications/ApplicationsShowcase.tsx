@@ -314,14 +314,21 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         .card-image {
           position: relative;
           width: 100%;
-          height: 180px;
+          min-height: 160px;
+          max-height: 220px;
           overflow: hidden;
+          background: #FFFFFF;
+          border-radius: 0.5rem 0.5rem 0 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .card-image img {
           width: 100%;
-          height: 100%;
-          object-fit: cover;
+          height: auto;
+          max-height: 220px;
+          object-fit: contain;
         }
 
         .card-badges {
