@@ -163,19 +163,20 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         /* Top Bar */
         .top-bar {
-          margin-bottom: 1.5rem;
-          padding: 1rem;
-          background: var(--sl-color-bg-sidebar);
-          border: 1px solid var(--sl-color-gray-6);
+          margin-bottom: 1rem;
+          padding: 0.75rem 0.5rem;
+          background: transparent;
+          border: 0;
           border-radius: 0.5rem;
         }
 
         .top-bar-row {
-          display: flex;
-          gap: 1rem;
-          align-items: flex-start;
-          flex-wrap: wrap;
-          margin-bottom: 1rem;
+          display: grid;
+          grid-template-columns: repeat(3, minmax(180px, 260px)) auto;
+          gap: 0.75rem 0.75rem;
+          align-items: stretch; /* ensure all cells share identical row height */
+          grid-auto-rows: 40px; /* compact controls */
+          margin: 0;
         }
 
         .top-bar-row:last-child {
@@ -184,20 +185,29 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         .search-container {
           position: relative;
-          flex: 1;
-          min-width: 300px;
+          min-width: 0;
+          width: 100%;
+          max-width: 300px; /* reduce visual length */
+          display: flex;
+          align-items: center;
+          height: 100%;
+          grid-column: 1 / -1; /* span full width on next row */
+          justify-self: start;
         }
 
         .search-input {
           width: 100%;
-          padding: 0.75rem;
-          border: 1px solid var(--sl-color-gray-5);
-          border-radius: 0.375rem;
+          padding: 0.625rem 2.25rem 0.625rem 0.875rem;
+          border: 1px solid var(--sl-color-gray-6);
+          border-radius: 0.5rem;
           background: var(--sl-color-bg);
           color: var(--sl-color-white);
-          font-size: 0.875rem;
-          margin-top: 0;
+          font-size: 0.9rem;
+          height: 100%;
+          line-height: 1.2;
         }
+
+        
 
         .search-input:focus {
           outline: none;
@@ -226,14 +236,15 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         }
 
         .filter-select {
-          padding: 0.75rem;
-          border: 1px solid var(--sl-color-gray-5);
-          border-radius: 0.375rem;
+          padding: 0.625rem 0.875rem;
+          border: 1px solid var(--sl-color-gray-6);
+          border-radius: 0.5rem;
           background: var(--sl-color-bg);
           color: var(--sl-color-white);
-          font-size: 0.875rem;
-          min-width: 140px;
-          margin-top: 0;
+          font-size: 0.95rem;
+          min-width: 0;
+          width: 100%;
+          height: 100%;
         }
 
         .filter-select:focus {
@@ -263,12 +274,13 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         }
 
         .clear-filters {
-          background: var(--sl-color-accent);
-          color: white;
+          background: transparent;
+          color: var(--sl-color-accent);
           border: none;
-          padding: 0.75rem 1rem;
-          border-radius: 0.375rem;
-          font-size: 0.875rem;
+          padding: 0 0.25rem;
+          border-radius: 0.5rem;
+          font-size: 0.85rem;
+          height: 100%;
           cursor: pointer;
           white-space: nowrap;
         }
@@ -277,11 +289,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           background: var(--sl-color-accent-high);
         }
 
-        .results-info {
-          margin-bottom: 1rem;
-          color: var(--sl-color-gray-2);
-          font-size: 0.875rem;
-        }
+        .results-info { display: none; }
 
         /* Applications Grid */
         .applications-grid {
@@ -479,24 +487,29 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+          .top-bar-row {
+            grid-template-columns: 1fr 1fr auto;
+          }
+        }
+
         @media (max-width: 768px) {
           .applications-showcase {
             padding: 0 0.75rem;
           }
 
           .top-bar-row {
-            flex-direction: column;
-            align-items: stretch;
+            grid-template-columns: 1fr;
           }
 
           .search-container {
             min-width: auto;
-            flex: none;
           }
 
           .filter-select,
           .sort-select {
             min-width: auto;
+            width: 100%;
           }
 
           .applications-grid {
@@ -517,7 +530,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
       
       <div className="applications-showcase">
         <div className="top-bar">
-          <div className="top-bar-row">
+          <div className="top-bar-row" role="region" aria-label="Sample apps filters">
             <div className="search-container">
               <input
                 type="text"
@@ -573,8 +586,8 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
             </select>
 
             {hasActiveFilters && (
-              <button onClick={clearAllFilters} className="clear-filters">
-                Clear
+              <button onClick={clearAllFilters} className="clear-filters" aria-label="Clear all filters">
+                Clear filters
               </button>
             )}
           </div>
@@ -582,9 +595,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           {/* Removed sorting options since we only sort by name now */}
         </div>
 
-        <div className="results-info">
-          {filteredApplications.length} application{filteredApplications.length !== 1 ? 's' : ''}
-        </div>
+        {/* results count removed per request */}
 
         <div className="applications-grid">
           {filteredApplications.map((app, index) => (
