@@ -158,13 +158,13 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         .applications-showcase {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 0 1rem;
+          padding: 0 1.25rem;
         }
 
         /* Top Bar */
         .top-bar {
-          margin-bottom: 1rem;
-          padding: 0.75rem 0.5rem;
+          margin: 0 0 0.75rem 0;
+          padding: 0 0 0.25rem 0;
           background: transparent;
           border: 0;
           border-radius: 0.5rem;
@@ -294,8 +294,9 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         /* Applications Grid */
         .applications-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 1.5rem;
+          grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+          gap: 1.25rem;
+          margin-top: 1.5rem; /* extra breathing room below filters */
         }
 
         /* Application Cards */
