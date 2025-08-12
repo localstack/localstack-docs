@@ -1,21 +1,15 @@
 export interface Application {
-  title: string;
+  name: string;
   description: string;
-  url: string;
+  githubUrl: string;
   teaser: string;
   services: string[];
-  deployment: string[];
-  platform: string[];
-  tags: string[];
-  complexity: string[];
-  pro: boolean;
-  cloudPods: boolean;
+  integrations: string[];
+  useCases: string[];
 }
 
 export interface FilterState {
   services: string[];
-  platforms: string[];
-  deployments: string[];
-  complexities: string[];
-  showProOnly: boolean;
+  useCases: string[];
+  integrations: string[];
 } 

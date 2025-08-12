@@ -1,58 +1,48 @@
 import React, { useState, useMemo } from 'react';
 
 interface Application {
-  title: string;
+  name: string;
   description: string;
-  url: string;
+  githubUrl: string;
   teaser: string;
   services: string[];
-  platform: string[];
-  deployment: string[];
-  tags: string[];
-  complexity: string[];
-  pro: boolean;
-  cloudPods: boolean;
+  integrations: string[];
+  useCases: string[];
 }
 
 interface FilterState {
   services: string[];
-  platforms: string[];
-  deployments: string[];
-  complexities: string[];
-  showProOnly: boolean;
+  useCases: string[];
+  integrations: string[];
 }
 
 interface ApplicationsShowcaseProps {
   applications: Application[];
   services: Record<string, string>;
-  platforms: Record<string, string>;
-  deployments: Record<string, string>;
-  complexities: { data: Record<string, string>; order: string[] };
+  integrations: Record<string, string>;
 }
 
 const ApplicationCard: React.FC<{ 
   app: Application; 
   services: Record<string, string>;
-  platforms: Record<string, string>;
-  deployments: Record<string, string>;
-}> = ({ app, services, platforms, deployments }) => {
+  integrations: Record<string, string>;
+}> = ({ app, services, integrations }) => {
   return (
     <a 
-      href={app.url} 
+      href={app.githubUrl} 
       target="_blank" 
       rel="noopener noreferrer" 
       className="app-card"
     >
       <div className="card-image">
-        <img src={app.teaser} alt={app.title} loading="lazy" />
+        <img src={app.teaser} alt={app.name} loading="lazy" />
         <div className="card-badges">
-          {app.pro && <span className="pro-badge">Pro</span>}
-          <span className="complexity-badge">{app.complexity[0]}</span>
+          {/* Removed badges since they're not in the new data structure */}
         </div>
       </div>
       
       <div className="card-content">
-        <h3 className="card-title">{app.title}</h3>
+        <h3 className="card-title">{app.name}</h3>
         <p className="card-description">{app.description}</p>
         
         <div className="card-footer">
@@ -82,20 +72,16 @@ const ApplicationCard: React.FC<{
 export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
   applications,
   services,
-  platforms,
-  deployments,
-  complexities,
+  integrations,
 }) => {
   const [filters, setFilters] = useState<FilterState>({
     services: [],
-    platforms: [],
-    deployments: [],
-    complexities: [],
-    showProOnly: false,
+    useCases: [],
+    integrations: [],
   });
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'title' | 'complexity'>('title');
+  const [sortBy, setSortBy] = useState<'name'>('name');
 
   // Get unique values for filters
   const uniqueServices = useMemo(() => {
@@ -103,20 +89,15 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
     return Array.from(allServices).sort((a, b) => (services[a] || a).localeCompare(services[b] || b));
   }, [applications, services]);
 
-  const uniquePlatforms = useMemo(() => {
-    const allPlatforms = new Set(applications.flatMap(app => app.platform));
-    return Array.from(allPlatforms).sort((a, b) => (platforms[a] || a).localeCompare(platforms[b] || b));
-  }, [applications, platforms]);
+  const uniqueUseCases = useMemo(() => {
+    const allUseCases = new Set(applications.flatMap(app => app.useCases));
+    return Array.from(allUseCases).sort();
+  }, [applications]);
 
-  const uniqueDeployments = useMemo(() => {
-    const allDeployments = new Set(applications.flatMap(app => app.deployment));
-    return Array.from(allDeployments).sort((a, b) => (deployments[a] || a).localeCompare(deployments[b] || b));
-  }, [applications, deployments]);
-
-  const uniqueComplexities = useMemo(() => {
-    const allComplexities = new Set(applications.flatMap(app => app.complexity));
-    return complexities.order.filter(complexity => allComplexities.has(complexity));
-  }, [applications, complexities.order]);
+  const uniqueIntegrations = useMemo(() => {
+    const allIntegrations = new Set(applications.flatMap(app => app.integrations));
+    return Array.from(allIntegrations).sort((a, b) => (integrations[a] || a).localeCompare(integrations[b] || b));
+  }, [applications, integrations]);
 
   // Filter and sort applications
   const filteredApplications = useMemo(() => {
@@ -125,40 +106,29 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
         const matchesSearch = 
-          app.title.toLowerCase().includes(searchLower) ||
+          app.name.toLowerCase().includes(searchLower) ||
           app.description.toLowerCase().includes(searchLower) ||
-          app.tags.some(tag => tag.toLowerCase().includes(searchLower)) ||
+          app.useCases.some(useCase => useCase.toLowerCase().includes(searchLower)) ||
           app.services.some(service => (services[service] || service).toLowerCase().includes(searchLower)) ||
-          app.platform.some(platform => (platforms[platform] || platform).toLowerCase().includes(searchLower));
+          app.integrations.some(integration => (integrations[integration] || integration).toLowerCase().includes(searchLower));
         if (!matchesSearch) return false;
       }
 
       // Other filters
       if (filters.services.length > 0 && !filters.services.some(service => app.services.includes(service))) return false;
-      if (filters.platforms.length > 0 && !filters.platforms.some(platform => app.platform.includes(platform))) return false;
-      if (filters.deployments.length > 0 && !filters.deployments.some(deployment => app.deployment.includes(deployment))) return false;
-      if (filters.complexities.length > 0 && !filters.complexities.some(complexity => app.complexity.includes(complexity))) return false;
-      if (filters.showProOnly && !app.pro) return false;
+      if (filters.useCases.length > 0 && !filters.useCases.some(useCase => app.useCases.includes(useCase))) return false;
+      if (filters.integrations.length > 0 && !filters.integrations.some(integration => app.integrations.includes(integration))) return false;
 
       return true;
     });
 
     // Sort applications
     return filtered.sort((a, b) => {
-      if (sortBy === 'title') {
-        return a.title.localeCompare(b.title);
-      } else {
-        const complexityOrder = { basic: 0, intermediate: 1, advanced: 2 };
-        const aComplexity = complexityOrder[a.complexity[0] as keyof typeof complexityOrder] ?? 1;
-        const bComplexity = complexityOrder[b.complexity[0] as keyof typeof complexityOrder] ?? 1;
-        return aComplexity - bComplexity;
-      }
+      return a.name.localeCompare(b.name);
     });
-  }, [applications, filters, searchTerm, sortBy, services, platforms]);
+  }, [applications, filters, searchTerm, sortBy, services, integrations]);
 
   const toggleFilter = (filterType: keyof FilterState, item: string) => {
-    if (filterType === 'showProOnly') return;
-    
     setFilters(prev => ({
       ...prev,
       [filterType]: prev[filterType].includes(item)
@@ -170,19 +140,15 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
   const clearAllFilters = () => {
     setFilters({
       services: [],
-      platforms: [],
-      deployments: [],
-      complexities: [],
-      showProOnly: false,
+      useCases: [],
+      integrations: [],
     });
     setSearchTerm('');
   };
 
   const hasActiveFilters = filters.services.length > 0 || 
-    filters.platforms.length > 0 || 
-    filters.deployments.length > 0 || 
-    filters.complexities.length > 0 || 
-    filters.showProOnly || 
+    filters.useCases.length > 0 || 
+    filters.integrations.length > 0 || 
     searchTerm.length > 0;
 
   return (
@@ -571,52 +537,30 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
             </select>
 
             <select 
-              value={filters.platforms[0] || ''} 
-              onChange={(e) => e.target.value ? toggleFilter('platforms', e.target.value) : null}
+              value={filters.useCases[0] || ''} 
+              onChange={(e) => e.target.value ? toggleFilter('useCases', e.target.value) : null}
               className="filter-select"
             >
-              <option value="">Languages</option>
-              {uniquePlatforms.map((platform) => (
-                <option key={platform} value={platform}>
-                  {platforms[platform] || platform}
+              <option value="">Use Cases</option>
+              {uniqueUseCases.map((useCase) => (
+                <option key={useCase} value={useCase}>
+                  {useCase}
                 </option>
               ))}
             </select>
 
             <select 
-              value={filters.deployments[0] || ''} 
-              onChange={(e) => e.target.value ? toggleFilter('deployments', e.target.value) : null}
+              value={filters.integrations[0] || ''} 
+              onChange={(e) => e.target.value ? toggleFilter('integrations', e.target.value) : null}
               className="filter-select"
             >
-              <option value="">Deployment</option>
-              {uniqueDeployments.map((deployment) => (
-                <option key={deployment} value={deployment}>
-                  {deployments[deployment] || deployment}
+              <option value="">Integrations</option>
+              {uniqueIntegrations.map((integration) => (
+                <option key={integration} value={integration}>
+                  {integrations[integration] || integration}
                 </option>
               ))}
             </select>
-
-            <select 
-              value={filters.complexities[0] || ''} 
-              onChange={(e) => e.target.value ? toggleFilter('complexities', e.target.value) : null}
-              className="filter-select"
-            >
-              <option value="">Complexity</option>
-              {uniqueComplexities.map((complexity) => (
-                <option key={complexity} value={complexity}>
-                  {complexities.data[complexity] || complexity}
-                </option>
-              ))}
-            </select>
-
-            <label className="pro-toggle">
-              <input
-                type="checkbox"
-                checked={filters.showProOnly}
-                onChange={(e) => setFilters(prev => ({ ...prev, showProOnly: e.target.checked }))}
-              />
-              Pro Only
-            </label>
 
             {hasActiveFilters && (
               <button onClick={clearAllFilters} className="clear-filters">
@@ -625,16 +569,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
             )}
           </div>
 
-          <div className="top-bar-row">
-            <select 
-              value={sortBy} 
-              onChange={(e) => setSortBy(e.target.value as 'title' | 'complexity')}
-              className="sort-select"
-            >
-              <option value="title">A-Z</option>
-              <option value="complexity">By Complexity</option>
-            </select>
-          </div>
+          {/* Removed sorting options since we only sort by name now */}
         </div>
 
         <div className="results-info">
@@ -644,11 +579,10 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         <div className="applications-grid">
           {filteredApplications.map((app, index) => (
             <ApplicationCard
-              key={`${app.title}-${index}`}
+              key={`${app.name}-${index}`}
               app={app}
               services={services}
-              platforms={platforms}
-              deployments={deployments}
+              integrations={integrations}
             />
           ))}
           
