@@ -43,22 +43,22 @@ const ApplicationCard: React.FC<{
       
       <div className="card-content">
         <h3 className="card-title">{app.name}</h3>
+        <div className="service-icons">
+          {app.services.slice(0, 10).map((serviceCode) => (
+            <div key={serviceCode} className="service-icon" title={services[serviceCode] || serviceCode}>
+              <img
+                src={`/images/aws/${serviceCode}.svg`}
+                alt={services[serviceCode] || serviceCode}
+              />
+            </div>
+          ))}
+          {app.services.length > 10 && (
+            <div className="service-more">+{app.services.length - 10}</div>
+          )}
+        </div>
         <p className="card-description">{app.description}</p>
         
         <div className="card-footer">
-          <div className="service-icons">
-            {app.services.slice(0, 10).map((serviceCode) => (
-              <div key={serviceCode} className="service-icon" title={services[serviceCode] || serviceCode}>
-                <img
-                  src={`/images/aws/${serviceCode}.svg`}
-                  alt={services[serviceCode] || serviceCode}
-                />
-              </div>
-            ))}
-            {app.services.length > 10 && (
-              <div className="service-more">+{app.services.length - 10}</div>
-            )}
-          </div>
           
           <span className="card-link">
             View Project →
@@ -204,7 +204,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         .search-input {
           width: 100%;
           padding: 0.625rem 2.25rem 0.625rem 0.875rem;
-          border: 1px solid var(--sl-color-gray-6);
+          border: 1px solid #999CAD;
           border-radius: 0.5rem;
           background: var(--sl-color-bg);
           color: var(--sl-color-white);
@@ -243,7 +243,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         .filter-select {
           padding: 0.625rem 0.875rem;
-          border: 1px solid var(--sl-color-gray-6);
+          border: 1px solid #999CAD;
           border-radius: 0.5rem;
           background: var(--sl-color-bg);
           color: var(--sl-color-white);
@@ -271,7 +271,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         .sort-select {
           padding: 0.75rem;
-          border: 1px solid var(--sl-color-gray-5);
+          border: 1px solid #999CAD;
           border-radius: 0.375rem;
           background: var(--sl-color-bg);
           color: var(--sl-color-white);
@@ -308,7 +308,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         /* Application Cards */
         .app-card {
           background: var(--sl-color-bg-sidebar);
-          border: 1px solid var(--sl-color-gray-6);
+          border: 1px solid #999CAD;
           border-radius: 0.75rem;
           overflow: hidden;
           transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -323,6 +323,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         .app-card:hover {
           transform: translateY(-2px);
+          border-color: var(--sl-color-accent);
           box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
@@ -402,10 +403,11 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         .card-footer {
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start;
           align-items: center;
           gap: 1rem;
           margin-top: auto;
+          width: 100%;
         }
 
         .service-icons {
@@ -414,6 +416,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           align-items: center;
           flex-wrap: wrap;
           flex: 1;
+          margin: 0 0 0.75rem 0;
         }
 
         .service-icon {
@@ -453,10 +456,11 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
           color: var(--sl-color-white);
           font-weight: 500;
           font-size: 0.875rem;
-          padding: 0.5rem 0.75rem;
+          padding: 0.5rem 0.75rem 0.5rem 0;
           border-radius: 0.375rem;
           transition: all 0.2s ease;
           white-space: nowrap;
+          margin-left: 0;
         }
 
         .app-card:hover .card-link {
