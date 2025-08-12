@@ -555,7 +555,10 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
             
             <select 
               value={filters.services[0] || ''} 
-              onChange={(e) => e.target.value ? toggleFilter('services', e.target.value) : null}
+              onChange={(e) => setFilters(prev => ({ 
+                ...prev, 
+                services: e.target.value ? [e.target.value] : []
+              }))}
               className="filter-select"
             >
               <option value="">Services</option>
@@ -568,7 +571,10 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
             <select 
               value={filters.useCases[0] || ''} 
-              onChange={(e) => e.target.value ? toggleFilter('useCases', e.target.value) : null}
+              onChange={(e) => setFilters(prev => ({ 
+                ...prev, 
+                useCases: e.target.value ? [e.target.value] : []
+              }))}
               className="filter-select"
             >
               <option value="">Use Cases</option>
@@ -581,7 +587,10 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
             <select 
               value={filters.integrations[0] || ''} 
-              onChange={(e) => e.target.value ? toggleFilter('integrations', e.target.value) : null}
+              onChange={(e) => setFilters(prev => ({ 
+                ...prev, 
+                integrations: e.target.value ? [e.target.value] : []
+              }))}
               className="filter-select"
             >
               <option value="">Integrations</option>
