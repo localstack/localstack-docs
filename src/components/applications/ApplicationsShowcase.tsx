@@ -128,6 +128,12 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
     });
   }, [applications, filters, searchTerm, sortBy, services, integrations]);
 
+  const isSingleResult = filteredApplications.length === 1;
+  const gridStyle = useMemo<React.CSSProperties>(() => ({
+    justifyContent: isSingleResult ? 'start' : 'stretch',
+    gridTemplateColumns: isSingleResult ? 'repeat(1, minmax(360px, 520px))' : undefined,
+  }), [isSingleResult]);
+
   const toggleFilter = (filterType: keyof FilterState, item: string) => {
     setFilters(prev => ({
       ...prev,
@@ -294,7 +300,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
         /* Applications Grid */
         .applications-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
           gap: 1.25rem;
           margin-top: 1.5rem; /* extra breathing room below filters */
         }
@@ -598,7 +604,7 @@ export const ApplicationsShowcase: React.FC<ApplicationsShowcaseProps> = ({
 
         {/* results count removed per request */}
 
-        <div className="applications-grid">
+        <div className="applications-grid" style={gridStyle}>
           {filteredApplications.map((app, index) => (
             <ApplicationCard
               key={`${app.name}-${index}`}
