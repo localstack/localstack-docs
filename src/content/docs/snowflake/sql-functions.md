@@ -422,7 +422,7 @@ The content will be updated as additional query features and functions are imple
 |MD5_NUMBER — Obsoleted|❓|
 |MD5_NUMBER_LOWER64|❓|
 |MD5_NUMBER_UPPER64|❓|
-|MEDIAN|❓|
+|MEDIAN|✅|
 |MIN|✅|
 |MIN_BY|✅|
 |MINHASH|❓|
@@ -496,6 +496,7 @@ The content will be updated as additional query features and functions are imple
 |REGR_VALY|❓|
 |REPEAT|✅|
 |REPLACE|✅|
+|REPLICATION_GROUP_DANGLING_REFERENCES|❓|
 |REPLICATION_GROUP_REFRESH_HISTORY, REPLICATION_GROUP_REFRESH_HISTORY_ALL|❓|
 |REPLICATION_GROUP_REFRESH_PROGRESS, REPLICATION_GROUP_REFRESH_PROGRESS_BY_JOB, REPLICATION_GROUP_REFRESH_PROGRESS_ALL|❓|
 |REPLICATION_GROUP_USAGE_HISTORY|❓|
@@ -543,7 +544,7 @@ The content will be updated as additional query features and functions are imple
 |SPLIT_TEXT_RECURSIVE_CHARACTER (SNOWFLAKE.CORTEX)|❓|
 |SPLIT_TO_TABLE|❓|
 |SQRT|✅|
-|SQUARE|❓|
+|SQUARE|✅|
 |ST_AREA|❓|
 |ST_ASEWKB|❓|
 |ST_ASEWKT|❓|
