@@ -204,9 +204,155 @@ Pipeline resolvers, on the other hand, invoke AppSync functions that wraps the A
 Unit resolvers are written in the Velocity templating language (VTL), while pipeline resolvers can be written in either VTL or JavaScript.
 
 
+## WebSocket Subscriptions
+
+LocalStack supports real-time GraphQL subscriptions over WebSocket for AWS AppSync APIs.
+
+Clients can subscribe to mutation-triggered events and receive updates in real time via the AppSync WebSocket endpoint. LocalStack supports the GraphQL `@aws_subscribe` directive, and core subscription message flow. Use this feature to power live updates in apps such as chat, dashboards, or collaborative editors. There's no need to poll for changes.
+
+You can set up a GraphQL subscription in your schema, connect to the WebSocket endpoint, and receive live updates triggered by a mutation.
+
+### 1. Extend Your GraphQL Schema
+
+First, ensure your schema includes a `subscription` type. Use the `@aws_subscribe` directive to link each subscription to a corresponding mutation.
+
+```graphql
+type Message {
+  id: ID!
+  content: String!
+}
+
+type Mutation {
+  postMessage(id: ID!, content: String!): Message!
+}
+
+type Subscription {
+  onMessagePosted: Message
+    @aws_subscribe(mutations: ["postMessage"])
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+```
+
+### 2. Connect to the WebSocket Endpoint
+
+LocalStack exposes a WebSocket endpoint for each GraphQL API:
+
+```json
+"REALTIME": "ws://localhost:4510/graphql/<api-id>"
+```
+
+Use a WebSocket client like `wscat` to connect:
+
+```bash
+npm install -g wscat
+
+export API_ID=<your-api-id>
+export API_KEY=<your-api-key>
+export HEADER="{\"host\":\"localhost:4566\",\"x-api-key\":\"$API_KEY\"}"
+export HEADER_ENCODED=$(echo -n $HEADER | base64 | tr '+/' '-_' | tr -d '=')
+
+wscat \
+  -s "graphql-ws" \
+  -c "ws://localhost:4510/graphql/$API_ID"
+```
+
+### 3. Initialize the WebSocket Connection
+
+After connecting, send a `connection_init` message:
+
+```json
+{ "type": "connection_init" }
+```
+
+You should receive a `connection_ack` in response.
+
+### 4. Start a Subscription
+
+Use a `start` message to register your subscription:
+
+```json
+{
+  "id": "1",
+  "type": "start",
+  "payload": {
+    "data": "{\"query\":\"subscription { onMessagePosted { id content } }\"}"
+  }
+}
+```
+
+### 5. Trigger the Subscription
+
+Now, trigger the matching mutation:
+
+```bash
+curl -X POST http://${API_ID}.appsync-api.localhost.localstack.cloud:4566/graphql \
+  -H "content-type: application/json" \
+  -H "x-api-key: ${API_KEY}" \
+  -d '{"query": "mutation { postMessage(id: \"1\", content: \"Hello world!\") { id content } }" }'
+
+You should see a live message from the WebSocket server like:
+
+```json title="Output"
+{
+  "type": "data",
+  "id": "1",
+  "payload": {
+    "data": {
+      "onMessagePosted": {
+        "id": "1",
+        "content": "Hello world!"
+      }
+    }
+  }
+}
+```
+
+### 6. Stop the Subscription
+
+To unregister, send a `stop` message:
+
+```json
+{ "type": "stop", "id": "1" }
+```
+
+You'll receive a `complete` message when successful.
+
+
+### Configuring WebSocket Subscription endpoints
+
+The WebSocket endpoint for GraphQL subscriptions is provided in the `uris` section of the `create-graphql-api` response.
+
+Example:
+
+```json
+"uris": {
+  "GRAPHQL": "http://localhost:4566/graphql/<api-id>",
+  "REALTIME": "ws://localhost:4510/graphql/<api-id>"
+}
+```
+
+LocalStack supports the following WebSocket message types:
+
+| Type              | Description                                     |
+| ----------------- | ----------------------------------------------- |
+| `connection_init` | Client initiates connection                     |
+| `connection_ack`  | Server acknowledges the connection              |
+| `start`           | Starts a subscription                           |
+| `start_ack`       | Acknowledges a successful subscription          |
+| `data`            | Sends a message when a matching mutation occurs |
+| `stop`            | Client unsubscribes from a subscription         |
+| `complete`        | Server confirms unsubscription                  |
+
+
 ### Configuring GraphQL endpoints
 
 There are three configurable strategies that govern how GraphQL API endpoints are created.
+
 The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment variable.
 
 | Value    | Format                                                 | Description                                                                                         |
@@ -214,6 +360,10 @@ The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment v
 | `domain` | `<api-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, slated to be the future default, uses the `localhost.localstack.cloud` domain to route to your localhost. |
 | `path`   | `localhost:4566/appsync-api/<api-id>/graphql`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
 | `legacy` | `localhost:4566/graphql/<api-id>`                    | This strategy represents the old endpoint format, which is currently the default but will eventually be phased out. |
+
+:::note
+The `REALTIME` endpoint will ignore the `GRAPHQL_ENDPOINT_STRATEGY` and always use the `legacy` strategy.
+:::
 
 
 ### GraphQL Resource Browser
@@ -243,155 +393,6 @@ The Resource Browser allows you to perform the following actions:
   Click on **Attach Resolver** to attach a resolver to a field, by providing the field name, data source name, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
 - **Create Function**: Click on the GraphQL API name and click **Functions**.
   Click on **Create Function** to create a function, by providing a name for the function, data source name, and Function Version, Request Mapping Template, Response Mapping Template, among other parameters, before clicking **Submit**.
-
-
-## WebSocket Subscriptions
-
-LocalStack supports real-time GraphQL subscriptions over WebSocket for AWS AppSync APIs. Clients can subscribe to mutation-triggered events and receive updates in real time via the AppSync WebSocket endpoint. LocalStack supports the GraphQL `@aws_subscribe` directive, and core subscription message flow.
-
-Use this feature to power live updates in apps such as chat, dashboards, or collaborative editors. There's no need to poll for changes.
-
-### Getting Started
-
-Set up a GraphQL subscription in your schema, connect to the WebSocket endpoint, and receive live updates triggered by a mutation.
-
-#### 1. Extend Your GraphQL Schema
-
-First, ensure your schema includes a `subscription` type. Use the `@aws_subscribe` directive to link each subscription to a corresponding mutation.
-
-```graphql
-type Message {
-  id: ID!
-  content: String!
-}
-
-type Mutation {
-  postMessage(id: ID!, content: String!): Message!
-}
-
-type Subscription {
-  onMessagePosted: Message
-    @aws_subscribe(mutations: ["postMessage"])
-}
-
-schema {
-  query: Query
-  mutation: Mutation
-  subscription: Subscription
-}
-```
-
-#### 2. Connect to the WebSocket Endpoint
-
-LocalStack exposes a WebSocket endpoint for each GraphQL API:
-
-```json
-"REALTIME": "ws://localhost:4510/graphql/<api-id>"
-```
-
-Use a WebSocket client like `wscat` to connect:
-
-```bash
-npm install -g wscat
-
-export API_ID=<your-api-id>
-export API_KEY=<your-api-key>
-export HEADER="{\"host\":\"localhost:4566\",\"x-api-key\":\"$API_KEY\"}"
-export HEADER_ENCODED=$(echo -n $HEADER | base64 | tr '+/' '-_' | tr -d '=')
-
-wscat \
-  -s "graphql-ws" \
-  -c "ws://localhost:4510/graphql/$API_ID"
-```
-
-#### 3. Initialize the WebSocket Connection
-
-After connecting, send a `connection_init` message:
-
-```json
-{ "type": "connection_init" }
-```
-
-You should receive a `connection_ack` in response.
-
-#### 4. Start a Subscription
-
-Use a `start` message to register your subscription:
-
-```json
-{
-  "id": "1",
-  "type": "start",
-  "payload": {
-    "data": "{\"query\":\"subscription { onMessagePosted { id content } }\"}"
-  }
-}
-```
-
-#### 5. Trigger the Subscription
-
-Now, trigger the matching mutation:
-
-```bash
-curl -X POST http://${API_ID}.appsync-api.localhost.localstack.cloud:4566/graphql \
-  -H "content-type: application/json" \
-  -H "x-api-key: ${API_KEY}" \
-  -d '{"query": "mutation { postMessage(id: \"1\", content: \"Hello world!\") { id content } }" }'
-
-You should see a live message from the WebSocket server like:
-
-```json title="Output"
-{
-  "type": "data",
-  "id": "1",
-  "payload": {
-    "data": {
-      "onMessagePosted": {
-        "id": "1",
-        "content": "Hello world!"
-      }
-    }
-  }
-}
-```
-
-#### 6. Stop the Subscription
-
-To unregister, send a `stop` message:
-
-```json
-{ "type": "stop", "id": "1" }
-```
-
-You'll receive a `complete` message when successful.
-
-
-### Configuring WebSocket endpoints
-
-The WebSocket endpoint for GraphQL subscriptions is provided in the `uris` section of the `create-graphql-api` response.
-
-Example:
-
-```json
-"uris": {
-  "GRAPHQL": "http://localhost:4566/graphql/<api-id>",
-  "REALTIME": "ws://localhost:4510/graphql/<api-id>"
-}
-```
-
-
-LocalStack supports the following WebSocket message types:
-
-| Type              | Description                                     |
-| ----------------- | ----------------------------------------------- |
-| `connection_init` | Client initiates connection                     |
-| `connection_ack`  | Server acknowledges the connection              |
-| `start`           | Starts a subscription                           |
-| `start_ack`       | Acknowledges a successful subscription          |
-| `data`            | Sends a message when a matching mutation occurs |
-| `stop`            | Client unsubscribes from a subscription         |
-| `complete`        | Server confirms unsubscription                  |
-
 
 
 ## Events API
