@@ -334,10 +334,10 @@ Use a `start` message to register your subscription:
 Now, trigger the matching mutation:
 
 ```bash
-awslocal appsync graphql \
-  --api-id $API_ID \
-  --query 'mutation { postMessage(id: "1", content: "Hello world!") { id content } }'
-```
+curl -X POST http://${API_ID}.appsync-api.localhost.localstack.cloud:4566/graphql \
+  -H "content-type: application/json" \
+  -H "x-api-key: ${API_KEY}" \
+  -d '{"query": "mutation { postMessage(id: \"1\", content: \"Hello world!\") { id content } }" }'
 
 You should see a live message from the WebSocket server like:
 
