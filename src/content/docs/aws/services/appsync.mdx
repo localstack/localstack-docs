@@ -300,7 +300,6 @@ export HEADER="{\"host\":\"localhost:4566\",\"x-api-key\":\"$API_KEY\"}"
 export HEADER_ENCODED=$(echo -n $HEADER | base64 | tr '+/' '-_' | tr -d '=')
 
 wscat \
-  -s "header-$HEADER_ENCODED" \
   -s "graphql-ws" \
   -c "ws://localhost:4510/graphql/$API_ID"
 ```
@@ -380,9 +379,6 @@ Example:
 }
 ```
 
-To connect, encode your headers (such as `x-api-key` and `host`) as a base64 JSON string and provide it using the `Sec-WebSocket-Protocol` header prefixed with `header-`. Use `graphql-ws` as the subprotocol.
-
-Only `API_KEY` authentication is currently supported for WebSocket connections in LocalStack. Other methods like Cognito, IAM, and Lambda are not yet implemented.
 
 LocalStack supports the following WebSocket message types:
 
