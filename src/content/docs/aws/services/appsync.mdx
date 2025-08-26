@@ -204,7 +204,7 @@ Pipeline resolvers, on the other hand, invoke AppSync functions that wraps the A
 Unit resolvers are written in the Velocity templating language (VTL), while pipeline resolvers can be written in either VTL or JavaScript.
 
 
-## WebSocket Subscriptions
+### WebSocket Subscriptions
 
 LocalStack supports real-time GraphQL subscriptions over WebSocket for AWS AppSync APIs.
 
@@ -212,7 +212,7 @@ Clients can subscribe to mutation-triggered events and receive updates in real t
 
 You can set up a GraphQL subscription in your schema, connect to the WebSocket endpoint, and receive live updates triggered by a mutation.
 
-### 1. Extend Your GraphQL Schema
+#### 1. Extend Your GraphQL Schema
 
 First, ensure your schema includes a `subscription` type. Use the `@aws_subscribe` directive to link each subscription to a corresponding mutation.
 
@@ -238,7 +238,7 @@ schema {
 }
 ```
 
-### 2. Connect to the WebSocket Endpoint
+#### 2. Connect to the WebSocket Endpoint
 
 LocalStack exposes a WebSocket endpoint for each GraphQL API:
 
@@ -256,8 +256,9 @@ export API_ID=<your-api-id>
 wscat \
   -s "graphql-ws" \
   -c "ws://localhost:4510/graphql/$API_ID"
+```
 
-### 3. Initialize the WebSocket Connection
+#### 3. Initialize the WebSocket Connection
 
 After connecting, send a `connection_init` message:
 
@@ -267,7 +268,7 @@ After connecting, send a `connection_init` message:
 
 You should receive a `connection_ack` in response.
 
-### 4. Start a Subscription
+#### 4. Start a Subscription
 
 Use a `start` message to register your subscription:
 
@@ -281,7 +282,7 @@ Use a `start` message to register your subscription:
 }
 ```
 
-### 5. Trigger the Subscription
+#### 5. Trigger the Subscription
 
 Now, trigger the matching mutation:
 
@@ -290,6 +291,7 @@ curl -X POST http://${API_ID}.appsync-api.localhost.localstack.cloud:4566/graphq
   -H "content-type: application/json" \
   -H "x-api-key: ${API_KEY}" \
   -d '{"query": "mutation { postMessage(id: \"1\", content: \"Hello world!\") { id content } }" }'
+```
 
 You should see a live message from the WebSocket server like:
 
@@ -308,7 +310,7 @@ You should see a live message from the WebSocket server like:
 }
 ```
 
-### 6. Stop the Subscription
+#### 6. Stop the Subscription
 
 To unregister, send a `stop` message:
 
@@ -318,19 +320,7 @@ To unregister, send a `stop` message:
 
 You'll receive a `complete` message when successful.
 
-
-### Configuring WebSocket Subscription endpoints
-
-The WebSocket endpoint for GraphQL subscriptions is provided in the `uris` section of the `create-graphql-api` response.
-
-Example:
-
-```json
-"uris": {
-  "GRAPHQL": "http://localhost:4566/graphql/<api-id>",
-  "REALTIME": "ws://localhost:4510/graphql/<api-id>"
-}
-```
+### Supported WebSocket Message Types
 
 LocalStack supports the following WebSocket message types:
 
@@ -356,6 +346,20 @@ The strategy can be configured via the `GRAPHQL_ENDPOINT_STRATEGY` environment v
 | `domain` | `<api-id>.appsync-api.localhost.localstack.cloud:4566` | This strategy, slated to be the future default, uses the `localhost.localstack.cloud` domain to route to your localhost. |
 | `path`   | `localhost:4566/appsync-api/<api-id>/graphql`         | An alternative strategy that can be beneficial if you're unable to resolve LocalStack's `localhost` domain. |
 | `legacy` | `localhost:4566/graphql/<api-id>`                    | This strategy represents the old endpoint format, which is currently the default but will eventually be phased out. |
+
+
+In addition to the GraphQL HTTP endpoint, each AppSync API also provides a WebSocket endpoint for GraphQL subscriptions. 
+
+The WebSocket server runs on a separate port that may change between deployments. To ensure correct connectivity, always use the `REALTIME` URL returned in the `uris` field of the `create-graphql-api` or `get-graphql-api` responses.
+
+Example:
+
+```json
+"uris": {
+  "GRAPHQL": "http://localhost:4566/graphql/<api-id>",
+  "REALTIME": "ws://localhost:4510/graphql/<api-id>"
+}
+```
 
 :::note
 The `REALTIME` endpoint will ignore the `GRAPHQL_ENDPOINT_STRATEGY` and always use the `legacy` strategy.
