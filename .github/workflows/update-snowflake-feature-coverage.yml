@@ -30,6 +30,8 @@ jobs:
 
       - name: Run the script
         working-directory: snowflake
+        env:
+          PYTHONPATH: ${{ github.workspace }}/snowflake
         run: |
           pip install localstack lxml requests
           python ./etc/coverage.py
