@@ -252,14 +252,10 @@ Use a WebSocket client like `wscat` to connect:
 npm install -g wscat
 
 export API_ID=<your-api-id>
-export API_KEY=<your-api-key>
-export HEADER="{\"host\":\"localhost:4566\",\"x-api-key\":\"$API_KEY\"}"
-export HEADER_ENCODED=$(echo -n $HEADER | base64 | tr '+/' '-_' | tr -d '=')
 
 wscat \
   -s "graphql-ws" \
   -c "ws://localhost:4510/graphql/$API_ID"
-```
 
 ### 3. Initialize the WebSocket Connection
 
