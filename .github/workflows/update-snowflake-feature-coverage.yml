@@ -30,8 +30,6 @@ jobs:
 
       - name: Run the script
         working-directory: snowflake
-        env:
-          PYTHONPATH: ${{ github.workspace }}/snowflake
         run: |
           pip install localstack lxml requests
           python ./etc/coverage.py
@@ -41,7 +39,8 @@ jobs:
           cd localstack-docs
           mv coverage-features.md src/content/docs/snowflake/features/index.md
           mv coverage-functions.md src/content/docs/snowflake/sql-functions.md
-      
+          mv coverage-restapi.md src/content/docs/snowflake/rest-api-endpoints.md
+
       - name: Check for changes
         id: check-for-changes
         working-directory: localstack-docs
