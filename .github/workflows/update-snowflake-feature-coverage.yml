@@ -28,9 +28,11 @@ jobs:
           path: snowflake
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Run the script 
+      - name: Run the script
+        working-directory: snowflake
+        env:
+          PYTHONPATH: ${{ github.workspace }}/snowflake
         run: |
-          cd snowflake
           pip install localstack lxml requests
           python ./etc/coverage.py
 
