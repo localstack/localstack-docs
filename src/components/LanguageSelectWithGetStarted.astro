@@ -1,0 +1,39 @@
+---
+import Default from '@astrojs/starlight/components/LanguageSelect.astro';
+
+// Get the current page route
+const route = Astro.locals.starlightRoute;
+const isSnowflakePage = route.id.startsWith('snowflake');
+
+console.log(route.id);
+
+// Build the URL with conditional parameter
+const getStartedUrl = isSnowflakePage
+  ? 'https://app.localstack.cloud/sign-up?emulator=snowflake'
+  : 'https://app.localstack.cloud/sign-up';
+---
+
+<style>
+  .button {
+    background-color: #703cea;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    text-decoration: none;
+    border-color: #703cea;
+    border-width: 1px;
+  }
+  .button:hover {
+    box-shadow: 0 0 8px 0 #6e3ae8;
+    border-color: #4d0dcf;
+    border-width: 1px;
+  }
+</style>
+
+<Default><slot /></Default>
+<a class="button" href={getStartedUrl}>Get Started</a>

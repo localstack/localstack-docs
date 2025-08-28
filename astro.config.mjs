@@ -53,6 +53,7 @@ export default defineConfig({
       },
       components: {
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
+        LanguageSelect: './src/components/LanguageSelectWithGetStarted.astro',
       },
       expressiveCode: {
         themes: ['one-light', 'one-dark-pro'],
