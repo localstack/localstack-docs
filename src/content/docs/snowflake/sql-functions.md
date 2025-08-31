@@ -469,7 +469,7 @@ The content will be updated as additional query features and functions are imple
 |POSITION|❓|
 |POW, POWER|✅|
 |PREVIOUS_DAY|❓|
-|PROMPT function|❓|
+|PROMPT|❓|
 |QUERY_ACCELERATION_HISTORY|❓|
 |QUERY_HISTORY, QUERY_HISTORY_BY_*|✅|
 |RADIANS|✅|
@@ -748,6 +748,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$SEND_NOTIFICATIONS_TO_CATALOG|❓|
 |SYSTEM$SET_APPLICATION_RESTRICTED_FEATURE_ACCESS|❓|
 |SYSTEM$SET_EVENT_SHARING_ACCOUNT_FOR_REGION|❓|
+|SYSTEM$SET_PRIVATELINK_ENDPOINT_HOSTNAME|❓|
 |SYSTEM$SET_REFERENCE|✅|
 |SYSTEM$SET_RETURN_VALUE|❓|
 |SYSTEM$SET_SPAN_ATTRIBUTES (for Snowflake Scripting)|❓|
