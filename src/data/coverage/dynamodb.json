@@ -641,13 +641,13 @@
     },
     {
       "UpdateKinesisStreamingDestination": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "community",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": ""
       }
     },
@@ -1167,7 +1167,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1235,6 +1235,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_global_tables",
             "test": "test_global_tables",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -1959,7 +1969,7 @@
             "test": "test_cognito_authorization_group_enforcement",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..data.getTest', '$..data.getAllTest', '$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
+            "snapshot_skipped": "['$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2075,6 +2085,26 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_mapping",
+            "test": "test_dynamodb_event_source_mapping",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_retry",
+            "test": "test_dynamodb_event_source_retry",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_enforcement.py::TestIAMEnforcementIdentityBasedPolicies::test_enforce_policy_dynamodb",
             "test": "test_enforce_policy_dynamodb",
             "response": "400",
@@ -2163,6 +2193,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_data_source.py::TestAppsyncDynamoDbDataSource::test_filter_expressions",
             "test": "test_filter_expressions",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_event_code_executor.py::TestAppsyncEventDynamoDbDataSource::test_put_get",
+            "test": "test_put_get",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -2521,7 +2561,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2969,7 +3009,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3417,6 +3457,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_invalid_query_index",
             "test": "test_invalid_query_index",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -4321,7 +4371,7 @@
             "test": "test_cognito_authorization_group_enforcement",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..data.getTest', '$..data.getAllTest', '$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
+            "snapshot_skipped": "['$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4349,6 +4399,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_data_source.py::TestAppsyncDynamoDbDataSource::test_filter_expressions",
             "test": "test_filter_expressions",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_event_code_executor.py::TestAppsyncEventDynamoDbDataSource::test_put_get",
+            "test": "test_put_get",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -4505,6 +4565,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_mapping",
+            "test": "test_dynamodb_event_source_mapping",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_retry",
+            "test": "test_dynamodb_event_source_retry",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -4575,6 +4655,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_stream_destination_records",
             "test": "test_stream_destination_records",
             "response": "200",
@@ -4625,7 +4715,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -4635,7 +4725,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4685,7 +4775,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5329,6 +5419,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_large_data_download",
@@ -7067,7 +7167,7 @@
             "test": "test_cognito_authorization_group_enforcement",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..data.getTest', '$..data.getAllTest', '$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
+            "snapshot_skipped": "['$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7095,6 +7195,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_data_source.py::TestAppsyncDynamoDbDataSource::test_filter_expressions",
             "test": "test_filter_expressions",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_event_code_executor.py::TestAppsyncEventDynamoDbDataSource::test_put_get",
+            "test": "test_put_get",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -7333,6 +7443,46 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_mapping",
+            "test": "test_dynamodb_event_source_mapping",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_mapping",
+            "test": "test_dynamodb_event_source_mapping",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_retry",
+            "test": "test_dynamodb_event_source_retry",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_retry",
+            "test": "test_dynamodb_event_source_retry",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/scenario/kinesis_firehose_redshift/test_kinesis_firehose_redshift.py::TestKinesisFirehoseScenario::test_kinesis_firehose_redshift",
             "test": "test_kinesis_firehose_redshift",
             "response": "400",
@@ -7365,6 +7515,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_data_source.py::TestAppsyncDynamoDbDataSource::test_filter_expressions",
             "test": "test_filter_expressions",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_event_code_executor.py::TestAppsyncEventDynamoDbDataSource::test_put_get",
+            "test": "test_put_get",
             "response": "400",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "",
@@ -7503,6 +7663,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       }
@@ -7531,10 +7711,30 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_stream_destination_records",
             "test": "test_stream_destination_records",
             "response": "200",
             "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "400",
+            "error": "ResourceNotFoundException",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -7762,6 +7962,16 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_event_code_executor.py::TestAppsyncEventDynamoDbDataSource::test_put_get",
+            "test": "test_put_get",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -8127,7 +8337,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -8177,7 +8387,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -8645,6 +8855,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_invalid_query_index",
             "test": "test_invalid_query_index",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -9569,7 +9789,7 @@
             "test": "test_cognito_authorization_group_enforcement",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..data.getTest', '$..data.getAllTest', '$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
+            "snapshot_skipped": "['$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -9597,6 +9817,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_data_source.py::TestAppsyncDynamoDbDataSource::test_filter_expressions",
             "test": "test_filter_expressions",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_event_code_executor.py::TestAppsyncEventDynamoDbDataSource::test_put_get",
+            "test": "test_put_get",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -9777,6 +10007,26 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/qldb/test_qldb.py::TestQLDB::test_stream_journal",
             "test": "test_stream_journal",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_mapping",
+            "test": "test_dynamodb_event_source_mapping",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_retry",
+            "test": "test_dynamodb_event_source_retry",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -10025,7 +10275,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -10813,6 +11063,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_event_code_executor.py::TestAppsyncEventDynamoDbDataSource::test_put_get",
+            "test": "test_put_get",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/appsync/test_appsync_websockets.py::TestWebsocketSubscription::test_websocket_subscriptions_relay_sample",
             "test": "test_websocket_subscriptions_relay_sample",
             "response": "200",
@@ -10930,6 +11190,26 @@
             "snapshot_skipped": "['$..StateReason', '$..Message.dynamodb.SizeBytes']",
             "aws_validated": true,
             "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_mapping",
+            "test": "test_dynamodb_event_source_mapping",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_retry",
+            "test": "test_dynamodb_event_source_retry",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
             "origin": "external"
           },
           {
@@ -11135,6 +11415,16 @@
             "test": "test_time_to_live_deletion",
             "response": "200",
             "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_time_to_live_deletion",
+            "test": "test_time_to_live_deletion",
+            "response": "400",
+            "error": "ResourceNotFoundException",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -11417,7 +11707,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11619,7 +11909,7 @@
             "test": "test_cognito_authorization_group_enforcement",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..data.getTest', '$..data.getAllTest', '$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
+            "snapshot_skipped": "['$..errors..data', '$..errors..errorInfo', '$..errors..locations..sourceName', '$..errors..message']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -12481,6 +12771,46 @@
         ]
       }
     },
+    "UpdateKinesisStreamingDestination": {
+      "StreamArn, TableName": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "400",
+            "error": "ValidationException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "StreamArn, TableName, UpdateKinesisStreamingConfiguration": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/dynamodb/test_dynamodb.py::TestDynamoDB::test_kinesis_streaming_destination_crud",
+            "test": "test_kinesis_streaming_destination_crud",
+            "response": "400",
+            "error": "ValidationException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "UpdateTable": {
       "AttributeDefinitions, GlobalSecondaryIndexUpdates, TableName": {
         "ls_community": [
@@ -13011,6 +13341,16 @@
             "error": "",
             "snapshot_skipped": "",
             "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMDynamoDBTracing::test_dynamodb_event_source_mapping",
+            "test": "test_dynamodb_event_source_mapping",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
           }

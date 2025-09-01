@@ -2127,6 +2127,20 @@
       }
     },
     "CreateDeployment": {
+      "canarySettings, description, restApiId, stageName": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      },
       "canarySettings, restApiId": {
         "ls_community": [
           {
@@ -2212,7 +2226,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2238,6 +2252,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_cfn_apigateway_aws_integration",
             "test": "test_cfn_apigateway_aws_integration",
             "response": "201",
@@ -2252,7 +2276,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2339,46 +2363,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "201",
             "error": "",
@@ -2784,7 +2768,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3540,7 +3524,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4436,6 +4420,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       },
@@ -5016,7 +5020,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -5606,7 +5610,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5993,46 +5997,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "201",
             "error": "",
@@ -6582,6 +6546,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -6620,7 +6604,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -6682,6 +6666,54 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          }
+        ]
+      },
+      "description, endpointConfiguration, minimumCompressionSize, name": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_with_endpoint_configuration",
+            "test": "test_create_rest_api_with_endpoint_configuration",
+            "response": "400",
+            "error": "ValidationException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_with_endpoint_configuration",
+            "test": "test_create_rest_api_with_endpoint_configuration",
+            "response": "400",
+            "error": "BadRequestException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "description, endpointConfiguration, name": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_private_type",
+            "test": "test_create_rest_api_private_type",
+            "response": "400",
+            "error": "BadRequestException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_verify_defaults",
+            "test": "test_create_rest_api_verify_defaults",
+            "response": "400",
+            "error": "ValidationException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       },
@@ -7622,6 +7654,26 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       },
@@ -7667,6 +7719,26 @@
       },
       "endpointConfiguration, name": {
         "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_verify_defaults",
+            "test": "test_create_rest_api_verify_defaults",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_with_endpoint_configuration",
+            "test": "test_create_rest_api_with_endpoint_configuration",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
           {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_dynamodb.py::test_error_aws_proxy_not_supported",
             "test": "test_error_aws_proxy_not_supported",
@@ -7822,7 +7894,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7843,6 +7915,46 @@
             "response": "201",
             "error": "",
             "snapshot_skipped": "['$..EncryptionType', '$..ChildShards']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_private_type",
+            "test": "test_create_rest_api_private_type",
+            "response": "400",
+            "error": "BadRequestException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_private_type",
+            "test": "test_create_rest_api_private_type",
+            "response": "400",
+            "error": "ValidationException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_with_endpoint_configuration",
+            "test": "test_create_rest_api_with_endpoint_configuration",
+            "response": "400",
+            "error": "BadRequestException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_with_endpoint_configuration",
+            "test": "test_create_rest_api_with_endpoint_configuration",
+            "response": "400",
+            "error": "ValidationException",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7904,8 +8016,38 @@
       "name": {
         "ls_community": [
           {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_verify_defaults",
+            "test": "test_create_rest_api_verify_defaults",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_with_optional_params",
             "test": "test_create_rest_api_with_optional_params",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_update_rest_api_ip_address_type",
+            "test": "test_update_rest_api_ip_address_type",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_delete_integration_response_errors",
+            "test": "test_delete_integration_response_errors",
             "response": "201",
             "error": "",
             "snapshot_skipped": "",
@@ -9188,7 +9330,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -9286,6 +9428,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_transformers.py::test_duplicate_resources",
             "test": "test_duplicate_resources",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
             "response": "201",
             "error": "",
             "snapshot_skipped": "['$..tags']",
@@ -9425,46 +9577,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "201",
             "error": "",
@@ -9636,7 +9748,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -9864,7 +9976,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -9980,7 +10092,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -10136,46 +10248,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/stepfunctions/v2/scenarios/test_sfn_scenarios.py::TestFundamental::test_step_functions_calling_api_gateway",
             "test": "test_step_functions_calling_api_gateway",
             "response": "201",
@@ -10233,6 +10305,20 @@
             "response": "201",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      },
+      "deploymentId, restApiId, stageName, tags, variables": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -10708,6 +10794,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_cfn_apigateway_aws_integration",
             "test": "test_cfn_apigateway_aws_integration",
             "response": "202",
@@ -10732,7 +10828,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -10859,46 +10955,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "202",
             "error": "",
@@ -11190,6 +11246,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_delete_integration_response_errors",
+            "test": "test_delete_integration_response_errors",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       }
@@ -11245,6 +11311,16 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -11359,46 +11435,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "204",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "204",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "204",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "204",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "204",
             "error": "",
@@ -11764,46 +11800,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/stepfunctions/v2/scenarios/test_sfn_scenarios.py::TestFundamental::test_step_functions_calling_api_gateway",
             "test": "test_step_functions_calling_api_gateway",
             "response": "202",
@@ -12122,8 +12118,28 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_verify_defaults",
+            "test": "test_create_rest_api_verify_defaults",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_with_binary_media_types",
             "test": "test_create_rest_api_with_binary_media_types",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_create_rest_api_with_endpoint_configuration",
+            "test": "test_create_rest_api_with_endpoint_configuration",
             "response": "202",
             "error": "",
             "snapshot_skipped": "",
@@ -12182,6 +12198,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_update_rest_api_ip_address_type",
+            "test": "test_update_rest_api_ip_address_type",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_update_rest_api_operation_add_remove",
             "test": "test_update_rest_api_operation_add_remove",
             "response": "202",
@@ -12224,6 +12250,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayGatewayResponse::test_update_gateway_response",
             "test": "test_update_gateway_response",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_delete_integration_response_errors",
+            "test": "test_delete_integration_response_errors",
             "response": "202",
             "error": "",
             "snapshot_skipped": "",
@@ -13366,7 +13402,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -13852,6 +13888,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_cfn_apigateway_aws_integration",
             "test": "test_cfn_apigateway_aws_integration",
             "response": "202",
@@ -13886,7 +13932,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -14023,46 +14069,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "202",
             "error": "",
@@ -14772,6 +14778,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -14830,6 +14856,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_cfn_apigateway_aws_integration",
             "test": "test_cfn_apigateway_aws_integration",
             "response": "202",
@@ -14854,7 +14890,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -14981,46 +15017,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "202",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "202",
             "error": "",
@@ -15549,6 +15545,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..createdDate', '$..lastUpdatedDate']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -17050,7 +17056,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -17060,7 +17066,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -17636,6 +17642,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_cfn_apigateway_aws_integration",
             "test": "test_cfn_apigateway_aws_integration",
             "response": "200",
@@ -17680,7 +17696,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -17690,7 +17706,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -17857,46 +17873,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "200",
             "error": "",
@@ -18148,7 +18124,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -18298,7 +18274,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -18682,7 +18658,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -18692,7 +18668,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -18838,51 +18814,21 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/stepfunctions/v2/scenarios/test_sfn_scenarios.py::TestFundamental::test_step_functions_calling_api_gateway",
             "test": "test_step_functions_calling_api_gateway",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..tracingConfiguration', '$..SdkHttpMetadata', '$..SdkResponseMetadata']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "['$..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -19016,6 +18962,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_cfn_apigateway_aws_integration",
             "test": "test_cfn_apigateway_aws_integration",
             "response": "200",
@@ -19040,7 +18996,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -19176,46 +19132,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/stepfunctions/v2/scenarios/test_sfn_scenarios.py::TestFundamental::test_step_functions_calling_api_gateway",
             "test": "test_step_functions_calling_api_gateway",
             "response": "200",
@@ -19317,6 +19233,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..createdDate', '$..lastUpdatedDate']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -20196,7 +20122,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -21112,6 +21038,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -21579,6 +21525,18 @@
             "snapshot_tested": true,
             "origin": "external"
           }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          }
         ]
       },
       "credentials, httpMethod, integrationHttpMethod, passthroughBehavior, requestParameters, resourceId, restApiId, type, uri": {
@@ -21752,7 +21710,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -22682,6 +22640,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayTestInvoke::test_invoke_test_method",
+            "test": "test_invoke_test_method",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_basic.py::TestAPIGateway::test_invoke_endpoint_cors_headers[http://allowed-False-UrlType.HOST_BASED]",
             "test": "test_invoke_endpoint_cors_headers[http://allowed-False-UrlType.HOST_BASED]",
             "response": "201",
@@ -22932,7 +22900,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -23089,46 +23057,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "201",
             "error": "",
@@ -23302,10 +23230,20 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_delete_integration_response_errors",
+            "test": "test_delete_integration_response_errors",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_integration_response_wrong_status_code",
@@ -23708,6 +23646,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       },
@@ -23782,6 +23730,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_update_apigateway_stage",
@@ -24088,7 +24046,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -24209,6 +24167,16 @@
       },
       "httpMethod, resourceId, responseTemplates, restApiId, selectionPattern, statusCode": {
         "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_delete_integration_response_errors",
+            "test": "test_delete_integration_response_errors",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
           {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_lifecycle_integration_response",
             "test": "test_lifecycle_integration_response",
@@ -24730,6 +24698,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       },
@@ -24990,7 +24968,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -25085,6 +25063,16 @@
             "snapshot_skipped": "['$..claims.iss', '$..claims.iat', '$..claims.version', '$..claims.at_hash', '$..claims.jti', '$..claims[\"cognito:user_status\"]']",
             "aws_validated": true,
             "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
             "origin": "external"
           }
         ]
@@ -25800,7 +25788,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -25854,7 +25842,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -26632,7 +26620,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -26650,6 +26638,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiMethod::test_update_method",
             "test": "test_update_method",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_delete_integration_response_errors",
+            "test": "test_delete_integration_response_errors",
             "response": "201",
             "error": "",
             "snapshot_skipped": "",
@@ -26750,6 +26748,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayIntegration::test_update_method_wrong_param_names",
             "test": "test_update_method_wrong_param_names",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayTestInvoke::test_invoke_test_method",
+            "test": "test_invoke_test_method",
             "response": "201",
             "error": "",
             "snapshot_skipped": "",
@@ -27448,6 +27456,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_apigateway_deployment_canary_settings",
+            "test": "test_apigateway_deployment_canary_settings",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "['$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_apigateway.py::test_cfn_deploy_apigateway_integration",
             "test": "test_cfn_deploy_apigateway_integration",
             "response": "201",
@@ -27529,46 +27547,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "201",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "201",
             "error": "",
@@ -27918,6 +27896,26 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -28191,6 +28189,18 @@
             "snapshot_tested": true,
             "origin": "internal"
           }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
+            "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          }
         ]
       },
       "httpMethod, resourceId, responseParameters, restApiId, statusCode": {
@@ -28200,7 +28210,7 @@
             "test": "test_validate_infra_setup",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -28876,7 +28886,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -29502,6 +29512,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_event_bridge_to_apigateway_tracing",
+            "test": "test_event_bridge_to_apigateway_tracing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -29668,7 +29688,7 @@
             "test": "test_cfn_deploy_apigateway_from_s3_swagger",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.createdDate', '$.get-stage.lastUpdatedDate', '$.get-stage.methodSettings', '$.get-stage.tags', '$..endpointConfiguration.ipAddressType']",
+            "snapshot_skipped": "['$.resources.items..resourceMethods.GET', '$.get-stage.methodSettings', '$.get-stage.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -29815,6 +29835,20 @@
           }
         ]
       },
+      "body, httpMethod, resourceId, restApiId": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApigatewayTestInvoke::test_invoke_test_method",
+            "test": "test_invoke_test_method",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "httpMethod, pathWithQueryString, resourceId, restApiId": {
         "ls_community": [
           {
@@ -29838,7 +29872,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..rootResourceId', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -29925,46 +29959,6 @@
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
-            "test": "test_apigateway_invoke_with_path",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke",
-            "test": "test_apigateway_invoke",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost",
-            "test": "test_apigateway_invoke_localhost",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_localhost_with_path",
-            "test": "test_apigateway_invoke_localhost_with_path",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/ported_from_v1/resources/test_stepfunctions.py::test_apigateway_invoke_with_path",
             "test": "test_apigateway_invoke_with_path",
             "response": "200",
             "error": "",
@@ -30654,6 +30648,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_update_rest_api_ip_address_type",
+            "test": "test_update_rest_api_ip_address_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_update_rest_api_operation_add_remove",
             "test": "test_update_rest_api_operation_add_remove",
             "response": "200",
@@ -30668,7 +30672,7 @@
             "test": "test_create_execute_api_vpc_endpoint",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource']",
+            "snapshot_skipped": "['$..endpointConfiguration.types', '$..policy.Statement..Resource', '$..endpointConfiguration.ipAddressType', '$.endpoint-details.ServiceRegion']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -30766,6 +30770,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_update_rest_api_compression",
             "test": "test_update_rest_api_compression",
+            "response": "400",
+            "error": "BadRequestException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/apigateway/test_apigateway_api.py::TestApiGatewayApiRestApi::test_update_rest_api_ip_address_type",
+            "test": "test_update_rest_api_ip_address_type",
             "response": "400",
             "error": "BadRequestException",
             "snapshot_skipped": "",
