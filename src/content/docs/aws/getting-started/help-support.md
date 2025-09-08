@@ -72,7 +72,6 @@ At the moment, we only provide support in `English`, as we are an international 
 | Slack community       | ✅    | ✅       | ✅       | ✅         |
 | GitHub Issues         | ✅    | ✅       | ✅       | ✅         |
 | Support email         |       | ✅       | ✅       | ✅         |
-| Slack support bot     |       | ✅       | ✅       | ✅         |
 | Web Application chat          |       | ✅       | ✅       | ✅         |
 | Ticketing portal      |       |          |          | ✅         |
 | Slack connect channel |       |          |          | ✅         |
@@ -116,7 +115,7 @@ If you have encountered outdated documentation, please report it on our [documen
 
 ### Standard support
 
-Standard support is available to users with an active Starter or Trial subscription.
+Standard support is available to users with an active Base or Trial subscription.
 This includes 1v1 support on a best-effort basis, without guaranteed response times.
 However, the support team aims to respond to inquiries within 24–48 hours during [regular business hours](#support-business-hours).
 
@@ -139,19 +138,11 @@ While we strive to provide comprehensive support for LocalStack, there are certa
 
 Standard support can be accessed through the following channels:
 
-- [LocalStack Slack Bot](https://localstack.cloud/slack)
+- [support@localstack.cloud](mailto:support@localstack.cloud)
 - [LocalStack Web Application](https://app.localstack.cloud)
 
 Providing detailed information upfront helps our team respond more quickly and efficiently.
 After submitting, the support team will respond as soon as possible.
-
-##### LocalStack Support Bot
-
-To create a support ticket:
-
-- Search for the LocalStack Pro Support in our [Slack Community](https://localstack.cloud/slack).
-- Navigate to Messages and type your request.
-- Include relevant details such as error logs, configuration settings, and steps to reproduce the issue.
 
 ##### LocalStack Web Application
 
@@ -164,7 +155,7 @@ To create a support ticket:
 
 ### Priority support
 
-Priority support is available for users with active Teams subscription, offering dedicated 1v1 assistance and faster response times:
+Priority support is available for users with active Ultimate subscription, offering dedicated 1v1 assistance and faster response times:
 
 - **First response**: within 24 hours
 - **Follow-up responses:** within 24 hours
