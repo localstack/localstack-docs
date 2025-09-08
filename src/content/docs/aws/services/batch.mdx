@@ -8,10 +8,10 @@ import FeatureCoverage from "../../../../components/feature-coverage/FeatureCove
 
 ## Introduction
 
-Batch is a cloud-based service provided by Amazon Web Services (AWS) that simplifies the process of running batch computing workloads on the AWS cloud infrastructure.
-Batch allows you to efficiently process large volumes of data and run batch jobs without the need to manage and provision underlying compute resources.
+Batch is a cloud-based service provided by Amazon Web Services (AWS) that simplifies the process of running batch computing workloads on the AWS cloud infrastructure. Batch allows you to efficiently process large volumes of data and run batch jobs without the need to manage and provision underlying compute resources.
 
-LocalStack allows you to use the Batch APIs to automate and scale computational tasks in your local environment while handling batch workloads.
+LocalStack allows you to use the Batch APIs to automate and scale computational tasks in your local environment while handling batch workloads. Batch jobs are executed using the ECS runtime, allowing for support of managed compute environments and improved service compatibility.
+
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Batch integration with LocalStack.
 
 ## Getting started
@@ -30,57 +30,61 @@ We will demonstrate how you create and run a Batch job by following these steps:
 ### Create a service role
 
 You can create a role using the [`CreateRole`](https://docs.aws.amazon.com/cli/latest/reference/iam/create-role.html) API.
-For LocalStack, the service role simply needs to exist.
-However, when [enforcing IAM policies](/aws/capabilities/security-testing/iam-policy-enforcement), it is necessary that the policy is valid.
+ 
+LocalStack requires the role to exist with a valid trust policy. When [enforcing IAM policies](/aws/capabilities/security-testing/iam-policy-enforcement), ensure that the policy is valid and the role is properly attached.
 
-Run the following command to create a role with an empty policy document:
+Run the following command to create a role for ECS task execution:
 
 ```bash
 awslocal iam create-role \
-    --role-name myrole  \
-    --assume-role-policy-document "{}"
+    --role-name myrole \
+    --assume-role-policy-document '{
+  "Version": "2025-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}'
 ```
 
-```bash title="Output"
-{
-    "Role": {
-        "Path": "/",
-        "RoleName": "myrole",
-        "RoleId": "AROAQAAAAAAAMKIDGTHVC",
-        "Arn": "arn:aws:iam::000000000000:role/myrole",
-        "CreateDate": "2023-08-10T20:52:06.196000Z",
-        "AssumeRolePolicyDocument": {}
-    }
-}
+Then attach the ECS task execution policy:
+
+```bash
+awslocal iam attach-role-policy \
+    --role-name myrole \
+    --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
 ```
+
 
 ### Create the compute environment
 
 You can use the [`CreateComputeEnvironment`](https://docs.aws.amazon.com/cli/latest/reference/batch/create-compute-environment.html) API to create a compute environment.
-Run the following command using the role ARN above (`arn:aws:iam::000000000000:role/myrole`), to create the compute environment:
+
+Run the following command using the role ARN above (arn:aws:iam::000000000000:role/myrole) to create a managed compute environment with FARGATE:
 
 ```bash
 awslocal batch create-compute-environment \
     --compute-environment-name myenv \
-    --type UNMANAGED \
-    --service-role <role-arn>
-```
-
-```bash title="Output"
-{
-    "computeEnvironmentName": "myenv",
-    "computeEnvironmentArn": "arn:aws:batch:us-east-1:000000000000:compute-environment/myenv"
-}
+    --type MANAGED \
+    --state ENABLED \
+    --compute-resources type=FARGATE,maxvCpus=128,subnets=subnet-12345678,securityGroupIds=sg-12345678 \
+    --service-role arn:aws:iam::000000000000:role/myrole
 ```
 
 :::note
-While an unmanaged compute environment has been specified, there is no need to provision any compute resources for this setup to function.
-Your tasks will run independently in new Docker containers, alongside the LocalStack container.
+While networking resources such as subnets and security groups are required as input, LocalStack does not create real cloud infrastructure. These values must still be present but are handled within the local ECS runtime.
 :::
+
 
 ### Create a job queue
 
 You can fetch the ARN using the [`DescribeComputeEnvironments`](https://docs.aws.amazon.com/cli/latest/reference/batch/describe-compute-environments.html) API.
+
 Run the following command to fetch the ARN of the compute environment:
 
 ```bash
@@ -89,21 +93,22 @@ awslocal batch describe-compute-environments --compute-environments myenv
 
 ```bash title="Output"
 {
-    "computeEnvironments": [
-        {
-            "computeEnvironmentName": "myenv",
-            "computeEnvironmentArn": "arn:aws:batch:us-east-1:000000000000:compute-environment/myenv",
-            "ecsClusterArn": "arn:aws:ecs:us-east-1:000000000000:cluster/OnDemand_Batch_f2faa82c-8c31-466d-ab22-579925d810ac",
-            "type": "UNMANAGED",
-            "status": "VALID",
-            "statusReason": "Compute environment is available",
-            "serviceRole": "arn:aws:iam::000000000000:role/myrole"
-        }
-    ]
+  "computeEnvironments": [
+    {
+      "computeEnvironmentName": "myenv",
+      "computeEnvironmentArn": "arn:aws:batch:us-east-1:000000000000:compute-environment/myenv",
+      "ecsClusterArn": "arn:aws:ecs:us-east-1:000000000000:cluster/OnDemand_Batch_abc123",
+      "type": "MANAGED",
+      "status": "VALID",
+      "statusReason": "Compute environment is available",
+      "serviceRole": "arn:aws:iam::000000000000:role/myrole"
+    }
+  ]
 }
 ```
 
 You can use the ARN to create the job queue using [`CreateJobQueue`](https://docs.aws.amazon.com/cli/latest/reference/batch/create-job-queue.html) API.
+
 Run the following command to create the job queue:
 
 ```bash
@@ -114,37 +119,34 @@ awslocal batch create-job-queue \
     --state ENABLED
 ```
 
-```bash title="Output"
-{
-    "jobQueueName": "myqueue",
-    "jobQueueArn": "arn:aws:batch:us-east-1:000000000000:job-queue/myqueue"
-}
-```
-
 ### Create a job definition
 
-Now, you can define what occurs during a job run, or at least what transpires by default.
-In this example, you can execute the `busybox` container from DockerHub and initiate the command: `sleep 30` within it.
-It's important to note that you can override this command when submitting the job.
+Now, you can define what occurs during a job run. In this example, you can execute the 'busybox' container from DockerHub and initiate the command: 'sleep 30'. It's important to note you can override this command when submitting the job. 
 
 Run the following command to create the job definition using the [`RegisterJobDefinition`](https://docs.aws.amazon.com/cli/latest/reference/batch/register-job-definition.html) API:
+
 
 ```bash
 awslocal batch register-job-definition \
     --job-definition-name myjobdefn \
     --type container \
-    --container-properties '{"image":"busybox","vcpus":1,"memory":128,"command":["sleep","30"]}'
-```
-
-```bash title="Output"
-{
-    "jobDefinitionName": "myjobdefn",
-    "jobDefinitionArn": "arn:aws:batch:us-east-1:000000000000:job-definition/myjobdefn:1",
-    "revision": 1
-}
+    --platform-capabilities FARGATE \
+    --container-properties '{
+        "image": "busybox",
+        "resourceRequirements": [
+            {"type": "VCPU", "value": "0.25"},
+            {"type": "MEMORY", "value": "512"}
+        ],
+        "command": ["sleep", "30"],
+        "networkConfiguration": {
+            "assignPublicIp": "ENABLED"
+        },
+        "executionRoleArn": "arn:aws:iam::000000000000:role/myrole"
+    }'
 ```
 
 If you want to pass arguments to the command as [parameters](https://docs.aws.amazon.com/batch/latest/userguide/job_definition_parameters.html#parameters), you can use the `Ref::` declaration to set placeholders for parameter substitution.
+
 This allows the dynamic passing of values at runtime for specific job definitions.
 
 ```bash
@@ -152,7 +154,19 @@ awslocal batch register-job-definition \
     --job-definition-name myjobdefn \
     --type container \
     --parameters '{"time":"10"}' \
-    --container-properties '{"image":"busybox","vcpus":1,"memory":128,"command":["sleep","Ref::time"]}'
+    --platform-capabilities FARGATE \
+    --container-properties '{
+        "image": "busybox",
+        "resourceRequirements": [
+            {"type": "VCPU", "value": "0.25"},
+            {"type": "MEMORY", "value": "512"}
+        ],
+        "command": ["sleep", "Ref::time"],
+        "networkConfiguration": {
+            "assignPublicIp": "ENABLED"
+        },
+        "executionRoleArn": "arn:aws:iam::000000000000:role/myrole"
+    }'
 ```
 
 ### Submit a job to the job queue
@@ -171,17 +185,24 @@ awslocal batch submit-job \
     --container-overrides '{"command":["sh", "-c", "sleep 5; pwd"]}'
 ```
 
-```bash title="Output"
-{
-    "jobName": "myjob",
-    "jobId": "23027eb6-cce0-4365-a412-36917a2dfd03"
-}
-```
-
 ## Current Limitations
 
-As mentioned in the example above, the creation of a compute environment does not entail the provisioning of EC2 or Fargate instances.
-Rather, it executes Batch jobs on the local Docker daemon, operating alongside LocalStack.
+LocalStack simulates the execution of ECS-based AWS Batch jobs using the local ECS runtime. No real infrastructure is created or managed.
+
+Array jobs are supported in sequential mode only.
+
+A subset of environment variables is supported, including:
+- `AWS_BATCH_CE_NAME`
+- `AWS_BATCH_JOB_ARRAY_INDEX`
+- `AWS_BATCH_JOB_ARRAY_SIZE`
+- `AWS_BATCH_JOB_ATTEMPT`
+- `AWS_BATCH_JOB_ID`
+- `AWS_BATCH_JQ_NAME`
+
+The configuration variable `ECS_DOCKER_FLAGS` can be used to pass additional Docker flags to the container runtime.
+
+Setting `ECS_TASK_EXECUTOR=kubernetes` is supported as an alternative backend, though Kubernetes execution is experimental and may not support all features.
+
 
 ## API Coverage
 
