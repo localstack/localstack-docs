@@ -329,6 +329,10 @@ export default defineConfig({
                   collapsed: true,
                 },
                 {
+                  label: 'LocalStack Toolkit VS Code',
+                  slug: 'aws/tooling/vscode-extension',
+                },
+                {
                   label: 'Testing Utils',
                   slug: 'aws/tooling/testing-utils',
                 },
