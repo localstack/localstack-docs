@@ -26,6 +26,20 @@ If you encounter problems or regressions you can **revert to the legacy engine**
 ```
 :::
 
+:::note
+
+## Upcoming Change in Handling Unsupported Resource Types
+
+In a future LocalStack release, the behavior of the CloudFormation engine will change when stacks contain **unsupported AWS resource types**.
+
+**Currently**, unsupported resources are silently ignored or mocked so that the rest of the stack can proceed.
+
+**With the upcoming change**, CloudFormation will instead **fail the deployment** if the template includes unsupported resource types.
+
+To **preview this new behavior** and prepare for the change, you can enable it manually:
+
+```bash
+CFN_IGNORE_UNSUPPORTED_RESOURCE_TYPES=1
 CloudFormation is a service provided by Amazon Web Services (AWS) that allows you to define and provision infrastructure as code.
 It enables you to create, update, and manage resources in a repeatable and automated manner using declarative templates.
 With CloudFormation, you can use JSON or YAML templates to define your desired infrastructure state.
