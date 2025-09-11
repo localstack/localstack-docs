@@ -29,6 +29,15 @@ The default approach for creating Kubernetes clusters using the local EKS API is
 LocalStack seamlessly manages the download and installation process, making it hassle-free for users.
 In most cases, the installation is automatic, eliminating the need for any manual customizations.
 
+:::note
+The Traefik ingress controller and the default k3d load balancer containers are no longer started automatically when creating an EKS cluster.  
+To restore the previous behavior, set the following configuration variable:
+
+```bash
+EKS_START_K3D_LB_INGRESS=1
+```
+:::
+
 You can create a new cluster using the [`CreateCluster`](https://docs.aws.amazon.com/eks/latest/APIReference/API_CreateCluster.html) API.
 Run the following command:
 
