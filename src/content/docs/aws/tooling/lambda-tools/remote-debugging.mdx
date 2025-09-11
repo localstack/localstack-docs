@@ -12,25 +12,316 @@ import { Badge } from '@astrojs/starlight/components';
 
 # Overview
 
-This guide covers remote debugging of Lambda functions with the IDEs [Visual Studio Code](https://code.visualstudio.com/) and [IntelliJ IDEA](https://www.jetbrains.com/idea/).
-For a simple working example of this feature, check out Pro sample [lambda-mounting-and-debugging](https://github.com/localstack/localstack-pro-samples/tree/master/lambda-mounting-and-debugging).
+Lambda Remote Debugging lets you use breakpoints, inspect variables, and step through your Lambda function code locally within VS Code. It is supported for Python, Node.js, and Java, and works with SAM-based or standalone Lambda projects. 
 
-More examples and tooling support for local Lambda debugging (including support for other IDEs like PyCharm) is coming soon - stay tuned!
+:::note 
 
-# Covered Topics
+For examples and sample apps, visit the [LocalStack Samples Repository](https://github.com/localstack-samples/localstack-pro-samples). 
 
-* [Debugging Python lambdas](#debugging-python-lambdas)
-* [Debugging JVM lambdas](#debugging-jvm-lambdas)
-* [Debugging Node.js lambdas](#debugging-nodejs-lambdas)
-* [Lambda Debug Mode (preview)](#lambda-debug-mode-preview)
+::: 
+
+
+## Lambda Remote Debugging with AWS Toolkit for VS Code 
+
+This guide describes how to use the AWS Toolkit for VS Code to debug Lambda functions running in LocalStack. This new integration enables interactive, IDE-native debugging for Python, Node.js, and Java Lambda functions with minimal setup.
+
+### Key Benefits
+
+* One-click remote automatic debugger configuration and injection via the AWS Toolkit for VS Code
+* Automatic Timeout Management
+* Support for Python, Node.js, and Java runtimes
+
+
+
+## Getting Started with AWS Toolkit (VS Code)
+
+### Prerequisites
+
+* Upgrade to LocalStack v4.8 (or higher) for both your LocalStack CLI and your LocalStack Docker image.
+* [VS Code](https://code.visualstudio.com/) (>= v1.83.0)
+* [AWS Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode) (>= v3.74)
+* [LocalStack Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=LocalStack.localstack) (>= v1.2.0)
+* [Docker](https://www.docker.com/)
+* A valid LocalStack Auth Token. Sign up for a [free LocalStack account](https://app.localstack.cloud/sign-up).
+* A valid **auth token** with an assigned **Free Tier or higher license**.
+* VS Code running on the **same machine** as LocalStack (container-based setups like Kubernetes are not yet supported).
+
+### Setup Steps
+
+The following setup creates the required `~/.aws/config` and `~/.aws/credentials` entries and ensures LocalStack runs with your active license.
+
+1. Install [AWS Toolkit](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode) and [LocalStack Toolkit](https://marketplace.visualstudio.com/items?itemName=LocalStack.localstack) from the VS Code Marketplace.
+2. Install the latest version of the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) for using the AWS Application builder functionality in the AWS Toolkit.
+3. Run the `LocalStack: Run Setup Wizard` from the Command Palette. (This sets your auth token and configures the `localstack` AWS profile.)
+
+![LocalStack: Run Setup Wizard](/images/aws/lambda-remote-debugging/wizard.png)
+
+4. Start LocalStack using the status bar or the command `Start LocalStack`.
+5. Switch your AWS profile in the status bar to `profile:localstack`.
+
+![LocalStack status bar](/images/aws/lambda-remote-debugging/status-bar.png)
+
+
+### Debugging Node.js, Python, Java (with Examples)
+
+You can debug either your own Lambda function or our sample project.
+
+### Use AWS Toolkit Sample
+
+1. Open the **AWS Explorer** in VS Code.
+
+![AWS Explorer](/images/aws/lambda-remote-debugging/explorer.png)
+
+2. To install the sample application, select the `...` menu in the AWS Explorer view and choose *Create application with Serverless template*. 
+
+![Create app](/images/aws/lambda-remote-debugging/create-app.png)
+
+3. Choose the **"Process SQS Records with Lambda"** sample.
+
+![Process SQS Records with Lambda](/images/aws/lambda-remote-debugging/choose-sqs-records-lambda.png)
+
+4. Select a runtime (Python, Node.js, or Java).
+
+5. Complete the wizard to generate the project.
+
+:::note
+
+If you want to use your own Lambda function, ensure your function and SAM template are compatible with LocalStack.
+
+If using our sample app, you may need to change the Lambda architecture from `arm64` to `x86_64` in `template.yaml` if running on an Intel machine.
+
+::: 
+
+### Deploy and Debug
+
+1. Deploy the function:
+
+   * Go to Application Builder view
+   * Click **Deploy SAM Application** (cloud icon)
+
+![Deploy SAM Application](/images/aws/lambda-remote-debugging/deploy-sam.png)
+
+   * Follow the wizard to deploy to LocalStack
+
+2. Open Remote Invoke Configuration:
+
+   * In **AWS Explorer**, right-click your deployed Lambda function
+   * Select **Invoke Remotely**
+
+3. Enable Remote Debugging:
+
+   * In the configuration view, check **Remote debugging**
+
+![Remote Invoke Config](/images/aws/lambda-remote-debugging/remote-invoke-config.png)
+
+![Expanded Remote Debugging](/images/aws/lambda-remote-debugging/expanded-remote-debugging.png)
+
+   * If prompted, provide the event input (e.g., SQS sample event)
+
+4. Set Breakpoints and Debug:
+
+   * Open your Lambda handler source file
+   * Set breakpoints in the margin
+   * Click **Remote Invoke**
+
+Your Lambda function will execute in LocalStack and pause at your breakpoint. You can inspect variables, step through code, and continue execution.
+
+
+### Debugging TypeScript with Source Maps
+
+To enable source-level debugging for TypeScript:
+
+1. Build your TypeScript Lambda with source maps enabled:
+
+```bash
+ tsc --sourceMap true
+```
+
+2. Ensure the compiled `.js` and `.map` files are present in the deployment package.
+3. Open the `.ts` source file in VS Code, set breakpoints, and proceed as with other runtimes.
+
+
+
+## Troubleshooting
+
+### `UnsupportedLocalStackVersion` Error
+
+If you receive the following error message:
+
+```
+UnsupportedLocalStackVersion: Your current LocalStack version does not support Lambda remote debugging. Update LocalStack and check your license.
+```
+
+Here's how to fix it:
+
+1. Make sure you are running **LocalStack Pro >= v4.8.0**
+
+   ```bash
+   docker pull localstack/localstack-pro:latest
+   ```
+2. Ensure your **auth token is valid** and has an **assigned license** (Free Tier or higher).
+
+   * You can re-run the **LocalStack Setup Wizard** in VS Code to verify.
+   * Or log into [app.localstack.cloud](https://app.localstack.cloud) and check your token and [license status](https://docs.localstack.cloud/aws/licensing/).
+
+### DNS Rebind Protection Issues
+
+Should downloading the Lambda function code fail, here's how to fix it:
+
+* Disable DNS rebind protection (see [LocalStack DNS docs](https://docs.localstack.cloud/aws/tooling/dns-server/#dns-rebind-protection))
+* Use `127.0.0.1` instead of `localhost.localstack.cloud` (**Automatic** setup) 
+    * Run the `LocalStack: Configure AWS Profile "localstack"` command from the VS Code Command Palette which will auto-configure the correct endpoint.
+* Use `127.0.0.1` instead of `localhost.localstack.cloud` (**Manual** setup) 
+    * Set `LOCALSTACK_HOST=127.0.0.1:4566` in `~/.localstack/default.env`
+    * Update your `endpoint_url` in your `localstack` profile located in `~/.aws/config`
+
+
+## Lambda Debug Mode (Preview) <Badge text="Pro" size="large" />
+
+Lambda Debug Mode is a preview feature in LocalStack designed to enhance your Lambda debugging workflows.
+This feature provides an optimized environment for debugging Lambda functions, ensuring that you have the
+necessary tools and flexibility to troubleshoot effectively.
+
+### Key Features
+* **Automatic Timeout Management**: Integrates with API Gateway to prevent Lambda function timeouts,
+  giving developers ample time to connect remote debuggers and inspect the function's behavior.
+* **Multi-Function Debugging**: Supports debugging multiple Lambda functions concurrently.
+
+### Enabling Lambda Debug Mode
+
+To enable Lambda Debug Mode, set the `LAMBDA_DEBUG_MODE` environment variable as shown below:
+
+```bash
+LAMBDA_DEBUG_MODE=1 \
+LAMBDA_DOCKER_FLAGS='-p 19891:19891' \
+localstack start
+```
+
+When enabled, Lambda Debug Mode automatically adjusts timeouts to accommodate debugging needs:
+* **Lambda Container Startup Timeout**: Provides additional time for debugger connection during container creation.
+* **Lambda Execution Timeout**: Extends the execution window, allowing for in-depth remote debugging.
+* **API Gateway-Lambda Integration Timeout**: Increases timeout settings to avoid premature terminations.
+
+### Advanced Configuration
+
+For further customization, you can use a configuration file.
+Specify the path to this file with the `LAMBDA_DEBUG_MODE_CONFIG_PATH` environment variable, ensuring the
+file is mounted into the LocalStack container.
+Manually setting `LAMBDA_DOCKER_FLAGS` is unnecessary when using this configuration.
+
+Here is an example of mounting a `debug_config.yaml` in your LocalStack container to start your Debug Mode:
+
+<Tabs>
+<TabItem label="LocalStack CLI">
+```bash
+LOCALSTACK_LAMBDA_DEBUG_MODE=1 \
+LOCALSTACK_LAMBDA_DEBUG_MODE_CONFIG_PATH=/tmp/debug_config.yaml \
+localstack start --volume /path/to/debug-config.yaml:/tmp/lambda_debug_mode_config.yaml
+```
+</TabItem>
+<TabItem label="Docker Compose">
+```yaml showLineNumbers
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    image: localstack/localstack-pro  # required for Pro
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+      - "127.0.0.1:443:443"              # LocalStack HTTPS Gateway (Pro)
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+      - LAMBDA_DEBUG_MODE=1
+      - LAMBDA_DEBUG_MODE_CONFIG_PATH=/tmp/debug_config.yaml
+    volumes:
+      - "./debug_config.yaml:/tmp/debug_config.yaml"
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+```
+</TabItem>
+</Tabs>
+
+Any change to the configuration file on your local filesystem would be automatically picked by the LocalStack container.
+After debugging a Lambda function, its associated container will automatically stop.
+
+The configuration file should contain a `functions` block where you can define debug settings
+for each specific Lambda function ARN.
+
+#### Example: Basic Debugging Configuration
+This example configures Lambda Debug Mode to use port 19891 for the remote debugger.
+
+```yaml showLineNumbers
+functions:
+  arn:aws:lambda:eu-central-1:000000000000:function:func-one:
+    debug-port: 19891
+```
+
+#### Example: Disabling Automatic Timeout Handling
+In this example, the automatic timeout handling feature is disabled for the specified Lambda function,
+enforcing the predefined timeouts instead.
+
+```yaml showLineNumbers
+functions:
+  arn:aws:lambda:eu-central-1:000000000000:function:func-one:
+    debug-port: 19891
+    enforce-timeouts: true
+```
+
+### Handling Unqualified ARNs
+
+Specifying an unqualified Lambda ARN in the configuration is equivalent to specifying the ARN
+with the `$LATEST` version qualifier.
+
+```yaml showLineNumbers
+functions:
+  arn:aws:lambda:eu-central-1:000000000000:function:func-one:$LATEST:
+    debug-port: 19891
+```
+
+### Debugging Multiple Functions
+
+To debug multiple Lambda functions simultaneously, assign a different debug port to each function.
+Note that this configuration affects the container's internal debugger port as well, so the debugger
+port must be set accordingly.
+
+```yaml showLineNumbers
+functions:
+  arn:aws:lambda:eu-central-1:000000000000:function:func-one:
+    debug-port: 19891
+  arn:aws:lambda:eu-central-1:000000000000:function:func-two:
+    debug-port: 19892
+```
+
+### Debugging Different Versions
+
+You can also debug different versions of the same Lambda function by assigning unique ports to each version.
+
+```yaml showLineNumbers
+functions:
+  arn:aws:lambda:eu-central-1:000000000000:function:func-one:1:
+    debug-port: 19891
+  arn:aws:lambda:eu-central-1:000000000000:function:func-two:2:
+    debug-port: 19892
+```
+
+
+## Manual Lambda Debugging (Legacy)
+
+* [Debugging Python Lambda functions](#debugging-python-lambda-functions)
+* [Debugging JVM Lambda functions](#debugging-jvm-lambda-functions)
+* [Debugging Node.js Lambda functions](#debugging-nodejs-lambda-functions)
 * [Resources](#resources)
 
 :::note
+
 Due to the ports published by the Lambda container for the debugger, it is currently only possible to debug one Lambda function at a time.
-For advanced debugging scenarios, such as those requiring multiple ports, refer to [Lambda Debug Mode (preview)](#lambda-debug-mode-preview) section.
+
+This limitation only applies to advanced manual debugging scenarios in legacy mode, such as those requiring multiple ports.
+
 :::
 
-## Debugging Python lambdas
+### Debugging Python Lambda functions
 
 Lambda functions debugging used to be a difficult task.
 LocalStack changes that
@@ -216,7 +507,7 @@ awslocal lambda invoke --function-name my-cool-local-function \
 </TabItem>
 </Tabs>
 
-## Debugging JVM lambdas
+### Debugging JVM Lambda functions
 
 ### Configure LocalStack and your Lambda function for remote JVM debugging
 
@@ -326,7 +617,7 @@ Now to debug your lambda function, click on the `Debug` icon with
 `Remote JVM on LS Debug` configuration selected, and then invoke your
 lambda function.
 
-## Debugging Node.js lambdas
+### Debugging Node.js Lambda functions
 
 ### Configure LocalStack for remote Node.js debugging
 
@@ -427,134 +718,6 @@ awslocal lambda invoke --function-name func1 \
 </TabItem>
 </Tabs>
 
-## Lambda Debug Mode (Preview) <Badge text="Pro" size="large" />
-
-Lambda Debug Mode is a preview feature in LocalStack designed to enhance your Lambda debugging workflows.
-This feature provides an optimized environment for debugging Lambda functions, ensuring that you have the
-necessary tools and flexibility to troubleshoot effectively.
-
-### Key Features
-* **Automatic Timeout Management**: Integrates with API Gateway to prevent Lambda function timeouts,
-giving developers ample time to connect remote debuggers and inspect the function's behavior.
-* **Multi-Function Debugging**: Supports debugging multiple Lambda functions concurrently.
-
-### Enabling Lambda Debug Mode
-
-To enable Lambda Debug Mode, set the `LAMBDA_DEBUG_MODE` environment variable as shown below:
-
-```bash
-LAMBDA_DEBUG_MODE=1 \
-LAMBDA_DOCKER_FLAGS='-p 19891:19891' \
-localstack start
-```
-
-When enabled, Lambda Debug Mode automatically adjusts timeouts to accommodate debugging needs:
-* **Lambda Container Startup Timeout**: Provides additional time for debugger connection during container creation.
-* **Lambda Execution Timeout**: Extends the execution window, allowing for in-depth remote debugging.
-* **API Gateway-Lambda Integration Timeout**: Increases timeout settings to avoid premature terminations.
-
-### Advanced Configuration
-
-For further customization, you can use a configuration file.
-Specify the path to this file with the `LAMBDA_DEBUG_MODE_CONFIG_PATH` environment variable, ensuring the
-file is mounted into the LocalStack container.
-Manually setting `LAMBDA_DOCKER_FLAGS` is unnecessary when using this configuration.
-
-Here is an example of mounting a `debug_config.yaml` in your LocalStack container to start your Debug Mode:
-
-<Tabs>
-<TabItem label="LocalStack CLI">
-```bash
-LOCALSTACK_LAMBDA_DEBUG_MODE=1 \
-LOCALSTACK_LAMBDA_DEBUG_MODE_CONFIG_PATH=/tmp/debug_config.yaml \
-localstack start --volume /path/to/debug-config.yaml:/tmp/lambda_debug_mode_config.yaml
-```
-</TabItem>
-<TabItem label="Docker Compose">
-```yaml showLineNumbers
-services:
-  localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
-    image: localstack/localstack-pro  # required for Pro
-    ports:
-      - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
-      - "127.0.0.1:443:443"              # LocalStack HTTPS Gateway (Pro)
-    environment:
-      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - DEBUG=${DEBUG:-0}
-      - LAMBDA_DEBUG_MODE=1
-      - LAMBDA_DEBUG_MODE_CONFIG_PATH=/tmp/debug_config.yaml
-    volumes:
-      - "./debug_config.yaml:/tmp/debug_config.yaml"
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-```
-</TabItem>
-</Tabs>
-
-Any change to the configuration file on your local filesystem would be automatically picked by the LocalStack container.
-After debugging a Lambda function, its associated container will automatically stop.
-
-The configuration file should contain a `functions` block where you can define debug settings
-for each specific Lambda function ARN.
-
-#### Example: Basic Debugging Configuration
-This example configures Lambda Debug Mode to use port 19891 for the remote debugger.
-
-```yaml showLineNumbers
-functions:
-  arn:aws:lambda:eu-central-1:000000000000:function:func-one:
-    debug-port: 19891
-```
-
-#### Example: Disabling Automatic Timeout Handling
-In this example, the automatic timeout handling feature is disabled for the specified Lambda function,
-enforcing the predefined timeouts instead.
-
-```yaml showLineNumbers
-functions:
-  arn:aws:lambda:eu-central-1:000000000000:function:func-one:
-    debug-port: 19891
-    enforce-timeouts: true
-```
-
-### Handling Unqualified ARNs
-
-Specifying an unqualified Lambda ARN in the configuration is equivalent to specifying the ARN
-with the `$LATEST` version qualifier.
-
-```yaml showLineNumbers
-functions:
-  arn:aws:lambda:eu-central-1:000000000000:function:func-one:$LATEST:
-    debug-port: 19891
-```
-
-### Debugging Multiple Functions
-
-To debug multiple Lambda functions simultaneously, assign a different debug port to each function.
-Note that this configuration affects the container's internal debugger port as well, so the debugger
-port must be set accordingly.
-
-```yaml showLineNumbers
-functions:
-  arn:aws:lambda:eu-central-1:000000000000:function:func-one:
-    debug-port: 19891
-  arn:aws:lambda:eu-central-1:000000000000:function:func-two:
-    debug-port: 19892
-```
-
-### Debugging Different Versions
-
-You can also debug different versions of the same Lambda function by assigning unique ports to each version.
-
-```yaml showLineNumbers
-functions:
-  arn:aws:lambda:eu-central-1:000000000000:function:func-one:1:
-    debug-port: 19891
-  arn:aws:lambda:eu-central-1:000000000000:function:func-two:2:
-    debug-port: 19892
-```
 
 ## Resources
 
@@ -562,5 +725,5 @@ functions:
 * [Spring Cloud Function on LocalStack (Kotlin JVM)](https://github.com/localstack/localstack-pro-samples/tree/master/sample-archive/spring-cloud-function-microservice)
 * [Enable Lambda Debug Mode to Automatically Raise Execution Timeouts (Java)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/java/base-enable-lambda-debug-mode)
 * [Enable Lambda Debug Mode to Automatically Raise Execution Timeouts (Python)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/python/base-multiple-lambda-debug-mode)
-* [Enable Lambda Debug Mode to Automatically Raise Execution Timeouts for multiple Lambdas (Python)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/python/base-multiple-lambda-debug-mode)
+* [Enable Lambda Debug Mode to Automatically Raise Execution Timeouts for multiple Lambda functions (Python)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/python/base-multiple-lambda-debug-mode)
 * [Enable Lambda Debug Mode to Automatically Handle Concurrent Function Invocations (Python)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/python/base-concurrent-lambda-debug-mode)
