@@ -333,35 +333,35 @@ export default defineConfig({
                   slug: 'aws/tooling/vscode-extension',
                 },
                 {
-                  label: 'Testing Utils',
-                  slug: 'aws/tooling/testing-utils',
-                },
-                {
-                  label: 'LocalSurf',
-                  slug: 'aws/tooling/localsurf',
-                },
-                {
-                  label: 'AWS Replicator',
-                  slug: 'aws/tooling/aws-replicator',
+                  label: 'Lambda Tools',
+                  autogenerate: {
+                    directory: '/aws/tooling/lambda-tools',
+                  },
+                  collapsed: true,
                 },
                 {
                   label: 'Event Studio',
                   slug: 'aws/tooling/event-studio',
                 },
                 {
+                  label: 'AWS Replicator',
+                  slug: 'aws/tooling/aws-replicator',
+                },
+                {
                   label: 'DNS Server',
                   slug: 'aws/tooling/dns-server',
+                },
+                {
+                  label: 'Testing Utils',
+                  slug: 'aws/tooling/testing-utils',
                 },
                 {
                   label: 'LocalStack Docker Extension',
                   slug: 'aws/tooling/localstack-docker-extension',
                 },
                 {
-                  label: 'Lambda Tools',
-                  autogenerate: {
-                    directory: '/aws/tooling/lambda-tools',
-                  },
-                  collapsed: true,
+                  label: 'LocalSurf',
+                  slug: 'aws/tooling/localsurf',
                 },
               ],
             },
