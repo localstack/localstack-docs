@@ -11,6 +11,21 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
+:::note
+We've introduced a **new CloudFormation engine** designed to improve long-term support for stack updates and resource drift detection.
+
+This includes internal changes that may affect existing stacks or deployment behavior. Most users will benefit from the new behavior automatically, but there are a few important notes to be aware of:
+
+- **Persistence is not backwards-compatible:** If you use persistent state, your stacks may not load correctly between the new and old engines.
+- **Default behavior has changed:** If your deployment logic depends on specific legacy quirks or unsupported update behavior, you may encounter issues.
+- **New features and improvements:** are now available under the new engine.
+
+If you encounter problems or regressions you can **revert to the legacy engine** by setting:
+  ```bash
+  PROVIDER_OVERRIDE_CLOUDFORMATION=engine-legacy
+```
+:::
+
 CloudFormation is a service provided by Amazon Web Services (AWS) that allows you to define and provision infrastructure as code.
 It enables you to create, update, and manage resources in a repeatable and automated manner using declarative templates.
 With CloudFormation, you can use JSON or YAML templates to define your desired infrastructure state.
