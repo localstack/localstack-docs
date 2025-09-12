@@ -23,7 +23,12 @@ The following versions of OpenSearch Service are supported by LocalStack:
 - 2.3
 - 2.7
 - 2.9
-- 2.11 (**default**)
+- 2.11
+- 2.13
+- 2.15
+- 2.17
+- 2.19
+- 3.1 (**default**)
 
 OpenSearch is closely coupled with the [Elasticsearch Service](../elasticsearch).
 Clusters generated through the OpenSearch Service will be visible within the Elasticsearch Service interface, and vice versa.
@@ -257,15 +262,17 @@ Now you can start another container for OpenSearch Dashboards, which is configur
 - The version of OpenSearch Dashboards is the same as the OpenSearch domain.
 
 ```bash
-docker inspect localstack-main | \
- jq -r '.[0].NetworkSettings.Networks | to_entries | .[].value.IPAddress'
+LS_IP=$(docker inspect localstack-main | \
+ jq -r '.[0].NetworkSettings.Networks | to_entries | .[].value.IPAddress')
+
+LS_NETWORK=$(docker inspect localstack-main | jq -r '.[0].NetworkSettings.Networks | to_entries | .[].key')
 
 docker run --rm -p 5601:5601 \
-  --network ls \
-  --dns 172.22.0.2 \
+  --network $LS_NETWORK \
+  --dns $LS_IP \
   -e "OPENSEARCH_HOSTS=http://secure-domain.us-east-1.opensearch.localhost.localstack.cloud:4566" \
   -e "OPENSEARCH_USERNAME=admin" -e 'OPENSEARCH_PASSWORD=really-secure-passwordAa!1' \
-  opensearchproject/opensearch-dashboards:2.11.0
+  opensearchproject/opensearch-dashboards:3.1.0
 ```
 
 Once the container is running, you can reach OpenSearch Dashboards at `http://localhost:5601` and you can log in with your OpenSearch domain credentials.
