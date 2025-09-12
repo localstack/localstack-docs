@@ -58,6 +58,15 @@ awslocal sqs get-queue-attributes \
     --attribute-names All
 ```
 
+To create a FIFO queue with suffix `.fifo`, as used by [AWS FIFO queues](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fifo-queue-message-identifiers.html), the queue needs to have the attributes `FifoQueue=true` set:
+
+```bash
+awslocal sqs create-queue --queue-name localstack-queue.fifo --attributes "FifoQueue=true"
+{
+    "QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue.fifo"
+}
+```
+
 ### Sending and receiving messages from the queue
 
 You can send a message to the SQS queue which will be queued and a consumer can pick it up.
