@@ -78,7 +78,7 @@ The content will be updated as additional query features and functions are imple
 |ARRAY_UNIQUE_AGG|✅|
 |ARRAYS_OVERLAP|✅|
 |ARRAYS_TO_OBJECT|✅|
-|ARRAYS_ZIP|❓|
+|ARRAYS_ZIP|✅|
 |AS_<object_type>|❓|
 |AS_ARRAY|✅|
 |AS_BINARY|✅|
@@ -105,6 +105,7 @@ The content will be updated as additional query features and functions are imple
 |BASE64_DECODE_STRING|❓|
 |BASE64_ENCODE|❓|
 |[ NOT ] BETWEEN|✅|
+|BIND_VALUES|❓|
 |BIT_LENGTH|❓|
 |BITAND|✅|
 |BITAND_AGG|❓|
@@ -172,7 +173,7 @@ The content will be updated as additional query features and functions are imple
 |CURRENT_DATE|✅|
 |CURRENT_IP_ADDRESS|✅|
 |CURRENT_ORGANIZATION_NAME|✅|
-|CURRENT_ORGANIZATION_USER|❓|
+|CURRENT_ORGANIZATION_USER|✅|
 |CURRENT_REGION|✅|
 |CURRENT_ROLE|✅|
 |CURRENT_ROLE_TYPE|✅|
