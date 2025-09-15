@@ -11,7 +11,7 @@
         "external_test_suite": true,
         "terraform_test_suite": true,
         "aws_validated": true,
-        "snapshot_tested": false,
+        "snapshot_tested": true,
         "snapshot_skipped": ""
       }
     },
@@ -1307,7 +1307,7 @@
         "external_test_suite": true,
         "terraform_test_suite": true,
         "aws_validated": true,
-        "snapshot_tested": false,
+        "snapshot_tested": true,
         "snapshot_skipped": ""
       }
     },
@@ -1769,6 +1769,16 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_fn_transform",
+            "test": "test_embedded_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ]
       }
@@ -1971,7 +1981,7 @@
             "test": "test_name_conflicts",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities', '$..ChangeSetId', '$..IncludeNestedStacks', '$..NotificationARNs', '$..Parameters', '$..StackId', '$..StatusReason', '$..StackStatusReason']",
+            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities', '$..ChangeSetId', '$..IncludeNestedStacks', '$..NotificationARNs', '$..Parameters', '$..StackId', '$..StatusReason', '$..StackStatusReason', '$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2007,13 +2017,23 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_list_parameter_type",
-            "test": "test_list_parameter_type",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::TestStacksApi::test_stack_description_lifecycle[with-tags]",
+            "test": "test_stack_description_lifecycle[with-tags]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ResourceChange.Details', '$..ResourceChange.Scope', '$..StackStatusReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::TestStacksApi::test_stack_name_creation",
+            "test": "test_stack_name_creation",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -2021,7 +2041,37 @@
             "test": "test_name_conflicts",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime']",
+            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[A-B-C]",
+            "test": "test_stack_deletion_order[A-B-C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[B-C]",
+            "test": "test_stack_deletion_order[B-C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[C]",
+            "test": "test_stack_deletion_order[C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2087,18 +2137,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_transformers.py::TestLanguageExtensionsTransform::test_transform_foreach_multiple_resources",
-            "test": "test_transform_foreach_multiple_resources",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..StackResources..PhysicalResourceId', '$..StackResources..StackId']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_transformers.py::TestLanguageExtensionsTransform::test_transform_length",
-            "test": "test_transform_length",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_transformers.py::TestLanguageExtensionsTransform::test_transform_foreach",
+            "test": "test_transform_foreach",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..PhysicalResourceId', '$..StackId']",
@@ -2107,11 +2147,11 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_transformers.py::TestLanguageExtensionsTransform::test_transform_to_json_string",
-            "test": "test_transform_to_json_string",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_transformers.py::TestLanguageExtensionsTransform::test_transform_foreach_use_case",
+            "test": "test_transform_foreach_use_case",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..StackResources..PhysicalResourceId', '$..StackResources..StackId']",
+            "snapshot_skipped": "['$..DependsOn', '$..Resources.GraphQLApi.Properties.Name', '$..OutputValue', '$..StackResources..PhysicalResourceId', '$..StackResources..StackId', '$..StackResources..ResourceStatusReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2119,6 +2159,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_transformers.py::test_transformer_property_level",
             "test": "test_transformer_property_level",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_update_stack.py::test_basic_update",
+            "test": "test_basic_update",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -2199,16 +2249,6 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/engine/test_conditions.py::TestCloudFormationConditions::test_dependency_in_non_evaluated_if_branch[false-DefaultParamValue]",
             "test": "test_dependency_in_non_evaluated_if_branch[false-DefaultParamValue]",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/engine/test_conditions.py::TestCloudFormationConditions::test_dependency_in_non_evaluated_if_branch[true-FallbackParamValue]",
-            "test": "test_dependency_in_non_evaluated_if_branch[true-FallbackParamValue]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -2307,6 +2347,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cdk.py::TestCdkInit::test_cdk_bootstrap_redeploy[v20]",
+            "test": "test_cdk_bootstrap_redeploy[v20]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Parameters', '$..Changes..Details', '$..Changes..LogicalResourceId', '$..Changes..ResourceType', '$..Changes..Scope', '$..IncludeNestedStacks', '$..Outputs..OutputValue', '$..Outputs..Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cdk.py::TestCdkInit::test_cdk_bootstrap_redeploy[v28]",
+            "test": "test_cdk_bootstrap_redeploy[v28]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Parameters', '$..Changes..Details', '$..Changes..LogicalResourceId', '$..Changes..ResourceType', '$..Changes..Scope', '$..IncludeNestedStacks', '$..Outputs..OutputValue', '$..Outputs..Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cloudformation.py::test_waitcondition",
             "test": "test_waitcondition",
             "response": "200",
@@ -2394,6 +2454,326 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_exports_imports.py::TestChangeSetImportExport::test_describe_change_set_import",
+            "test": "test_describe_change_set_import",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope', '$..Parameters']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_exports_imports.py::TestChangeSetImportExport::test_describe_change_set_import_non_existent_export_then_create",
+            "test": "test_describe_change_set_import_non_existent_export_then_create",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope', '$..Parameters']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[false]",
+            "test": "test_conditional_transform[false]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[true]",
+            "test": "test_conditional_transform[true]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_fn_transform_include[json]",
+            "test": "test_embedded_fn_transform_include[json]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_fn_transform_include[yml]",
+            "test": "test_embedded_fn_transform_include[yml]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_fn_transform",
+            "test": "test_embedded_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_for_attribute_fn_transform",
+            "test": "test_embedded_macro_for_attribute_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_fn_transform_include[json]",
+            "test": "test_global_fn_transform_include[json]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_fn_transform_include[yml]",
+            "test": "test_global_fn_transform_include[yml]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_macro_fn_transform",
+            "test": "test_global_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_macro_with_intrinsic_function",
+            "test": "test_macro_with_intrinsic_function",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_multiple_fn_transform_order",
+            "test": "test_multiple_fn_transform_order",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_remove_transform_in_update_change_set",
+            "test": "test_remove_transform_in_update_change_set",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_serverless_fn_transform",
+            "test": "test_serverless_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_update_parameter_transform_in_update_change_set",
+            "test": "test_update_parameter_transform_in_update_change_set",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_global_macros.py::TestChangeSetGlobalMacros::test_base_global_macro",
+            "test": "test_base_global_macro",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_global_macros.py::TestChangeSetGlobalMacros::test_update_after_macro_for_before_version_is_deleted",
+            "test": "test_update_after_macro_for_before_version_is_deleted",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_dynamic_parameter_scenarios[change_dynamic]",
+            "test": "test_base_dynamic_parameter_scenarios[change_dynamic]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_dynamic_parameter_scenarios[change_parameter_for_condition_create_resource]",
+            "test": "test_base_dynamic_parameter_scenarios[change_parameter_for_condition_create_resource]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_mapping_scenarios[update_string_referencing_resource]",
+            "test": "test_base_mapping_scenarios[update_string_referencing_resource]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_conditions",
+            "test": "test_conditions",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_dynamic_update",
+            "test": "test_dynamic_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_execute_with_ref",
+            "test": "test_execute_with_ref",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_parameter_lookup",
+            "test": "test_mappings_with_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_static_fields",
+            "test": "test_mappings_with_static_fields",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_parameter_changes",
+            "test": "test_parameter_changes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup_no_change",
+            "test": "test_dynamic_ssm_parameter_lookup_no_change",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup_no_change",
+            "test": "test_dynamic_ssm_parameter_lookup_no_change",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_list_stacks.py::test_listing_stacks",
+            "test": "test_listing_stacks",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -2597,6 +2977,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_template_engine.py::TestMacros::test_scope_order_and_parameters",
+            "test": "test_scope_order_and_parameters",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_template_engine.py::TestMacros::test_validate_lambda_internals",
             "test": "test_validate_lambda_internals",
             "response": "200",
@@ -2665,6 +3055,46 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_change_parameter_type",
+            "test": "test_change_parameter_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_change_parameter_type",
+            "test": "test_change_parameter_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/dynamodbstreams/test_dynamodb_streams.py::TestDynamoDBStreams::test_table_v2_stream",
@@ -2765,6 +3195,376 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_changesets.py::TestUpdates::test_deleting_resource",
+            "test": "test_deleting_resource",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..Error.Message', '$..message']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_changesets.py::TestUpdates::test_simple_update_single_resource",
+            "test": "test_simple_update_single_resource",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_changesets.py::TestUpdates::test_simple_update_two_resources",
+            "test": "test_simple_update_two_resources",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_no_echo_parameter",
+            "test": "test_no_echo_parameter",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..Stacks..ChangeSetId', '$..Capabilities', '$..IncludeNestedStacks', '$..LastUpdatedTime', '$..NotificationARNs', '$..ResourceChange', '$..StackResourceDetail.Metadata', '$..Stacks..Outputs..Description', '$..StackResourceDetail.DriftInformation']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[A-B-C]",
+            "test": "test_stack_deletion_order[A-B-C]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[B-C]",
+            "test": "test_stack_deletion_order[B-C]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[C]",
+            "test": "test_stack_deletion_order[C]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deploy_order[A-B-C]",
+            "test": "test_stack_deploy_order[A-B-C]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..StackId', '$..PhysicalResourceId', '$..ResourceProperties']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deploy_order[A-C-B]",
+            "test": "test_stack_deploy_order[A-C-B]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..StackId', '$..PhysicalResourceId', '$..ResourceProperties']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deploy_order[B-A-C]",
+            "test": "test_stack_deploy_order[B-A-C]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..StackId', '$..PhysicalResourceId', '$..ResourceProperties']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deploy_order[B-C-A]",
+            "test": "test_stack_deploy_order[B-C-A]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..StackId', '$..PhysicalResourceId', '$..ResourceProperties']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deploy_order[C-A-B]",
+            "test": "test_stack_deploy_order[C-A-B]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..StackId', '$..PhysicalResourceId', '$..ResourceProperties']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deploy_order[C-B-A]",
+            "test": "test_stack_deploy_order[C-B-A]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..StackId', '$..PhysicalResourceId', '$..ResourceProperties']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_update_stack.py::test_diff_after_update",
+            "test": "test_diff_after_update",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "all",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resource_providers/ec2/test_ec2_resource_provider.py::test_deploy_instance_with_key_pair",
+            "test": "test_deploy_instance_with_key_pair",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..KeyPairs..KeyType', '$..KeyPairs..Tags', '$..Error..Message']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_ssm.py::test_parameter_defaults",
+            "test": "test_parameter_defaults",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..Error.Message', '$..message']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_ssm.py::test_update_ssm_parameter_tag",
+            "test": "test_update_ssm_parameter_tag",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_ssm.py::test_update_ssm_parameters",
+            "test": "test_update_ssm_parameters",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[true]",
+            "test": "test_conditional_transform[true]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_fn_transform_include[json]",
+            "test": "test_embedded_fn_transform_include[json]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_fn_transform",
+            "test": "test_embedded_macro_fn_transform",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_fn_transform_include[json]",
+            "test": "test_global_fn_transform_include[json]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_fn_transform_include[yml]",
+            "test": "test_global_fn_transform_include[yml]",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_macro_with_intrinsic_function",
+            "test": "test_macro_with_intrinsic_function",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_remove_transform_in_update_change_set",
+            "test": "test_remove_transform_in_update_change_set",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_update_parameter_transform_in_update_change_set",
+            "test": "test_update_parameter_transform_in_update_change_set",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_global_macros.py::TestChangeSetGlobalMacros::test_update_after_macro_for_before_version_is_deleted",
+            "test": "test_update_after_macro_for_before_version_is_deleted",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_mappings.py::TestChangeSetMappings::test_mapping_leaf_update",
+            "test": "test_mapping_leaf_update",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_conditions",
+            "test": "test_conditions",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_execute_with_ref",
+            "test": "test_execute_with_ref",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_static_fields",
+            "test": "test_mappings_with_static_fields",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_parameter_changes",
+            "test": "test_parameter_changes",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_single_resource_static_update",
+            "test": "test_single_resource_static_update",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_describe_failed_change_set",
+            "test": "test_describe_failed_change_set",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['$..StatusReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_change_parameter_type",
+            "test": "test_change_parameter_type",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ],
         "ls_pro": [
@@ -3229,6 +4029,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_samples.py::TestSharedResourcesSample::test_listener_services_are_accessible_and_returning_expected_content",
+            "test": "test_listener_services_are_accessible_and_returning_expected_content",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/elasticache/test_elasticache_redis.py::TestCacheCluster::test_redis_connection",
             "test": "test_redis_connection",
             "response": "200",
@@ -3309,8 +4119,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_data.py::TestAuroraPostgresCfn::test_advisory_lock",
-            "test": "test_advisory_lock",
+            "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_data.py::TestAuroraPostgresCfn::test_number_of_records_updated[update-with-ctes]",
+            "test": "test_number_of_records_updated[update-with-ctes]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -3797,16 +4607,6 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/engine/test_conditions.py::TestCloudFormationConditions::test_dependency_in_non_evaluated_if_branch[true-FallbackParamValue]",
-            "test": "test_dependency_in_non_evaluated_if_branch[true-FallbackParamValue]",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "external"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/engine/test_references.py::TestFnSub::test_non_string_parameter_in_sub",
             "test": "test_non_string_parameter_in_sub",
             "response": "200",
@@ -3887,6 +4687,46 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_execute_with_ref",
+            "test": "test_execute_with_ref",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_single_resource_static_update",
+            "test": "test_single_resource_static_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup_no_change",
+            "test": "test_dynamic_ssm_parameter_lookup_no_change",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_template_engine.py::TestSsmParameters::test_create_change_set_with_ssm_parameter_list",
             "test": "test_create_change_set_with_ssm_parameter_list",
             "response": "200",
@@ -3935,6 +4775,26 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_change_parameter_type",
+            "test": "test_change_parameter_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/ssm/test_ssm.py::TestSSM::test_get_parameter_by_arn",
@@ -4115,6 +4975,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_template_engine.py::TestSsmParameters::test_resolve_ssm_missing_parameter",
+            "test": "test_resolve_ssm_missing_parameter",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Community: tests/aws/services/dynamodbstreams/test_dynamodb_streams.py::TestDynamoDBStreams::test_table_v2_stream",
@@ -4759,6 +5629,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_samples.py::TestSharedResourcesSample::test_deployed_resources",
+            "test": "test_deployed_resources",
+            "response": "400",
+            "error": "ParameterNotFound",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_samples.py::TestSharedResourcesSample::test_listener_services_are_accessible_and_returning_expected_content",
             "test": "test_listener_services_are_accessible_and_returning_expected_content",
             "response": "400",
@@ -4853,7 +5733,7 @@
             "test": "test_select_char",
             "response": "400",
             "error": "ParameterNotFound",
-            "snapshot_skipped": "['$..create-result.numberOfRecordsUpdated', '$..insert-result.numberOfRecordsUpdated']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4947,7 +5827,7 @@
             "test": "test_name_conflicts",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities', '$..ChangeSetId', '$..IncludeNestedStacks', '$..NotificationARNs', '$..Parameters', '$..StackId', '$..StatusReason', '$..StackStatusReason']",
+            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities', '$..ChangeSetId', '$..IncludeNestedStacks', '$..NotificationARNs', '$..Parameters', '$..StackId', '$..StatusReason', '$..StackStatusReason', '$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -4983,6 +5863,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::TestStacksApi::test_stack_description_lifecycle[no-tags]",
+            "test": "test_stack_description_lifecycle[no-tags]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ResourceChange.Details', '$..ResourceChange.Scope', '$..StackStatusReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::TestStacksApi::test_stack_description_lifecycle[with-tags]",
+            "test": "test_stack_description_lifecycle[with-tags]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ResourceChange.Details', '$..ResourceChange.Scope', '$..StackStatusReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_list_parameter_type",
             "test": "test_list_parameter_type",
             "response": "200",
@@ -4997,7 +5897,37 @@
             "test": "test_name_conflicts",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime']",
+            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[A-B-C]",
+            "test": "test_stack_deletion_order[A-B-C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[B-C]",
+            "test": "test_stack_deletion_order[B-C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[C]",
+            "test": "test_stack_deletion_order[C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -5183,16 +6113,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/engine/test_conditions.py::TestCloudFormationConditions::test_dependency_in_non_evaluated_if_branch[true-FallbackParamValue]",
-            "test": "test_dependency_in_non_evaluated_if_branch[true-FallbackParamValue]",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/engine/test_references.py::TestFnSub::test_fn_sub_cases",
             "test": "test_fn_sub_cases",
             "response": "200",
@@ -5263,6 +6183,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cdk.py::TestCdkInit::test_cdk_bootstrap_redeploy[v20]",
+            "test": "test_cdk_bootstrap_redeploy[v20]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Parameters', '$..Changes..Details', '$..Changes..LogicalResourceId', '$..Changes..ResourceType', '$..Changes..Scope', '$..IncludeNestedStacks', '$..Outputs..OutputValue', '$..Outputs..Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cdk.py::TestCdkInit::test_cdk_bootstrap_redeploy[v28]",
+            "test": "test_cdk_bootstrap_redeploy[v28]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Parameters', '$..Changes..Details', '$..Changes..LogicalResourceId', '$..Changes..ResourceType', '$..Changes..Scope', '$..IncludeNestedStacks', '$..Outputs..OutputValue', '$..Outputs..Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cloudformation.py::test_waitcondition",
             "test": "test_waitcondition",
             "response": "200",
@@ -5300,6 +6240,316 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_exports_imports.py::TestChangeSetImportExport::test_describe_change_set_import",
+            "test": "test_describe_change_set_import",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope', '$..Parameters']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_exports_imports.py::TestChangeSetImportExport::test_describe_change_set_import_non_existent_export_then_create",
+            "test": "test_describe_change_set_import_non_existent_export_then_create",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope', '$..Parameters']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[false]",
+            "test": "test_conditional_transform[false]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[true]",
+            "test": "test_conditional_transform[true]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_fn_transform_include[json]",
+            "test": "test_embedded_fn_transform_include[json]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_fn_transform_include[yml]",
+            "test": "test_embedded_fn_transform_include[yml]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_fn_transform",
+            "test": "test_embedded_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_for_attribute_fn_transform",
+            "test": "test_embedded_macro_for_attribute_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_fn_transform_include[json]",
+            "test": "test_global_fn_transform_include[json]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_fn_transform_include[yml]",
+            "test": "test_global_fn_transform_include[yml]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_macro_fn_transform",
+            "test": "test_global_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_macro_with_intrinsic_function",
+            "test": "test_macro_with_intrinsic_function",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_multiple_fn_transform_order",
+            "test": "test_multiple_fn_transform_order",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_remove_transform_in_update_change_set",
+            "test": "test_remove_transform_in_update_change_set",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_serverless_fn_transform",
+            "test": "test_serverless_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_update_parameter_transform_in_update_change_set",
+            "test": "test_update_parameter_transform_in_update_change_set",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_global_macros.py::TestChangeSetGlobalMacros::test_base_global_macro",
+            "test": "test_base_global_macro",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_global_macros.py::TestChangeSetGlobalMacros::test_update_after_macro_for_before_version_is_deleted",
+            "test": "test_update_after_macro_for_before_version_is_deleted",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_dynamic_parameter_scenarios[change_dynamic]",
+            "test": "test_base_dynamic_parameter_scenarios[change_dynamic]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_dynamic_parameter_scenarios[change_parameter_for_condition_create_resource]",
+            "test": "test_base_dynamic_parameter_scenarios[change_parameter_for_condition_create_resource]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_mapping_scenarios[update_string_referencing_resource]",
+            "test": "test_base_mapping_scenarios[update_string_referencing_resource]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_conditions",
+            "test": "test_conditions",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_dynamic_update",
+            "test": "test_dynamic_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_execute_with_ref",
+            "test": "test_execute_with_ref",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_parameter_lookup",
+            "test": "test_mappings_with_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_static_fields",
+            "test": "test_mappings_with_static_fields",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_parameter_changes",
+            "test": "test_parameter_changes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_single_resource_static_update",
+            "test": "test_single_resource_static_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup_no_change",
+            "test": "test_dynamic_ssm_parameter_lookup_no_change",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_list_stacks.py::test_listing_stacks",
+            "test": "test_listing_stacks",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -5503,6 +6753,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_template_engine.py::TestMacros::test_scope_order_and_parameters",
+            "test": "test_scope_order_and_parameters",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_template_engine.py::TestMacros::test_validate_lambda_internals",
             "test": "test_validate_lambda_internals",
             "response": "200",
@@ -5540,6 +6800,26 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_change_parameter_type",
+            "test": "test_change_parameter_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -5917,6 +7197,16 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_fn_transform",
+            "test": "test_embedded_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ]
       }
@@ -6109,16 +7399,6 @@
       "Name, Overwrite, Tags, Type, Value": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_changesets.py::TestUpdates::test_deleting_resource",
-            "test": "test_deleting_resource",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..Error.Message', '$..message']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_changesets.py::TestUpdates::test_simple_update_single_resource",
             "test": "test_simple_update_single_resource",
             "response": "200",
@@ -6157,6 +7437,196 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[true]",
+            "test": "test_conditional_transform[true]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_fn_transform",
+            "test": "test_embedded_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_for_attribute_fn_transform",
+            "test": "test_embedded_macro_for_attribute_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_macro_fn_transform",
+            "test": "test_global_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_macro_with_intrinsic_function",
+            "test": "test_macro_with_intrinsic_function",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_multiple_fn_transform_order",
+            "test": "test_multiple_fn_transform_order",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_remove_transform_in_update_change_set",
+            "test": "test_remove_transform_in_update_change_set",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_update_parameter_transform_in_update_change_set",
+            "test": "test_update_parameter_transform_in_update_change_set",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_dynamic_parameter_scenarios[change_dynamic]",
+            "test": "test_base_dynamic_parameter_scenarios[change_dynamic]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_mapping_scenarios[update_string_referencing_resource]",
+            "test": "test_base_mapping_scenarios[update_string_referencing_resource]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_dynamic_update",
+            "test": "test_dynamic_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_execute_with_ref",
+            "test": "test_execute_with_ref",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_parameter_lookup",
+            "test": "test_mappings_with_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_static_fields",
+            "test": "test_mappings_with_static_fields",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_parameter_changes",
+            "test": "test_parameter_changes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_single_resource_static_update",
+            "test": "test_single_resource_static_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_change_parameter_type",
+            "test": "test_change_parameter_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ]
       },
@@ -6191,10 +7661,32 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       },
       "Name, Overwrite, Value": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ],
         "ls_pro": [
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_customresources.py::test_update_custom_resource",
@@ -6319,7 +7811,7 @@
             "test": "test_name_conflicts",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities', '$..ChangeSetId', '$..IncludeNestedStacks', '$..NotificationARNs', '$..Parameters', '$..StackId', '$..StatusReason', '$..StackStatusReason']",
+            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities', '$..ChangeSetId', '$..IncludeNestedStacks', '$..NotificationARNs', '$..Parameters', '$..StackId', '$..StatusReason', '$..StackStatusReason', '$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -6355,6 +7847,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::TestStacksApi::test_stack_description_lifecycle[no-tags]",
+            "test": "test_stack_description_lifecycle[no-tags]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ResourceChange.Details', '$..ResourceChange.Scope', '$..StackStatusReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::TestStacksApi::test_stack_description_lifecycle[with-tags]",
+            "test": "test_stack_description_lifecycle[with-tags]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ResourceChange.Details', '$..ResourceChange.Scope', '$..StackStatusReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_list_parameter_type",
             "test": "test_list_parameter_type",
             "response": "200",
@@ -6369,7 +7881,37 @@
             "test": "test_name_conflicts",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime']",
+            "snapshot_skipped": "['$..EnableTerminationProtection', '$..LastUpdatedTime', '$..Capabilities']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[A-B-C]",
+            "test": "test_stack_deletion_order[A-B-C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[B-C]",
+            "test": "test_stack_deletion_order[B-C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/api/test_stacks.py::test_stack_deletion_order[C]",
+            "test": "test_stack_deletion_order[C]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe.ChangeSetId', '$..EnableTerminationProtection', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId', '$..Changes..ResourceChange.BeforeContext.Properties.Value', '$..StackEvents..EventId', '$..StackEvents..ResourceStatusReason', '$..StackEvents..ResourceProperties.Value', 'all-events..EventId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -6545,16 +8087,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/engine/test_conditions.py::TestCloudFormationConditions::test_dependency_in_non_evaluated_if_branch[true-FallbackParamValue]",
-            "test": "test_dependency_in_non_evaluated_if_branch[true-FallbackParamValue]",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/engine/test_references.py::TestFnSub::test_fn_sub_cases",
             "test": "test_fn_sub_cases",
             "response": "200",
@@ -6635,6 +8167,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cdk.py::TestCdkInit::test_cdk_bootstrap_redeploy[v20]",
+            "test": "test_cdk_bootstrap_redeploy[v20]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Parameters', '$..Changes..Details', '$..Changes..LogicalResourceId', '$..Changes..ResourceType', '$..Changes..Scope', '$..IncludeNestedStacks', '$..Outputs..OutputValue', '$..Outputs..Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cdk.py::TestCdkInit::test_cdk_bootstrap_redeploy[v28]",
+            "test": "test_cdk_bootstrap_redeploy[v28]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Parameters', '$..Changes..Details', '$..Changes..LogicalResourceId', '$..Changes..ResourceType', '$..Changes..Scope', '$..IncludeNestedStacks', '$..Outputs..OutputValue', '$..Outputs..Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_cloudformation.py::test_waitcondition",
             "test": "test_waitcondition",
             "response": "200",
@@ -6702,6 +8254,336 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_exports_imports.py::TestChangeSetImportExport::test_describe_change_set_import",
+            "test": "test_describe_change_set_import",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope', '$..Parameters']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_exports_imports.py::TestChangeSetImportExport::test_describe_change_set_import_non_existent_export_then_create",
+            "test": "test_describe_change_set_import_non_existent_export_then_create",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Changes..ResourceChange.Details', '$..Changes..ResourceChange.Scope', '$..Parameters']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[false]",
+            "test": "test_conditional_transform[false]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[true]",
+            "test": "test_conditional_transform[true]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_fn_transform_include[json]",
+            "test": "test_embedded_fn_transform_include[json]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_fn_transform_include[yml]",
+            "test": "test_embedded_fn_transform_include[yml]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_fn_transform",
+            "test": "test_embedded_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_for_attribute_fn_transform",
+            "test": "test_embedded_macro_for_attribute_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_fn_transform_include[json]",
+            "test": "test_global_fn_transform_include[json]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_fn_transform_include[yml]",
+            "test": "test_global_fn_transform_include[yml]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_macro_fn_transform",
+            "test": "test_global_macro_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_macro_with_intrinsic_function",
+            "test": "test_macro_with_intrinsic_function",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_multiple_fn_transform_order",
+            "test": "test_multiple_fn_transform_order",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_remove_transform_in_update_change_set",
+            "test": "test_remove_transform_in_update_change_set",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_serverless_fn_transform",
+            "test": "test_serverless_fn_transform",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_update_parameter_transform_in_update_change_set",
+            "test": "test_update_parameter_transform_in_update_change_set",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_global_macros.py::TestChangeSetGlobalMacros::test_base_global_macro",
+            "test": "test_base_global_macro",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_global_macros.py::TestChangeSetGlobalMacros::test_update_after_macro_for_before_version_is_deleted",
+            "test": "test_update_after_macro_for_before_version_is_deleted",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_dynamic_parameter_scenarios[change_dynamic]",
+            "test": "test_base_dynamic_parameter_scenarios[change_dynamic]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_dynamic_parameter_scenarios[change_parameter_for_condition_create_resource]",
+            "test": "test_base_dynamic_parameter_scenarios[change_parameter_for_condition_create_resource]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_base_mapping_scenarios[update_string_referencing_resource]",
+            "test": "test_base_mapping_scenarios[update_string_referencing_resource]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_conditions",
+            "test": "test_conditions",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_dynamic_update",
+            "test": "test_dynamic_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_execute_with_ref",
+            "test": "test_execute_with_ref",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_parameter_lookup",
+            "test": "test_mappings_with_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_mappings_with_static_fields",
+            "test": "test_mappings_with_static_fields",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_parameter_changes",
+            "test": "test_parameter_changes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::TestCaptureUpdateProcess::test_single_resource_static_update",
+            "test": "test_single_resource_static_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup",
+            "test": "test_dynamic_ssm_parameter_lookup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup_no_change",
+            "test": "test_dynamic_ssm_parameter_lookup_no_change",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_sets.py::test_dynamic_ssm_parameter_lookup_no_change",
+            "test": "test_dynamic_ssm_parameter_lookup_no_change",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction', '$..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_list_stacks.py::test_listing_stacks",
+            "test": "test_listing_stacks",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -6905,6 +8787,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_template_engine.py::TestMacros::test_scope_order_and_parameters",
+            "test": "test_scope_order_and_parameters",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_template_engine.py::TestMacros::test_validate_lambda_internals",
             "test": "test_validate_lambda_internals",
             "response": "200",
@@ -6982,6 +8874,46 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_change_parameter_type",
+            "test": "test_change_parameter_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_change_parameter_type",
+            "test": "test_change_parameter_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/v2/test_dynamic_resolving.py::TestSSMParameterValues::test_update_parameter_between_deployments",
+            "test": "test_update_parameter_between_deployments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -7507,6 +9439,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_samples.py::TestSharedResourcesSample::test_deployed_resources",
+            "test": "test_deployed_resources",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_samples.py::TestSharedResourcesSample::test_listener_services_are_accessible_and_returning_expected_content",
             "test": "test_listener_services_are_accessible_and_returning_expected_content",
             "response": "200",
@@ -7611,7 +9553,7 @@
             "test": "test_select_char",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..create-result.numberOfRecordsUpdated', '$..insert-result.numberOfRecordsUpdated']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
