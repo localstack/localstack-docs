@@ -36,6 +36,7 @@ At the moment, we only provide support in `English`, as we are an international 
 | Base       | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
 | Ultimate   | [**Priority Support**](/aws/getting-started/help-support/#priority-support)     |
 | Enterprise | [**Enterprise Support**](/aws/getting-started/help-support/#enterprise-support) |
+| Student       | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
 
 ## Support Coverage for legacy plans
 
