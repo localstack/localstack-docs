@@ -356,7 +356,7 @@ For any subscription or access-related questions, please reach out to Support.
 | [](https://docs.localstack.cloud/references/coverage/coverage_cognito-idp/)[Amazon Cognito User Pools](https://docs.localstack.cloud/references/coverage/coverage_cognito-idp/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_acm-pca/)[AWS Private Certificate Authority](https://docs.localstack.cloud/references/coverage/coverage_acm-pca/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_wafv2/)[AWS Web Application Firewall (WAF)](https://docs.localstack.cloud/references/coverage/coverage_wafv2/) | ✅ | ✅ | ✅ |
-| [](https://docs.localstack.cloud/references/coverage/coverage_iam/)[AWS Identity and Access Management (IAM)](https://docs.localstack.cloud/references/coverage/coverage_iam/) | ✅ | ✅ | ✅ |
+| [](https://docs.localstack.cloud/references/coverage/coverage_iam/)[AWS Identity and Access Management (IAM)](https://docs.localstack.cloud/references/coverage/coverage_iam/) | ✅ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_identitystore/)[AWS IAM Identity Store API](https://docs.localstack.cloud/references/coverage/coverage_identitystore/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_sso-admin/)[AWS IAM Identity Center](https://docs.localstack.cloud/references/coverage/coverage_sso-admin/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_ram/)[AWS Resource Access Manager (RAM)](https://docs.localstack.cloud/references/coverage/coverage_ram/) | ✅ | ✅ | ✅ |
