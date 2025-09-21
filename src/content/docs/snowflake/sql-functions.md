@@ -39,6 +39,7 @@ The content will be updated as additional query features and functions are imple
 |ALL_USER_NAMES|❓|
 |ANY_VALUE|✅|
 |APPLICATION_JSON|❓|
+|APPLICATION_SPECIFICATION_STATUS_HISTORY|❓|
 |APPROX_COUNT_DISTINCT|❓|
 |APPROX_PERCENTILE|❓|
 |APPROX_PERCENTILE_ACCUMULATE|❓|
@@ -364,6 +365,7 @@ The content will be updated as additional query features and functions are imple
 |IS [ NOT ] DISTINCT FROM|❓|
 |IS [ NOT ] NULL|✅|
 |IS_<object_type>|❓|
+|IS_APPLICATION_ROLE_ACTIVATED (SYS_CONTEXT function)|❓|
 |IS_APPLICATION_ROLE_IN_SESSION|❓|
 |IS_ARRAY|✅|
 |IS_BINARY|✅|
@@ -374,6 +376,8 @@ The content will be updated as additional query features and functions are imple
 |IS_DECIMAL|✅|
 |IS_DOUBLE, IS_REAL|✅|
 |IS_GRANTED_TO_INVOKER_ROLE|❓|
+|IS_GROUP_ACTIVATED (SYS_CONTEXT function)|❓|
+|IS_GROUP_IMPORTED (SYS_CONTEXT function)|❓|
 |IS_INSTANCE_ROLE_IN_SESSION|❓|
 |IS_INTEGER|✅|
 |IS_NULL_VALUE|✅|
@@ -381,9 +385,11 @@ The content will be updated as additional query features and functions are imple
 |IS_ORGANIZATION_USER|❓|
 |IS_ORGANIZATION_USER_GROUP|❓|
 |IS_ORGANIZATION_USER_GROUP_IN_SESSION|❓|
+|IS_ROLE_ACTIVATED (SYS_CONTEXT function)|❓|
 |IS_ROLE_IN_SESSION|❓|
 |IS_TIME|✅|
 |IS_TIMESTAMP_*|❓|
+|IS_USER_IMPORTED (SYS_CONTEXT function)|❓|
 |JAROWINKLER_SIMILARITY|❓|
 |JSON_EXTRACT_PATH_TEXT|❓|
 |KURTOSIS|❓|
@@ -620,13 +626,19 @@ The content will be updated as additional query features and functions are imple
 |SUBSTR, SUBSTRING|✅|
 |SUM|✅|
 |SUMMARIZE (SNOWFLAKE.CORTEX)|❓|
+|SYS_CONTEXT|❓|
+|SYS_CONTEXT (SNOWFLAKE$APPLICATION namespace)|❓|
+|SYS_CONTEXT (SNOWFLAKE$ENVIRONMENT namespace)|❓|
+|SYS_CONTEXT (SNOWFLAKE$ORGANIZATION namespace)|❓|
+|SYS_CONTEXT (SNOWFLAKE$ORGANIZATION_SESSION namespace)|❓|
+|SYS_CONTEXT (SNOWFLAKE$SESSION namespace)|❓|
 |SYSDATE|✅|
 |SYSTEM$ABORT_SESSION|❓|
 |SYSTEM$ABORT_TRANSACTION|❓|
 |SYSTEM$ACTIVATE_CMK_INFO|❓|
 |SYSTEM$ADD_EVENT (for Snowflake Scripting)|❓|
 |SYSTEM$ADD_REFERENCE|❓|
-|SYSTEM$ALLOWLIST|❓|
+|SYSTEM$ALLOWLIST|✅|
 |SYSTEM$ALLOWLIST_PRIVATELINK|❓|
 |SYSTEM$APP_COMPATIBILITY_CHECK|❓|
 |SYSTEM$APPLICATION_GET_LOG_LEVEL|❓|
@@ -751,6 +763,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$SCHEDULE_ASYNC_REPLICATION_GROUP_REFRESH|❓|
 |SYSTEM$SEND_NOTIFICATIONS_TO_CATALOG|❓|
 |SYSTEM$SET_APPLICATION_RESTRICTED_FEATURE_ACCESS|❓|
+|SYSTEM$SET_CATALOG_INTEGRATION|❓|
 |SYSTEM$SET_EVENT_SHARING_ACCOUNT_FOR_REGION|❓|
 |SYSTEM$SET_PRIVATELINK_ENDPOINT_HOSTNAME|❓|
 |SYSTEM$SET_REFERENCE|✅|
@@ -849,7 +862,7 @@ The content will be updated as additional query features and functions are imple
 |TRY_TO_TIMESTAMP, TRY_TO_TIMESTAMP_*|✅|
 |TYPEOF|❓|
 |UNICODE|✅|
-|UNIFORM|❓|
+|UNIFORM|✅|
 |UPPER|✅|
 |UUID_STRING|✅|
 |VALIDATE|❓|
