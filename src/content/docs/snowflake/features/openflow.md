@@ -56,6 +56,5 @@ Running query (account/DB/schema TEST/TEST/public): SELECT 123
 :::note
 ## Limitations
 - The initial download of Apache NiFi is large (~750 MB) and may take several minutes.  
-- Integration tests for this feature are disabled in CI due to the heavy binary size.  
 - Only basic UI and processor creation are supported. Advanced Openflow functionality, including governance, AI capabilities, and managed connectors, is not included in the local emulator.
 :::
