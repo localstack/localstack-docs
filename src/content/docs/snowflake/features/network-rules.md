@@ -16,7 +16,7 @@ While you can create and manage network rules, their use in enforcing network ac
 
 ## Getting started
 
-This guide is designed for users new to network rules and assumes you are already connected to your Snowflake emulator with an SQL client. The following examples demonstrate how to create, alter, show, and drop network rules.
+This guide is designed for users new to network rules and assumes you are already connected to your Snowflake emulator with a SQL client. The following examples demonstrate how to create, alter, show, and drop network rules.
 
 ### Create a network rule
 
