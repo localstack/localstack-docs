@@ -8,7 +8,7 @@ tags: ["Base"]
 
 API integrations in Snowflake provide a secure way to configure trust between Snowflake and external cloud providers such as AWS API Gateway. They are typically used when creating external functions or API-based workflows.
 
-The LocalStack Snowflake emulator now supports basic **CRUD operations** for API integrations, not the actual implementation or usage of them. This is useful for testing Terraform configurations or other automation flows that depend on these objects.
+The LocalStack Snowflake emulator now supports basic **CRUD operations** for API integrations, which are currently mocked and not functional. This is useful for testing Terraform configurations or other automation flows that depend on these objects.
 
 Currently, this feature is partially mocked and designed primarily to unblock end-to-end test coverage. Behavior may not fully reflect production Snowflake semantics.
 
