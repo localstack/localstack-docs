@@ -63,7 +63,6 @@ SELECT 123;
 Running query (account/DB/schema TEST/TEST/public): SELECT 123
 ```
 
-![Processor logs](/images/snowflake/openflow-feature/processor-logs.png)
 
 
 :::note
