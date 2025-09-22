@@ -38,6 +38,9 @@ The following example demonstrates how to run a simple query against the Snowfla
 
 2. Configure the processor:
 - Set the **Database Connection Pooling Service** to use the default `Snowflake Connection Pool`.
+
+![Processor](/images/snowflake/openflow-feature/processor.png)
+
 - Enter a query, for example:
 
 ```sql
@@ -46,13 +49,22 @@ SELECT 123;
 
 - In the **Relationships** tab, configure the processor to terminate or retry on `failure` and `success`.
 
+![Terminate Processor](/images/snowflake/openflow-feature/terminate-processor.png)
+
+
 3. Start the processor: Right-click the processor and choose **Start**. The processor will run the SQL query against the Snowflake emulator.
+
+![Start Processor](/images/snowflake/openflow-feature/start-processor.png)
+
 
 4. Verify execution: In the emulator logs, you should see the executed query:
 
 ```sql
 Running query (account/DB/schema TEST/TEST/public): SELECT 123
 ```
+
+![Processor logs](/images/snowflake/openflow-feature/processor-logs.png)
+
 
 :::note
 ## Limitations
