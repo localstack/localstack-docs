@@ -25,6 +25,7 @@ To begin using Openflow in LocalStack:
 1. Start your Snowflake emulator.
 2. Open the following URL in your browser: `https://snowflake.localhost.localstack.cloud:4566/openflow/`
 
+![Openflow running locally via Apache NiFi](/images/snowflake/openflow-feature/openflow-nifi.png)
 
 The first load may take some time, as Apache NiFi dependencies are downloaded and initialized.
 
