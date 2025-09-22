@@ -7,7 +7,7 @@ tags: ["Base"]
 ## Introduction
 Openflow is Snowflake’s data movement service that provides a unified platform for building, scaling, and managing data pipelines. It is powered by Apache NiFi and enables flexible data ingestion, transformation, and integration across diverse sources and destinations.
 
-The Snowflake emulator in LocalStack supports **basic Openflow functionality** by exposing an Apache NiFi–based UI. This allows you to experiment locally with Openflow concepts, such as creating processors and running SQL queries against the Snowflake emulator.
+The Snowflake emulator in LocalStack supports **basic Openflow functionality** by using Apache NiFi. This allows you to experiment locally with Openflow concepts, such as creating processors and running SQL queries against the Snowflake emulator.
 
 You can access the Openflow UI when the emulator is running at:
 
@@ -16,7 +16,7 @@ https://snowflake.localhost.localstack.cloud:4566/openflow/
 ```
 
 :::note
-Openflow is Snowflake is intended for local experimentation. It does not provide the full set of managed Openflow capabilities available in Snowflake’s cloud platform.
+Openflow in LocalStack for Snowflake is intended for local experimentation. It does not provide the full set of managed Openflow capabilities available in Snowflake’s cloud platform.
 :::
 
 ## Getting started
