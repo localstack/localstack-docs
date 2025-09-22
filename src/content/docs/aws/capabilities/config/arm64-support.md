@@ -31,7 +31,7 @@ docker inspect localstack/localstack | jq '.[0].Architecture'
 Since LocalStack&nbsp;2.0, Lambda functions execute in Docker containers with the target platform `linux/amd64` or `linux/arm64`
 depending on the [instruction set architecture](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html) configured for the function (`x86_64` by default or `arm64`).
 This behavior can lead to errors if the host system, the Docker image, or the code/layer of the function do not support the target architecture.
-If you prefer to execute Lambda functions natively, you can set the [configuration]({{< ref "configuration#lambda" >}}) variable `LAMBDA_IGNORE_ARCHITECTURE=1`.
+If you prefer to execute Lambda functions natively, you can set the [Lambda configuration](https://docs.localstack.cloud/aws/capabilities/config/configuration/#lambda) variable to `LAMBDA_IGNORE_ARCHITECTURE=1`.
 
 Host systems with [multi-architecture support](https://docs.docker.com/build/building/multi-platform/) can run containers for different Linux architectures using emulation.
 For example, an Apple Silicon MacBook can execute `linux/arm64` (`arm64`) Lambda functions natively or emulate them for `linux/arm64` (`x86_64`).
