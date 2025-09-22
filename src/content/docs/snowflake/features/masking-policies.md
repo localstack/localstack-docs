@@ -11,13 +11,8 @@ Masking policies are schema-level objects that let you define column-level data 
 The Snowflake emulator in LocalStack now supports **basic CRUD operations** for masking policies. This allows you to create, alter, drop, and show masking policies locally. While the full integration of masking policies with table data is not yet supported, you can use these operations to experiment with policy definitions and query their metadata.
 
 ## Getting started
-To begin using masking policies in LocalStack:
 
-1. Start your Snowflake emulator.
-2. Connect to the emulator using an SQL client.
-3. Use SQL statements such as `CREATE MASKING POLICY`, `ALTER MASKING POLICY`, `DROP MASKING POLICY`, and `SHOW MASKING POLICIES` to manage policies.
-
-This feature is intended for local development and testing. It is useful for validating schema migration scripts, Terraform workflows, or integration tests that reference masking policies.
+Masking policies is intended for local development and testing. It is useful for validating schema migration scripts, Terraform workflows, or integration tests that reference masking policies.
 
 ## Create, alter, and drop a masking policy
 
