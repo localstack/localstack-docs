@@ -7,7 +7,7 @@ tags: ["Base"]
 ## Introduction
 Secrets in Snowflake provide a secure way to store sensitive credentials, such as usernames and passwords, for use with external integrations. They allow you to centralize authentication information and manage access consistently across your Snowflake environment. 
 
-The Snowflake emulator offers CRUD support, not the actual implementation or usage of them.  This makes it possible to test workloads locally that rely on secure credential management without needing a live Snowflake account.
+The Snowflake emulator offers CRUD support,  which are currently mocked and not functional.  This makes it possible to test workloads locally that rely on secure credential management without needing a live Snowflake account.
 
 ## Getting started
 This guide is designed for users new to Secrets and assumes basic knowledge of SQL and Snowflake. Start your Snowflake emulator and connect to it using an SQL client in order to execute the queries below.
