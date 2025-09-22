@@ -8,7 +8,7 @@ tags: ["Base"]
 
 Resource monitors in Snowflake allow administrators to track and control credit usage for warehouses and accounts. They help manage costs by defining limits and triggering actions (such as suspending warehouses) when thresholds are reached.
 
-The Snowflake emulator offers CRUD support for resource monitors. This is useful for testing workload governance and cost control strategies in your local development environment.
+The Snowflake emulator offers CRUD support for resource monitors, not the actual implementation or usage of them. This is useful for testing workload governance and cost control strategies in your local development environment.
 
 ## Getting started
 
