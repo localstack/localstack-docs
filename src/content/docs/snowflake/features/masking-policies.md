@@ -8,7 +8,7 @@ tags: ["Base"]
 
 Masking policies are schema-level objects that let you define column-level data protection rules in Snowflake. They determine how sensitive data is displayed depending on the context of the query and the role of the user. For example, a masking policy can ensure that full values are shown to administrators while obfuscating values for regular users.
 
-The Snowflake emulator in LocalStack now supports **basic CRUD operations** for masking policies. This allows you to create, alter, drop, and show masking policies locally. While the full integration of masking policies with table data is not yet supported, you can use these operations to experiment with policy definitions and query their metadata.
+The Snowflake emulator in LocalStack now supports **basic CRUD operations** for masking policies, not the actual implementation or usage of them. While the full integration of masking policies with table data is not yet supported, you can use these operations to experiment with policy definitions and query their metadata locally.
 
 ## Getting started
 
