@@ -18,23 +18,17 @@ This guide explains how to set up the Snowflake emulator and use Snowflake CLI t
 
 LocalStack for Snowflake works with popular Snowflake integrations to run your SQL queries. This guide uses the [Snowflake CLI](/snowflake/integrations/snow-cli/), but you can also use [SnowSQL](/snowflake/integrations/snow-sql/), [DBeaver](/snowflake/integrations/dbeaver/) or the [LocalStack Web Application](/snowflake/tooling/user-interface/) for this purpose.
 
+:::note
+Each integration link includes the connection instructions needed to work with the emulator. Please be sure to follow those setup steps before running queries.
+:::
+
 ## Instructions
 
-Before you begin, pull the Snowflake emulator image (`localstack/snowflake`) and start the container:
+Before you begin, first start the LocalStack for Snowflake emulator:
 
 ```bash
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
 localstack start --stack snowflake
-```
-
-Check the emulator's availability by running:
-
-```bash
-curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
-```
-
-```bash title="Output"
-{"success": true}
 ```
 
 In this quickstart, we'll create a student records database that demonstrates how to:
@@ -248,3 +242,10 @@ You can now explore the following resources to learn more about the Snowflake em
 
 - [Features](/snowflake/features/): Learn about the Snowflake emulator's features and how to use them.
 - [Capabilities](/snowflake/capabilities/): Find information about the Snowflake emulator's capabilities and how to use them.
+
+:::note
+### How can I get help with the LocalStack for Snowflake?
+
+LocalStack for Snowflake is now GA. To get help, you can join the [Slack community](https://localstack.cloud/slack) and share your feedback, questions, and suggestions with the LocalStack team on the `#help` channel. If your team is using LocalStack for Snowflake, you can also request support by [contacting us](https://localstack.cloud/contact) or 
+[opening a GitHub issue with the Snowflake tag](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+bug%2Cstatus%3A+triage+needed%2CSnowflake%3A+general&template=bug-report.yml&title=bug%3A+%3Ctitle%3E).
+:::

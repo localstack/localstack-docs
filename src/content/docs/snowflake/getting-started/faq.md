@@ -30,9 +30,31 @@ If you are using the LocalStack for Snowflake in your CI pipelines consistently,
 
 A CI key allows you to use LocalStack in your CI environment. Every activation of a CI key consumes one CI credit. This means that with every build triggered through the LocalStack container you will consume one credit. To use more credits, you can [contact us](https://localstack.cloud/contact) to discuss your requirements.
 
+### How do I enable detailed debug logs?
+
+You can set the `SF_LOG=trace` environment variable in the Snowflake container to enable detailed trace logs that show all the request/response message.
+
+When using `docker-compose` then simply add this variable to the `environment` section of the YAML configuration file.
+If you're starting up via the `localstack start` CLI, then make sure to start up via the following configuration: 
+
+```bash
+DOCKER_FLAGS='-e SF_LOG=trace' DEBUG=1 localstack start --stack snowflake
+```
+
+### The `snowflake.localhost.localstack.cloud` hostname doesn't resolve on my machine, what can I do?
+
+On some systems, including some newer versions of MacOS, the domain name `snowflake.localhost.localstack.cloud` may not resolve properly.
+If you are encountering network issues and your Snowflake client drivers are unable to connect to the emulator, you may need to manually add the following entry to your `/etc/hosts` file:
+
+```bash
+127.0.0.1	snowflake.localhost.localstack.cloud
+```
+
 ## Support FAQs
 
-### How can I get help with the LocalStack for Snowflake?
+### How can I get help with LocalStack for Snowflake?
 
-LocalStack for Snowflake is now GA. To get help, you can join the [Slack community](https://localstack.cloud/slack) and share your feedback, questions, and suggestions with the LocalStack team on the `#help` channel. If your team is using LocalStack for Snowflake, you can also request support by [contacting us](https://localstack.cloud/contact) or 
+LocalStack for Snowflake is now GA. To get help, you can join the [Slack community](https://localstack.cloud/slack) and share your feedback, questions, and suggestions with the LocalStack team on the `#help` channel. 
+
+If your team is using LocalStack for Snowflake, you can also request support by [contacting us](https://localstack.cloud/contact) or 
 [opening a GitHub issue with the Snowflake tag](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+bug%2Cstatus%3A+triage+needed%2CSnowflake%3A+general&template=bug-report.yml&title=bug%3A+%3Ctitle%3E).
