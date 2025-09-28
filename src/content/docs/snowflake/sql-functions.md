@@ -27,6 +27,7 @@ The content will be updated as additional query features and functions are imple
 |AI_COMPLETE (Single image)|❓|
 |AI_COMPLETE (Single string)|❓|
 |AI_COMPLETE|❓|
+|AI_COUNT_TOKENS|❓|
 |AI_EMBED|❓|
 |AI_EXTRACT|❓|
 |AI_FILTER|❓|
@@ -35,6 +36,7 @@ The content will be updated as additional query features and functions are imple
 |AI_SIMILARITY|❓|
 |AI_SUMMARIZE_AGG|❓|
 |AI_TRANSCRIBE|❓|
+|AI_TRANSLATE|❓|
 |ALERT_HISTORY|❓|
 |ALL_USER_NAMES|❓|
 |ANY_VALUE|✅|
@@ -712,6 +714,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$GET_PRIVATELINK_CONFIG|❓|
 |SYSTEM$GET_PRIVATELINK_ENDPOINT_REGISTRATIONS|❓|
 |SYSTEM$GET_PRIVATELINK_ENDPOINTS_INFO|❓|
+|SYSTEM$GET_PURCHASE_ATTRIBUTES|❓|
 |SYSTEM$GET_REFERENCED_OBJECT_ID_HASH|❓|
 |SYSTEM$GET_RESULTSET_STATUS|❓|
 |SYSTEM$GET_SERVICE_DNS_DOMAIN|❓|
@@ -743,8 +746,8 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$LIST_NAMESPACES_FROM_CATALOG|❓|
 |SYSTEM$LOG, SYSTEM$LOG_<level> (for Snowflake Scripting)|✅|
 |SYSTEM$MIGRATE_SAML_IDP_REGISTRATION|❓|
-|SYSTEM$OPT_IN_INTERNAL_STAGE_NETWORK_ACCESS_LOGS|❓|
-|SYSTEM$OPT_OUT_INTERNAL_STAGE_NETWORK_ACCESS_LOGS|❓|
+|SYSTEM$OPT_IN_INTERNAL_STAGE_NETWORK_LOGS|❓|
+|SYSTEM$OPT_OUT_INTERNAL_STAGE_NETWORK_LOGS|❓|
 |SYSTEM$PIPE_FORCE_RESUME|❓|
 |SYSTEM$PIPE_REBINDING_WITH_NOTIFICATION_CHANNEL|❓|
 |SYSTEM$PIPE_STATUS|❓|
