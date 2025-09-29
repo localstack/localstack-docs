@@ -2064,7 +2064,7 @@
             "test": "test_cdc_load_replication_task_alter_table_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2074,7 +2074,7 @@
             "test": "test_cdc_load_replication_task_data_queries[default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2084,7 +2084,7 @@
             "test": "test_cdc_load_replication_task_data_queries[non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2094,7 +2094,7 @@
             "test": "test_cdc_load_replication_task_misc_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2104,7 +2104,7 @@
             "test": "test_cdc_rename_change_column[mariadb]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2114,7 +2114,7 @@
             "test": "test_cdc_rename_change_column[mysql]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2144,7 +2144,7 @@
             "test": "test_cdc_replication_task_data_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name']",
+            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2252,7 +2252,7 @@
             "test": "test_full_load_replication_task[mariadb-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2262,7 +2262,7 @@
             "test": "test_full_load_replication_task[mariadb-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2272,7 +2272,7 @@
             "test": "test_full_load_replication_task[mariadb-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2282,7 +2282,7 @@
             "test": "test_full_load_replication_task[mysql-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2292,7 +2292,7 @@
             "test": "test_full_load_replication_task[mysql-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2302,7 +2302,7 @@
             "test": "test_full_load_replication_task[mysql-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3158,7 +3158,7 @@
             "test": "test_cdc_load_replication_task_alter_table_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3168,7 +3168,7 @@
             "test": "test_cdc_load_replication_task_data_queries[default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3178,7 +3178,7 @@
             "test": "test_cdc_load_replication_task_data_queries[non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3188,7 +3188,7 @@
             "test": "test_cdc_load_replication_task_misc_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3198,7 +3198,7 @@
             "test": "test_cdc_rename_change_column[mariadb]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3208,7 +3208,7 @@
             "test": "test_cdc_rename_change_column[mysql]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3238,7 +3238,7 @@
             "test": "test_cdc_replication_task_data_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name']",
+            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3288,7 +3288,7 @@
             "test": "test_full_load_replication_task[mariadb-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3298,7 +3298,7 @@
             "test": "test_full_load_replication_task[mariadb-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3308,7 +3308,7 @@
             "test": "test_full_load_replication_task[mariadb-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3318,7 +3318,7 @@
             "test": "test_full_load_replication_task[mysql-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3328,7 +3328,7 @@
             "test": "test_full_load_replication_task[mysql-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3338,7 +3338,7 @@
             "test": "test_full_load_replication_task[mysql-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4466,7 +4466,7 @@
             "test": "test_cdc_rename_change_column[mariadb]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4476,7 +4476,7 @@
             "test": "test_cdc_rename_change_column[mysql]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4506,7 +4506,7 @@
             "test": "test_cdc_replication_task_data_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name']",
+            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4556,7 +4556,7 @@
             "test": "test_full_load_replication_task[mariadb-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4566,7 +4566,7 @@
             "test": "test_full_load_replication_task[mariadb-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4576,7 +4576,7 @@
             "test": "test_full_load_replication_task[mariadb-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4586,7 +4586,7 @@
             "test": "test_full_load_replication_task[mysql-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4596,7 +4596,7 @@
             "test": "test_full_load_replication_task[mysql-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4606,7 +4606,7 @@
             "test": "test_full_load_replication_task[mysql-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4906,7 +4906,7 @@
             "test": "test_cdc_load_replication_task_alter_table_queries",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4916,7 +4916,7 @@
             "test": "test_cdc_load_replication_task_data_queries[default]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4926,7 +4926,7 @@
             "test": "test_cdc_load_replication_task_data_queries[non_default]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4936,7 +4936,7 @@
             "test": "test_cdc_load_replication_task_misc_queries",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4946,7 +4946,7 @@
             "test": "test_cdc_rename_change_column[mariadb]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4956,7 +4956,7 @@
             "test": "test_cdc_rename_change_column[mysql]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4986,7 +4986,7 @@
             "test": "test_cdc_replication_task_data_types",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name']",
+            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5026,7 +5026,7 @@
             "test": "test_full_load_replication_task[mariadb-default]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5036,7 +5036,7 @@
             "test": "test_full_load_replication_task[mariadb-non_default]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5046,7 +5046,7 @@
             "test": "test_full_load_replication_task[mariadb-unformatted_json]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5056,7 +5056,7 @@
             "test": "test_full_load_replication_task[mysql-default]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5066,7 +5066,7 @@
             "test": "test_full_load_replication_task[mysql-non_default]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5076,7 +5076,7 @@
             "test": "test_full_load_replication_task[mysql-unformatted_json]",
             "response": "400",
             "error": "ResourceNotFoundFault",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5500,7 +5500,7 @@
             "test": "test_cdc_load_replication_task_alter_table_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5510,7 +5510,7 @@
             "test": "test_cdc_load_replication_task_data_queries[default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5520,7 +5520,7 @@
             "test": "test_cdc_load_replication_task_data_queries[non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5530,7 +5530,7 @@
             "test": "test_cdc_load_replication_task_misc_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5540,7 +5540,7 @@
             "test": "test_cdc_rename_change_column[mariadb]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5550,7 +5550,7 @@
             "test": "test_cdc_rename_change_column[mysql]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5580,7 +5580,7 @@
             "test": "test_cdc_replication_task_data_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name']",
+            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5620,7 +5620,7 @@
             "test": "test_full_load_replication_task[mariadb-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5630,7 +5630,7 @@
             "test": "test_full_load_replication_task[mariadb-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5640,7 +5640,7 @@
             "test": "test_full_load_replication_task[mariadb-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5650,7 +5650,7 @@
             "test": "test_full_load_replication_task[mysql-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5660,7 +5660,7 @@
             "test": "test_full_load_replication_task[mysql-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5670,7 +5670,7 @@
             "test": "test_full_load_replication_task[mysql-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6156,7 +6156,7 @@
             "test": "test_cdc_load_replication_task_alter_table_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6166,7 +6166,7 @@
             "test": "test_cdc_load_replication_task_data_queries[default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6176,7 +6176,7 @@
             "test": "test_cdc_load_replication_task_data_queries[non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6186,7 +6186,7 @@
             "test": "test_cdc_load_replication_task_misc_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6196,7 +6196,7 @@
             "test": "test_cdc_rename_change_column[mariadb]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6206,7 +6206,7 @@
             "test": "test_cdc_rename_change_column[mysql]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6216,7 +6216,7 @@
             "test": "test_cdc_replication_task_data_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name']",
+            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6256,7 +6256,7 @@
             "test": "test_full_load_replication_task[mariadb-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6266,7 +6266,7 @@
             "test": "test_full_load_replication_task[mariadb-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6276,7 +6276,7 @@
             "test": "test_full_load_replication_task[mariadb-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6286,7 +6286,7 @@
             "test": "test_full_load_replication_task[mysql-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6296,7 +6296,7 @@
             "test": "test_full_load_replication_task[mysql-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6306,7 +6306,7 @@
             "test": "test_full_load_replication_task[mysql-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6744,7 +6744,7 @@
             "test": "test_cdc_load_replication_task_alter_table_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6754,7 +6754,7 @@
             "test": "test_cdc_load_replication_task_data_queries[default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6764,7 +6764,7 @@
             "test": "test_cdc_load_replication_task_data_queries[non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6774,7 +6774,7 @@
             "test": "test_cdc_load_replication_task_misc_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6784,7 +6784,7 @@
             "test": "test_cdc_rename_change_column[mariadb]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6794,7 +6794,7 @@
             "test": "test_cdc_rename_change_column[mysql]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6824,7 +6824,7 @@
             "test": "test_cdc_replication_task_data_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name']",
+            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6854,7 +6854,7 @@
             "test": "test_full_load_replication_task[mariadb-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6864,7 +6864,7 @@
             "test": "test_full_load_replication_task[mariadb-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6874,7 +6874,7 @@
             "test": "test_full_load_replication_task[mariadb-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6884,7 +6884,7 @@
             "test": "test_full_load_replication_task[mysql-default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6894,7 +6894,7 @@
             "test": "test_full_load_replication_task[mysql-non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6904,7 +6904,7 @@
             "test": "test_full_load_replication_task[mysql-unformatted_json]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height']",
+            "snapshot_skipped": "['$..EncryptionType', '$..ReplicationTask.RecoveryCheckpoint', '$..ReplicationTasks..RecoveryCheckpoint', '$..Data.data.height', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7286,7 +7286,7 @@
             "test": "test_cdc_load_replication_task_alter_table_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7296,7 +7296,7 @@
             "test": "test_cdc_load_replication_task_data_queries[default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7306,7 +7306,7 @@
             "test": "test_cdc_load_replication_task_data_queries[non_default]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.stream-position', '$..metadata.transaction-record-id', '$..metadata.prev-transaction-record-id', '$.kinesis-records[10].Data.data.favorite_color', '$.describe-replication-tasks..RecoveryCheckpoint', '$.describe-replication-tasks..CdcStartPosition', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7316,7 +7316,7 @@
             "test": "test_cdc_load_replication_task_misc_queries",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType']",
+            "snapshot_skipped": "['$..EncryptionType', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7326,7 +7326,7 @@
             "test": "test_cdc_rename_change_column[mariadb]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7336,7 +7336,7 @@
             "test": "test_cdc_rename_change_column[mysql]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id']",
+            "snapshot_skipped": "['$..EncryptionType', '$..metadata.prev-transaction-id', '$..metadata.prev-transaction-record-id', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7366,7 +7366,7 @@
             "test": "test_cdc_replication_task_data_types",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name']",
+            "snapshot_skipped": "['$..EncryptionType', '$..national_char_type.collation-name', '$..national_varchar_type.collation-name', '$..json_type.collation-name', '$..Data.control.old-table-def.collation-name', '$..Data.control.table-def.collation-name']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
