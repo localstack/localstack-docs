@@ -103,12 +103,26 @@ jobs:
           WORKFLOW: "AWS / Build, Test, Push"
           RESOURCE_FOLDER: "metrics-implementation-details/community"
 
+      - name: Download CloudFormation catalog from Pro pipeline (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target iac-generate-catalog-assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-pro
+          ARTIFACT_ID: iac-catalog-assets
+          WORKFLOW: "IaC – Generate Catalog Assets"
+
       - name: Create Parity Coverage Docs
         working-directory: docs
         run: |
           python3 -m scripts.create_data_coverage -i target/metrics-implementation-details -r target/metrics-raw -o target/updated_coverage -s src/data/coverage/service_display_name.json
           mv -f target/updated_coverage/data/*.json src/data/coverage
      
+      - name: Generate CloudFormation Coverage Tables
+        working-directory: docs
+        run: |
+            python3 scripts/create_cfn_coverage_table.py --cfn-json target/iac-catalog-assets/cfn_resources.json
+
       - name: Check for changes
         id: check-for-changes
         working-directory: docs
