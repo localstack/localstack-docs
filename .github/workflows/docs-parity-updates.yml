@@ -141,15 +141,15 @@ jobs:
         with:
           path: docs/.github/bot_templates/PARITY_COVERAGE_DOCS_PR.md
 
-      - name: Create PR
-        uses: peter-evans/create-pull-request@v7
-        if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
-        with:
-          path: docs
-          title: "Update Parity Coverage Docs"
-          body: "${{ steps.template.outputs.content }}"
-          branch: "parity-coverage-auto-updates"
-          author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
-          committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
-          commit-message: "update generated parity coverage docs"
-          token: ${{ secrets.PRO_ACCESS_TOKEN }}
+      # - name: Create PR
+      #   uses: peter-evans/create-pull-request@v7
+      #   if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+      #   with:
+      #     path: docs
+      #     title: "Update Parity Coverage Docs"
+      #     body: "${{ steps.template.outputs.content }}"
+      #     branch: "parity-coverage-auto-updates"
+      #     author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+      #     committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+      #     commit-message: "update generated parity coverage docs"
+      #     token: ${{ secrets.PRO_ACCESS_TOKEN }}
