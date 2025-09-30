@@ -72,7 +72,7 @@ jobs:
           ARTIFACT_ID: parity-metric-pro-raw-amd*
           WORKFLOW: "AWS / Build, Test, Push" 
           PREFIX_ARTIFACT: pro-integration-test
-      
+
       - name: Download coverage (capture-notimplemented) data from Pro pipeline (GitHub)
         working-directory: docs
         run: /tmp/get_latest_github_metrics.sh ./target main
@@ -102,6 +102,36 @@ jobs:
           ARTIFACT_ID: capture-notimplemented
           WORKFLOW: "AWS / Build, Test, Push"
           RESOURCE_FOLDER: "metrics-implementation-details/community"
+
+      - name: Download coverage data for K8s pipeline (acceptance tests) (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-pro
+          ARTIFACT_ID: parity-metric-pro-k8s-acceptance-raw-amd64-*
+          WORKFLOW: "AWS / Pro K8s tests"
+          PREFIX_ARTIFACT: k8s-acceptance-test
+
+      - name: Download coverage data for K8s pipeline (integration tests) (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-pro
+          ARTIFACT_ID: parity-metric-pro-k8s-integration-raw-amd64-*
+          WORKFLOW: "AWS / Pro K8s tests"
+          PREFIX_ARTIFACT: k8s-integration-test
+
+      - name: Download coverage data for community K8s pipeline (integration tests) (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-pro
+          ARTIFACT_ID: parity-metric-community-k8s-integration-raw-*
+          WORKFLOW: "AWS / Community K8S tests"
+          PREFIX_ARTIFACT: k8s-community-integration-test
 
       - name: Create Parity Coverage Docs
         working-directory: docs

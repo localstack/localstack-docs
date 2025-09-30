@@ -167,6 +167,7 @@ def _init_metric_recorder(operations_dict: dict):
             "aws_validated": False,
             "snapshot_tested": False,
             "snapshot_skipped": "",
+            "k8s_test_suite": False,
         }
         operations[operation] = op_attributes
 
@@ -221,17 +222,17 @@ def aggregate_recorded_raw_data(
     pathlist = Path(base_dir).rglob("*.csv")
     for path in pathlist:
         test_source = path.stem
-        # print(f"checking {str(path)}")
         with open(path, "r") as csv_obj:
             csv_dict_reader = csv.DictReader(csv_obj)
             for metric in csv_dict_reader:
                 service = metric.get("service")
                 if service not in services_of_interest:
                     continue
-                
-                node_id = metric.get("node_id") or metric.get("test_node_id")
-                if not node_id:
+
+                node_id = metric.get("node_id") or metric.get("test_node_id") or ""
+                if not node_id and not test_source.startswith("k8s"):
                     # some records do not have a node-id -> relates to requests in the background between tests
+                    # For K8s tests we do not have a node_id, so we keep those records
                     continue
 
                 # skip tests are marked as xfail
@@ -250,6 +251,7 @@ def aggregate_recorded_raw_data(
 
                 internal_test = False
                 external_test = False
+                k8s_tested = False
 
                 if test_source.startswith("community"):
                     test_node_origin = "LocalStack Community"
@@ -259,6 +261,11 @@ def aggregate_recorded_raw_data(
                     test_node_origin = "LocalStack Pro"
                     internal_test = True
                     source = "ls_pro"
+                elif test_source.startswith("k8s"):
+                    internal_test = False  # We consider it as external test to avoid adding these in test list
+                    k8s_tested = True
+                    source = "ls_pro"  # for now k8s tests are only running in pro
+                    test_node_origin = "LocalStack Pro"
                 else:
                     external_test = True
 
@@ -274,6 +281,8 @@ def aggregate_recorded_raw_data(
                     op_record["internal_test_suite"] = True
                 if external_test and not op_record.get("external_test_suite"):
                     op_record["external_test_suite"] = True
+                if k8s_tested and not op_record.get("k8s_test_suite"):
+                    op_record["k8s_test_suite"] = True
 
                 aws_validated = (
                     str(metric.get("aws_validated", "false")).lower() == "true"
