@@ -371,7 +371,7 @@ For any subscription or access-related questions, please reach out to Support.
 | CI Credits | ✅ Up to 240 credits monthly per workspace | ✅ Up to 2400 credits monthly per workspace | Unlimited |
 | Stack Insights | ✅ For all supported services | ✅ For all supported services | ✅ For all supported services |
 | Local state persistence | ✅ | ✅ | ✅ |
-| Cloud-based state persistence via Cloud pods | ✅ 500 MB, lifetime per license | ✅ 1 GB, lifetime per license | ✅ 5 GB lifetime, per license |
+| Cloud-based state persistence via Cloud pods | ❌ | ✅ 1 GB, lifetime per license | ✅ 5 GB lifetime, per license |
 | [Cloud Sandbox](https://docs.localstack.cloud/user-guide/cloud-sandbox/) previews & ephemeral instances | ❌ | ✅ 1000 minutes monthly per workspace | ✅ 3000 minutes monthly per workspace |
 | AWS Replicator | ❌ | ✅ | ✅ |
 | IAM Policy Enforcement | ❌ | ❌ | ✅ |
