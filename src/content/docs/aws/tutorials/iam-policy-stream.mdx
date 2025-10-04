@@ -54,35 +54,35 @@ The following diagram illustrates the architecture of this tutorial:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     LocalStack Environment                   │
-│                                                              │
+│                     LocalStack Environment                  │
+│                                                             │
 │  ┌──────────────┐                                           │
 │  │   S3 Bucket  │                                           │
 │  │  (s3-event-  │                                           │
 │  │ notification-│                                           │
 │  │   bucket)    │                                           │
 │  └──────┬───────┘                                           │
-│         │                                                    │
+│         │                                                   │
 │         │ Event Notification                                │
 │         │ (requires IAM policy)                             │
-│         │                                                    │
-│         ▼                                                    │
+│         │                                                   │
+│         ▼                                                   │
 │  ┌──────────────┐                                           │
 │  │  SQS Queue   │                                           │
 │  │(s3-event-not-│                                           │
 │  │ification-    │                                           │
 │  │  queue)      │                                           │
 │  └──────────────┘                                           │
-│                                                              │
-│         │                                                    │
+│                                                             │
+│         │                                                   │
 │         │ API Calls & IAM Violations                        │
-│         ▼                                                    │
-│  ┌────────────────────────────────────┐                    │
-│  │  IAM Enforcement Engine            │                    │
-│  │  (IAM_SOFT_MODE=1)                 │                    │
-│  └────────────────────────────────────┘                    │
-│         │                                                    │
-└─────────┼────────────────────────────────────────────────────┘
+│         ▼                                                   │
+│  ┌────────────────────────────────────┐                     │
+│  │  IAM Enforcement Engine            │                     │
+│  │  (IAM_SOFT_MODE=1)                 │                     │
+│  └────────────────────────────────────┘                     │
+│         │                                                   │
+└─────────┼───────────────────────────────────────────────────┘
           │
           │ Policy Stream
           ▼
