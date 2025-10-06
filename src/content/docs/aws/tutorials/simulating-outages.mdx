@@ -55,26 +55,56 @@ The following diagram shows the architecture that this application builds and de
 
 ![Architecture](/images/aws/arch-1.png)
 
-### Preflight checks
 
-Before starting any outages, it's important to verify that our application is functioning correctly.
-Start by creating an entity and saving it.
-To do this, use curl to call the API Gateway endpoint for the POST method:
+## Testing the application
+
+Before simulating outages, verify that the application is working as expected:
 
 ```bash
 curl --location 'http://12345.execute-api.localhost.localstack.cloud:4566/dev/productApi' \
---header 'Content-Type: application/json' \
---data '{
-    "id": "prod-2004",
-    "name": "Ultimate Gadget",
-    "price": "49.99",
-    "description": "The Ultimate Gadget is the perfect tool for tech enthusiasts looking for the next level in gadgetry.
-Compact, powerful, and loaded with features."
-}'
+    --header 'Content-Type: application/json' \
+    --data '{
+        "id": "prod-2004",
+        "name": "Ultimate Gadget",
+        "price": "49.99",
+        "description": "The Ultimate Gadget is the perfect tool for tech enthusiasts looking for the next level in gadgetry. Compact, powerful, and loaded with features."
+    }'
 ```
+
+Expected output:
 
 ```bash title="Output"
 Product added/updated successfully.
+```
+
+After ending the outage, confirm that previously failed items are stored successfully:
+
+```bash
+awslocal dynamodb scan --table-name Products
+```
+
+Expected output:
+
+```json
+{
+    "Items": [
+        {
+            "name": { "S": "Super Widget" },
+            "description": { "S": "A versatile widget that can be used for a variety of purposes. Durable, reliable, and affordable." },
+            "id": { "S": "prod-1003" },
+            "price": { "N": "29.99" }
+        },
+        {
+            "name": { "S": "Ultimate Gadget" },
+            "description": { "S": "The Ultimate Gadget is the perfect tool for tech enthusiasts looking for the next level in gadgetry. Compact, powerful, and loaded with features." },
+            "id": { "S": "prod-2004" },
+            "price": { "N": "49.99" }
+        }
+    ],
+    "Count": 2,
+    "ScannedCount": 2,
+    "ConsumedCapacity": null
+}
 ```
 
 ### Simulating the outage
@@ -197,6 +227,20 @@ Compact, powerful, and loaded with features."
 }
 ```
 
+
+## Conclusion
+
+Simulating outages with the Chaos API helps uncover weaknesses in application error handling and data durability. To mitigate outages:
+
+- Implement retry logic for failed operations
+- Use queues (e.g., SQS) to buffer writes during downtime
+- Employ Lambda functions to process and retry queued items
+- Monitor system health and automate recovery actions
+
+By proactively testing and designing for failure, you can build resilient cloud applications that gracefully handle disruptions and minimize data loss.
+
+---
+
 ### Introducing network latency
 
 The LocalStack Chaos API can also introduce a network latency for all connections.
@@ -204,25 +248,24 @@ This can be done with the following configuration:
 
 ```bash
 curl --location --request POST 'http://localhost.localstack.cloud:4566/_localstack/chaos/effects' \
---header 'Content-Type: application/json' \
---data '{
-    "latency": 5000
-}'
+    --header 'Content-Type: application/json' \
+    --data '{
+        "latency": 5000
+    }'
 ```
 
 With this configured, you can use the same sample stack to observe and understand the effects of a 5-second delay on each service call.
 
 ```bash
 curl --location 'http://12345.execute-api.localhost.localstack.cloud:4566/dev/productApi' \
---max-time 2 \
---header 'Content-Type: application/json' \
---data '{
-    "id": "prod-1088",
-    "name": "Super Widget",
-    "price": "29.99",
-    "description": "A versatile widget that can be used for a variety of purposes.
-Durable, reliable, and affordable."
-}'
+    --max-time 2 \
+    --header 'Content-Type: application/json' \
+    --data '{
+        "id": "prod-1088",
+        "name": "Super Widget",
+        "price": "29.99",
+        "description": "A versatile widget that can be used for a variety of purposes. Durable, reliable, and affordable."
+    }'
 ```
 
 ```bash title="Output"
