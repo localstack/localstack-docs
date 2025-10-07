@@ -124,6 +124,13 @@ jobs:
         run: |
             python3 scripts/create_cfn_coverage_table.py --cfn-json target/iac-catalog-assets/cfn_resources.json
 
+      - name: Print CFN docs page diff (test)
+        working-directory: docs
+        run: |
+          echo "Showing changes for src/content/docs/aws/services/cloudformation.mdx"
+          git status --porcelain -- src/content/docs/aws/services/cloudformation.mdx || true
+          git --no-pager diff --unified=0 -- src/content/docs/aws/services/cloudformation.mdx || true
+
       - name: Check for changes
         id: check-for-changes
         working-directory: docs
@@ -132,7 +139,8 @@ jobs:
           # Check against the PR branch if it exists, otherwise against the main
           # Store the result in resources/diff-check.log and store the diff count in the GitHub Action output "diff-count"
           mkdir -p resources
-          (git diff --name-only origin/parity-coverage-auto-updates data/coverage/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'main' }} src/data/coverage/ 2>/dev/null) | tee -a resources/diff-check.log
+          FILES_TO_CHECK="src/data/coverage/ src/content/docs/aws/services/cloudformation.mdx"
+          (git diff --name-only origin/parity-coverage-auto-updates $FILES_TO_CHECK 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'main' }} $FILES_TO_CHECK 2>/dev/null) | tee -a resources/diff-check.log
           echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> $GITHUB_OUTPUT
 
       - name: Read PR markdown template
