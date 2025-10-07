@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
           path: docs
-          # ref: ${{ github.event.inputs.targetBranch || 'main' }}
+          ref: ${{ github.event.inputs.targetBranch || 'main' }}
 
       - name: Set up system wide dependencies
         run: |
@@ -124,13 +124,6 @@ jobs:
         run: |
             python3 scripts/create_cfn_coverage_table.py --cfn-json target/iac-catalog-assets/cfn_resources.json
 
-      - name: Print CFN docs page diff (test)
-        working-directory: docs
-        run: |
-          echo "Showing changes for src/content/docs/aws/services/cloudformation.mdx"
-          git status --porcelain -- src/content/docs/aws/services/cloudformation.mdx || true
-          git --no-pager diff --unified=0 -- src/content/docs/aws/services/cloudformation.mdx || true
-
       - name: Check for changes
         id: check-for-changes
         working-directory: docs
@@ -150,15 +143,15 @@ jobs:
         with:
           path: docs/.github/bot_templates/PARITY_COVERAGE_DOCS_PR.md
 
-      # - name: Create PR
-      #   uses: peter-evans/create-pull-request@v7
-      #   if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
-      #   with:
-      #     path: docs
-      #     title: "Update Parity Coverage Docs"
-      #     body: "${{ steps.template.outputs.content }}"
-      #     branch: "parity-coverage-auto-updates"
-      #     author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
-      #     committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
-      #     commit-message: "update generated parity coverage docs"
-      #     token: ${{ secrets.PRO_ACCESS_TOKEN }}
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+        with:
+          path: docs
+          title: "Update Parity Coverage Docs"
+          body: "${{ steps.template.outputs.content }}"
+          branch: "parity-coverage-auto-updates"
+          author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          commit-message: "update generated parity coverage docs"
+          token: ${{ secrets.PRO_ACCESS_TOKEN }}
