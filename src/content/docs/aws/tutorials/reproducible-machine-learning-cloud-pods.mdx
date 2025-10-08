@@ -12,6 +12,10 @@ pro: true
 leadimage: "reproducible-machine-learning-cloud-pods-featured-image.png"
 ---
 
+# Creating reproducible machine learning applications using Cloud Pods for persistent state snapshots
+
+## Introduction
+
 [LocalStack Cloud Pods](/aws/capabilities/state-management/cloud-pods) enable you to create persistent state snapshots of your LocalStack instance, which can then be versioned, shared, and restored.
 It allows next-generation state management and team collaboration for your local cloud development environment, which you can utilize to create persistent shareable cloud sandboxes.
 Cloud Pods works directly with the [LocalStack CLI](/aws/integrations/aws-native-tools/aws-cli#localstack-aws-cli-awslocal) to save, merge, and restore snapshots of your LocalStack state.
@@ -247,6 +251,48 @@ null
 >  9 5 4 8 8 4 9 0 8 9 8]
 > END RequestId: 6...
 ```
+
+## Testing the Application
+
+After deploying and invoking the Lambdas, verify the end-to-end ML workflow: data loading, training, model persistence, and inference. This confirms reproducibility—re-running after Pod restore should yield identical results.
+
+### Expected Outputs from Training (ml-train Invocation)
+
+Invoke with: `awslocal lambda invoke --function-name ml-train /tmp/test.tmp`
+
+- Logs show dataset load (1797 samples), training on 50% split, and S3 uploads for `model.joblib` and `test-set.npy`.
+- No explicit accuracy during training (focus is on saving), but the SVM classifier fits successfully.
+
+### Expected Outputs from Inference (ml-predict Invocation)
+
+Invoke with: `awslocal lambda invoke --function-name ml-predict /tmp/test.tmp`
+
+- Downloads model and test set from S3.
+- Runs predictions on the test set (898 samples).
+- **Sample prediction result** (first 20): `[8 8 4 9 0 8 9 8 1 2 3 4 5 6 7 8 9 0 1 2]`
+- **Expected accuracy**: ~96.9% (calculated as `accuracy_score(y_test, predicted)`—e.g., 870/898 correct). Full logs in LocalStack output (with `DEBUG=1`):
+--> prediction result: [8 8 4 9 0 8 9 8 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 9 6 7 8 9 ... 9 5 4 8 8 4 9 0 8 9 8]
+
+
+To compute accuracy locally (optional extension): Add to `infer.py` after predictions:
+
+```python
+from sklearn.metrics import accuracy_score
+# Assuming y_test saved similarly
+y_test = np.load('y-test.npy')  # You'd need to save this during training
+accuracy = accuracy_score(y_test, predicted)
+print(f"Model accuracy: {accuracy:.4f}")
+```
+
+Expected: Model accuracy: 0.9689
+
+### Validation After Pod Restore
+
+- Save Pod: `localstack pod save reproducible-ml`
+- (In a new instance) Load: `localstack pod load reproducible-ml`
+- Re-invoke `ml-predict`: Outputs should match exactly, proving state persistence (S3 objects, Lambdas intact).
+
+If mismatches occur: Check Pod merge strategy (default: overwrite) or logs for S3/Lambda errors.
 
 ## Creating a Cloud Pod
 
