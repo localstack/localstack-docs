@@ -183,6 +183,9 @@ def replace_content_between(
     ending_rx: str,
     replacement_block: str,
 ) -> str:
+    # Build a regex that replaces the content between two headings starting_rx and ending_rx.
+    # Group1 - start heading
+    # Group2 - content; lookahead preserves end boundary.
     pattern = re.compile(
         rf"(^{starting_rx}\s*\n)(.*?)(?={ending_rx})",
         re.DOTALL | re.MULTILINE,
