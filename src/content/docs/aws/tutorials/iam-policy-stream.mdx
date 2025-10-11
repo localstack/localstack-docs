@@ -52,48 +52,7 @@ Additionally, it serves as a useful learning tool, helping users understand the 
 
 The following diagram illustrates the architecture of this tutorial:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     LocalStack Environment                  │
-│                                                             │
-│  ┌──────────────┐                                           │
-│  │   S3 Bucket  │                                           │
-│  │  (s3-event-  │                                           │
-│  │ notification-│                                           │
-│  │   bucket)    │                                           │
-│  └──────┬───────┘                                           │
-│         │                                                   │
-│         │ Event Notification                                │
-│         │ (requires IAM policy)                             │
-│         │                                                   │
-│         ▼                                                   │
-│  ┌──────────────┐                                           │
-│  │  SQS Queue   │                                           │
-│  │(s3-event-not-│                                           │
-│  │ification-    │                                           │
-│  │  queue)      │                                           │
-│  └──────────────┘                                           │
-│                                                             │
-│         │                                                   │
-│         │ API Calls & IAM Violations                        │
-│         ▼                                                   │
-│  ┌────────────────────────────────────┐                     │
-│  │  IAM Enforcement Engine            │                     │
-│  │  (IAM_SOFT_MODE=1)                 │                     │
-│  └────────────────────────────────────┘                     │
-│         │                                                   │
-└─────────┼───────────────────────────────────────────────────┘
-          │
-          │ Policy Stream
-          ▼
-   ┌──────────────────────────────────────┐
-   │  LocalStack Web Application          │
-   │  IAM Policy Stream Dashboard         │
-   │  - View API calls                    │
-   │  - See IAM violations                │
-   │  - Generate policies                 │
-   └──────────────────────────────────────┘
-```
+![LocalStack Environment Architecture](/images/aws/iam-policy-stream-architecture.png)
 
 In this architecture:
 1. An **S3 bucket** is configured to send event notifications when objects are created
