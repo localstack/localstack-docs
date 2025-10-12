@@ -12,6 +12,8 @@ pro: false
 leadimage: "s3-static-website-terraform-featured-image.png"
 ---
 
+## Introduction
+
 [AWS Simple Storage Service (S3)](https://aws.amazon.com/s3/) is a proprietary object storage solution that can store an unlimited number of objects for many use cases.
 S3 is a highly scalable, durable and reliable service that we can use for various use cases: hosting a static site, handling big data analytics, managing application logs, storing web assets and much more!
 
@@ -36,6 +38,48 @@ For this tutorial, you will need:
 - [LocalStack Community](https://github.com/localstack/localstack)
 - [Terraform](https://www.terraform.io/downloads.html)
 - [awslocal](https://github.com/localstack/awscli-local)
+
+## Architecture
+
+The following diagram illustrates the architecture of the static website hosting setup using S3 and Terraform:
+
+```
+┌─────────────┐
+│   Browser   │
+└──────┬──────┘
+       │
+       │ HTTP Request
+       │
+       ▼
+┌─────────────────────────────────────────┐
+│  S3 Website Endpoint                    │
+│  testwebsite.s3-website.                │
+│  localhost.localstack.cloud:4566        │
+└──────┬──────────────────────────────────┘
+       │
+       │
+       ▼
+┌─────────────────────────────────────────┐
+│  LocalStack S3 Bucket                   │
+│  ┌───────────────────────────────────┐  │
+│  │  Bucket: testwebsite              │  │
+│  │  ├── index.html                   │  │
+│  │  ├── error.html                   │  │
+│  │  └── assets/ (optional)           │  │
+│  │                                   │  │
+│  │  Policy: Public Read Access       │  │
+│  │  Website Hosting: Enabled         │  │
+│  └───────────────────────────────────┘  │
+│                                         │
+│  Provisioned via Terraform              │
+└─────────────────────────────────────────┘
+```
+
+In this architecture:
+- A browser makes an HTTP request to the S3 website endpoint
+- LocalStack's S3 service serves the static content from the configured bucket
+- The bucket contains HTML files and optional assets
+- Terraform provisions and configures all resources locally
 
 ## Creating a static website
 
@@ -373,6 +417,61 @@ tflocal init
 tflocal plan
 tflocal apply
 ```
+
+## Testing the application
+
+After deploying your static website, it's important to verify that everything is working correctly.
+Here are several ways to test your S3-hosted static website:
+
+### Accessing the website
+
+Navigate to the LocalStack S3 website endpoint in your browser:
+
+```
+http://testwebsite.s3-website.localhost.localstack.cloud:4566/
+```
+
+You should see your `index.html` content displayed, which in our case shows: "Static Website deployed locally over S3 using LocalStack".
+
+### Testing with curl
+
+You can also test the website using `curl` from your terminal:
+
+```bash
+curl http://testwebsite.s3-website.localhost.localstack.cloud:4566/
+```
+
+This should return the HTML content of your `index.html` file.
+
+### Verifying the error page
+
+To test the custom error document, try accessing a non-existent page:
+
+```bash
+curl http://testwebsite.s3-website.localhost.localstack.cloud:4566/nonexistent.html
+```
+
+You should receive the content from your `error.html` file: "Something is amiss." with an appropriate HTTP 4XX status code.
+
+### Checking bucket configuration
+
+You can verify the bucket's website configuration using `awslocal`:
+
+```bash
+awslocal s3api get-bucket-website --bucket testwebsite
+```
+
+This command should return the index and error document configuration for your bucket.
+
+### Listing bucket contents
+
+To confirm all your files were uploaded correctly:
+
+```bash
+awslocal s3 ls s3://testwebsite/
+```
+
+This will display all the files in your bucket, including `index.html`, `error.html`, and any additional assets.
 
 ## Conclusion
 
