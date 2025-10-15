@@ -12,7 +12,7 @@ tags: ["Enterprise"]
 Enterprise support offers organizations personalized resources, direct communication channels with the LocalStack team, and flexible service level agreements (SLAs) to meet specific business requirements.
 The key components of our enterprise support offering include:
 
-- **Direct Slack Connect Channel**: A dedicated Slack Connect channel is available to maintain a direct communication link with the LocalStack engineering team.
+- **Direct Slack Connect or Teams Channel**: A dedicated Slack Connect or Teams channel is available to maintain a direct communication link with the LocalStack engineering team. This setup ensures quick issue resolution and streamlined collaboration, improving overall service efficiency.
   This setup ensures quick issue resolution and streamlined collaboration, improving overall service efficiency.
 - **Dedicated Customer Success Manager (CSM) and Technical Account Manager (TAM)**: Enterprise customers are assigned a CSM and SA.
   The CSM acts as a strategic advisor to help fully utilize LocalStack's offerings, while the SA provides expert technical assistance in designing and optimizing solutions tailored to your needs.
