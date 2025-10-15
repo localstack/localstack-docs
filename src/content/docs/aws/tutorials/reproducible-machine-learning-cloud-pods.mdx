@@ -41,7 +41,7 @@ For this tutorial, you will need the following:
 
 - [LocalStack Pro](https://localstack.cloud/pricing/)
 - [awslocal](/aws/integrations/aws-native-tools/aws-cli#localstack-aws-cli-awslocal)
-- [Optical recognition of handwritten digits dataset](https://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits)
+- [Optical recognition of handwritten digits dataset](https://github.com/localstack-samples/localstack-pro-samples/raw/refs/heads/master/reproducible-ml/digits.csv.gz) ([Source](https://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits))
 
 If you don't have a subscription to LocalStack Pro, you can request a trial license upon sign-up.
 For this tutorial to work, you must have the LocalStack CLI installed, which must be version 1.3 or higher.
@@ -196,6 +196,7 @@ zip lambda.zip train.py
 zip infer.zip infer.py
 awslocal s3 mb s3://reproducible-ml
 awslocal s3 cp lambda.zip s3://reproducible-ml/lambda.zip
+awslocal s3 cp infer.zip s3://reproducible-ml/infer.zip
 awslocal s3 cp digits.csv.gz s3://reproducible-ml/digits.csv.gz
 ```
 
@@ -212,7 +213,9 @@ awslocal lambda create-function --function-name ml-train \
   --timeout 600 \
   --code '{"S3Bucket":"reproducible-ml","S3Key":"lambda.zip"}' \
   --layers arn:aws:lambda:us-east-1:446751924810:layer:python-3-8-scikit-learn-0-23-1:2
+```
 
+```bash
 awslocal lambda create-function --function-name ml-predict \
   --runtime python3.8 \
   --role arn:aws:iam::000000000000:role/lambda-role \
