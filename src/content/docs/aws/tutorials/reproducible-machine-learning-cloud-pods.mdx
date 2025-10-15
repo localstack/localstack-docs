@@ -161,6 +161,10 @@ Now, we will create a new file called `infer.py` which will contain a second han
 This function will be used to perform predictions on new data with the model we trained previously.
 
 ```python
+import boto3
+import numpy
+from joblib import load
+
 def handler(event, context):
     # download the model and the test set from S3
     s3_client = boto3.client("s3")
