@@ -15,13 +15,10 @@ leadimage: "s3-static-website-terraform-featured-image.png"
 ## Introduction
 
 [AWS Simple Storage Service (S3)](https://aws.amazon.com/s3/) is a proprietary object storage solution that can store an unlimited number of objects for many use cases.
-S3 is a highly scalable, durable and reliable service that we can use for various use cases: hosting a static site, handling big data analytics, managing application logs, storing web assets and much more!
+S3 is a highly scalable, durable and reliable service that we can use for any use case involving file-based storage: hosting a static site, handling big data analytics, managing application logs, storing web assets and much more!
 
-With S3, you have unlimited storage with your data stored in buckets.
-A bucket refers to a directory, while an object is just another term for a file.
-Every object (file) stores the name of the file (key), the contents (value), a version ID and the associated metadata.
-You can also use S3 to host a static website, to serve static content.
-It might include HTML, CSS, JavaScript, images, and other assets that make up your website.
+With S3, objects are stored in buckets. A bucket is effectively a directory, while an object is a file. Every object (file) stores the name of the file (key), the contents (value), a version ID and the associated metadata. You can also use S3 to host to server static content as a static website.
+The static content might include HTML, CSS, JavaScript, images, and other assets that make up your website.
 
 LocalStack supports the S3 API, which means you can use the same API calls to interact with S3 in LocalStack as you would with AWS.
 Using LocalStack, you can create and manage S3 buckets and objects locally, use AWS SDKs and third-party integrations to work with S3, and test your applications without making any significant alterations.
@@ -43,37 +40,7 @@ For this tutorial, you will need:
 
 The following diagram illustrates the architecture of the static website hosting setup using S3 and Terraform:
 
-```
-┌─────────────┐
-│   Browser   │
-└──────┬──────┘
-       │
-       │ HTTP Request
-       │
-       ▼
-┌─────────────────────────────────────────┐
-│  S3 Website Endpoint                    │
-│  testwebsite.s3-website.                │
-│  localhost.localstack.cloud:4566        │
-└──────┬──────────────────────────────────┘
-       │
-       │
-       ▼
-┌─────────────────────────────────────────┐
-│  LocalStack S3 Bucket                   │
-│  ┌───────────────────────────────────┐  │
-│  │  Bucket: testwebsite              │  │
-│  │  ├── index.html                   │  │
-│  │  ├── error.html                   │  │
-│  │  └── assets/ (optional)           │  │
-│  │                                   │  │
-│  │  Policy: Public Read Access       │  │
-│  │  Website Hosting: Enabled         │  │
-│  └───────────────────────────────────┘  │
-│                                         │
-│  Provisioned via Terraform              │
-└─────────────────────────────────────────┘
-```
+![Architecture](/images/aws/s3-static-website-terraform-diagram.png)
 
 In this architecture:
 - A browser makes an HTTP request to the S3 website endpoint
