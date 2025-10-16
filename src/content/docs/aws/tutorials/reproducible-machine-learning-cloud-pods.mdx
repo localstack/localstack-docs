@@ -75,9 +75,9 @@ It is similar to a Python dictionary but provides attribute-style access and can
 def load_digits(*, n_class=10, return_X_y=False, as_frame=False):
     # download files from S3
     s3_client = boto3.client("s3")
-    s3_client.download_file(Bucket="pods-test", Key="digits.csv.gz", Filename="digits.csv.gz")
+    s3_client.download_file(Bucket="reproducible-ml", Key="digits.csv.gz", Filename="/tmp/digits.csv.gz")
 
-    data = numpy.loadtxt('digits.csv.gz', delimiter=',')
+    data = numpy.loadtxt('/tmp/digits.csv.gz', delimiter=',')
     target = data[:, -1].astype(numpy.int, copy=False)
     flat_data = data[:, :-1]
     images = flat_data.view()
@@ -141,12 +141,12 @@ def handler(event, context):
     s3_client = boto3.client("s3")
     buffer = io.BytesIO()
     dump(clf, buffer)
-    s3_client.put_object(Body=buffer.getvalue(), Bucket="pods-test", Key="model.joblib")
+    s3_client.put_object(Body=buffer.getvalue(), Bucket="reproducible-ml", Key="model.joblib")
 
     # Save the test-set to the S3 bucket
-    numpy.save('test-set.npy', X_test)
-    with open('test-set.npy', 'rb') as f:
-        s3_client.put_object(Body=f, Bucket="pods-test", Key="test-set.npy")
+    numpy.save('/tmp/test-set.npy', X_test)
+    with open('/tmp/test-set.npy', 'rb') as f:
+        s3_client.put_object(Body=f, Bucket="reproducible-ml", Key="test-set.npy")
 ```
 
 First, we loaded the images and flattened them into 1-dimensional arrays.
@@ -168,13 +168,13 @@ from joblib import load
 def handler(event, context):
     # download the model and the test set from S3
     s3_client = boto3.client("s3")
-    s3_client.download_file(Bucket="pods-test", Key="test-set.npy", Filename="test-set.npy")
-    s3_client.download_file(Bucket="pods-test", Key="model.joblib", Filename="model.joblib")
+    s3_client.download_file(Bucket="reproducible-ml", Key="test-set.npy", Filename="/tmp/test-set.npy")
+    s3_client.download_file(Bucket="reproducible-ml", Key="model.joblib", Filename="/tmp/model.joblib")
 
-    with open("test-set.npy", "rb") as f:
+    with open("/tmp/test-set.npy", "rb") as f:
         X_test = numpy.load(f)
 
-    clf = load("model.joblib")
+    clf = load("/tmp/model.joblib")
 
     predicted = clf.predict(X_test)
     print("--> prediction result:", predicted)
