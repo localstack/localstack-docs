@@ -258,48 +258,6 @@ null
 > END RequestId: 6...
 ```
 
-## Testing the Application
-
-After deploying and invoking the Lambdas, verify the end-to-end ML workflow _(data loading, training, model persistence, and inference)_. This confirms reproducibility, and re-running after Pod restore should yield identical results.
-
-### Expected Outputs from Training
-
-Invoke `ml-train` with: `awslocal lambda invoke --function-name ml-train /tmp/test.tmp`
-
-- Logs show dataset load (1797 samples), training on 50% split, and S3 uploads for `model.joblib` and `test-set.npy`.
-- No explicit accuracy during training (focus is on savings), but the SVM classifier fits successfully.
-
-### Expected Outputs from Inference (ml-predict Invocation)
-
-Invoke `ml-predict` with: `awslocal lambda invoke --function-name ml-predict /tmp/test.tmp`
-
-- Downloads model and test set from S3.
-- Runs predictions on the test set (898 samples).
-- **Sample prediction result** (first 20): `[8 8 4 9 0 8 9 8 1 2 3 4 5 6 7 8 9 0 1 2]`
-- **Expected accuracy**: ~96.9% (calculated as `accuracy_score(y_test, predicted)`—e.g., 870/898 correct). Full logs in LocalStack output (with `DEBUG=1`):
---> prediction result: [8 8 4 9 0 8 9 8 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 9 6 7 8 9 ... 9 5 4 8 8 4 9 0 8 9 8]
-
-
-To compute accuracy locally (optional extension): Add to `infer.py` after predictions:
-
-```python
-from sklearn.metrics import accuracy_score
-# Assuming y_test saved similarly
-y_test = np.load('y-test.npy')  # You'd need to save this during training
-accuracy = accuracy_score(y_test, predicted)
-print(f"Model accuracy: {accuracy:.4f}")
-```
-
-Expected Model accuracy: 0.9689
-
-### Validation After Pod Restore
-
-- Save Pod: `localstack pod save reproducible-ml`
-- (In a new instance) Load: `localstack pod load reproducible-ml`
-- Re-invoke `ml-predict`: Outputs should match exactly, proving state persistence (S3 objects, Lambdas intact).
-
-If a mismatch occurs, check the Pod's merge strategy `(default: overwrite)` or logs for S3/Lambda errors.
-
 ## Creating a Cloud Pod
 
 After deploying the Lambda functions, we can create a Cloud Pod to share our local infrastructure and instance state with other LocalStack users in the organization.
@@ -382,6 +340,48 @@ The available merge strategies are:
   It will also merge the existing state with the state of the Cloud Pod recursively.
 
 ![State Merge mechanisms with LocalStack Cloud Pods](/images/aws/cloud-pods-state-merge-mechanisms.png)
+
+## Testing the Application
+
+After deploying and invoking the Lambdas, first verify the end-to-end ML workflow via the data loading, training, and inference. After successfully running the application and saving a Cloud Pod, re-running the application after Pod restore should yield identical results.
+
+### Expected Outputs from Training
+
+Invoke `ml-train` with: `awslocal lambda invoke --function-name ml-train /tmp/test.tmp`
+
+- Logs show dataset load (1797 samples), training on 50% split, and S3 uploads for `model.joblib` and `test-set.npy`.
+- No explicit accuracy during training (focus is on savings), but the SVM classifier fits successfully.
+
+### Expected Outputs from Inference (ml-predict Invocation)
+
+Invoke `ml-predict` with: `awslocal lambda invoke --function-name ml-predict /tmp/test.tmp`
+
+- Downloads model and test set from S3.
+- Runs predictions on the test set (898 samples).
+- **Sample prediction result** (first 20): `[8 8 4 9 0 8 9 8 1 2 3 4 5 6 7 8 9 0 1 2]`
+- **Expected accuracy**: ~96.9% (calculated as `accuracy_score(y_test, predicted)`—e.g., 870/898 correct). Full logs in LocalStack output (with `DEBUG=1`):
+--> prediction result: [8 8 4 9 0 8 9 8 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 9 6 7 8 9 ... 9 5 4 8 8 4 9 0 8 9 8]
+
+
+To compute accuracy locally (optional extension): Add to `infer.py` after predictions:
+
+```python
+from sklearn.metrics import accuracy_score
+# Assuming y_test saved similarly
+y_test = np.load('y-test.npy')  # You'd need to save this during training
+accuracy = accuracy_score(y_test, predicted)
+print(f"Model accuracy: {accuracy:.4f}")
+```
+
+Expected Model accuracy: 0.9689
+
+### Validation After Pod Restore
+
+- Save Pod: `localstack pod save reproducible-ml`
+- (In a new instance) Load: `localstack pod load reproducible-ml`
+- Re-invoke `ml-predict`: Outputs should match exactly, proving state persistence (S3 objects, Lambdas intact).
+
+If a mismatch occurs, check the Pod's merge strategy `(default: overwrite)` or logs for S3/Lambda errors.
 
 ## Conclusion
 
