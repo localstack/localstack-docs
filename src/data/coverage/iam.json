@@ -162,10 +162,10 @@
       "CreateOpenIDConnectProvider": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": true,
         "terraform_test_suite": true,
-        "aws_validated": false,
+        "aws_validated": true,
         "snapshot_tested": false,
         "snapshot_skipped": "",
         "k8s_test_suite": false
@@ -2806,7 +2806,7 @@
             "test": "test_prefill_dynamodb_table",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2816,7 +2816,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -3376,7 +3376,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -3662,8 +3662,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_multiple_fn_transform_order",
-            "test": "test_multiple_fn_transform_order",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_macro_with_intrinsic_function",
+            "test": "test_macro_with_intrinsic_function",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
@@ -13264,6 +13264,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackConfigFile::test_log_emission",
+            "test": "test_log_emission",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackFluentD::test_log_emission",
             "test": "test_log_emission",
             "response": "200",
@@ -13330,6 +13340,16 @@
             "error": "",
             "snapshot_skipped": "",
             "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
+            "test": "test_irsa",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
             "snapshot_tested": false,
             "origin": "external"
           },
@@ -13806,6 +13826,46 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_tags",
             "test": "test_pipe_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "test": "test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "test": "test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "test": "test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation_with_reserved_vars",
+            "test": "test_pipe_target_input_transformation_with_reserved_vars",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -14444,6 +14504,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_internals.py::TestIAMPolicyRetrieval::test_iam_user_multiple_policies",
             "test": "test_iam_user_multiple_policies",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -15218,6 +15288,46 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_iam_denied_event_structure",
+            "test": "test_iam_denied_event_structure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_required_action_details_in_events",
+            "test": "test_required_action_details_in_events",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -15862,6 +15972,22 @@
         ]
       }
     },
+    "CreateOpenIDConnectProvider": {
+      "ClientIDList, Url": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
+            "test": "test_irsa",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "CreatePolicy": {
       "Description, Path, PolicyDocument, PolicyName, Tags": {
         "ls_pro": [
@@ -16374,8 +16500,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_multiple_fn_transform_order",
-            "test": "test_multiple_fn_transform_order",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_macro_with_intrinsic_function",
+            "test": "test_macro_with_intrinsic_function",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
@@ -25886,6 +26012,46 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "test": "test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "test": "test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "test": "test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation_with_reserved_vars",
+            "test": "test_pipe_target_input_transformation_with_reserved_vars",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures",
             "test": "test_sqs_fifo_dlq_partial_batch_failures",
             "response": "200",
@@ -26048,6 +26214,16 @@
           {
             "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_apigateway_tracing.py::TestAPIGatewayTracing::test_apigateway_sqs_query_api_tracing",
             "test": "test_apigateway_sqs_query_api_tracing",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -26452,7 +26628,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -27182,7 +27358,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -27448,8 +27624,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_multiple_fn_transform_order",
-            "test": "test_multiple_fn_transform_order",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_macro_with_intrinsic_function",
+            "test": "test_macro_with_intrinsic_function",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
@@ -38800,6 +38976,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
+            "test": "test_firelens_config_from_s3",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_get_aws_execution_env_from_task[FARGATE]",
             "test": "test_get_aws_execution_env_from_task[FARGATE]",
             "response": "200",
@@ -38880,6 +39066,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_parallel_failure",
+            "test": "test_run_simple_task_ec2_parallel_failure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_sequentially",
             "test": "test_run_simple_task_ec2_sequentially",
             "response": "200",
@@ -38942,6 +39138,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFargateApplicationLoadBalanced::test_service_deployment",
             "test": "test_service_deployment",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackConfigFile::test_log_emission",
+            "test": "test_log_emission",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -39060,6 +39266,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
+            "test": "test_irsa",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestExtraK3SArgs::test_extra_k3s_args",
             "test": "test_extra_k3s_args",
             "response": "200",
@@ -39144,7 +39360,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -39154,7 +39370,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -39164,7 +39380,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -39214,7 +39430,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -40330,6 +40546,46 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "test": "test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "test": "test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "test": "test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation_with_reserved_vars",
+            "test": "test_pipe_target_input_transformation_with_reserved_vars",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures",
             "test": "test_sqs_fifo_dlq_partial_batch_failures",
             "response": "200",
@@ -40718,7 +40974,7 @@
             "test": "test_prefill_dynamodb_table",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -40970,7 +41226,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -43842,6 +44098,46 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_iam_denied_event_structure",
+            "test": "test_iam_denied_event_structure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_required_action_details_in_events",
+            "test": "test_required_action_details_in_events",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_conditions.py::TestIAMConditions::test_aws_request_tags_for_iam",
             "test": "test_aws_request_tags_for_iam",
             "response": "403",
@@ -44648,6 +44944,26 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -45240,8 +45556,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_for_attribute_fn_transform",
-            "test": "test_embedded_macro_for_attribute_fn_transform",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[false]",
+            "test": "test_conditional_transform[false]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
@@ -45400,8 +45716,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/sqs/test_sqs.py::TestSqsProvider::test_receive_empty_queue[sqs]",
-            "test": "test_receive_empty_queue[sqs]",
+            "node_id": "LocalStack Community: tests/aws/services/sns/test_sns_filter_policy.py::TestSNSFilterPolicyBody::test_filter_policy_on_message_body[False]",
+            "test": "test_filter_policy_on_message_body[False]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -53762,16 +54078,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_cognito.py::test_cognito_role_attachment",
-            "test": "test_cognito_role_attachment",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..UserPool.SchemaAttributes', '$..UserPool.UserPoolTags', '$..UserPool.AccountRecoverySetting', '$..UserPool.Policies.SignInPolicy', '$..CognitoIdentityProviders..ProviderName']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_customresources.py::test_object_output",
             "test": "test_object_output",
             "response": "200",
@@ -53780,6 +54086,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_ecr.py::test_untransformed_url_when_no_repository_created",
+            "test": "test_untransformed_url_when_no_repository_created",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cognito/test_cognito.py::TestAuthFlows::test_admin_no_srp_auth_flow",
@@ -54032,13 +54348,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestRouting::test_query_string[condition6-param1&param2=value3-False]",
-            "test": "test_query_string[condition6-param1&param2=value3-False]",
+            "node_id": "LocalStack Pro: tests/aws/services/elbv2/test_elbv2_target_groups.py::TestElbV2TargetGroups::test_target_group_attributes_stickiness[TLS-True-source_ip]",
+            "test": "test_target_group_attributes_stickiness[TLS-True-source_ip]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -54812,6 +55128,46 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "test": "test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "test": "test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "test": "test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation_with_reserved_vars",
+            "test": "test_pipe_target_input_transformation_with_reserved_vars",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures",
             "test": "test_sqs_fifo_dlq_partial_batch_failures",
             "response": "200",
@@ -54952,13 +55308,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_api.py::TestRDSEventSubscription::test_event_subscription_ops_non_existent",
-            "test": "test_event_subscription_ops_non_existent",
+            "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_api.py::TestRDSDBInstanceCRUD::test_delete_db_instance_allow_deleting_instance_on_cluster_without_final_snapshot",
+            "test": "test_delete_db_instance_allow_deleting_instance_on_cluster_without_final_snapshot",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
             "aws_validated": true,
-            "snapshot_tested": true,
+            "snapshot_tested": false,
             "origin": "external"
           },
           {
@@ -55022,6 +55378,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_lambda_esm.py::TestLambdaESMKinesisTracing::test_kinesis_event_source_mapping",
             "test": "test_kinesis_event_source_mapping",
             "response": "200",
@@ -55062,7 +55428,7 @@
             "test": "test_stepfunctions_input_recipient_list[step_function_input4-FAILED]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..traceHeader', '$..cause']",
+            "snapshot_skipped": "['$..traceHeader', '$..cause', '$..redriveCount', '$..redriveStatus', '$..redriveStatusReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -55822,7 +56188,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56188,8 +56554,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_for_attribute_fn_transform",
-            "test": "test_embedded_macro_for_attribute_fn_transform",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[false]",
+            "test": "test_conditional_transform[false]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
@@ -56788,8 +57154,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/sqs/test_sqs.py::TestSqsProvider::test_receive_empty_queue[sqs]",
-            "test": "test_receive_empty_queue[sqs]",
+            "node_id": "LocalStack Community: tests/aws/services/sns/test_sns_filter_policy.py::TestSNSFilterPolicyBody::test_filter_policy_on_message_body[False]",
+            "test": "test_filter_policy_on_message_body[False]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -65280,6 +65646,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestHttpApiServiceDiscoveryPrivateIntegration::test_servicediscovery_ecs_integration",
             "test": "test_servicediscovery_ecs_integration",
             "response": "200",
@@ -66420,16 +66796,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_cognito.py::test_cognito_role_attachment",
-            "test": "test_cognito_role_attachment",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..UserPool.SchemaAttributes', '$..UserPool.UserPoolTags', '$..UserPool.AccountRecoverySetting', '$..UserPool.Policies.SignInPolicy', '$..CognitoIdentityProviders..ProviderName']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_customresources.py::test_customresource_lambda_backed",
             "test": "test_customresource_lambda_backed",
             "response": "200",
@@ -66468,6 +66834,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_ecr.py::test_untransformed_url_when_no_repository_created",
+            "test": "test_untransformed_url_when_no_repository_created",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_ecs.py::test_capacity_providers",
@@ -66630,13 +67006,13 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_lambda_redirect",
-            "test": "test_lambda_redirect",
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_response_headers_policy",
+            "test": "test_create_response_headers_policy",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..ETag', '$..Error.Message', '$..Message']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -67660,6 +68036,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
+            "test": "test_firelens_config_from_s3",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_get_aws_execution_env_from_task[FARGATE]",
             "test": "test_get_aws_execution_env_from_task[FARGATE]",
             "response": "200",
@@ -67740,6 +68126,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_parallel_failure",
+            "test": "test_run_simple_task_ec2_parallel_failure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_sequentially",
             "test": "test_run_simple_task_ec2_sequentially",
             "response": "200",
@@ -67802,6 +68198,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFargateApplicationLoadBalanced::test_service_deployment",
             "test": "test_service_deployment",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackConfigFile::test_log_emission",
+            "test": "test_log_emission",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -67920,6 +68326,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
+            "test": "test_irsa",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestExtraK3SArgs::test_extra_k3s_args",
             "test": "test_extra_k3s_args",
             "response": "200",
@@ -67950,13 +68366,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestRouting::test_query_string[condition6-param1&param2=value3-False]",
-            "test": "test_query_string[condition6-param1&param2=value3-False]",
+            "node_id": "LocalStack Pro: tests/aws/services/elbv2/test_elbv2_target_groups.py::TestElbV2TargetGroups::test_target_group_attributes_stickiness[TLS-True-source_ip]",
+            "test": "test_target_group_attributes_stickiness[TLS-True-source_ip]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -67984,7 +68400,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -67994,7 +68410,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -68004,7 +68420,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -68064,7 +68480,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -68920,6 +69336,46 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "test": "test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "test": "test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "test": "test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation_with_reserved_vars",
+            "test": "test_pipe_target_input_transformation_with_reserved_vars",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures",
             "test": "test_sqs_fifo_dlq_partial_batch_failures",
             "response": "200",
@@ -69120,6 +69576,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_api.py::TestRDSDBInstanceCRUD::test_delete_db_instance_allow_deleting_instance_on_cluster_without_final_snapshot",
+            "test": "test_delete_db_instance_allow_deleting_instance_on_cluster_without_final_snapshot",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_api.py::TestRDSDbProxyCRUD::test_create_db_proxy",
             "test": "test_create_db_proxy",
             "response": "200",
@@ -69155,16 +69621,6 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..DBProxyEndpoints..Endpoint', '$..DBProxyEndpoints..Status', '$..DBProxyEndpoints..VpcId']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_api.py::TestRDSEventSubscription::test_event_subscription_ops_non_existent",
-            "test": "test_event_subscription_ops_non_existent",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -69456,7 +69912,7 @@
             "test": "test_stepfunctions_input_recipient_list[step_function_input4-FAILED]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..traceHeader', '$..cause']",
+            "snapshot_skipped": "['$..traceHeader', '$..cause', '$..redriveCount', '$..redriveStatus', '$..redriveStatusReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -69756,7 +70212,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -70346,7 +70802,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "404",
             "error": "CommonServiceException",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -70469,6 +70925,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..headers.server', '$..json.headers.Connection', '$..json.headers.Forwarded', '$..json.headers.Via', '$..json.headers.X-Forwarded-For', '$..json.headers.X-Forwarded-Port', '$..json.headers.X-Forwarded-Proto']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -71864,6 +72330,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
+            "test": "test_firelens_config_from_s3",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_get_aws_execution_env_from_task[FARGATE]",
             "test": "test_get_aws_execution_env_from_task[FARGATE]",
             "response": "200",
@@ -71944,6 +72420,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_parallel_failure",
+            "test": "test_run_simple_task_ec2_parallel_failure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_sequentially",
             "test": "test_run_simple_task_ec2_sequentially",
             "response": "200",
@@ -72006,6 +72492,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFargateApplicationLoadBalanced::test_service_deployment",
             "test": "test_service_deployment",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackConfigFile::test_log_emission",
+            "test": "test_log_emission",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -72098,7 +72594,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -72108,7 +72604,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -72118,7 +72614,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -72178,7 +72674,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -74782,6 +75278,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_conditions.py::TestIAMConditions::test_aws_request_tags_for_iam",
             "test": "test_aws_request_tags_for_iam",
             "response": "409",
@@ -74874,6 +75380,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_internals.py::TestIAMPolicyRetrieval::test_iam_user_multiple_policies",
             "test": "test_iam_user_multiple_policies",
+            "response": "409",
+            "error": "CommonServiceException",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
             "response": "409",
             "error": "CommonServiceException",
             "snapshot_skipped": "",
@@ -75274,7 +75790,7 @@
             "test": "test_stepfunctions_input_recipient_list[step_function_input4-FAILED]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..traceHeader', '$..cause']",
+            "snapshot_skipped": "['$..traceHeader', '$..cause', '$..redriveCount', '$..redriveStatus', '$..redriveStatusReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -75834,7 +76350,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -76120,8 +76636,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_embedded_macro_for_attribute_fn_transform",
-            "test": "test_embedded_macro_for_attribute_fn_transform",
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_conditional_transform[false]",
+            "test": "test_conditional_transform[false]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
@@ -76290,8 +76806,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/sqs/test_sqs.py::TestSqsProvider::test_receive_empty_queue[sqs]",
-            "test": "test_receive_empty_queue[sqs]",
+            "node_id": "LocalStack Community: tests/aws/services/sns/test_sns_filter_policy.py::TestSNSFilterPolicyBody::test_filter_policy_on_message_body[False]",
+            "test": "test_filter_policy_on_message_body[False]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -84602,13 +85118,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestHttpApiServiceDiscoveryPrivateIntegration::test_servicediscovery_ecs_integration",
-            "test": "test_servicediscovery_ecs_integration",
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -85202,16 +85718,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_cognito.py::test_cognito_role_attachment",
-            "test": "test_cognito_role_attachment",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..UserPool.SchemaAttributes', '$..UserPool.UserPoolTags', '$..UserPool.AccountRecoverySetting', '$..UserPool.Policies.SignInPolicy', '$..CognitoIdentityProviders..ProviderName']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_customresources.py::test_customresource_lambda_backed",
             "test": "test_customresource_lambda_backed",
             "response": "200",
@@ -85240,6 +85746,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_ecr.py::test_untransformed_url_when_no_repository_created",
+            "test": "test_untransformed_url_when_no_repository_created",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_ecs.py::test_create_service_with_code_deploy",
@@ -85332,13 +85848,13 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_lambda_redirect",
-            "test": "test_lambda_redirect",
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_response_headers_policy",
+            "test": "test_create_response_headers_policy",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..ETag', '$..Error.Message', '$..Message']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -85632,6 +86148,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackConfigFile::test_log_emission",
+            "test": "test_log_emission",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackFluentD::test_log_emission",
             "test": "test_log_emission",
             "response": "200",
@@ -85702,6 +86228,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
+            "test": "test_irsa",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestExtraK3SArgs::test_extra_k3s_args",
             "test": "test_extra_k3s_args",
             "response": "200",
@@ -85732,13 +86268,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestRouting::test_query_string[condition6-param1&param2=value3-False]",
-            "test": "test_query_string[condition6-param1&param2=value3-False]",
+            "node_id": "LocalStack Pro: tests/aws/services/elbv2/test_elbv2_target_groups.py::TestElbV2TargetGroups::test_target_group_attributes_stickiness[TLS-True-source_ip]",
+            "test": "test_target_group_attributes_stickiness[TLS-True-source_ip]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -86162,6 +86698,46 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "test": "test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "test": "test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "test": "test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation_with_reserved_vars",
+            "test": "test_pipe_target_input_transformation_with_reserved_vars",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures",
             "test": "test_sqs_fifo_dlq_partial_batch_failures",
             "response": "200",
@@ -86312,13 +86888,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_api.py::TestRDSEventSubscription::test_event_subscription_ops_non_existent",
-            "test": "test_event_subscription_ops_non_existent",
+            "node_id": "LocalStack Pro: tests/aws/services/rds/test_rds_api.py::TestRDSDBInstanceCRUD::test_delete_db_instance_allow_deleting_instance_on_cluster_without_final_snapshot",
+            "test": "test_delete_db_instance_allow_deleting_instance_on_cluster_without_final_snapshot",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
             "aws_validated": true,
-            "snapshot_tested": true,
+            "snapshot_tested": false,
             "origin": "external"
           },
           {
@@ -86772,6 +87348,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_internals.py::TestIAMPolicyRetrieval::test_iam_user_multiple_policies",
             "test": "test_iam_user_multiple_policies",
+            "response": "404",
+            "error": "CommonServiceException",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
             "response": "404",
             "error": "CommonServiceException",
             "snapshot_skipped": "",
@@ -88208,6 +88794,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/integration/replicator/services/iam/test_role_replication.py::TestIamRoleReplication::test_incomplete_replication",
             "test": "test_incomplete_replication",
             "response": "404",
@@ -89002,6 +89598,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestLambdaEventSourceMappings::test_sqs_event_source_mapping",
+            "test": "test_sqs_event_source_mapping",
+            "response": "404",
+            "error": "CommonServiceException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
           }
         ]
       }
@@ -89024,7 +89640,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -90466,7 +91082,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -90476,7 +91092,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -90486,7 +91102,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -90496,7 +91112,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -90506,7 +91122,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -90516,7 +91132,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -90626,7 +91242,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -90636,7 +91252,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -91512,6 +92128,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestLambdaEventSourceMappings::test_sqs_event_source_mapping",
+            "test": "test_sqs_event_source_mapping",
+            "response": "404",
+            "error": "CommonServiceException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/neptune/test_neptune_cfn.py::TestNeptuneCfn::test_neptune_iam_authentication_delete_only",
             "test": "test_neptune_iam_authentication_delete_only",
             "response": "404",
@@ -91642,7 +92268,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -91704,7 +92330,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -91714,7 +92340,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -91724,7 +92350,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -91784,7 +92410,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -92956,6 +93582,46 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_policy_generation_status.py::TestPolicyGenerationStatus::test_enable_enforcement_via_api",
             "test": "test_enable_enforcement_via_api",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_iam_denied_event_structure",
+            "test": "test_iam_denied_event_structure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_required_action_details_in_events",
+            "test": "test_required_action_details_in_events",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -94258,6 +94924,26 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -94338,7 +95024,7 @@
             "test": "test_stepfunctions_input_recipient_list[step_function_input4-FAILED]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..traceHeader', '$..cause']",
+            "snapshot_skipped": "['$..traceHeader', '$..cause', '$..redriveCount', '$..redriveStatus', '$..redriveStatusReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -95008,7 +95694,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -95018,7 +95704,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -96668,7 +97354,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "404",
             "error": "CommonServiceException",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -97174,6 +97860,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestHttpApiServiceDiscoveryPrivateIntegration::test_servicediscovery_ecs_integration",
@@ -98116,13 +98812,13 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_lambda_redirect",
-            "test": "test_lambda_redirect",
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_response_headers_policy",
+            "test": "test_create_response_headers_policy",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..ETag', '$..Error.Message', '$..Message']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -98786,6 +99482,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
+            "test": "test_firelens_config_from_s3",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_get_aws_execution_env_from_task[FARGATE]",
             "test": "test_get_aws_execution_env_from_task[FARGATE]",
             "response": "200",
@@ -98866,6 +99572,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_parallel_failure",
+            "test": "test_run_simple_task_ec2_parallel_failure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_sequentially",
             "test": "test_run_simple_task_ec2_sequentially",
             "response": "200",
@@ -98936,6 +99652,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackConfigFile::test_log_emission",
+            "test": "test_log_emission",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackFluentD::test_log_emission",
             "test": "test_log_emission",
             "response": "200",
@@ -98996,6 +99722,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
+            "test": "test_irsa",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestELB::test_elb_lambda_target_permissions",
             "test": "test_elb_lambda_target_permissions",
             "response": "200",
@@ -99020,7 +99756,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -99030,7 +99766,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -99040,7 +99776,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -99050,7 +99786,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -99060,7 +99796,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -99070,7 +99806,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -99180,7 +99916,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -99190,7 +99926,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -100338,6 +101074,46 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_tags",
             "test": "test_pipe_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "test": "test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "test": "test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "test": "test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation_with_reserved_vars",
+            "test": "test_pipe_target_input_transformation_with_reserved_vars",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -102432,6 +103208,66 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_iam_denied_event_structure",
+            "test": "test_iam_denied_event_structure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_required_action_details_in_events",
+            "test": "test_required_action_details_in_events",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -103188,6 +104024,46 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_iam_denied_event_structure",
+            "test": "test_iam_denied_event_structure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_required_action_details_in_events",
+            "test": "test_required_action_details_in_events",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
           }
         ]
       }
@@ -103252,7 +104128,7 @@
             "test": "test_stepfunctions_input_recipient_list[step_function_input4-FAILED]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..traceHeader', '$..cause']",
+            "snapshot_skipped": "['$..traceHeader', '$..cause', '$..redriveCount', '$..redriveStatus', '$..redriveStatusReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -103922,7 +104798,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -103932,7 +104808,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -105860,6 +106736,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestHttpApiServiceDiscoveryPrivateIntegration::test_servicediscovery_ecs_integration",
             "test": "test_servicediscovery_ecs_integration",
             "response": "200",
@@ -106800,13 +107686,13 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_lambda_redirect",
-            "test": "test_lambda_redirect",
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_response_headers_policy",
+            "test": "test_create_response_headers_policy",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..ETag', '$..Error.Message', '$..Message']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -107470,6 +108356,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
+            "test": "test_firelens_config_from_s3",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_get_aws_execution_env_from_task[FARGATE]",
             "test": "test_get_aws_execution_env_from_task[FARGATE]",
             "response": "200",
@@ -107550,6 +108446,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_parallel_failure",
+            "test": "test_run_simple_task_ec2_parallel_failure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_sequentially",
             "test": "test_run_simple_task_ec2_sequentially",
             "response": "200",
@@ -107620,6 +108526,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackConfigFile::test_log_emission",
+            "test": "test_log_emission",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackFluentD::test_log_emission",
             "test": "test_log_emission",
             "response": "200",
@@ -107680,6 +108596,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
+            "test": "test_irsa",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestELB::test_elb_lambda_target_permissions",
             "test": "test_elb_lambda_target_permissions",
             "response": "200",
@@ -107704,7 +108630,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -107714,7 +108640,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -107724,7 +108650,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -107734,7 +108660,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -107744,7 +108670,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -107754,7 +108680,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -107864,7 +108790,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -107874,7 +108800,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -109012,6 +109938,46 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_tags",
             "test": "test_pipe_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "test": "test_pipe_target_input_transformation[User is <$.body.user> and age <$.body.unknown> and size <$.body.size> and valid <$.body.valid> and color <$.body.favColors[1]>]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "test": "test_pipe_target_input_transformation[[ 1, 2, 3 ]]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "test": "test_pipe_target_input_transformation[{ \"user\": <$.body.user>, \"mixed\": \"<$.body.user> and another string\", \"intTest\": 2, \"floatTest\": <$.body.size>, \"boolTest\": <$.body.valid>, \"color\": <$.body.favColors[1]>, \"age\": <$.body.unknown> }]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_pipe_target_input_transformation_with_reserved_vars",
+            "test": "test_pipe_target_input_transformation_with_reserved_vars",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -111092,6 +112058,66 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_iam_denied_event_structure",
+            "test": "test_iam_denied_event_structure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMEventDataStructure::test_required_action_details_in_events",
+            "test": "test_required_action_details_in_events",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_explicit_deny_event_on_span",
+            "test": "test_iam_explicit_deny_event_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_iam_instrumentation.py::TestIAMInstrumentation::test_iam_implicit_denied_events_on_span",
+            "test": "test_iam_implicit_denied_events_on_span",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
           }
         ]
       }
@@ -111220,7 +112246,7 @@
             "test": "test_prefill_dynamodb_table",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas']",
+            "snapshot_skipped": "['$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -111230,7 +112256,7 @@
             "test": "test_validate_infra_setup",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.DeletionProtectionEnabled', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..Table.WarmThroughput']",
+            "snapshot_skipped": "['$..Tags', '$..get_resources.items', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -111530,7 +112556,7 @@
             "test": "test_cfn_lambda_dynamodb_source",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..Table.Replicas', '$..StreamDescription.CreationRequestDateTime']",
+            "snapshot_skipped": "['$..Tags', '$..Configuration.CodeSize', '$..PolicyNames', '$..policies..PolicyName', '$..Role.Description', '$..Role.MaxSessionDuration', '$..StackResources..LogicalResourceId', '$..StackResources..PhysicalResourceId', '$..Table.ProvisionedThroughput.LastDecreaseDateTime', '$..Table.ProvisionedThroughput.LastIncreaseDateTime', '$..StreamDescription.CreationRequestDateTime']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -113718,6 +114744,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
+            "test": "test_firelens_config_from_s3",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_get_aws_execution_env_from_task[FARGATE]",
             "test": "test_get_aws_execution_env_from_task[FARGATE]",
             "response": "200",
@@ -113798,6 +114834,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_parallel_failure",
+            "test": "test_run_simple_task_ec2_parallel_failure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_sequentially",
             "test": "test_run_simple_task_ec2_sequentially",
             "response": "200",
@@ -113860,6 +114906,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFargateApplicationLoadBalanced::test_service_deployment",
             "test": "test_service_deployment",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs_patterns.py::TestEcsFirelensStackConfigFile::test_log_emission",
+            "test": "test_log_emission",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -113962,7 +115018,7 @@
             "test": "test_dynamodb_leading_keys_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.DeletionProtectionEnabled', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus', '$..Role.Tags']",
+            "snapshot_skipped": "['$..TableDescription.BillingModeSummary.LastUpdateToPayPerRequestDateTime', '$..TableDescription.ProvisionedThroughput.LastDecreaseDateTime', '$..TableDescription.ProvisionedThroughput.LastIncreaseDateTime', '$..TableDescription.TableStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -113972,7 +115028,7 @@
             "test": "test_iam_role_chaining_override_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -113982,7 +115038,7 @@
             "test": "test_iam_role_chaining_transitive_session_tags",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -114042,7 +115098,7 @@
             "test": "test_secretsmanager_tags_on_resource_and_principal",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Role.Tags']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
