@@ -106,7 +106,6 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/user-guide/aws/memorydb/)[Amazon MemoryDB](https://docs.localstack.cloud/user-guide/aws/memorydb/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/neptune/)[Amazon Neptune](https://docs.localstack.cloud/user-guide/aws/neptune/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/timestream/)[Amazon Timestream](https://docs.localstack.cloud/user-guide/aws/timestream/) | ❌ | ❌ | ✅ | ✅ |
-| [](https://docs.localstack.cloud/user-guide/aws/qldb/)[Amazon Quantum Ledger Database (QLDB)](https://docs.localstack.cloud/user-guide/aws/qldb/) | ❌ | ❌ | ✅ | ✅ |
 | Developer Tools |  |  |  |  |
 | [](https://docs.localstack.cloud/references/coverage/coverage_codecommit/)[AWS CodeCommit](https://docs.localstack.cloud/references/coverage/coverage_codecommit/) | ❌ | ✅ | ✅ | ✅ |
 | AWS CodeArtifact | ❌ | ✅ | ✅ | ✅ |
@@ -291,7 +290,6 @@ For any subscription or access-related questions, please reach out to Support.
 | [](https://docs.localstack.cloud/user-guide/aws/memorydb/)[Amazon MemoryDB](https://docs.localstack.cloud/user-guide/aws/memorydb/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/neptune/)[Amazon Neptune](https://docs.localstack.cloud/user-guide/aws/neptune/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/timestream/)[Amazon Timestream](https://docs.localstack.cloud/user-guide/aws/timestream/) | ✅ | ✅ | ✅ |
-| [](https://docs.localstack.cloud/user-guide/aws/qldb/)[Amazon Quantum Ledger Database (QLDB)](https://docs.localstack.cloud/user-guide/aws/qldb/) | ✅ | ✅ | ✅ |
 | Developer Tools |  |  |  |
 | [](https://docs.localstack.cloud/references/coverage/coverage_codecommit/)[AWS CodeCommit](https://docs.localstack.cloud/references/coverage/coverage_codecommit/) | ✅ | ✅ | ✅ |
 | AWS CodeBuild | ✅ | ✅ | ✅ |
