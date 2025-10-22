@@ -7,6 +7,35 @@ editUrl: false
 
 The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
 
+### 1.2.0
+- Add support for `SQUARE`, `FACTORIAL`, `UNIFORM`, `SYSTEM$ALLOWLIST`, `ARRAYS_ZIP`, `CURRENT_ORGANIZATION_USER`, `QUERY_HISTORY` functions
+- Enhance metadata for varchar type
+- Add support for `PIVOT` operation
+- Introduce `SF_S3_ENDPOINT_EXTERNAL` config
+- Add logic to add DQM records on `TRIGGER_ON_CHANGES`
+- Add implementation for `PUT /api/v2/databases/{name}`
+- Enhance parity for different flavors of `REVOKE` statements
+- Add support for quoted stage references
+- Fix drop tables with multi-level identifiers
+- Enhance parity for GRANT TO statements
+- Fix FULL JOINs between columns of different types
+- Properly delete stage files on table `REPLACE`
+- Add initial CRUD support for network rules
+- Fix column dependencies and `WHERE/ORDER BY` references in subqueries
+- Add initial CRUD support for API INTEGRATIONs
+- Enhance processing of UPDATE queries with table aliases
+- Add initial support for Openflow via Apache NiFi
+- Fix parsing timestamps with milliseconds
+- Fix CREATE OR REPLACE statements when schema name is specified in resource identifier
+- Enhance parity for database roles and grants
+- Add initial CRUD support for SECRETs
+- Support UDFs with handler code imported from stage file
+- Add initial CRUD support for resource monitors
+- Add initial CRUD support for masking policies
+- Support `SHOW REPLICATION ACCOUNTS`
+- Enhance parity for creating transient schemas 
+- Enhance `CREATE MASKING POLICY` handling
+
 ### 1.1.0
 - Add support for functions: `ROUND`, `SYSDATE`, `STARTSWITH`, `ENDSWITH`, `MD5`, `SUBSTR`, `HAVERSINE`, `LAST_DAY`, `TRY_CAST`, `TRUNCATE`, `PERCENT_RANK`, `SYSTEM$TASK_DEPENDENTS_ENABLE`
 - Implement `TRY_*` conversion functions

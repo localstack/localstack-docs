@@ -36,6 +36,7 @@ At the moment, we only provide support in `English`, as we are an international 
 | Base       | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
 | Ultimate   | [**Priority Support**](/aws/getting-started/help-support/#priority-support)     |
 | Enterprise | [**Enterprise Support**](/aws/getting-started/help-support/#enterprise-support) |
+| Student       | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
 
 ## Support Coverage for legacy plans
 
@@ -92,7 +93,7 @@ Basic Support is available to all LocalStack users and includes access to docume
 Community support is available through the following channels:
 
 - [LocalStack Slack Community](https://localstack.cloud/slack)
-- [GitHub Issue](https://github.com/localstack/docs/issues/new)
+- [GitHub Issue](https://github.com/localstack/localstack/issues/new)
 
 Note that community support is provided on a best-effort basis and is not guaranteed.
 Users are encouraged to help others by sharing their knowledge and experiences.
@@ -111,7 +112,7 @@ You can use GitHub Issue to:
 - [Report existing bugs](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+bug%2Cstatus%3A+triage+needed&template=bug-report.yml&title=bug%3A+%3Ctitle%3E)
 
 Make sure to follow the issue templates and provide as much information as possible.
-If you have encountered outdated documentation, please report it on our [documentation repository](https://github.com/localstack/docs).
+If you have encountered outdated documentation, please report it on our [documentation repository](https://github.com/localstack/localstack-docs).
 
 ### Standard support
 

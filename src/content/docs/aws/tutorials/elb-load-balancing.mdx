@@ -12,16 +12,20 @@ pro: true
 leadimage: "elb-load-balancing-featured-image.png"
 ---
 
-[Elastic Load Balancer (ELB)](https://aws.amazon.com/elasticloadbalancing/) is a service that distributes incoming application traffic across multiple targets, such as EC2 instances, containers, IP addresses, and Lambda functions.
-ELBs can be physical hardware or virtual software components.
-They accept incoming traffic and distribute it across multiple targets in one or more Availability Zones.
+## Introduction 
+
+[Elastic Load Balancer (ELB)](https://aws.amazon.com/elasticloadbalancing/)is a service that distributes incoming application traffic across multiple targets, such as EC2 instances, containers, IP addresses, and Lambda functions. 
+ELBs can be physical hardware or virtual software components. They accept incoming traffic and distribute it across multiple targets in one or more Availability Zones. 
 Using ELB, you can quickly scale your load balancer to accommodate changes in traffic over time, ensuring optimal performance for your application and workloads running on the AWS infrastructure.
 
-ELB provides three types of load balancers: [Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html), [Network Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html), [Classic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/introduction.html), and [Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html).
+ELB provides four types of load balancers: 
+- **[Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)**: Manages HTTP/HTTPS traffic, offering advanced routing features at the application layer.
+- **[Network Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/introduction.html)**: Handles TCP traffic with high performance and low latency at the transport layer.
+- **[Gateway Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/introduction.html)**: Deploys, scales, and manages third-party virtual appliances with a transparent network gateway.
+- **[Classic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/introduction.html)**: Provides basic load balancing for both HTTP/HTTPS and TCP traffic.
 
-In this tutorial we focus on the Application Load Balancer (ALB), which operates at the Application layer of the OSI model and is specifically designed for load balancing HTTP and HTTPS traffic for web applications.
-ALB works at the request level, allowing advanced load-balancing features for HTTP and HTTPS requests.
-It also enables you to register Lambda functions as targets.
+In this tutorial, we focus on the Application Load Balancer (ALB), which operates at Layer 7 (Application layer) of the OSI model and is specifically designed for load balancing HTTP and HTTPS traffic for web applications. 
+ALB works at the request level, allowing advanced load-balancing features for HTTP and HTTPS requests. It also enables you to register Lambda functions as targets. 
 You can configure a listener rule that forwards requests to a target group for your Lambda function, triggering its execution to process the request.
 
 [LocalStack Pro](https://localstack.cloud) extends support for ELB Application Load Balancers and the configuration of target groups, including Lambda functions.
@@ -37,10 +41,26 @@ Additionally, we will demonstrate how to set up ELB endpoints to efficiently for
 - [awslocal](https://github.com/localstack/awscli-local)
 - [curl](https://curl.se/) and [jq](https://jqlang.github.io/jq/)
 
+## Architecture
+
+The architecture emulates a scalable AWS setup locally: Clients send HTTP/HTTPS requests to the ALB's DNS endpoint. 
+The ALB listener (e.g., on port 80) routes traffic based on path rules to target groups, which forward to registered Lambda functions. 
+These functions process requests and return responses. The setup runs within a VPC and subnet for networking isolation, all emulated in LocalStack.
+
+### Key components
+- Clients/Users: Initiate traffic via browsers or tools like curl.
+- ALB Listener: Receives and routes based on rules (e.g., /hello1 → hello1 Lambda).
+- Target Group: Manages health checks and forwards to Lambda targets.
+- Lambda Functions: Handle business logic (e.g., return "Hello 1").
+- VPC/Subnet: Provides network boundaries.
+
+![Architecture diagram for ELB Application Load Balancer with Lambda targets](/src/assets/images/aws/tutorials/elb-load-balancing-architecture-image.png)
+
 ## Setup a Serverless project
 
 Serverless is an open-source framework that enables you to build, package, and deploy serverless applications seamlessly across various cloud providers and platforms.
 With the Serverless framework, you can easily set up your serverless development environment, define your applications as functions and events, and deploy your entire infrastructure to the cloud using a single command.
+
 To start using the Serverless framework, install the Serverless framework globally by executing the following command using `npm`:
 
 ```bash
@@ -48,6 +68,7 @@ npm install -g serverless
 ```
 
 The above command installs the Serverless framework globally on your machine.
+
 After the installation is complete, you can verify it by running the following command:
 
 ```bash
@@ -59,6 +80,7 @@ SDK: 4.3.2
 ```
 
 This command displays the version numbers of the Serverless framework's core, plugins, and SDK you installed.
+
 Now, let's proceed with creating a new Serverless project using the `serverless` command:
 
 ```bash
@@ -91,6 +113,7 @@ The `serverless-localstack` plugin enables your Serverless project to redirect A
 This bucket is responsible for storing the deployment artifacts and ensuring that old deployment buckets are properly cleaned up after each deployment.
 
 We have a `serverless.yml` file in the directory to define our Serverless project's configuration, which includes information such as the service name, the provider (AWS in this case), the functions, and example events that trigger those functions.
+
 To set up the plugins we installed earlier, you need to add the following properties to your `serverless.yml` file:
 
 ```yaml showLineNumbers
@@ -119,8 +142,8 @@ custom:
 
 To configure Serverless to use the LocalStack plugin specifically for the `local` stage and ensure that your Serverless project only deploys to LocalStack instead of the real AWS Cloud, you need to set the `--stage` flag when using the `serverless deploy` command and specify the flag variable as `local`.
 
-Configure a `deploy` script in your `package.json` file to simplify the deployment process.
-It lets you run the `serverless deploy` command directly over your local infrastructure.
+Configure a `deploy` script in your `package.json` file to simplify the deployment process. It lets you run the `serverless deploy` command directly over your local infrastructure.
+
 Update your `package.json` file to include the following:
 
 ```json showLineNumbers
@@ -186,11 +209,9 @@ module.exports.hello2 = async (event) => {
 };
 ```
 
-We have defined the `hello1` and `hello2` Lambda functions in the updated code.
-Each function receives an event parameter and logs it to the console.
-The function then returns a response with a status code of 200 and a plain text body containing the respective `"Hello"` message.
-It's important to note that the `isBase64Encoded` property is not required for plain text responses.
-It is typically used when you need to include binary content in the response body and want to indicate that the content is Base64 encoded.
+We have defined the `hello1` and `hello2` Lambda functions in the updated code. Each function receives an event parameter and logs it to the console. The function then returns a response with a status code of 200 and a plain text body containing the respective `"Hello"` message.
+
+It's important to note that the `isBase64Encoded` property is not required for plain text responses. It is typically used when you need to include binary content in the response body and want to indicate that the content is Base64 encoded.
 
 Let us now configure the `serverless.yml` file to create an Application Load Balancer (ALB) and attach the Lambda functions to it.
 
@@ -231,12 +252,12 @@ custom:
       - local
 ```
 
-In the above configuration, we specify the service name (`serverless-elb` in this case) and set the provider to AWS with the Node.js 12.x runtime.
-We include the necessary plugins, `serverless-localstack` and `serverless-deployment-bucket`, for LocalStack support and deployment bucket management.
-Next, we define the `hello1` and `hello2` functions with their respective handlers and event triggers.
-In this example, both functions are triggered by HTTP GET requests to the `/hello1` and `/hello2` paths.
+In the above configuration, we specify the service name (`serverless-elb` in this case) and set the provider to AWS with the Node.js 12.x runtime. We include the necessary plugins, `serverless-localstack` and `serverless-deployment-bucket`, for LocalStack support and deployment bucket management.
+
+Next, we define the `hello1` and `hello2` functions with their respective handlers and event triggers. In this example, both functions are triggered by HTTP GET requests to the `/hello1` and `/hello2` paths.
 
 Lastly, let's create a VPC, a subnet, an Application Load Balancer, and an HTTP listener on the load balancer that redirects traffic to the target group.
+
 To do this, add the following resources to your `serverless.yml` file:
 
 ```yaml showLineNumbers
@@ -276,20 +297,20 @@ resources:
         CidrBlock: 12.2.1.0/24
 ```
 
-With these resource definitions, you have completed the configuration of your Serverless project.
-Now you can create your local AWS infrastructure on LocalStack and deploy your Application Load Balancers with the two Lambda functions as targets.
+You have completed the configuration of your Serverless project! Now you can create your local AWS infrastructure on LocalStack and deploy your Application Load Balancers with the two Lambda functions as targets.
 
 ## Creating the infrastructure on LocalStack
 
-Now that we have completed the initial setup let's run LocalStack's AWS emulation on our local machine.
+Now that we have completed the initial setup, let's run LocalStack's AWS emulation on our local machine.
+
 Start LocalStack by running the following command:
 
 ```bash
 LOCALSTACK_AUTH_TOKEN=<your-auth-token> localstack start -d
 ```
 
-This command launches LocalStack in the background, enabling you to use the AWS services locally.
-Now, let's deploy our Serverless project and verify the resources created in LocalStack.
+This command launches LocalStack in the background, enabling you to use the AWS services locally. Now, let's deploy our Serverless project and verify the resources created in LocalStack.
+
 Run the following command:
 
 ```bash
@@ -297,6 +318,7 @@ npm run deploy
 ```
 
 This command deploys your Serverless project using the "local" stage.
+
 The output will resemble the following:
 
 ```bash
@@ -317,8 +339,8 @@ functions:
   hello2: test-elb-load-balancing-local-hello2 (157 kB)
 ```
 
-This output confirms the successful deployment of your Serverless service to the `local` stage in LocalStack.
-It also displays information about the deployed Lambda functions (`hello1` and `hello2`).
+This output confirms the successful deployment of your Serverless service to the `local` stage in LocalStack. It also displays information about the deployed Lambda functions (`hello1` and `hello2`).
+
 You can run the following command to verify that the functions and the load balancers have been deployed:
 
 ```bash showLineNumbers
@@ -365,8 +387,12 @@ The ALB endpoints for the two Lambda functions, hello1 and hello2, are accessibl
 - [`http://lb-test-1.elb.localhost.localstack.cloud:4566/hello1`](http://lb-test-1.elb.localhost.localstack.cloud:4566/hello1)
 - [`http://lb-test-1.elb.localhost.localstack.cloud:4566/hello2`](http://lb-test-1.elb.localhost.localstack.cloud:4566/hello2)
 
-To test these endpoints, you can use the curl command along with the jq tool for better formatting.
-Run the following commands:
+## Testing
+
+Here in the testing phase we will test endpoints, do a validation check which includes health check and error handling. To test these endpoints, you can use the curl command along with the jq tool for better formatting.
+
+1. **Verify Deployment:** Use the commands `awslocal lambda list-functions` and `awslocal elbv2 describe-load-balancers` respectively to confirm the existince of Lambda and ALB respectively
+2. **Test Endpoints:** Run the following commands:
 
 ```bash
 curl http://lb-test-1.elb.localhost.localstack.cloud:4566/hello1 | jq
@@ -374,16 +400,29 @@ curl http://lb-test-1.elb.localhost.localstack.cloud:4566/hello1 | jq
 curl http://lb-test-1.elb.localhost.localstack.cloud:4566/hello2 | jq
 "Hello 2"
 ```
+Both commands send an HTTP GET request to the endpoints and uses `jq` to format the response. The expected outputs are `Hello 1` & `Hello 2`, representing the Lambda functions' response.
 
-Both commands send an HTTP GET request to the endpoints and uses `jq` to format the response.
-The expected outputs are `Hello 1` & `Hello 2`, representing the Lambda functions' response.
+3. **Health Checks:** Describe target health:
+```bash
+awslocal elbv2 describe-target-health --target-group-arn $(awslocal elbv2 describe-target-groups --load-balancer-arn $(awslocal elbv2 describe-load-balancers --names lb-test-1 --query 'LoadBalancers[0].LoadBalancerArn' --output text) --query 'TargetGroups[0].TargetGroupArn' --output text)
+```
+
+4. **Invalid Path:** Test fallback/redirect:
+```bash
+curl -I http://lb-test-1.elb.localhost.localstack.cloud:4566/invalid
+```
+
+5. **Logs Validation:** Check Lambda logs for invocations:
+```bash
+awslocal logs describe-log-groups --query 'logGroups[].logGroupName' | jq -r '.[] | select(contains("hello1"))' | xargs -I {} awslocal logs tail {} --follow
+```
+
+If tests fail, you can ensure LocalStack is healthy (`localstack status services`), check ports (default `4566`), and restart if needed.
 
 ## Conclusion
 
 In this tutorial, we have learned how to create an Application Load Balancer (ALB) with two Lambda functions as targets using LocalStack.
-We have also explored creating, configuring, and deploying a Serverless project with LocalStack.
-This enables developers to develop and test Cloud and Serverless applications locally conveniently.
 
-LocalStack offers integrations with various popular tools such as Terraform, Pulumi, Serverless Application Model (SAM), and more.
-For more information about LocalStack integrations, you can refer to our [Integration documentation]().
-To further explore and experiment with the concepts covered in this tutorial, you can access the code and resources on our [LocalStack Pro samples over GitHub](https://github.com/localstack/localstack-pro-samples/tree/master/elb-load-balancing) along with a `Makefile` for step-by-step execution.
+We have also explored creating, configuring, and deploying a Serverless project with LocalStack, enabling developers to develop and test Cloud and Serverless applications locally without AWS costs—accelerating iteration for cloud-native workloads.
+
+LocalStack offers integrations with various popular tools such as Terraform, Pulumi, Serverless Application Model (SAM), and more. For more information about LocalStack integrations, you can refer to our [Integration documentation](https://docs.localstack.cloud/aws/integrations). To further explore and experiment with the concepts covered in this tutorial, you can access the code and resources on our [LocalStack Pro samples over GitHub](https://github.com/localstack/localstack-pro-samples/tree/master/elb-load-balancing) along with a Makefile for step-by-step execution.

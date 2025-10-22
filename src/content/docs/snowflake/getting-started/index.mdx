@@ -1,0 +1,177 @@
+---
+title: Installation
+description: Installation guide to get started with LocalStack for Snowflake.
+template: doc
+sidebar:
+    order: 0
+---
+
+import { Code, LinkButton, Tabs, TabItem } from '@astrojs/starlight/components';
+import { LOCALSTACK_VERSION } from "astro:env/server";
+
+## LocalStack CLI for Snowflake
+
+The easiest way to get started with LocalStack for Snowflake is by using the LocalStack CLI. It automatically pulls the correct Docker image, manages the container, and supports additional features like image updates and debugging.
+
+## Installing the LocalStack CLI
+
+The LocalStack CLI can be installed using Python, Brew (macOS), or Windows executables.
+
+
+<Tabs>
+
+<TabItem label="Python" value="python">
+
+If you prefer to install LocalStack via Python (recommended for most Snowflake users), follow the steps below.
+
+Please ensure the following are installed:
+
+- [Python](https://docs.python.org/3/using/index.html) (versions 3.7 to 3.11)
+- [pip](https://pip.pypa.io/en/stable/installation/)
+
+Then install the LocalStack CLI:
+
+```bash
+python3 -m pip install --upgrade localstack
+````
+
+:::note
+To download a specific version of LocalStack, replace `<version>` with the required version from [release page](https://github.com/localstack/localstack/releases).
+
+```bash
+python3 -m pip install localstack==<version>
+```
+:::
+
+
+:::tip[MacOS Sierra?]
+If you have problems with permissions in MacOS X Sierra, install with:
+
+```bash
+python3 -m pip install --user localstack
+```
+:::
+
+:::danger
+Do not use `sudo` or the `root` user when starting LocalStack.
+It should be installed and started entirely under a local non-root user.
+:::
+
+</TabItem>
+
+<TabItem label="macOS" value="macos">
+
+You can install the LocalStack CLI using Homebrew:
+
+```bash
+brew install localstack/tap/localstack-cli
+```
+
+<details>
+<summary>Alternative: Binary Download</summary>
+
+Download the binary for your architecture:
+
+<LinkButton href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-darwin-amd64-onefile.tar.gz`} icon="download" variant="minimal">Intel (AMD64)</LinkButton>
+
+Then extract it:
+
+<Code code={`sudo tar xvzf localstack-cli-${LOCALSTACK_VERSION}-darwin-*-onefile.tar.gz -C /usr/local/bin`} lang="bash" />
+
+</details>
+
+</TabItem>
+
+<TabItem label="Windows" value="windows">
+
+You can download the pre-built binary below:
+
+<LinkButton href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-windows-amd64-onefile.zip`} icon="download" variant="minimal">Intel (AMD64)</LinkButton>
+
+Then extract the archive and run the binary in PowerShell.
+
+:::note
+You can download and install the Windows executable from our [GitHub Releases](https://github.com/localstack/localstack-cli/releases).
+:::
+
+</TabItem>
+
+</Tabs>
+
+
+Need more options? See our [alternative installation instructions](https://docs.localstack.cloud/snowflake/getting-started/#alternatives).
+
+## Starting the Snowflake Emulator
+
+Once the CLI is installed and your auth token is set, start the Snowflake Emulator with:
+
+```bash
+localstack start --stack snowflake
+```
+
+This will pull the LocalStack for Snowfalke image and run the Docker image automatically.
+
+:::note
+You may also start the LocalStack container using [Docker Compose](https://docs.localstack.cloud/snowflake/getting-started/#alternatives).
+:::
+
+### Check if the emulator is running
+
+Run the following command:
+
+```bash
+curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
+```
+
+Expected response:
+
+```json
+{"success": true}
+```
+
+
+## Updating LocalStack
+
+To keep both the CLI and emulator images up to date, run:
+
+```bash
+localstack update all
+```
+
+If you only want to update the Snowflake image manually (e.g. to pick up a recent fix), you can run:
+
+```bash
+docker pull localstack/snowflake:latest
+```
+
+
+## Alternatives
+
+If you prefer Docker Compose, you can start the emulator using the configuration below:
+
+```yaml showLineNumbers
+version: "3.8"
+
+services:
+  localstack:
+    container_name: "localstack-snowflake"
+    image: localstack/snowflake
+    ports:
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4510-4559:4510-4559"
+      - "127.0.0.1:443:443"
+    environment:
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
+    volumes:
+      - "./volume:/var/lib/localstack"
+```
+
+Start the container with:
+
+```bash
+docker-compose up
+```
+
+## Next steps
+
+Now that the Snowflake emulator is installed, you can use it for developing and testing your Snowflake data pipelines. Refer to our [Quickstart](/snowflake/getting-started/quickstart/) guide to get started.

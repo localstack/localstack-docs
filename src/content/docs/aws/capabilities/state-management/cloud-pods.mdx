@@ -589,9 +589,12 @@ The available strategies are:
 - `service-merge`: This strategy merges services at the account-region level, provided there's no overlap in resources.
   It prioritizes the loaded resources when merging.
 
+The LocalStack's default merge strategy can be changed via the `MERGE_STRATEGY` [configuration variable](/aws/capabilities/config/configuration/).
+
 ### LocalStack CLI
 
-To activate merge strategies, set `--strategy <strategy>` when loading a Cloud Pod using the LocalStack CLI.
+Every `pod load` operation uses the merge strategy set in `MERGE_STRATEGY` (`account-region-merge` by default).
+When loading a Cloud Pod via the LocalStack CLI, set the `--strategy <strategy>` option to override the strategy in the configuration variable.
 For instance, to load a Cloud Pod named `test-pod-s3-sqs` with the `service-merge` strategy, run the following command:
 
 ```bash

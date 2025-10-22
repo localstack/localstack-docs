@@ -32,8 +32,8 @@ awslocal mq create-broker \
     --broker-name test-broker \
     --deployment-mode SINGLE_INSTANCE \
     --engine-type ACTIVEMQ \
-    --engine-version='5.16.6' \
-    --host-instance-type 'mq.t2.micro' \
+    --engine-version='5.18' \
+    --host-instance-type 'mq.t3.micro' \
     --auto-minor-version-upgrade \
     --publicly-accessible \
     --users='{"ConsoleAccess": true, "Groups": ["testgroup"],"Password": "QXwV*$iUM9USHnVv&!^7s3c@", "Username": "admin"}'
@@ -73,7 +73,7 @@ awslocal mq describe-broker --broker-id b-f503abb7-66bc-47fb-b1a9-8d8c51ef6545
     "Created": "2022-10-17T07:14:21.065527Z",
     "DeploymentMode": "SINGLE_INSTANCE",
     "EngineType": "ACTIVEMQ",
-    "HostInstanceType": "mq.t2.micro",
+    "HostInstanceType": "mq.t3.micro",
     "Tags": {}
 }
 ```
@@ -110,7 +110,8 @@ The following code snippets and sample applications provide practical examples o
 
 Currently, our MQ emulation offers only fundamental capabilities, and it comes with certain limitations:
 
-- **ActiveMQ Version Limitation:** Presently, only ActiveMQ version 5.16.6 is supported.
+- **ActiveMQ Version Limitation:** LocalStack pins Apache MQ 5.18 to the patched version 5.18.7.
+Since June 2025, [5.18 is the only supported version on AWS](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/activemq-version-management.html).
   RabbitMQ is not supported at this time.
 - **IAM User Management:** IAM Users are not actively enforced, although they are necessary for making correct calls within the system.
 - **Configuration Enforcement:** While it is feasible to create configurations, they are not actively enforced within the broker.

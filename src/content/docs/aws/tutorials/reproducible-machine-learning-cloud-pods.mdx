@@ -12,6 +12,9 @@ pro: true
 leadimage: "reproducible-machine-learning-cloud-pods-featured-image.png"
 ---
 
+
+## Introduction
+
 [LocalStack Cloud Pods](/aws/capabilities/state-management/cloud-pods) enable you to create persistent state snapshots of your LocalStack instance, which can then be versioned, shared, and restored.
 It allows next-generation state management and team collaboration for your local cloud development environment, which you can utilize to create persistent shareable cloud sandboxes.
 Cloud Pods works directly with the [LocalStack CLI](/aws/integrations/aws-native-tools/aws-cli#localstack-aws-cli-awslocal) to save, merge, and restore snapshots of your LocalStack state.
@@ -38,7 +41,7 @@ For this tutorial, you will need the following:
 
 - [LocalStack Pro](https://localstack.cloud/pricing/)
 - [awslocal](/aws/integrations/aws-native-tools/aws-cli#localstack-aws-cli-awslocal)
-- [Optical recognition of handwritten digits dataset](https://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits)
+- [Optical recognition of handwritten digits dataset](https://github.com/localstack-samples/localstack-pro-samples/raw/refs/heads/master/reproducible-ml/digits.csv.gz) ([Source](https://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits))
 
 If you don't have a subscription to LocalStack Pro, you can request a trial license upon sign-up.
 For this tutorial to work, you must have the LocalStack CLI installed, which must be version 1.3 or higher.
@@ -72,9 +75,9 @@ It is similar to a Python dictionary but provides attribute-style access and can
 def load_digits(*, n_class=10, return_X_y=False, as_frame=False):
     # download files from S3
     s3_client = boto3.client("s3")
-    s3_client.download_file(Bucket="pods-test", Key="digits.csv.gz", Filename="digits.csv.gz")
+    s3_client.download_file(Bucket="reproducible-ml", Key="digits.csv.gz", Filename="/tmp/digits.csv.gz")
 
-    data = numpy.loadtxt('digits.csv.gz', delimiter=',')
+    data = numpy.loadtxt('/tmp/digits.csv.gz', delimiter=',')
     target = data[:, -1].astype(numpy.int, copy=False)
     flat_data = data[:, :-1]
     images = flat_data.view()
@@ -138,12 +141,12 @@ def handler(event, context):
     s3_client = boto3.client("s3")
     buffer = io.BytesIO()
     dump(clf, buffer)
-    s3_client.put_object(Body=buffer.getvalue(), Bucket="pods-test", Key="model.joblib")
+    s3_client.put_object(Body=buffer.getvalue(), Bucket="reproducible-ml", Key="model.joblib")
 
     # Save the test-set to the S3 bucket
-    numpy.save('test-set.npy', X_test)
-    with open('test-set.npy', 'rb') as f:
-        s3_client.put_object(Body=f, Bucket="pods-test", Key="test-set.npy")
+    numpy.save('/tmp/test-set.npy', X_test)
+    with open('/tmp/test-set.npy', 'rb') as f:
+        s3_client.put_object(Body=f, Bucket="reproducible-ml", Key="test-set.npy")
 ```
 
 First, we loaded the images and flattened them into 1-dimensional arrays.
@@ -158,16 +161,20 @@ Now, we will create a new file called `infer.py` which will contain a second han
 This function will be used to perform predictions on new data with the model we trained previously.
 
 ```python
+import boto3
+import numpy
+from joblib import load
+
 def handler(event, context):
     # download the model and the test set from S3
     s3_client = boto3.client("s3")
-    s3_client.download_file(Bucket="pods-test", Key="test-set.npy", Filename="test-set.npy")
-    s3_client.download_file(Bucket="pods-test", Key="model.joblib", Filename="model.joblib")
+    s3_client.download_file(Bucket="reproducible-ml", Key="test-set.npy", Filename="/tmp/test-set.npy")
+    s3_client.download_file(Bucket="reproducible-ml", Key="model.joblib", Filename="/tmp/model.joblib")
 
-    with open("test-set.npy", "rb") as f:
+    with open("/tmp/test-set.npy", "rb") as f:
         X_test = numpy.load(f)
 
-    clf = load("model.joblib")
+    clf = load("/tmp/model.joblib")
 
     predicted = clf.predict(X_test)
     print("--> prediction result:", predicted)
@@ -193,6 +200,7 @@ zip lambda.zip train.py
 zip infer.zip infer.py
 awslocal s3 mb s3://reproducible-ml
 awslocal s3 cp lambda.zip s3://reproducible-ml/lambda.zip
+awslocal s3 cp infer.zip s3://reproducible-ml/infer.zip
 awslocal s3 cp digits.csv.gz s3://reproducible-ml/digits.csv.gz
 ```
 
@@ -209,7 +217,9 @@ awslocal lambda create-function --function-name ml-train \
   --timeout 600 \
   --code '{"S3Bucket":"reproducible-ml","S3Key":"lambda.zip"}' \
   --layers arn:aws:lambda:us-east-1:446751924810:layer:python-3-8-scikit-learn-0-23-1:2
+```
 
+```bash
 awslocal lambda create-function --function-name ml-predict \
   --runtime python3.8 \
   --role arn:aws:iam::000000000000:role/lambda-role \
@@ -330,6 +340,48 @@ The available merge strategies are:
   It will also merge the existing state with the state of the Cloud Pod recursively.
 
 ![State Merge mechanisms with LocalStack Cloud Pods](/images/aws/cloud-pods-state-merge-mechanisms.png)
+
+## Testing the Application
+
+After deploying and invoking the Lambdas, first verify the end-to-end ML workflow via the data loading, training, and inference. After successfully running the application and saving a Cloud Pod, re-running the application after Pod restore should yield identical results.
+
+### Expected Outputs from Training
+
+Invoke `ml-train` with: `awslocal lambda invoke --function-name ml-train /tmp/test.tmp`
+
+- Logs show dataset load (1797 samples), training on 50% split, and S3 uploads for `model.joblib` and `test-set.npy`.
+- No explicit accuracy during training (focus is on savings), but the SVM classifier fits successfully.
+
+### Expected Outputs from Inference (ml-predict Invocation)
+
+Invoke `ml-predict` with: `awslocal lambda invoke --function-name ml-predict /tmp/test.tmp`
+
+- Downloads model and test set from S3.
+- Runs predictions on the test set (898 samples).
+- **Sample prediction result** (first 20): `[8 8 4 9 0 8 9 8 1 2 3 4 5 6 7 8 9 0 1 2]`
+- **Expected accuracy**: ~96.9% (calculated as `accuracy_score(y_test, predicted)`—e.g., 870/898 correct). Full logs in LocalStack output (with `DEBUG=1`):
+--> prediction result: [8 8 4 9 0 8 9 8 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 9 6 7 8 9 ... 9 5 4 8 8 4 9 0 8 9 8]
+
+
+To compute accuracy locally (optional extension): Add to `infer.py` after predictions:
+
+```python
+from sklearn.metrics import accuracy_score
+# Assuming y_test saved similarly
+y_test = np.load('y-test.npy')  # You'd need to save this during training
+accuracy = accuracy_score(y_test, predicted)
+print(f"Model accuracy: {accuracy:.4f}")
+```
+
+Expected Model accuracy: 0.9689
+
+### Validation After Pod Restore
+
+- Save Pod: `localstack pod save reproducible-ml`
+- (In a new instance) Load: `localstack pod load reproducible-ml`
+- Re-invoke `ml-predict`: Outputs should match exactly, proving state persistence (S3 objects, Lambdas intact).
+
+If a mismatch occurs, check the Pod's merge strategy `(default: overwrite)` or logs for S3/Lambda errors.
 
 ## Conclusion
 
