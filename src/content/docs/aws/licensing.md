@@ -64,7 +64,6 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/references/coverage/coverage_redshift-data/)[Amazon Redshift Data API](https://docs.localstack.cloud/references/coverage/coverage_redshift-data/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_lakeformation/)[AWS Lake Formation](https://docs.localstack.cloud/references/coverage/coverage_lakeformation/) | ❌ | ❌ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/msk/)[Amazon Managed Streaming for Apache Kafka](https://docs.localstack.cloud/user-guide/aws/msk/) | ❌ | ❌ | ✅ | ✅ |
-| [](https://docs.localstack.cloud/user-guide/aws/kinesisanalytics/)[Amazon Kinesis Data Analytics](https://docs.localstack.cloud/user-guide/aws/kinesisanalytics/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/kinesisanalyticsv2/)[Amazon Managed Service for Apache Flink](https://docs.localstack.cloud/user-guide/aws/kinesisanalyticsv2/) | ❌ | ❌ | ✅ | ✅ |
 | Application Integration |  |  |  |  |
 | [](https://docs.localstack.cloud/user-guide/aws/swf/)[Amazon Simple Workflow Service (SWF)](https://docs.localstack.cloud/user-guide/aws/swf/) | ✅ | ✅ | ✅ | ✅ |
@@ -249,7 +248,6 @@ For any subscription or access-related questions, please reach out to Support.
 | [](https://docs.localstack.cloud/references/coverage/coverage_redshift-data/)[Amazon Redshift Data API](https://docs.localstack.cloud/references/coverage/coverage_redshift-data/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_lakeformation/)[AWS Lake Formation](https://docs.localstack.cloud/references/coverage/coverage_lakeformation/) | ✅ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/msk/)[Amazon Managed Streaming for Apache Kafka](https://docs.localstack.cloud/user-guide/aws/msk/) | ✅ | ✅ | ✅ |
-| [](https://docs.localstack.cloud/user-guide/aws/kinesisanalytics/)[Amazon Kinesis Data Analytics](https://docs.localstack.cloud/user-guide/aws/kinesisanalytics/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/kinesisanalyticsv2/)[Amazon Managed Service for Apache Flink](https://docs.localstack.cloud/user-guide/aws/kinesisanalyticsv2/) | ✅ | ✅ | ✅ |
 | Application Integration |  |  |  |
 | [](https://docs.localstack.cloud/user-guide/aws/swf/)[Amazon Simple Workflow Service (SWF)](https://docs.localstack.cloud/user-guide/aws/swf/) | ✅ | ✅ | ✅ |
