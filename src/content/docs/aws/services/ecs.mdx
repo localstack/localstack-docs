@@ -348,8 +348,17 @@ Alternatively, you can download the image from the private registry before using
 LocalStack's ECS emulation supports custom log routing via FireLens.
 FireLens allows the ECS service to manage the configuration of the logging driver of application containers, and to create the proper configuration for the `fluentbit`/`fluentd` logging layer.
 
-However the current implementation of FireLens does not support [custom configurations via S3 buckets](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/firelens-taskdef.html#firelens-taskdef-customconfig).
-Additionally, you cannot use ECS on Kubernetes with FireLens.
+However, you cannot use ECS on Kubernetes with FireLens.
+
+### Custom Config Support
+
+LocalStack ECS FireLens now supports the provision of custom configurations:
+
+- You can supply a custom Fluent Bit configuration through the ECS task definition. The config is included in the default configuration via the [`@INCLUDE` directive](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/configuration-file#config-include-file).
+- Custom config files can be provisioned via S3 (for EC2 tasks) or be baked into the image (supported for both Fargate and EC2 tasks).
+- LocalStack now also supports the `s3` fluentbit plugin for extended log routing use-cases.
+
+For usage details and configuration patterns, refer to the [AWS ECS FireLens custom config documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/firelens-taskdef.html#firelens-taskdef-customconfig).
 
 ## Resource Browser
 
