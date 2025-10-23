@@ -105,13 +105,15 @@ jobs:
 
       - name: Download CloudFormation catalog from Pro pipeline (GitHub)
         working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target iac-generate-catalog-assets
+        continue-on-error: true
+        run: /tmp/get_latest_github_metrics.sh ./target main
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
           REPOSITORY_NAME: localstack-pro
           ARTIFACT_ID: iac-catalog-assets
           WORKFLOW: "IaC – Generate Catalog Assets"
           RESOURCE_FOLDER: "iac-catalog-assets"
+
       - name: Download coverage data for K8s pipeline (acceptance tests) (GitHub)
         working-directory: docs
         run: /tmp/get_latest_github_metrics.sh ./target main
@@ -150,6 +152,7 @@ jobs:
      
       - name: Generate CloudFormation Coverage Tables
         working-directory: docs
+        continue-on-error: true
         run: |
             python3 scripts/create_cfn_coverage_table.py --cfn-json target/iac-catalog-assets/cfn_resources.json
 
