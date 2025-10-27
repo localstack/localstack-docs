@@ -55,7 +55,7 @@ const columns: ColumnDef<any>[] = [
   {
     id: 'k8s_support',
     accessorFn: (row) => row[Object.keys(row)[0]].k8s_test_suite,
-    header: () => 'Kubernetes Support',
+    header: () => 'Tested on Kubernetes',
     cell: ({ getValue }) => (getValue() ? '✔️' : ''),
     enableSorting: false,
     enableResizing: false,
