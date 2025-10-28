@@ -52,14 +52,6 @@ const columns: ColumnDef<any>[] = [
     enableSorting: false,
     enableResizing: false,
   },
-  {
-    id: 'k8s_support',
-    accessorFn: (row) => row[Object.keys(row)[0]].k8s_test_suite,
-    header: () => 'Kubernetes Support',
-    cell: ({ getValue }) => (getValue() ? '✔️' : ''),
-    enableSorting: false,
-    enableResizing: false,
-  },
 ];
 
 export default function PersistenceCoverage({ service }: { service: string }) {
@@ -144,8 +136,6 @@ export default function PersistenceCoverage({ service }: { service: string }) {
                       case 'implemented':
                         return '15%';
                       case 'image':
-                        return '15%';
-                      case 'k8s_support':
                         return '15%';
                       default:
                         return '15%';

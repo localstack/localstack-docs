@@ -72,7 +72,7 @@ jobs:
           ARTIFACT_ID: parity-metric-pro-raw-amd*
           WORKFLOW: "AWS / Build, Test, Push" 
           PREFIX_ARTIFACT: pro-integration-test
-
+      
       - name: Download coverage (capture-notimplemented) data from Pro pipeline (GitHub)
         working-directory: docs
         run: /tmp/get_latest_github_metrics.sh ./target main
@@ -103,59 +103,12 @@ jobs:
           WORKFLOW: "AWS / Build, Test, Push"
           RESOURCE_FOLDER: "metrics-implementation-details/community"
 
-      - name: Download CloudFormation catalog from Pro pipeline (GitHub)
-        working-directory: docs
-        continue-on-error: true
-        run: /tmp/get_latest_github_metrics.sh ./target main
-        env:
-          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-pro
-          ARTIFACT_ID: iac-catalog-assets
-          WORKFLOW: "IaC – Generate Catalog Assets"
-          RESOURCE_FOLDER: "iac-catalog-assets"
-
-      - name: Download coverage data for K8s pipeline (acceptance tests) (GitHub)
-        working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target main
-        env:
-          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-pro
-          ARTIFACT_ID: parity-metric-pro-k8s-acceptance-raw-amd64-*
-          WORKFLOW: "AWS / Pro K8s tests"
-          PREFIX_ARTIFACT: k8s-acceptance-test
-
-      - name: Download coverage data for K8s pipeline (integration tests) (GitHub)
-        working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target main
-        env:
-          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-pro
-          ARTIFACT_ID: parity-metric-pro-k8s-integration-raw-amd64-*
-          WORKFLOW: "AWS / Pro K8s tests"
-          PREFIX_ARTIFACT: k8s-integration-test
-
-      - name: Download coverage data for community K8s pipeline (integration tests) (GitHub)
-        working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target main
-        env:
-          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-pro
-          ARTIFACT_ID: parity-metric-community-k8s-integration-raw-*
-          WORKFLOW: "AWS / Community K8S tests"
-          PREFIX_ARTIFACT: k8s-community-integration-test
-
       - name: Create Parity Coverage Docs
         working-directory: docs
         run: |
           python3 -m scripts.create_data_coverage -i target/metrics-implementation-details -r target/metrics-raw -o target/updated_coverage -s src/data/coverage/service_display_name.json
           mv -f target/updated_coverage/data/*.json src/data/coverage
      
-      - name: Generate CloudFormation Coverage Tables
-        working-directory: docs
-        continue-on-error: true
-        run: |
-            python3 scripts/create_cfn_coverage_table.py --cfn-json target/iac-catalog-assets/cfn_resources.json
-
       - name: Check for changes
         id: check-for-changes
         working-directory: docs
@@ -164,8 +117,7 @@ jobs:
           # Check against the PR branch if it exists, otherwise against the main
           # Store the result in resources/diff-check.log and store the diff count in the GitHub Action output "diff-count"
           mkdir -p resources
-          FILES_TO_CHECK="src/data/coverage/ src/content/docs/aws/services/cloudformation.mdx"
-          (git diff --name-only origin/parity-coverage-auto-updates $FILES_TO_CHECK 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'main' }} $FILES_TO_CHECK 2>/dev/null) | tee -a resources/diff-check.log
+          (git diff --name-only origin/parity-coverage-auto-updates data/coverage/ 2>/dev/null || git diff --name-only origin/${{ github.event.inputs.targetBranch || 'main' }} src/data/coverage/ 2>/dev/null) | tee -a resources/diff-check.log
           echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> $GITHUB_OUTPUT
 
       - name: Read PR markdown template

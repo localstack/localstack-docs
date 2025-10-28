@@ -64,6 +64,7 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/references/coverage/coverage_redshift-data/)[Amazon Redshift Data API](https://docs.localstack.cloud/references/coverage/coverage_redshift-data/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_lakeformation/)[AWS Lake Formation](https://docs.localstack.cloud/references/coverage/coverage_lakeformation/) | ❌ | ❌ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/msk/)[Amazon Managed Streaming for Apache Kafka](https://docs.localstack.cloud/user-guide/aws/msk/) | ❌ | ❌ | ✅ | ✅ |
+| [](https://docs.localstack.cloud/user-guide/aws/kinesisanalytics/)[Amazon Kinesis Data Analytics](https://docs.localstack.cloud/user-guide/aws/kinesisanalytics/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/kinesisanalyticsv2/)[Amazon Managed Service for Apache Flink](https://docs.localstack.cloud/user-guide/aws/kinesisanalyticsv2/) | ❌ | ❌ | ✅ | ✅ |
 | Application Integration |  |  |  |  |
 | [](https://docs.localstack.cloud/user-guide/aws/swf/)[Amazon Simple Workflow Service (SWF)](https://docs.localstack.cloud/user-guide/aws/swf/) | ✅ | ✅ | ✅ | ✅ |
@@ -105,6 +106,7 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/user-guide/aws/memorydb/)[Amazon MemoryDB](https://docs.localstack.cloud/user-guide/aws/memorydb/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/neptune/)[Amazon Neptune](https://docs.localstack.cloud/user-guide/aws/neptune/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/timestream/)[Amazon Timestream](https://docs.localstack.cloud/user-guide/aws/timestream/) | ❌ | ❌ | ✅ | ✅ |
+| [](https://docs.localstack.cloud/user-guide/aws/qldb/)[Amazon Quantum Ledger Database (QLDB)](https://docs.localstack.cloud/user-guide/aws/qldb/) | ❌ | ❌ | ✅ | ✅ |
 | Developer Tools |  |  |  |  |
 | [](https://docs.localstack.cloud/references/coverage/coverage_codecommit/)[AWS CodeCommit](https://docs.localstack.cloud/references/coverage/coverage_codecommit/) | ❌ | ✅ | ✅ | ✅ |
 | AWS CodeArtifact | ❌ | ✅ | ✅ | ✅ |
@@ -247,6 +249,7 @@ For any subscription or access-related questions, please reach out to Support.
 | [](https://docs.localstack.cloud/references/coverage/coverage_redshift-data/)[Amazon Redshift Data API](https://docs.localstack.cloud/references/coverage/coverage_redshift-data/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_lakeformation/)[AWS Lake Formation](https://docs.localstack.cloud/references/coverage/coverage_lakeformation/) | ✅ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/msk/)[Amazon Managed Streaming for Apache Kafka](https://docs.localstack.cloud/user-guide/aws/msk/) | ✅ | ✅ | ✅ |
+| [](https://docs.localstack.cloud/user-guide/aws/kinesisanalytics/)[Amazon Kinesis Data Analytics](https://docs.localstack.cloud/user-guide/aws/kinesisanalytics/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/kinesisanalyticsv2/)[Amazon Managed Service for Apache Flink](https://docs.localstack.cloud/user-guide/aws/kinesisanalyticsv2/) | ✅ | ✅ | ✅ |
 | Application Integration |  |  |  |
 | [](https://docs.localstack.cloud/user-guide/aws/swf/)[Amazon Simple Workflow Service (SWF)](https://docs.localstack.cloud/user-guide/aws/swf/) | ✅ | ✅ | ✅ |
@@ -288,6 +291,7 @@ For any subscription or access-related questions, please reach out to Support.
 | [](https://docs.localstack.cloud/user-guide/aws/memorydb/)[Amazon MemoryDB](https://docs.localstack.cloud/user-guide/aws/memorydb/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/neptune/)[Amazon Neptune](https://docs.localstack.cloud/user-guide/aws/neptune/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/timestream/)[Amazon Timestream](https://docs.localstack.cloud/user-guide/aws/timestream/) | ✅ | ✅ | ✅ |
+| [](https://docs.localstack.cloud/user-guide/aws/qldb/)[Amazon Quantum Ledger Database (QLDB)](https://docs.localstack.cloud/user-guide/aws/qldb/) | ✅ | ✅ | ✅ |
 | Developer Tools |  |  |  |
 | [](https://docs.localstack.cloud/references/coverage/coverage_codecommit/)[AWS CodeCommit](https://docs.localstack.cloud/references/coverage/coverage_codecommit/) | ✅ | ✅ | ✅ |
 | AWS CodeBuild | ✅ | ✅ | ✅ |
