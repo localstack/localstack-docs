@@ -86,7 +86,8 @@ You can preserve your AWS infrastructure with Localstack in various ways.
     state-name: <cloud-pod-name>
     state-action: load
     skip-startup: 'true'
-
+  env:
+    LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 ...
 
 - name: Save the Cloud Pod 
@@ -95,6 +96,8 @@ You can preserve your AWS infrastructure with Localstack in various ways.
     state-backend: cloud-pods
     state-name: <cloud-pod-name>
     state-action: save
+  env:
+    LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 ...
 ```
 

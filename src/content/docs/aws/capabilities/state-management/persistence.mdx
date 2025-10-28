@@ -122,6 +122,14 @@ Although we are working to support both snapshot-based persistence and Cloud pod
 there are some common issues, known limitations, and also services that are not well tested for persistence support.
 An overview is available [here](#persistence-coverage-overview).
 
+:::note
+When using LocalStack's persistence feature, ports assigned to services (like RDS or Elasticache) when the snapshot was created may not be preserved when loading a saved state. 
+If you start new services *before* restoring the previous state, these new instances may use ports originally used by the saved services. 
+
+As a result, restored resources may point to invalid or unintended ports.
+It is suggested to estore services in the same order as initially deployed, though this is not always reliable.
+:::
+
 Please help us improve persistence support by reporting bugs on our [GitHub issue tracker](https://github.com/localstack/localstack/issues/new/choose).
 
 ## Technical Details

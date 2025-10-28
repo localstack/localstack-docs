@@ -68,7 +68,6 @@ The Resource Browser supports the following AWS services:
 | **Database**                 | [Amazon DynamoDB](https://app.localstack.cloud/inst/default/resources/dynamodb)                          |
 |                              | [Amazon RDS](https://app.localstack.cloud/inst/default/resources/rds)                                    |
 |                              | [Amazon ElastiCache](https://app.localstack.cloud/inst/default/resources/elasticache)                    |
-|                              | [Amazon QLDB](https://app.localstack.cloud/inst/default/resources/qldb/ledgers)                                  |
 |                              | [Amazon DocumentDB](https://app.localstack.cloud/inst/default/resources/docdb/clusters) |
 |                               | [Amazon Neptune](https://app.localstack.cloud/inst/default/resources/neptune/clusters) |
 |                              | [Amazon Timestream](https://app.localstack.cloud/inst/default/resources/timestream-write) |
