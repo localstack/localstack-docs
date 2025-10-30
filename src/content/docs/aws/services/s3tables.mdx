@@ -9,8 +9,9 @@ import FeatureCoverage from "../../../../components/feature-coverage/FeatureCove
 
 ## Introduction
 
-Amazon S3 Tables are specialized S3 buckets for managing tabular data (for example, Apache Iceberg tables) with built-in maintenance features like automatic compaction and snapshot management.
-They are designed for analytics workloads that need high read/write throughput and simplified table operations.
+Amazon S3 Tables is a managed Apache Iceberg table catalog that uses S3 storage.
+It acts as a catalog that transparently manages the underlying S3 buckets for you, providing built-in maintenance features like automatic compaction and snapshot management.
+It is designed for analytics workloads that need high read/write throughput and simplified table operations without having to directly manage S3 bucket infrastructure.
 
 LocalStack lets you use the S3 Tables API locally to create table buckets, organize tables in namespaces, and manage table metadata locations.
 The supported APIs are available on the [API coverage section](#api-coverage), which provides information on the extent of S3 Tables' integration with LocalStack.
@@ -61,7 +62,7 @@ awslocal s3tables create-namespace \
 
 ### Create a table
 
-You can also create a table within the namespace.
+You can also create a table within the namespace with the [`CreateTable`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3Tables_CreateTable.html) API.
 
 Run the following command to create a table named `my_table` within the namespace `my_namespace`:
 
@@ -129,6 +130,7 @@ awslocal s3tables get-table-metadata-location \
 ```bash title="Output"
 {
     "versionToken": "0c0c1509",
+    "metadataLocation": "s3://hqpdve6ni1lb7w5bdn24lruswomtsh5bdrw66oip--table-s3/metadata/00000-b6d96c57-403a-4387-ac59-ec55ac2e646b.metadata.json",
     "warehouseLocation": "s3://hqpdve6ni1lb7w5bdn24lruswomtsh5bdrw66oip--table-s3"
 }
 ```
