@@ -4,13 +4,13 @@ description: Learn how to build and test a serverless image resizing pipeline lo
 services:
 - sqs
 - lmb
-services:
-  - lambda
-  - s3
-platform: pro
+- s3
+platform:
+- nodejs
 pro: true
-deployment: docker-compose
-leadimage: /img/tutorials/image-resizer-hot-reload.png
+deployment:
+- docker-compose
+leadimage: "image-resizer-hot-reload.png"
 ---
 
 # S3 Image Resizer with Lambda (Hot Reload)
