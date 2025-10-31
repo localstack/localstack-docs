@@ -1,6 +1,16 @@
 ---
 title: S3 Image Resizer with Lambda (Hot Reload)
 description: Learn how to build and test a serverless image resizing pipeline locally using LocalStack Pro with Lambda hot reload support.
+services:
+- sqs
+- lmb
+services:
+  - lambda
+  - s3
+platform: pro
+pro: true
+deployment: docker-compose
+leadimage: /img/tutorials/image-resizer-hot-reload.png
 ---
 
 # S3 Image Resizer with Lambda (Hot Reload)
@@ -17,7 +27,6 @@ The workflow is simple:
 
 This pattern is ideal for developing and testing serverless media-processing workflows like thumbnails, avatars, and dynamic image scaling.
 
----
 
 ## Prerequisites
 
@@ -30,8 +39,16 @@ Make sure you have the following installed and configured:
 - **Make** (optional, for running build scripts)
 - Basic understanding of AWS Lambda and S3 event triggers
 
----
+## Why / Use Case
+Image resizing is a fundamental part of many web applications — whether you’re:
+- A **CMS platform** generating thumbnails for uploaded images
+- An **e-commerce store** optimizing product visuals
+- A **developer** testing media pipelines before production
 
+Running this workflow locally with LocalStack lets you:
+- Develop and debug Lambdas faster (no redeploys)
+- Avoid AWS costs during experimentation
+- Simulate a realistic event-driven workflow
 ## Architecture Diagram
 
 ```text
@@ -42,23 +59,25 @@ Make sure you have the following installed and configured:
                   │
            (S3 Event Trigger)
                   │
-          ┌───────▼────────────┐
+                  ▼
+          ┌────────────────────┐
           │     Lambda         │
           │ (Image Resizer)    │
           └───────┬────────────┘
                   │
-          ┌───────▼────────────┐
-          │  Target S3 Bucket  │
+                  ▼
+          ┌─────────────────────┐
+          │  Target S3 Bucket   │
           │ (e.g. output-bucket)│
-          └────────────────────┘
+          └─────────────────────┘
 ```
-# Steps
-## 1. Clone the Repository
+## Steps
+### 1. Clone the Repository
 ```
 git clone https://github.com/localstack-samples/sample-lambda-s3-image-resizer-hot-reload.git
 cd sample-lambda-s3-image-resizer-hot-reload
 ```
-## 2. Install Dependencies
+### 2. Install Dependencies
 
 If using Python:
 ```
@@ -71,14 +90,14 @@ If using Node.js Lambdas:
 ```
 npm install
 ```
-## 3. Start LocalStack
+### 3. Start LocalStack
 
 Make sure your LocalStack Pro token is set:
 ```
 localstack auth set-token <your-auth-token>
 localstack start
 ```
-## 4. Build and Deploy the Lambda
+### 4. Build and Deploy the Lambda
 ```
 Run the provided scripts to build and deploy:
 
@@ -88,7 +107,7 @@ deployment/awslocal/deploy.sh
 
 This sets up S3 buckets, event triggers, and deploys the Lambda function locally.
 
-## 5. Upload a Sample Image
+### 5. Upload a Sample Image
 
 Once deployment completes, upload a sample image to the input bucket:
 ```
@@ -97,8 +116,8 @@ awslocal s3 cp ./samples/test-image.jpg s3://input-bucket/
 
 The Lambda will trigger automatically and write the resized image to s3://output-bucket/.
 
-# Testing the Application
-## Step 1: Verify the Resized Image
+## Testing the Application
+### Step 1: Verify the Resized Image
 
 * List files in the output bucket:
 ```
@@ -114,7 +133,7 @@ awslocal s3 cp s3://output-bucket/test-image.jpg ./output/
 ```
 identify ./output/test-image.jpg
 ```
-## Step 2: Test Hot Reload
+### Step 2: Test Hot Reload
 
 * Modify your Lambda code locally (for example, change the resize dimensions or add a watermark).
 
@@ -127,7 +146,7 @@ awslocal s3 cp ./samples/test-image2.jpg s3://input-bucket/
 
 Verify that the new logic is applied (e.g., updated size or watermark visible).
 
-# Conclusion
+## Conclusion
 
 You’ve built and tested a complete serverless image pipeline on LocalStack, featuring:
 
