@@ -1,0 +1,195 @@
+---
+title: "Building a Serverless Quiz Application with LocalStack"
+description: Build an interactive serverless quiz application using AWS Lambda, DynamoDB, and API Gateway. Learn how to create, deploy, and test a complete serverless architecture locally with LocalStack, featuring quiz creation, submission handling, and scoring mechanisms.
+services:
+- lambda
+- ddb
+- agw
+- s3
+platform:
+- Python
+deployment:
+- awscli
+pro: true
+leadimage: "serverless-quiz-app-featured-image.png"
+---
+
+## Introduction
+
+Interactive quiz applications are popular for education, training, and engagement platforms. Building them with serverless architecture provides scalability, cost-effectiveness, and simplified maintenance. In this tutorial, we'll create a complete serverless quiz application using AWS Lambda, DynamoDB, and API Gateway.
+
+Our quiz application will allow users to:
+- Create new quizzes with multiple-choice questions
+- Submit quiz responses and receive immediate scoring
+- View quiz results and leaderboards
+
+Using LocalStack, we can develop and test this entire serverless infrastructure locally before deploying to AWS, enabling rapid development cycles and cost-effective testing.
+
+## Prerequisites
+
+For this tutorial, you will need:
+
+- [LocalStack Pro](https://localstack.cloud/pricing/) with a valid auth token
+- [AWS CLI](https://docs.localstack.cloud/user-guide/integrations/aws-cli/) with [`awslocal` wrapper](https://docs.localstack.cloud/user-guide/integrations/aws-cli/#localstack-aws-cli-awslocal)
+- [AWS CDK](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/) with [`cdklocal` wrapper](https://github.com/localstack/aws-cdk-local) (**optional**)
+- [Python 3.11+](https://www.python.org/downloads/) and `pip`
+- [curl](https://curl.se/) for testing API endpoints
+- [`make`](https://www.gnu.org/software/make/) (**optional**, but recommended for running the sample application)
+
+## Architecture
+
+The following diagram shows the serverless architecture we'll build:
+
+![Application Architecture](/images/aws/serverless-quiz-app-architecture.png)
+
+The architecture consists of:
+
+- **API Gateway**: REST API endpoints for quiz operations with Lambda integrations
+- **Lambda Functions**: Serverless functions handling quiz operations (create, submit, score, retrieve)
+- **DynamoDB Tables**: NoSQL database storing quiz metadata (`Quizzes`) and user submissions (`UserSubmissions`)
+- **CloudFront Distribution**: Global delivery of frontend assets with caching
+- **S3 Bucket**: Static website hosting for the quiz frontend interface
+- **SQS**: Managing asynchronous submissions with Dead Letter Queue for failed processing
+- **SNS Topics**: Alert notifications and system integration
+- **Step Functions**: Email notification workflows
+- **IAM Roles and Policies**: Least-privilege access control for all services
+
+### Request Flow
+
+1. Client sends HTTP requests to API Gateway endpoints
+2. API Gateway triggers corresponding Lambda functions
+3. Lambda functions interact with DynamoDB for data persistence
+4. Responses are returned through API Gateway to the client
+5. Static frontend is served from S3 bucket via CloudFront distribution
+
+## Getting Started
+
+### Clone the Repository
+
+First, clone the sample repository and navigate to the project directory:
+
+```bash
+git clone https://github.com/localstack-samples/sample-serverless-quiz-app.git
+cd sample-serverless-quiz-app
+```
+
+### Set up the Environment
+
+Create a Python virtual environment and install dependencies:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r tests/requirements-dev.txt
+```
+
+## Deploying the Application
+
+### Start LocalStack
+
+First, start LocalStack with your auth token:
+
+```bash
+localstack auth set-token <your-auth-token>
+localstack start
+```
+
+### Deploy the Infrastructure
+
+You can deploy the application using either AWS CLI or CDK:
+
+#### Option 1: AWS CLI Deployment (Recommended)
+
+Deploy the complete serverless infrastructure using the provided script:
+
+```bash
+bin/deploy.sh
+```
+
+#### Option 2: CDK Deployment
+
+Alternatively, deploy using AWS CDK with LocalStack:
+
+```bash
+cd cdk
+cdklocal bootstrap
+AWS_CMD=awslocal CDK_CMD=cdklocal bash ../bin/deploy_cdk.sh
+```
+
+Both deployment methods will:
+1. Create DynamoDB tables for quizzes and submissions
+2. Deploy Lambda functions for quiz operations
+3. Set up API Gateway endpoints
+4. Configure S3 bucket for static hosting
+5. Seed sample quiz data
+
+The deployment output will show:
+
+```bash
+CloudFront URL: https://1e372b81.cloudfront.localhost.localstack.cloud
+API Gateway Endpoint: http://localhost:4566/_aws/execute-api/4xu5emxibf/test
+```
+
+## Testing the Application
+
+The application includes comprehensive testing capabilities across multiple dimensions:
+
+### Manual Testing
+
+Navigate to the CloudFront URL from the deployment output to interact with the quiz application. The interface allows you to:
+
+- Create new quizzes with multiple choice questions
+- Submit quiz responses and receive immediate scoring
+- View leaderboards with top performers
+- Test email notifications through the MailHog extension
+
+**Note**: If you have deployed the application using AWS CLI, sample quiz data would have been seeded to make local testing easier.
+
+### End-to-End Integration Testing
+
+Run the complete test suite to validate quiz creation, submission, and scoring:
+
+```bash
+pytest tests/test_infra.py
+```
+
+The automated tests utilize the AWS SDK for Python (boto3) and the `requests` library to interact with the quiz application API.
+
+## Advanced Features with LocalStack Pro
+
+### Resource Browser
+
+Use the LocalStack Web Application to inspect your deployed resources:
+
+- [DynamoDB Tables](https://app.localstack.cloud/inst/default/resources/dynamodb): View table data and query operations
+- [Lambda Functions](https://app.localstack.cloud/inst/default/resources/lambda/functions): Monitor function invocations and logs
+- [API Gateway](https://app.localstack.cloud/inst/default/resources/apigateway): Inspect API endpoints and request routing
+
+### Cloud Pods for Quick Setup
+
+Skip the deployment step by loading a pre-configured environment:
+
+```bash
+localstack restart
+localstack pod load serverless-quiz-app
+```
+
+This instantly loads the complete application infrastructure from a saved state.
+
+## Conclusion
+
+In this tutorial, we've built a complete serverless quiz application demonstrating key serverless patterns:
+
+- **Event-driven architecture** with API Gateway triggering Lambda functions
+- **NoSQL data persistence** using DynamoDB for scalable storage
+- **Stateless function design** enabling automatic scaling
+- **RESTful API design** for clean client-server communication
+
+The application showcases how LocalStack enables rapid serverless development by providing a local AWS environment for testing and iteration. This approach allows developers to:
+
+- Test serverless applications without cloud costs
+- Develop offline with full AWS service emulation
+- Validate application logic before production deployment
+- Iterate quickly during development cycles
+
+For production deployment, the same code and configuration can be deployed to AWS with minimal changes, demonstrating the power of LocalStack for serverless development workflows.

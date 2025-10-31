@@ -30,10 +30,19 @@ This allows you to run end-to-end tests, preview features, and collaborate withi
 
 This tutorial will show you how to use LocalStack's Ephemeral Instance feature to generate an Application Preview automatically for every new Pull Request (PR) using a GitHub Action workflow.
 
+## Architecture diagram of the preview flow
+
+![Ephemeral Previews Flow](/images/aws/empheral_previews_flow.png)
+
+This diagram illustrates the ephemeral preview flow, where a GitHub Pull Request triggers a GitHub Actions workflow that automatically deploys the backend and frontend resources to a temporary LocalStack instance. 
+The ephemeral instance generates a shareable application preview URL, allowing team members to test and validate the application in a production like environment.
+Once the Pull Request is closed or merged, the ephemeral instance is automatically shut down, ensuring no unnecessary costs are incurred.
+
 ## Prerequisites
 
 - [LocalStack Web Application account](https://app.localstack.cloud/)
 - [GitHub Account](https://github.com/join)  & [`gh` CLI](https://github.com/cli/cli?tab=readme-ov-file#installation) (optional)
+
 
 ## Tutorial: Setting up Application Previews for your cloud application
 
@@ -189,6 +198,36 @@ After downloading, you can visualize logs and environment variables using a tool
     name: diagnose.json.gz
     path: ./diagnose.json.gz
 ```
+## **Testing the application**
+
+Once the Application Preview is successfully deployed on a LocalStack Ephemeral Instance, you can validate that your cloud application is functioning as expected before merging your Pull Request.
+
+Follow the checklist below to verify the preview environment:
+
+### **Testing the application checklist**
+
+- **Preview URL Reachability:**  
+    Ensure the preview URL added as a comment on your Pull Request is accessible. Open the link to verify that the frontend application loads successfully in your browser.
+    
+- **Smoke Tests Execution:**  
+    Perform basic smoke tests to validate the core functionality of your application. For example, verify that API endpoints respond correctly, CRUD operations succeed, and authentication flows (if applicable) function as intended.
+    
+- **Backend Resource Validation:**  
+    Confirm that key AWS-like resources, such as DynamoDB tables, Lambda functions, and API Gateway endpoints, are deployed and operational within the LocalStack environment. You can use the `awslocal` CLI to inspect resources, for example:
+    
+    ```bash
+    awslocal dynamodb list-tables
+    awslocal lambda list-functions
+    awslocal apigatewayv2 get-apis
+    ```
+    
+- **Frontend Verification:**  
+    Test that the deployed frontend connects correctly to the backend APIs exposed via LocalStack and that any user interactions (e.g., creating or retrieving data) work as expected.
+    
+ 
+    
+
+After completing these checks and confirming the application behaves as expected, your preview is considered validated and ready for review or merge.
 
 ## Conclusion
 

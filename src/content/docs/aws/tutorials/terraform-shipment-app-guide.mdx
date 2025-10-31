@@ -1,0 +1,124 @@
+---
+title: "Tutorial: Terraform Fullstack Serverless Shipment App"
+description: "Deploy a full-stack shipment tracking application locally using Terraform and LocalStack."
+services:
+- agw
+- lmb
+- ddb
+- s3
+platform:
+- Terraform
+- Node.js
+deployment:
+- terraform
+- awscli
+pro: false
+leadimage: "banner.png"
+---
+
+[LocalStack](https://localstack.cloud) enables you to develop and test cloud applications locally by emulating AWS services on your machine. In this tutorial, you will deploy a full-stack serverless shipment tracking application using Terraform and LocalStack.
+
+This sample app consists of a React frontend and a Spring Boot backend, integrating with key AWS services like API Gateway, Lambda, DynamoDB, S3, SNS, and SQS. The infrastructure is managed entirely using Terraform, demonstrating Infrastructure as Code (IaC) workflows.
+
+![Terraform Fullstack Serverless Shipment App Architecture](https://github.com/localstack-samples/sample-terraform-fullstack-serverless-shipment-app/raw/master/sample-pictures/architecture.png)
+
+## Prerequisites
+
+Make sure the following tools and dependencies are installed and configured on your local machine before proceeding:
+
+- **LocalStack** (preferably Team or Pro edition for advanced features)
+- **Terraform CLI**
+- **AWS CLI** with the [awslocal](https://docs.localstack.cloud/aws/integrations/aws-native-tools/aws-cli/#localstack-aws-cli-awslocal) wrapper for LocalStack
+- **Maven 3.8.5+** and **Java 17** for Spring Boot backend
+- **Node.js** and **npm** for React frontend
+- **make** (optional, but recommended for simplified commands)
+
+## Installation
+
+Clone the sample repository and install dependencies:
+
+```
+git clone https://github.com/localstack-samples/sample-terraform-fullstack-serverless-shipment-app.git
+cd sample-terraform-fullstack-serverless-shipment-app
+
+make install
+```
+
+This command builds the Lambda validator JAR and installs frontend Node.js packages.
+
+## Deployment
+
+Start LocalStack in the background with your authorization token configured:
+
+```
+localstack auth set-token <your-auth-token>
+localstack start -d
+```
+
+Use the provided Makefile to deploy all infrastructure components:
+
+```
+make deploy
+```
+
+This creates and configures:
+
+- S3 buckets for shipment images and Lambda code
+- DynamoDB tables preloaded with sample shipments
+- Lambda functions for image validation and processing
+- SNS topics and SQS queues for event messaging
+- Required IAM roles and permissions
+
+## Running the Application
+
+### Start React Frontend
+
+```
+cd shipment-list-frontend
+npm start
+```
+
+Access the UI at [http://localhost:3000](http://localhost:3000).
+
+### Start Spring Boot Backend
+
+In a separate terminal, run:
+
+```
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+The backend API will be available at [http://localhost:8081](http://localhost:8081).
+
+## Testing
+
+Run full end-to-end tests with:
+
+```
+make test
+```
+
+## Using the Application
+
+- View shipment list on the React frontend.
+- Upload shipment images; valid ones are watermarked by the Lambda function.
+- Invalid files are automatically replaced.
+- Real-time updates are delivered via Server-Sent Events.
+- Create, update, or delete shipments through provided UI and API endpoints.
+
+## Summary and Use Cases
+
+This project illustrates:
+
+- Deploying AWS resources (S3, Lambda, DynamoDB, SNS, SQS) with Terraform.
+- Serverless image processing and validation using Lambda.
+- Reactive messaging using SNS and SQS.
+- Seamless switching between AWS and LocalStack via Spring Profiles.
+- Integration testing using Testcontainers.
+- Using LocalStack CLI wrappers (`awslocal`, `tflocal`) for streamlined local development.
+- Infrastructure as Code testing enabling consistent, repeatable environment setups.
+
+
+---
+
+By completing this tutorial, you can confidently develop and test complex serverless applications locally with LocalStack and Terraform, accelerating your cloud-native development cycles.

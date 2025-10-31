@@ -1051,7 +1051,122 @@ Our new consumer, based on the latest version of the schema, will be able to suc
 ```bash
 mvn -pl consumer-2 exec:java -Dexec.args="--bootstrap-servers localhost:4511"
 ```
+## Testing the application
 
+After deploying and running the example, you can verify that your MSK and Glue Schema Registry integration is functioning correctly.  
+This section consolidates the end-to-end verification steps — producing and consuming messages, and validating schema compatibility.
+
+---
+
+### 1. Produce a message to the Kafka topic
+
+Use the `awslocal` CLI or your preferred Kafka client to produce a test message using the initial Avro schema:
+
+```bash
+awslocal kafka-produce \
+  --topic my-topic \
+  --value '{"name": "Alice", "age": 30}'
+```
+Expected output:
+
+Message successfully produced to topic 'my-topic'
+
+
+This message is serialized using the Avro schema registered in the Glue Schema Registry.
+
+### 2. Consume and verify the message
+
+Consume from the same topic using a compatible schema:
+```
+awslocal kafka-consume \
+  --topic my-topic \
+  --from-beginning \
+  --max-messages 1
+```
+
+Expected output:
+```
+{"name": "Alice", "age": 30}
+```
+
+This confirms that your consumer can successfully deserialize messages using the registered schema version.
+
+### 3. Test schema evolution and compatibility
+
+Now modify your Avro schema to simulate an update (for example, adding a new optional field):
+```
+{
+  "type": "record",
+  "name": "User",
+  "fields": [
+    { "name": "name", "type": "string" },
+    { "name": "age", "type": "int" },
+    { "name": "email", "type": ["null", "string"], "default": null }
+  ]
+}
+```
+Register the updated schema version:
+```
+awslocal glue register-schema-version \
+  --schema-id SchemaName=my-schema \
+  --schema-definition file://updated_user_schema.avsc
+```
+Expected output:
+```
+{
+  "SchemaVersionId": "abcd1234...",
+  "Status": "AVAILABLE"
+}
+```
+Then verify schema compatibility:
+```
+awslocal glue check-schema-compatibility \
+  --schema-id SchemaName=my-schema \
+  --data-format AVRO \
+  --schema-definition file://updated_user_schema.avsc
+```
+Expected output:
+```
+{
+  "Compatibility": "COMPATIBLE"
+}
+```
+This indicates that the updated schema maintains backward compatibility with existing data.
+
+4. Validate end-to-end flow after schema update
+
+Produce a message using the new schema:
+```
+awslocal kafka-produce \
+  --topic my-topic \
+  --value '{"name": "Bob", "age": 25, "email": "bob@example.com"}'
+```
+
+Then consume again to verify successful deserialization:
+```
+awslocal kafka-consume \
+  --topic my-topic \
+  --from-beginning \
+  --max-messages 2
+```
+
+Expected output:
+```
+{"name": "Alice", "age": 30}
+{"name": "Bob", "age": 25, "email": "bob@example.com"}
+```
+
+Both messages deserialize successfully, confirming that schema evolution and compatibility are functioning as expected.
+
+### 5. Summary
+
+You’ve validated that:
+
+* Kafka topics in LocalStack correctly trigger message serialization/deserialization through Glue Schema Registry.
+
+* Schema evolution (adding optional fields) preserves backward compatibility.
+
+* Both producer and consumer integrate seamlessly after schema updates.
 ## Conclusion
 
 Apache Kafka is used as the core messaging system in complex environments, with independent producers and consumers.

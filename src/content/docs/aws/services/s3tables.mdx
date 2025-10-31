@@ -1,0 +1,169 @@
+---
+title: "S3 Tables"
+description: Get started with Amazon S3 Tables on LocalStack
+persistence: supported
+tags: ["Ultimate"]
+---
+
+import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+
+## Introduction
+
+Amazon S3 Tables is a managed Apache Iceberg table catalog that uses S3 storage.
+It acts as a catalog that transparently manages the underlying S3 buckets for you, providing built-in maintenance features like automatic compaction and snapshot management.
+It is designed for analytics workloads that need high read/write throughput and simplified table operations without having to directly manage S3 bucket infrastructure.
+
+LocalStack lets you use the S3 Tables API locally to create table buckets, organize tables in namespaces, and manage table metadata locations.
+The supported APIs are available on the [API coverage section](#api-coverage), which provides information on the extent of S3 Tables' integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to S3 Tables and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+
+Start your LocalStack container using your preferred method.
+We will demonstrate how to create a table bucket, a namespace, a table, and how to retrieve table details and metadata location with the AWS CLI.
+
+### Create a table bucket
+
+You can create a table bucket to store S3 Tables using the [`CreateTableBucket`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3Buckets_CreateTableBucket.html) API.
+
+Run the following command to create a table bucket named `my-table-bucket`:
+
+```bash
+awslocal s3tables create-table-bucket --name my-table-bucket
+```
+
+```bash title="Output"
+{
+    "arn": "arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket"
+}
+```
+
+### Create a namespace
+
+Namespaces help organize tables within a table bucket. You can create a namespace within the table bucket using the [`CreateNamespace`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3Buckets_CreateNamespace.html) API.
+
+Run the following command to create a namespace named `my_namespace` within the table bucket `my-table-bucket`:
+
+```bash
+awslocal s3tables create-namespace \
+    --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
+    --namespace my_namespace
+```
+
+```bash title="Output"
+{
+    "tableBucketARN": "arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket",
+    "namespace": [
+        "my_namespace"
+    ]
+}
+```
+
+### Create a table
+
+You can also create a table within the namespace with the [`CreateTable`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3Tables_CreateTable.html) API.
+
+Run the following command to create a table named `my_table` within the namespace `my_namespace`:
+
+```bash
+awslocal s3tables create-table \
+    --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
+    --namespace my_namespace \
+    --name my_table \
+    --format ICEBERG
+```
+
+```bash title="Output"
+{
+    "tableARN": "arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket/table/my_table",
+    "versionToken": "0c0c1509"
+}
+```
+
+### Retrieve table information
+
+You can describe the table to view details such as ARN, namespace, format, and warehouse location using the [`GetTable`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3Tables_GetTable.html) API.
+
+Run the following command to describe the table `my_table`:
+
+```bash
+awslocal s3tables get-table \
+    --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
+    --namespace my_namespace \
+    --name my_table
+```
+
+```bash title="Output"
+{
+    "name": "my_table",
+    "type": "customer",
+    "tableARN": "arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket/table/my_table",
+    "namespace": [
+        "my_namespace"
+    ],
+    "namespaceId": "380d99d1-abbf-4121-8e2c-c9a06e2def06",
+    "versionToken": "0c0c1509",
+    "warehouseLocation": "s3://hqpdve6ni1lb7w5bdn24lruswomtsh5bdrw66oip--table-s3",
+    "createdAt": "2025-10-23T15:34:59.193399Z",
+    "createdBy": "000000000000",
+    "modifiedAt": "2025-10-23T15:34:59.193400Z",
+    "ownerAccountId": "000000000000",
+    "format": "ICEBERG",
+    "tableBucketId": "bead5f2e-405f-4c66-b8f3-545f89ee1058"
+}
+```
+
+### Retrieve table metadata location
+
+You can fetch the warehouse location used for table metadata using the [`GetTableMetadataLocation`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3Tables_GetTableMetadataLocation.html) API.
+
+Run the following command to fetch the warehouse location for the table `my_table`:
+
+```bash
+awslocal s3tables get-table-metadata-location \
+    --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
+    --namespace my_namespace \
+    --name my_table
+```
+
+```bash title="Output"
+{
+    "versionToken": "0c0c1509",
+    "metadataLocation": "s3://hqpdve6ni1lb7w5bdn24lruswomtsh5bdrw66oip--table-s3/metadata/00000-b6d96c57-403a-4387-ac59-ec55ac2e646b.metadata.json",
+    "warehouseLocation": "s3://hqpdve6ni1lb7w5bdn24lruswomtsh5bdrw66oip--table-s3"
+}
+```
+
+### List tables in a namespace
+
+You can list tables in the `my_namespace` namespace using the [`ListTables`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_s3Tables_ListTables.html) API.
+
+Run the following command to list tables in the namespace `my_namespace`:
+
+```bash
+awslocal s3tables list-tables \
+    --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
+    --namespace my_namespace
+```
+
+```bash title="Output"
+{
+    "tables": [
+        {
+            "namespace": [
+                "my_namespace"
+            ],
+            "name": "my_table",
+            "type": "customer",
+            "tableARN": "arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket/table/my_table",
+            "createdAt": "2025-10-23T15:34:59.193399Z",
+            "modifiedAt": "2025-10-23T15:34:59.193400Z"
+        }
+    ]
+}
+```
+
+## API Coverage
+
+<FeatureCoverage service="s3tables" client:load />
