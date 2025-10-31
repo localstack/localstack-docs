@@ -1,0 +1,266 @@
+---
+title: "Initializing an RDS Database with AWS CDK and LocalStack"
+description: Learn how to provision and initialize Amazon RDS databases locally using AWS CDK and LocalStack. This tutorial demonstrates database schema creation, data seeding, and testing with Cloud Pods for reproducible development environments.
+services:
+- rds
+- lambda
+- sec
+platform:
+- JavaScript
+- Node.js
+deployment:
+- aws-cdk
+- CloudFormation
+pro: true
+leadimage: "rds-database-initialization-featured-image.png"
+---
+
+## Introduction
+
+Database initialization is a critical aspect of application development and testing. Setting up databases with proper schemas and seed data consistently across development, testing, and CI environments can be challenging. Amazon RDS provides managed database services, but testing database initialization scripts and configurations requires a reliable local development environment.
+
+[LocalStack Pro](https://app.localstack.cloud/) enables you to emulate Amazon RDS, Lambda, and Secrets Manager locally, allowing you to develop and test database initialization workflows without connecting to AWS. This approach accelerates development cycles, reduces costs, and ensures consistent environments across different stages of your development pipeline.
+
+In this tutorial, we will demonstrate how to provision and initialize an Amazon RDS database using AWS CDK and LocalStack. We'll create a Lambda function that executes custom SQL scripts to set up database schemas and seed data. Additionally, we'll explore how Cloud Pods can streamline CI workflows by providing pre-seeded database environments.
+
+## Prerequisites
+
+For this tutorial, you will need:
+
+- [LocalStack Pro](https://localstack.cloud/pricing/) with a valid auth token
+- [AWS CLI](https://docs.localstack.cloud/user-guide/integrations/aws-cli/) with the [`awslocal` wrapper](https://docs.localstack.cloud/user-guide/integrations/aws-cli/#localstack-aws-cli-awslocal)
+- [AWS CDK](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/) with the [`cdklocal`](https://www.npmjs.com/package/aws-cdk-local) wrapper
+- [Node.js](https://nodejs.org/en/download/) (version 16 or later)
+- [Docker](https://docker.io/)
+- MySQL or PostgreSQL client (for testing database connections)
+- [`make`](https://www.gnu.org/software/make/) (optional, but recommended)
+
+## Architecture
+
+The following diagram shows the architecture that this sample application builds and deploys:
+
+![Architecture Diagram demonstrating Amazon RDS initialization using CDK](/images/aws/rds-database-initialization-architecture.png)
+
+The architecture consists of:
+
+- **Amazon RDS**: The central database instance that will be initialized and pre-filled with data
+- **AWS Lambda**: A Node.js function that executes SQL scripts to initialize the database schema and seed data
+- **AWS Secrets Manager**: Stores database credentials and connection details securely
+- **CloudFormation Custom Resource**: Triggers the Lambda function during deployment to perform database initialization
+
+The initialization process works as follows:
+1. CDK deploys the RDS instance and related resources
+2. A CloudFormation Custom Resource triggers the Lambda function
+3. The Lambda function retrieves database credentials from Secrets Manager
+4. The function connects to the RDS instance and executes initialization SQL scripts
+5. Database tables are created and populated with seed data
+
+## Getting Started
+
+### Project Setup
+
+First, clone the sample repository and install dependencies:
+
+```bash
+git clone https://github.com/localstack-samples/sample-cdk-rds-database-initialization.git
+cd sample-cdk-rds-database-initialization
+```
+
+Install the project dependencies:
+
+```bash
+npm install
+# or if you prefer using make
+make install
+```
+
+### Configure LocalStack
+
+Start LocalStack with your auth token:
+
+```bash
+localstack auth set-token <your-auth-token>
+localstack start
+```
+
+> **Note**: By default, LocalStack uses the MariaDB engine for RDS (see [RDS documentation](https://docs.localstack.cloud/user-guide/aws/rds/#mysql-engine)). To use the real MySQL engine in a separate Docker container, set the environment variable `RDS_MYSQL_DOCKER=1`.
+
+## Deployment
+
+Deploy the sample application using CDK:
+
+```bash
+make deploy
+# or manually:
+cdklocal deploy
+```
+
+The deployment process will:
+1. Create an RDS MySQL instance
+2. Set up a Secrets Manager secret with database credentials
+3. Deploy a Lambda function with database initialization code
+4. Execute the initialization script via CloudFormation Custom Resource
+
+After successful deployment, you'll see output similar to:
+
+```bash
+Outputs:
+RdsInitExample.RdsInitFnResponse = {"status":"OK","results":[/*...SQL operations...*/]}
+RdsInitExample.functionName = my-lambda-rds-query-helper
+RdsInitExample.secretName = /rdsinitexample/rds/creds/mysql-01
+Stack ARN:
+arn:aws:cloudformation:us-east-1:000000000000:stack/RdsInitExample/3f53b7bd
+
+✨  Total time: 80.21s
+
+CDK deployed successfully.
+```
+
+The outputs include:
+- `RdsInitFnResponse`: Results from executing the database initialization script
+- `functionName`: Lambda function name for running test queries
+- `secretName`: Secrets Manager secret containing database connection details
+
+## Testing the Application
+
+The sample application creates a database with tables and sample data. Let's verify the initialization was successful by running queries against the database.
+
+### Querying the Database via Lambda
+
+The deployed Lambda function `my-lambda-rds-query-helper` can execute SQL queries against the initialized database. The function requires two parameters:
+- `sqlQuery`: The SQL command to execute
+- `secretName`: The Secrets Manager secret containing database credentials
+
+**For AWS CLI v1:**
+```bash
+awslocal lambda invoke \
+  --function-name my-lambda-rds-query-helper \
+  --payload '{"sqlQuery": "select Author from books", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
+  output
+```
+
+**For AWS CLI v2:**
+```bash
+awslocal lambda invoke \
+  --cli-binary-format raw-in-base64-out \
+  --function-name my-lambda-rds-query-helper \
+  --payload '{"sqlQuery": "select Author from books", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
+  output
+```
+
+View the results:
+```bash
+cat output
+```
+
+Expected output:
+```json
+{
+  "status": "SUCCESS",
+  "results": [
+    {"Author": "Jane Doe"},
+    {"Author": "Jane Doe"}, 
+    {"Author": "LocalStack"}
+  ]
+}
+```
+
+You can also run more detailed queries to explore the data:
+
+**Query all book details:**
+```bash
+awslocal lambda invoke \
+  --cli-binary-format raw-in-base64-out \
+  --function-name my-lambda-rds-query-helper \
+  --payload '{"sqlQuery": "SELECT * FROM books LIMIT 5", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
+  output && cat output
+```
+
+### Testing Different SQL Operations
+
+Test various database operations to verify the initialization:
+
+**Check table structure:**
+```bash
+awslocal lambda invoke \
+  --cli-binary-format raw-in-base64-out \
+  --function-name my-lambda-rds-query-helper \
+  --payload '{"sqlQuery": "DESCRIBE books", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
+  output && cat output
+```
+
+**Count records:**
+```bash
+awslocal lambda invoke \
+  --cli-binary-format raw-in-base64-out \
+  --function-name my-lambda-rds-query-helper \
+  --payload '{"sqlQuery": "SELECT COUNT(*) as total_books FROM books", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
+  output && cat output
+```
+
+**Filter by author:**
+```bash
+awslocal lambda invoke \
+  --cli-binary-format raw-in-base64-out \
+  --function-name my-lambda-rds-query-helper \
+  --payload '{"sqlQuery": "SELECT title, published_year FROM books WHERE author = \"George Orwell\"", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
+  output && cat output
+```
+
+### Connecting Directly to the Database
+
+For more comprehensive testing, you can connect directly to the RDS instance using a MySQL client. First, retrieve the database connection details:
+
+```bash
+# Get the database endpoint
+awslocal rds describe-db-instances --query 'DBInstances[0].Endpoint.Address' --output text
+
+# Get credentials from Secrets Manager
+awslocal secretsmanager get-secret-value --secret-id /rdsinitexample/rds/creds/mysql-01 --query SecretString --output text
+```
+
+Connect using the MySQL command-line client:
+```bash
+mysql -h <endpoint> -P 4510 -u <username> -p<password> <database_name>
+```
+
+Once connected, you can run SQL queries directly:
+```sql
+USE your_database_name;
+SHOW TABLES;
+SELECT * FROM books;
+```
+
+### Running Integration Tests
+
+Execute the complete test suite to validate all functionality:
+
+```bash
+make test
+```
+
+This will run end-to-end tests that verify:
+- Database connectivity
+- Schema creation
+- Data seeding
+- Query operations
+- Error handling
+
+## Conclusion
+
+This tutorial demonstrated how to provision and initialize an Amazon RDS database locally using AWS CDK and LocalStack. You learned how to:
+
+- **Set up LocalStack Pro** for local AWS service emulation
+- **Deploy RDS infrastructure** using AWS CDK and CloudFormation
+- **Initialize database schemas and data** via Lambda functions during deployment
+- **Test the initialized database** using both Lambda queries and direct MySQL connections
+- **Create repeatable database setups** for development and testing environments
+
+This approach provides several key benefits for database development:
+
+- **Consistent Environments**: Reproducible database setup across development, testing, and CI environments
+- **Faster Development Cycles**: Test database initialization scripts locally without AWS dependencies
+- **Cost-Effective Testing**: No AWS charges during development and testing phases
+- **Reliable CI/CD**: Automated database setup ensures consistent test environments
+
+The patterns demonstrated in this tutorial provide a solid foundation for managing database initialization in your LocalStack-based development workflow, enabling you to develop and test database-driven applications more efficiently and reliably.
