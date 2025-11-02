@@ -14,5 +14,6 @@ This section covers how to use LocalStack with:
 - Architect (ARC)
 - Quarkus
 - Spring Cloud Function
+- Aspire
 
-Each guide shows how to configure the framework to work seamlessly with LocalStack for local development and testing. 
+Each guide shows how to configure the framework to work seamlessly with LocalStack for local development and testing.
