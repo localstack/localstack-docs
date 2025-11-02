@@ -832,8 +832,8 @@ The content will be updated as additional query features and functions are imple
 |TO_DECIMAL, TO_NUMBER, TO_NUMERIC|✅|
 |TO_DOUBLE|✅|
 |TO_FILE|❓|
-|TO_GEOGRAPHY|❓|
-|TO_GEOMETRY|❓|
+|TO_GEOGRAPHY|✅|
+|TO_GEOMETRY|✅|
 |TO_JSON|❓|
 |TO_OBJECT|✅|
 |TO_QUERY|❓|
