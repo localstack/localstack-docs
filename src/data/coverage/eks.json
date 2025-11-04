@@ -121,13 +121,13 @@
     },
     {
       "CreatePodIdentityAssociation": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -212,13 +212,13 @@
     },
     {
       "DeletePodIdentityAssociation": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -394,13 +394,13 @@
     },
     {
       "DescribePodIdentityAssociation": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -576,13 +576,13 @@
     },
     {
       "ListPodIdentityAssociations": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -758,13 +758,13 @@
     },
     {
       "UpdatePodIdentityAssociation": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -907,6 +907,16 @@
       "addonName, addonVersion, clientRequestToken, clusterName": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity",
+            "test": "test_pod_identity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAddons::test_cluster_addon_errors",
             "test": "test_cluster_addon_errors",
             "response": "400",
@@ -979,6 +989,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
             "test": "test_access_entry_lifecycle[iam_role]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_disabled_default_access_entry",
+            "test": "test_disabled_default_access_entry",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -1239,6 +1259,42 @@
         ]
       }
     },
+    "CreatePodIdentityAssociation": {
+      "clientRequestToken, clusterName, namespace, roleArn, serviceAccount": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity",
+            "test": "test_pod_identity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "409",
+            "error": "ResourceInUseException",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "DeleteAccessEntry": {
       "clusterName, principalArn": {
         "ls_pro": [
@@ -1294,6 +1350,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity",
+            "test": "test_pod_identity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1385,13 +1451,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
-            "test": "test_irsa",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -1471,13 +1537,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
-            "test": "test_irsa",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -1498,6 +1564,42 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "DeletePodIdentityAssociation": {
+      "associationId, clusterName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity",
+            "test": "test_pod_identity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -1583,6 +1685,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity",
+            "test": "test_pod_identity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAddons::test_cluster_addon_errors",
             "test": "test_cluster_addon_errors",
             "response": "404",
@@ -1598,6 +1710,16 @@
             "response": "404",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "['$..accessConfig', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity",
+            "test": "test_pod_identity",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1751,6 +1873,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
             "test": "test_access_entry_lifecycle[iam_role]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_disabled_default_access_entry",
+            "test": "test_disabled_default_access_entry",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -2091,13 +2223,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_irsa",
-            "test": "test_irsa",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
             "response": "404",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -2106,6 +2238,32 @@
             "response": "404",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "['$..releaseVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "DescribePodIdentityAssociation": {
+      "associationId, clusterName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2175,6 +2333,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_default_access_entry",
             "test": "test_default_access_entry",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_disabled_default_access_entry",
+            "test": "test_disabled_default_access_entry",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -2339,6 +2507,64 @@
         ]
       }
     },
+    "ListPodIdentityAssociations": {
+      "clusterName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "clusterName, namespace": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "clusterName, namespace, serviceAccount": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "clusterName, serviceAccount": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "400",
+            "error": "InvalidRequestException",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "ListTagsForResource": {
       "resourceArn": {
         "ls_pro": [
@@ -2446,6 +2672,22 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdatePodIdentityAssociation": {
+      "associationId, clientRequestToken, clusterName, roleArn, targetRoleArn": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSIAMIntegration::test_pod_identity_association_api",
+            "test": "test_pod_identity_association_api",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..identity.oidc.issuer', '$..logging', '$..platformVersion', '$..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
