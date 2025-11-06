@@ -168,6 +168,7 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/references/coverage/coverage_acm/)[AWS Certificate Manager](https://docs.localstack.cloud/references/coverage/coverage_acm/) | ✅ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_cognito-identity/)[Amazon Cognito Identity Pools](https://docs.localstack.cloud/references/coverage/coverage_cognito-identity/) | ❌ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_cognito-idp/)[Amazon Cognito User Pools](https://docs.localstack.cloud/references/coverage/coverage_cognito-idp/) | ❌ | ✅ | ✅ | ✅ |
+| [](https://docs.localstack.cloud/aws/services/verifiedpermissions/)[Amazon Verified Permissions](https://docs.localstack.cloud/aws/services/verifiedpermissions/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_acm-pca/)[AWS Private Certificate Authority](https://docs.localstack.cloud/references/coverage/coverage_acm-pca/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_wafv2/)[AWS Web Application Firewall (WAF)](https://docs.localstack.cloud/references/coverage/coverage_wafv2/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_iam/)[AWS Identity and Access Management (IAM)](https://docs.localstack.cloud/references/coverage/coverage_iam/) | ✅ | ✅ | ✅ | ✅ |
