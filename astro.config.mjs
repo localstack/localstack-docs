@@ -198,12 +198,7 @@ export default defineConfig({
           },
         }),
         starlightDocSearch({
-          appId: 'XBW1JU7CW5',
-          apiKey: '6b0341e2f50196d328d088dbb5cd6166',
-          indexName: 'localstack',
-          searchParameters: {
-            facets: ['lvl0'],
-          },
+          clientOptionsModule: './src/config/docsearch.ts',
         }),
       ],
       sidebar: [
