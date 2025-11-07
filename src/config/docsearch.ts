@@ -17,7 +17,7 @@ export default {
         // Determine the boost filter based on pathname
         let boostFilter: string | null = null;
         if (pathname.startsWith('/aws/')) {
-          boostFilter = "hierarchy.lvl0:'LocalStack for AWS'";
+          boostFilter = "hierarchy.lvl0:LocalStack for AWS";
         } else if (pathname.startsWith('/snowflake/')) {
           boostFilter = "hierarchy.lvl0:LocalStack for Snowflake";
         }
