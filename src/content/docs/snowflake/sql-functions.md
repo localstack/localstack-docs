@@ -32,6 +32,7 @@ The content will be updated as additional query features and functions are imple
 |AI_EXTRACT|❓|
 |AI_FILTER|❓|
 |AI_PARSE_DOCUMENT|❓|
+|AI_REDACT|❓|
 |AI_SENTIMENT|❓|
 |AI_SIMILARITY|❓|
 |AI_SUMMARIZE_AGG|❓|
@@ -211,6 +212,7 @@ The content will be updated as additional query features and functions are imple
 |DATEADD|✅|
 |DATEDIFF|✅|
 |DAYNAME|✅|
+|DBT_PROJECT_EXECUTION_HISTORY|❓|
 |DECODE|❓|
 |DECOMPRESS_BINARY|❓|
 |DECOMPRESS_STRING|❓|
@@ -464,6 +466,7 @@ The content will be updated as additional query features and functions are imple
 |OBJECT_KEYS|✅|
 |OBJECT_PICK|❓|
 |OCTET_LENGTH|❓|
+|ONLINE_FEATURE_TABLE_REFRESH_HISTORY|❓|
 |PARSE_DOCUMENT (SNOWFLAKE.CORTEX)|❓|
 |PARSE_IP|✅|
 |PARSE_JSON|✅|
@@ -621,6 +624,7 @@ The content will be updated as additional query features and functions are imple
 |STARTSWITH|✅|
 |STDDEV, STDDEV_SAMP|❓|
 |STDDEV_POP|❓|
+|STORAGE_LIFECYCLE_POLICY_HISTORY|❓|
 |STRIP_NULL_VALUE|❓|
 |STRTOK|❓|
 |STRTOK_SPLIT_TO_TABLE|❓|
@@ -702,6 +706,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$GET_CMK_INFO|❓|
 |SYSTEM$GET_CMK_KMS_KEY_POLICY|❓|
 |SYSTEM$GET_COMPUTE_POOL_PENDING_MAINTENANCE|❓|
+|SYSTEM$GET_DBT_LOG|❓|
 |SYSTEM$GET_DEBUG_STATUS|❓|
 |SYSTEM$GET_DIRECTORY_TABLE_STATUS|❓|
 |SYSTEM$GET_GCP_KMS_CMK_GRANT_ACCESS_CMD|❓|
@@ -745,6 +750,8 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$LIST_APPLICATION_RESTRICTED_FEATURES|❓|
 |SYSTEM$LIST_ICEBERG_TABLES_FROM_CATALOG|❓|
 |SYSTEM$LIST_NAMESPACES_FROM_CATALOG|❓|
+|SYSTEM$LOCATE_DBT_ARCHIVE|❓|
+|SYSTEM$LOCATE_DBT_ARTIFACTS|❓|
 |SYSTEM$LOG, SYSTEM$LOG_<level> (for Snowflake Scripting)|✅|
 |SYSTEM$MIGRATE_SAML_IDP_REGISTRATION|❓|
 |SYSTEM$OPT_IN_INTERNAL_STAGE_NETWORK_LOGS|❓|
