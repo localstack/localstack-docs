@@ -65,6 +65,7 @@ const columns: ColumnDef<any>[] = [
 export default function PersistenceCoverage({ service }: { service: string }) {
   const [coverage, setCoverage] = React.useState<any[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([
+    { id: 'implemented', desc: true },
     { id: 'operation', desc: false },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
