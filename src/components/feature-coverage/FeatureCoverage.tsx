@@ -21,7 +21,13 @@ import type {
   ColumnDef,
   ColumnFiltersState,
 } from '@tanstack/react-table';
+import { CircleHelp } from 'lucide-react';
 
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData extends unknown, TValue> {
+    tooltip?: string;
+  }
+}
 
 const columns: ColumnDef<any>[] = [
   {
@@ -55,10 +61,13 @@ const columns: ColumnDef<any>[] = [
   {
     id: 'k8s_support',
     accessorFn: (row) => row[Object.keys(row)[0]].k8s_test_suite,
-    header: () => 'Tested on Kubernetes',
+    header: () => 'Verified on Kubernetes',
     cell: ({ getValue }) => (getValue() ? '✔️' : ''),
     enableSorting: false,
     enableResizing: false,
+    meta: {
+      tooltip: 'Indicates whether this operation has passed our internal integration test suite running against a LocalStack pod deployed on a Kubernetes cluster.'
+    }
   },
 ];
 
@@ -180,6 +189,20 @@ export default function PersistenceCoverage({ service }: { service: string }) {
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
+                      )}
+                      {header.column.columnDef.meta?.tooltip && (
+                          <span
+                            title={header.column.columnDef.meta.tooltip}
+                            style={{
+                                cursor: 'help',
+                                display: 'inline-flex',
+                            }}
+                          >
+                            <CircleHelp
+                              size={20}
+                              className="text-gray-500 dark:text-gray-200 hover:text-gray-300"
+                            />
+                          </span>
                       )}
                       {canSort && (
                         <span>
