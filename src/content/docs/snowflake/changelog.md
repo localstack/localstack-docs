@@ -7,6 +7,45 @@ editUrl: false
 
 The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
 
+### 1.4.0
+- Add support for `SELECT * EXCLUDE (...)`
+- Add support for `PI` function
+- Enhance parity for query binding values and numeric timestamps with TZ
+- Support `UPDATE ... FROM ... SET ...` syntax
+- Add support for query bindings from stage files
+- Add support for switching JSON/Arrow result encoding in session parameters
+- Enable returning of result batches for large query results
+- Fix VARCHAR type/modifier when inferred from SELECT statements
+- Return exact column type/modifiers for `DESCRIBE VIEW` results 
+- Fix default type modifiers when inferred from SELECT statements
+- Add logic to clean up temporary stages on session termination
+- Raise `DuplicateMergeKey` on `MERGE` duplicates
+- Fix duplicate columns in `DESCRIBE TABLE` queries
+- Add support for inline foreign key syntax
+- Properly handle error responses for async queries
+- Fix `GROUP BY` positional references being incorrectly wrapped
+
+### 1.3.0
+- Retry failing db commands and enhance handling of transactions
+- Upgrade to Python 3.13 
+- Expand Alias References
+- Support python-only queries in snowflake scripting
+- Remove byte order mark (BOM) in query string to support SnowConvert tool
+- Add resultSetMetaData for v2 API responses
+- Fix multiline `CREATE TASK`
+- Patch `SHOW OBJECTS` with the new columns
+- Add patch to fix parsing CREATE TABLE within BEGIN blocks
+- Enhance `LAG`/`LEAD` functions
+- Fix variant usage in `FLATTEN`
+- Enhance support for procedures with INSERT statements
+- Enhance parity for `SHOW VIEWS` to show view definitions
+- Enhance scope and object-type support for `SHOW OBJECTS` queries
+- Enhance parity for `SHOW VIEWS` queries
+- Add `TIMELIMIT` parameter to `GENERATOR` function
+- Enhance support for `GRANT` with `APPLICATION ROLEs`
+- Handle cross db references in `INFORMATION_SCHEMA.TABLES` view
+- Enhance parity of column types for `DESCRIBE VIEW` queries
+
 ### 1.2.0
 - Add support for `SQUARE`, `FACTORIAL`, `UNIFORM`, `SYSTEM$ALLOWLIST`, `ARRAYS_ZIP`, `CURRENT_ORGANIZATION_USER`, `QUERY_HISTORY` functions
 - Enhance metadata for varchar type
