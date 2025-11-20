@@ -199,7 +199,8 @@ This section covers configuration options that are specific to certain AWS servi
 | `EKS_K8S_PROVIDER` | `k3s` (default)\|`local` | The k8s provider which should be used to start the k8s cluster backing EKS. For more information on the providers, please see [Elastic Kubernetes Service (EKS)](/aws/services/eks) |
 | `EKS_K3S_IMAGE_REPOSITORY` | `rancher/k3s` (default) | Custom repository of the `rancher/k3s` image used to spin up Kubernetes clusters locally. |
 | `EKS_START_K3D_LB_INGRESS` |      `0` (default)     |  Whether to start the k3d load balancer and Traefik ingress controller automatically when creating an EKS cluster. Set to `1` to enable.  |
- 
+| `EKS_PERSIST_CLUSTER_CONTENTS` | `0` (default) | When Persistence is enabled or when saving/loading Cloud Pods, this flag can be used to control whether the content deployed to EKS clusters will be persisted. Set to `1` to enable. |
+
 ### ElastiCache
 
 | Variable | Example Values | Description |
