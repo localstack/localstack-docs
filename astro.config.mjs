@@ -494,6 +494,10 @@ export default defineConfig({
               autogenerate: { directory: '/snowflake/features' },
             },
             {
+              label: 'Sample Apps',
+              slug: 'snowflake/sample-apps',
+            },
+            {
               label: 'Capabilities',
               collapsed: true,
               autogenerate: { directory: '/snowflake/capabilities' },
@@ -507,10 +511,6 @@ export default defineConfig({
               label: 'Integrations',
               collapsed: true,
               autogenerate: { directory: '/snowflake/integrations' },
-            },
-            {
-              label: 'Sample Apps',
-              slug: 'snowflake/sample-apps',
             },
             {
               label: 'Tutorials',
