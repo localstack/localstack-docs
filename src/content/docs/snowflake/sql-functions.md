@@ -770,6 +770,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$REGISTRY_LIST_IMAGES — Deprecated|❓|
 |SYSTEM$REMOVE_ALL_REFERENCES|❓|
 |SYSTEM$REMOVE_REFERENCE|✅|
+|SYSTEM$REPORT_HEALTH_STATUS|❓|
 |SYSTEM$RESTORE_PRIVATELINK_ENDPOINT|❓|
 |SYSTEM$RESTORE_PRIVATELINK_ENDPOINT_TSS|❓|
 |SYSTEM$REVOKE_PRIVATELINK|❓|
@@ -837,6 +838,7 @@ The content will be updated as additional query features and functions are imple
 |TO_BOOLEAN|✅|
 |TO_CHAR, TO_VARCHAR|✅|
 |TO_DATE, DATE|✅|
+|TO_DECFLOAT|❓|
 |TO_DECIMAL, TO_NUMBER, TO_NUMERIC|✅|
 |TO_DOUBLE|✅|
 |TO_FILE|❓|
@@ -867,6 +869,7 @@ The content will be updated as additional query features and functions are imple
 |TRY_TO_BINARY|✅|
 |TRY_TO_BOOLEAN|✅|
 |TRY_TO_DATE|✅|
+|TRY_TO_DECFLOAT|❓|
 |TRY_TO_DECIMAL, TRY_TO_NUMBER, TRY_TO_NUMERIC|✅|
 |TRY_TO_DOUBLE|✅|
 |TRY_TO_FILE|❓|
