@@ -84,6 +84,9 @@ Options:
                                  or `private`].
   Does not create a new version
 
+  -S, --secret TEXT              Secret for the Cloud Pod encryption. Encryption is an
+                                 Enterprise only feature.
+
   -f, --format [json]            The formatting style for the save command
                                  output.
 
