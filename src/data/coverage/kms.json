@@ -1097,7 +1097,7 @@
             "test": "test_successful_replication[arn]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1107,7 +1107,7 @@
             "test": "test_successful_replication[identifier]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1283,6 +1283,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_get_parameters_for_import",
             "test": "test_get_parameters_for_import",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_get_parameters_for_import_raises_for_non_external_kms_keys",
+            "test": "test_get_parameters_for_import_raises_for_non_external_kms_keys",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -1761,6 +1771,26 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_decrypt_recipient",
+            "test": "test_decrypt_recipient",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_decrypt_recipient_invalid_attestation",
+            "test": "test_decrypt_recipient_invalid_attestation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_derive_shared_secret",
             "test": "test_derive_shared_secret",
             "response": "200",
@@ -1981,6 +2011,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_key_rotation_updates_current_key_material_id_for_aws_symmetric_keys",
+            "test": "test_key_rotation_updates_current_key_material_id_for_aws_symmetric_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_key_rotations_encryption_decryption",
             "test": "test_key_rotations_encryption_decryption",
             "response": "200",
@@ -2063,6 +2103,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_raises_error_given_non_symmetric_key",
             "test": "test_rotate_key_on_demand_raises_error_given_non_symmetric_key",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_on_demand_returns_arn_for_key_id",
+            "test": "test_rotate_on_demand_returns_arn_for_key_id",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -2327,7 +2377,7 @@
             "test": "test_kms_cross_account_encrypt",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags']",
+            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags', '$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2528,6 +2578,70 @@
           }
         ]
       },
+      "Description, KeyUsage, Origin": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "test": "test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_on_external_key_with_no_key_material[RSA_4096]",
+            "test": "test_rotate_key_on_demand_on_external_key_with_no_key_material[RSA_4096]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_on_external_key_with_no_key_material[SYMMETRIC_DEFAULT]",
+            "test": "test_rotate_key_on_demand_on_external_key_with_no_key_material[SYMMETRIC_DEFAULT]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "test": "test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "Description, KeyUsage, Tags": {
         "ls_community": [
           {
@@ -2667,16 +2781,6 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_unsupported_rotate_key_on_demand_with_imported_key_material",
-            "test": "test_unsupported_rotate_key_on_demand_with_imported_key_material",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
           }
         ]
       },
@@ -2785,7 +2889,7 @@
             "test": "test_successful_replication[arn]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2795,7 +2899,7 @@
             "test": "test_successful_replication[identifier]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2959,6 +3063,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_symmetric_encrypt_offline_decrypt_online[RSA_2048-RSAES_OAEP_SHA_1]",
             "test": "test_symmetric_encrypt_offline_decrypt_online[RSA_2048-RSAES_OAEP_SHA_1]",
             "response": "200",
@@ -3040,6 +3154,30 @@
           }
         ]
       },
+      "CiphertextBlob, EncryptionAlgorithm, KeyId, Recipient": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_decrypt_recipient",
+            "test": "test_decrypt_recipient",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_decrypt_recipient_invalid_attestation",
+            "test": "test_decrypt_recipient_invalid_attestation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "CiphertextBlob, EncryptionContext, KeyId": {
         "ls_pro": [
           {
@@ -3069,6 +3207,26 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_symmetric",
             "test": "test_import_key_symmetric",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -3653,11 +3811,41 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_key_rotation_updates_current_key_material_id_for_aws_symmetric_keys",
+            "test": "test_key_rotation_updates_current_key_material_id_for_aws_symmetric_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_replicate_key",
             "test": "test_replicate_key",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..KeyMetadata.Enabled', '$..KeyMetadata.KeyState', '$..ReplicaKeyMetadata.Enabled', '$..ReplicaKeyMetadata.KeyState', '$..ReplicaPolicy']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3889,7 +4077,7 @@
             "test": "test_successful_replication[arn]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3899,7 +4087,7 @@
             "test": "test_successful_replication[identifier]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4249,6 +4437,26 @@
       "EncryptionAlgorithm, KeyId, Plaintext": {
         "ls_community": [
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_decrypt_recipient",
+            "test": "test_decrypt_recipient",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_decrypt_recipient_invalid_attestation",
+            "test": "test_decrypt_recipient_invalid_attestation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_encrypt_decrypt[RSA_2048-RSAES_OAEP_SHA_256]",
             "test": "test_encrypt_decrypt[RSA_2048-RSAES_OAEP_SHA_256]",
             "response": "200",
@@ -4319,8 +4527,28 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_modifies_key_material",
             "test": "test_rotate_key_on_demand_modifies_key_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -4405,7 +4633,7 @@
             "test": "test_kms_cross_account_encrypt",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags']",
+            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags', '$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4415,7 +4643,7 @@
             "test": "test_kms_cross_account_encrypt",
             "response": "400",
             "error": "AccessDeniedException",
-            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags']",
+            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags', '$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5093,7 +5321,7 @@
             "test": "test_kms_cross_account_encrypt",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags']",
+            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags', '$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -5103,7 +5331,7 @@
             "test": "test_kms_cross_account_encrypt",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags']",
+            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags', '$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5313,6 +5541,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "test": "test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_rsa_aes_wrap_sha256",
             "test": "test_import_key_rsa_aes_wrap_sha256",
             "response": "200",
@@ -5333,8 +5571,48 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "test": "test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_get_parameters_for_import",
             "test": "test_get_parameters_for_import",
+            "response": "400",
+            "error": "UnsupportedOperationException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_get_parameters_for_import_raises_for_non_external_kms_keys",
+            "test": "test_get_parameters_for_import_raises_for_non_external_kms_keys",
             "response": "400",
             "error": "UnsupportedOperationException",
             "snapshot_skipped": "",
@@ -5592,6 +5870,50 @@
       }
     },
     "ImportKeyMaterial": {
+      "EncryptedKeyMaterial, ExpirationModel, ImportToken, ImportType, KeyId": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "test": "test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "test": "test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "response": "400",
+            "error": "KMSInvalidStateException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "EncryptedKeyMaterial, ExpirationModel, ImportToken, KeyId": {
         "ls_community": [
           {
@@ -5685,6 +6007,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "test": "test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_rsa_aes_wrap_sha256",
             "test": "test_import_key_rsa_aes_wrap_sha256",
             "response": "200",
@@ -5697,6 +6029,36 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_symmetric",
             "test": "test_import_key_symmetric",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "test": "test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -6005,6 +6367,20 @@
             "origin": "internal"
           }
         ]
+      },
+      "Marker": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_hmac_create_key",
+            "test": "test_hmac_create_key",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
       }
     },
     "ListResourceTags": {
@@ -6077,7 +6453,7 @@
             "test": "test_kms_cross_account_encrypt",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags']",
+            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags', '$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -6107,7 +6483,7 @@
             "test": "test_successful_replication[arn]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6117,7 +6493,7 @@
             "test": "test_successful_replication[identifier]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6171,7 +6547,7 @@
             "test": "test_kms_cross_account_encrypt",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags']",
+            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags', '$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6351,6 +6727,16 @@
       "KeyId": {
         "ls_community": [
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_key_rotation_updates_current_key_material_id_for_aws_symmetric_keys",
+            "test": "test_key_rotation_updates_current_key_material_id_for_aws_symmetric_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_key_rotations_encryption_decryption",
             "test": "test_key_rotations_encryption_decryption",
             "response": "200",
@@ -6371,8 +6757,28 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_modifies_key_material",
             "test": "test_rotate_key_on_demand_modifies_key_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -6401,10 +6807,40 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_on_demand_returns_arn_for_key_id",
+            "test": "test_rotate_on_demand_returns_arn_for_key_id",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_key_rotations_limits",
             "test": "test_key_rotations_limits",
             "response": "400",
             "error": "LimitExceededException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_on_external_key_with_no_key_material[RSA_4096]",
+            "test": "test_rotate_key_on_demand_on_external_key_with_no_key_material[RSA_4096]",
+            "response": "400",
+            "error": "KMSInvalidStateException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_on_external_key_with_no_key_material[SYMMETRIC_DEFAULT]",
+            "test": "test_rotate_key_on_demand_on_external_key_with_no_key_material[SYMMETRIC_DEFAULT]",
+            "response": "400",
+            "error": "KMSInvalidStateException",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -6441,10 +6877,10 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_unsupported_rotate_key_on_demand_with_imported_key_material",
-            "test": "test_unsupported_rotate_key_on_demand_with_imported_key_material",
-            "response": "501",
-            "error": "InternalFailure",
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "test": "test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "response": "400",
+            "error": "KMSInvalidStateException",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -6743,6 +7179,26 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_decrypt_recipient",
+            "test": "test_decrypt_recipient",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_decrypt_recipient_invalid_attestation",
+            "test": "test_decrypt_recipient_invalid_attestation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_derive_shared_secret",
             "test": "test_derive_shared_secret",
             "response": "200",
@@ -6953,6 +7409,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_get_parameters_for_import_raises_for_non_external_kms_keys",
+            "test": "test_get_parameters_for_import_raises_for_non_external_kms_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_get_public_key",
             "test": "test_get_public_key",
             "response": "200",
@@ -7073,6 +7539,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "test": "test_import_key_material_raises_if_there_is_already_key_material_pending",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_import_key_rsa_aes_wrap_sha256",
             "test": "test_import_key_rsa_aes_wrap_sha256",
             "response": "200",
@@ -7175,6 +7651,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_key_rotation_status",
             "test": "test_key_rotation_status",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_key_rotation_updates_current_key_material_id_for_aws_symmetric_keys",
+            "test": "test_key_rotation_updates_current_key_material_id_for_aws_symmetric_keys",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -7343,8 +7829,38 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "test": "test_rotate_key_on_demand_for_external_keys_decrypts_with_previous_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_modifies_key_material",
             "test": "test_rotate_key_on_demand_modifies_key_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_on_external_key_with_no_key_material[RSA_4096]",
+            "test": "test_rotate_key_on_demand_on_external_key_with_no_key_material[RSA_4096]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_on_external_key_with_no_key_material[SYMMETRIC_DEFAULT]",
+            "test": "test_rotate_key_on_demand_on_external_key_with_no_key_material[SYMMETRIC_DEFAULT]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -7373,6 +7889,26 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "test": "test_rotate_key_on_demand_raises_for_no_pending_key_material",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "test": "test_rotate_key_on_demand_updates_current_key_material_for_external_keys",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_with_symmetric_key_and_automatic_rotation_disabled",
             "test": "test_rotate_key_on_demand_with_symmetric_key_and_automatic_rotation_disabled",
             "response": "200",
@@ -7385,6 +7921,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_key_on_demand_with_symmetric_key_and_automatic_rotation_enabled",
             "test": "test_rotate_key_on_demand_with_symmetric_key_and_automatic_rotation_enabled",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_rotate_on_demand_returns_arn_for_key_id",
+            "test": "test_rotate_on_demand_returns_arn_for_key_id",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -7565,16 +8111,6 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_tag_key_with_duplicate_tag_keys_raises_error",
             "test": "test_tag_key_with_duplicate_tag_keys_raises_error",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/kms/test_kms.py::TestKMS::test_unsupported_rotate_key_on_demand_with_imported_key_material",
-            "test": "test_unsupported_rotate_key_on_demand_with_imported_key_material",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -7989,7 +8525,7 @@
             "test": "test_kms_cross_account_encrypt",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags']",
+            "snapshot_skipped": "['$..Error.Message', '$..Role.Tags', '$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -8039,7 +8575,7 @@
             "test": "test_successful_replication[arn]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -8049,7 +8585,7 @@
             "test": "test_successful_replication[identifier]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..CurrentKeyMaterialId']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
