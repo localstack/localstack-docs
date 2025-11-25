@@ -353,3 +353,18 @@ For more details, please take a look at our [Enterprise offering](https://locals
 The LocalStack Web Application connects to your LocalStack container running on your local machine and retrieves the information directly via the `localhost` without using the internet.
 Features such as Resource Browsers, IAM Policy Stream, Chaos Engineering dashboard, and others communicate directly with the LocalStack container using your browser.
 None of the information is sent to the internet, or stored on any external servers maintained by LocalStack.
+
+### Why can't I access my LocalStack instance in the Web Application when using Chrome?
+
+If you are using Google Chrome and encounter an error accessing your LocalStack instance (e.g., at `localhost.localstack.cloud:4566`) from the [Web Application](https://app.localstack.cloud), it is likely due to Chrome's recent security changes regarding [**Private Network Access**](https://developer.chrome.com/blog/local-network-access).
+ 
+This change requires you to explicitly grant the LocalStack Web Application permission to communicate with your local network:
+
+1. In your Chrome browser, navigate to the LocalStack Web Application: `https://app.localstack.cloud`.
+2. Click the **lock icon** located to the left of the URL.
+3. Select **Site settings** (or **Settings** if shown directly).
+4. Scroll down to the **Local network access** setting.
+5. Change the setting to **Allow**.
+6. Refresh the Web App page.
+ 
+This resolves the issue by allowing the public-facing Web Application to access your LocalStack instance running on your local machine.
