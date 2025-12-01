@@ -1,6 +1,5 @@
 {
   "service": "s3control",
-  "pro_support": true,
   "community_support": true,
   "operations": [
     {
@@ -853,7 +852,7 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": false,
-        "external_test_suite": true,
+        "external_test_suite": false,
         "terraform_test_suite": false,
         "aws_validated": false,
         "snapshot_tested": false,
@@ -967,13 +966,13 @@
     },
     {
       "ListTagsForResource": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "community",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -1188,26 +1187,26 @@
     },
     {
       "TagResource": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "community",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
     },
     {
       "UntagResource": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "community",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -1253,8 +1252,8 @@
     },
     {
       "UpdateStorageLensGroup": {
-        "implemented": true,
-        "availability": "pro",
+        "implemented": false,
+        "availability": "",
         "internal_test_suite": false,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -1318,6 +1317,32 @@
         ]
       }
     },
+    "ListTagsForResource": {
+      "AccountId, ResourceArn": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
+            "test": "test_tag_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..HostId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
+            "test": "test_tag_operation_no_bucket",
+            "response": "404",
+            "error": "NoSuchResource",
+            "snapshot_skipped": "['$..HostId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "PutPublicAccessBlock": {
       "AccountId, PublicAccessBlockConfiguration": {
         "ls_community": [
@@ -1349,6 +1374,78 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "TagResource": {
+      "AccountId, ResourceArn, Tags": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
+            "test": "test_tag_lifecycle",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "['$..HostId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_resource_validation",
+            "test": "test_tag_resource_validation",
+            "response": "400",
+            "error": "MalformedXML",
+            "snapshot_skipped": "['$..HostId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_resource_validation",
+            "test": "test_tag_resource_validation",
+            "response": "400",
+            "error": "InvalidTag",
+            "snapshot_skipped": "['$..HostId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
+            "test": "test_tag_operation_no_bucket",
+            "response": "404",
+            "error": "NoSuchResource",
+            "snapshot_skipped": "['$..HostId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UntagResource": {
+      "AccountId, ResourceArn, TagKeys": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
+            "test": "test_tag_lifecycle",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "['$..HostId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
+            "test": "test_tag_operation_no_bucket",
+            "response": "404",
+            "error": "NoSuchResource",
+            "snapshot_skipped": "['$..HostId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
