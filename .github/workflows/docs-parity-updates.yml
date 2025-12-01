@@ -42,18 +42,6 @@ jobs:
           curl -o /tmp/get_latest_github_metrics.sh -L https://raw.githubusercontent.com/localstack/meta/main/scripts/get_latest_github_metrics.sh -H 'Accept: application/vnd.github.v3.raw'
           chmod +x /tmp/get_latest_github_metrics.sh
 
-      - name: Download metrics data from Moto Integration test pipeline (GitHub)
-        working-directory: docs
-        continue-on-error: true
-        run: /tmp/get_latest_github_metrics.sh ./target main
-        env:
-          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-moto-test-coverage 
-          ARTIFACT_ID: test-metrics
-          WORKFLOW: moto-integration-tests
-          PREFIX_ARTIFACT: moto-integration-test
-          FILTER_SUCCESS: 0
-
       - name: Download metrics data from Terraform Integration test pipeline (GitHub)
         working-directory: docs
         run: /tmp/get_latest_github_metrics.sh ./target main
