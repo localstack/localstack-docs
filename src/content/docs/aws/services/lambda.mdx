@@ -500,6 +500,24 @@ Replace `test-layer` and `1` with the name and version number of your layer, res
 
 After granting access, the next time you reference the layer in one of your local Lambda functions using the AWS Lambda layer ARN, the layer will be automatically pulled down and integrated into your local dev environment.
 
+
+## Lambda Managed Instances
+
+LocalStack provides local testing support for Lambda Managed Instances. We support all of the new APIs, as well as the CloudFormation and Terraform resource types. All the same configuration is therefore possible on your local machine, without needing to modify your infrastructure as code (IaC).
+
+::note
+
+This is an evolving feature and current support is scoped as follows:
+
+- We **do not spin up any additional EC2 instances**. LocalStack runs Lambda functions in containers on your local machine.
+
+- **Multi-concurrency support is not yet available.** This feature is planned for a future release (target: 2026). Currently, each parallel Lambda invocation is served by a separate container.
+
+- **IAM Permissions are not enforced.** A Capacity Provider is configured with an Operator Role, but the permissions are not enforced by LocalStack. It’s important you check the AWS documentation to ensure you’ve configured this role correctly.
+
+:::
+
+
 ## LocalStack Lambda Runtime Interface Emulator (RIE)
 
 LocalStack uses a [custom implementation](https://github.com/localstack/lambda-runtime-init/) of the
