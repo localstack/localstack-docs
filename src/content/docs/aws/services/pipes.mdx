@@ -184,6 +184,10 @@ SageMaker Pipeline,
 Step Functions state machine: Express workflows (SYNC or ASYNC),
 or Timestream for LiveAnalytics table.
 
+## Input transformation
+
+LocalStack supports target and enrichment input transformation for Pipes using JSONPath. Wildcards (*) are also supported.
+
 ## Supported log destinations
 
 LocalStack supports the following [log destinations](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html) for detailed Pipes logging:
@@ -198,8 +202,6 @@ or Amazon S3 logs.
 
 The EventBridge Pipes implementation in LocalStack is currently in preview stage and has the following limitations:
 
-- Input transformation is supported for targets and enrichments.
-- Wildcards (*) in JSONPath are supported with input transformation.
 - Lack of concurrency support (i.e., ParallelizationFactor), resulting in slower processing in high-throughput scenarios.
 - Lack of lifecycle management for pipe states (i.e., missing tests for state transitions).
 - Lack of re-sharding support when polling from Kinesis and DynamoDB streams.
