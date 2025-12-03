@@ -63,6 +63,7 @@ Example mapping:
 | Callback URL           | Single sign-on URL          |
 | Identifier (Entity Id) | Audience URI (SP Entity ID) |
 
+
 ### 2. Configure SAML Attribute Statements
 
 LocalStack supports mapping the following user attributes:
@@ -81,6 +82,10 @@ In Okta, add these under **Attribute Statements (optional)**:
 
 > **Note:** In some setups, Okta may not always populate `firstName` or `lastName` during signup. This is usually a configuration mismatch on the IdP side. Users can still manually enter these fields during signup if needed.
 
+![Configuring SSO using Okta with SAML Attribute Statements](/images/aws/sso-okta-attribute-statements.png)
+
+![Configuring SSO using Okta with SAML Attribute Statements](/images/aws/sso-okta-attribute-statements-2.png)
+
 ### 3. Retrieve the Okta Metadata URL
 
 Once the application is created, navigate to:
@@ -88,6 +93,8 @@ Once the application is created, navigate to:
 > **Applications → Sign On → SAML 2.0 → Metadata URL**
 
 Copy this URL.
+
+![Retrieve Okta Metadata URL](/images/aws/retrieve-okta-metadata-url.png)
 
 This URL should be used in the LocalStack UI under:
 
@@ -117,6 +124,8 @@ Once completed, LocalStack will display:
 * **Sign Up Portal URL**
 
 These values are used in the Okta app configuration and for distributing the signup link to end-users.
+
+![Place Okta Metadata URL in LocalStack UI](/images/aws/import-metadata-file.png)
 
 ### 5. Assign Users to the Okta Application
 
