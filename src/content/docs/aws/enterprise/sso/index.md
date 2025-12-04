@@ -132,6 +132,67 @@ These values are used in the Okta app configuration and for distributing the sig
 Ensure that the correct users and groups have access to the Okta SAML app. Only assigned users will be able to authenticate into LocalStack via SSO.
 
 
+
+## SSO for JumpCloud (SAML)
+
+This example outlines the required configuration when using **JumpCloud** as a SAML Identity Provider for LocalStack.
+
+### 1. Create a Custom SAML Application
+
+In the JumpCloud Admin Portal:
+
+1. Go to **SSO Applications → Add New Application**
+2. Select **Custom Application**
+3. Open **Manage Single Sign-On (SSO)** and choose **Configure SSO with SAML**
+
+![JumpCloud Admin Portal Custom Application](/images/aws/jumpcloud-step1.png)
+
+
+### 2. Map Required Fields
+
+Copy the fields from the LocalStack SSO configuration screen into the corresponding JumpCloud fields.
+
+| JumpCloud field   | LocalStack value       |
+| ----------------- | ---------------------- |
+| **IdP Entity ID** | Identity provider name |
+| **SP Entity ID**  | Identifier (Entity Id) |
+| **ACS URLs**      | Callback URL           |
+| **Login URL**     | Sign Up Portal         |
+
+![JumpCloud Map Required Fields](/images/aws/jumpcloud-step2.png)
+
+
+### 3. Attribute Mapping
+
+Add the following user attributes:
+
+| Service Provider Attribute | JumpCloud Attribute |
+| -------------------------- | ------------------- |
+| email                      | email               |
+| firstname                  | firstname           |
+| lastname                   | lastname            |
+
+
+### 4. Required Options
+
+Ensure the following options are enabled:
+
+* **Declare Redirect Endpoint**
+* **Include Group Attribute** with the name:
+
+  ```
+  memberOf
+  ```
+
+![JumpCloud Map Required Fields](/images/aws/jumpcloud-step4.png)
+
+
+### 5. Assign Users
+
+Save the application and assign users or groups who should access LocalStack via SSO.
+
+
+
 ## Attribute mapping
 
 These attributes can be defined to automatically map attributes of user entities in your internal IdP to user attributes in the LocalStack platform.
