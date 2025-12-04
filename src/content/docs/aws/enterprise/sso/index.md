@@ -133,7 +133,7 @@ Ensure that the correct users and groups have access to the Okta SAML app. Only 
 
 
 
-## SSO for JumpCloud (SAML)
+## SSO for JumpCloud
 
 This example outlines the required configuration when using **JumpCloud** as a SAML Identity Provider for LocalStack.
 
