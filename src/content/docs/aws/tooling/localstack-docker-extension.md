@@ -29,7 +29,7 @@ To begin using it, navigate to the **Extensions Marketplace**, search for **Loca
 An alternative method for installing the LocalStack's Extension for Docker Desktop is pulling the [public Docker image](https://hub.docker.com/r/localstack/localstack-docker-desktop) from Docker Hub and installing it!
 
 ```bash
-docker extension install localstack/localstack-docker-desktop:0.5.7
+docker extension install localstack/localstack-docker-desktop:latest
 ```
 
 After installation, you can access the LocalStack Extension for Docker Desktop from the **Extensions** tab.
