@@ -29,12 +29,12 @@ The content will be updated as additional query features and functions are imple
 ### Catalog Integration
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**CATALOG INTEGRATION**|❓|✅|❓|✅|✅|
+|**CATALOG INTEGRATION**|❌|✅|❌|✅|✅|
 
 ### Databases
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|USE|
 |----|----|----|----|----|----|----|----|
-|**DATABASE**|✅|✅|✅|✅|✅|❓|✅|
+|**DATABASE**|✅|✅|✅|✅|✅|❌|✅|
 
 ### Data and File Operations
 | |COPY INTO|GET|LIST|PUT|REMOVE|
@@ -44,17 +44,17 @@ The content will be updated as additional query features and functions are imple
 ### Dynamic Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|----|
-|**DYNAMIC TABLE**|❓|✅|✅|✅|✅|❓|
+|**DYNAMIC TABLE**|❌|✅|✅|✅|✅|❌|
 
 ### External Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**EXTERNAL TABLE**|❓|❓|❓|❓|❓|
+|**EXTERNAL TABLE**|❌|❌|❌|❌|❌|
 
 ### External Volumes
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|----|
-|**EXTERNAL VOLUME**|✅|✅|✅|✅|✅|❓|
+|**EXTERNAL VOLUME**|✅|✅|✅|✅|✅|❌|
 
 ### File Formats
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
@@ -74,7 +74,7 @@ The content will be updated as additional query features and functions are imple
 ### Iceberg Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|----|
-|**ICEBERG TABLE**|❓|✅|❓|✅|❓|❓|
+|**ICEBERG TABLE**|❌|✅|❌|✅|❌|❌|
 
 ### Indexes
 | |CREATE|DROP|SHOW|
@@ -94,12 +94,12 @@ The content will be updated as additional query features and functions are imple
 ### Procedures
 | |ALTER|CALL|CALL WITH|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|----|----|
-|**PROCEDURE**|❓|✅|❓|✅|✅|✅|✅|
+|**PROCEDURE**|❌|✅|❌|✅|✅|✅|✅|
 
 ### Roles
 | |ALTER|CREATE|DROP|GRANT|REVOKE|SHOW|USE|
 |----|----|----|----|----|----|----|----|
-|**ROLE**|❓|✅|✅|❓|❓|✅|✅|
+|**ROLE**|❌|✅|✅|❌|❌|✅|✅|
 
 ### Row Access Policies
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
@@ -109,7 +109,7 @@ The content will be updated as additional query features and functions are imple
 ### Schemas
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|USE|
 |----|----|----|----|----|----|----|----|
-|**SCHEMA**|✅|✅|✅|✅|✅|❓|✅|
+|**SCHEMA**|✅|✅|✅|✅|✅|❌|✅|
 
 ### Sequences
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
@@ -119,7 +119,7 @@ The content will be updated as additional query features and functions are imple
 ### Shares
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**SHARE**|❓|✅|❓|✅|✅|
+|**SHARE**|❌|✅|❌|✅|✅|
 
 ### Stages
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
@@ -129,7 +129,7 @@ The content will be updated as additional query features and functions are imple
 ### Storage Integrations
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**STORAGE INTEGRATION**|❓|✅|✅|✅|✅|
+|**STORAGE INTEGRATION**|❌|✅|✅|✅|✅|
 
 ### Streams
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
@@ -144,12 +144,12 @@ The content will be updated as additional query features and functions are imple
 ### Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|TRUNCATE|UNDROP|
 |----|----|----|----|----|----|----|----|
-|**TABLE**|✅|✅|✅|✅|✅|❓|❓|
+|**TABLE**|✅|✅|✅|✅|✅|❌|❌|
 
 ### Tags
 | |ALTER|CREATE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|
-|**TAG**|✅|✅|✅|✅|❓|
+|**TAG**|✅|✅|✅|✅|❌|
 
 ### Tasks
 | |ALTER|CREATE|DESCRIBE|DROP|EXECUTE|SHOW|
@@ -159,7 +159,7 @@ The content will be updated as additional query features and functions are imple
 ### Users
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**USER**|✅|✅|❓|✅|✅|
+|**USER**|✅|✅|❌|✅|✅|
 
 ### Views
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
