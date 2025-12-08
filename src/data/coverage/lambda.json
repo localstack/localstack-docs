@@ -52,7 +52,7 @@
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -130,7 +130,7 @@
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -286,7 +286,7 @@
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -403,7 +403,7 @@
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -624,7 +624,7 @@
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -806,7 +806,7 @@
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -864,7 +864,7 @@
     {
       "TagResource": {
         "implemented": true,
-        "availability": "community",
+        "availability": "pro",
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -910,7 +910,7 @@
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -4307,7 +4307,7 @@
             "test": "test_function_scaling_config",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4341,10 +4341,30 @@
             "test": "test_api_surface",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_lambda.py::TestManagedInstancesCdk::test_publish_and_invoke",
+            "test": "test_publish_and_invoke",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_add_capacity_provider_to_normal_function_disallowed",
+            "test": "test_add_capacity_provider_to_normal_function_disallowed",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_create_capacity_provider_with_defaults",
@@ -4359,6 +4379,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_lambda_function_relying_on_default_values",
             "test": "test_lambda_function_relying_on_default_values",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_remove_capacity_provider_from_function_disallowed",
+            "test": "test_remove_capacity_provider_from_function_disallowed",
             "response": "202",
             "error": "",
             "snapshot_skipped": "",
@@ -6081,7 +6111,7 @@
             "test": "test_function_scaling_config",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6209,6 +6239,36 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_remove_capacity_provider_from_function_disallowed",
+            "test": "test_remove_capacity_provider_from_function_disallowed",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_validate_lambda_function_capacity_provider_configuration",
+            "test": "test_validate_lambda_function_capacity_provider_configuration",
+            "response": "400",
+            "error": "ValidationException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_validate_lambda_function_capacity_provider_configuration",
+            "test": "test_validate_lambda_function_capacity_provider_configuration",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       },
@@ -6219,7 +6279,17 @@
             "test": "test_api_surface",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_lambda.py::TestManagedInstancesCdk::test_publish_and_invoke",
+            "test": "test_publish_and_invoke",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -14867,6 +14937,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_add_capacity_provider_to_normal_function_disallowed",
+            "test": "test_add_capacity_provider_to_normal_function_disallowed",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_kinesis_dlq_pipe",
             "test": "test_kinesis_dlq_pipe",
             "response": "201",
@@ -18373,6 +18453,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_add_capacity_provider_to_normal_function_disallowed",
+            "test": "test_add_capacity_provider_to_normal_function_disallowed",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_capacity_provider",
             "test": "test_capacity_provider",
             "response": "202",
@@ -18407,7 +18497,7 @@
             "test": "test_function_scaling_config",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -18438,6 +18528,16 @@
             "response": "202",
             "error": "",
             "snapshot_skipped": "['$..ResponseMetadata.HTTPStatusCode', '$..StatusCode']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_remove_capacity_provider_from_function_disallowed",
+            "test": "test_remove_capacity_provider_from_function_disallowed",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -18537,7 +18637,7 @@
             "test": "test_function_scaling_config",
             "response": "409",
             "error": "ResourceConflictException",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -27645,11 +27745,21 @@
         ],
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_lambda.py::TestManagedInstancesCdk::test_invoke",
+            "test": "test_invoke",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_lambda.py::TestManagedInstancesCdk::test_publish_and_invoke",
             "test": "test_publish_and_invoke",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -27729,7 +27839,7 @@
             "test": "test_function_scaling_config",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -27750,6 +27860,16 @@
             "response": "202",
             "error": "",
             "snapshot_skipped": "['$..ResponseMetadata.HTTPStatusCode', '$..StatusCode']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_remove_capacity_provider_from_function_disallowed",
+            "test": "test_remove_capacity_provider_from_function_disallowed",
+            "response": "202",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -30515,6 +30635,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_add_capacity_provider_to_normal_function_disallowed",
+            "test": "test_add_capacity_provider_to_normal_function_disallowed",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_scaling_config_validation",
             "test": "test_scaling_config_validation",
             "response": "204",
@@ -31933,7 +32063,7 @@
             "test": "test_api_surface",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -31943,17 +32073,27 @@
             "test": "test_api_surface",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_lambda.py::TestManagedInstancesCdk::test_invoke",
+            "test": "test_invoke",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_lambda.py::TestManagedInstancesCdk::test_publish_and_invoke",
             "test": "test_publish_and_invoke",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -42035,7 +42175,7 @@
             "test": "test_api_surface",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -44101,11 +44241,21 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_add_capacity_provider_to_normal_function_disallowed",
+            "test": "test_add_capacity_provider_to_normal_function_disallowed",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_function_scaling_config",
             "test": "test_function_scaling_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -44126,6 +44276,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..ResponseMetadata.HTTPStatusCode', '$..StatusCode']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_remove_capacity_provider_from_function_disallowed",
+            "test": "test_remove_capacity_provider_from_function_disallowed",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -44545,7 +44705,7 @@
             "test": "test_function_scaling_config",
             "response": "404",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -44811,7 +44971,7 @@
             "test": "test_api_surface",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -44821,7 +44981,7 @@
             "test": "test_api_surface",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -44831,7 +44991,17 @@
             "test": "test_publish_and_invoke",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_lambda.py::TestManagedInstancesCdk::test_publish_and_invoke",
+            "test": "test_publish_and_invoke",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -44921,7 +45091,17 @@
             "test": "test_function_scaling_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_list_function_versions_by_capacity_provider",
+            "test": "test_list_function_versions_by_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ResponseMetadata.HTTPStatusCode', '$..StatusCode']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -45261,7 +45441,7 @@
             "test": "test_api_surface",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -45427,7 +45607,7 @@
             "test": "test_api_surface",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "['$..Tags', '$..CapacityProviderOperatorRoleArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -45599,6 +45779,16 @@
             "test": "test_function_scaling_config",
             "response": "200",
             "error": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_scaling_config_validation",
+            "test": "test_scaling_config_validation",
+            "response": "400",
+            "error": "ValidationException",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -47679,7 +47869,7 @@
             "test": "test_invoke",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -50423,16 +50613,6 @@
           {
             "node_id": "LocalStack Pro: tests/aws/scenario/serverlesspresso/test_serverlesspresso.py::TestServerlesspressoScenario::test_order_completion_workflow",
             "test": "test_order_completion_workflow",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/aws/scenario/serverlesspresso/test_serverlesspresso.py::TestServerlesspressoScenario::test_populate_data",
-            "test": "test_populate_data",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -56103,7 +56283,7 @@
             "test": "test_publish_and_invoke",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -56173,7 +56353,7 @@
             "test": "test_function_scaling_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -56577,7 +56757,7 @@
             "test": "test_function_scaling_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -59043,7 +59223,7 @@
             "test": "test_publish_and_invoke",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..MemorySize']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -59333,7 +59513,7 @@
             "test": "test_function_scaling_config",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -60019,7 +60199,7 @@
             "test": "test_function_scaling_config",
             "response": "202",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -60043,6 +60223,16 @@
             "test": "test_function_scaling_config",
             "response": "202",
             "error": "",
+            "snapshot_skipped": "['$..Configuration.RevisionId', '$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', 'get_function_scaling_config_before_update..RequestedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig', 'get_function_scaling_config_before_update..AppliedFunctionScalingConfig']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_scaling_config_validation",
+            "test": "test_scaling_config_validation",
+            "response": "400",
+            "error": "ValidationException",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -60526,6 +60716,16 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/cloudformation/test_change_set_fn_transform.py::TestChangeSetFnTransform::test_global_macro_fn_transform",
+            "test": "test_global_macro_fn_transform",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['per-resource-events..*', 'delete-describe..*', '$..Capabilities', '$..IncludeNestedStacks', '$..Scope', '$..Details', '$..Parameters', '$..Replacement', '$..PolicyAction']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -61526,6 +61726,30 @@
       }
     },
     "UpdateFunctionConfiguration": {
+      "CapacityProviderConfig, FunctionName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_add_capacity_provider_to_normal_function_disallowed",
+            "test": "test_add_capacity_provider_to_normal_function_disallowed",
+            "response": "400",
+            "error": "InvalidParameterValueException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_remove_capacity_provider_from_function_disallowed",
+            "test": "test_remove_capacity_provider_from_function_disallowed",
+            "response": "400",
+            "error": "ValidationException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "DeadLetterConfig, FunctionName": {
         "ls_community": [
           {
@@ -61737,6 +61961,20 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "internal"
+          }
+        ]
+      },
+      "FunctionName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_remove_capacity_provider_from_function_disallowed",
+            "test": "test_remove_capacity_provider_from_function_disallowed",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       },
