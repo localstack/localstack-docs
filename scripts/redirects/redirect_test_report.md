@@ -1168,12 +1168,6 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
-### ✅ AWS: /user-guide/aws/iotanalytics/
-- **Expected:** /aws/services/iotanalytics
-- **Final URL:** https://localstack-docs.pages.dev/aws/services/iotanalytics/
-- **Status Code:** 200
-- **Message:** ✅ Redirect successful
-
 ### ✅ AWS: /tutorials/lambda-ecr-container-images/
 - **Expected:** /aws/tutorials/lambda-ecr-container-images
 - **Final URL:** https://localstack-docs.pages.dev/aws/tutorials/lambda-ecr-container-images/
@@ -2083,12 +2077,6 @@
 ### ✅ AWS: /applications/full-stack-application-with-aws-lambda-dynamodb-s3-for-shipment-validation/
 - **Expected:** https://github.com/localstack-samples/sample-shipment-list-demo-lambda-dynamodb-s3
 - **Final URL:** https://github.com/localstack-samples/sample-shipment-list-demo-lambda-dynamodb-s3
-- **Status Code:** 200
-- **Message:** ✅ Redirect successful
-
-### ✅ AWS: /references/coverage/coverage_iotanalytics/
-- **Expected:** /aws/services/iotanalytics
-- **Final URL:** https://localstack-docs.pages.dev/aws/services/iotanalytics/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 

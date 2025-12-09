@@ -120,7 +120,6 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | IoT |  |  |  |  |
 | [](https://docs.localstack.cloud/user-guide/aws/iot/)[AWS IoT](https://docs.localstack.cloud/user-guide/aws/iot/) | ❌ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/iotwireless/)[AWS IoT Wireless](https://docs.localstack.cloud/user-guide/aws/iotwireless/) | ❌ | ❌ | ✅ | ✅ |
-| [](https://docs.localstack.cloud/user-guide/aws/iotanalytics/)[AWS IoT Analytics](https://docs.localstack.cloud/user-guide/aws/iotanalytics/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/iotdata/)[AWS IoT Data](https://docs.localstack.cloud/user-guide/aws/iotdata/) | ❌ | ❌ | ✅ | ✅ |
 | Management & Governance |  |  |  |  |
 | [](https://docs.localstack.cloud/user-guide/aws/cloudformation/)[AWS CloudFormation](https://docs.localstack.cloud/user-guide/aws/cloudformation/) | ✅ | ✅ | ✅ | ✅ |
@@ -303,7 +302,6 @@ For any subscription or access-related questions, please reach out to Support.
 | IoT |  |  |  |
 | [](https://docs.localstack.cloud/user-guide/aws/iot/)[AWS IoT](https://docs.localstack.cloud/user-guide/aws/iot/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/iotwireless/)[AWS IoT Wireless](https://docs.localstack.cloud/user-guide/aws/iotwireless/) | ✅ | ✅ | ✅ |
-| [](https://docs.localstack.cloud/user-guide/aws/iotanalytics/)[AWS IoT Analytics](https://docs.localstack.cloud/user-guide/aws/iotanalytics/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/iotdata/)[AWS IoT Data](https://docs.localstack.cloud/user-guide/aws/iotdata/) | ✅ | ✅ | ✅ |
 | Management & Governance |  |  |  |
 | [](https://docs.localstack.cloud/user-guide/aws/cloudformation/)[AWS CloudFormation](https://docs.localstack.cloud/user-guide/aws/cloudformation/) | ✅ | ✅ | ✅ |
