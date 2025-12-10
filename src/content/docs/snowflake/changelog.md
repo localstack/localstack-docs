@@ -7,6 +7,17 @@ editUrl: false
 
 The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
 
+### 1.5.0
+- Add support for `POSITION`, `CHARINDEX`, `LEFT`, `RIGHT`, `LENGTH/LEN` SQL function
+- Fix long-running queries by continuing to run them asynchronously
+- Enhance parity for `SELECT AVG OVER ROWS` aggregate queries
+- Enhance parity and metadata for large timestamps
+- Add logic to disable SF client telemetry for the emulator
+- Enhance parity for GET expressions with quoted file refs
+- Preserve case for quoted identifiers in SELECT results
+- Enhance parity to GET a single stage file directly
+- Support Iceberg CTAS (`CREATE ICEBERG TABLE AS SELECT`)
+
 ### 1.4.0
 - Add support for `SELECT * EXCLUDE (...)`
 - Add support for `PI` function
