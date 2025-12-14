@@ -407,7 +407,7 @@ The content will be updated as additional query features and functions are imple
 |LEAD|✅|
 |LEAST|✅|
 |LEAST_IGNORE_NULLS|✅|
-|LEFT|❌|
+|LEFT|✅|
 |LENGTH, LEN|✅|
 |[ NOT ] LIKE|✅|
 |LIKE ALL|❌|
@@ -494,8 +494,8 @@ The content will be updated as additional query features and functions are imple
 |REDUCE|❌|
 |[ NOT ] REGEXP|❌|
 |REGEXP_COUNT|❌|
-|REGEXP_INSTR|❌|
-|REGEXP_LIKE|❌|
+|REGEXP_INSTR|✅|
+|REGEXP_LIKE|✅|
 |REGEXP_REPLACE|✅|
 |REGEXP_SUBSTR|✅|
 |REGEXP_SUBSTR_ALL|❌|
