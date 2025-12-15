@@ -201,13 +201,13 @@
       "DescribeCapacityProviders": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": true,
         "terraform_test_suite": true,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -708,13 +708,13 @@
       "UpdateCapacityProvider": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": true,
         "terraform_test_suite": true,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -837,6 +837,20 @@
   ],
   "details": {
     "CreateCapacityProvider": {
+      "autoScalingGroupProvider, cluster, name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
+            "test": "test_firelens_config_from_s3",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      },
       "autoScalingGroupProvider, name": {
         "ls_pro": [
           {
@@ -848,6 +862,30 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          }
+        ]
+      },
+      "cluster, managedInstancesProvider, name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       }
@@ -1534,6 +1572,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestClustersCrud::test_cluster_capacity_providers",
             "test": "test_cluster_capacity_providers",
             "response": "200",
@@ -1919,6 +1967,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..cpu', '$..memory', '$..registeredBy', '$..requiresAttributes', '$..containerDefinitions..systemControls', '$.environment.AWS_ACCESS_KEY_ID', '$.environment.AWS_ENDPOINT_URL', '$.environment.AWS_SECRET_ACCESS_KEY', '$.environment.LOCALSTACK_HOSTNAME', '$.environment.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI', '$.environment.ECS_AGENT_URI', '$.environment.ECS_CONTAINER_METADATA_URI', '$.environment.ECS_CONTAINER_METADATA_URI_V4', '$.environment.HOSTNAME']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2956,6 +3014,40 @@
             "origin": "internal"
           }
         ]
+      },
+      "capacityProvider, cluster": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "500",
+            "error": "InternalError",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
       }
     },
     "DeleteCluster": {
@@ -2982,13 +3074,13 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestHttpApiServiceDiscoveryPrivateIntegration::test_servicediscovery_ecs_integration",
-            "test": "test_servicediscovery_ecs_integration",
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -3047,6 +3139,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..pipelineExecution.artifactRevisions', '$..pipelineExecution.trigger.triggerDetail', '$..pipelineExecutionSummaries..sourceRevisions', '$..pipelineExecutionSummaries..trigger', '$..actionExecutionDetails..output.executionResult.externalExecutionId', '$..actionExecutionDetails..output.outputVariables.AuthorDisplayName', '$..actionExecutionDetails..output.outputVariables.AuthorEmail', '$..actionExecutionDetails..output.outputVariables.AuthorId', '$..actionExecutionDetails..output.outputVariables.ProviderType', '$..actionExecutionDetails..updatedBy']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3447,6 +3549,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..cpu', '$..memory', '$..registeredBy', '$..requiresAttributes', '$..containerDefinitions..systemControls', '$.environment.AWS_ACCESS_KEY_ID', '$.environment.AWS_ENDPOINT_URL', '$.environment.AWS_SECRET_ACCESS_KEY', '$.environment.LOCALSTACK_HOSTNAME', '$.environment.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI', '$.environment.ECS_AGENT_URI', '$.environment.ECS_CONTAINER_METADATA_URI', '$.environment.ECS_CONTAINER_METADATA_URI_V4', '$.environment.HOSTNAME']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4042,6 +4154,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestHttpApiServiceDiscoveryPrivateIntegration::test_servicediscovery_ecs_integration",
             "test": "test_servicediscovery_ecs_integration",
             "response": "200",
@@ -4193,6 +4315,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..headers.server', '$..json.headers.Connection', '$..json.headers.Forwarded', '$..json.headers.Via', '$..json.headers.X-Forwarded-For', '$..json.headers.X-Forwarded-Port', '$..json.headers.X-Forwarded-Proto']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -4603,6 +4735,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..cpu', '$..memory', '$..registeredBy', '$..requiresAttributes', '$..containerDefinitions..systemControls', '$.environment.AWS_ACCESS_KEY_ID', '$.environment.AWS_ENDPOINT_URL', '$.environment.AWS_SECRET_ACCESS_KEY', '$.environment.LOCALSTACK_HOSTNAME', '$.environment.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI', '$.environment.ECS_AGENT_URI', '$.environment.ECS_CONTAINER_METADATA_URI', '$.environment.ECS_CONTAINER_METADATA_URI_V4', '$.environment.HOSTNAME']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5270,6 +5412,32 @@
         ]
       }
     },
+    "DescribeCapacityProviders": {
+      "capacityProviders": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "DescribeClusters": {
       "clusters": {
         "ls_pro": [
@@ -5845,6 +6013,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..headers.server', '$..json.headers.Connection', '$..json.headers.Forwarded', '$..json.headers.Via', '$..json.headers.X-Forwarded-For', '$..json.headers.X-Forwarded-Port', '$..json.headers.X-Forwarded-Proto']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -6515,6 +6693,26 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..cpu', '$..memory', '$..registeredBy', '$..requiresAttributes', '$..containerDefinitions..systemControls', '$.environment.AWS_ACCESS_KEY_ID', '$.environment.AWS_ENDPOINT_URL', '$.environment.AWS_SECRET_ACCESS_KEY', '$.environment.LOCALSTACK_HOSTNAME', '$.environment.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI', '$.environment.ECS_AGENT_URI', '$.environment.ECS_CONTAINER_METADATA_URI', '$.environment.ECS_CONTAINER_METADATA_URI_V4', '$.environment.HOSTNAME']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7220,6 +7418,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestClustersCrud::test_cluster_capacity_providers",
             "test": "test_cluster_capacity_providers",
             "response": "200",
@@ -7585,6 +7793,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..cpu', '$..memory', '$..registeredBy', '$..requiresAttributes', '$..containerDefinitions..systemControls', '$.environment.AWS_ACCESS_KEY_ID', '$.environment.AWS_ENDPOINT_URL', '$.environment.AWS_SECRET_ACCESS_KEY', '$.environment.LOCALSTACK_HOSTNAME', '$.environment.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI', '$.environment.ECS_AGENT_URI', '$.environment.ECS_CONTAINER_METADATA_URI', '$.environment.ECS_CONTAINER_METADATA_URI_V4', '$.environment.HOSTNAME']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -7962,6 +8180,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestClustersCrud::test_cluster_capacity_providers",
             "test": "test_cluster_capacity_providers",
             "response": "200",
@@ -8342,6 +8570,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_failed_tasks_log_to_cloudwatch",
             "test": "test_failed_tasks_log_to_cloudwatch",
             "response": "200",
@@ -8669,6 +8907,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..headers.server', '$..json.headers.Connection', '$..json.headers.Forwarded', '$..json.headers.Via', '$..json.headers.X-Forwarded-For', '$..json.headers.X-Forwarded-Port', '$..json.headers.X-Forwarded-Proto']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -9067,6 +9315,16 @@
             "snapshot_skipped": "['$..cluster.attachments', '$..cluster.attachmentsStatus', '$..cluster.statistics', '$..cluster.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
+            "test": "test_firelens_config_from_s3",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
             "origin": "external"
           }
         ]
@@ -10713,6 +10971,20 @@
           }
         ]
       },
+      "containerDefinitions, family, networkMode, requiresCompatibilities": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "containerDefinitions, family, tags": {
         "ls_pro": [
           {
@@ -10753,6 +11025,30 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      },
+      "capacityProviderStrategy, clientToken, cluster, count, taskDefinition": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "400",
+            "error": "InvalidParameterException",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -11872,6 +12168,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_execute_with_managed_capacity_provider",
+            "test": "test_execute_with_managed_capacity_provider",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..taskDefinition.containerDefinitions..systemControls', '$..taskDefinition.registeredBy', '$..taskDefinition.requiresAttributes']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_failed_tasks_log_to_cloudwatch",
             "test": "test_failed_tasks_log_to_cloudwatch",
             "response": "200",
@@ -12112,16 +12418,6 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestEcsDocker::test_task_mount_host_volume",
-            "test": "test_task_mount_host_volume",
-            "response": "500",
-            "error": "InternalError",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
-          },
-          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_run_simple_task_ec2_parallel_failure",
             "test": "test_run_simple_task_ec2_parallel_failure",
             "response": "500",
@@ -12190,6 +12486,22 @@
         ]
       }
     },
+    "UpdateCapacityProvider": {
+      "cluster, managedInstancesProvider, name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_managed_capacity_providers_lifecycle",
+            "test": "test_managed_capacity_providers_lifecycle",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "UpdateCluster": {
       "cluster, settings": {
         "ls_pro": [
@@ -12225,6 +12537,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..headers.server', '$..json.headers.Connection', '$..json.headers.Forwarded', '$..json.headers.Via', '$..json.headers.X-Forwarded-For', '$..json.headers.X-Forwarded-Port', '$..json.headers.X-Forwarded-Proto']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
+            "test": "test_apigatewayv2_servicediscovery_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
