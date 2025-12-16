@@ -439,10 +439,6 @@ export default defineConfig({
                   autogenerate: { directory: '/aws/enterprise/sso' },
                 },
                 {
-                  label: 'Kubernetes Operator',
-                  slug: 'aws/enterprise/k8s-operator',
-                },
-                {
                   label: 'Kubernetes Executor',
                   slug: 'aws/enterprise/kubernetes-executor',
                 },
