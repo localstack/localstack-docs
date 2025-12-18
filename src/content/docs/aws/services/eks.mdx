@@ -116,6 +116,72 @@ awslocal eks describe-cluster --name cluster1
 }
 ```
 
+### Creating a managed node group
+
+The EKS cluster created in the previous step does not include any worker nodes by default.
+While you can inspect the server node, it is tainted and not schedulable for running workloads.
+To run workloads on the cluster, you need to add at least one worker node.
+One way to achieve this is by creating a managed node group.
+When you create a managed node group, LocalStack automatically provisions a Docker container and joins it to the cluster along with provisioning a mocked ec2 instance.
+
+You can create a managed node group for your EKS cluster using the [`CreateNodegroup`](https://docs.aws.amazon.com/eks/latest/APIReference/API_CreateNodegroup.html) API.
+Run the following command:
+
+```bash
+awslocal eks create-nodegroup \
+  --cluster-name cluster1 \
+  --nodegroup-name nodegroup1 \
+  --node-role arn:aws:iam::000000000000:role/eks-nodegroup-role \
+  --subnets subnet-12345678 \
+  --scaling-config desiredSize=1
+```
+
+```bash title="Output"
+{
+    "nodegroup": {
+        "nodegroupName": "nodegroup1",
+        "nodegroupArn": "arn:aws:eks:us-east-1:000000000000:nodegroup/cluster1/nodegroup1/xxx",
+        "clusterName": "cluster1",
+        "version": "1.21",
+        "releaseVersion": "1.21.7-20220114",
+        "createdAt": "2022-04-13T17:25:45.821000+02:00",
+        "status": "CREATING",
+        "capacityType": "ON_DEMAND",
+        "scalingConfig": {
+            "desiredSize": 1
+        },
+        "subnets": [
+            "subnet-12345678"
+        ],
+        "nodeRole": "arn:aws:iam::000000000000:role/eks-nodegroup-role",
+        "labels": {},
+        "health": {
+            "issues": []
+        },
+        "updateConfig": {
+            "maxUnavailable": 1
+        }
+    }
+}
+```
+
+Once ready you can list the nodes in your cluster using `kubectl`:
+
+```bash
+kubectl get nodes
+```
+
+You should see an output similar to this:
+
+```bash title="Output"
+NAME                                    STATUS   ROLES                  AGE     VERSION
+k3d-cluster1-xxx-agent-nodegroup1-0-0   Ready    <none>                 28s     v1.33.2+k3s1
+k3d-cluster1-xxx-server-0               Ready    control-plane,master   2m12s   v1.33.2+k3s1
+
+```
+
+At this point, your EKS cluster is fully operational and ready to deploy workloads.
+
 ### Utilizing ECR Images within EKS
 
 You can now use ECR (Elastic Container Registry) images within your EKS environment.
