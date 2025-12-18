@@ -42,6 +42,10 @@
     }
 
     navElements.forEach((element) => {
+      if (element.children && element.children.length > 0) {
+        return;
+      }
+
       // Get the text content, trimming whitespace
       const textContent = element.textContent.trim();
 
