@@ -119,7 +119,7 @@ awslocal eks describe-cluster --name cluster1
 ### Creating a managed node group
 
 The EKS cluster created in the previous step does not include any worker nodes by default.
-While you can inspect the server node, it is tainted and not schedulable for running workloads.
+While you can inspect the server node, it is [tainted](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) and workloads cannot be scheduled on it.
 To run workloads on the cluster, you need to add at least one worker node.
 One way to achieve this is by creating a managed node group.
 When you create a managed node group, LocalStack automatically provisions a Docker container and joins it to the cluster along with provisioning a mocked ec2 instance.
