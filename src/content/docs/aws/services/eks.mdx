@@ -23,6 +23,71 @@ To interact with the Kubernetes cluster, you should also install [`kubectl`](htt
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can auto-install an embedded Kubernetes cluster, configure ingress, and deploy a sample service with ECR.
 
+### Deploy the necessary networking components
+
+First we need to create a VPC for the EKS cluster. You can create a new VPC using the [`CreateVpc` API](https://docs.aws.amazon.com/vpc/latest/APIReference/API_CreateVpc.html).
+
+Run the following command:
+
+```bash title="Create VPC"
+awslocal ec2 create-vpc --cidr-block 10.0.0.0/16
+```
+
+```bash title="Output"
+{
+    "Vpc": {
+        ...
+        "CidrBlock": "10.0.0.0/16",
+        "VpcId": "vpc-12345678",
+        ...
+    }
+}
+```
+
+Next, we need to create a subnet in the VPC. You can create a 2 subnets using the [`CreateSubnet` API](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSubnet.html). Some extra tags might be required for specific Controllers to work properly. Please refer to their specific documentation for more details.
+
+Run the following command:
+
+```bash title="Create Subnet 1"
+awslocal ec2 create-subnet \
+  --vpc-id vpc-12345678 \
+  --cidr-block 10.0.1.0/24 \
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=kubernetes.io/cluster/cluster1,Value=Owned},{Key=kubernetes.io/role/internal-elb,Value=1}]' \
+  --availability-zone us-east-1a
+```
+
+```bash title="Output"
+{
+    "Subnet": {
+        ...
+        "SubnetId": "subnet-1",
+        "VpcId": "vpc-12345678",
+        "CidrBlock": "10.0.1.0/24"
+        ...
+    }
+}
+```
+
+```bash title="Create Subnet 2"
+awslocal ec2 create-subnet \
+  --vpc-id vpc-12345678 \
+  --cidr-block 10.0.2.0/24 \
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=kubernetes.io/cluster/cluster1,Value=Owned},{Key=kubernetes.io/role/internal-elb,Value=1}]' \
+  --availability-zone us-east-1b
+```
+
+```bash title="Output"
+{
+    "Subnet": {
+        ...
+        "SubnetId": "subnet-2",
+        "VpcId": "vpc-12345678",
+        "CidrBlock": "10.0.2.0/24"
+        ...
+    }
+}
+```
+
 ### Create an embedded Kubernetes cluster
 
 The default approach for creating Kubernetes clusters using the local EKS API is by setting up an embedded [k3d](https://k3d.io/) kube cluster within Docker.
@@ -38,14 +103,15 @@ EKS_START_K3D_LB_INGRESS=1
 ```
 :::
 
-You can create a new cluster using the [`CreateCluster`](https://docs.aws.amazon.com/eks/latest/APIReference/API_CreateCluster.html) API.
+You can create a new cluster using the [`CreateCluster` API](https://docs.aws.amazon.com/eks/latest/APIReference/API_CreateCluster.html).
+
 Run the following command:
 
-```bash
+```bash title="Create Cluster"
 awslocal eks create-cluster \
   --name cluster1 \
   --role-arn "arn:aws:iam::000000000000:role/eks-role" \
-  --resources-vpc-config "{}"
+  --resources-vpc-config '{"subnetIds":["subnet-1", "subnet-2"]}'
 ```
 
 ```bash title="Output"
@@ -55,7 +121,12 @@ awslocal eks create-cluster \
         "arn": "arn:aws:eks:us-east-1:000000000000:cluster/cluster1",
         "createdAt": "2022-04-13T16:38:24.850000+02:00",
         "roleArn": "arn:aws:iam::000000000000:role/eks-role",
-        "resourcesVpcConfig": {},
+        "resourcesVpcConfig": {
+            "subnetIds": [
+                "subnet-1",
+                "subnet-2"
+            ]
+        },
         "identity": {
             "oidc": {
                 "issuer": "https://localhost.localstack.cloud/eks-oidc"
@@ -65,6 +136,14 @@ awslocal eks create-cluster \
         "clientRequestToken": "cbdf2bb6-fd3b-42b1-afe0-3c70980b5959"
     }
 }
+```
+
+The cluster creation process may take a few moments as LocalStack sets up the necessary components. Avoid attempting to access the cluster until the status changes to `ACTIVE`.
+
+Run the following command to wait for the cluster status to become `ACTIVE`:
+
+```bash title="Wait for Cluster"
+awslocal eks wait cluster-active --name cluster1
 ```
 
 :::note
@@ -86,10 +165,11 @@ f05770ec8523   rancher/k3s:v1.21.5-k3s2       "/bin/k3s server --t…"   1 minut
 ...
 ```
 
-After successfully creating and initializing the cluster, we can easily find the server endpoint, using the [`DescribeCluster`](https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeCluster.html) API.
+After successfully creating and initializing the cluster, we can easily find the server endpoint, using the [`DescribeCluster` API](https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeCluster.html).
+
 Run the following command:
 
-```bash
+```bash title="Describe Cluster"
 awslocal eks describe-cluster --name cluster1
 ```
 
@@ -101,7 +181,12 @@ awslocal eks describe-cluster --name cluster1
         "createdAt": "2022-04-13T17:12:39.738000+02:00",
         "endpoint": "https://localhost.localstack.cloud:4511",
         "roleArn": "arn:aws:iam::000000000000:role/eks-role",
-        "resourcesVpcConfig": {},
+        "resourcesVpcConfig": {
+            "subnetIds": [
+                "subnet-1",
+                "subnet-2"
+            ]
+        },
         "identity": {
             "oidc": {
                 "issuer": "https://localhost.localstack.cloud/eks-oidc"
@@ -124,12 +209,12 @@ You can create a managed node group for your EKS cluster using the [`CreateNodeg
 
 Run the following command:
 
-```bash
+```bash title="Create Node Group"
 awslocal eks create-nodegroup \
   --cluster-name cluster1 \
   --nodegroup-name nodegroup1 \
   --node-role arn:aws:iam::000000000000:role/eks-nodegroup-role \
-  --subnets subnet-12345678 \
+  --subnets subnet-1 subnet-2 \
   --scaling-config desiredSize=1
 ```
 
@@ -148,7 +233,8 @@ awslocal eks create-nodegroup \
             "desiredSize": 1
         },
         "subnets": [
-            "subnet-12345678"
+            "subnet-1",
+            "subnet-2"
         ],
         "nodeRole": "arn:aws:iam::000000000000:role/eks-nodegroup-role",
         "labels": {},
@@ -162,9 +248,17 @@ awslocal eks create-nodegroup \
 }
 ```
 
+The node group creation process may take a few moments as LocalStack sets up the necessary components.
+
+You can wait for the node group status to become `ACTIVE` by running the following command:
+
+```bash title="Wait for Node Group"
+awslocal eks wait nodegroup-active --cluster-name cluster1 --nodegroup-name nodegroup1
+```
+
 Once ready you can list the nodes in your cluster using `kubectl`:
 
-```bash
+```bash title="Get Nodes"
 kubectl get nodes
 ```
 
@@ -204,7 +298,7 @@ Once you have configured this correctly, you can seamlessly use your ECR image w
 To showcase this behavior, let's go through a concise step-by-step guide that will lead us to the successful pulling of an image from local ECR.
 For the purpose of this guide, we will retag the `nginx` image to be pushed to a local ECR repository under a different name, and then utilize it for a pod configuration.
 
-You can create a new ECR repository using the [`CreateRepository`](https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_CreateRepository.html) API.
+You can create a new ECR repository using the [`CreateRepository` API](https://docs.aws.amazon.com/AmazonECR/latest/APIReference/API_CreateRepository.html).
 Run the following command:
 
 ```bash
@@ -250,7 +344,7 @@ docker push 000000000000.dkr.ecr.us-east-1.localhost.localstack.cloud:4566/fanci
 
 Now, let us set up the EKS cluster using the image pushed to local ECR.
 
-Next, we can configure `kubectl` to use the EKS cluster, using the [`UpdateKubeconfig`](https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateClusterConfig.html) API.
+Next, we can configure `kubectl` to use the EKS cluster, using the [`UpdateKubeconfig` API](https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateClusterConfig.html).
 Run the following command:
 
 ```bash
