@@ -140,4 +140,8 @@ Note that in both cases, SSL verification must be disabled.
 
 ### From a lambda function
 
+If you're using LocalStack with a Lambda function, run it inside the same Docker network as LocalStack. The function uses the AWS SDK to communicate directly with LocalStack over the internal Docker network, without leaving the container environment.
+
+Because both the Lambda function and LocalStack are co-located within the Docker network, AWS service requests are resolved internally and routed directly to LocalStack. This does not require transparent endpoint injection or host-level DNS configuration, as networking is handled entirely within Docker.
+
 ![A Lambda function communicating with LocalStack within a Docker container](/images/aws/5.svg)
