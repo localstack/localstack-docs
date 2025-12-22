@@ -38,7 +38,7 @@ awslocal ec2 create-vpc --cidr-block 10.0.0.0/16
     "Vpc": {
         ...
         "CidrBlock": "10.0.0.0/16",
-        "VpcId": "vpc-12345678",
+        "VpcId": "<vpc-id>",
         ...
     }
 }
@@ -50,9 +50,8 @@ Run the following command:
 
 ```bash title="Create Subnet 1"
 awslocal ec2 create-subnet \
-  --vpc-id vpc-12345678 \
+  --vpc-id <vpc-id> \
   --cidr-block 10.0.1.0/24 \
-  --tag-specifications 'ResourceType=subnet,Tags=[{Key=kubernetes.io/cluster/cluster1,Value=Owned},{Key=kubernetes.io/role/internal-elb,Value=1}]' \
   --availability-zone us-east-1a
 ```
 
@@ -60,8 +59,8 @@ awslocal ec2 create-subnet \
 {
     "Subnet": {
         ...
-        "SubnetId": "subnet-1",
-        "VpcId": "vpc-12345678",
+        "SubnetId": "<subnet-id-1>",
+        "VpcId": "<vpc-id>",
         "CidrBlock": "10.0.1.0/24"
         ...
     }
@@ -70,9 +69,8 @@ awslocal ec2 create-subnet \
 
 ```bash title="Create Subnet 2"
 awslocal ec2 create-subnet \
-  --vpc-id vpc-12345678 \
+  --vpc-id <vpc-id> \
   --cidr-block 10.0.2.0/24 \
-  --tag-specifications 'ResourceType=subnet,Tags=[{Key=kubernetes.io/cluster/cluster1,Value=Owned},{Key=kubernetes.io/role/internal-elb,Value=1}]' \
   --availability-zone us-east-1b
 ```
 
@@ -80,8 +78,8 @@ awslocal ec2 create-subnet \
 {
     "Subnet": {
         ...
-        "SubnetId": "subnet-2",
-        "VpcId": "vpc-12345678",
+        "SubnetId": "<subnet-id-2>",
+        "VpcId": "<vpc-id>",
         "CidrBlock": "10.0.2.0/24"
         ...
     }
@@ -111,7 +109,7 @@ Run the following command:
 awslocal eks create-cluster \
   --name cluster1 \
   --role-arn "arn:aws:iam::000000000000:role/eks-role" \
-  --resources-vpc-config '{"subnetIds":["subnet-1", "subnet-2"]}'
+  --resources-vpc-config '{"subnetIds":["<subnet-id-1>", "<subnet-id-2>"]}'
 ```
 
 ```bash title="Output"
@@ -123,8 +121,8 @@ awslocal eks create-cluster \
         "roleArn": "arn:aws:iam::000000000000:role/eks-role",
         "resourcesVpcConfig": {
             "subnetIds": [
-                "subnet-1",
-                "subnet-2"
+                "<subnet-id-1>",
+                "<subnet-id-2>"
             ]
         },
         "identity": {
@@ -165,42 +163,6 @@ f05770ec8523   rancher/k3s:v1.21.5-k3s2       "/bin/k3s server --t…"   1 minut
 ...
 ```
 
-After successfully creating and initializing the cluster, we can easily find the server endpoint, using the [`DescribeCluster` API](https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeCluster.html).
-
-Run the following command:
-
-```bash title="Describe Cluster"
-awslocal eks describe-cluster --name cluster1
-```
-
-```bash title="Output"
-{
-    "cluster": {
-        "name": "cluster1",
-        "arn": "arn:aws:eks:us-east-1:000000000000:cluster/cluster1",
-        "createdAt": "2022-04-13T17:12:39.738000+02:00",
-        "endpoint": "https://localhost.localstack.cloud:4511",
-        "roleArn": "arn:aws:iam::000000000000:role/eks-role",
-        "resourcesVpcConfig": {
-            "subnetIds": [
-                "subnet-1",
-                "subnet-2"
-            ]
-        },
-        "identity": {
-            "oidc": {
-                "issuer": "https://localhost.localstack.cloud/eks-oidc"
-            }
-        },
-        "status": "ACTIVE",
-        "certificateAuthority": {
-            "data": "..."
-        },
-        "clientRequestToken": "d188f578-b353-416b-b309-5d8c76ecc4e2"
-    }
-}
-```
-
 ### Creating a managed node group
 
 The EKS cluster created in the previous step does not include any worker nodes by default. While you can inspect the server node, it is [tainted](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/), and workloads cannot be scheduled on it. To run workloads on the cluster, you must add at least one worker node. One way to do this is by creating a managed node group. When you create a managed node group, LocalStack automatically provisions a Docker container, joins it to the cluster, and provisions a mocked EC2 instance.
@@ -214,7 +176,7 @@ awslocal eks create-nodegroup \
   --cluster-name cluster1 \
   --nodegroup-name nodegroup1 \
   --node-role arn:aws:iam::000000000000:role/eks-nodegroup-role \
-  --subnets subnet-1 subnet-2 \
+  --subnets <subnet-id-1> <subnet-id-2> \
   --scaling-config desiredSize=1
 ```
 
@@ -233,8 +195,8 @@ awslocal eks create-nodegroup \
             "desiredSize": 1
         },
         "subnets": [
-            "subnet-1",
-            "subnet-2"
+            "<subnet-id-1>",
+            "<subnet-id-2>"
         ],
         "nodeRole": "arn:aws:iam::000000000000:role/eks-nodegroup-role",
         "labels": {},
@@ -254,21 +216,6 @@ You can wait for the node group status to become `ACTIVE` by running the followi
 
 ```bash title="Wait for Node Group"
 awslocal eks wait nodegroup-active --cluster-name cluster1 --nodegroup-name nodegroup1
-```
-
-Once ready you can list the nodes in your cluster using `kubectl`:
-
-```bash title="Get Nodes"
-kubectl get nodes
-```
-
-You should see an output similar to this:
-
-```bash title="Output"
-NAME                                    STATUS   ROLES                  AGE     VERSION
-k3d-cluster1-xxx-agent-nodegroup1-0-0   Ready    <none>                 28s     v1.33.2+k3s1
-k3d-cluster1-xxx-server-0               Ready    control-plane,master   2m12s   v1.33.2+k3s1
-
 ```
 
 At this point, your EKS cluster is fully operational and ready to deploy workloads.
