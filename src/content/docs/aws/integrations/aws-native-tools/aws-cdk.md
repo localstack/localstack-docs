@@ -96,7 +96,7 @@ It is advisable to prioritize re-creating (deleting and re-deploying) over updat
 
 CDK Asset deployment (e.g., Lambda code, S3 content) requires a LocalStack paid plan.
 
-This process relies on the `AWS::CloudFormation::CustomResource API`, which is not available in the Community edition. If deployments hang or fail silently, check the LocalStack logs for CustomResource errors.
+This process relies on the `AWS::CloudFormation::CustomResource` API, which is not available in the Community edition. If deployments hang or fail silently, check the LocalStack logs for `CustomResource` errors.
 :::
 
 ### Stacks with validated certificates
