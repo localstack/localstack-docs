@@ -91,7 +91,13 @@ awslocal sns list-topics
 
 Updating CDK stacks may result in deployment failures and inconsistent state within LocalStack.
 It is advisable to prioritize re-creating (deleting and re-deploying) over updating stacks.
-Our focus for this year will be on resolving issues related to the `UPDATE` support, and continuous improvements can be anticipated in this area throughout 2024.
+
+:::note 
+
+CDK Asset deployment (e.g., Lambda code, S3 content) requires a LocalStack paid plan.
+
+This process relies on the `AWS::CloudFormation::CustomResource API`, which is not available in the Community edition. If deployments hang or fail silently, check the LocalStack logs for CustomResource errors.
+:::
 
 ### Stacks with validated certificates
 
