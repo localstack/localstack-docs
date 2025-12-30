@@ -137,7 +137,6 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/references/coverage/coverage_account/)[AWS Account Management](https://docs.localstack.cloud/references/coverage/coverage_account/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_organizations/)[AWS Organizations](https://docs.localstack.cloud/references/coverage/coverage_organizations/) | ❌ | ❌ | ✅ | ✅ |
 | Media |  |  |  |  |
-| [](https://docs.localstack.cloud/references/coverage/coverage_elastictranscoder/)[Amazon Elastic Transcoder](https://docs.localstack.cloud/references/coverage/coverage_elastictranscoder/) | ❌ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_mediaconvert/)[AWS Elemental MediaConvert](https://docs.localstack.cloud/references/coverage/coverage_mediaconvert/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_mediastore/)[AWS Elemental MediaStore](https://docs.localstack.cloud/references/coverage/coverage_mediastore/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_mediastore-data/)[AWS Elemental MediaStore Data Plane](https://docs.localstack.cloud/references/coverage/coverage_mediastore-data/) | ❌ | ❌ | ✅ | ✅ |
@@ -320,7 +319,6 @@ For any subscription or access-related questions, please reach out to Support.
 | [](https://docs.localstack.cloud/references/coverage/coverage_account/)[AWS Account Management](https://docs.localstack.cloud/references/coverage/coverage_account/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_organizations/)[AWS Organizations](https://docs.localstack.cloud/references/coverage/coverage_organizations/) | ✅ | ✅ | ✅ |
 | Media |  |  |  |
-| [](https://docs.localstack.cloud/references/coverage/coverage_elastictranscoder/)[Amazon Elastic Transcoder](https://docs.localstack.cloud/references/coverage/coverage_elastictranscoder/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_mediaconvert/)[AWS Elemental MediaConvert](https://docs.localstack.cloud/references/coverage/coverage_mediaconvert/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_mediastore/)[AWS Elemental MediaStore](https://docs.localstack.cloud/references/coverage/coverage_mediastore/) | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_mediastore-data/)[AWS Elemental MediaStore Data Plane](https://docs.localstack.cloud/references/coverage/coverage_mediastore-data/) | ✅ | ✅ | ✅ |
