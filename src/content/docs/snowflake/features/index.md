@@ -134,7 +134,7 @@ The content will be updated as additional query features and functions are imple
 ### Streams
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**STREAM**|✅|✅|✅|✅|✅|
+|**STREAM**|✅|✅|❌|✅|✅|
 
 ### Streamlits
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
