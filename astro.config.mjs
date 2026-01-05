@@ -88,6 +88,13 @@ export default defineConfig({
           tag: 'script',
           attrs: {
             type: 'text/javascript',
+          },
+          content: `!function(){var e,t,n;e="f528d4d390d322d",t=function(){Reo.init({clientID:"f528d4d390d322d"})},(n=document.createElement("script")).src="https://static.reo.dev/"+e+"/reo.js",n.defer=!0,n.onload=t,document.head.appendChild(n)}();`,
+        },
+        {
+          tag: 'script',
+          attrs: {
+            type: 'text/javascript',
             id: 'icon-script-loader',
             async: true,
             defer: true,
