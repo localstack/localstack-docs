@@ -188,7 +188,7 @@
       "DeleteEnvironmentConfiguration": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": true,
+        "internal_test_suite": false,
         "external_test_suite": false,
         "terraform_test_suite": false,
         "aws_validated": false,
@@ -529,10 +529,10 @@
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -555,10 +555,10 @@
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -581,10 +581,10 @@
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -624,8 +624,8 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -634,8 +634,8 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -643,9 +643,9 @@
             "test": "test_manage_environments",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "snapshot_skipped": "['$..PlatformArn', '$..Environments..CNAME', '$..Environments..HealthStatus', '$..Environments..Status', '$..Environments..EndpointURL', '$..CNAME', '$..EnvironmentLinks', '$..HealthStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -688,8 +688,8 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -726,16 +726,16 @@
           }
         ]
       },
-      "ApplicationName, EnvironmentName": {
+      "ApplicationName, Description, EnvironmentName, OptionSettings, SolutionStackName": {
         "ls_pro": [
           {
             "node_id": "LocalStack Pro: tests/aws/services/elasticbeanstalk/test_elasticbeanstalk.py::TestElasticBeanstalk::test_manage_environments",
             "test": "test_manage_environments",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "snapshot_skipped": "['$..PlatformArn', '$..Environments..CNAME', '$..Environments..HealthStatus', '$..Environments..Status', '$..Environments..EndpointURL', '$..CNAME', '$..EnvironmentLinks', '$..HealthStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -753,15 +753,19 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
-          },
+          }
+        ]
+      },
+      "ApplicationName, TerminateEnvByForce": {
+        "ls_pro": [
           {
             "node_id": "LocalStack Pro: tests/aws/services/elasticbeanstalk/test_elasticbeanstalk.py::TestElasticBeanstalk::test_manage_application_versions",
             "test": "test_manage_application_versions",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -770,8 +774,8 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -779,9 +783,9 @@
             "test": "test_manage_environments",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "snapshot_skipped": "['$..PlatformArn', '$..Environments..CNAME', '$..Environments..HealthStatus', '$..Environments..Status', '$..Environments..EndpointURL', '$..CNAME', '$..EnvironmentLinks', '$..HealthStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -799,16 +803,6 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/elasticbeanstalk/test_elasticbeanstalk.py::TestElasticBeanstalk::test_manage_application_versions",
-            "test": "test_manage_application_versions",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
           }
         ]
       }
@@ -829,22 +823,6 @@
         ]
       }
     },
-    "DeleteEnvironmentConfiguration": {
-      "ApplicationName, EnvironmentName": {
-        "ls_pro": [
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/elasticbeanstalk/test_elasticbeanstalk.py::TestElasticBeanstalk::test_manage_environments",
-            "test": "test_manage_environments",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
-          }
-        ]
-      }
-    },
     "DescribeApplicationVersions": {
       "ApplicationName": {
         "ls_pro": [
@@ -854,8 +832,8 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -904,8 +882,8 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -938,6 +916,40 @@
       }
     },
     "DescribeEnvironments": {
+      "ApplicationName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/elasticbeanstalk/test_elasticbeanstalk.py::TestElasticBeanstalk::test_manage_application_versions",
+            "test": "test_manage_application_versions",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/elasticbeanstalk/test_elasticbeanstalk.py::TestElasticBeanstalk::test_manage_applications",
+            "test": "test_manage_applications",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/elasticbeanstalk/test_elasticbeanstalk.py::TestElasticBeanstalk::test_manage_environments",
+            "test": "test_manage_environments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..PlatformArn', '$..Environments..CNAME', '$..Environments..HealthStatus', '$..Environments..Status', '$..Environments..EndpointURL', '$..CNAME', '$..EnvironmentLinks', '$..HealthStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "ApplicationName, EnvironmentNames": {
         "ls_pro": [
           {
@@ -955,9 +967,9 @@
             "test": "test_manage_environments",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "snapshot_skipped": "['$..PlatformArn', '$..Environments..CNAME', '$..Environments..HealthStatus', '$..Environments..Status', '$..Environments..EndpointURL', '$..CNAME', '$..EnvironmentLinks', '$..HealthStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -991,6 +1003,20 @@
             "origin": "internal"
           }
         ]
+      },
+      "EnvironmentName, ForceTerminate": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/elasticbeanstalk/test_elasticbeanstalk.py::TestElasticBeanstalk::test_manage_environments",
+            "test": "test_manage_environments",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..PlatformArn', '$..Environments..CNAME', '$..Environments..HealthStatus', '$..Environments..Status', '$..Environments..EndpointURL', '$..CNAME', '$..EnvironmentLinks', '$..HealthStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
       }
     },
     "UpdateApplication": {
@@ -1002,8 +1028,8 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -1018,8 +1044,8 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -1033,9 +1059,9 @@
             "test": "test_manage_environments",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
+            "snapshot_skipped": "['$..PlatformArn', '$..Environments..CNAME', '$..Environments..HealthStatus', '$..Environments..Status', '$..Environments..EndpointURL', '$..CNAME', '$..EnvironmentLinks', '$..HealthStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
