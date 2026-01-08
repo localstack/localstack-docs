@@ -450,6 +450,10 @@ export default defineConfig({
                   slug: 'aws/enterprise/kubernetes-executor',
                 },
                 {
+                  label: 'Kubernetes Operator',
+                  slug: 'aws/enterprise/kubernetes-operator',
+                },
+                {
                   label: 'Enterprise Image',
                   slug: 'aws/enterprise/enterprise-image',
                 },
