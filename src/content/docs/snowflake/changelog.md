@@ -7,6 +7,24 @@ editUrl: false
 
 The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
 
+### 1.6.0
+- Add support for SQL `REGEXP_LIKE`, `SPLIT_PART`, `STRIP_NULL_VALUE`, `TRY_PARSE_JSON` function
+- Integrate Snowflake with S3 tables
+- Improve dynamic table query handling and error reporting
+- Support access delegation mode in Polaris catalog
+- Fix `DATEADD` function to support column references as input arguments
+- Fix casting of types for interval arithmetics
+- Enhance parity for `TO_DATE` with large datetimes 
+- Bump Apache NiFi version to 2.7.1
+- Enable cross-database queries in SELECT statements
+- Fix schema-qualified identifier handling and standardize canonical name usage
+- Verify Accept header for `GET/PUT` statements
+- Add support for rows column in `SHOW OBJECTS`
+- Enhance parity for location and other response fields in `PUT` uploads
+- Enhance support for large numbers and auto-casting of `DECIMAL/DOUBLE` with mixed `VALUES`
+- Add update stats to response of DML operations
+- Fixes schema resolution for `CREATE STREAM` statements
+
 ### 1.5.0
 - Add support for `POSITION`, `CHARINDEX`, `LEFT`, `RIGHT`, `LENGTH/LEN` SQL function
 - Fix long-running queries by continuing to run them asynchronously
