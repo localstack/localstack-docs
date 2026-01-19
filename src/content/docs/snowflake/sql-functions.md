@@ -21,6 +21,7 @@ The content will be updated as additional query features and functions are imple
 |ACOS|✅|
 |ACOSH|✅|
 |ADD_MONTHS|✅|
+|AGG|❌|
 |AI_AGG|❌|
 |AI_CLASSIFY|❌|
 |AI_COMPLETE (Prompt object)|❌|
@@ -555,7 +556,7 @@ The content will be updated as additional query features and functions are imple
 |<service_name>!SPCS_GET_METRICS|❌|
 |<service_name>!SPCS_WAIT_FOR|❌|
 |SPLIT|✅|
-|SPLIT_PART|❌|
+|SPLIT_PART|✅|
 |SPLIT_TEXT_MARKDOWN_HEADER (SNOWFLAKE.CORTEX)|❌|
 |SPLIT_TEXT_RECURSIVE_CHARACTER (SNOWFLAKE.CORTEX)|❌|
 |SPLIT_TO_TABLE|❌|
@@ -626,7 +627,7 @@ The content will be updated as additional query features and functions are imple
 |STDDEV, STDDEV_SAMP|❌|
 |STDDEV_POP|❌|
 |STORAGE_LIFECYCLE_POLICY_HISTORY|❌|
-|STRIP_NULL_VALUE|❌|
+|STRIP_NULL_VALUE|✅|
 |STRTOK|❌|
 |STRTOK_SPLIT_TO_TABLE|❌|
 |STRTOK_TO_ARRAY|❌|
@@ -778,6 +779,7 @@ The content will be updated as additional query features and functions are imple
 |SYSTEM$REMOVE_ALL_REFERENCES|❌|
 |SYSTEM$REMOVE_REFERENCE|✅|
 |SYSTEM$REPORT_HEALTH_STATUS|❌|
+|SYSTEM$RESOLVE_PYTHON_PACKAGES|❌|
 |SYSTEM$RESTORE_PRIVATELINK_ENDPOINT|❌|
 |SYSTEM$RESTORE_PRIVATELINK_ENDPOINT_TSS|❌|
 |SYSTEM$REVOKE_PRIVATELINK|❌|
