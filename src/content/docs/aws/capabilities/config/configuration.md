@@ -430,6 +430,7 @@ To learn more about these configuration options, see [Cloud Pods](/aws/capabilit
 | `OUTBOUND_HTTPS_PROXY` | `https://10.10.1.3` | HTTPS Proxy used for downloads of runtime dependencies and connections outside LocalStack itself |
 | `REQUESTS_CA_BUNDLE` | `/var/lib/localstack/lib/ca_bundle.pem` | CA Bundle to be used to verify HTTPS requests made by LocalStack |
 | `DOCKER_HOST` | `unix:///var/run/docker.sock` (default) | Daemon socket to connect Docker. Used by the LocalStack dependency [Docker](https://docs.docker.com/engine/reference/commandline/cli/#environment-variables). |
+| `SSL_NO_VERIFY` | `0` \| `1` | Disables TLS verification when making requests to the LocalStack Cloud, including the license server, and when fetching the certificate for localhost.localstack.cloud. |
 
 ## Debugging
 
