@@ -20,7 +20,7 @@ const response = await fetch(
   'https://api.github.com/repos/localstack/localstack/releases/latest',
   {
     headers: { Accept: 'application/vnd.github+json' },
-  }
+  },
 );
 const data = await response.json();
 const latestVersion = data.tag_name.replace('v', '');
@@ -54,6 +54,7 @@ export default defineConfig({
       components: {
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
         LanguageSelect: './src/components/LanguageSelectWithGetStarted.astro',
+        Banner: './src/components/BannerWithPersistentAnnouncement.astro',
       },
       expressiveCode: {
         themes: ['one-light', 'one-dark-pro'],
