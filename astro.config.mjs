@@ -7,7 +7,6 @@ import starlightLinksValidator from 'starlight-links-validator';
 import starlightImageZoom from 'starlight-image-zoom';
 import sitemap from '@astrojs/sitemap';
 import starlightFullViewMode from 'starlight-fullview-mode';
-import starlightTocOverviewCustomizer from 'starlight-toc-overview-customizer';
 
 import markdoc from '@astrojs/markdoc';
 
@@ -43,6 +42,7 @@ export default defineConfig({
     starlight({
       title: 'Docs',
       favicon: '/images/favicons/favicon.ico',
+      routeMiddleware: './src/routeData.ts',
       customCss: [
         './src/fonts/font-face.css',
         './src/styles/global.css',
@@ -189,9 +189,6 @@ export default defineConfig({
       plugins: [
         starlightImageZoom({
           showCaptions: true,
-        }),
-        starlightTocOverviewCustomizer({
-          overviewTitle: 'Back to top',
         }),
         starlightFullViewMode({
           leftSidebarEnabled: false,
