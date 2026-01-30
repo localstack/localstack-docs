@@ -3,7 +3,7 @@ title: AWS .NET
 description: How to use the .NET AWS SDK with LocalStack.
 template: doc
 sidebar:
-    order: 1
+  order: 1
 ---
 
 ## Overview
@@ -18,7 +18,7 @@ Here is an example of how to create an `LambdaClient` with the endpoint set to L
 ```csharp
 var lambdaClient = new AmazonLambdaClient(new AmazonLambdaConfig(
     {
-        ServiceURL = "http://localhost:4566"
+        ServiceURL = "http://localhost.localstack.cloud:4566"
     }
 );
 ```
@@ -28,7 +28,7 @@ If you want to specify a region and credentials when creating the client, please
 ```csharp
 var lambdaClient = new AmazonLambdaClient(new BasicAWSCredentials("test", "test"), new AmazonLambdaConfig(
     {
-        ServiceURL = "http://localhost:4566",
+        ServiceURL = "http://localhost.localstack.cloud:4566",
         AuthenticationRegion = "eu-west-1"
     }
 );
@@ -58,7 +58,7 @@ The S3 service endpoint is slightly different from the other service endpoints, 
 ```csharp
 var config = new AmazonS3Config(
     {
-        ServiceURL = "http://localhost:4566",
+        ServiceURL = "http://localhost.localstack.cloud:4566",
         ForcePathStyle = true
     }
 );

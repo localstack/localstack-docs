@@ -3,7 +3,7 @@ title: AWS C++
 description: How to use the C++ AWS SDK with LocalStack.
 template: doc
 sidebar:
-    order: 2
+  order: 2
 ---
 
 ## Overview
@@ -36,7 +36,7 @@ int main()
 
     // create SQS client with local endpoint configuration
     Aws::Client::ClientConfiguration clientConfig;
-    clientConfig.endpointOverride = "http://localhost:4566";
+    clientConfig.endpointOverride = "http://localhost.localstack.cloud:4566";
     SQS::SQSClient client = SQS::SQSClient(clientConfig);
 
     // create queue
@@ -88,7 +88,7 @@ Once compiled, we'll see the following output when running the application:
 Creating queue ...
 Sending message ...
 Receiving message ...
-Received 1 messages from queue http://localhost:4566/000000000000/test-queue
+Received 1 messages from queue http://localhost.localstack.cloud:4566/000000000000/test-queue
 Received message:
   MessageId: 4731b327-49b2-4410-a8da-2c479e7bde04
   ReceiptHandle: ZTQ1M2Q1ZjYtMjBkZS00ODQxLTlkYzQtMjBlMGQ4MDNkODVkIGFybjphd3M6c3FzOnVzLWVhc3QtMTowMDAwMDAwMDAwMDA6dGVzdC1xdWV1ZSA0NzMxYjMyNy00OWIyLTQ0MTAtYThkYS0yYzQ3OWU3YmRlMDQgMTY3ODIxMjExMS42ODk1NTE=
@@ -99,5 +99,5 @@ Delete message success result: 1
 
 ## Resources
 
-* [AWS SDK for C++](https://docs.aws.amazon.com/sdk-for-cpp)
-* [Getting Started Guide](https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/getting-started.html)
+- [AWS SDK for C++](https://docs.aws.amazon.com/sdk-for-cpp)
+- [Getting Started Guide](https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/getting-started.html)

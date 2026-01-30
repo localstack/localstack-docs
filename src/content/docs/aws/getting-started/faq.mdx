@@ -11,25 +11,27 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 ## LocalStack Core FAQs
 
 ### How do I resolve SSL issues due to revoked local certificate for `localhost.localstack.cloud`?
+
 To resolve the issue follow the steps:
+
 1. **Update to the latest LocalStack version:** To resolve the SSL issues due to revoked certificate, we strongly recommend updating to the latest LocalStack version (v3.7.0 and above)for the most reliable and seamless experience.
 2. **Clear the cached certificate:** It’s important to clear the cached certificate if you continue to experience the issue when updating to the latest LS version.
-  This can be done by deleting the cached certificate file.
-  For example, on Linux systems, you can locate and remove the file at  `~/.cache/localstack/volume/cache/server.test.pem`.
-  The exact path may differ depending on your operating system and how you’ve started LocalStack.
-  Please refer to our [documentation](/aws/capabilities/config/filesystem/#localstack-volume-directory) for specific instructions.
+   This can be done by deleting the cached certificate file.
+   For example, on Linux systems, you can locate and remove the file at `~/.cache/localstack/volume/cache/server.test.pem`.
+   The exact path may differ depending on your operating system and how you’ve started LocalStack.
+   Please refer to our [documentation](/aws/capabilities/config/filesystem/#localstack-volume-directory) for specific instructions.
 
 **Workarounds for older (&lt;v3.7.0) LocalStack versions:**
 
-1. **Disable Certificate Download**: To prevent downloading a revoked certificate, set the environment variable  `SKIP_SSL_CERT_DOWNLOAD=1`.
-  This will cause LocalStack to use a self-signed SSL certificate.
-  Additionally, it’s important to clear the cached certificate from your host machine as mentioned above.
-2. **Use HTTP Instead of HTTPS**: Where possible, use  `http://`  instead of  `https://`  to avoid issues related to the revoked certificates.
-  This workaround works with most browsers.
-  However, Safari requires additional steps:
-    2.1.  **Safari Users**: To make this work, you’ll need to first navigate to the page in a new tab and accept the security warning.
-  To do this, make sure that LocalStack is started with  `SKIP_SSL_CERT_DOWNLOAD=1`  and that you have cleared the cached certificate as mentioned above.
-  Once you’ve accepted the warning, you should be able to proceed.
+1. **Disable Certificate Download**: To prevent downloading a revoked certificate, set the environment variable `SKIP_SSL_CERT_DOWNLOAD=1`.
+   This will cause LocalStack to use a self-signed SSL certificate.
+   Additionally, it’s important to clear the cached certificate from your host machine as mentioned above.
+2. **Use HTTP Instead of HTTPS**: Where possible, use `http://` instead of `https://` to avoid issues related to the revoked certificates.
+   This workaround works with most browsers.
+   However, Safari requires additional steps:
+   2.1. **Safari Users**: To make this work, you’ll need to first navigate to the page in a new tab and accept the security warning.
+   To do this, make sure that LocalStack is started with `SKIP_SSL_CERT_DOWNLOAD=1` and that you have cleared the cached certificate as mentioned above.
+   Once you’ve accepted the warning, you should be able to proceed.
 
 ### How to update my LocalStack CLI?
 
@@ -49,12 +51,12 @@ localstack update localstack-cli
 ### Is using `localhost.localstack.cloud:4566` to set as the endpoint for AWS services recommended?
 
 `localhost.localstack.cloud` is the recommended endpoint - especially for S3, in order to enable host-based bucket endpoints.
+
 - When using this domain within LocalStack compute environments like Lambda, ECS or EC2, this domain name resolves to the LocalStack container via our DNS server available in version 2.3.
 - By configuring your environment, your applications can also use `localhost.localstack.cloud` to resolve to the LocalStack container via our DNS server.
 - In addition, we also publish an SSL certificate that is automatically used inside LocalStack, in order to enable HTTPS endpoints with valid certificates.
 
-Across our docs, we use `localhost:4566` instead of `localhost.localstack.cloud`, to provide a fallback option to users.
-The primary reason being that some users are behind a corporate firewall or an internet service provider that does not allow resolving `localhost.localstack.cloud` properly.
+Across our docs, we use `localhost.localstack.cloud:4566` instead of `localhost:4566`, as this is the recommended endpoint. However, we still provide `localhost:4566` as a fallback option to users, especially for users who are behind a corporate firewall or an internet service provider that does not allow resolving `localhost.localstack.cloud` properly.
 
 ### How should I use the latest LocalStack Docker images?
 
@@ -69,6 +71,7 @@ The diagnose endpoint is only available if you run LocalStack with `DEBUG=1`.
 We do push a set of different image tags for the LocalStack Docker images.
 When using LocalStack, you can decide which tag you want to use.
 These tags have different semantics and will be updated on different occasions:
+
 - `latest` (default)
   - This is our default tag.
     It refers to the latest commit which has been fully tested using our extensive integration test suite.
@@ -133,6 +136,7 @@ To fix this, set the following environment variables:
 Set the system locale (language for non-Unicode programs) to UTF-8 to avoid Unicode errors.
 
 Follow these steps:
+
 - Open the Control Panel.
 - Go to "Clock and Region" or "Region and Language."
 - Click on the "Administrative" tab.
@@ -148,10 +152,11 @@ A company proxy can lead to connection issues.
 To allow access to the `localstack/bigdata` image, use the following Docker configuration in your `docker-compose.yml` file:
 
 ```yaml
+
 ...
 environment:
-- HTTP_PROXY =
-- NO_PROXY = .s3.localhost.localstack.cloud,127.0.0.1,*.localhost
+  - HTTP_PROXY =
+  - NO_PROXY = .s3.localhost.localstack.cloud,127.0.0.1,*.localhost
 ...
 ```
 
@@ -197,11 +202,12 @@ Set your DockerHub credentials:
 You can add in the volume `~/.docker/config.json:/config.json` where the `config.json` is saved and point the `DOCKER_CONFIG=/config.json` variable to the JSON file in the Docker image.
 
 ```yaml
+
 ...
-    environment:
-      - DOCKER_CONFIG=/config.json
-    volumes:
-      - ~/.docker/config.json:/config.json
+environment:
+  - DOCKER_CONFIG=/config.json
+volumes:
+  - ~/.docker/config.json:/config.json
 ...
 ```
 
@@ -209,16 +215,12 @@ If you have an active AWS account, you can use the public AWS ECR image.
 You can use the following command to pull the image:
 
 <Tabs>
-<TabItem label="Community">
-```shell
-docker pull public.ecr.aws/localstack/localstack:latest
-```
-</TabItem>
-<TabItem label="Pro">
-```shell
-docker pull public.ecr.aws/localstack/localstack-pro:latest
-```
-</TabItem>
+  <TabItem label="Community">
+    ```shell docker pull public.ecr.aws/localstack/localstack:latest ```
+  </TabItem>
+  <TabItem label="Pro">
+    ```shell docker pull public.ecr.aws/localstack/localstack-pro:latest ```
+  </TabItem>
 </Tabs>
 
 ### How to increase IO performance for LocalStack's Docker image under Windows?
@@ -244,6 +246,7 @@ To do so, you need to change the [`docker-compose.yml`](https://github.com/local
 ---
 
 As an alternative, you can set the volume as `- "~/volume:/var/lib/localstack"` then start Docker using command `wsl docker compose -f docker-compose.yml up`.
+
 </TabItem>
 <TabItem label="Docker Volumes">
 ```yaml showshowLineNumbers
@@ -357,7 +360,7 @@ None of the information is sent to the internet, or stored on any external serve
 ### Why can't I access my LocalStack instance in the Web Application when using Chrome?
 
 If you are using Google Chrome and encounter an error accessing your LocalStack instance (e.g., at `localhost.localstack.cloud:4566`) from the [Web Application](https://app.localstack.cloud), it is likely due to Chrome's recent security changes regarding [**Private Network Access**](https://developer.chrome.com/blog/local-network-access).
- 
+
 This change requires you to explicitly grant the LocalStack Web Application permission to communicate with your local network:
 
 1. In your Chrome browser, navigate to the LocalStack Web Application: `https://app.localstack.cloud`.
@@ -366,5 +369,5 @@ This change requires you to explicitly grant the LocalStack Web Application perm
 4. Scroll down to the **Local network access** setting.
 5. Change the setting to **Allow**.
 6. Refresh the Web App page.
- 
+
 This resolves the issue by allowing the public-facing Web Application to access your LocalStack instance running on your local machine.

@@ -3,7 +3,7 @@ title: Quarkus
 description: Use the Quarkus framework with LocalStack
 template: doc
 sidebar:
-    order: 3
+  order: 3
 ---
 
 ## Introduction
@@ -68,15 +68,15 @@ Add the following dependencies to the `pom.xml` file:
     <groupId>software.amazon.awssdk</groupId>
     <artifactId>apache-client</artifactId>
 </dependency>
-````
+```
 
 To configure LocalStack, add the following properties to the `application.properties` file:
 
 ```bash showshowLineNumbers
-quarkus.lambda.endpoint-override=http://localhost:4566 
+quarkus.lambda.endpoint-override=http://localhost.localstack.cloud:4566
 
-quarkus.lambda.aws.region=us-east-1 
-quarkus.lambda.aws.credentials.type=static 
+quarkus.lambda.aws.region=us-east-1
+quarkus.lambda.aws.credentials.type=static
 quarkus.lambda.aws.credentials.static-provider.access-key-id=test-key
 quarkus.lambda.aws.credentials.static-provider.secret-access-key=test-secret
 ```
@@ -101,6 +101,7 @@ With GraalVM installed, you can also create a native executable binary using the
 ```bash
 ./mvnw clean package -Dnative.
 ```
+
 :::
 
 :::note
@@ -108,8 +109,8 @@ Dev Services for Amazon Services is automatically enabled for each extension add
 
 - When `quarkus.devservices.enabled` is set to false.
 - When `devservices.enabled` is set to false per extension (e.g., `quarkus.s3.devservices.enabled=false`).
-- When the `endpoint-override` is configured (e.g., `quarkus.s3.endpoint-override=http://localhost:4566`).
-:::
+- When the `endpoint-override` is configured (e.g., `quarkus.s3.endpoint-override=http://localhost.localstack.cloud:4566`).
+  :::
 
 ## Supported extensions
 
@@ -128,22 +129,23 @@ Dev Services for Amazon Services is automatically enabled for each extension add
 The following configuration properties are fixed at build time.
 All the other configuration properties can be overridden at runtime.
 
-| Property                                   | Type                   | Default                              |
-|----------------------------------------------------------|------------------------|--------------------------------------|
-| `quarkus.aws.devservices.localstack.image-name`           | string                 | `localstack/localstack:3.0.1`            |
-| `quarkus.aws.devservices.localstack.init-scripts-folder`  | string                 |                                      |
-| `quarkus.aws.devservices.localstack.init-scripts-classpath`| string                 |                                      |
-| `quarkus.aws.devservices.localstack.init-completion-msg`  | string                 |                                      |
-| `quarkus.aws.devservices.localstack.container-properties` | `Map<String,String>`  |                                      |
-| `quarkus.aws.devservices.localstack.additional-services."additional-services".enabled` | boolean                |                                      |
-| `quarkus.aws.devservices.localstack.additional-services."additional-services".shared`  | boolean                | `false`                              |
-| `quarkus.aws.devservices.localstack.additional-services."additional-services".service-name` | string                 | `localstack`                         |
-| `quarkus.aws.devservices.localstack.additional-services."additional-services".container-properties` | `Map<String,String>`  |                                      |
+| Property                                                                                            | Type                 | Default                       |
+| --------------------------------------------------------------------------------------------------- | -------------------- | ----------------------------- |
+| `quarkus.aws.devservices.localstack.image-name`                                                     | string               | `localstack/localstack:3.0.1` |
+| `quarkus.aws.devservices.localstack.init-scripts-folder`                                            | string               |                               |
+| `quarkus.aws.devservices.localstack.init-scripts-classpath`                                         | string               |                               |
+| `quarkus.aws.devservices.localstack.init-completion-msg`                                            | string               |                               |
+| `quarkus.aws.devservices.localstack.container-properties`                                           | `Map<String,String>` |                               |
+| `quarkus.aws.devservices.localstack.additional-services."additional-services".enabled`              | boolean              |                               |
+| `quarkus.aws.devservices.localstack.additional-services."additional-services".shared`               | boolean              | `false`                       |
+| `quarkus.aws.devservices.localstack.additional-services."additional-services".service-name`         | string               | `localstack`                  |
+| `quarkus.aws.devservices.localstack.additional-services."additional-services".container-properties` | `Map<String,String>` |                               |
 
 :::note
+
 - If `quarkus.aws.devservices.localstack.additional-services."additional-services".enabled` is set to `true` and the endpoint-override is not configured, LocalStack will be started and utilized instead of the provided configuration.
   For all services excluding Cognito, LocalStack will function as the core cloud emulator.
-   In the case of Cognito, the emulation/mocking will be done by Moto.
+  In the case of Cognito, the emulation/mocking will be done by Moto.
 - The `quarkus.aws.devservices.localstack.additional-services."additional-services".shared` indicates whether the LocalStack container managed by Dev Services is shared.
   In shared mode, Quarkus utilizes label-based service discovery, specifically the `quarkus-dev-service-localstack` label, to identify running containers.
   If a matching container is found, it is used.
@@ -155,7 +157,7 @@ All the other configuration properties can be overridden at runtime.
   Otherwise, it creates a new container with the `quarkus-dev-service-localstack` label set to the specified value.
   In test mode, Dev Services groups services with the same service-name value into a single container instance.
   This property is useful when there's a requirement for multiple shared LocalStack instances.
-:::
+  :::
 
 ### Specific configuration
 

@@ -2,8 +2,8 @@
 title: Testing Utils
 description: Tools to simplify application testing on LocalStack.
 template: doc
-tags: ["Free"]
-nav: 
+tags: ['Free']
+nav:
 ---
 
 ## Introduction
@@ -42,7 +42,7 @@ class TestKinesis(unittest.TestCase):
             service_name="kinesis",
             aws_access_key_id="test",
             aws_secret_access_key="test",
-            endpoint_url="http://localhost:4566",
+            endpoint_url="http://localhost.localstack.cloud:4566",
         )
 
         kinesis.create_stream(StreamName="test", ShardCount=1)

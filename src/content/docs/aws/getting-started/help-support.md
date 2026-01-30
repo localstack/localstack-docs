@@ -24,7 +24,7 @@ We welcome any feedback as we continue to improve LocalStack for all users.
 
 :::note
 At the moment, we only provide support in `English`, as we are an international team with members from various regions.
- This allows us to maintain clear and consistent internal communication across all our locations.
+This allows us to maintain clear and consistent internal communication across all our locations.
 :::
 
 ## Support Coverage
@@ -36,7 +36,7 @@ At the moment, we only provide support in `English`, as we are an international 
 | Base       | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
 | Ultimate   | [**Priority Support**](/aws/getting-started/help-support/#priority-support)     |
 | Enterprise | [**Enterprise Support**](/aws/getting-started/help-support/#enterprise-support) |
-| Student       | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
+| Student    | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
 
 ## Support Coverage for legacy plans
 
@@ -44,38 +44,38 @@ At the moment, we only provide support in `English`, as we are an international 
 | ---------- | ------------------------------------------------------------------------------- |
 | Hobby      | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
 | Starter    | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
-| Teams      | [**Priority Support**](/aws/getting-started/help-support/#priority-support)    |
+| Teams      | [**Priority Support**](/aws/getting-started/help-support/#priority-support)     |
 | Enterprise | [**Enterprise Support**](/aws/getting-started/help-support/#enterprise-support) |
 
 ## Support features
 
 | Features                     | Basic | Standard | Priority | Enterprise |
-| ---------------------------- |:-------:|:----------:|:----------:|:------------:|
-| LocalStack documentation     | ✅    | ✅       | ✅       | ✅         |
-| Community support            | ✅    | ✅       | ✅       | ✅         |
-| Operational support          | ✅    | ✅       | ✅       | ✅         |
-| 1v1 technical support        |       | ✅       | ✅       | ✅         |
-| Screen sharing sessions      |       |          | ✅       | ✅         |
-| Third-Party Tools            |       |          | ✅       | ✅         |
-| Faster response times        |       |          | ✅       | ✅         |
-| Real-time chat support\*     |       |          |          | ✅         |
-| Support ticketing portal     |       |          |          | ✅         |
-| SLAs                         |       |          |          | ✅         |
-| Direct Slack connect channel |       |          |          | ✅         |
-| Dedicated CSM and TAM         |       |          |          | ✅         |
+| ---------------------------- | :---: | :------: | :------: | :--------: |
+| LocalStack documentation     |  ✅   |    ✅    |    ✅    |     ✅     |
+| Community support            |  ✅   |    ✅    |    ✅    |     ✅     |
+| Operational support          |  ✅   |    ✅    |    ✅    |     ✅     |
+| 1v1 technical support        |       |    ✅    |    ✅    |     ✅     |
+| Screen sharing sessions      |       |          |    ✅    |     ✅     |
+| Third-Party Tools            |       |          |    ✅    |     ✅     |
+| Faster response times        |       |          |    ✅    |     ✅     |
+| Real-time chat support\*     |       |          |          |     ✅     |
+| Support ticketing portal     |       |          |          |     ✅     |
+| SLAs                         |       |          |          |     ✅     |
+| Direct Slack connect channel |       |          |          |     ✅     |
+| Dedicated CSM and TAM        |       |          |          |     ✅     |
 
 - Real time chat support is offered during our [Support Business Hours](#support-business-hours)
 
 ## Support channels
 
 | Channels              | Basic | Standard | Priority | Enterprise |
-| --------------------- |:-------:|:----------:|:----------:|:------------:|
-| Slack community       | ✅    | ✅       | ✅       | ✅         |
-| GitHub Issues         | ✅    | ✅       | ✅       | ✅         |
-| Support email         |       | ✅       | ✅       | ✅         |
-| Web Application chat          |       | ✅       | ✅       | ✅         |
-| Ticketing portal      |       |          |          | ✅         |
-| Slack connect channel |       |          |          | ✅         |
+| --------------------- | :---: | :------: | :------: | :--------: |
+| Slack community       |  ✅   |    ✅    |    ✅    |     ✅     |
+| GitHub Issues         |  ✅   |    ✅    |    ✅    |     ✅     |
+| Support email         |       |    ✅    |    ✅    |     ✅     |
+| Web Application chat  |       |    ✅    |    ✅    |     ✅     |
+| Ticketing portal      |       |          |          |     ✅     |
+| Slack connect channel |       |          |          |     ✅     |
 
 ## Support Resources
 
@@ -214,9 +214,9 @@ To use LocalStack's diagnostics endpoint:
 - Set the environment variable `LS_LOG=trace`
 - Start LocalStack
 - Run the affected task(s)
-- Call the diagnostic endpoint `curl -s localhost:4566/_localstack/diagnose > diagnose.json && zip diagnose.zip diagnose.json && rm diagnose.json` (Endpoint URL depends on your configuration)
+- Call the diagnostic endpoint `curl -s localhost.localstack.cloud:4566/_localstack/diagnose > diagnose.json && zip diagnose.zip diagnose.json && rm diagnose.json` (Endpoint URL depends on your configuration)
 - Once you have the `diagnose.zip` file, please send it to our support team via our email support@localstack.cloud, or via your existing support ticket.
-:::
+  :::
 
 :::danger
 Ensure that you avoid sending the diagnostic output to public channels or forums, as it may contain sensitive information.

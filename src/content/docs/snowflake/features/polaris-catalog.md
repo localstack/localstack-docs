@@ -1,7 +1,7 @@
 ---
-title: "Polaris Catalog"
+title: 'Polaris Catalog'
 description: Get started with Polaris Catalog in LocalStack for Snowflake
-tags: ["Base"]
+tags: ['Base']
 ---
 
 ## Introduction
@@ -32,7 +32,7 @@ docker run -d --name polaris-test \
   -e AWS_REGION=us-east-1 \
   -e AWS_ACCESS_KEY_ID=test \
   -e AWS_SECRET_ACCESS_KEY=test \
-  -e AWS_ENDPOINT_URL=http://localhost:4566 \
+  -e AWS_ENDPOINT_URL=http://localhost.localstack.cloud:4566 \
   -e POLARIS_BOOTSTRAP_CREDENTIALS=default-realm,root,s3cr3t \
   -e polaris.realm-context.realms=default-realm \
   -e quarkus.otel.sdk.disabled=true \
@@ -41,7 +41,7 @@ docker run -d --name polaris-test \
 
 Wait for Polaris to become healthy:
 
-```bash 
+```bash
 curl -X GET http://localhost:8182/health
 ```
 
@@ -186,28 +186,28 @@ awslocal s3 ls s3://$BUCKET_NAME/test/test_namespace/
 
 You will see:
 
--   `data/` with `.parquet` files
--   `metadata/` with Iceberg metadata files
+- `data/` with `.parquet` files
+- `metadata/` with Iceberg metadata files
 
 ## Configuration options
 
 The following configuration options are available for the Polaris Catalog Docker image provided by LocalStack:
 
-| Environment Variable | Description | Default Value | Required |
-|---------------------|-------------|---------------|----------|
-| `AWS_REGION` | The AWS region to use | `us-east-1` | Yes |
-| `AWS_ACCESS_KEY_ID` | AWS access key ID for accessing AWS services | - | Yes when using AWS services |
-| `AWS_SECRET_ACCESS_KEY` | AWS secret access key for accessing AWS services | - | Yes when using AWS services |
-| `AWS_ENDPOINT_URL` | Custom endpoint URL for AWS services (e.g., for LocalStack) | - | No |
-| `POLARIS_BOOTSTRAP_CREDENTIALS` | Initial realm, username, and password in format: `realm,username,password` | - | Yes |
-| `polaris.realm-context.realms` | List of realms to create/use | - | Yes |
-| `quarkus.otel.sdk.disabled` | Disable OpenTelemetry SDK | `false` | No |
+| Environment Variable            | Description                                                                | Default Value | Required                    |
+| ------------------------------- | -------------------------------------------------------------------------- | ------------- | --------------------------- |
+| `AWS_REGION`                    | The AWS region to use                                                      | `us-east-1`   | Yes                         |
+| `AWS_ACCESS_KEY_ID`             | AWS access key ID for accessing AWS services                               | -             | Yes when using AWS services |
+| `AWS_SECRET_ACCESS_KEY`         | AWS secret access key for accessing AWS services                           | -             | Yes when using AWS services |
+| `AWS_ENDPOINT_URL`              | Custom endpoint URL for AWS services (e.g., for LocalStack)                | -             | No                          |
+| `POLARIS_BOOTSTRAP_CREDENTIALS` | Initial realm, username, and password in format: `realm,username,password` | -             | Yes                         |
+| `polaris.realm-context.realms`  | List of realms to create/use                                               | -             | Yes                         |
+| `quarkus.otel.sdk.disabled`     | Disable OpenTelemetry SDK                                                  | `false`       | No                          |
 
 The following logging options are available for the Polaris Catalog Docker image:
 
-| Logging Option | Description |
-|----------------|-------------|
-| `quarkus.log.level` | Sets the overall logging level (e.g., DEBUG) |
-| `quarkus.log.console.level` | Sets the console logging level (e.g., DEBUG) |
-| `quarkus.log.category."org.apache.polaris".level` | Sets the logging level specifically for the Polaris components |
+| Logging Option                                        | Description                                                             |
+| ----------------------------------------------------- | ----------------------------------------------------------------------- |
+| `quarkus.log.level`                                   | Sets the overall logging level (e.g., DEBUG)                            |
+| `quarkus.log.console.level`                           | Sets the console logging level (e.g., DEBUG)                            |
+| `quarkus.log.category."org.apache.polaris".level`     | Sets the logging level specifically for the Polaris components          |
 | `quarkus.log.category."org.apache.polaris".min-level` | Sets the minimum logging level for the Polaris components (e.g., TRACE) |

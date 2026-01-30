@@ -3,7 +3,7 @@ title: AWS Ruby
 description: How to use the Ruby AWS SDK with LocalStack.
 template: doc
 sidebar:
-    order: 8
+  order: 8
 ---
 
 ## Overview
@@ -92,7 +92,7 @@ For alternative AWS services, you can use the following configuration:
 ```ruby showshowLineNumbers
 region = "us-east-2"
 Aws.config.update(
-    endpoint:  'http://localhost:4566', # update with localstack endpoint
+    endpoint:  'http://localhost.localstack.cloud:4566', # update with localstack endpoint
     access_key_id: 'test', # update with localstack credentials
     secret_access_key: 'test', # update with localstack credentials
     region: region,
@@ -101,5 +101,5 @@ Aws.config.update(
 
 ## Resources
 
-* [AWS SDK for Ruby](https://aws.amazon.com/sdk-for-ruby/)
-* [Official repository of the AWS SDK for Ruby](https://github.com/aws/aws-sdk-ruby)
+- [AWS SDK for Ruby](https://aws.amazon.com/sdk-for-ruby/)
+- [Official repository of the AWS SDK for Ruby](https://github.com/aws/aws-sdk-ruby)
