@@ -2,9 +2,9 @@
 title: Custom TLS certificates
 description: Using custom TLS certificates with LocalStack
 template: doc
-tags: ["Free"]
+tags: ['Free']
 sidebar:
-    order: 5
+  order: 5
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
@@ -88,8 +88,8 @@ services:
 It is recommended to create a `boot` init hook.
 Create a directory on your local system that includes
 
-* the certificate you wish to copy, and
-* the following shell script:
+- the certificate you wish to copy, and
+- the following shell script:
 
 ```bash
 #!/bin/bash
@@ -102,8 +102,21 @@ update-ca-certificates
 
 Then run LocalStack with the environment variables
 
-* `REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt`, and
-* `CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt`, and
-* `NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt`
+- `REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt`, and
+- `CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt`, and
+- `NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt`
 
 and follow the instructions fn the [init hooks documentation](/aws/capabilities/config/initialization-hooks) for configuring LocalStack to use the hook directory as a `boot` hook.
+
+## Disabling TLS verification for LocalStack Cloud
+
+If your proxy intercepts traffic to LocalStack cloud services (e.g., license server, localhost.localstack.cloud), you can disable TLS verification for these specific requests using the `SSL_NO_VERIFY` [configuration variable](/aws/capabilities/config/configuration#security).
+
+```bash
+SSL_NO_VERIFY=1 localstack start
+```
+
+:::caution
+This approach disables certificate verification rather than trusting your proxy's certificate.
+Use custom certificates (as described above) when you need to maintain proper TLS verification for all traffic.
+:::
