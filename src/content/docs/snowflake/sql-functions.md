@@ -46,7 +46,7 @@ The content will be updated as additional query features and functions are imple
 |APPLICATION_JSON|❌|
 |APPLICATION_SPECIFICATION_STATUS_HISTORY|❌|
 |APPROX_COUNT_DISTINCT|❌|
-|APPROX_PERCENTILE|❌|
+|APPROX_PERCENTILE|✅|
 |APPROX_PERCENTILE_ACCUMULATE|❌|
 |APPROX_PERCENTILE_COMBINE|❌|
 |APPROX_PERCENTILE_ESTIMATE|❌|
@@ -127,10 +127,10 @@ The content will be updated as additional query features and functions are imple
 |BITSHIFTRIGHT|✅|
 |BITXOR|✅|
 |BITXOR_AGG|❌|
-|BOOLAND|❌|
+|BOOLAND|✅|
 |BOOLAND_AGG|❌|
 |BOOLNOT|❌|
-|BOOLOR|❌|
+|BOOLOR|✅|
 |BOOLOR_AGG|❌|
 |BOOLXOR|❌|
 |BOOLXOR_AGG|❌|
@@ -161,6 +161,7 @@ The content will be updated as additional query features and functions are imple
 |COPY_HISTORY|❌|
 |CORR|❌|
 |CORTEX_SEARCH_DATA_SCAN|❌|
+|CORTEX_SEARCH_REFRESH_HISTORY|❌|
 |COS|✅|
 |COSH|✅|
 |COT|✅|
@@ -460,7 +461,7 @@ The content will be updated as additional query features and functions are imple
 |NULLIFZERO|✅|
 |NVL|✅|
 |NVL2|✅|
-|OBJECT_AGG|❌|
+|OBJECT_AGG|✅|
 |OBJECT_CONSTRUCT|✅|
 |OBJECT_CONSTRUCT_KEEP_NULL|✅|
 |OBJECT_DELETE|✅|
@@ -861,6 +862,7 @@ The content will be updated as additional query features and functions are imple
 |TO_QUERY|❌|
 |TO_TIME, TIME|✅|
 |TO_TIMESTAMP, TO_TIMESTAMP_*|✅|
+|TO_UUID|❌|
 |TO_VARIANT|✅|
 |TO_XML|❌|
 |TRANSFORM|❌|
@@ -889,6 +891,7 @@ The content will be updated as additional query features and functions are imple
 |TRY_TO_GEOMETRY|❌|
 |TRY_TO_TIME|✅|
 |TRY_TO_TIMESTAMP, TRY_TO_TIMESTAMP_*|✅|
+|TRY_TO_UUID|❌|
 |TYPEOF|❌|
 |UNICODE|✅|
 |UNIFORM|✅|
@@ -907,7 +910,9 @@ The content will be updated as additional query features and functions are imple
 |VECTOR_L2_DISTANCE|❌|
 |VECTOR_MAX|❌|
 |VECTOR_MIN|❌|
+|VECTOR_NORMALIZE|❌|
 |VECTOR_SUM|❌|
+|VECTOR_TRUNCATE|❌|
 |WAREHOUSE_LOAD_HISTORY|❌|
 |WAREHOUSE_METERING_HISTORY|❌|
 |WIDTH_BUCKET|❌|
