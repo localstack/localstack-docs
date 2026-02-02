@@ -16,7 +16,12 @@ Lambda Remote Debugging lets you use breakpoints, inspect variables, and step th
 
 :::note 
 
-For examples and sample apps, visit the [LocalStack Samples Repository](https://github.com/localstack-samples/localstack-pro-samples). 
+For examples and sample apps, visit the [LocalStack Samples Repository](https://github.com/localstack-samples/localstack-pro-samples):
+
+- [Debug your Python Lambda Function](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debugging-sam-python)
+- [Debug your JavaScript Lambda Function](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debugging-sam-javascript)
+- [Debug your TypeScript Lambda Function](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debugging-sam-typescript)
+- [Debug your Java Lambda Function](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debugging-sam-java)
 
 ::: 
 
@@ -311,7 +316,6 @@ functions:
 * [Debugging Python Lambda functions](#debugging-python-lambda-functions)
 * [Debugging JVM Lambda functions](#debugging-jvm-lambda-functions)
 * [Debugging Node.js Lambda functions](#debugging-nodejs-lambda-functions)
-* [Resources](#resources)
 
 :::note
 
@@ -327,10 +331,6 @@ Lambda functions debugging used to be a difficult task.
 LocalStack changes that
 with the same local code mounting functionality that also helps you
 to [iterate quickly over your function code](/aws/tooling/lambda-tools/hot-reloading).
-
-For a simple working example of this feature, you can refer to
-[our samples](https://github.com/localstack/localstack-pro-samples/tree/master/lambda-mounting-and-debugging).
-There, the necessary code fragments for enabling debugging are already present.
 
 ### Debugging a Python Lambda in Visual Studio Code
 
@@ -476,13 +476,13 @@ To create the Lambda function, you just need to take care of two things:
 2. Set the S3 key to the path of the directory your lambda function resides in.
    The handler is then referenced by the filename of your lambda code and the function in that code that should be invoked.
 
-So, in our [example](https://github.com/localstack/localstack-pro-samples/tree/master/lambda-mounting-and-debugging), this would be:
+Using the AWS CLI, this would be:
 
 ```bash
 awslocal lambda create-function --function-name my-cool-local-function \
     --code S3Bucket="hot-reload",S3Key="$(pwd)/" \
     --handler handler.handler \
-    --runtime python3.8 \
+    --runtime python3.13 \
     --timeout 150 \
     --role arn:aws:iam::000000000000:role/lambda-role
 ```
@@ -719,11 +719,9 @@ awslocal lambda invoke --function-name func1 \
 </Tabs>
 
 
-## Resources
+## Examples
 
-* [Lambda Code Mounting and Debugging (Python)](https://github.com/localstack/localstack-pro-samples/tree/master/lambda-mounting-and-debugging)
-* [Spring Cloud Function on LocalStack (Kotlin JVM)](https://github.com/localstack/localstack-pro-samples/tree/master/sample-archive/spring-cloud-function-microservice)
-* [Enable Lambda Debug Mode to Automatically Raise Execution Timeouts (Java)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/java/base-enable-lambda-debug-mode)
-* [Enable Lambda Debug Mode to Automatically Raise Execution Timeouts (Python)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/python/base-multiple-lambda-debug-mode)
-* [Enable Lambda Debug Mode to Automatically Raise Execution Timeouts for multiple Lambda functions (Python)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/python/base-multiple-lambda-debug-mode)
-* [Enable Lambda Debug Mode to Automatically Handle Concurrent Function Invocations (Python)](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debug-mode/python/base-concurrent-lambda-debug-mode)
+- [Debug your Python Lambda Function](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debugging-sam-python)
+- [Debug your JavaScript Lambda Function](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debugging-sam-javascript)
+- [Debug your TypeScript Lambda Function](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debugging-sam-typescript)
+- [Debug your Java Lambda Function](https://github.com/localstack-samples/localstack-pro-samples/tree/master/lambda-debugging-sam-java)
