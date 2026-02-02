@@ -316,7 +316,6 @@ functions:
 * [Debugging Python Lambda functions](#debugging-python-lambda-functions)
 * [Debugging JVM Lambda functions](#debugging-jvm-lambda-functions)
 * [Debugging Node.js Lambda functions](#debugging-nodejs-lambda-functions)
-* [Resources](#resources)
 
 :::note
 
@@ -332,10 +331,6 @@ Lambda functions debugging used to be a difficult task.
 LocalStack changes that
 with the same local code mounting functionality that also helps you
 to [iterate quickly over your function code](/aws/tooling/lambda-tools/hot-reloading).
-
-For a simple working example of this feature, you can refer to
-[our samples](https://github.com/localstack/localstack-pro-samples/tree/master/lambda-mounting-and-debugging).
-There, the necessary code fragments for enabling debugging are already present.
 
 ### Debugging a Python Lambda in Visual Studio Code
 
@@ -481,13 +476,13 @@ To create the Lambda function, you just need to take care of two things:
 2. Set the S3 key to the path of the directory your lambda function resides in.
    The handler is then referenced by the filename of your lambda code and the function in that code that should be invoked.
 
-So, in our [example](https://github.com/localstack/localstack-pro-samples/tree/master/lambda-mounting-and-debugging), this would be:
+Using the AWS CLI, this would be:
 
 ```bash
 awslocal lambda create-function --function-name my-cool-local-function \
     --code S3Bucket="hot-reload",S3Key="$(pwd)/" \
     --handler handler.handler \
-    --runtime python3.8 \
+    --runtime python3.13 \
     --timeout 150 \
     --role arn:aws:iam::000000000000:role/lambda-role
 ```
