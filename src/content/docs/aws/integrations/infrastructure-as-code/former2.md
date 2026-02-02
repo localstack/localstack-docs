@@ -3,7 +3,7 @@ title: Former2
 description: Use Former2 to generate Infrastructure-as-Code outputs from existing resources with LocalStack.
 template: doc
 sidebar:
-    order: 5
+  order: 5
 ---
 
 ## Introduction
@@ -79,6 +79,7 @@ localstack logs
 ```bash
 awslocal s3 ls
 ```
+
 ```bash title="Output"
 2023-10-14 21:01:08 my-bucket
 ```
@@ -90,7 +91,7 @@ awslocal sqs list-queues
 ```bash title="Output"
 {
     "QueueUrls": [
-        "http://localhost:4566/000000000000/my-queue"
+        "http://localhost.localstack.cloud:4566/000000000000/my-queue"
     ]
 }
 ```

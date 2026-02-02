@@ -8,7 +8,7 @@ LocalStack provides several internal endpoints for various local AWS services an
 These endpoints are not part of the official AWS API and are available in the `/_localstack` and `/_aws` paths.
 You can use [curl](https://curl.se/) or your favourite HTTP REST client to access endpoints.
 
-You can start your LocalStack instance and go to [http://localhost.localstack.cloud:4566/_localstack/swagger](http://localhost.localstack.cloud:4566/_localstack/swagger)
+You can start your LocalStack instance and go to [http://localhost.localstack.cloud:4566/\_localstack/swagger](http://localhost.localstack.cloud:4566/_localstack/swagger)
 to browse the Swagger UI, visualize and interact with all the API's resources implemented in LocalStack.
 
 ### LocalStack endpoints
@@ -24,9 +24,10 @@ You can use the `/_localstack/health` endpoint to restart or kill the services.
 You can use [curl](https://curl.se/) or your HTTP REST client to access the endpoint:
 
 ```bash
-curl -v --request POST --header "Content-Type: application/json"  --data '{"action":"restart"}' http://localhost:4566/_localstack/health
-curl -v --request POST --header "Content-Type: application/json"  --data '{"action":"kill"}' http://localhost:4566/_localstack/health
+curl -v --request POST --header "Content-Type: application/json"  --data '{"action":"restart"}' http://localhost.localstack.cloud:4566/_localstack/health
+curl -v --request POST --header "Content-Type: application/json"  --data '{"action":"kill"}' http://localhost.localstack.cloud:4566/_localstack/health
 ```
+
 :::
 
 ### AWS endpoints

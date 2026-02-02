@@ -3,7 +3,7 @@ title: AWS CDK
 description: Use the AWS CDK (Cloud Development Kit) with LocalStack.
 template: doc
 sidebar:
-    order: 2
+  order: 2
 ---
 
 ![AWS CDK](public/images/aws/aws-cdk-logo.svg)
@@ -46,15 +46,15 @@ cdklocal --help
 
 The following environment variables can be configured:
 
-* `AWS_ENDPOINT_URL`: The endpoint URL (i.e., protocol, host, and port) to connect to LocalStack (default: `http://localhost:4566`)
-* `LAMBDA_MOUNT_CODE`: Whether to use local Lambda code mounting (via setting `hot-reload` S3 bucket name)
+- `AWS_ENDPOINT_URL`: The endpoint URL (i.e., protocol, host, and port) to connect to LocalStack (default: `http://localhost.localstack.cloud:4566`)
+- `LAMBDA_MOUNT_CODE`: Whether to use local Lambda code mounting (via setting `hot-reload` S3 bucket name)
 
 ### Example
 
 Make sure that LocalStack is installed and successfully started with the required services before running the example
 
 ```bash
-curl http://localhost:4566/_localstack/health
+curl http://localhost.localstack.cloud:4566/_localstack/health
 ```
 
 The CDK command line ships with a sample app generator to run a quick test for getting started.
@@ -92,7 +92,7 @@ awslocal sns list-topics
 Updating CDK stacks may result in deployment failures and inconsistent state within LocalStack.
 It is advisable to prioritize re-creating (deleting and re-deploying) over updating stacks.
 
-:::note 
+:::note
 
 CDK Asset deployment (e.g., Lambda code, S3 content) requires a LocalStack paid plan.
 
@@ -112,8 +112,8 @@ However, issues exist for `aws-cdk >= 2.177.0`.
 
 For these versions:
 
-* We unset AWS-related environment variables like `AWS_PROFILE` before calling `cdk`.
-* We explicitly set `AWS_ENDPOINT_URL` and `AWS_ENDPOINT_URL_S3` to point to LocalStack.
+- We unset AWS-related environment variables like `AWS_PROFILE` before calling `cdk`.
+- We explicitly set `AWS_ENDPOINT_URL` and `AWS_ENDPOINT_URL_S3` to point to LocalStack.
 
 Some environment variables may cause conflicting config, such as wrong region or accidental deploys to real AWS.
 To allow specific variables (e.g., `AWS_REGION`), use `AWS_ENVAR_ALLOWLIST`:

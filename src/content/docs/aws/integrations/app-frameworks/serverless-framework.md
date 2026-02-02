@@ -3,7 +3,7 @@ title: Serverless Framework
 description: Use the Serverless Framework with LocalStack.
 template: doc
 sidebar:
-    order: 1
+  order: 1
 ---
 
 ## Overview
@@ -20,11 +20,11 @@ In particular, the setup consists of the following two steps.
 
 This guide assumes that you have the following tools installed.
 
-* LocalStack ([Install](/aws/getting-started/installation))
-* Serverless ([Install](https://www.serverless.com/framework/docs/getting-started/))
+- LocalStack ([Install](/aws/getting-started/installation))
+- Serverless ([Install](https://www.serverless.com/framework/docs/getting-started/))
 
 It also assumes that you already have a Serverless app set up consisting of a couple of Lambda functions and a `serverless.yml` file similar to the following.
-An example Serverless app integrated with LocalStack can be found here: <a href="https://github.com/localstack/serverless-python-rest-api-with-dynamodb"><i class="fab fa-github"></i>  Simple REST API using the Serverless Framework and LocalStack</a>
+An example Serverless app integrated with LocalStack can be found here: <a href="https://github.com/localstack/serverless-python-rest-api-with-dynamodb"><i class="fab fa-github"></i> Simple REST API using the Serverless Framework and LocalStack</a>
 
 ```yaml showshowLineNumbers
 service: my-service
@@ -67,6 +67,7 @@ resources:
 ## Install and configure Serverless-LocalStack Plugin
 
 To install the plugin, execute the following command in the root of your project.
+
 ```bash
 npm install -D serverless-localstack
 ```
@@ -74,8 +75,8 @@ npm install -D serverless-localstack
 Next, set up the plugin by adding the following properties to `serverless.yml`.
 
 ```yaml
-...
 
+...
 plugins:
   - serverless-localstack
 
@@ -103,7 +104,7 @@ dynamodb = boto3.resource('dynamodb')
 By default, this call attempts to create a connection via the usual AWS endpoints.
 However, when running services in LocalStack, we need to make sure, our applications creates a connection via the LocalStack endpoint instead.
 
-Usually, all of LocalStack's services are available via a specific port on localhost (e.g. `localhost:4566`).
+Usually, all of LocalStack's services are available via a specific port on localhost (e.g. `localhost.localstack.cloud:4566`).
 However, this endpoint only works when accessing LocalStack from outside its Docker runtime.
 
 Since the Lambda functions execute within the LocalStack Docker container, Lambda functions cannot access other services via the usual localhost endpoint.
@@ -131,11 +132,13 @@ In LocalStack Pro, no code changes are required using our [Transparent Endpoint 
 You can now deploy your Serverless service to LocalStack.
 
 First, start LocalStack by running
+
 ```bash
 localstack start
 ```
 
 Then deploy the endpoint by running
+
 ```bash
 serverless deploy --stage local
 ```
@@ -167,14 +170,14 @@ resources: 35
 api keys:
   None
 endpoints:
-  http://localhost:4566/restapis/XXXXXXXXXX/local/_user_request_
+  http://localhost.localstack.cloud:4566/restapis/XXXXXXXXXX/local/_user_request_
 functions:
   ...
 layers:
   None
 ```
 
-Use the displayed endpoint `http://localhost:4566/restapis/XXXXXXXXXX/local/_user_request_/my/custom/endpoint` to make requests to the deployed service.
+Use the displayed endpoint `http://localhost.localstack.cloud:4566/restapis/XXXXXXXXXX/local/_user_request_/my/custom/endpoint` to make requests to the deployed service.
 
 ## Advanced topics
 
