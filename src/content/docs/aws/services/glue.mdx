@@ -1,10 +1,10 @@
 ---
 title: Glue
 description: Get started with Glue on LocalStack
-tags: ["Ultimate"]
+tags: ['Ultimate']
 ---
 
-import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+import FeatureCoverage from '../../../../components/feature-coverage/FeatureCoverage';
 
 ## Introduction
 
@@ -14,21 +14,7 @@ LocalStack allows you to use the Glue APIs in your local environment.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Glue's integration with LocalStack.
 
 :::note
-LocalStack now includes a container-based Glue Job executor, enabling Glue jobs to run within a Docker environment.
-Previously, LocalStack relied on a pre-packaged binary that included Spark and other required components.
-The new executor leverages the `aws-glue-libs` Docker image, provides better production parity, faster startup times, and more reliable execution.
-
-Key enhancements include:
-
-- Running Glue jobs inside Docker containers
-- Providing isolated execution environments per job
-- Executing multiple jobs in parallel
-- Ensuring correct versioning of Spark, Hadoop, Python, Java, and related libraries
-- Improving startup times and offline execution support
-- Ability to run Glue jobs on Kubernetes clusters
-
-To use it, set `GLUE_JOB_EXECUTOR=docker` and `GLUE_JOB_EXECUTOR_PROVIDER=v2` in your LocalStack configuration.
-The new executor additionally deprecates older versions of Glue (`0.9`, `1.0`, `2.0`).
+As of LocalStack 4.13.0, the default Glue job executor provider is `v2`, meaining LocalStack will use the container-based Glue Job executor, enabling Glue jobs to run within a Docker environment. The `GLUE_JOB_EXECUTOR_PROVIDER` configuration variable that enables the use of the legacy Glue job executor provider is deprecated and will be removed in the next major release.
 :::
 
 ## Getting started

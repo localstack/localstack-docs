@@ -228,7 +228,7 @@ Also see [OpenSearch configuration variables](#opensearch) which are used to man
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `GLUE_JOB_EXECUTOR_PROVIDER` | `v1` (default) \| `v2` | Feature flag to switch between the old and new Glue job executor providers. |
+| `GLUE_JOB_EXECUTOR_PROVIDER` (**deprecated**) | `v1` \| `v2` (default) | Feature flag to switch between the old and new, default Glue job executor providers. |
 | `GLUE_JOB_EXECUTOR` | `docker` (default) \| `kubernetes` | Whether to run Glue jobs when LocalStack is deployed on Kubernetes. Jobs are run as pods in the Kubernetes cluster. |
 | `DOCKER_GLOBAL_IMAGE_PREFIX` | | Specify custom images for Glue jobs by configuring their custom image repository. |
 
