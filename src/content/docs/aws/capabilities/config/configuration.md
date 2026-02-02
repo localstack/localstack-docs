@@ -185,7 +185,10 @@ This section covers configuration options that are specific to certain AWS servi
 | `EC2_DOWNLOAD_DEFAULT_IMAGES` | `0`\|`1` (default) | At startup, LocalStack Pro downloads latest Ubuntu images from Docker Hub for use as AMIs. This can be disabled for security reasons. |
 | `EC2_EBS_MAX_VOLUME_SIZE` | `1000` (default) | Maximum size (in MiBs) of user-specified EBS block devices mounted into EC2 container instances. |
 | `EC2_HYPERVISOR_URI` | `qemu:///system` (default) | [Libvirt connection URI](https://libvirt.org/uri.html#remote-uris) that indicates the hypervisor host. Only QEMU drivers are supported at this time. |
+| `EC2_LIBVIRT_NETWORK` | `default` (default) | Name of the Libvirt network to use for all instances when using the Libvirt VM manager. |
+| `EC2_LIBVIRT_POOL` | `default` (default) | Name of the Libvirt storage pool to use for all images when using the Libvirt VM manager. |
 | `EC2_MOUNT_BLOCK_DEVICES` | `1`\|`0` (default) | Whether to create and mount user-specified EBS block devices into EC2 container instances. |
+| `EC2_REFERENCE_DOMAIN` | `my-template-vm` | Name of a shut-off Libvirt domain whose configuration will be cloned for all new VMs created by LocalStack. If unset or the domain is not found/not shut-off, LocalStack uses a generic configuration. |
 | `EC2_REMOVE_CONTAINERS` | `0`\|`1` (default) | Controls whether created Docker containers are removed at instance termination or LocalStack shuts down. Disable this if there is a need to examine the container filesystem for debugging. |
 | `EC2_VM_MANAGER` | `docker`(default)\|`libvirt`\|`mock` | Emulation method to use in LocalStack Pro. This option is not available in LocalStack community. |
 
