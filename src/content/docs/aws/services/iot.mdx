@@ -195,6 +195,41 @@ The following actions are supported:
 - [DynamoDBv2](https://docs.aws.amazon.com/iot/latest/developerguide/dynamodb-v2-rule-action.html)
 - [HTTP](https://docs.aws.amazon.com/iot/latest/developerguide/https-rule-action.html) (URL confirmation and substitution templating is not implemented)
 
+## Troubleshooting
+
+### Node.js `aws-iot-device-sdk` Connection Issues
+
+When using the [`aws-iot-device-sdk`](https://github.com/aws/aws-iot-device-sdk-js) library, you may encounter SSL certificate errors because Node.js rejects self-signed certificates by default.
+
+**Solution:** Set the environment variable to disable certificate validation:
+
+```bash
+export NODE_TLS_REJECT_UNAUTHORIZED=0
+```
+
+**For Lambda functions**, you also need to explicitly set the `region` parameter in the device configuration:
+
+```js
+const device = new iot.device({
+  protocol: 'wss',
+  host: endpoint,
+  region: process.env.AWS_REGION, // Required for LocalStack
+  // ... other options
+});
+```
+
+And configure the Lambda environment:
+
+```bash
+awslocal lambda update-function-configuration \
+  --function-name your-function-name \
+  --environment "Variables={NODE_TLS_REJECT_UNAUTHORIZED=0}"
+```
+
+:::caution
+Only use `NODE_TLS_REJECT_UNAUTHORIZED=0` in development environments. As an alternative, consider using standard MQTT libraries like [MQTT.js](https://github.com/mqttjs/MQTT.js).
+:::
+
 ## API Coverage
 
 <FeatureCoverage service="iot" client:load />
