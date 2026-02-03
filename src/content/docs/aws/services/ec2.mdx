@@ -538,10 +538,12 @@ An evaluation version of Windows Server 2012 R2 is provided by [Cloudbase Soluti
 
 LocalStack does not come preloaded with any AMIs.
 
-Compatible qcow2 images must be placed at the default Libvirt storage pool at `/var/lib/libvirt/images` on the host machine.
+Compatible qcow2 images must be placed in the Libvirt storage pool on the host machine.
+By default, this is located at `/var/lib/libvirt/images`.
+If you use a different storage pool, configure it using the [`EC2_LIBVIRT_POOL`](/aws/capabilities/config/configuration#ec2) option.
 Images must be named with the prefix `ami-` followed by at least 8 hexadecimal characters without an extension, e.g. `ami-1234abcd`.
 
-You may need run the following command to make sure the image is registered with Libvirt:
+You may need run the following command to make sure the image is registered with Libvirt (replace `default` with your storage pool name if different):
 
 ```bash
 virsh pool-refresh default
@@ -603,9 +605,37 @@ You can then use a compatible VNC client (e.g. [TigerVNC](https://tigervnc.org/)
 
 ![Tiger VNC](/images/aws/tiger-vnc.png)
 
+### Configuration
+
+The Libvirt VM manager supports several configuration options to customize its behavior.
+
+#### Domain Cloning
+
+By default, LocalStack creates VMs using a generic Libvirt domain configuration.
+However, certain hypervisor setups may require specialized configurations that LocalStack cannot automatically detect.
+
+You can use the [`EC2_REFERENCE_DOMAIN`](/aws/capabilities/config/configuration#ec2) configuration option to specify a pre-configured Libvirt domain that LocalStack will use as a template for all new instances.
+LocalStack clones the domain configuration, updating elements like UUID, MAC addresses, and boot volumes as needed.
+
+To use domain cloning:
+
+1. Create and configure a Libvirt domain with your desired settings using `virt-manager` or `virsh`.
+2. Ensure the domain is in shut-off state.
+3. Set `EC2_REFERENCE_DOMAIN` to the domain name when starting LocalStack.
+
+If the specified domain does not exist or is not in shut-off state, LocalStack falls back to using the generic configuration.
+
+#### Storage Pool and Network
+
+By default, LocalStack uses the Libvirt storage pool and network named `default`.
+If your Libvirt setup uses different names, you can configure them using:
+
+- [`EC2_LIBVIRT_POOL`](/aws/capabilities/config/configuration#ec2): Name of the Libvirt storage pool for images (defaults to `default`).
+- [`EC2_LIBVIRT_NETWORK`](/aws/capabilities/config/configuration#ec2): Name of the Libvirt network for instances (defaults to `default`).
+
 ### Networking
 
-All instances are assigned interfaces on the default Libvirt network.
+All instances are assigned interfaces on the configured Libvirt network (see `EC2_LIBVIRT_NETWORK` above).
 This makes it possible to have host/instance as well as instance/instance network communication.
 
 It is possible to allow network access to the LocalStack container from within the virtualized instance.
