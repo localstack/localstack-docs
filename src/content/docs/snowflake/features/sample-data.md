@@ -12,7 +12,7 @@ The Snowflake emulator supports importing Snowflake's sample datasets using the 
 
 ## Getting started
 
-This guide is designed for users new to Sample Data and assumes basic knowledge of SQL and Snowflake. Start your Snowflake emulator and connect to it using an SQL client to execute the queries below.
+This guide is designed for users new to Sample Data and assumes basic knowledge of SQL and Snowflake. Start your Snowflake emulator and connect to it using a SQL client to execute the queries below.
 
 The following sections guide you through importing sample data and querying the TPC-H benchmark dataset.
 
