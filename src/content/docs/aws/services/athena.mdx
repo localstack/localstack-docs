@@ -143,10 +143,14 @@ awslocal athena start-query-execution \
 Please note that this query may take some time to finish executing.
 You can observe the output in the LocalStack container (ideally with `DEBUG=1` enabled) to follow the steps of the query execution.
 
-Finally, we can now run a `SELECT` query to extract data from the Delta Lake table we've just created:
+Finally, we can now run a `SELECT` query to extract data from the Delta Lake table we've just created.
+To query Delta Lake tables, specify `Catalog=deltalake` in the `QueryExecutionContext`:
 
 ```bash
-queryId=$(awslocal athena start-query-execution --query-string "SELECT * from deltalake.default.test" | jq -r .QueryExecutionId)
+queryId=$(awslocal athena start-query-execution \
+    --query-string "SELECT * FROM test" \
+    --query-execution-context "Database=default,Catalog=deltalake" \
+    --result-configuration "OutputLocation=s3://test/output/" | jq -r .QueryExecutionId)
 awslocal athena get-query-results --query-execution-id $queryId
 ```
 
@@ -179,10 +183,6 @@ The query should yield a result similar to the output below:
 ...
 ```
 
-:::note
-The `SELECT` statement above currently requires us to prefix the database/table name with `deltalake.` - this will be further improved in a future iteration, for better parity with AWS.
-:::
-
 ## Iceberg Tables
 
 The LocalStack Athena implementation also supports [Iceberg tables](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-creating-tables.html).
@@ -191,6 +191,15 @@ You can define an Iceberg table in Athena using the `CREATE TABLE` statement, as
 ```sql
 CREATE TABLE mytable (c1 integer, c2 string, c3 double)
 LOCATION 's3://mybucket/prefix/' TBLPROPERTIES ( 'table_type' = 'ICEBERG' )
+```
+
+To query Iceberg tables, specify `Catalog=iceberg` in the `QueryExecutionContext`:
+
+```bash
+awslocal athena start-query-execution \
+    --query-string "SELECT * FROM mytable" \
+    --query-execution-context "Database=default,Catalog=iceberg" \
+    --result-configuration "OutputLocation=s3://mybucket/output/"
 ```
 
 Once the table has been created and data inserted into it, you can see the Iceberg metadata and data files being created in S3:
