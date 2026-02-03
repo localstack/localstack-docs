@@ -296,6 +296,10 @@ export default defineConfig({
                   slug: 'aws/tooling',
                 },
                 {
+                  label: 'LocalStack CLI',
+                  slug: 'aws/tooling/localstack-cli',
+                },
+                {
                   label: 'LocalStack SDKs',
                   autogenerate: {
                     directory: '/aws/tooling/localstack-sdks',
