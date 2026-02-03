@@ -1,12 +1,9 @@
-
 ---
 title: "Feature Coverage"
 linkTitle: "Feature Coverage"
-weight: 1
-description: >
-  Overview of the implemented Snowflake features in LocalStack
-cascade:
-  type: docs
+description: Overview of the implemented Snowflake resource types and operations in LocalStack
+template: doc
+editUrl: false
 hide_readingtime: true
 ---
 
@@ -14,7 +11,6 @@ hide_readingtime: true
 
 This page provides a list of Snowflake query features (resource types and operations) that are supported in the LocalStack emulator.
 The content will be updated as additional query features and functions are implemented.
-
 
 ### Applications
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
@@ -170,4 +166,3 @@ The content will be updated as additional query features and functions are imple
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|USE|
 |----|----|----|----|----|----|----|
 |**WAREHOUSE**|✅|✅|✅|✅|✅|✅|
-

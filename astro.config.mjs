@@ -486,8 +486,7 @@ export default defineConfig({
             },
             {
               label: 'Features',
-              collapsed: true,
-              autogenerate: { directory: '/snowflake/features' },
+              slug: 'snowflake/features',
             },
             {
               label: 'Sample Apps',
@@ -512,6 +511,10 @@ export default defineConfig({
               label: 'Tutorials',
               collapsed: true,
               autogenerate: { directory: '/snowflake/tutorials' },
+            },
+            {
+              label: 'Feature Coverage',
+              slug: 'snowflake/feature-coverage',
             },
             {
               label: 'SQL Functions',

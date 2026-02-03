@@ -240,7 +240,7 @@ Now that you've completed the quickstart, here are some additional features you 
 
 You can now explore the following resources to learn more about the Snowflake emulator:
 
-- [Features](/snowflake/features/): Learn about the Snowflake emulator's features and how to use them.
+- [Feature Coverage](/snowflake/feature-coverage/): Learn about the Snowflake emulator's features and how to use them.
 - [Capabilities](/snowflake/capabilities/): Find information about the Snowflake emulator's capabilities and how to use them.
 
 :::note
