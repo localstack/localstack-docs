@@ -194,8 +194,9 @@ export default defineConfig({
           leftSidebarEnabled: false,
         }),
         starlightLinksValidator({
-          errorOnRelativeLinks: false,
-          errorOnLocalLinks: false,
+          errorOnRelativeLinks: true,
+          errorOnLocalLinks: false,  // Allow localhost links in tutorials (they're instructional)
+          errorOnInvalidHashes: true,
         }),
         starlightUtils({
           multiSidebar: {

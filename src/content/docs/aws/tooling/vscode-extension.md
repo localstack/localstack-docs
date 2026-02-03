@@ -72,7 +72,7 @@ The AWS Toolkit for VS Code, a separate VS Code extension available from Amazon,
 
 ## Contributing
 
-[Read our contributing guidelines](./CONTRIBUTING.md) to learn how you can help.
+[Read our contributing guidelines](https://github.com/localstack/localstack-toolkit-vscode/blob/main/CONTRIBUTING.md) to learn how you can help.
 
 
 ### LocalStack Toolkit for VS Code extension support
