@@ -8,6 +8,7 @@
     'Getting Started': 'rocket-icon',
     'Local AWS Services': 'cube-icon',
     Features: 'cube-icon',
+    'Feature Coverage': 'buildings-icon',
     'Sample Apps': 'file-icon',
     Capabilities: 'starburst-icon',
     Tooling: 'wrench-icon',

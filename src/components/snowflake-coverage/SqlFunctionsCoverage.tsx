@@ -151,13 +151,13 @@ export default function SqlFunctionsCoverage() {
       </div>
 
       {/* Table */}
-      <div className="p-2 block max-w-full overflow-x-auto overflow-y-hidden">
+      <div className="block w-full overflow-x-auto overflow-y-hidden">
         <Table
           className="w-full"
           style={{
             borderCollapse: 'collapse',
-            tableLayout: 'fixed',
             width: '100%',
+            minWidth: '100%',
           }}
         >
           <TableHeader>
@@ -165,17 +165,6 @@ export default function SqlFunctionsCoverage() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort();
-
-                  const getColumnWidth = (columnId: string) => {
-                    switch (columnId) {
-                      case 'name':
-                        return '70%';
-                      case 'supported':
-                        return '30%';
-                      default:
-                        return '50%';
-                    }
-                  };
 
                   return (
                     <TableHead
@@ -187,7 +176,7 @@ export default function SqlFunctionsCoverage() {
                       }
                       className={canSort ? 'cursor-pointer select-none' : ''}
                       style={{
-                        width: getColumnWidth(header.id),
+                        width: header.id === 'supported' ? '120px' : 'auto',
                         textAlign: header.id === 'name' ? 'left' : 'center',
                         border: '1px solid #999CAD',
                         background: '#AFB2C2',
@@ -235,6 +224,7 @@ export default function SqlFunctionsCoverage() {
                   <TableCell
                     key={cell.id}
                     style={{
+                      width: cell.column.id === 'supported' ? '120px' : 'auto',
                       textAlign: cell.column.id === 'name' ? 'left' : 'center',
                       border: '1px solid #999CAD',
                       padding: '12px 8px',

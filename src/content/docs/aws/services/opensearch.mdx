@@ -31,7 +31,7 @@ The following versions of OpenSearch Service are supported by LocalStack:
 - 2.19
 - 3.1 (**default**)
 
-OpenSearch is closely coupled with the [Elasticsearch Service](../elasticsearch).
+OpenSearch is closely coupled with the [Elasticsearch Service](/aws/services/es/).
 Clusters generated through the OpenSearch Service will be visible within the Elasticsearch Service interface, and vice versa.
 You can select an Elasticsearch version with the `--engine-version` parameter while creating an OpenSearch Service domain.
 
@@ -112,7 +112,7 @@ The strategy can be configured via the `OPENSEARCH_ENDPOINT_STRATEGY` environmen
 | ------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `domain` | `<domain-name>.<region>.<engine-type>.localhost.localstack.cloud:4566`             | The default strategy employing the `localhost.localstack.cloud` domain for routing to localhost.     |
 | `path`   | `localhost:4566/<engine-type>/<region>/<domain-name>`                              | An alternative strategy useful if resolving LocalStack's localhost domain poses difficulties.       |
-| `port`   | `localhost:<port-from-range>`                                                      | Directly exposes cluster(s) via ports from [the external service port range](). |
+| `port`   | `localhost:<port-from-range>`                                                      | Directly exposes cluster(s) via ports from [the external service port range](/aws/capabilities/networking/external-port-range/). |
 
 Irrespective of the originating service for the clusters, the domain of each cluster consistently aligns with its engine type, be it OpenSearch or Elasticsearch.
 Consequently, OpenSearch clusters incorporate `opensearch` within their domains (e.g., `my-domain.us-east-1.opensearch.localhost.localstack.cloud:4566`), while Elasticsearch clusters feature `es` in their domains (e.g., `my-domain.us-east-1.es.localhost.localstack.cloud:4566`).
@@ -239,7 +239,7 @@ When using OpenSearch Dashboards with LocalStack, you need to make sure to:
 - Enable the [advanced security options](#advanced-security-options) and set a username and a password.
   This is required by OpenSearch Dashboards.
 - Ensure that the OpenSearch Dashboards Docker container uses the LocalStack DNS.
-  You can find more information on how to connect your Docker container to Localstack in our [Network Troubleshooting guide]().
+  You can find more information on how to connect your Docker container to Localstack in our [Network Troubleshooting guide](/aws/capabilities/networking/).
 
 First, you need to make sure to start LocalStack in a specific Docker network:
 

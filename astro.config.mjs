@@ -194,8 +194,9 @@ export default defineConfig({
           leftSidebarEnabled: false,
         }),
         starlightLinksValidator({
-          errorOnRelativeLinks: false,
-          errorOnLocalLinks: false,
+          errorOnRelativeLinks: true,
+          errorOnLocalLinks: false,  // Allow localhost links in tutorials (they're instructional)
+          errorOnInvalidHashes: true,
         }),
         starlightUtils({
           multiSidebar: {
@@ -294,6 +295,10 @@ export default defineConfig({
                 {
                   label: 'Overview',
                   slug: 'aws/tooling',
+                },
+                {
+                  label: 'LocalStack CLI',
+                  slug: 'aws/tooling/localstack-cli',
                 },
                 {
                   label: 'LocalStack SDKs',
@@ -486,8 +491,7 @@ export default defineConfig({
             },
             {
               label: 'Features',
-              collapsed: true,
-              autogenerate: { directory: '/snowflake/features' },
+              slug: 'snowflake/features',
             },
             {
               label: 'Sample Apps',
@@ -512,6 +516,10 @@ export default defineConfig({
               label: 'Tutorials',
               collapsed: true,
               autogenerate: { directory: '/snowflake/tutorials' },
+            },
+            {
+              label: 'Feature Coverage',
+              slug: 'snowflake/feature-coverage',
             },
             {
               label: 'SQL Functions',

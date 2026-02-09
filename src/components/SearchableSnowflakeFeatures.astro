@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import { SearchableSnowflakeFeatures } from './SearchableSnowflakeFeatures.tsx';
+
+const allFeatures = await getCollection('docs', ({ id }) => {
+  return id.startsWith('snowflake/features/') && !id.includes('/index');
+});
+
+const sortedFeatures = allFeatures.sort((a, b) => {
+  const titleA = a.data.title || a.data.linkTitle || '';
+  const titleB = b.data.title || b.data.linkTitle || '';
+  return titleA.localeCompare(titleB);
+});
+
+const featureData = sortedFeatures.map(feature => {
+  const title = feature.data.title || feature.data.linkTitle || 'Unknown Feature';
+  const description = feature.data.description || `Implementation details for ${title}`;
+  
+  const href = `/${feature.id}`;
+  
+  return {
+    title,
+    description,
+    href
+  };
+});
+---
+
+<SearchableSnowflakeFeatures features={featureData} client:load />

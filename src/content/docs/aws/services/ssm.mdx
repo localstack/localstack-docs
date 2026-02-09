@@ -143,8 +143,10 @@ The following table highlights some differences between LocalStack SSM and AWS S
 
 The other limitations of LocalStack SSM are:
 
-- Dockerized instances only support `AWS-RunShellScript` commands.
-- [`SendCommand`](https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_SendCommand.html) only runs 1 command per invocation and will ignore multiple commands passed as an array, starting from the 2nd one.
+- **Document Support**: LocalStack supports both AWS-managed documents (such as `AWS-RunShellScript`) and custom documents with [`SendCommand`](https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_SendCommand.html) API.
+  - Parameter substitution in documents using the `{{ parameter-name }}` syntax is supported.
+  - Only documents using the `aws:runShellScript` plugin are fully supported for execution in Dockerized instances.
+  - Documents using other plugins will fall back to the Moto implementation, which may not function correctly.
 - Commands returning non-zero codes won't capture standard output or error streams, leaving them empty.
 - Shell constructs such as job controls (`&&`, `||`), and redirection (`>`) are not supported.
 

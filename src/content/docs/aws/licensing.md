@@ -179,6 +179,7 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/user-guide/aws/backup/)[AWS Backup](https://docs.localstack.cloud/user-guide/aws/backup/) | ❌ | ❌ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_efs/)[Amazon EFS](https://docs.localstack.cloud/references/coverage/coverage_efs/) | ❌ | ❌ | ✅ | ✅ |
 | Emulator Enhancements |  |  |  |  |
+| [Extensions](/aws/tooling/extensions/) | ✅ | ✅ | ✅ | ✅ |
 | CI Credits | ❌ | ✅ 300 credits monthly per workspace | ✅ 1000 credits monthly per workspace | ✅ 1,000 CI/CD credits / month |
 | Stack Insights | ❌ | ✅ For all supported services | ✅ For all supported services | ✅ For all supported services |
 | Local state persistence | ❌ | ✅ | ✅ | ✅ |
