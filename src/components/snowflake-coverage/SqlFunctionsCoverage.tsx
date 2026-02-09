@@ -1,13 +1,5 @@
 import React from 'react';
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from '@/components/ui/table';
-import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
@@ -151,32 +143,33 @@ export default function SqlFunctionsCoverage() {
       </div>
 
       {/* Table */}
-      <div className="block w-full overflow-x-auto overflow-y-hidden">
-        <Table
-          className="w-full"
+      <div style={{ width: '100%' }}>
+        <table
           style={{
             borderCollapse: 'collapse',
+            tableLayout: 'fixed',
             width: '100%',
-            minWidth: '100%',
           }}
         >
-          <TableHeader>
+          <colgroup>
+            <col style={{ width: '80%' }} />
+            <col style={{ width: '20%' }} />
+          </colgroup>
+          <thead>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort();
 
                   return (
-                    <TableHead
+                    <th
                       key={header.id}
                       onClick={
                         canSort
                           ? header.column.getToggleSortingHandler()
                           : undefined
                       }
-                      className={canSort ? 'cursor-pointer select-none' : ''}
                       style={{
-                        width: header.id === 'supported' ? '120px' : 'auto',
                         textAlign: header.id === 'name' ? 'left' : 'center',
                         border: '1px solid #999CAD',
                         background: '#AFB2C2',
@@ -187,6 +180,7 @@ export default function SqlFunctionsCoverage() {
                         lineHeight: '16px',
                         letterSpacing: '-0.15px',
                         padding: '12px 8px',
+                        cursor: canSort ? 'pointer' : 'default',
                       }}
                     >
                       {flexRender(
@@ -194,7 +188,7 @@ export default function SqlFunctionsCoverage() {
                         header.getContext()
                       )}
                       {canSort && (
-                        <span>
+                        <span style={{ display: 'inline-block', width: '1em' }}>
                           {header.column.getIsSorted() === 'asc'
                             ? ' ▲'
                             : header.column.getIsSorted() === 'desc'
@@ -202,13 +196,13 @@ export default function SqlFunctionsCoverage() {
                             : ''}
                         </span>
                       )}
-                    </TableHead>
+                    </th>
                   );
                 })}
-              </TableRow>
+              </tr>
             ))}
-          </TableHeader>
-          <TableBody
+          </thead>
+          <tbody
             style={{
               color: 'var(--sl-color-gray-1)',
               fontFamily: 'AeonikFono',
@@ -219,12 +213,11 @@ export default function SqlFunctionsCoverage() {
             }}
           >
             {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <tr key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell
+                  <td
                     key={cell.id}
                     style={{
-                      width: cell.column.id === 'supported' ? '120px' : 'auto',
                       textAlign: cell.column.id === 'name' ? 'left' : 'center',
                       border: '1px solid #999CAD',
                       padding: '12px 8px',
@@ -234,12 +227,12 @@ export default function SqlFunctionsCoverage() {
                     }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+                  </td>
                 ))}
-              </TableRow>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       </div>
 
       {/* Pagination */}
