@@ -1,0 +1,45 @@
+---
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import { CopyPageDropdown } from './CopyPageDropdown';
+
+// Get the current page route
+const route = Astro.locals.starlightRoute;
+
+// Check if copy page should be hidden (via frontmatter)
+const hideCopyPage = route.entry?.data?.hideCopyPage ?? false;
+
+// Construct the full page URL
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://docs.localstack.cloud';
+const pageUrl = `${siteUrl}/${route.id}/`;
+const pageTitle = route.entry?.data?.title || 'Documentation';
+---
+
+<div class="page-title-header">
+  <Default />
+  {!hideCopyPage && (
+    <CopyPageDropdown 
+      client:load
+      pageUrl={pageUrl}
+      pageTitle={pageTitle}
+    />
+  )}
+</div>
+
+<style>
+  .page-title-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .page-title-header :global(h1) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .page-title-header :global(.copy-page-dropdown) {
+    flex-shrink: 0;
+  }
+</style> 
