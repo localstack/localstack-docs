@@ -5,8 +5,26 @@ import { CopyPageDropdown } from './CopyPageDropdown';
 // Get the current page route
 const route = Astro.locals.starlightRoute;
 
-// Check if copy page should be hidden (via frontmatter)
-const hideCopyPage = route.entry?.data?.hideCopyPage ?? false;
+// Pages where copy button should be hidden (index/landing pages)
+const hiddenPaths = [
+  'aws',
+  'aws/services',
+  'aws/sample-apps',
+  'aws/capabilities',
+  'aws/tooling',
+  'aws/integrations',
+  'aws/enterprise',
+  'aws/tutorials',
+  'snowflake',
+  'snowflake/features',
+  'snowflake/sample-apps',
+  'snowflake/capabilities',
+  'snowflake/integrations',
+];
+
+// Check if copy page should be hidden (via frontmatter or path match)
+const isHiddenPath = hiddenPaths.includes(route.id);
+const hideCopyPage = route.entry?.data?.hideCopyPage ?? isHiddenPath;
 
 // Construct the full page URL
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://docs.localstack.cloud';
