@@ -175,6 +175,15 @@ Commands:
 First, create a new extension from a template.
 To use `localstack extensions dev new`, you will also need to install [cookiecutter](https://github.com/cookiecutter/cookiecutter) via `pip install cookiecutter`.
 
+LocalStack provides two extension templates to help you get started:
+
+- **Basic template** (default): A minimal extension template with Python backend code
+- **React template**: An extension template that includes a React-based UI component
+
+#### Using the basic template
+
+To create an extension using the basic template, run:
+
 ```bash showLineNumbers
 localstack extensions dev new
 project_name [My LocalStack Extension]:
@@ -199,6 +208,45 @@ This will create a new Python project with the following layout:
   - setup.cfg
   - setup.py
 </FileTree>
+
+Then run `make install` in the newly created project to make a distribution package.
+
+
+#### Using the React template
+
+To create an extension with a React-based UI, use the `--template react` flag:
+
+```bash showLineNumbers
+localstack extensions dev new --template react
+project_name [My LocalStack Extension]:
+project_short_description [All the boilerplate you need to create a LocalStack extension.]:
+project_slug [my-localstack-extension]:
+module_name [my_localstack_extension]:
+full_name [Jane Doe]:
+email [jane@example.com]:
+github_username [janedoe]:
+version [0.1.0]:
+```
+
+The React template provides a small app with multiple pages to demonstrate how to use multiple pages in the same extension. When you start the LocalStack container with your React-based extension enabled, the extension UI will be automatically available through the LocalStack Web Application.
+
+<FileTree>
+- my-localstack-extension
+  - Makefile
+  - README.md
+  - backend
+    - my_localstack_extension
+  - backend.pth
+  - frontend
+    - \_\_init\_\_.py
+    - package.json
+    - public
+    - src
+    - tsconfig.json
+  - pyproject.toml
+</FileTree>
+
+The extension UI will be available at `http://localhost.localstack.cloud:4566/_extension/my-localstack-extension/#/dashboard` when LocalStack is running.
 
 Then run `make install` in the newly created project to make a distribution package.
 
