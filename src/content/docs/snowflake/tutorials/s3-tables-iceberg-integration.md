@@ -243,7 +243,7 @@ SELECT * FROM iceberg_customer_orders;
 
 In this tutorial, you learned how to integrate AWS S3 Tables with Snowflake using LocalStack. You created S3 Tables resources, populated a table with data using PyIceberg, configured a catalog integration in Snowflake, and queried Iceberg tables stored in S3 Tables buckets using `CATALOG_TABLE_NAME`.
 
-This integration enables you to:
+The S3 Tables integration enables you to:
 
 - Query data stored in S3 Tables using familiar Snowflake SQL syntax.
 - Leverage automatic schema inference from external Iceberg catalogs.
