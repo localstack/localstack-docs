@@ -7,6 +7,26 @@ editUrl: false
 
 The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
 
+### 1.7.0
+- Add support for `OBJECT_AGG`, `QUERY_HISTORY_BY_USER`, `BOOLAND_AGG`, `BOOLOR_AGG`, `APPROX_PERCENTILE`, `LIKE`, `ILIKE`, and math functions
+- Add support for date arithmetics
+- Add support for `INFORMATION_SCHEMA.COLUMNS`, `INFORMATION_SCHEMA.SCHEMATA`, and `INFORMATION_SCHEMA.DATABASES` views
+- Add support for anonymous code blocks
+- Add support for if-else clauses in Snowflake scripting
+- Support `ALTER DYNAMIC TABLE` and dynamic tables enhancements
+- Support multiple variable assignment and `IDENTIFIER()` with session variables
+- Support distinct clause in window functions
+- Enhance `TERSE` support for `SHOW` commands
+- Enhance `IDENTIFIER()` support for `CREATE/DROP SCHEMA` with fully-qualified names
+- Enhance `INFORMATION_SCHEMA` handling for same-name passthrough and identifier resolution
+- Enhance handling of internal identifiers
+- Improve routing of table functions to internal `INFORMATION_SCHEMA`
+- Raise error for non-existent `INFORMATION_SCHEMA` views
+- Fix null handling in timestamp/date/time implicit casts
+- Fix `PIVOT` with CTEs
+- Fix `SYSTEM$BOOTSTRAP_DATA_REQUEST` to support varargs
+- Fix evaluating values for describe-only queries
+
 ### 1.6.0
 - Add support for SQL `REGEXP_LIKE`, `SPLIT_PART`, `STRIP_NULL_VALUE`, `TRY_PARSE_JSON` function
 - Integrate Snowflake with S3 tables
