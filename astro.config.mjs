@@ -5,6 +5,7 @@ import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import starlightDocSearch from '@astrojs/starlight-docsearch';
 import starlightLinksValidator from 'starlight-links-validator';
 import starlightImageZoom from 'starlight-image-zoom';
+import starlightLlmsTxt from 'starlight-llms-txt';
 import sitemap from '@astrojs/sitemap';
 import starlightFullViewMode from 'starlight-fullview-mode';
 
@@ -187,6 +188,25 @@ export default defineConfig({
         replacesTitle: true,
       },
       plugins: [
+        starlightLlmsTxt({
+          projectName: 'LocalStack',
+          description:
+            'LocalStack is a cloud service emulator that runs in a single container on your laptop or in your CI environment. It provides an easy-to-use test/mocking framework for developing cloud applications, with support for AWS services and Snowflake.',
+          customSets: [
+            {
+              label: 'AWS',
+              description: 'Documentation for LocalStack AWS emulation',
+              paths: ['aws/**'],
+            },
+            {
+              label: 'Snowflake',
+              description: 'Documentation for LocalStack Snowflake emulation',
+              paths: ['snowflake/**'],
+            },
+          ],
+          exclude: ['aws/changelog', 'snowflake/changelog'],
+          rawContent: true,
+        }),
         starlightImageZoom({
           showCaptions: true,
         }),
