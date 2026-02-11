@@ -53,6 +53,7 @@ export default defineConfig({
         baseUrl: 'https://github.com/localstack/localstack-docs/edit/main/',
       },
       components: {
+        PageTitle: './src/components/PageTitleWithCopyButton.astro',
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
         LanguageSelect: './src/components/LanguageSelectWithGetStarted.astro',
         Banner: './src/components/BannerWithPersistentAnnouncement.astro',

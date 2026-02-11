@@ -1,0 +1,65 @@
+---
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import { CopyPageDropdown } from './CopyPageDropdown';
+
+// Get the current page route
+const route = Astro.locals.starlightRoute;
+
+// Pages where copy button should be hidden (index/landing pages)
+const hiddenPaths = [
+    '',
+    '/',
+    'aws',
+  'aws/services',
+  'aws/sample-apps',
+  'aws/capabilities',
+  'aws/tooling',
+  'aws/integrations',
+  'aws/enterprise',
+  'aws/tutorials',
+  'snowflake',
+  'snowflake/features',
+  'snowflake/sample-apps',
+  'snowflake/capabilities',
+  'snowflake/integrations',
+];
+
+// Check if copy page should be hidden (via frontmatter or path match)
+const isHiddenPath = hiddenPaths.includes(route.id);
+const hideCopyPage = route.entry?.data?.hideCopyPage ?? isHiddenPath;
+
+// Construct the full page URL
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://docs.localstack.cloud';
+const pageUrl = `${siteUrl}/${route.id}/`;
+const pageTitle = route.entry?.data?.title || 'Documentation';
+---
+
+<div class="page-title-header">
+  <Default />
+  {!hideCopyPage && (
+    <CopyPageDropdown 
+      client:load
+      pageUrl={pageUrl}
+      pageTitle={pageTitle}
+    />
+  )}
+</div>
+
+<style>
+  .page-title-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .page-title-header :global(h1) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .page-title-header :global(.copy-page-dropdown) {
+    flex-shrink: 0;
+  }
+</style> 

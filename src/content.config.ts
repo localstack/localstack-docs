@@ -14,6 +14,7 @@ export const collections = {
 				leadimage: z.string().optional(),
 				tags: z.array(z.string()).optional(),
 				persistence: z.string().optional(),
+				hideCopyPage: z.boolean().optional(),
 			}),
 		}),
 	}),
