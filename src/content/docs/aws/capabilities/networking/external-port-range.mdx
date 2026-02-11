@@ -104,3 +104,33 @@ services:
 
 By customizing the `GATEWAY_LISTEN` and `EXTERNAL_SERVICE_PORTS_START`/`EXTERNAL_SERVICE_PORTS_END` values for each instance, you can ensure that they operate on distinct port ranges, preventing any conflicts and enabling smooth execution of multiple LocalStack instances.
 Please make sure to set `MAIN_CONTAINER_NAME` for following usages of the LocalStack CLI to specify which instance of LocalStack you want to address with the specific CLI command.
+
+## TLS Certificate Coverage for `localhost.localstack.cloud`
+LocalStack provides TLS certificates for the `localhost.localstack.cloud` domain, which allows secure HTTPS access to service endpoints using region-specific hostnames such as:
+```arduino
+https://s3.us-east-1.localhost.localstack.cloud:4566
+```
+These certificates enable proper hostname validation for supported AWS regions when using HTTPS with SDKs, the AWS CLI, browsers, and other tools.
+
+### Supported Regions
+
+Due to certificate authority and infrastructure limitations, TLS certificates are currently only issued for a subset of AWS regions. If you attempt to use an unsupported region, you may encounter TLS errors such as:
+
+```vbnet
+SSL: CERTIFICATE_VERIFY_FAILED
+hostname mismatch
+x509: certificate is not valid for any names
+```
+The full list of supported regions is available here:
+- `us-east-1`
+- `us-east-2`
+- `us-west-1`
+- `us-west-2`
+- `eu-central-1`
+- `eu-west-1`
+
+### Why this limitation exists
+
+TLS certificates must explicitly include supported hostnames. Because each region requires hostname coverage, and certificate authorities impose size and validation constraints, it is currently not possible to include all AWS regions in the LocalStack certificate.
+
+We are actively working to expand coverage where technically feasible.
