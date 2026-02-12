@@ -225,6 +225,18 @@ LOCALSTACK_HOST=<kubernetes-service-name>
 
 ## Child containers are not spawning
 
+### Certificate issues when spawning child pods
+
+If you experience the following error when creating child pods (i.e., Lambda pod failure), then your proxy settings might be applied to cluster internal communication:
+
+```
+localstack.services.lambda_.invocation.assignment.AssignmentException: Could not start new environment: MaxRetryError:MyHTTPSConnectionPool(host='192.168.0.1', port=443): Max retries exceeded with url: /api/v1/namespaces/ns-perf-a39e28bf-c600-498d-9ecc-41419eca1007/pods/lambda-pod-52c280f8dd194dc72bced60e190db6ef/log (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+```
+
+If you are using `HTTP_PROXY` or `HTTPS_PROXY` environment variables to configure a TLS terminating proxy server (i.e., corporate environments), then you may need to add the Kubernetes API server IP address to the `NO_PROXY` environment variable. 
+
+In the example above, add `NO_PROXY=192.168.0.1` to your pod environment variables.
+
 ### Docker runtime errors
 
 ```text
