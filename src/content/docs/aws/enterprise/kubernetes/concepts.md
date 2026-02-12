@@ -1,5 +1,5 @@
 ---
-title: Concepts 
+title: Concepts & Architecture 
 description: Concepts & Architecture
 template: doc
 sidebar:
@@ -24,6 +24,8 @@ Its primary responsibilities include:
 * Managing the lifecycle of compute workloads spawned on behalf of AWS services
 
 From a Kubernetes perspective, the LocalStack pod is a standard pod that fully participates in cluster networking. It is typically exposed through a Kubernetes `Service`, and all AWS API interactions—whether from inside or outside the cluster—are routed through this pod.
+
+![How the Localstack Pod works](/images/aws/k8s-concepts.png)
 
 
 ## Execution modes
