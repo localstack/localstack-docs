@@ -3,7 +3,7 @@ title: Deploy with Helm
 description: Install and run LocalStack on Kubernetes using the official Helm chart.
 template: doc
 sidebar:
-    order: 3
+    order: 4
 tags: ["Enterprise"]
 ---
 
@@ -67,7 +67,6 @@ Then install using your custom values:
 helm install localstack localstack/localstack -f values.yaml
 ```
 
-:::
 
 #### Auth token from a Kubernetes Secret
 
@@ -80,11 +79,10 @@ extraEnvVars:
       secretKeyRef:
         name: <name of the secret>
         key: <name of the key in the secret containing the API key>
-```
 
 ## Configure
 
-The chart ships with sensible defaults, but most production-ish setups will want a small `values.yaml` to customize behavior.
+The chart ships with sensible defaults, but most production setups will want a small `values.yaml` to customize behavior.
 
 ### View all default values
 
@@ -167,7 +165,7 @@ This is especially useful for workflows where you seed resources or rely on stat
 
 ### Set Pod resource requests and limits
 
-Some environments (notably **EKS on Fargate**) may terminate Pods with low/default resource allocations. Consider setting explicit requests/limits:
+Some environments (notably **EKS on Fargate**) may terminate the LocalStack pod if not configured with reasonable requests/limits:
 
 ```yaml
 resources:
@@ -179,7 +177,7 @@ resources:
     memory: 2Gi
 ```
 
-### Add env vars and startup scripts
+### Add environment variables and startup scripts
 
 You can inject environment variables or run a startup script to:
 

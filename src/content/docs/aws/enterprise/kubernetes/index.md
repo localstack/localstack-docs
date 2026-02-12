@@ -19,20 +19,28 @@ Supported cases:
 
 ## Requirements:
 
-- K8s Cluster (k3d, minikube)
-- Kubectl
-- Helm
-- LS helm chart
-- LS operator
+- K8s Cluster (such as k3d, minikube, EKS)
+- [kubectl](https://kubernetes.io/docs/reference/kubectl/)
+- (Optional) [Helm](https://helm.sh/)
+- (Optional) LS helm chart
+- (Optional) LS operator
 
 
-## DIY vs Helm Chart vs Operator
+## Deployment methods
+
+LocalStack can be deployed into a Kubernetes cluster using multiple methods:
+* using the LocalStack Operator
+* using the LocalStack helm chart
+* by manually creating Kubernetes manifests
+
+
+The table below compares these methods.
 
 | Deployment approach | Pros | Cons |
 |---------------------|------|------|
-| **DIY (YAML manifests)** | · Full control over Kubernetes configuration and resources | · Time-consuming to set up and maintain<br> · Manual updates and lifecycle management |
-| **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> · Supports both LocalStack Community and Pro images | · Customization is limited to chart values and overrides |
 | **Operator** | · Declarative, self-managed control plane<br> · Built-in validation, defaulting, and reconciliation logic | · Limited to the LocalStack Pro image only<br> · Steeper learning curve compared to Helm |
+| **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> · Supports both LocalStack Community and Pro images | · Customization is limited to chart values and overrides |
+| **DIY (YAML manifests)** | · Full control over Kubernetes configuration and resources | · Time-consuming to set up and maintain<br> · Manual updates and lifecycle management |
 
 
 ## Licensing

@@ -3,11 +3,11 @@ title: Deploy LocalStack Operator
 description: Deploy and manage LocalStack in a Kubernetes cluster using the LocalStack Operator.
 template: doc
 sidebar:
-    order: 4
+    order: 3
 tags: ["Enterprise"]
 ---
 
-The LocalStack Operator provides a Kubernetes-native way to deploy and manage LocalStack instances. It abstracts Kubernetes-specific configuration and automates operational tasks, making LocalStack deployments more consistent and easier to maintain.
+The LocalStack Operator is our Kubernetes-native way to deploy and manage LocalStack instances. It abstracts Kubernetes-specific configuration and automates operational tasks, making LocalStack deployments more consistent and easier to maintain. It can manage multiple LocalStack instances within a cluster to provide isolated local clouds for multiple users.
 
 The Operator manages the full lifecycle of LocalStack resources and enables advanced Kubernetes integrations that are difficult to configure manually.
 
@@ -20,7 +20,7 @@ This guide explains how to deploy and manage LocalStack in a Kubernetes cluster 
 
 The Operator supports the following advanced capabilities:
 
-* Cluster DNS configuration to correctly resolve AWS-style subdomains
+* Cluster DNS configuration to correctly resolve AWS-style subdomains in the same namespace
 * Automatic loading of Cloud Pods on startup
 * Support for initialization hooks
 * Simplified logging configuration
@@ -54,7 +54,7 @@ To install a specific version:
 kubectl apply -f https://github.com/localstack/localstack-operator/releases/v0.4.0/download/controller.yaml
 ```
 
-See the Operator releases page for all available versions.
+See the [Operator releases page](https://github.com/localstack/localstack-operator/releases) for all available versions.
 
 
 ### Deploy LocalStack instance
@@ -88,7 +88,7 @@ kubectl create secret generic localstack-auth-token \
   --from-literal=LOCALSTACK_AUTH_TOKEN="$LOCALSTACK_AUTH_TOKEN"
 ```
 
-The auth token must be available in the `LOCALSTACK_AUTH_TOKEN` environment variable when creating the Secret.
+With this example, the auth token must be available in the `LOCALSTACK_AUTH_TOKEN` environment variable when creating the Secret.
 
 notes:::
 More advanced examples are available in the LocalStack Operator GitHub repository.
@@ -128,7 +128,7 @@ When `dnsProvider: coredns` is configured, LocalStack can also be reached throug
 The LocalStack Operator introduces a `LocalStack` Custom Resource Definition (CRD) that controls how LocalStack instances are deployed and configured.
 
 :::Note
-CRD documentation is currently maintained manually. For a full reference of available fields, see: [https://github.com/localstack/localstack-operator/blob/v0.4.0/api-docs.md](https://github.com/localstack/localstack-operator/blob/v0.4.0/api-docs.md)
+CRD documentation is currently maintained manually. For a full reference of available fields, see: [https://github.com/localstack/localstack-operator/blob/main/api-docs.md](https://github.com/localstack/localstack-operator/blob/main/api-docs.md)
 :::
 
 
