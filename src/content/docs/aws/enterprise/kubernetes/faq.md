@@ -165,7 +165,9 @@ This indicates missing or incorrect RBAC permissions for the LocalStack Pod’s 
 
 ### LocalStack cannot connect to real AWS
 
-Common causes:
+You may want LocalStack to connect to real AWS when testing hybrid workflows, forwarding specific requests, or accessing resources that are not fully emulated locally.
+
+Common causes for connection failure:
 
 * **Transparent Endpoint Injection**
 
