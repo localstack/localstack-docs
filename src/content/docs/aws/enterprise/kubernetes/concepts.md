@@ -23,7 +23,7 @@ Its primary responsibilities include:
 * Orchestrating services that require additional compute (for example Lambda, Glue, ECS, and EC2)
 * Managing the lifecycle of compute workloads spawned on behalf of AWS services
 
-From a Kubernetes perspective, the LocalStack pod is a standard pod that fully participates in cluster networking. It is typically exposed through a Kubernetes `Service`, and all AWS API interactions—whether from inside or outside the cluster—are routed through this pod.
+From a Kubernetes perspective, the LocalStack pod is a standard pod that fully participates in cluster networking. It is typically exposed through a Kubernetes `Service`, and all AWS API interactions —whether from inside or outside the cluster— are routed through this pod.
 
 ![How the Localstack Pod works](/images/aws/k8s-concepts.png)
 
