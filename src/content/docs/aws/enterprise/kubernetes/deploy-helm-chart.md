@@ -98,11 +98,6 @@ Create a `values.yaml` and apply it during install/upgrade:
 helm upgrade --install localstack localstack/localstack -f values.yaml
 ```
 
-:::note
-Keep the existing **parameters table** in this page (or embed it as a collapsible section).
-
-If you’re migrating from the existing Kubernetes docs page, preserve the parameter names and meaning so users can “diff” old vs new without re-learning.
-:::
 
 ## Verify
 
