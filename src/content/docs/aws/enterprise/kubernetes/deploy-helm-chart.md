@@ -47,7 +47,6 @@ helm install localstack localstack/localstack
 
 This creates the LocalStack resources in your cluster using the chart defaults.
 
-:::note
 ### Install LocalStack Pro
 
 If you want to use the `localstack-pro` image, create a `values.yaml` file:
@@ -79,8 +78,9 @@ extraEnvVars:
       secretKeyRef:
         name: <name of the secret>
         key: <name of the key in the secret containing the API key>
+```
 
-## Configure
+## Configure chart
 
 The chart ships with sensible defaults, but most production setups will want a small `values.yaml` to customize behavior.
 
