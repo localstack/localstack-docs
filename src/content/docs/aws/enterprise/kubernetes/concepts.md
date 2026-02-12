@@ -89,6 +89,7 @@ In a Kubernetes deployment:
 
 * The DNS server can be exposed through the same Kubernetes Service as the LocalStack API ports.
 * This allows transparent resolution of AWS service hostnames and `localhost.localstack.cloud` to LocalStack endpoints from within the cluster.
+* If a custom domain is used to refer to the LocalStack Kubernetes service (via `LOCALSTACK_HOST`) then this name and subdomains of this name are also resolved by the LocalStack DNS server
 
 This enables applications running in Kubernetes to interact with LocalStack using standard AWS SDK endpoint resolution without additional configuration.
 
