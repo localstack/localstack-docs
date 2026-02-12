@@ -92,7 +92,7 @@ In a Kubernetes deployment:
 This enables applications running in Kubernetes to interact with LocalStack using standard AWS SDK endpoint resolution without additional configuration.
 
 
-## When to choose the Kubernetes-native executor
+## Choose execution mode
 
 The Kubernetes-native executor should be used when LocalStack is deployed inside a Kubernetes cluster and workloads must run reliably and securely.
 
