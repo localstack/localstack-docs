@@ -7,7 +7,6 @@ sidebar:
 tags: ["Enterprise"]
 ---
 
-## Overview
 
 LocalStack is a local AWS cloud environment that emulates core AWS services for development and testing. 
 

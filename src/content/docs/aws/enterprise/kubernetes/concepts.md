@@ -7,8 +7,6 @@ sidebar:
 tags: ["Enterprise"]
 ---
 
-## Concepts & Architecture
-
 This conceptual guide explains how LocalStack runs inside a Kubernetes cluster, how workloads are executed, and how networking and DNS behave in a Kubernetes-based deployment.
 
 

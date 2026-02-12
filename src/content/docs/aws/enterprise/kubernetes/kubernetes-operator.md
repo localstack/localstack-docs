@@ -7,8 +7,6 @@ sidebar:
 tags: ["Enterprise"]
 ---
 
-## Introduction
-
 The LocalStack Operator provides a Kubernetes-native way to deploy and manage LocalStack instances. It abstracts Kubernetes-specific configuration and automates operational tasks, making LocalStack deployments more consistent and easier to maintain.
 
 The Operator manages the full lifecycle of LocalStack resources and enables advanced Kubernetes integrations that are difficult to configure manually.

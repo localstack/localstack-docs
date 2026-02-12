@@ -7,8 +7,6 @@ sidebar:
 tags: ["Enterprise"]
 ---
 
-## Introduction
-
 LocalStack Enterprise provides a Kubernetes executor for various emulated services.
 It allows you to run these services as Kubernetes pods in your Kubernetes clusters.
 By default, LocalStack uses the `docker` backend for these services.

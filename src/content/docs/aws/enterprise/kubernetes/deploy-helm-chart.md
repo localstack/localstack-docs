@@ -7,8 +7,6 @@ sidebar:
 tags: ["Enterprise"]
 ---
 
-## Introduction
-
 A Helm chart is a package that bundles Kubernetes manifests into a reusable, configurable deployment unit. It makes applications easier to install, upgrade, and manage. 
 
 Using the LocalStack Helm chart lets you deploy LocalStack to Kubernetes with set defaults while still customizing resources, persistence, networking, and environment variables through a single `values.yaml`. This approach is especially useful for teams running LocalStack in shared clusters or CI environments where repeatable, versioned deployments matter.

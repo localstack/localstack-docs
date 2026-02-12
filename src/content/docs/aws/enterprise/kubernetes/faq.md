@@ -7,8 +7,6 @@ sidebar:
 tags: ["Enterprise"]
 ---
 
-# Troubleshooting FAQ
-
 This section covers common issues when running LocalStack on Kubernetes and how to diagnose them.
 
 
