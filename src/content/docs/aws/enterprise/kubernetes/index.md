@@ -10,11 +10,12 @@ tags: ["Enterprise"]
 
 LocalStack is a local AWS cloud environment that emulates core AWS services for development and testing. 
 
-When deployed on Kubernetes, services that typically spawn Docker containers (such as Lambda, ECS, or RDS) instead spawn Kubernetes pods within the same cluster. Behavior is improved by allowing dynamic scaling, isolation, and native Kubernetes orchestration.
+When LocalStack is deployed on Kubernetes and configured to use the Kubernetes-native executor (by setting `CONTAINER_RUNTIME=kubernetes`), services that would normally spawn Docker containers (ie., Lambda, ECS, or RDS) instead create Kubernetes pods within the cluster. This enables dynamic scaling, isolation, and native Kubernetes orchestration.
 
 Supported cases:
 
 - Local Development Environments: Provide isolated, consistent environments for individual developers or small teams.
+- Hosted Development Environments: Provide scalable and isolated development environments for teams. 
 - CI/CD Pipeline Testing: Run end-to-end integration tests in a reproducible, cloud-like environment during CI/CD workflows.
 
 ## Requirements:
@@ -38,7 +39,7 @@ The table below compares these methods.
 
 | Deployment approach | Pros | Cons |
 |---------------------|------|------|
-| **Operator** | · Declarative, self-managed control plane<br> · Built-in validation, defaulting, and reconciliation logic | · Limited to the LocalStack Pro image only<br> · Steeper learning curve compared to Helm |
+| **Operator** | · Declarative, self-managed control plane<br> · Built-in validation, defaulting, and reconciliation logic | · Steeper learning curve compared to Helm |
 | **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> · Supports both LocalStack Community and Pro images | · Customization is limited to chart values and overrides |
 | **DIY (YAML manifests)** | · Full control over Kubernetes configuration and resources | · Time-consuming to set up and maintain<br> · Manual updates and lifecycle management |
 
