@@ -550,6 +550,11 @@ export default defineConfig({
               label: 'Changelog',
               slug: 'snowflake/changelog',
             },
+            {
+              label: 'Help & Support',
+              collapsed: true,
+              autogenerate: { directory: '/snowflake/help-support' },
+            },
           ],
         },
       ],
