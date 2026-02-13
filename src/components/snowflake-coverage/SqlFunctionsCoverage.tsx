@@ -60,7 +60,9 @@ export default function SqlFunctionsCoverage() {
     { id: 'supported', desc: true },
     { id: 'name', desc: false },
   ]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
   const [statusFilter, setStatusFilter] = React.useState<string>('all');
 
   React.useEffect(() => {
@@ -79,8 +81,9 @@ export default function SqlFunctionsCoverage() {
   const filteredFunctions = React.useMemo(() => {
     if (!data) return [];
     if (statusFilter === 'all') return data.functions;
-    if (statusFilter === 'supported') return data.functions.filter(f => f.supported);
-    return data.functions.filter(f => !f.supported);
+    if (statusFilter === 'supported')
+      return data.functions.filter((f) => f.supported);
+    return data.functions.filter((f) => !f.supported);
   }, [data, statusFilter]);
 
   const table = useReactTable({
@@ -105,14 +108,16 @@ export default function SqlFunctionsCoverage() {
   }
 
   return (
-    <div className="w-full">
+    <div style={{ width: '100%', minWidth: '100%' }}>
       {/* Filters */}
       <div className="flex flex-wrap gap-4 mb-4">
         <input
           type="text"
           placeholder="Filter by function name..."
           value={(table.getColumn('name')?.getFilterValue() as string) || ''}
-          onChange={(e) => table.getColumn('name')?.setFilterValue(e.target.value)}
+          onChange={(e) =>
+            table.getColumn('name')?.setFilterValue(e.target.value)
+          }
           className="border rounded px-3 py-2 w-full max-w-xs"
           style={{
             color: '#707385',
@@ -128,7 +133,6 @@ export default function SqlFunctionsCoverage() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="border rounded px-3 py-2"
           style={{
-            color: '#707385',
             fontFamily: 'AeonikFono',
             fontSize: '14px',
             fontWeight: '500',
@@ -143,9 +147,10 @@ export default function SqlFunctionsCoverage() {
       </div>
 
       {/* Table */}
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', overflow: 'hidden' }}>
         <table
           style={{
+            display: 'table',
             borderCollapse: 'collapse',
             tableLayout: 'fixed',
             width: '100%',
@@ -185,15 +190,15 @@ export default function SqlFunctionsCoverage() {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                       {canSort && (
                         <span style={{ display: 'inline-block', width: '1em' }}>
                           {header.column.getIsSorted() === 'asc'
                             ? ' ▲'
                             : header.column.getIsSorted() === 'desc'
-                            ? ' ▼'
-                            : ''}
+                              ? ' ▼'
+                              : ''}
                         </span>
                       )}
                     </th>
@@ -223,7 +228,8 @@ export default function SqlFunctionsCoverage() {
                       padding: '12px 8px',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      whiteSpace: cell.column.id === 'name' ? 'normal' : 'nowrap',
+                      whiteSpace:
+                        cell.column.id === 'name' ? 'normal' : 'nowrap',
                     }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -258,7 +264,8 @@ export default function SqlFunctionsCoverage() {
             fontSize: '14px',
           }}
         >
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          Page {table.getState().pagination.pageIndex + 1} of{' '}
+          {table.getPageCount()}
         </span>
         <button
           className="px-3 py-1 border rounded disabled:opacity-50"
