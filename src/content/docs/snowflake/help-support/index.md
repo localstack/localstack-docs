@@ -1,13 +1,11 @@
 ---
-title: Help & Support
+title: Overview
 description: How to request Help & Support for LocalStack for Snowflake.
 template: doc
 sidebar:
     order: 1
 ---
 
-
-## Introduction
 
 LocalStack provides various support channels to help users troubleshoot issues and integrate the platform into their workflows. The level of support available depends on the plan associated with your account.
 
@@ -32,7 +30,7 @@ At the moment, we only provide support in `English`, as we are an international
 | **Plan** | **Tier** |
 | --- | --- |
 | Trial | [**Standard Support**](https://docs.localstack.cloud/snowflake/help-support/#standard-support) |
-| Base | [Priority Support](https://docs.localstack.cloud/snowflake/help-support/#priority-support) |
+| Base | [**Priority Support**](https://docs.localstack.cloud/snowflake/help-support/#priority-support) |
 | Enterprise | [**Enterprise Support**](https://docs.localstack.cloud/snowflake/help-support/#enterprise-support) |
 
 
