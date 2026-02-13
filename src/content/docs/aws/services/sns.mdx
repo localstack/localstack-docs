@@ -186,6 +186,49 @@ awslocal sns unsubscribe \
 LocalStack’s SNS implementation offers additional endpoints for developers located at `/_aws/sns`.
 These endpoints provide the ability to access different SNS internals, like Platform Endpoint messages which are not sent to those platforms, or Subscription Tokens which you might not be able to retrieve otherwise.
 
+
+### Phone opt-outs
+
+For testing purposes, LocalStack provides an internal developer endpoint to add phone numbers to the SNS opt-out list.
+
+In AWS, phone number opt-outs are typically handled via inbound SMS keywords (for example, `STOP`) or managed through Amazon Pinpoint. Since inbound SMS handling and Pinpoint integration are outside the scope of LocalStack’s SNS emulation, this endpoint allows you to opt-out phone numbers directly for local testing.
+
+This is a **LocalStack internal endpoint**, not part of the AWS SNS public API.
+
+```
+POST /_aws/sns/phone-opt-outs
+```
+
+#### Query parameters
+
+| Parameter   | Required | Description                                                                          |
+| ----------- | -------- | ------------------------------------------------------------------------------------ |
+| phoneNumber | Yes      | Phone number to add to the SNS opt-out list.                                         |
+| accountId   | No       | AWS Account ID under which the opt-out should be stored. Defaults to `000000000000`. |
+
+The opt-out list is account-wide and stored under the default region `us-east-1`.
+
+#### Create phone opt-out list
+
+Add a phone number to create the opt-out list:
+
+```bash
+curl -X POST "http://localhost:4566/_aws/sns/phone-opt-outs" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "phoneNumber": "+123123123",
+        "accountId": "000000000000"
+      }'
+```
+
+:::note
+* This endpoint is intended for **local testing only**.
+* The opt-out list is stored per account.
+* Adding the same phone number multiple times is safe. Internally, phone numbers are stored in a set, so duplicate entries are ignored.
+* Once opted out, SNS operations that respect the opt-out list (for example, `ListPhoneNumbersOptedOut`) will include the number.
+:::
+
+
 ### Platform Endpoint messages
 
 For testing purposes, LocalStack retains all messages published to a platform endpoint in memory, making it easy to retrieve them.
