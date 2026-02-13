@@ -3,7 +3,7 @@ title: Enterprise Support
 description: How to request Enterprise Support for LocalStack for Snowflake.
 template: doc
 sidebar:
-    order: 2
+    order: 1
 tags: ["Enterprise"]
 ---
 
