@@ -1,9 +1,6 @@
 name: Update LocalStack CLI Docs
 
 on:
-  pull_request:
-    branches:
-      - main
   schedule:
     # Run on the 15th of every month at 00:00 UTC
     - cron: "0 0 15 * *"
@@ -45,11 +42,6 @@ jobs:
           python3 scripts/generate_cli_docs.py
         env:
           LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
-      
-      - name: Test
-        working-directory: docs
-        run: |
-          cat src/content/docs/aws/tooling/localstack-cli.md
 
       - name: Check for changes
         id: check-for-changes
