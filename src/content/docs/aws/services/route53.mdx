@@ -69,15 +69,11 @@ awslocal route53 change-resource-record-sets \
 }
 ```
 
-## Routing traffic to AWS resources
-
-LocalStack Route53 supports routing traffic to various AWS resources using alias records. This allows you to point your domain names directly to AWS services without managing IP addresses.
-
-### Routing to S3 static websites
+## Routing traffic to S3 static websites
 
 You can route traffic from a Route53 domain to an S3 bucket configured for static website hosting using alias records. This is useful when you want to serve a static website with a custom domain name.
 
-#### Create an S3 bucket with website hosting
+### Create an S3 bucket with website hosting
 
 First, create an S3 bucket and configure it for static website hosting. Run the following commands:
 
@@ -112,7 +108,7 @@ awslocal s3api put-bucket-policy \
     }'
 ```
 
-#### Create a Route53 alias record
+### Create a Route53 alias record
 
 Now create a hosted zone and an alias record that points to the S3 website endpoint:
 
@@ -152,7 +148,7 @@ The key points for S3 website alias records are:
 - The `Type` must be `A` (for IPv4) or `AAAA` (for IPv6)
 - Set `EvaluateTargetHealth` to `false` for S3 website endpoints
 
-#### Verify DNS resolution
+### Verify DNS resolution
 
 You can verify that your domain resolves to the S3 website using [DNS resolution](#dns-resolution) or by making HTTP requests:
 
@@ -164,11 +160,9 @@ dig @localhost $DOMAIN
 curl http://$DOMAIN:4566/
 ```
 
-### Routing to Elastic Load Balancers
+## Routing traffic to Elastic Load Balancers
 
 You can also route traffic to Elastic Load Balancers (ELB) using alias records. This is commonly used for distributing traffic across multiple instances.
-
-#### Create an alias record for ELB
 
 After creating your load balancer, you can create an alias record that points to it:
 
