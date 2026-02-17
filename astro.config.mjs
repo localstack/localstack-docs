@@ -57,6 +57,7 @@ export default defineConfig({
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
         LanguageSelect: './src/components/LanguageSelectWithGetStarted.astro',
         Banner: './src/components/BannerWithPersistentAnnouncement.astro',
+        Footer: './src/components/FooterWithFeedback.astro',
       },
       expressiveCode: {
         themes: ['one-light', 'one-dark-pro'],
