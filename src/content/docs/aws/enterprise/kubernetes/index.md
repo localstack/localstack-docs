@@ -50,7 +50,7 @@ While the LocalStack Community image can be deployed in Kubernetes, it does not 
 
 ## Help & Support
 
-LocalStack Pro (with a valid license) is the only version that provides:
+LocalStack Enterprise (or additional purchase of the Kubernetes pack add-on) is the only version that provides: 
 
 - Official support and integration for Kubernetes environments.
 - Dynamic pod creation by services like Lambda, ECS, RDS, etc.
