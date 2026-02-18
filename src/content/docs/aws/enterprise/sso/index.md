@@ -145,7 +145,7 @@ In the JumpCloud Admin Portal:
 2. Select **Custom Application**
 3. Open **Manage Single Sign-On (SSO)** and choose **Configure SSO with SAML**
 
-![JumpCloud Admin Portal Custom Application](/images/aws/jumpcloud-step1.png)
+![JumpCloud Admin Portal Custom Application](/images/aws/jumpcloud-step1.jpg)
 
 
 ### 2. Map Required Fields
