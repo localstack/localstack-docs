@@ -441,7 +441,7 @@ export default defineConfig({
                 },
                 {
                   label: 'Kubernetes',
-                  autogenerate: { directory: '/aws/enterprise/' },
+                  autogenerate: { directory: '/aws/enterprise/kubernetes' },
                   collapsed: true,
                 },
                 {
