@@ -30,8 +30,8 @@ From a Kubernetes perspective, the LocalStack pod is a standard pod that fully p
 
 LocalStack supports two execution modes for running compute workloads:
 
-* Docker executor
 * Kubernetes-native executor
+* Docker executor
 
 ### Docker executor
 
