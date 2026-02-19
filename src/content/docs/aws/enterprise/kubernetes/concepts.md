@@ -33,12 +33,6 @@ LocalStack supports two execution modes for running compute workloads:
 * Kubernetes-native executor
 * Docker executor
 
-### Docker executor
-
-The Docker executor runs workloads as containers started via a Docker runtime that is accessible from the LocalStack pod. This provides a simple, self-contained execution model without Kubernetes-level scheduling.
-
-However, Kubernetes does not provide a Docker daemon inside pods by default. To use the Docker executor in Kubernetes, the LocalStack pod must be given access to a Docker-compatible runtime (commonly via a Docker-in-Docker sidecar), which adds complexity and security concerns.
-
 ### Kubernetes-native executor
 
 The Kubernetes-native executor runs workloads as Kubernetes pods. In this mode, LocalStack communicates directly with the Kubernetes API to create, manage, and clean up pods on demand.
@@ -46,6 +40,12 @@ The Kubernetes-native executor runs workloads as Kubernetes pods. In this mode, 
 This execution mode provides stronger isolation, better security, and full integration with Kubernetes scheduling, resource limits, and lifecycle management.
 
 The execution mode is configured using the `CONTAINER_RUNTIME` environment variable.
+
+### Docker executor
+
+The Docker executor runs workloads as containers started via a Docker runtime that is accessible from the LocalStack pod. This provides a simple, self-contained execution model without Kubernetes-level scheduling.
+
+However, Kubernetes does not provide a Docker daemon inside pods by default. To use the Docker executor in Kubernetes, the LocalStack pod must be given access to a Docker-compatible runtime (commonly via a Docker-in-Docker sidecar), which adds complexity and security concerns.
 
 
 ## Child pods
