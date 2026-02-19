@@ -460,12 +460,13 @@ export default defineConfig({
                   slug: 'aws/enterprise',
                 },
                 {
-                  label: 'Single Sign-On',
-                  autogenerate: { directory: '/aws/enterprise/sso' },
+                  label: 'Kubernetes',
+                  autogenerate: { directory: '/aws/enterprise/kubernetes' },
+                  collapsed: true,
                 },
                 {
-                  label: 'Kubernetes Executor',
-                  slug: 'aws/enterprise/kubernetes-executor',
+                  label: 'Single Sign-On',
+                  autogenerate: { directory: '/aws/enterprise/sso' },
                 },
                 {
                   label: 'Enterprise Image',

@@ -3,11 +3,9 @@ title: Kubernetes Executor
 description: Configuring Kubernetes Executor for compute services in LocalStack Enterprise.
 template: doc
 sidebar:
-    order: 4
+    order: 5
 tags: ["Enterprise"]
 ---
-
-## Introduction
 
 LocalStack Enterprise provides a Kubernetes executor for various emulated services.
 It allows you to run these services as Kubernetes pods in your Kubernetes clusters.
