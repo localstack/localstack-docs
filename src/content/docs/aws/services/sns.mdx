@@ -225,7 +225,7 @@ curl -X POST "http://localhost:4566/_aws/sns/phone-opt-outs" \
 :::note
 * This endpoint is intended for **local testing only**.
 * The opt-out list is stored per account.
-* Adding the same phone number multiple times is safe. Internally, phone numbers are stored in a set, so duplicate entries are ignored.
+* Adding the same phone number multiple times is idempotent (performing the same operation once has the same effect as performing it multiple times).
 * Once opted out, SNS operations that respect the opt-out list (for example, `ListPhoneNumbersOptedOut`) will include the number.
 :::
 
