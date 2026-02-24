@@ -20,6 +20,8 @@ export default {
           boostFilter = "hierarchy.lvl0:LocalStack for AWS";
         } else if (pathname.startsWith('/snowflake/')) {
           boostFilter = "hierarchy.lvl0:LocalStack for Snowflake";
+        } else if (pathname.startsWith('/azure/')) {
+          boostFilter = "hierarchy.lvl0:LocalStack for Azure";
         }
 
         if (!boostFilter) {

@@ -186,7 +186,7 @@ export default defineConfig({
         starlightLlmsTxt({
           projectName: 'LocalStack',
           description:
-            'LocalStack is a cloud service emulator that runs in a single container on your laptop or in your CI environment. It provides an easy-to-use test/mocking framework for developing cloud applications, with support for AWS services and Snowflake.',
+            'LocalStack is a cloud service emulator that runs in a single container on your laptop or in your CI environment. It provides an easy-to-use test/mocking framework for developing cloud applications, with support for AWS services, Snowflake, and Azure.',
           customSets: [
             {
               label: 'AWS',
@@ -198,8 +198,13 @@ export default defineConfig({
               description: 'Documentation for LocalStack Snowflake emulation',
               paths: ['snowflake/**'],
             },
+            {
+              label: 'Azure',
+              description: 'Documentation for LocalStack Azure emulation',
+              paths: ['azure/**'],
+            },
           ],
-          exclude: ['aws/changelog', 'snowflake/changelog'],
+          exclude: ['aws/changelog', 'snowflake/changelog', 'azure/changelog'],
           rawContent: true,
         }),
         starlightImageZoom({
@@ -544,6 +549,38 @@ export default defineConfig({
             {
               label: 'Changelog',
               slug: 'snowflake/changelog',
+            },
+          ],
+        },
+        {
+          label: 'Azure',
+          collapsed: true,
+          items: [
+            {
+              label: 'Welcome',
+              slug: 'azure',
+            },
+            {
+              label: 'Getting Started',
+              autogenerate: { directory: '/azure/getting-started' },
+              collapsed: true,
+            },
+            {
+              label: 'Local Azure Services',
+              slug: 'azure/services',
+            },
+            {
+              label: 'Sample Apps',
+              slug: 'azure/sample-apps',
+            },
+            {
+              label: 'Integrations',
+              autogenerate: { directory: '/azure/integrations' },
+              collapsed: true,
+            },
+            {
+              label: 'Changelog',
+              slug: 'azure/changelog',
             },
           ],
         },
