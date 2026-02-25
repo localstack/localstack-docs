@@ -3517,7 +3517,7 @@
             "test": "test_lambda_init_environment",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -3595,6 +3595,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency",
             "test": "test_provisioned_concurrency",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency_init_failure",
+            "test": "test_provisioned_concurrency_init_failure",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -8213,16 +8223,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_integration.py::test_events_sqs_sns_lambda",
-            "test": "test_events_sqs_sns_lambda",
-            "response": "400",
-            "error": "ResourceAlreadyExistsException",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_lambda.py::TestCfnLambdaDestinations::test_generic_destination_routing[sqs-sqs]",
             "test": "test_generic_destination_routing[sqs-sqs]",
             "response": "400",
@@ -10559,7 +10559,17 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..BrokerNodeGroupInfo.ConnectivityInfo', '$..BrokerNodeGroupInfo.StorageInfo', '$..CurrentBrokerSoftwareInfo', '$..CustomerActionStatus', '$..CurrentVersion', '$..EncryptionInfo', '$..EnhancedMonitoring', '$..OpenMonitoring', '$..StorageMode', '$..Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka_kraft.py::TestKafkaKRaft::test_kafka_event_source_mapping_single_topic",
+            "test": "test_kafka_event_source_mapping_single_topic",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -10969,7 +10979,7 @@
             "test": "test_introspect",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11009,7 +11019,7 @@
             "test": "test_latest_published_update_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatus', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReason', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReasonCode', 'get_function_response_postupdate_latest..Configuration.RevisionId']",
+            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11035,6 +11045,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_delete",
+            "test": "test_lifecycle_delete",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_invoke",
             "test": "test_lifecycle_invoke",
             "response": "200",
@@ -11049,7 +11069,7 @@
             "test": "test_update_function_configuration_capacity_provide_arn",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', '$..RevisionId']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11059,7 +11079,7 @@
             "test": "test_introspect_with_valid_runtimes[dotnet10]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11069,7 +11089,7 @@
             "test": "test_introspect_with_valid_runtimes[dotnet8]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11079,7 +11099,7 @@
             "test": "test_introspect_with_valid_runtimes[java21]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11089,7 +11109,7 @@
             "test": "test_introspect_with_valid_runtimes[java25]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11099,7 +11119,7 @@
             "test": "test_introspect_with_valid_runtimes[nodejs22.x]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11109,7 +11129,7 @@
             "test": "test_introspect_with_valid_runtimes[nodejs24.x]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11119,7 +11139,7 @@
             "test": "test_introspect_with_valid_runtimes[python3.13]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11129,7 +11149,7 @@
             "test": "test_introspect_with_valid_runtimes[python3.14]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -11775,23 +11795,13 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/scenario/serverlesspresso/test_serverlesspresso.py::TestServerlesspressoScenario::test_populate_data",
-            "test": "test_populate_data",
+            "node_id": "LocalStack Pro: tests/aws/scenario/serverlesspresso/test_serverlesspresso.py::TestServerlesspressoScenario::test_open_store",
+            "test": "test_open_store",
             "response": "400",
             "error": "ResourceAlreadyExistsException",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/apigateway/test_websocket_apis.py::TestWebSockets::test_websocket_subprotocols",
-            "test": "test_websocket_subprotocols",
-            "response": "400",
-            "error": "ResourceAlreadyExistsException",
-            "snapshot_skipped": "['$..connection', '$..server', '$.headers-subprotocols-connect-header.sec-websocket-protocol']",
-            "aws_validated": true,
-            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -11939,7 +11949,7 @@
             "test": "test_submit_job_with_more_than_one_size",
             "response": "400",
             "error": "ResourceAlreadyExistsException",
-            "snapshot_skipped": "['$..jobSummaryList..jobDefinition', '$..jobSummaryList..container', '$..jobs..attempts', '$..jobs..container.containerInstanceArn', '$..jobs..container.logStreamName', '$..jobs..container.networkInterfaces', '$..tasks..availabilityZone', '$..tasks..containers..imageDigest', '$..tasks..containers..memory', '$..tasks..containers..runtimeId', '$..tasks..cpu', '$..tasks..ephemeralStorage', '$..tasks..executionStoppedAt', '$..tasks..group', '$..tasks..memory', '$..tasks..overrides.containerOverrides..cpu', '$..tasks..overrides.containerOverrides..memory', '$..tasks..overrides.inferenceAcceleratorOverrides', '$..tasks..platformFamily', '$..tasks..platformVersion', '$..tasks..startedBy', '$..tasks..stopCode', '$..tasks..stoppedReason', '$..tasks..version', '$..jobSummaryList..arrayProperties.statusSummary']",
+            "snapshot_skipped": "['$..jobSummaryList..jobDefinition', '$..jobSummaryList..container', '$..jobs..attempts', '$..jobs..container.containerInstanceArn', '$..jobs..container.logStreamName', '$..jobs..container.networkInterfaces', '$..tasks..availabilityZone', '$..tasks..containers..imageDigest', '$..tasks..containers..memory', '$..tasks..containers..runtimeId', '$..tasks..cpu', '$..tasks..ephemeralStorage', '$..tasks..executionStoppedAt', '$..tasks..group', '$..tasks..memory', '$..tasks..overrides.containerOverrides..cpu', '$..tasks..overrides.containerOverrides..memory', '$..tasks..overrides.inferenceAcceleratorOverrides', '$..tasks..platformFamily', '$..tasks..platformVersion', '$..tasks..startedBy', '$..tasks..stopCode', '$..tasks..stoppedReason', '$..tasks..version', '$..arrayProperties.statusSummaryLastUpdatedAt']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -12129,7 +12139,7 @@
             "test": "test_latest_published_update_config",
             "response": "400",
             "error": "ResourceAlreadyExistsException",
-            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatus', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReason', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReasonCode', 'get_function_response_postupdate_latest..Configuration.RevisionId']",
+            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -12149,7 +12159,7 @@
             "test": "test_update_function_configuration_capacity_provide_arn",
             "response": "400",
             "error": "ResourceAlreadyExistsException",
-            "snapshot_skipped": "['$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', '$..RevisionId']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -14145,6 +14155,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaBaseFeatures::test_large_payloads",
+            "test": "test_large_payloads",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..LogResult']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaBehavior::test_ignore_architecture",
             "test": "test_ignore_architecture",
             "response": "200",
@@ -14189,7 +14209,7 @@
             "test": "test_lambda_init_environment",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -14267,6 +14287,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency",
             "test": "test_provisioned_concurrency",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency_init_failure",
+            "test": "test_provisioned_concurrency_init_failure",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -20437,8 +20467,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_iam[/testpath/]",
-            "test": "test_lambda_iam[/testpath/]",
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_iam[/]",
+            "test": "test_lambda_iam[/]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -20449,6 +20479,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_sqs_destination",
             "test": "test_lambda_sqs_destination",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_sns_firehose",
+            "test": "test_sns_firehose",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -20531,7 +20571,17 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..BrokerNodeGroupInfo.ConnectivityInfo', '$..BrokerNodeGroupInfo.StorageInfo', '$..CurrentBrokerSoftwareInfo', '$..CustomerActionStatus', '$..CurrentVersion', '$..EncryptionInfo', '$..EnhancedMonitoring', '$..OpenMonitoring', '$..StorageMode', '$..Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka_kraft.py::TestKafkaKRaft::test_kafka_event_source_mapping_single_topic",
+            "test": "test_kafka_event_source_mapping_single_topic",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -20941,7 +20991,7 @@
             "test": "test_introspect",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -20981,7 +21031,7 @@
             "test": "test_latest_published_update_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatus', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReason', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReasonCode', 'get_function_response_postupdate_latest..Configuration.RevisionId']",
+            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21007,6 +21057,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_delete",
+            "test": "test_lifecycle_delete",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_invoke",
             "test": "test_lifecycle_invoke",
             "response": "200",
@@ -21021,7 +21081,7 @@
             "test": "test_update_function_configuration_capacity_provide_arn",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', '$..RevisionId']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21031,7 +21091,7 @@
             "test": "test_introspect_with_valid_runtimes[dotnet10]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21041,7 +21101,7 @@
             "test": "test_introspect_with_valid_runtimes[dotnet8]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21051,7 +21111,7 @@
             "test": "test_introspect_with_valid_runtimes[java21]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21061,7 +21121,7 @@
             "test": "test_introspect_with_valid_runtimes[java25]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21071,7 +21131,7 @@
             "test": "test_introspect_with_valid_runtimes[nodejs22.x]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21081,7 +21141,7 @@
             "test": "test_introspect_with_valid_runtimes[nodejs24.x]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21091,7 +21151,7 @@
             "test": "test_introspect_with_valid_runtimes[python3.13]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21101,7 +21161,7 @@
             "test": "test_introspect_with_valid_runtimes[python3.14]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -21874,16 +21934,6 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_iam[/testpath/]",
-            "test": "test_lambda_iam[/testpath/]",
-            "response": "400",
-            "error": "ResourceNotFoundException",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
             "origin": "internal"
           },
           {
@@ -23907,7 +23957,7 @@
             "test": "test_lambda_init_environment",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -23985,6 +24035,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency",
             "test": "test_provisioned_concurrency",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency_init_failure",
+            "test": "test_provisioned_concurrency_init_failure",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -30195,8 +30255,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_iam[/testpath/]",
-            "test": "test_lambda_iam[/testpath/]",
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_iam[/]",
+            "test": "test_lambda_iam[/]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -30289,7 +30349,17 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..BrokerNodeGroupInfo.ConnectivityInfo', '$..BrokerNodeGroupInfo.StorageInfo', '$..CurrentBrokerSoftwareInfo', '$..CustomerActionStatus', '$..CurrentVersion', '$..EncryptionInfo', '$..EnhancedMonitoring', '$..OpenMonitoring', '$..StorageMode', '$..Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka_kraft.py::TestKafkaKRaft::test_kafka_event_source_mapping_single_topic",
+            "test": "test_kafka_event_source_mapping_single_topic",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -30459,7 +30529,7 @@
             "test": "test_introspect",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -30499,7 +30569,7 @@
             "test": "test_latest_published_update_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatus', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReason', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReasonCode', 'get_function_response_postupdate_latest..Configuration.RevisionId']",
+            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -30525,6 +30595,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_delete",
+            "test": "test_lifecycle_delete",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_invoke",
             "test": "test_lifecycle_invoke",
             "response": "200",
@@ -30539,7 +30619,7 @@
             "test": "test_update_function_configuration_capacity_provide_arn",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', '$..RevisionId']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -31505,8 +31585,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_iam[/]",
-            "test": "test_lambda_iam[/]",
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_iam[/testpath/]",
+            "test": "test_lambda_iam[/testpath/]",
             "response": "400",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "",
@@ -31939,7 +32019,7 @@
             "test": "test_list_function_versions_by_capacity_provider",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..ResponseMetadata.HTTPStatusCode', '$..StatusCode']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -31987,6 +32067,56 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances_api.py::TestAPI::test_update_functon_with_wrong_publish_to",
             "test": "test_update_functon_with_wrong_publish_to",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_tagging.py::TestLambdaTagWithRGTA::test_create_tag_in_rgta_on_esm_create",
+            "test": "test_create_tag_in_rgta_on_esm_create",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_tagging.py::TestLambdaTagWithRGTA::test_create_tag_in_rgta_on_fn_create",
+            "test": "test_create_tag_in_rgta_on_fn_create",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_tagging.py::TestLambdaTagWithRGTA::test_remove_function_delete_tags_in_rgta",
+            "test": "test_remove_function_delete_tags_in_rgta",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_tagging.py::TestLambdaTagWithRGTA::test_tag_lifecycle_with_rgta[event_source_mapping]",
+            "test": "test_tag_lifecycle_with_rgta[event_source_mapping]",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_tagging.py::TestLambdaTagWithRGTA::test_tag_lifecycle_with_rgta[lambda_function]",
+            "test": "test_tag_lifecycle_with_rgta[lambda_function]",
             "response": "400",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "",
@@ -32929,7 +33059,7 @@
             "test": "test_submit_job_with_more_than_one_size",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..jobSummaryList..jobDefinition', '$..jobSummaryList..container', '$..jobs..attempts', '$..jobs..container.containerInstanceArn', '$..jobs..container.logStreamName', '$..jobs..container.networkInterfaces', '$..tasks..availabilityZone', '$..tasks..containers..imageDigest', '$..tasks..containers..memory', '$..tasks..containers..runtimeId', '$..tasks..cpu', '$..tasks..ephemeralStorage', '$..tasks..executionStoppedAt', '$..tasks..group', '$..tasks..memory', '$..tasks..overrides.containerOverrides..cpu', '$..tasks..overrides.containerOverrides..memory', '$..tasks..overrides.inferenceAcceleratorOverrides', '$..tasks..platformFamily', '$..tasks..platformVersion', '$..tasks..startedBy', '$..tasks..stopCode', '$..tasks..stoppedReason', '$..tasks..version', '$..jobSummaryList..arrayProperties.statusSummary']",
+            "snapshot_skipped": "['$..jobSummaryList..jobDefinition', '$..jobSummaryList..container', '$..jobs..attempts', '$..jobs..container.containerInstanceArn', '$..jobs..container.logStreamName', '$..jobs..container.networkInterfaces', '$..tasks..availabilityZone', '$..tasks..containers..imageDigest', '$..tasks..containers..memory', '$..tasks..containers..runtimeId', '$..tasks..cpu', '$..tasks..ephemeralStorage', '$..tasks..executionStoppedAt', '$..tasks..group', '$..tasks..memory', '$..tasks..overrides.containerOverrides..cpu', '$..tasks..overrides.containerOverrides..memory', '$..tasks..overrides.inferenceAcceleratorOverrides', '$..tasks..platformFamily', '$..tasks..platformVersion', '$..tasks..startedBy', '$..tasks..stopCode', '$..tasks..stoppedReason', '$..tasks..version', '$..arrayProperties.statusSummaryLastUpdatedAt']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -34075,6 +34205,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency_init_failure",
+            "test": "test_provisioned_concurrency_init_failure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaFeatures::test_invocation_type_event[nodejs16.x]",
             "test": "test_invocation_type_event[nodejs16.x]",
             "response": "200",
@@ -34525,6 +34665,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda_runtimes.py::TestJavaRuntimes::test_java_custom_handler_method_specification[cloud.localstack.sample.LambdaHandlerWithInterfaceAndCustom::handleRequest-INTERFACE]",
+            "test": "test_java_custom_handler_method_specification[cloud.localstack.sample.LambdaHandlerWithInterfaceAndCustom::handleRequest-INTERFACE]",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..LoggingConfig']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda_runtimes.py::TestJavaRuntimes::test_java_custom_handler_method_specification[cloud.localstack.sample.LambdaHandlerWithInterfaceAndCustom::handleRequestCustom-CUSTOM]",
             "test": "test_java_custom_handler_method_specification[cloud.localstack.sample.LambdaHandlerWithInterfaceAndCustom::handleRequestCustom-CUSTOM]",
             "response": "400",
@@ -34891,6 +35041,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestELB::test_elb_register_lambda_target_validation",
+            "test": "test_elb_register_lambda_target_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_cross_account.py::TestLambdaCrossAccount::test_lambda_cross_account_invoke",
             "test": "test_lambda_cross_account_invoke",
             "response": "200",
@@ -35093,6 +35253,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_sqs_destination",
             "test": "test_lambda_sqs_destination",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_sns_firehose",
+            "test": "test_sns_firehose",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -36177,6 +36347,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency_init_failure",
+            "test": "test_provisioned_concurrency_init_failure",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestRequestIdHandling::test_request_id_async_invoke_with_retry",
             "test": "test_request_id_async_invoke_with_retry",
             "response": "200",
@@ -36472,16 +36652,6 @@
             "response": "400",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "['$..Records..md5OfMessageAttributes']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestRequestIdHandling::test_request_id_invoke",
-            "test": "test_request_id_invoke",
-            "response": "400",
-            "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..logs']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -37945,6 +38115,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestELB::test_elb_register_lambda_target_validation",
+            "test": "test_elb_register_lambda_target_validation",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_cross_account.py::TestLambdaCrossAccount::test_lambda_cross_account_invoke",
             "test": "test_lambda_cross_account_invoke",
             "response": "200",
@@ -38167,6 +38347,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_sqs_destination",
             "test": "test_lambda_sqs_destination",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_sns_firehose",
+            "test": "test_sns_firehose",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -40603,7 +40793,7 @@
             "test": "test_lambda_init_environment",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -40681,6 +40871,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency",
             "test": "test_provisioned_concurrency",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency_init_failure",
+            "test": "test_provisioned_concurrency_init_failure",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -43181,16 +43381,6 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/sns/test_sns.py::TestSNSSMS::test_publish_sms_endpoint",
             "test": "test_publish_sms_endpoint",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "internal"
-          },
-          {
-            "node_id": "LocalStack Community: tests/aws/services/sns/test_sns.py::TestSNSSMS::test_publish_wrong_phone_format",
-            "test": "test_publish_wrong_phone_format",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -46573,7 +46763,7 @@
             "test": "test_lambda_init_environment",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -46651,6 +46841,16 @@
           {
             "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency",
             "test": "test_provisioned_concurrency",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/lambda_/test_lambda.py::TestLambdaConcurrency::test_provisioned_concurrency_init_failure",
+            "test": "test_provisioned_concurrency_init_failure",
             "response": "400",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "",
@@ -52371,16 +52571,6 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestApiGatewayLambdaAuthorizers::test_apigateway_authorizer_resource_based[REQUEST]",
-            "test": "test_apigateway_authorizer_resource_based[REQUEST]",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "internal"
-          },
-          {
             "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestApiGatewayLambdaAuthorizers::test_apigateway_authorizer_resource_based[TOKEN]",
             "test": "test_apigateway_authorizer_resource_based[TOKEN]",
             "response": "200",
@@ -52431,18 +52621,18 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_iam[/testpath/]",
-            "test": "test_lambda_iam[/testpath/]",
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_sqs_destination",
+            "test": "test_lambda_sqs_destination",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
             "aws_validated": true,
-            "snapshot_tested": true,
+            "snapshot_tested": false,
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_lambda_sqs_destination",
-            "test": "test_lambda_sqs_destination",
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_inter_service_enforcement.py::TestInterServiceCommunicationEnforcement::test_sns_firehose",
+            "test": "test_sns_firehose",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -52525,7 +52715,17 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..BrokerNodeGroupInfo.ConnectivityInfo', '$..BrokerNodeGroupInfo.StorageInfo', '$..CurrentBrokerSoftwareInfo', '$..CustomerActionStatus', '$..CurrentVersion', '$..EncryptionInfo', '$..EnhancedMonitoring', '$..OpenMonitoring', '$..StorageMode', '$..Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka_kraft.py::TestKafkaKRaft::test_kafka_event_source_mapping_single_topic",
+            "test": "test_kafka_event_source_mapping_single_topic",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -52925,7 +53125,7 @@
             "test": "test_introspect",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -52965,7 +53165,7 @@
             "test": "test_latest_published_update_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatus', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReason', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReasonCode', 'get_function_response_postupdate_latest..Configuration.RevisionId']",
+            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -52991,6 +53191,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_delete",
+            "test": "test_lifecycle_delete",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_invoke",
             "test": "test_lifecycle_invoke",
             "response": "200",
@@ -53005,7 +53215,7 @@
             "test": "test_update_function_configuration_capacity_provide_arn",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', '$..RevisionId']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -53015,7 +53225,7 @@
             "test": "test_introspect_with_valid_runtimes[dotnet10]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -53025,7 +53235,7 @@
             "test": "test_introspect_with_valid_runtimes[dotnet8]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -53035,7 +53245,7 @@
             "test": "test_introspect_with_valid_runtimes[java21]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -53045,7 +53255,7 @@
             "test": "test_introspect_with_valid_runtimes[java25]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -53055,7 +53265,7 @@
             "test": "test_introspect_with_valid_runtimes[nodejs22.x]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -53065,7 +53275,7 @@
             "test": "test_introspect_with_valid_runtimes[nodejs24.x]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -53075,7 +53285,7 @@
             "test": "test_introspect_with_valid_runtimes[python3.13]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -53085,7 +53295,7 @@
             "test": "test_introspect_with_valid_runtimes[python3.14]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -55741,6 +55951,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/identitystore/test_identitystore.py::TestIdentityStore::test_create_list_describe_group",
+            "test": "test_create_list_describe_group",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/iot/test_iot.py::TestTopicRules::test_topic_rule_triggers_lambda",
             "test": "test_topic_rule_triggers_lambda",
             "response": "400",
@@ -55765,19 +55985,39 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..BrokerNodeGroupInfo.ConnectivityInfo', '$..BrokerNodeGroupInfo.StorageInfo', '$..CurrentBrokerSoftwareInfo', '$..CustomerActionStatus', '$..CurrentVersion', '$..EncryptionInfo', '$..EnhancedMonitoring', '$..OpenMonitoring', '$..StorageMode', '$..Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/kms/test_kms.py::TestKMS::test_create_key",
-            "test": "test_create_key",
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka_kraft.py::TestKafkaKRaft::test_kafka_event_source_mapping_single_topic",
+            "test": "test_kafka_event_source_mapping_single_topic",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kms/test_kms.py::TestKmsTagging::test_kms_multi_region_keys",
+            "test": "test_kms_multi_region_keys",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..KeyMetadata.Enabled', '$..KeyMetadata.KeyState', '$..ReplicaKeyMetadata.Enabled', '$..ReplicaKeyMetadata.KeyState', '$..ReplicaPolicy']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/lambda_debug_mode/test_ldm_endpoint.py::TestLDMEndpoint::test_config_with_auto_port",
+            "test": "test_config_with_auto_port",
             "response": "400",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
+            "aws_validated": false,
+            "snapshot_tested": false,
             "origin": "external"
           },
           {
@@ -56165,7 +56405,7 @@
             "test": "test_introspect",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..Payload.paths._tmp_gid', '$..Payload.paths._tmp_mode', '$..Payload.paths._tmp_owner', '$..Payload.paths._tmp_uid', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.platform_machine', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56205,7 +56445,7 @@
             "test": "test_latest_published_update_config",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatus', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReason', 'get_function_response_postupdate_latest..Configuration.LastUpdateStatusReasonCode', 'get_function_response_postupdate_latest..Configuration.RevisionId']",
+            "snapshot_skipped": "['$..Configuration.ConfigSha256', '$..ConfigSha256']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56231,6 +56471,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_delete",
+            "test": "test_lifecycle_delete",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/lambda_/test_lambda_managed_instances.py::TestLambdaManagedInstances::test_lifecycle_invoke",
             "test": "test_lifecycle_invoke",
             "response": "400",
@@ -56245,7 +56495,7 @@
             "test": "test_update_function_configuration_capacity_provide_arn",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Configuration.LastUpdateStatus', '$..Configuration.LastUpdateStatusReason', '$..Configuration.LastUpdateStatusReasonCode', '$..RevisionId']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56255,7 +56505,7 @@
             "test": "test_introspect_with_valid_runtimes[dotnet10]",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56265,7 +56515,7 @@
             "test": "test_introspect_with_valid_runtimes[dotnet8]",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56275,7 +56525,7 @@
             "test": "test_introspect_with_valid_runtimes[java21]",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56285,7 +56535,7 @@
             "test": "test_introspect_with_valid_runtimes[java25]",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56295,7 +56545,7 @@
             "test": "test_introspect_with_valid_runtimes[nodejs22.x]",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56305,7 +56555,7 @@
             "test": "test_introspect_with_valid_runtimes[nodejs24.x]",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56315,7 +56565,7 @@
             "test": "test_introspect_with_valid_runtimes[python3.13]",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -56325,7 +56575,7 @@
             "test": "test_introspect_with_valid_runtimes[python3.14]",
             "response": "400",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET']",
+            "snapshot_skipped": "['$..Payload.environment.AWS_XRAY_DAEMON_ADDRESS', '$..Payload.environment.AWS_LAMBDA_MAX_CONCURRENCY', '$..Payload.environment._AWS_XRAY_DAEMON_ADDRESS', '$..CapacityProviderConfig.LambdaManagedInstancesCapacityProviderConfig.PerExecutionEnvironmentMaxConcurrency', '$..Payload.environment.AWS_CONTAINER_AUTHORIZATION_TOKEN', '$..Payload.environment.AWS_CONTAINER_CREDENTIALS_FULL_URI', '$..Payload.environment.AWS_ENDPOINT_URL', '$..Payload.environment.AWS_LAMBDA_FUNCTION_TIMEOUT', '$..Payload.environment.EDGE_PORT', '$..Payload.environment.LOCALSTACK_HOSTNAME', '$..Payload.environment.DOTNET_CLI_TELEMETRY_OPTOUT', '$..Payload.environment.DOTNET_NOLOGO', '$..Payload.environment.DOTNET_RUNNING_IN_CONTAINER', '$..Payload.environment.DOTNET_VERSION', '$..Payload.environment.NODE_TLS_REJECT_UNAUTHORIZED', '$..Payload.environment.AWS_CA_BUNDLE', '$..Payload.environment.JAVA_TOOL_OPTIONS', '$..Payload.environment._LAMBDA_TELEMETRY_LOG_FD_PROVIDER_SOCKET', '$..Payload.environment.LC_CTYPE']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
