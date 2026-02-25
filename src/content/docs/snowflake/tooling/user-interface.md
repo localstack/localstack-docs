@@ -31,17 +31,21 @@ Navigate to [**https://app.localstack.cloud/inst/default/snowflake**](https://ap
 
 ### Run SQL queries
 
-The User Interface provides a **Worksheet** tab that allows you to run SQL queries and view the results.
+The User Interface provides a **Worksheet** tab that allows you to run SQL queries and view results. The editor includes SQL syntax highlighting and autocomplete to help you write queries faster.
 
-![Running SQL queries](/images/snowflake/run-sql-queries-web-ui.png)
+![Running SQL queries](/images/snowflake/new-run-sql-queries.png)
 
-You can click on **Warehouses** and **Databases** on the right side of the worksheet to view the available warehouses and databases.
+Use the **Local Resources** panel on the right to explore available databases, schemas, tables, and columns in a hierarchical view.
+
+![Local Resources](/images/snowflake/local-resources.png)
+
+You can run the current statement by placing your cursor inside it, or execute only a selected portion of SQL.
 
 ### View Snowflake logs
 
 The User Interface provides a **Logs** tab that provides you a detailed view of request/response traces of API calls issued against the local emulator. You can view the request and response headers, body, and status code.
 
-![View request/response traces](/images/snowflake/request-logs-web-ui.png)
+![View request/response traces](/images/snowflake/logs.png)
 
 ### Proxy to a real Snowflake instance
 
@@ -53,4 +57,4 @@ The User Interface provides a **Proxy** tab that allows you to enter your Snowfl
 Be careful when operating the proxy, as it can incur costs and access data in your real Snowflake account. For security reasons, please make sure to use scoped credentials with the least set of required permissions (ideally read-only). Only run the proxy against test/staging environments, and never against a production database.
 :::
 
-![Forward queries to a real Snowflake instance](/images/snowflake/proxy-web-ui.png)
+![Forward queries to a real Snowflake instance](/images/snowflake/proxy.png)
