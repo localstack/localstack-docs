@@ -215,7 +215,7 @@ export default defineConfig({
         }),
         starlightLinksValidator({
           errorOnRelativeLinks: true,
-          errorOnLocalLinks: false,  // Allow localhost links in tutorials (they're instructional)
+          errorOnLocalLinks: false, // Allow localhost links in tutorials (they're instructional)
           errorOnInvalidHashes: true,
         }),
         starlightUtils({
@@ -562,7 +562,7 @@ export default defineConfig({
             },
             {
               label: 'Getting Started',
-              autogenerate: { directory: '/azure/getting-started' },
+              autogenerate: { directory: 'azure/getting-started' },
               collapsed: true,
             },
             {
@@ -570,12 +570,8 @@ export default defineConfig({
               slug: 'azure/services',
             },
             {
-              label: 'Sample Apps',
-              slug: 'azure/sample-apps',
-            },
-            {
               label: 'Integrations',
-              autogenerate: { directory: '/azure/integrations' },
+              autogenerate: { directory: 'azure/integrations' },
               collapsed: true,
             },
             {
