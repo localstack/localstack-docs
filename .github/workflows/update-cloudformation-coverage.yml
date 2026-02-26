@@ -1,0 +1,73 @@
+name: Update CloudFormation Coverage
+
+on:
+  schedule:
+    - cron: 0 5 * * MON
+  workflow_dispatch:
+    inputs:
+      targetBranch:
+        required: false
+        type: string
+        default: 'main'
+
+jobs:
+  update-cloudformation-coverage:
+    name: Update CloudFormation coverage data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: docs
+          ref: ${{ github.event.inputs.targetBranch || 'main' }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Skip odd weeks on schedule
+        id: biweekly-gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "schedule" ] && [ $((10#$(date +%V) % 2)) -ne 0 ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Skipping this scheduled run to maintain biweekly cadence."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update CloudFormation coverage data
+        if: steps.biweekly-gate.outputs.skip != 'true'
+        working-directory: docs
+        run: |
+          python3 scripts/create_cloudformation_coverage.py
+        env:
+          NOTION_SECRET: ${{ secrets.NOTION_TOKEN }}
+
+      - name: Check for changes
+        if: steps.biweekly-gate.outputs.skip != 'true'
+        id: check-for-changes
+        working-directory: docs
+        env:
+          TARGET_BRANCH: ${{ github.event.inputs.targetBranch || 'main' }}
+        run: |
+          mkdir -p resources
+          (git diff --name-only origin/automated-cloudformation-coverage-updates src/data/cloudformation/ 2>/dev/null || git diff --name-only "origin/$TARGET_BRANCH" src/data/cloudformation/ 2>/dev/null) | tee -a resources/diff-check.log
+          echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> "$GITHUB_OUTPUT"
+          cat resources/diff-check.log
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        if: ${{ success() && steps.biweekly-gate.outputs.skip != 'true' && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+        with:
+          path: docs
+          title: "Update CloudFormation coverage data"
+          body: "Updating CloudFormation feature coverage data from the Notion resource database."
+          branch: "automated-cloudformation-coverage-updates"
+          author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          commit-message: "update generated cloudformation coverage data"
+          token: ${{ secrets.PRO_ACCESS_TOKEN }}

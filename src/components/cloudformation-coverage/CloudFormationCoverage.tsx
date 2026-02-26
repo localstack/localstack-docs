@@ -16,12 +16,10 @@ import type {
 
 type CloudFormationResource = {
   resource_type: string;
-  primary_identifier_paths: string;
   service: string;
   create: boolean;
   delete: boolean;
   update: boolean;
-  tier: string;
 };
 
 type CloudFormationCoverageData = {
@@ -36,19 +34,15 @@ const coverageData = data as CloudFormationCoverageData;
 const getColumnWidth = (columnId: string): string => {
   switch (columnId) {
     case 'resource_type':
-      return '21%';
-    case 'primary_identifier_paths':
-      return '29%';
+      return '50%';
     case 'service':
-      return '12%';
+      return '20%';
     case 'create':
     case 'delete':
     case 'update':
-      return '8%';
-    case 'tier':
-      return '14%';
+      return '10%';
     default:
-      return '8%';
+      return '10%';
   }
 };
 
@@ -62,11 +56,6 @@ const columns: ColumnDef<CloudFormationResource>[] = [
       row.original.resource_type
         .toLowerCase()
         .includes((filterValue ?? '').toLowerCase()),
-  },
-  {
-    accessorKey: 'primary_identifier_paths',
-    header: () => 'Primary Identifier Path(s)',
-    cell: ({ row }) => row.original.primary_identifier_paths || '-',
   },
   {
     accessorKey: 'service',
@@ -97,17 +86,10 @@ const columns: ColumnDef<CloudFormationResource>[] = [
     sortingFn: (rowA, rowB) =>
       Number(rowB.original.update) - Number(rowA.original.update),
   },
-  {
-    accessorKey: 'tier',
-    header: () => 'Community / Pro',
-    cell: ({ row }) => row.original.tier,
-    enableSorting: true,
-  },
 ];
 
 export default function CloudFormationCoverage() {
   const [sorting, setSorting] = React.useState<SortingState>([
-    { id: 'tier', desc: false },
     { id: 'service', desc: false },
     { id: 'resource_type', desc: false },
   ]);
@@ -247,11 +229,7 @@ export default function CloudFormationCoverage() {
                       padding: '12px 8px',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      whiteSpace:
-                        cell.column.id === 'resource_type' ||
-                        cell.column.id === 'primary_identifier_paths'
-                          ? 'normal'
-                          : 'nowrap',
+                      whiteSpace: cell.column.id === 'resource_type' ? 'normal' : 'nowrap',
                     }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

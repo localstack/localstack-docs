@@ -5,6 +5,7 @@ import json
 import os
 import re
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -111,20 +112,6 @@ def to_bool(value: Any) -> bool:
     return normalized in {"true", "1", "yes", "y", "supported", "enabled"}
 
 
-def normalize_tier(value: Any, is_open_source: Any) -> str:
-    if isinstance(value, str) and value.strip():
-        normalized = value.strip().lower()
-        if normalized in {"community", "oss", "open source", "opensource"}:
-            return "Community"
-        if normalized in {"pro", "enterprise"}:
-            return "Pro"
-        return value.strip()
-
-    if to_bool(is_open_source):
-        return "Community"
-    return "Pro"
-
-
 def derive_service(service_value: Any, resource_type: str) -> str:
     if isinstance(service_value, str) and service_value.strip():
         return service_value.strip()
@@ -136,24 +123,35 @@ def derive_service(service_value: Any, resource_type: str) -> str:
 
 
 def notion_post(path: str, secret: str, payload: dict[str, Any]) -> dict[str, Any]:
-    request = Request(
-        url=f"{NOTION_API_BASE}{path}",
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {secret}",
-            "Notion-Version": NOTION_VERSION,
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    try:
-        with urlopen(request) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except HTTPError as err:
-        body = err.read().decode("utf-8", errors="ignore")
-        raise RuntimeError(f"Notion API error ({err.code}): {body}") from err
-    except URLError as err:
-        raise RuntimeError(f"Notion request failed: {err.reason}") from err
+    last_error: Exception | None = None
+    for attempt in range(4):
+        request = Request(
+            url=f"{NOTION_API_BASE}{path}",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {secret}",
+                "Notion-Version": NOTION_VERSION,
+                "Content-Type": "application/json",
+            },
+            method="POST",
+        )
+        try:
+            with urlopen(request) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except HTTPError as err:
+            body = err.read().decode("utf-8", errors="ignore")
+            if err.code in {429, 500, 502, 503, 504} and attempt < 3:
+                time.sleep(2**attempt)
+                continue
+            raise RuntimeError(f"Notion API error ({err.code}): {body}") from err
+        except URLError as err:
+            last_error = err
+            if attempt < 3:
+                time.sleep(2**attempt)
+                continue
+            raise RuntimeError(f"Notion request failed: {err.reason}") from err
+
+    raise RuntimeError(f"Notion request failed after retries: {last_error}")
 
 
 def collect_pages(database_id: str, notion_secret: str) -> list[dict[str, Any]]:
@@ -186,14 +184,6 @@ def transform_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         resource_type_key = resolve_property_name(
             properties, ["Resource Type", "Resource", "Type"]
         )
-        identifier_path_key = resolve_property_name(
-            properties,
-            [
-                "Primary Identifier Path(s)",
-                "Primary Identifier Paths",
-                "Primary Identifier Path",
-            ],
-        )
         service_key = resolve_property_name(properties, ["Service"])
         supports_update_key = resolve_property_name(
             properties,
@@ -204,25 +194,12 @@ def transform_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "Update",
             ],
         )
-        tier_key = resolve_property_name(
-            properties,
-            ["Community or Pro", "Tier", "Edition", "Image", "Provider version"],
-        )
-        is_open_source_key = resolve_property_name(
-            properties, ["Is open source", "Open Source", "Is OSS"]
-        )
-
         resource_type = str(
             extract_property_value(properties.get(resource_type_key)) if resource_type_key else ""
         ).strip()
         if not resource_type:
             continue
 
-        primary_identifier_paths = str(
-            extract_property_value(properties.get(identifier_path_key))
-            if identifier_path_key
-            else ""
-        ).strip()
         service = derive_service(
             extract_property_value(properties.get(service_key)) if service_key else "",
             resource_type,
@@ -232,26 +209,17 @@ def transform_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             if supports_update_key
             else False
         )
-        tier = normalize_tier(
-            extract_property_value(properties.get(tier_key)) if tier_key else "",
-            extract_property_value(properties.get(is_open_source_key))
-            if is_open_source_key
-            else False,
-        )
-
         rows.append(
             {
                 "resource_type": resource_type,
-                "primary_identifier_paths": primary_identifier_paths,
                 "service": service,
                 "create": True,
                 "delete": True,
                 "update": supports_update,
-                "tier": tier,
             }
         )
 
-    rows.sort(key=lambda item: (item["tier"], item["service"], item["resource_type"]))
+    rows.sort(key=lambda item: (item["service"], item["resource_type"]))
     return rows
 
 
