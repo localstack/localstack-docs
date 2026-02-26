@@ -570,10 +570,6 @@ export default defineConfig({
               slug: 'azure/services',
             },
             {
-              label: 'Sample Apps',
-              slug: 'azure/sample-apps',
-            },
-            {
               label: 'Integrations',
               autogenerate: { directory: '/azure/integrations' },
               collapsed: true,
