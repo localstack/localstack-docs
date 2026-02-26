@@ -577,6 +577,13 @@ export default defineConfig({
               label: 'Integrations',
               autogenerate: { directory: '/azure/integrations' },
               collapsed: true,
+              items: [
+                {
+                  label: 'SDKs',
+                  autogenerate: { directory: '/azure/integrations/sdks' },
+                  collapsed: true,
+                },
+              ],
             },
             {
               label: 'Changelog',
