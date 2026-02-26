@@ -1,7 +1,6 @@
 ---
 title: Quickstart
 description: Get started with LocalStack for Azure in a few simple steps.
-description: 
 template: doc
 sidebar:
     order: 1
