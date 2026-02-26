@@ -13,13 +13,13 @@ In this guide, you will run some basic Azure CLI commands to manage resource gro
 
 ## Prerequisites
 
-- [`localstack`  CLI](https://docs.localstack.cloud/getting-started/installation/#localstack-cli)
+- [`localstack`  CLI](/aws/getting-started/installation/#localstack-cli)
 - [`azlocal` CLI](https://pypi.org/project/azlocal/)
-- [LocalStack for Azure]({{< ref "installation" >}})
+- [LocalStack for Azure](/azure/getting-started/)
 
 ## Instructions
 
-Before you begin, make sure that the Emulator is running - see the [Installation Instructions]({{< ref "installation" >}}).
+Before you begin, make sure that the Emulator is running, see the [installation instructions](/azure/getting-started/).
 
 ### Setup the `azlocal` tool
 
@@ -29,7 +29,7 @@ To instruct the regular `az` CLI tool to communicate with the Azure emulator, ru
 $ azlocal start_interception
 ```
 
-You may see some warnings about experimental commands - you can safely ignore these.
+You may see some warnings about experimental commands, you can safely ignore these.
 
 ### Create a resource group
 

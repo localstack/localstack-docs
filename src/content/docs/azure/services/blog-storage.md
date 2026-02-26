@@ -10,11 +10,10 @@ Azure Blob storage is a service for storing large amounts of unstructured data, 
 Blob storage is used to serve images or documents directly to a browser, storing files for distributed access, streaming video and audio, and writing to log files.
 
 LocalStack for Azure allows you to use Blob storage APIs in your local environment to upload and download blobs, and manage containers.
-The supported APIs are available on the [API Coverage page]({{< ref "coverage" >}}), which provides information on the extent of Blob Storage's integration with LocalStack.
 
 ## Getting started
 
-This guide is designed for users who are new to Blob storage and assumes that [azlocal is installed]({{< ref "getting-started/quickstart" >}}).
+This guide is designed for users who are new to Blob storage and assumes that [`azlocal` is installed](/azure/getting-started/).
 We will demonstrate how to create a resource group, storage account, container, upload and download blobs, and view blob details.
 
 ### Create a resource group
@@ -25,7 +24,6 @@ You can create a resource group using the following command:
 $ az group create \
     --name MyResourceGroup \
     --location westeurope
-{{< / command >}}
 ```
 
 The following output would be displayed:
@@ -96,7 +94,7 @@ $ azlocal storage container create \
 
 Note the use of `azlocal` here!
 
-There are certain commands, like `az storage container`, that do not properly work with the Emulator - they do work if you use the `azlocal` tool instead.
+There are certain commands, like `az storage container`, that do not properly work with the Emulator. They do work if you use the `azlocal` tool instead.
 
 The following output would be displayed:
 
