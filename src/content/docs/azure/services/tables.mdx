@@ -1,10 +1,133 @@
 ---
 title: "Tables"
-description: API coverage for Microsoft.Tables in LocalStack for Azure.
+description: Get started with Azure Tables in LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Tables is a schema-less NoSQL store for semi-structured data, optimized for fast lookups with partition and row keys.
+It is commonly used for metadata, state tracking, and lightweight application records.
+With the modern API, you can manage tables and query entities through the Azure Tables data plane.
+
+LocalStack for Azure lets you build and test Azure Tables workflows locally using familiar CLI patterns.
+The supported APIs are listed in the [API Coverage](#api-coverage) section.
+
+## Getting started
+
+This guide is designed for users new to Azure Tables and assumes basic knowledge of the Azure CLI and `azlocal`.
+
+Start by enabling interception so your `az` commands are routed to LocalStack:
+
+```bash
+azlocal start_interception
+```
+
+The following example creates storage resources, creates a table, and queries entities using the modern API flow.
+
+### Create a resource group
+
+Create a resource group for your Tables resources:
+
+```bash
+az group create --name rg-tables-modern-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "name": "rg-tables-modern-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-tables-modern-demo",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create a storage account for Tables
+
+Create a storage account that provides the Tables endpoint:
+
+```bash
+az storage account create \
+  --name tablesdoc87acct \
+  --resource-group rg-tables-modern-demo \
+  --location westeurope \
+  --sku Standard_LRS \
+  --kind StorageV2
+```
+
+```bash title="Output"
+{
+  "name": "tablesdoc87acct",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-tables-modern-demo/providers/Microsoft.Storage/storageAccounts/tablesdoc87acct",
+  "location": "westeurope",
+  "kind": "StorageV2",
+  "provisioningState": "Succeeded",
+  "primaryEndpoints": {
+    "table": "https://tablesdoc87accttable.localhost.localstack.cloud:4566",
+    ...
+  },
+  ...
+}
+```
+
+### Create and list tables
+
+Get a connection string for data-plane table operations:
+
+```bash
+CONNECTION_STRING=$(az storage account show-connection-string \
+  --name tablesdoc87acct \
+  --resource-group rg-tables-modern-demo \
+  --query connectionString -o tsv)
+```
+
+Create a table:
+
+```bash
+az storage table create --name moderntable --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "created": true
+}
+```
+
+List tables in the account:
+
+```bash
+az storage table list --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+[
+  {
+    "name": "moderntable"
+  }
+]
+```
+
+### Query entities in the table
+
+Query entities from the table (empty response in this fresh table):
+
+```bash
+az storage entity query \
+  --connection-string "$CONNECTION_STRING" \
+  --table-name moderntable
+```
+
+```bash title="Output"
+{
+  "items": [],
+  "nextMarker": {}
+}
+```
 
 ## API Coverage
 
