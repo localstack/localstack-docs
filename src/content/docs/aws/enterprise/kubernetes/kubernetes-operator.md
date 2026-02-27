@@ -223,6 +223,35 @@ curl http://1d4b6907.execute-api.localstack-localstack.my-namespace:4566/json
 
 This works without additional DNS configuration in client applications.
 
+## Storage
+
+:::note
+Requires Operator version 0.4.0 or later.
+:::
+
+To persist the [LocalStack volume](/aws/capabilities/config/filesystem/#localstack-volume), use the `spec.pvcName` to specify the PVC you want to mount. This automatically mounts the PVC at `/var/lib/localstack`.
+
+For example:
+
+```yaml
+# pvc definition
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myPvc
+spec:
+  # ...
+
+# LocalStack instance definition
+apiVersion: api.localstack.cloud/v1alpha1
+kind: LocalStack
+metadata:
+  name: localstack
+  namespace: my-namespace
+spec:
+  # ...
+  pvcName: myPvc
+```
 
 ## Update
 
