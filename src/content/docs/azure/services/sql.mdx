@@ -1,10 +1,223 @@
 ---
 title: "SQL"
-description: API coverage for Microsoft.Sql in LocalStack for Azure.
+description: Get started with Azure SQL in LocalStack for Azure.
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure SQL is a managed relational database service for building cloud-native applications with familiar SQL Server tooling.
+It supports creating logical servers, provisioning databases, and configuring operational features such as firewall access and retention policies.
+This makes it a common choice for transactional workloads and application backends.
+
+LocalStack for Azure lets you build and test Azure SQL workflows locally using the same CLI patterns you use in cloud environments.
+The supported APIs are listed in the [API Coverage](#api-coverage) section.
+
+## Getting started
+
+This guide is designed for users new to Azure SQL and assumes basic knowledge of the Azure CLI and `azlocal`.
+
+Start by enabling interception so your `az` commands are routed to LocalStack:
+
+```bash
+azlocal start_interception
+```
+
+The following example creates a SQL server, creates a database, configures firewall access, and manages retention and encryption settings.
+
+### Create a resource group
+
+Create a resource group to contain your SQL resources:
+
+```bash
+az group create --name rg-sql-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo",
+  "location": "westeurope",
+  "name": "rg-sql-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create and inspect a SQL server
+
+Create a logical SQL server to host your databases:
+
+```bash
+az sql server create \
+  --name sqlsrvdoc85 \
+  --resource-group rg-sql-demo \
+  --location westeurope \
+  --admin-user lsadmin \
+  --admin-password "LocalstackSqlPassw0rd"
+```
+
+```bash title="Output"
+{
+  "name": "UpsertLogicalServer",
+  "operation": "UpsertLogicalServer",
+  "status": "Succeeded",
+  ...
+}
+```
+
+Get the SQL server details to verify it is ready:
+
+```bash
+az sql server show --name sqlsrvdoc85 --resource-group rg-sql-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85",
+  "name": "sqlsrvdoc85",
+  "location": "westeurope",
+  "state": "Ready",
+  "publicNetworkAccess": "Enabled",
+  "type": "Microsoft.Sql/servers",
+  ...
+}
+```
+
+### Create and query a database
+
+Create a database on the SQL server:
+
+```bash
+az rest --method put \
+  --url "http://management.localhost.localstack.cloud:4566/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85?api-version=2021-11-01" \
+  --headers "Content-Type=application/json" \
+  --body '{"location":"westeurope"}'
+```
+
+```bash title="Output"
+{
+  "name": "CreateLogicalDatabase",
+  "operation": "CreateLogicalDatabase",
+  "startTime": "2026-02-27T10:11:48.1772187108+00:00",
+  "status": "InProgress"
+}
+```
+
+List databases on the SQL server to confirm it was created:
+
+```bash
+az rest --method get \
+  --url "http://management.localhost.localstack.cloud:4566/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases?api-version=2021-11-01"
+```
+
+```bash title="Output"
+{
+  "value": [
+    {
+      "name": "sqldbdoc85",
+      "type": "Microsoft.Sql/servers/databases",
+      "properties": {
+        "status": "Online",
+        ...
+      },
+      ...
+    }
+  ]
+}
+```
+
+### Add a firewall rule
+
+Create a firewall rule to allow client access:
+
+```bash
+az sql server firewall-rule create \
+  --resource-group rg-sql-demo \
+  --server sqlsrvdoc85 \
+  --name AllowLocal \
+  --start-ip-address 0.0.0.0 \
+  --end-ip-address 255.255.255.255
+```
+
+```bash title="Output"
+{
+  "name": "AllowLocal",
+  "startIpAddress": "0.0.0.0",
+  "endIpAddress": "255.255.255.255",
+  "type": "Microsoft.Sql/servers/firewallRules",
+  ...
+}
+```
+
+### Configure transparent data encryption
+
+Enable transparent data encryption on the database:
+
+```bash
+az rest --method put \
+  --url "http://management.localhost.localstack.cloud:4566/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85/transparentDataEncryption/current?api-version=2021-11-01" \
+  --headers "Content-Type=application/json" \
+  --body '{"properties":{"status":"Enabled"}}'
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85/transparentDataEncryption/current",
+  "name": "current",
+  "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+  ...
+}
+```
+
+### Configure backup retention policies
+
+Configure a short-term backup retention policy:
+
+```bash
+az rest --method put \
+  --url "http://management.localhost.localstack.cloud:4566/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85/backupShortTermRetentionPolicies/default?api-version=2021-11-01" \
+  --headers "Content-Type=application/json" \
+  --body '{"properties":{"retentionDays":7,"diffBackupIntervalInHours":24}}'
+```
+
+```bash title="Output"
+{
+  "name": "default",
+  "properties": {
+    "retentionDays": 7,
+    "diffBackupIntervalInHours": 24
+  },
+  "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
+  ...
+}
+```
+
+Configure a long-term backup retention policy:
+
+```bash
+az rest --method put \
+  --url "http://management.localhost.localstack.cloud:4566/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85/backupLongTermRetentionPolicies/default?api-version=2021-11-01" \
+  --headers "Content-Type=application/json" \
+  --body '{"properties":{"weeklyRetention":"PT0S","monthlyRetention":"PT0S","yearlyRetention":"PT0S","weekOfYear":1}}'
+```
+
+```bash title="Output"
+{
+  "name": "default",
+  "properties": {
+    "weeklyRetention": "PT0S",
+    "monthlyRetention": "PT0S",
+    "yearlyRetention": "PT0S",
+    "weekOfYear": 1
+  },
+  "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+  ...
+}
+```
 
 ## API Coverage
 
