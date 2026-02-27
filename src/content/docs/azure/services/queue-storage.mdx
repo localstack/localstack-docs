@@ -1,10 +1,182 @@
 ---
 title: "Queue Storage"
-description: API coverage for Microsoft.QueueStorage in LocalStack for Azure.
+description: Get started with Azure Queue Storage on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Queue Storage is a messaging service for storing large numbers of messages that can be accessed from anywhere over HTTP or HTTPS.
+It is commonly used to decouple application components and build asynchronous processing workflows.
+Queue Storage is useful for buffering work items between producers and consumers.
+
+LocalStack for Azure allows you to build and test Queue Storage workflows in your local environment.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Queue Storage's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Queue Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Start your LocalStack container using your preferred method.
+Then start CLI interception:
+
+```bash
+azlocal start_interception
+```
+
+### Create a resource group
+
+Create a resource group to contain your storage resources:
+
+```bash
+az group create \
+  --name rg-queue-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-queue-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-queue-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a storage account
+
+Create a storage account for Queue Storage:
+
+```bash
+az storage account create \
+  --name stqueuedemols \
+  --resource-group rg-queue-demo \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+```bash title="Output"
+{
+  ...
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-queue-demo/providers/Microsoft.Storage/storageAccounts/stqueuedemols",
+  ...
+  "name": "stqueuedemols",
+  ...
+  "placement": null,
+  "primaryEndpoints": {
+    "blob": "https://stqueuedemolsblob.localhost.localstack.cloud:4566",
+    ...
+    "queue": "https://stqueuedemolsqueue.localhost.localstack.cloud:4566",
+    ...
+  },
+  ....
+}
+```
+
+### Configure the connection string
+
+Use the storage account connection string for queue operations:
+
+```bash
+CONNECTION_STRING=$(az storage account show-connection-string \
+  --name stqueuedemols \
+  --resource-group rg-queue-demo \
+  --query connectionString -o tsv)
+```
+
+### Create and inspect a queue
+
+Create a queue:
+
+```bash
+az storage queue create \
+  --name app-queue \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "created": true
+}
+```
+
+Verify the queue exists:
+
+```bash
+az storage queue exists \
+  --name app-queue \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "exists": true
+}
+```
+
+List queues in the storage account:
+
+```bash
+az storage queue list \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+[
+  {
+    "approximateMessageCount": null,
+    "metadata": null,
+    "name": "app-queue"
+  }
+]
+```
+
+### Put and read a message
+
+Add a message to the queue:
+
+```bash
+az storage message put \
+  --queue-name app-queue \
+  --content "hello-from-localstack" \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "content": "hello-from-localstack",
+  ...
+  "id": "a253ff4a-7b9c-434e-9c33-deae3070193c",
+  ...
+}
+```
+
+Peek messages without consuming them:
+
+```bash
+az storage message peek \
+  --queue-name app-queue \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+[
+  {
+    "content": "hello-from-localstack",
+    ...
+    "id": "a253ff4a-7b9c-434e-9c33-deae3070193c",
+    "insertionTime": "2026-02-27T07:45:14+00:00",
+    ...
+  }
+]
+```
 
 ## API Coverage
 
