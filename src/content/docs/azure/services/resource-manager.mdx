@@ -1,0 +1,129 @@
+---
+title: "Resource Manager"
+description: Get started with Azure Resource Manager on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Resource Manager (ARM) is the deployment and management layer for Azure resources.
+It lets you create, query, and organize resources through a consistent control-plane API.
+ARM is commonly used to manage resource groups, deployments, and provider registrations.
+
+LocalStack for Azure allows you to build and test Resource Manager workflows in your local environment.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Resource Manager's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Resource Manager and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Start your LocalStack container using your preferred method.
+Then start CLI interception:
+
+```bash
+azlocal start_interception
+```
+
+### Create a resource group
+
+Create a resource group:
+
+```bash
+az group create \
+  --name rg-resources-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "name": "rg-resources-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resources-demo",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "..."
+}
+```
+
+### Get and list resource groups
+
+Get the resource group details:
+
+```bash
+az group show --name rg-resources-demo
+```
+
+```bash title="Output"
+{
+  "name": "rg-resources-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resources-demo",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "..."
+}
+```
+
+List matching resource groups:
+
+```bash
+az group list --query "[?name=='rg-resources-demo']"
+```
+
+```bash title="Output"
+[
+  {
+    "name": "rg-resources-demo",
+    "location": "westeurope",
+    "..."
+  }
+]
+```
+
+### Query resource providers
+
+Get a specific provider:
+
+```bash
+az provider show --namespace Microsoft.Resources
+```
+
+```bash title="Output"
+{
+  "namespace": "Microsoft.Resources",
+  "registrationState": "Registered",
+  "registrationPolicy": "RegistrationFree",
+  "resourceTypes": [
+    {
+      "resourceType": "resourceGroups",
+      "apiVersions": ["2023-07-01", "..."],
+      "..."
+    }
+    ...
+  ],
+  "..."
+}
+```
+
+List provider registration state:
+
+```bash
+az provider list --query "[?namespace=='Microsoft.Resources'].{namespace:namespace,registrationState:registrationState}"
+```
+
+```bash title="Output"
+[
+  {
+    "namespace": "Microsoft.Resources",
+    "registrationState": "Registered"
+  }
+]
+```
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Resources" client:load />

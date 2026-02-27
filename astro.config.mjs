@@ -675,7 +675,8 @@ export default defineConfig({
             },
             {
               label: 'Local Azure Services',
-              slug: 'azure/services',
+              autogenerate: { directory: '/azure/services' },
+              collapsed: true,
             },
             {
               label: 'Integrations',
