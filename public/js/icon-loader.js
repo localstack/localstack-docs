@@ -7,6 +7,7 @@
     Welcome: 'cube-icon',
     'Getting Started': 'rocket-icon',
     'Local AWS Services': 'cube-icon',
+    'Local Azure Services': 'cube-icon',
     Features: 'cube-icon',
     'Feature Coverage': 'buildings-icon',
     'Sample Apps': 'file-icon',
@@ -101,6 +102,8 @@
           window.location.href = '/aws/';
         } else if (selectedValue === 'Snowflake') {
           window.location.href = '/snowflake/';
+        } else if (selectedValue === 'Azure') {
+          window.location.href = '/azure/';
         }
         
         setTimeout(() => {
