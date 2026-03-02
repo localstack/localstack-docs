@@ -15,44 +15,6 @@ Queue Storage is useful for buffering work items between producers and consumers
 LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Queue Storage.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Queue Storage's integration with LocalStack.
 
-## Features
-
-The Queue Storage emulator supports the following features:
-
-- **Queue CRUD operations**: Create, list, delete, and check existence of queues.
-- **Message operations**: Send (put), peek, get (dequeue), and delete messages.
-- **Queue metadata**: Set and retrieve custom metadata on queues.
-- **Stored access policies**: Create, list, update, show, and delete queue-level access policies.
-- **SAS token generation**: Generate shared access signatures for queue-level access.
-- **Control plane (ARM) APIs**: Create and get queues, get and set queue service properties via Azure Resource Manager.
-- **Multiple authentication modes**: Storage account key, login credentials, and connection strings.
-
-## Known limitations
-
-- **No data persistence across restarts**: Queue data is not persisted and is lost when the LocalStack emulator is stopped or restarted.
-- **Loose header validation**: Unsupported request headers or parameters are silently accepted instead of being rejected.
-- **API version is not enforced**: The emulator does not validate the `x-ms-version` header against supported versions.
-
-
-## Differences with the cloud service
-
-| Aspect | Azure | LocalStack emulator |
-|--------|-------|---------------------|
-| **Queue endpoint URL** | `{account}.queue.core.windows.net` | `{account}queue.localhost.localstack.cloud:{port}`: The service type is appended to the account name rather than used as a subdomain. |
-| **Queue service properties** | CORS, logging, and metrics settings are persisted and applied | `set_service_properties` is a no-op; `get_service_properties` returns empty defaults |
-| **Storage account keys** | Managed by Azure and unique per account | Keys are emulator-generated |
-| **Header validation** | Strict: Unsupported headers produce errors. | Loose: Unsupported headers are silently ignored. |
-| **API version enforcement** | Enforced per documented version history. | Skipped: All API versions are accepted. |
-
-## Emulator customization
-
-The following environment variables can be set on the LocalStack container to customize Queue Storage behavior:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `STORAGE_EXPOSE_AZURITE_PORTS` | `true` | When set to `false`, internal storage ports are not mapped to the host, disabling direct connectivity to the storage backend. |
-
-
 ## Getting started
 
 This guide is designed for users new to Queue Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
@@ -121,7 +83,9 @@ azlocal storage account create \
 
 There are three ways to authenticate storage queue commands against the emulator:
 
-**1. Storage account key**: Retrieve the account key and pass it with `--account-name` and `--account-key`:
+#### Storage account key
+
+Retrieve the account key and pass it with `--account-name` and `--account-key`:
 
 ```bash
 ACCOUNT_KEY=$(azlocal storage account keys list \
@@ -135,7 +99,9 @@ azlocal storage queue list \
   --account-key "$ACCOUNT_KEY"
 ```
 
-**2. Login credentials**: Use `--auth-mode login` to authenticate with the current session credentials:
+#### Login credentials
+
+Use `--auth-mode login` to authenticate with the current session credentials:
 
 ```bash
 azlocal storage queue list \
@@ -143,7 +109,9 @@ azlocal storage queue list \
   --auth-mode login
 ```
 
-**3. Connection string**: Bundle the account name and key into a single value:
+#### Connection string
+
+Bundle the account name and key into a single value:
 
 ```bash
 CONNECTION_STRING=$(azlocal storage account show-connection-string \
@@ -264,6 +232,35 @@ azlocal storage message get \
   }
 ]
 ```
+
+## Features
+
+The Queue Storage emulator supports the following features:
+
+- **Data plane REST API**: Queue CRUD, message operations (put, peek, get, delete), queue metadata, stored access policies, and SAS token generation.
+- **Control plane (ARM) REST API**: Create and get queues, get and set queue service properties via Azure Resource Manager.
+- **Multiple authentication modes**: Storage account key, login credentials, and connection strings.
+
+## Limitations
+
+- **No data persistence across restarts**: Queue data is not persisted and is lost when the LocalStack emulator is stopped or restarted.
+- **Queue endpoint URL**: The service type is appended to the account name (`{account}queue.localhost.localstack.cloud:{port}`) rather than used as a subdomain (`{account}.queue.core.windows.net`).
+- **Queue service properties**: `set_service_properties` is a no-op and `get_service_properties` returns empty defaults, unlike Azure where CORS, logging, and metrics settings are persisted and applied.
+- **Storage account keys**: Keys are emulator-generated rather than managed by Azure.
+- **Header validation**: Unsupported request headers or parameters are silently accepted instead of being rejected.
+- **API version enforcement**: The emulator does not validate the `x-ms-version` header; all API versions are accepted.
+
+## Configuration
+
+The following environment variables can be set on the LocalStack container to customize Queue Storage behavior:
+
+- `STORAGE_EXPOSE_AZURITE_PORTS`: When set to `false`, internal storage ports are not mapped to the host, disabling direct connectivity to the storage backend. Defaults to `true`.
+
+## Samples
+
+The following sample demonstrates how to use Queue Storage with LocalStack for Azure:
+
+- [Azure Functions Sample with LocalStack for Azure](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-storage-http/dotnet)
 
 ## API Coverage
 
