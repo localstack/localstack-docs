@@ -10,28 +10,65 @@ import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureF
 
 Azure Queue Storage is a messaging service for storing large numbers of messages that can be accessed from anywhere over HTTP or HTTPS.
 It is commonly used to decouple application components and build asynchronous processing workflows.
-Queue Storage is useful for buffering work items between producers and consumers.
+Queue Storage is useful for buffering work items between producers and consumers. For more information, see [What is Azure Queue Storage?](https://learn.microsoft.com/en-us/azure/storage/queues/storage-queues-introduction).
 
-LocalStack for Azure allows you to build and test Queue Storage workflows in your local environment.
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Queue Storage.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Queue Storage's integration with LocalStack.
+
+## Features
+
+The Queue Storage emulator supports the following features:
+
+- **Queue CRUD operations**: Create, list, delete, and check existence of queues.
+- **Message operations**: Send (put), peek, get (dequeue), and delete messages.
+- **Queue metadata**: Set and retrieve custom metadata on queues.
+- **Stored access policies**: Create, list, update, show, and delete queue-level access policies.
+- **SAS token generation**: Generate shared access signatures for queue-level access.
+- **Control plane (ARM) APIs**: Create and get queues, get and set queue service properties via Azure Resource Manager.
+- **Multiple authentication modes**: Storage account key, login credentials, and connection strings.
+
+## Known limitations
+
+- **No data persistence across restarts**: Queue data is not persisted and is lost when the LocalStack emulator is stopped or restarted.
+- **Loose header validation**: Unsupported request headers or parameters are silently accepted instead of being rejected.
+- **API version is not enforced**: The emulator does not validate the `x-ms-version` header against supported versions.
+
+
+## Differences with the cloud service
+
+| Aspect | Azure | LocalStack emulator |
+|--------|-------|---------------------|
+| **Queue endpoint URL** | `{account}.queue.core.windows.net` | `{account}queue.localhost.localstack.cloud:{port}`: The service type is appended to the account name rather than used as a subdomain. |
+| **Queue service properties** | CORS, logging, and metrics settings are persisted and applied | `set_service_properties` is a no-op; `get_service_properties` returns empty defaults |
+| **Storage account keys** | Managed by Azure and unique per account | Keys are emulator-generated |
+| **Header validation** | Strict: Unsupported headers produce errors. | Loose: Unsupported headers are silently ignored. |
+| **API version enforcement** | Enforced per documented version history. | Skipped: All API versions are accepted. |
+
+## Emulator customization
+
+The following environment variables can be set on the LocalStack container to customize Queue Storage behavior:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `STORAGE_EXPOSE_AZURITE_PORTS` | `true` | When set to `false`, internal storage ports are not mapped to the host, disabling direct connectivity to the storage backend. |
+
 
 ## Getting started
 
-This guide is designed for users new to Queue Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+This guide is designed for users new to Queue Storage and assumes basic knowledge of the Azure CLI and our [`azlocal` wrapper script](../azlocal).
 
 Start your LocalStack container using your preferred method.
-Then start CLI interception:
 
-```bash
-azlocal start_interception
-```
+> [!NOTE]
+> All commands in this guide use `azlocal`, our wrapper around the Azure CLI that routes requests to LocalStack.
+Once parity between `az` and `azlocal` for storage commands is complete, the commands can be used interchangeably.
 
 ### Create a resource group
 
 Create a resource group to contain your storage resources:
 
 ```bash
-az group create \
+azlocal group create \
   --name rg-queue-demo \
   --location westeurope
 ```
@@ -52,10 +89,10 @@ az group create \
 
 ### Create a storage account
 
-Create a storage account for Queue Storage:
+Create an [Azure storage account](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview) for Queue Storage:
 
 ```bash
-az storage account create \
+azlocal storage account create \
   --name stqueuedemols \
   --resource-group rg-queue-demo \
   --location westeurope \
@@ -80,23 +117,52 @@ az storage account create \
 }
 ```
 
-### Configure the connection string
+### Authentication
 
-Use the storage account connection string for queue operations:
+There are three ways to authenticate storage queue commands against the emulator:
+
+**1. Storage account key**: Retrieve the account key and pass it with `--account-name` and `--account-key`:
 
 ```bash
-CONNECTION_STRING=$(az storage account show-connection-string \
+ACCOUNT_KEY=$(azlocal storage account keys list \
+  --account-name stqueuedemols \
+  --resource-group rg-queue-demo \
+  --query "[0].value" \
+  --output tsv)
+
+azlocal storage queue list \
+  --account-name stqueuedemols \
+  --account-key "$ACCOUNT_KEY"
+```
+
+**2. Login credentials**: Use `--auth-mode login` to authenticate with the current session credentials:
+
+```bash
+azlocal storage queue list \
+  --account-name stqueuedemols \
+  --auth-mode login
+```
+
+**3. Connection string**: Bundle the account name and key into a single value:
+
+```bash
+CONNECTION_STRING=$(azlocal storage account show-connection-string \
   --name stqueuedemols \
   --resource-group rg-queue-demo \
   --query connectionString -o tsv)
+
+azlocal storage queue list \
+  --connection-string "$CONNECTION_STRING"
 ```
+
+The remaining examples in this guide use connection strings for brevity.
 
 ### Create and inspect a queue
 
 Create a queue:
 
 ```bash
-az storage queue create \
+azlocal storage queue create \
   --name app-queue \
   --connection-string "$CONNECTION_STRING"
 ```
@@ -110,7 +176,7 @@ az storage queue create \
 Verify the queue exists:
 
 ```bash
-az storage queue exists \
+azlocal storage queue exists \
   --name app-queue \
   --connection-string "$CONNECTION_STRING"
 ```
@@ -124,7 +190,7 @@ az storage queue exists \
 List queues in the storage account:
 
 ```bash
-az storage queue list \
+azlocal storage queue list \
   --connection-string "$CONNECTION_STRING"
 ```
 
@@ -138,12 +204,12 @@ az storage queue list \
 ]
 ```
 
-### Put and read a message
+### Put, peek, and get messages
 
 Add a message to the queue:
 
 ```bash
-az storage message put \
+azlocal storage message put \
   --queue-name app-queue \
   --content "hello-from-localstack" \
   --connection-string "$CONNECTION_STRING"
@@ -158,10 +224,10 @@ az storage message put \
 }
 ```
 
-Peek messages without consuming them:
+Peek at messages without consuming them:
 
 ```bash
-az storage message peek \
+azlocal storage message peek \
   --queue-name app-queue \
   --connection-string "$CONNECTION_STRING"
 ```
@@ -173,6 +239,27 @@ az storage message peek \
     ...
     "id": "a253ff4a-7b9c-434e-9c33-deae3070193c",
     "insertionTime": "2026-02-27T07:45:14+00:00",
+    ...
+  }
+]
+```
+
+Get (dequeue) a message from the queue, which makes it invisible to other consumers for the visibility timeout period:
+
+```bash
+azlocal storage message get \
+  --queue-name app-queue \
+  --connection-string "$CONNECTION_STRING" \
+  --output json
+```
+
+```bash title="Output"
+[
+  {
+    "content": "hello-from-localstack",
+    ...
+    "id": "a253ff4a-7b9c-434e-9c33-deae3070193c",
+    "popReceipt": "...",
     ...
   }
 ]
