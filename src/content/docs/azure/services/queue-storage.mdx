@@ -19,11 +19,12 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 This guide is designed for users new to Queue Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
 
-Start your LocalStack container using your preferred method.
+Start your LocalStack container using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/).
 
 > [!NOTE]
-> All commands in this guide use `azlocal`, our wrapper around the Azure CLI that routes requests to LocalStack.
-Once parity between `az` and `azlocal` for storage commands is complete, the commands can be used interchangeably.
+> As an alternative to using the `azlocal` CLI, customers can run `az start-interception`. This command points the `az` CLI away from the public Azure cloud management API and toward the local emulator API.
+To revert this configuration, use `azlocal stop-interception`, which re-configures the CLI to send commands to the official Azure platform management REST API. 
+At this time, there is no full parity between `azlocal` commands and `az` commands after running `az start-interception`. Therefore, this technique is not fully interchangeable.
 
 ### Create a resource group
 
