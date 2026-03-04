@@ -8,51 +8,57 @@ import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureF
 
 ## Introduction
 
-Azure Storage Accounts provide a unified namespace for Azure Storage services such as Blob, Queue, File, and Table.
-They are the foundational resource used to store and organize application data at scale.
-Most Azure storage workflows begin by provisioning and configuring a storage account.
+An Azure storage account serves as a centralized container for all your data objects, including blobs, files, queues, and tables. It provides a unique, globally accessible namespace reachable via HTTP or HTTPS. For more information, see [Overview of storage accounts](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview).
 
-LocalStack for Azure lets you build and test storage account workflows locally using the same CLI-based flow as cloud environments.
+LocalStack for Azure provides a local environment for building and testing applications that make use of blobs, queues, and tables. For more information, see:
+
+- [Blob Storage](/azure/services/blob-storage)
+- [Queue Storage](/azure/services/queue-storage)
+- [Table Storage](/azure/services/table-storage)
+
 The supported APIs are listed in the [API Coverage](#api-coverage) section.
 
 ## Getting started
 
-This guide is designed for users new to Azure Storage Accounts and assumes basic knowledge of the Azure CLI and `azlocal`.
+This guide is designed for users new to Azure Storage Accounts and Blob Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
 
-Start by enabling interception so your `az` commands are routed to LocalStack:
+Start your LocalStack container using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/).
 
-```bash
-azlocal start_interception
-```
-
-The following example creates a storage account, inspects account details, manages access keys, and creates a blob container.
+> [!NOTE]
+> As an alternative to using the `azlocal` CLI, customers can run `az start-interception`. This command points the `az` CLI away from the public Azure cloud management API and toward the local emulator API.
+To revert this configuration, use `azlocal stop-interception`, which re-configures the CLI to send commands to the official Azure platform management REST API.
+At this time, there is no full parity between `azlocal` commands and `az` commands after running `az start-interception`. Therefore, this technique is not fully interchangeable.
 
 ### Create a resource group
 
 Create a resource group for your storage account resources:
 
 ```bash
-az group create --name rg-storage-demo --location westeurope
+azlocal group create \
+  --name rg-storage-demo \
+  --location westeurope
 ```
 
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-storage-demo",
   "location": "westeurope",
+  "managedBy": null,
   "name": "rg-storage-demo",
   "properties": {
     "provisioningState": "Succeeded"
   },
-  "..."
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
 }
 ```
 
-### Create and inspect a storage account
+### Create a storage account
 
-Create a storage account with the `StorageV2` kind and `Standard_LRS` SKU:
+Create an [Azure storage account](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview) with the `StorageV2` kind and `Standard_LRS` SKU:
 
 ```bash
-az storage account create \
+azlocal storage account create \
   --name stordoc86acct \
   --resource-group rg-storage-demo \
   --location westeurope \
@@ -62,45 +68,76 @@ az storage account create \
 
 ```bash title="Output"
 {
+  ...
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-storage-demo/providers/Microsoft.Storage/storageAccounts/stordoc86acct",
-  "name": "stordoc86acct",
-  "location": "westeurope",
+  ...
   "kind": "StorageV2",
-  "provisioningState": "Succeeded",
+  "location": "westeurope",
+  "name": "stordoc86acct",
+  ...
   "primaryEndpoints": {
     "blob": "https://stordoc86acctblob.localhost.localstack.cloud:4566",
     "queue": "https://stordoc86acctqueue.localhost.localstack.cloud:4566",
     "table": "https://stordoc86accttable.localhost.localstack.cloud:4566",
-    "..."
+    ...
   },
-  "..."
+  "provisioningState": "Succeeded",
+  ...
 }
 ```
 
-List storage accounts in the resource group:
+### Authentication
+
+There are three ways to authenticate storage blob commands against the emulator:
+
+#### Storage account key
+
+Retrieve the account key and pass it with `--account-name` and `--account-key`:
 
 ```bash
-az storage account list --resource-group rg-storage-demo
+ACCOUNT_KEY=$(azlocal storage account keys list \
+  --account-name stordoc86acct \
+  --resource-group rg-storage-demo \
+  --query "[0].value" \
+  --output tsv)
+
+azlocal storage container list \
+  --account-name stordoc86acct \
+  --account-key "$ACCOUNT_KEY"
 ```
 
-```bash title="Output"
-[
-  {
-    "name": "stordoc86acct",
-    "location": "westeurope",
-    "kind": "StorageV2",
-    "type": "Microsoft.Storage/storageAccounts",
-    "..."
-  }
-]
+#### Login credentials
+
+Use `--auth-mode login` to authenticate with the current session credentials:
+
+```bash
+azlocal storage container list \
+  --account-name stordoc86acct \
+  --auth-mode login
 ```
+
+#### Connection string
+
+Bundle the account name and key into a single value:
+
+```bash
+CONNECTION_STRING=$(azlocal storage account show-connection-string \
+  --name stordoc86acct \
+  --resource-group rg-storage-demo \
+  --query connectionString -o tsv)
+
+azlocal storage container list \
+  --connection-string "$CONNECTION_STRING"
+```
+
+The remaining examples in this guide use connection strings for brevity.
 
 ### Manage account keys and connection string
 
 List the storage account access keys:
 
 ```bash
-az storage account keys list \
+azlocal storage account keys list \
   --account-name stordoc86acct \
   --resource-group rg-storage-demo
 ```
@@ -125,7 +162,7 @@ az storage account keys list \
 Regenerate the primary key:
 
 ```bash
-az storage account keys renew \
+azlocal storage account keys renew \
   --account-name stordoc86acct \
   --resource-group rg-storage-demo \
   --key key1
@@ -134,7 +171,7 @@ az storage account keys renew \
 Fetch a connection string for data-plane operations:
 
 ```bash
-az storage account show-connection-string \
+azlocal storage account show-connection-string \
   --name stordoc86acct \
   --resource-group rg-storage-demo
 ```
@@ -145,50 +182,24 @@ az storage account show-connection-string \
 }
 ```
 
-### Create and inspect a blob container
+## Features
+- **Control plane (ARM) REST API**: Storage account CRUD (create, read, update, delete, list), account key management, and name availability checks via Azure Resource Manager.
+- **Multiple authentication modes**: Storage account key, login credentials, and connection strings.
+- **Storage account management**: Create, update, delete, and list storage accounts. Supports `StorageV2`, `BlobStorage`, and `Storage` account kinds with configurable SKU, access tier, and TLS version.
+- **Account key management**: List and regenerate storage account keys (`key1`/`key2`).
+- **Connection string generation**: Retrieve ready-to-use connection strings containing all service endpoints (Blob, Queue, Table, File).
 
-Store the account connection string in an environment variable:
+## Limitations
+- **Header validation**: Unsupported request headers or parameters are silently accepted instead of being rejected.
+- **API version enforcement**: The emulator does not validate the `x-ms-version` header; all API versions are accepted.
 
-```bash
-CONNECTION_STRING=$(az storage account show-connection-string \
-  --name stordoc86acct \
-  --resource-group rg-storage-demo \
-  --query connectionString -o tsv)
-```
+## Samples
 
-Create a blob container in the storage account:
+The following sample demonstrates how to use Storage Accounts with LocalStack for Azure:
 
-```bash
-az storage container create \
-  --name docs-container \
-  --connection-string "$CONNECTION_STRING"
-```
-
-```bash title="Output"
-{
-  "created": true
-}
-```
-
-List containers in the storage account:
-
-```bash
-az storage container list --connection-string "$CONNECTION_STRING"
-```
-
-```bash title="Output"
-[
-  {
-    "name": "docs-container",
-    "properties": {
-      "hasImmutabilityPolicy": false,
-      "hasLegalHold": false,
-      "..."
-    },
-    "..."
-  }
-]
-```
+- [Azure Functions Sample with LocalStack for Azure](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-storage-http/dotnet)
+- [Azure Functions App with Managed Identity](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-managed-identity/python)
+- [Azure Web App with Managed Identity](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-managed-identity/python)
 
 ## API Coverage
 
