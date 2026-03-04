@@ -91,6 +91,10 @@ kubectl create secret generic localstack-auth-token \
 With this example, the auth token must be available in the `LOCALSTACK_AUTH_TOKEN` environment variable when creating the Secret.
 
 :::note
+The Secret must be created in the **same namespace** as the `LocalStack` resource. In the example above, that is `my-namespace`.
+:::
+
+:::note
 More advanced examples are available in the LocalStack Operator GitHub repository.
 :::
 
