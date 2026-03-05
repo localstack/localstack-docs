@@ -127,7 +127,7 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/user-guide/aws/logs/)[Amazon CloudWatch Logs](https://docs.localstack.cloud/user-guide/aws/logs/) | ✅ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/user-guide/aws/resource_groups/)[AWS Resource Groups](https://docs.localstack.cloud/user-guide/aws/resource_groups/) | ✅ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_ssm/)[AWS Systems Manager Parameter Store](https://docs.localstack.cloud/references/coverage/coverage_ssm/) | ✅ | ✅ | ✅ | ✅ |
-| [](https://docs.localstack.cloud/references/coverage/coverage_cloudcontrol/)[AWS Cloud Control](https://docs.localstack.cloud/references/coverage/coverage_cloudcontrol/) | ❌ | ✅ | ✅ | ✅ |
+| [](https://docs.localstack.cloud/references/coverage/coverage_cloudcontrol/)[AWS Cloud Control](https://docs.localstack.cloud/references/coverage/coverage_cloudcontrol/) | ✅ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_application-autoscaling/)[AWS Application Auto Scaling](https://docs.localstack.cloud/references/coverage/coverage_application-autoscaling/) | ❌ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_autoscaling/)[Amazon EC2 Auto Scaling](https://docs.localstack.cloud/references/coverage/coverage_autoscaling/) | ❌ | ✅ | ✅ | ✅ |
 | [](https://docs.localstack.cloud/references/coverage/coverage_config/)[AWS Config](https://docs.localstack.cloud/references/coverage/coverage_config/) | ✅ | ✅ | ✅ | ✅ |
