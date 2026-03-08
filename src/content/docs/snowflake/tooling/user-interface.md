@@ -31,7 +31,7 @@ Navigate to [**https://app.localstack.cloud/inst/default/snowflake**](https://ap
 
 ### Run SQL queries
 
-The User Interface provides a **Worksheet** tab that allows you to run SQL queries and view results. The editor includes SQL syntax highlighting and autocomplete to help you write queries faster.
+The User Interface provides a **SQL Worksheet** tab that allows you to run SQL queries and view results. The editor includes SQL syntax highlighting and autocomplete to help you write queries faster.
 
 ![Running SQL queries](/images/snowflake/new-run-sql-queries.png)
 
@@ -39,13 +39,18 @@ Use the **Local Resources** panel on the right to explore available databases, s
 
 ![Local Resources](/images/snowflake/local-resources.png)
 
-You can run the current statement by placing your cursor inside it, or execute only a selected portion of SQL.
+You can run the current statement by placing your cursor inside it, or execute only a selected portion of SQL from the editor.
 
-### View Snowflake logs
 
-The User Interface provides a **Logs** tab that provides you a detailed view of request/response traces of API calls issued against the local emulator. You can view the request and response headers, body, and status code.
+### View Query History
 
-![View request/response traces](/images/snowflake/logs.png)
+The User Interface provides a **Query History** tab that displays recently executed queries along with their execution details.
+
+Each entry includes metadata such as the query ID, SQL text, execution status, duration, rows returned, and the database, schema, and warehouse used during execution.
+
+You can search and filter the query history to quickly locate queries by text, execution status, or time range.
+
+![Query history](/images/snowflake/query-history.png)
 
 ### Proxy to a real Snowflake instance
 
