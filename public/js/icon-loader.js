@@ -92,7 +92,9 @@
   };
 
   function handleDropdownNavigation() {
-    const leftNavSelect = document.querySelector('select.astro-oojz3yon');
+    const leftNavSelect = document.querySelector(
+      'starlight-multi-sidebar-select select'
+    );
     if (leftNavSelect) {
       leftNavSelect.addEventListener('change', (event) => {
         const selectedValue = event.target.value;
