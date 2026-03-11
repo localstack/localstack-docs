@@ -8,7 +8,6 @@ tags: ["Enterprise"]
 ---
 
 Some LocalStack services have limited or no support when running on Kubernetes.
-This page documents these known limitations.
 
 :::note
 We are continually working on improving parity between Docker and Kubernetes so there will be fewer limitations in the future.
