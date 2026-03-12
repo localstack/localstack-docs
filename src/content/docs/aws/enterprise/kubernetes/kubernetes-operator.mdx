@@ -7,6 +7,8 @@ sidebar:
 tags: ["Enterprise"]
 ---
 
+import OperatorPermissionsTable from '../../../../../components/kubernetes-operator/OperatorPermissionsTable';
+
 The LocalStack Operator is our Kubernetes-native way to deploy and manage LocalStack instances. It abstracts Kubernetes-specific configuration and automates operational tasks, making LocalStack deployments more consistent and easier to maintain. It can manage multiple LocalStack instances within a cluster to provide isolated local clouds for multiple users.
 
 The Operator manages the full lifecycle of LocalStack resources and enables advanced Kubernetes integrations that are difficult to configure manually.
@@ -140,27 +142,7 @@ CRD documentation is currently maintained manually. For a full reference of avai
 
 The Operator manifest creates all required `Roles`, `ClusterRoles`, and `bindings`.
 
-
-| **Kind** | **Name** | **API Groups** | **Resources** | **Verbs** |
-| --- | --- | --- | --- | --- |
-| **Role** | `localstack-operator-leader-election-role` |  | `configmaps` | get, list, watch, create, update, patch, delete |
-|  |  | `coordination.k8s.io` | `leases` | get, list, watch, create, update, patch, delete |
-|  |  |  | `events` | create, patch |
-| **ClusterRole** | `localstack-operator-manager-role` |  | `configmaps` | delete, get, list, patch, update, watch |
-|  |  |  | `events` | create, patch |
-|  |  |  | `pods`, `pods/exec`, `pods/log` | create, delete, deletecollection, get, list, patch, update, watch |
-|  |  |  | `secrets` | get, list, watch |
-|  |  |  | `serviceaccounts` | create, delete, get, list, update, watch |
-|  |  |  | `services` | create, delete, get, list, patch, update, watch |
-|  |  | `api.localstack.cloud` | `localstacks` | create, delete, get, list, patch, update, watch |
-|  |  | `api.localstack.cloud` | `localstacks/finalizers` | update |
-|  |  | `api.localstack.cloud` | `localstacks/status` | get, patch, update |
-|  |  | `apps` | `deployments` | create, delete, get, list, patch, update, watch |
-|  |  | `apps` | `deployments/scale` | create, delete, get, list, patch, update, watch |
-|  |  | `rbac.authorization.k8s.io` | `rolebindings`, `roles` | create, delete, list, update, watch |
-| **ClusterRole** | `localstack-operator-metrics-reader` |  | (nonResourceURLs: `/metrics`) | get |
-| **ClusterRole** | `localstack-operator-proxy-role` | `authentication.k8s.io` | `tokenreviews` | create |
-|  |  | `authorization.k8s.io` | `subjectaccessreviews` | create |
+<OperatorPermissionsTable />
 
 
 ### Manager ClusterRole

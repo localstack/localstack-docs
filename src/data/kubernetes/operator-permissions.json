@@ -1,0 +1,100 @@
+[
+  {
+    "kind": "Role",
+    "name": "localstack-operator-leader-election-role",
+    "resources": ["configmaps"],
+    "verbs": ["get", "list", "watch", "create", "update", "patch", "delete"]
+  },
+  {
+    "apiGroup": "coordination.k8s.io",
+    "resources": ["leases"],
+    "verbs": ["get", "list", "watch", "create", "update", "patch", "delete"]
+  },
+  {
+    "resources": ["events"],
+    "verbs": ["create", "patch"]
+  },
+  {
+    "kind": "ClusterRole",
+    "name": "localstack-operator-manager-role",
+    "resources": ["configmaps"],
+    "verbs": ["delete", "get", "list", "patch", "update", "watch"]
+  },
+  {
+    "resources": ["events"],
+    "verbs": ["create", "patch"]
+  },
+  {
+    "resources": ["pods", "pods/exec", "pods/log"],
+    "verbs": [
+      "create",
+      "delete",
+      "deletecollection",
+      "get",
+      "list",
+      "patch",
+      "update",
+      "watch"
+    ]
+  },
+  {
+    "resources": ["secrets"],
+    "verbs": ["get", "list", "watch"]
+  },
+  {
+    "resources": ["serviceaccounts"],
+    "verbs": ["create", "delete", "get", "list", "update", "watch"]
+  },
+  {
+    "resources": ["services"],
+    "verbs": ["create", "delete", "get", "list", "patch", "update", "watch"]
+  },
+  {
+    "apiGroup": "api.localstack.cloud",
+    "resources": ["localstacks"],
+    "verbs": ["create", "delete", "get", "list", "patch", "update", "watch"]
+  },
+  {
+    "apiGroup": "api.localstack.cloud",
+    "resources": ["localstacks/finalizers"],
+    "verbs": ["update"]
+  },
+  {
+    "apiGroup": "api.localstack.cloud",
+    "resources": ["localstacks/status"],
+    "verbs": ["get", "patch", "update"]
+  },
+  {
+    "apiGroup": "apps",
+    "resources": ["deployments"],
+    "verbs": ["create", "delete", "get", "list", "patch", "update", "watch"]
+  },
+  {
+    "apiGroup": "apps",
+    "resources": ["deployments/scale"],
+    "verbs": ["create", "delete", "get", "list", "patch", "update", "watch"]
+  },
+  {
+    "apiGroup": "rbac.authorization.k8s.io",
+    "resources": ["rolebindings", "roles"],
+    "verbs": ["create", "delete", "list", "update", "watch"]
+  },
+  {
+    "kind": "ClusterRole",
+    "name": "localstack-operator-metrics-reader",
+    "nonResourceUrls": ["/metrics"],
+    "verbs": ["get"]
+  },
+  {
+    "kind": "ClusterRole",
+    "name": "localstack-operator-proxy-role",
+    "apiGroup": "authentication.k8s.io",
+    "resources": ["tokenreviews"],
+    "verbs": ["create"]
+  },
+  {
+    "apiGroup": "authorization.k8s.io",
+    "resources": ["subjectaccessreviews"],
+    "verbs": ["create"]
+  }
+]
