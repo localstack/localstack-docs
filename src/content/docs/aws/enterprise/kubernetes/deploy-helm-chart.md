@@ -157,6 +157,10 @@ persistence:
 This is especially useful for workflows where you seed resources or rely on state across restarts.
 :::
 
+This performs these two changes:
+* sets `PERSISTENCE=1`, and
+* creates a psrsistent volume claim for the (customizable) storage class.
+
 
 ### Set Pod resource requests and limits
 

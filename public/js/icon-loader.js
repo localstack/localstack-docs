@@ -7,6 +7,7 @@
     Welcome: 'cube-icon',
     'Getting Started': 'rocket-icon',
     'Local AWS Services': 'cube-icon',
+    'Local Azure Services': 'cube-icon',
     Features: 'cube-icon',
     'Feature Coverage': 'buildings-icon',
     'Sample Apps': 'file-icon',
@@ -91,7 +92,9 @@
   };
 
   function handleDropdownNavigation() {
-    const leftNavSelect = document.querySelector('select.astro-oojz3yon');
+    const leftNavSelect = document.querySelector(
+      'starlight-multi-sidebar-select select'
+    );
     if (leftNavSelect) {
       leftNavSelect.addEventListener('change', (event) => {
         const selectedValue = event.target.value;
@@ -101,6 +104,8 @@
           window.location.href = '/aws/';
         } else if (selectedValue === 'Snowflake') {
           window.location.href = '/snowflake/';
+        } else if (selectedValue === 'Azure') {
+          window.location.href = '/azure/';
         }
         
         setTimeout(() => {

@@ -91,6 +91,11 @@ In a Kubernetes deployment:
 
 This enables applications running in Kubernetes to interact with LocalStack using standard AWS SDK endpoint resolution without additional configuration.
 
+## Storage
+
+LocalStack can store data that persists across sessions, such as data that can be used for [local persistence](https://docs.localstack.cloud/aws/capabilities/state-management/persistence/) or caching downloaded resources between sessions. See the [LocalStack volume](/aws/capabilities/config/filesystem/#localstack-volume) page for more information. 
+
+This volume directory can be created in Kubernetes using a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and associated [Persistent Volume Claim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims). This volume should be mounted into the pod at `/var/lib/localstack` to persist LocalStack state. See the [Operator](/aws/enterprise/kubernetes/kubernetes-operator/) and [Helm Chart](/aws/enterprise/kubernetes/deploy-helm-chart) documentation for specific details.
 
 ## Choose execution mode
 
