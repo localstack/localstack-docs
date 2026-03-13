@@ -3,14 +3,14 @@ title: FAQ
 description: Frequently asked questions about LocalStack for Snowflake
 template: doc
 sidebar:
-    order: 3
+  order: 3
 ---
 
 ## Core FAQs
 
 ### Are Snowflake v2 APIs supported?
 
-Yes, the LocalStack for Snowflake supports the Snowflake v2 SQL API (`/api/v2/*` endpoints), as well as the legacy v1 SQL API (which is still being used by a large portion of Snowflake client libraries and SDKs) 
+Yes, the LocalStack for Snowflake supports the Snowflake v2 SQL API (`/api/v2/*` endpoints), as well as the legacy v1 SQL API (which is still being used by a large portion of Snowflake client libraries and SDKs)
 
 ### Why are my Snowflake tests failing?
 
@@ -35,7 +35,7 @@ A CI key allows you to use LocalStack in your CI environment. Every activation o
 You can set the `SF_LOG=trace` environment variable in the Snowflake container to enable detailed trace logs that show all the request/response message.
 
 When using `docker-compose` then simply add this variable to the `environment` section of the YAML configuration file.
-If you're starting up via the `localstack start` CLI, then make sure to start up via the following configuration: 
+If you're starting up via the `localstack start` CLI, then make sure to start up via the following configuration:
 
 ```bash
 DOCKER_FLAGS='-e SF_LOG=trace' DEBUG=1 localstack start --stack snowflake
@@ -54,7 +54,7 @@ If you are encountering network issues and your Snowflake client drivers are una
 
 ### How can I get help with LocalStack for Snowflake?
 
-LocalStack for Snowflake is now GA. To get help, you can join the [Slack community](https://localstack.cloud/slack) and share your feedback, questions, and suggestions with the LocalStack team on the `#help` channel. 
+LocalStack for Snowflake is now GA. To get help, you can join the [Slack community](https://localstack.cloud/slack) and share your feedback, questions, and suggestions with the LocalStack team on the `#help` channel.
 
-If your team is using LocalStack for Snowflake, you can also request support by [contacting us](https://localstack.cloud/contact) or 
-[opening a GitHub issue with the Snowflake tag](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+bug%2Cstatus%3A+triage+needed%2CSnowflake%3A+general&template=bug-report.yml&title=bug%3A+%3Ctitle%3E).
+If your team is using LocalStack for Snowflake, you can also request support by [contacting us](https://localstack.cloud/contact) or
+[opening a GitHub Discussion](https://github.com/orgs/localstack/discussions).

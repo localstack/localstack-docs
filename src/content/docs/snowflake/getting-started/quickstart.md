@@ -3,7 +3,7 @@ title: Quickstart
 description: Get started with LocalStack for Snowflake in a few simple steps
 template: doc
 sidebar:
-    order: 2
+  order: 2
 ---
 
 ## Introduction
@@ -199,8 +199,8 @@ The output should be:
 Similarly, you can query the student details based on their GPA:
 
 ```sql
-SELECT first_name, last_name, major, gpa 
-FROM STUDENT_DATA 
+SELECT first_name, last_name, major, gpa
+FROM STUDENT_DATA
 WHERE gpa >= 3.8
 ORDER BY gpa DESC;
 ```
@@ -244,8 +244,9 @@ You can now explore the following resources to learn more about the Snowflake em
 - [Capabilities](/snowflake/capabilities/): Find information about the Snowflake emulator's capabilities and how to use them.
 
 :::note
+
 ### How can I get help with the LocalStack for Snowflake?
 
-LocalStack for Snowflake is now GA. To get help, you can join the [Slack community](https://localstack.cloud/slack) and share your feedback, questions, and suggestions with the LocalStack team on the `#help` channel. If your team is using LocalStack for Snowflake, you can also request support by [contacting us](https://localstack.cloud/contact) or 
-[opening a GitHub issue with the Snowflake tag](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+bug%2Cstatus%3A+triage+needed%2CSnowflake%3A+general&template=bug-report.yml&title=bug%3A+%3Ctitle%3E).
+LocalStack for Snowflake is now GA. To get help, you can join the [Slack community](https://localstack.cloud/slack) and share your feedback, questions, and suggestions with the LocalStack team on the `#help` channel. If your team is using LocalStack for Snowflake, you can also request support by [contacting us](https://localstack.cloud/contact) or
+[opening a GitHub Discussion](https://github.com/orgs/localstack/discussions).
 :::
