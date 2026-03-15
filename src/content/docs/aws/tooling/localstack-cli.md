@@ -15,7 +15,7 @@ It provides convenience features to interact with LocalStack features like Cloud
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
 :::note
-This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 4.13.1`.
+This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 4.14.0`.
 :::
 
 ## Global Options
@@ -751,7 +751,7 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  dev
+  dev        Developer tools for developing LocalStack extensions.
   init       Initialize the LocalStack extensions environment.
   install    Install a LocalStack extension.
   list       List installed extension.
@@ -763,10 +763,12 @@ Commands:
 
 #### `extensions dev`
 
-
+Developer tools for developing LocalStack extensions.
 
 ```bash
 Usage: localstack extensions dev [OPTIONS] COMMAND [ARGS]...
+
+  Developer tools for developing LocalStack extensions.
 
 Options:
   -h, --help  Show this message and exit.
