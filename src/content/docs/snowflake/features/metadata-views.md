@@ -29,7 +29,7 @@ WHERE TABLE_SCHEMA = 'PUBLIC';
 
 The expected output is:
 
-```
+```bash title="Output"
 +-----------------+--------------+--------------+------------+-----------+
 | TABLE_CATALOG   | TABLE_SCHEMA | TABLE_NAME   | TABLE_TYPE | ROW_COUNT |
 |-----------------+--------------+--------------+------------+-----------|
@@ -84,7 +84,7 @@ WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = 'ORDERS';
 
 The expected output is:
 
-```
+```bash title="Output"
 +------------+-------------+-----------+-------------+------------------+
 | TABLE_NAME | COLUMN_NAME | DATA_TYPE | IS_NULLABLE | ORDINAL_POSITION |
 |------------+-------------+-----------+-------------+------------------|
@@ -154,7 +154,7 @@ FROM INFORMATION_SCHEMA.SCHEMATA;
 
 The expected output is:
 
-```
+```bash title="Output"
 +----------------+--------------------+--------------+-------------------------------+
 | CATALOG_NAME   | SCHEMA_NAME        | SCHEMA_OWNER | CREATED                       |
 |----------------+--------------------+--------------+-------------------------------|
@@ -195,7 +195,7 @@ WHERE TABLE_SCHEMA = 'PUBLIC';
 
 The expected output is:
 
-```
+```bash title="Output"
 +--------------+------------------+--------------------------------------------------------+-----------+
 | TABLE_SCHEMA | TABLE_NAME       | VIEW_DEFINITION                                        | IS_SECURE |
 |--------------+------------------+--------------------------------------------------------+-----------|
@@ -233,7 +233,7 @@ FROM INFORMATION_SCHEMA.DATABASES;
 
 The expected output is:
 
-```
+```bash title="Output"
 +---------------+----------------+----------+-------------------------------+
 | DATABASE_NAME | DATABASE_OWNER | TYPE     | CREATED                       |
 |---------------+----------------+----------+-------------------------------|
@@ -273,7 +273,7 @@ FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY(
 
 The expected output is:
 
-```
+```bash title="Output"
 +------------------+-----------------------------+-----------+------------------+-------------------------------+-------------------------------+
 | QUERY_ID         | QUERY_TEXT                  | USER_NAME | EXECUTION_STATUS | START_TIME                    | END_TIME                      |
 |------------------+-----------------------------+-----------+------------------+-------------------------------+-------------------------------|
@@ -309,7 +309,7 @@ FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_USER(
 
 The expected output is:
 
-```
+```bash title="Output"
 +------------------+-----------------------------+------------------+-------------------------------+
 | QUERY_ID         | QUERY_TEXT                  | EXECUTION_STATUS | START_TIME                    |
 |------------------+-----------------------------+------------------+-------------------------------|
@@ -341,7 +341,7 @@ FROM TABLE(INFORMATION_SCHEMA.TAG_REFERENCES(
 
 The expected output is:
 
-```
+```bash title="Output"
 +--------------+------------+-------------+-----------+-------------+--------+-------------+
 | TAG_DATABASE | TAG_SCHEMA | TAG_NAME    | TAG_VALUE | OBJECT_NAME | DOMAIN | COLUMN_NAME |
 |--------------+------------+-------------+-----------+-------------+--------+-------------|
@@ -372,7 +372,7 @@ WHERE DOMAIN = 'TABLE';
 
 The expected output is:
 
-```
+```bash title="Output"
 +--------------+------------+-------------+-----------+-----------------+-------------+--------+
 | TAG_DATABASE | TAG_SCHEMA | TAG_NAME    | TAG_VALUE | OBJECT_DATABASE | OBJECT_NAME | DOMAIN |
 |--------------+------------+-------------+-----------+-----------------+-------------+--------|
