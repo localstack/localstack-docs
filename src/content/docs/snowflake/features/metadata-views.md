@@ -8,8 +8,8 @@ tags: ["Base"]
 
 Snowflake provides metadata views and table functions to query information about database objects, schemas, tables, columns, and query history. These views are available through two schemas:
 
-- **INFORMATION_SCHEMA** — a read-only schema present in every Snowflake database, scoped to that database's objects.
-- **ACCOUNT_USAGE** — available in the special `SNOWFLAKE` database, providing account-wide views that span all databases.
+- **INFORMATION_SCHEMA**: A read-only schema present in every Snowflake database, scoped to that database's objects.
+- **ACCOUNT_USAGE**: Available in the special `SNOWFLAKE` database, providing account-wide views that span all databases.
 
 The Snowflake emulator supports querying metadata views, allowing you to inspect the structure of your local Snowflake objects using the same SQL syntax as the Snowflake service.
 
@@ -20,23 +20,6 @@ The `INFORMATION_SCHEMA` schema contains views that return metadata about object
 ### TABLES
 
 The `TABLES` view returns metadata about tables and views in the current database.
-
-```sql
-SELECT TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE, ROW_COUNT
-FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_SCHEMA = 'PUBLIC';
-```
-
-The expected output is:
-
-```bash title="Output"
-+-----------------+--------------+--------------+------------+-----------+
-| TABLE_CATALOG   | TABLE_SCHEMA | TABLE_NAME   | TABLE_TYPE | ROW_COUNT |
-|-----------------+--------------+--------------+------------+-----------|
-| MY_DATABASE     | PUBLIC       | ORDERS       | BASE TABLE | 0         |
-| MY_DATABASE     | PUBLIC       | CUSTOMERS    | BASE TABLE | 0         |
-+-----------------+--------------+--------------+------------+-----------+
-```
 
 The following columns are returned:
 
@@ -75,24 +58,6 @@ The following columns are returned:
 ### COLUMNS
 
 The `COLUMNS` view returns metadata about the columns of tables and views in the current database.
-
-```sql
-SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE, ORDINAL_POSITION
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = 'ORDERS';
-```
-
-The expected output is:
-
-```bash title="Output"
-+------------+-------------+-----------+-------------+------------------+
-| TABLE_NAME | COLUMN_NAME | DATA_TYPE | IS_NULLABLE | ORDINAL_POSITION |
-|------------+-------------+-----------+-------------+------------------|
-| ORDERS     | ORDER_ID    | NUMBER    | NO          | 1                |
-| ORDERS     | CUSTOMER_ID | NUMBER    | YES         | 2                |
-| ORDERS     | ORDER_DATE  | DATE      | YES         | 3                |
-+------------+-------------+-----------+-------------+------------------+
-```
 
 The following columns are returned:
 
@@ -147,22 +112,6 @@ The following columns are returned:
 
 The `SCHEMATA` view returns metadata about schemas in the current database.
 
-```sql
-SELECT CATALOG_NAME, SCHEMA_NAME, SCHEMA_OWNER, CREATED
-FROM INFORMATION_SCHEMA.SCHEMATA;
-```
-
-The expected output is:
-
-```bash title="Output"
-+----------------+--------------------+--------------+-------------------------------+
-| CATALOG_NAME   | SCHEMA_NAME        | SCHEMA_OWNER | CREATED                       |
-|----------------+--------------------+--------------+-------------------------------|
-| MY_DATABASE    | PUBLIC             | PUBLIC       | 2024-01-01 00:00:00.000000+00 |
-| MY_DATABASE    | INFORMATION_SCHEMA | NULL         | 2024-01-01 00:00:00.000000+00 |
-+----------------+--------------------+--------------+-------------------------------+
-```
-
 The following columns are returned:
 
 | Column | Data Type | Description |
@@ -187,22 +136,6 @@ The following columns are returned:
 
 The `VIEWS` view returns metadata about views in the current database.
 
-```sql
-SELECT TABLE_SCHEMA, TABLE_NAME, VIEW_DEFINITION, IS_SECURE
-FROM INFORMATION_SCHEMA.VIEWS
-WHERE TABLE_SCHEMA = 'PUBLIC';
-```
-
-The expected output is:
-
-```bash title="Output"
-+--------------+------------------+--------------------------------------------------------+-----------+
-| TABLE_SCHEMA | TABLE_NAME       | VIEW_DEFINITION                                        | IS_SECURE |
-|--------------+------------------+--------------------------------------------------------+-----------|
-| PUBLIC       | ACTIVE_ORDERS_V  | CREATE VIEW PUBLIC.ACTIVE_ORDERS_V AS SELECT * FROM .. | NO        |
-+--------------+------------------+--------------------------------------------------------+-----------+
-```
-
 The following columns are returned:
 
 | Column | Data Type | Description |
@@ -225,21 +158,6 @@ The following columns are returned:
 ### DATABASES
 
 The `DATABASES` view returns metadata about databases accessible in the account.
-
-```sql
-SELECT DATABASE_NAME, DATABASE_OWNER, TYPE, CREATED
-FROM INFORMATION_SCHEMA.DATABASES;
-```
-
-The expected output is:
-
-```bash title="Output"
-+---------------+----------------+----------+-------------------------------+
-| DATABASE_NAME | DATABASE_OWNER | TYPE     | CREATED                       |
-|---------------+----------------+----------+-------------------------------|
-| MY_DATABASE   | PUBLIC         | STANDARD | 2024-01-01 00:00:00.000000+00 |
-+---------------+----------------+----------+-------------------------------+
-```
 
 The following columns are returned:
 
@@ -264,24 +182,6 @@ In addition to views, `INFORMATION_SCHEMA` provides table functions that return 
 
 The `QUERY_HISTORY` table function returns the recent query execution history for the current account.
 
-```sql
-SELECT QUERY_ID, QUERY_TEXT, USER_NAME, EXECUTION_STATUS, START_TIME, END_TIME
-FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY(
-  RESULT_LIMIT => 10
-));
-```
-
-The expected output is:
-
-```bash title="Output"
-+------------------+-----------------------------+-----------+------------------+-------------------------------+-------------------------------+
-| QUERY_ID         | QUERY_TEXT                  | USER_NAME | EXECUTION_STATUS | START_TIME                    | END_TIME                      |
-|------------------+-----------------------------+-----------+------------------+-------------------------------+-------------------------------|
-| 01b8c8f4-0001-.. | SELECT * FROM ORDERS        | ROOT      | SUCCESS          | 2024-01-01 12:00:01.000000+00 | 2024-01-01 12:00:02.000000+00 |
-| 01b8c8f4-0002-.. | CREATE TABLE ORDERS (...)   | ROOT      | SUCCESS          | 2024-01-01 12:00:00.000000+00 | 2024-01-01 12:00:01.000000+00 |
-+------------------+-----------------------------+-----------+------------------+-------------------------------+-------------------------------+
-```
-
 The function accepts the following parameters:
 
 | Parameter | Type | Default | Description |
@@ -299,24 +199,6 @@ The `END_TIME_RANGE_START` and `END_TIME_RANGE_END` parameters are accepted but 
 
 The `QUERY_HISTORY_BY_USER` table function returns the recent query execution history for a specific user. It returns the same columns as `QUERY_HISTORY`.
 
-```sql
-SELECT QUERY_ID, QUERY_TEXT, EXECUTION_STATUS, START_TIME
-FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_USER(
-  USER_NAME => 'ROOT',
-  RESULT_LIMIT => 10
-));
-```
-
-The expected output is:
-
-```bash title="Output"
-+------------------+-----------------------------+------------------+-------------------------------+
-| QUERY_ID         | QUERY_TEXT                  | EXECUTION_STATUS | START_TIME                    |
-|------------------+-----------------------------+------------------+-------------------------------|
-| 01b8c8f4-0001-.. | SELECT * FROM ORDERS        | SUCCESS          | 2024-01-01 12:00:01.000000+00 |
-+------------------+-----------------------------+------------------+-------------------------------+
-```
-
 The function accepts the following parameters:
 
 | Parameter | Type | Default | Description |
@@ -330,24 +212,6 @@ The function accepts the following parameters:
 ### TAG_REFERENCES
 
 The `TAG_REFERENCES` table function returns all tag assignments for a specific object within the current database.
-
-```sql
-SELECT TAG_DATABASE, TAG_SCHEMA, TAG_NAME, TAG_VALUE, OBJECT_NAME, DOMAIN, COLUMN_NAME
-FROM TABLE(INFORMATION_SCHEMA.TAG_REFERENCES(
-  'MY_TABLE',
-  'table'
-));
-```
-
-The expected output is:
-
-```bash title="Output"
-+--------------+------------+-------------+-----------+-------------+--------+-------------+
-| TAG_DATABASE | TAG_SCHEMA | TAG_NAME    | TAG_VALUE | OBJECT_NAME | DOMAIN | COLUMN_NAME |
-|--------------+------------+-------------+-----------+-------------+--------+-------------|
-| MY_DATABASE  | PUBLIC     | COST_CENTER | finance   | MY_TABLE    | TABLE  | NULL        |
-+--------------+------------+-------------+-----------+-------------+--------+-------------+
-```
 
 The function accepts the following positional parameters:
 
@@ -363,23 +227,6 @@ The `ACCOUNT_USAGE` schema is available in the special `SNOWFLAKE` database and 
 ### TAG_REFERENCES
 
 The `ACCOUNT_USAGE.TAG_REFERENCES` view returns all tag-to-object associations across the entire account. Unlike the `INFORMATION_SCHEMA.TAG_REFERENCES()` table function, this view returns every tag assignment without requiring you to specify a particular object.
-
-```sql
-SELECT TAG_DATABASE, TAG_SCHEMA, TAG_NAME, TAG_VALUE, OBJECT_DATABASE, OBJECT_NAME, DOMAIN
-FROM SNOWFLAKE.ACCOUNT_USAGE.TAG_REFERENCES
-WHERE DOMAIN = 'TABLE';
-```
-
-The expected output is:
-
-```bash title="Output"
-+--------------+------------+-------------+-----------+-----------------+-------------+--------+
-| TAG_DATABASE | TAG_SCHEMA | TAG_NAME    | TAG_VALUE | OBJECT_DATABASE | OBJECT_NAME | DOMAIN |
-|--------------+------------+-------------+-----------+-----------------+-------------+--------|
-| MY_DATABASE  | PUBLIC     | COST_CENTER | finance   | MY_DATABASE     | MY_TABLE    | TABLE  |
-| MY_DATABASE  | PUBLIC     | SENSITIVITY | high      | MY_DATABASE     | MY_TABLE    | TABLE  |
-+--------------+------------+-------------+-----------+-----------------+-------------+--------+
-```
 
 The following columns are returned:
 
