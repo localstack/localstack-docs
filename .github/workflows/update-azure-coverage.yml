@@ -9,6 +9,8 @@ on:
         required: true
         type: string
         description: "Branch to checkout and compare against (e.g. harshmishra/doc-91)"
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   update-azure-coverage:
@@ -23,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
           path: docs
-          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch || 'main' }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch || github.event_name == 'pull_request' && github.head_ref || 'main' }}
 
       - name: Set up system wide dependencies
         run: |
@@ -58,7 +60,7 @@ jobs:
         id: check-for-changes
         working-directory: docs
         env:
-          TARGET_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch || 'main' }}
+          TARGET_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch || github.event_name == 'pull_request' && github.head_ref || 'main' }}
         run: |
           mkdir -p resources
           (git diff --name-only origin/automated-azure-coverage-updates src/data/azure-coverage/ 2>/dev/null || git diff --name-only "origin/$TARGET_BRANCH" src/data/azure-coverage/ 2>/dev/null) | tee -a resources/diff-check.log
