@@ -63,6 +63,13 @@ def _load_csv(path: Path) -> dict[str, dict[str, dict[str, dict[str, Any]]]]:
         reader = csv.DictReader(file)
         if not reader.fieldnames:
             raise ValueError("Input CSV has no headers.")
+        required_headers = {"resource_provider", "service", "feature"}
+        if not required_headers.issubset(set(reader.fieldnames)):
+            raise ValueError(
+                "Unexpected CSV schema. Expected headers including "
+                f"{sorted(required_headers)}, got {reader.fieldnames}. "
+                "The downloaded artifact may contain an error payload instead of CSV data."
+            )
 
         for row in reader:
             provider = _normalize_provider(row.get("resource_provider", ""))
@@ -89,6 +96,12 @@ def _load_csv(path: Path) -> dict[str, dict[str, dict[str, dict[str, Any]]]]:
                 "implemented": implemented,
                 "pro": pro_only,
             }
+
+    if not coverage:
+        raise ValueError(
+            "No Azure coverage records were parsed from the input CSV. "
+            "Please verify the artifact content is valid and non-empty."
+        )
 
     return coverage
 

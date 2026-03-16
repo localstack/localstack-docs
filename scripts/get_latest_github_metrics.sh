@@ -7,7 +7,7 @@ METRICS_ARTIFACTS_BRANCH=${2:-main}
 
 # env vars
 REPOSITORY_NAME=${REPOSITORY_NAME:-localstack-pro}
-ARTIFACT_ID=${ARTIFACT_ID:-implemented_features_python-amd64.csv}
+ARTIFACT_ID=${ARTIFACT_ID:-implemented_features_python-amd64}
 WORKFLOW=${WORKFLOW:-"Az / Build, Test, Push"}
 PREFIX_ARTIFACT=${PREFIX_ARTIFACT:-}
 FILTER_SUCCESS=${FILTER_SUCCESS:-1}
@@ -30,15 +30,28 @@ else
   SELECTOR='.[] | select(.status=="completed" and (.conclusion=="failure" or .conclusion=="success"))'
 fi
 
-RUN_IDS=$(gh run list --limit "$LIMIT" --branch "$METRICS_ARTIFACTS_BRANCH" --repo "$REPOSITORY_OWNER/$REPOSITORY_NAME" --workflow "$WORKFLOW" --json databaseId,conclusion,status --jq "$SELECTOR")
+RUN_IDS=()
+while IFS= read -r run_id; do
+  RUN_IDS+=("$run_id")
+done < <(
+  gh run list \
+    --limit "$LIMIT" \
+    --branch "$METRICS_ARTIFACTS_BRANCH" \
+    --repo "$REPOSITORY_OWNER/$REPOSITORY_NAME" \
+    --workflow "$WORKFLOW" \
+    --json databaseId,conclusion,status \
+    --jq "$SELECTOR | .databaseId"
+)
 
-if [ "$(echo "$RUN_IDS" | jq -rs '.[0].databaseId')" = "null" ]; then
-  echo "No matching workflow run found."
+if [ "${#RUN_IDS[@]}" -eq 0 ]; then
+  echo "No matching workflow runs found."
   exit 1
 fi
 
-for ((i=0; i<LIMIT; i++)); do
-  RUN_ID=$(echo "$RUN_IDS" | jq -rs ".[$i].databaseId")
+for RUN_ID in "${RUN_IDS[@]}"; do
+  if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+    continue
+  fi
   echo "Trying run id: $RUN_ID"
 
   gh run download "$RUN_ID" --repo "$REPOSITORY_OWNER/$REPOSITORY_NAME" -p "$ARTIFACT_ID" -D "$TMP_FOLDER" || true
@@ -48,6 +61,11 @@ for ((i=0; i<LIMIT; i++)); do
     break
   fi
 done
+
+if [ "$(ls -1 "$TMP_FOLDER" 2>/dev/null | wc -l)" -eq 0 ]; then
+  echo "Failed to download artifact '$ARTIFACT_ID' from the checked workflow runs."
+  exit 1
+fi
 
 echo "Moving artifact to $TARGET_FOLDER"
 mkdir -p "$TARGET_FOLDER"

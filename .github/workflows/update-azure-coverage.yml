@@ -9,8 +9,6 @@ on:
         required: true
         type: string
         description: "Branch to checkout and compare against (e.g. harshmishra/doc-91)"
-  pull_request:
-    types: [opened, synchronize]
 
 jobs:
   update-azure-coverage:
@@ -25,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0
           path: docs
-          ref: ${{ github.event.inputs.targetBranch }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch || 'main' }}
 
       - name: Set up system wide dependencies
         run: |
@@ -42,20 +40,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
           REPOSITORY_NAME: localstack-pro
-          ARTIFACT_ID: implemented_features_python-amd64.csv
+          ARTIFACT_ID: implemented_features_python-amd64
           WORKFLOW: "Az / Build, Test, Push"
 
       - name: Generate Azure coverage JSON data
         working-directory: docs
         run: |
-          python3 scripts/create_azure_coverage.py -i target/implemented_features_python-amd64.csv/implemented_features.csv -o target/updated_azure_coverage
-          mv -f target/updated_azure_coverage/*.json src/data/azure-coverage/
+          python3 scripts/create_azure_coverage.py -i target/implemented_features.csv -o target/updated_azure_coverage
+          if ls target/updated_azure_coverage/*.json > /dev/null 2>&1; then
+            mv -f target/updated_azure_coverage/*.json src/data/azure-coverage/
+          else
+            echo "No JSON files generated in target/updated_azure_coverage."
+            exit 1
+          fi
 
       - name: Check for changes
         id: check-for-changes
         working-directory: docs
         env:
-          TARGET_BRANCH: ${{ github.event.inputs.targetBranch }}
+          TARGET_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch || 'main' }}
         run: |
           mkdir -p resources
           (git diff --name-only origin/automated-azure-coverage-updates src/data/azure-coverage/ 2>/dev/null || git diff --name-only "origin/$TARGET_BRANCH" src/data/azure-coverage/ 2>/dev/null) | tee -a resources/diff-check.log
