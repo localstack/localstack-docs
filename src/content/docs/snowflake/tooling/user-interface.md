@@ -51,15 +51,3 @@ Each entry includes metadata such as the query ID, SQL text, execution status, d
 You can search and filter the query history to quickly locate queries by text, execution status, or time range.
 
 ![Query history](/images/snowflake/query-history.png)
-
-### Proxy to a real Snowflake instance
-
-You can forward queries from the Snowflake emulator to a real Snowflake instance using a proxy.
-
-The User Interface provides a **Proxy** tab that allows you to enter your Snowflake account credentials. Click on the **Save** button to save the credentials. You can now run queries in the Query Editor, and they will be forwarded to the real Snowflake instance.
-
-:::danger
-Be careful when operating the proxy, as it can incur costs and access data in your real Snowflake account. For security reasons, please make sure to use scoped credentials with the least set of required permissions (ideally read-only). Only run the proxy against test/staging environments, and never against a production database.
-:::
-
-![Forward queries to a real Snowflake instance](/images/snowflake/proxy.png)
