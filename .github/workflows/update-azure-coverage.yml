@@ -1,0 +1,79 @@
+name: Update Azure Coverage Data
+
+on:
+  schedule:
+    - cron: 0 5 * * MON
+  workflow_dispatch:
+    inputs:
+      targetBranch:
+        required: true
+        type: string
+        description: "Branch to checkout and compare against (e.g. harshmishra/doc-91)"
+
+jobs:
+  update-azure-coverage:
+    name: Update Azure coverage data
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: docs
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch || 'main' }}
+
+      - name: Set up system wide dependencies
+        run: |
+          sudo apt-get install jq wget
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download Azure implementation metrics artifact
+        working-directory: docs
+        run: bash ./scripts/get_latest_github_metrics.sh ./target main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-pro
+          ARTIFACT_ID: implemented_features_python-amd64
+          WORKFLOW: "Az / Build, Test, Push"
+
+      - name: Generate Azure coverage JSON data
+        working-directory: docs
+        run: |
+          python3 scripts/create_azure_coverage.py -i target/implemented_features.csv -o target/updated_azure_coverage
+          if ls target/updated_azure_coverage/*.json > /dev/null 2>&1; then
+            mv -f target/updated_azure_coverage/*.json src/data/azure-coverage/
+          else
+            echo "No JSON files generated in target/updated_azure_coverage."
+            exit 1
+          fi
+
+      - name: Check for changes
+        id: check-for-changes
+        working-directory: docs
+        env:
+          TARGET_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.targetBranch || 'main' }}
+        run: |
+          mkdir -p resources
+          (git diff --name-only origin/automated-azure-coverage-updates src/data/azure-coverage/ 2>/dev/null || git diff --name-only "origin/$TARGET_BRANCH" src/data/azure-coverage/ 2>/dev/null) | tee -a resources/diff-check.log
+          echo "diff-count=$(cat resources/diff-check.log | wc -l)" >> "$GITHUB_OUTPUT"
+          cat resources/diff-check.log
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+        with:
+          path: docs
+          title: "Update Azure coverage data"
+          body: "Update generated Azure coverage JSON data from the latest LocalStack Pro parity metrics artifact."
+          branch: "automated-azure-coverage-updates"
+          author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          commit-message: "update generated azure coverage data"
+          token: ${{ secrets.PRO_ACCESS_TOKEN }}
