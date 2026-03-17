@@ -1,10 +1,279 @@
 ---
 title: "Service Bus"
-description: API coverage for Microsoft.ServiceBus in LocalStack for Azure.
+description: Get started with Azure Service Bus on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Service Bus is a fully managed enterprise message broker that supports queues and publish/subscribe topics.
+It helps decouple distributed systems and build reliable asynchronous messaging workflows.
+Service Bus is commonly used for command processing, event distribution, and integration between independent services. For more information, see [What is Azure Service Bus?](https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview)
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Service Bus.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Service Bus's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Service Bus and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Start your LocalStack container using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/).
+
+:::note
+As an alternative to using the `azlocal` CLI, users can run:
+
+`azlocal start-interception`
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+`azlocal stop-interception`
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API. At this time, there is no full parity between `azlocal` and `az` commands after running `az start-interception`. Therefore, this technique is not fully interchangeable.
+:::
+
+### Create a resource group
+
+Create a resource group to contain your Service Bus resources:
+
+```bash
+azlocal group create \
+  --name rg-servicebus-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-servicebus-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-servicebus-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a Service Bus namespace
+
+Create a Service Bus namespace in the resource group:
+
+```bash
+azlocal servicebus namespace create \
+  --resource-group rg-servicebus-demo \
+  --name sbnsdoc83 \
+  --location westeurope \
+  --sku Standard
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-servicebus-demo/providers/Microsoft.ServiceBus/namespaces/sbnsdoc83",
+  "name": "sbnsdoc83",
+  "location": "westeurope",
+  "provisioningState": "Succeeded",
+  "serviceBusEndpoint": "https://sbnsdoc83.localhost.localstack.cloud:4511",
+  "sku": {
+    "name": "Standard",
+    "tier": "Standard"
+  },
+  ...
+}
+```
+
+Get and list namespaces:
+
+```bash
+azlocal servicebus namespace show \
+  --resource-group rg-servicebus-demo \
+  --name sbnsdoc83
+
+azlocal servicebus namespace list \
+  --resource-group rg-servicebus-demo
+```
+
+### Create and inspect a queue
+
+Create a queue in the namespace:
+
+```bash
+azlocal servicebus queue create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name orders-queue
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-servicebus-demo/providers/Microsoft.ServiceBus/namespaces/sbnsdoc83/queues/orders-queue",
+  "name": "orders-queue",
+  "location": "westeurope",
+  "status": "Active",
+  "messageCount": 0,
+  "maxSizeInMegabytes": 1024,
+  ...
+}
+```
+
+Get and list queues:
+
+```bash
+azlocal servicebus queue show \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name orders-queue
+
+azlocal servicebus queue list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83
+```
+
+### Create topic and subscription
+
+Create a topic and a subscription:
+
+```bash
+azlocal servicebus topic create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name orders-topic
+
+azlocal servicebus topic subscription create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic \
+  --name orders-sub
+```
+
+```bash title="Output"
+{
+  "name": "orders-topic",
+  "status": "Active",
+  "subscriptionCount": 0,
+  ...
+}
+{
+  "name": "orders-sub",
+  "status": "Active",
+  "messageCount": 0,
+  ...
+}
+```
+
+Get and list subscriptions:
+
+```bash
+azlocal servicebus topic subscription show \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic \
+  --name orders-sub
+
+azlocal servicebus topic subscription list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic
+```
+
+### Create and list subscription rules
+
+Create a SQL filter rule for the subscription:
+
+```bash
+azlocal servicebus topic subscription rule create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic \
+  --subscription-name orders-sub \
+  --name high-priority \
+  --filter-sql-expression "priority = 'high'"
+```
+
+```bash title="Output"
+{
+  "name": "high-priority",
+  "filterType": "SqlFilter",
+  "sqlFilter": {
+    "sqlExpression": "priority = 'high'",
+    ...
+  },
+  ...
+}
+```
+
+List rules for the subscription:
+
+```bash
+azlocal servicebus topic subscription rule list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic \
+  --subscription-name orders-sub
+```
+
+### Create and manage namespace authorization rules
+
+Create an authorization rule:
+
+```bash
+azlocal servicebus namespace authorization-rule create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name app-policy \
+  --rights Listen Send
+```
+
+```bash title="Output"
+{
+  "name": "app-policy",
+  "rights": [
+    "Listen",
+    "Send"
+  ],
+  ...
+}
+```
+
+List authorization rules:
+
+```bash
+azlocal servicebus namespace authorization-rule list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83
+```
+
+List and regenerate keys:
+
+```bash
+azlocal servicebus namespace authorization-rule keys list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name app-policy
+
+azlocal servicebus namespace authorization-rule keys renew \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name app-policy \
+  --key PrimaryKey
+```
+
+```bash title="Output"
+{
+  "keyName": "app-policy",
+  "primaryConnectionString": "Endpoint=https://sbnsdoc83.localhost.localstack.cloud:4511/;SharedAccessKeyName=app-policy;SharedAccessKey=...;UseDevelopmentEmulator=true",
+  "secondaryConnectionString": "Endpoint=https://sbnsdoc83.localhost.localstack.cloud:4511/;SharedAccessKeyName=app-policy;SharedAccessKey=...;UseDevelopmentEmulator=true",
+  ...
+}
+{
+  "keyName": "app-policy",
+  "primaryConnectionString": "Endpoint=https://sbnsdoc83.localhost.localstack.cloud:4511/;SharedAccessKeyName=app-policy;SharedAccessKey=...;UseDevelopmentEmulator=true",
+  ...
+}
+```
 
 ## API Coverage
 
