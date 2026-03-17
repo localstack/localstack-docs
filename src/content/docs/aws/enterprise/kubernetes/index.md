@@ -43,7 +43,7 @@ The table below compares these methods.
 | **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> · Supports both LocalStack Community and Pro images | · Customization is limited to chart values and overrides |
 | **DIY (YAML manifests)** | · Full control over Kubernetes configuration and resources | · Time-consuming to set up and maintain<br> · Manual updates and lifecycle management |
 
-## Supported Services
+## Limitations
 | Service | Supported | Explanation |
 | ------- | --------- | ----------- |
 | `Sagemaker` | No | Requires spawning Docker containers at runtime, which is unavailable when LocalStack runs inside a Kubernetes pod. |
