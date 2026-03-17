@@ -43,6 +43,18 @@ The table below compares these methods.
 | **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> · Supports both LocalStack Community and Pro images | · Customization is limited to chart values and overrides |
 | **DIY (YAML manifests)** | · Full control over Kubernetes configuration and resources | · Time-consuming to set up and maintain<br> · Manual updates and lifecycle management |
 
+## Limitations
+| Service | Supported | Explanation |
+| ------- | --------- | ----------- |
+| `Sagemaker` | No | Requires spawning Docker containers at runtime, which is unavailable when LocalStack runs inside a Kubernetes pod. |
+| `Bedrock` | No | Requires spawning Docker containers at runtime, which is unavailable when LocalStack runs inside a Kubernetes pod. |
+| `EKS` | No | Uses k3d, which requires Docker to create clusters. A Docker-free local mode is available but unsupported. |
+| `CodeBuild` | No | Requires spawning Docker containers at runtime, which is unavailable when LocalStack runs inside a Kubernetes pod. |
+| `SSM` | Partial | Most SSM functionality is supported. Session Manager (`ssm:StartSession`) for exec-ing into EC2 instances is not supported. |
+| `ECS` | Partial | Core task execution is supported. FireLens log routing, volume mounts, port exposure from tasks, and private registry credentials via `RepositoryCredentials` are not supported. |
+| `EC2` | Partial | Core EC2 functionality is supported. User data scripts may not behave identically to AWS — full parity is not guaranteed. |
+| `RDS` | Partial | Most database engines are supported. MySQL 5.7 is not supported. Persistence across pod restarts is not supported, except for PostgreSQL and MariaDB. |
+
 
 ## Licensing
 
