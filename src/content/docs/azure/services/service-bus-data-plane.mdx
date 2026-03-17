@@ -1,10 +1,198 @@
 ---
 title: "Service Bus Data Plane"
-description: API coverage for Microsoft.ServiceBus.DataPlane in LocalStack for Azure.
+description: Get started with Azure Service Bus Data Plane on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Service Bus Data Plane APIs let you operate messaging entities through the namespace endpoint directly.
+These APIs are useful for programmatic queue, topic, and subscription operations in integration and messaging workflows.
+In LocalStack, they are useful for validating data-plane behavior without calling Azure cloud endpoints.
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Service Bus Data Plane APIs.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Service Bus Data Plane integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Service Bus Data Plane APIs and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Start your LocalStack container using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/).
+
+:::note
+As an alternative to using the `azlocal` CLI, users can run:
+
+`azlocal start-interception`
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+`azlocal stop-interception`
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API. At this time, there is no full parity between `azlocal` and `az` commands after running `az start-interception`. Therefore, this technique is not fully interchangeable.
+:::
+
+### Create a resource group
+
+Create a resource group for your Service Bus resources:
+
+```bash
+azlocal group create \
+  --name rg-servicebus-dp-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-servicebus-dp-demo",
+  "location": "westeurope",
+  "name": "rg-servicebus-dp-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create a Service Bus namespace
+
+Create a namespace and capture its data-plane endpoint:
+
+```bash
+azlocal servicebus namespace create \
+  --resource-group rg-servicebus-dp-demo \
+  --name sbnsdoc84 \
+  --location westeurope \
+  --sku Standard
+```
+
+```bash title="Output"
+{
+  "name": "sbnsdoc84",
+  "serviceBusEndpoint": "https://sbnsdoc84.localhost.localstack.cloud:4511",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Store the HTTP endpoint for data-plane REST calls:
+
+```bash
+SB_ENDPOINT="http://sbnsdoc84.localhost.localstack.cloud:4511"
+```
+
+### Create and inspect a queue entity
+
+Create a queue via the data-plane Entity `Put` API:
+
+```bash
+curl -s -X PUT "$SB_ENDPOINT/dpqueue?api-version=2017-04" \
+  -H "Content-Type: application/atom+xml;type=entry;charset=utf-8" \
+  -d '<?xml version="1.0" encoding="utf-8"?><entry xmlns="http://www.w3.org/2005/Atom"><title type="text">dpqueue</title><content type="application/xml"><QueueDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect" /></content></entry>'
+```
+
+```xml title="Output"
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">dpqueue</title>
+  <content type="application/xml">
+    <QueueDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
+      <Status>Active</Status>
+      ...
+    </QueueDescription>
+  </content>
+</entry>
+```
+
+Get the queue entity via Entity `Get`:
+
+```bash
+curl -s -X GET "$SB_ENDPOINT/dpqueue?api-version=2017-04"
+```
+
+```xml title="Output"
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">dpqueue</title>
+  <content type="application/xml">
+    <QueueDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
+      <MessageCount>0</MessageCount>
+      <Status>Active</Status>
+      ...
+    </QueueDescription>
+  </content>
+</entry>
+```
+
+### Create and inspect a topic subscription
+
+Create a topic entity:
+
+```bash
+curl -s -X PUT "$SB_ENDPOINT/dptopic?api-version=2017-04" \
+  -H "Content-Type: application/atom+xml;type=entry;charset=utf-8" \
+  -d '<?xml version="1.0" encoding="utf-8"?><entry xmlns="http://www.w3.org/2005/Atom"><title type="text">dptopic</title><content type="application/xml"><TopicDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect" /></content></entry>'
+```
+
+Create a subscription via Subscription `Put`:
+
+```bash
+curl -s -X PUT "$SB_ENDPOINT/dptopic/subscriptions/dpsub?api-version=2017-04" \
+  -H "Content-Type: application/atom+xml;type=entry;charset=utf-8" \
+  -d '<?xml version="1.0" encoding="utf-8"?><entry xmlns="http://www.w3.org/2005/Atom"><title type="text">dpsub</title><content type="application/xml"><SubscriptionDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect" /></content></entry>'
+```
+
+```xml title="Output"
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">dpsub</title>
+  <content type="application/xml">
+    <SubscriptionDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
+      <Status>Active</Status>
+      <MaxDeliveryCount>10</MaxDeliveryCount>
+      ...
+    </SubscriptionDescription>
+  </content>
+</entry>
+```
+
+Get the subscription via Subscription `Get`:
+
+```bash
+curl -s -X GET "$SB_ENDPOINT/dptopic/subscriptions/dpsub?api-version=2017-04"
+```
+
+```xml title="Output"
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">dpsub</title>
+  <content type="application/xml">
+    <SubscriptionDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
+      <MessageCount>0</MessageCount>
+      <Status>Active</Status>
+      ...
+    </SubscriptionDescription>
+  </content>
+</entry>
+```
+
+### Delete subscription and entities
+
+Delete the subscription via Subscription `Delete`:
+
+```bash
+curl -s -X DELETE "$SB_ENDPOINT/dptopic/subscriptions/dpsub?api-version=2017-04"
+```
+
+Delete entities via Entity `Delete`:
+
+```bash
+curl -s -X DELETE "$SB_ENDPOINT/dptopic?api-version=2017-04"
+
+curl -s -X DELETE "$SB_ENDPOINT/dpqueue?api-version=2017-04"
+```
 
 ## API Coverage
 
