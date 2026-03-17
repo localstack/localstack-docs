@@ -80,7 +80,7 @@ Set your Localstack auth token to allow you to start LocalStack
 Usage: localstack auth set-token [OPTIONS] AUTH_TOKEN
 
   Configure your auth token. Your auth token is used the license activation to
-  activate LocalStack Pro. This is different from `localstack auth login`
+  activate LocalStack for AWS. This is different from `localstack auth login`
   which enables platform features such as pushing cloud pods to your webapp
   account.
 
@@ -959,7 +959,7 @@ Usage: localstack pod list [OPTIONS] [REMOTE]
   With the --public flag, it lists the all the available public Cloud Pods. A
   public Cloud Pod is available across the boundary of a user and/or
   organization. In other words, any public Cloud Pod can be injected by any
-  other user holding a LocalStack Pro (or above) license.
+  other user holding a LocalStack for AWS (or above) license.
 
 Options:
   -p, --public               List all the available public Cloud Pods

@@ -50,7 +50,7 @@ pre:
 The above minimal configuration file starts LocalStack and creates an S3 bucket, SQS queue, and SNS topic.
 
 :::note
-To use the LocalStack Pro image, configure a LocalStack Auth Token by appending `LOCALSTACK_AUTH_TOKEN=${{ .secrets.LOCALSTACK_AUTH_TOKEN }}` to the `localstack start` command.
+To use the LocalStack for AWS image, configure a LocalStack Auth Token by appending `LOCALSTACK_AUTH_TOKEN=${{ .secrets.LOCALSTACK_AUTH_TOKEN }}` to the `localstack start` command.
 Subsequently, you need to add your LocalStack Auth Token to your HyperExecute Portal as a secret.
 :::
 
@@ -125,4 +125,4 @@ jobs:
 
 Add your username and access key to your GitHub repository secrets.
 You can find your access key in the HyperExecute Portal.
-If you are using the LocalStack Pro image, you need to add your LocalStack Auth Token to your GitHub repository secrets.
+If you are using the LocalStack for AWS image, you need to add your LocalStack Auth Token to your GitHub repository secrets.

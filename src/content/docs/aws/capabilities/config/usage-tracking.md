@@ -7,7 +7,7 @@ template: doc
 ## Overview
 
 For license activations, we track the timestamp and the licensing credentials.
-We need to do this to make CI credits work.
+
 It is tracked regardless of whether the user disables event tracking since we collect this in the backend, not the client.
 
 ## LocalStack usage statistics
@@ -79,8 +79,6 @@ Here is an example of AWS API call metadata:
   }
 }
 ```
-
-For the community image, we only track service, operation, status code, and how often the combination of those occurred.
 
 ### CLI invocations
 

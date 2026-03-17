@@ -35,7 +35,6 @@ For unique licensing needs across teams or environments, please contact Sales.
 
 All paid tiers include a fixed allocation of:
 
-- CI credits (monthly pool)
 - Ephemeral Instance minutes (monthly pool)
 - Cloud Pod storage (per contract, shared across all users)
 
@@ -180,7 +179,6 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [](https://docs.localstack.cloud/references/coverage/coverage_efs/)[Amazon EFS](https://docs.localstack.cloud/references/coverage/coverage_efs/) | ❌ | ❌ | ✅ | ✅ |
 | Emulator Enhancements |  |  |  |  |
 | [Extensions](/aws/tooling/extensions/) | ✅ | ✅ | ✅ | ✅ |
-| CI Credits | ❌ | ✅ 300 credits monthly per workspace | ✅ 1000 credits monthly per workspace | ✅ 1,000 CI/CD credits / month |
 | Stack Insights | ❌ | ✅ For all supported services | ✅ For all supported services | ✅ For all supported services |
 | Local state persistence | ❌ | ✅ | ✅ | ✅ |
 | Cloud-based state persistence via Cloud pods | ❌ | ✅ 300 MB, lifetime per workspace | ✅ 3 GB, lifetime per workspace | ✅ 500 MB cloud pod storage (lifetime) |

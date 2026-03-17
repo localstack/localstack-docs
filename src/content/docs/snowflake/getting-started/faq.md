@@ -24,12 +24,6 @@ Note: In case you are deploying the LocalStack for Snowflake in a Kubernetes clu
 
 ## Integration FAQs
 
-### Why are my CI pipelines failing with `license.not_enough_credits` error?
-
-If you are using the LocalStack for Snowflake in your CI pipelines consistently, you may encounter the `license.not_enough_credits` error. This error occurs when the LocalStack for Snowflake is unable to process the requests due to the lack of LocalStack CI credits.
-
-A CI key allows you to use LocalStack in your CI environment. Every activation of a CI key consumes one CI credit. This means that with every build triggered through the LocalStack container you will consume one credit. To use more credits, you can [contact us](https://localstack.cloud/contact) to discuss your requirements.
-
 ### How do I enable detailed debug logs?
 
 You can set the `SF_LOG=trace` environment variable in the Snowflake container to enable detailed trace logs that show all the request/response message.

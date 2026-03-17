@@ -40,7 +40,7 @@ The table below compares these methods.
 | Deployment approach | Pros | Cons |
 |---------------------|------|------|
 | **Operator** | · Declarative, self-managed control plane<br> · Built-in validation, defaulting, and reconciliation logic | · Requires in-cluster component (controller) |
-| **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> · Supports both LocalStack Community and Pro images | · Customization is limited to chart values and overrides |
+| **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> | · Customization is limited to chart values and overrides |
 | **DIY (YAML manifests)** | · Full control over Kubernetes configuration and resources | · Time-consuming to set up and maintain<br> · Manual updates and lifecycle management |
 
 ## Limitations
@@ -55,20 +55,9 @@ The table below compares these methods.
 | `EC2` | Partial | Core EC2 functionality is supported. User data scripts may not behave identically to AWS — full parity is not guaranteed. |
 | `RDS` | Partial | Most database engines are supported. MySQL 5.7 is not supported. Persistence across pod restarts is not supported, except for PostgreSQL and MariaDB. |
 
-
-## Licensing
-
-While the LocalStack Community image can be deployed in Kubernetes, it does not support containerized service functionality required for full cloud-like behavior. Services such as Lambda, which require spawning and managing compute containers at runtime, only support pod creation with the LocalStack Pro image. The Community edition lacks the runtime capabilities needed to dynamically instantiate and orchestrate workloads in Kubernetes.
-
 ## Help & Support
 
 LocalStack Enterprise (or additional purchase of the Kubernetes pack add-on) is the only version that provides: 
 
 - Official support and integration for Kubernetes environments.
 - Dynamic pod creation by services like Lambda, ECS, RDS, etc.
-
-Community image users:
-
-- Can be deployed in Kubernetes cluster for basic service emulation (e.g., S3, SQS).
-- Do not receive official Kubernetes support.
-- Cannot use features like Lambda execution.

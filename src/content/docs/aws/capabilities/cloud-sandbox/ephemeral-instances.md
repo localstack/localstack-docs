@@ -183,13 +183,3 @@ localstack ephemeral delete --name my-instance-123
 ```bash
 Successfully deleted instance: my-instance-123 ✅
 ```
-
-## Credit Consumption
-
-Ephemeral Instances consume credits based on the resources used and the duration of the instance.
-You can view the credit consumption of the Ephemeral Instance in the **Ephemeral Instance** page.
-Currently, for every 1 credit, you can run an Ephemeral Instance for 1 minute.
-You can view the available minutes under the **Lifetime in minutes** slider when creating an Ephemeral Instance.
-You can also see the credit consumption in the **Credit Consumption** section of the Ephemeral Instance page.
-
-![Credit Consumption](/images/aws/credit-consumption.png)
