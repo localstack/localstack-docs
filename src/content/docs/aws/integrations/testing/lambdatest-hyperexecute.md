@@ -125,4 +125,4 @@ jobs:
 
 Add your username and access key to your GitHub repository secrets.
 You can find your access key in the HyperExecute Portal.
-If you are using the LocalStack for AWS image, you need to add your LocalStack Auth Token to your GitHub repository secrets.
+You need to add your LocalStack Auth Token to your GitHub repository secrets.

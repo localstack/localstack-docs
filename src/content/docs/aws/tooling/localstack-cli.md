@@ -959,7 +959,7 @@ Usage: localstack pod list [OPTIONS] [REMOTE]
   With the --public flag, it lists the all the available public Cloud Pods. A
   public Cloud Pod is available across the boundary of a user and/or
   organization. In other words, any public Cloud Pod can be injected by any
-  other user holding a LocalStack for AWS (or above) license.
+  other user holding a LocalStack for AWS license.
 
 Options:
   -p, --public               List all the available public Cloud Pods

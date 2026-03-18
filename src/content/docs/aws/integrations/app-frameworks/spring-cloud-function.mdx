@@ -679,7 +679,6 @@ class ApplicationStack(parent: Construct, name: String) : Stack(parent, name) {
             .event(RuleTargetInput.fromObject(mapOf("httpMethod" to "SCHEDULE", "path" to "warmup")))
             .build()
 
-        // Please note that events is a LocalStack for AWS feature
         warmupRule.addTarget(warmupTarget)
 
         SingletonFunction.Builder.create(this, "ExampleFunctionOne")
