@@ -79,10 +79,8 @@ Set your Localstack auth token to allow you to start LocalStack
 ```bash
 Usage: localstack auth set-token [OPTIONS] AUTH_TOKEN
 
-  Configure your auth token. Your auth token is used the license activation to
-  activate LocalStack for AWS. This is different from `localstack auth login`
-  which enables platform features such as pushing cloud pods to your webapp
-  account.
+Set up your auth token to activate your LocalStack for AWS license.
+This differs from localstack auth login, which is used for platform features such as syncing Cloud Pods with your web account.
 
   The auth token you configure here will be passed to the
   `LOCALSTACK_AUTH_TOKEN` environment variable of the LocalStack container
