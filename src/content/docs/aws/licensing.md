@@ -20,7 +20,7 @@ We provide the following subscription for non-commercial use:
 - Hobby
 
 We offer special subscriptions for select segments:
-- Student,requires a verified GitHub Education student account
+- Student, requires a verified GitHub Education student account
 - OSS project sponsorship, requires approval from LocalStack. Applications can be submitted here.
 
 If you purchased a LocalStack license **before May 8, 2025**, [click here to learn about your available features and legacy entitlements](#legacy-plan-usage-allocations).
