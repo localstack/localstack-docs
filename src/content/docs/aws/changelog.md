@@ -31,7 +31,7 @@ Starting with the end-of-March 2026 release, LocalStack for AWS follows
 For example, `2026.03.0` is the initial March 2026 release and patch releases in the same month increment
 the last segment (`2026.03.1`, `2026.03.2`, and so on).
 
-Releases up to and including `v4.13.0` continue to use [Semantic Versioning](https://semver.org/).
+Releases up to and including `v4.14.0` continue to use [Semantic Versioning](https://semver.org/).
 
 | Version  | Release Date       | Release Notes                                                                                       |
 |-----------|--------------------|----------------------------------------------------------------------------------------------------|
