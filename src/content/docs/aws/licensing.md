@@ -190,7 +190,7 @@ Debug and Inspect through App Inspector | ✅|✅|✅|✅|✅|
 | Stack Insights | ❌ | ✅ | ✅ | ✅ | ✅ |
 | Local state persistence | ❌ | ✅ | ✅ | ✅ | ✅|
 | Cloud-based state persistence via Cloud pods | ❌ | ✅ 300 MB, lifetime per workspace | ✅ 3 GB, lifetime per workspace | ✅ 5 GB per user, lifetime | ✅ 500 MB cloud pod storage (lifetime) |
-| [Cloud Sandbox](https://docs.localstack.cloud/user-guide/cloud-sandbox/) previews & ephemeral instances | ❌ | ✅ 100 minutes monthly per workspace | ✅ 500 minutes monthly per workspace | ✅| 3000 minutes monthly per workspace | ❌ |
+| [Cloud Sandbox](https://docs.localstack.cloud/user-guide/cloud-sandbox/) previews & ephemeral instances | ❌ | ✅ 100 minutes monthly per workspace | ✅ 500 minutes monthly per workspace | ✅ 3000 minutes monthly per workspace | ❌ |
 | AWS Replicator | ❌ | ❌ | ✅ | ✅ | ✅
 | IAM Policy Enforcement | ❌ | ✅ | ✅ | ✅ | ✅
 | IAM Policy Streams | ❌ | ❌ | ✅ | ✅ | ✅
