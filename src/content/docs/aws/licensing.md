@@ -185,7 +185,7 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | Emulator Enhancements |  |  |  |  |  |
 | Personal Developer Sandbox | 1 | Per License | Per License | Per License | 1 | 1 |
 | Testing in CI  | ✅ | ✅ | ✅ | ✅ | ✅ |
-Debug and Inspect through App Inspector | ✅|✅|✅|✅|✅|
+Preview: Debug and Inspect through Event Studio | ❌|Preview|Preview|Preview|❌|
 [Extensions](https://docs.localstack.cloud/aws/tooling/extensions/) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Stack Insights | ❌ | ✅ | ✅ | ✅ | ✅ |
 | Local state persistence | ❌ | ✅ | ✅ | ✅ | ✅|
