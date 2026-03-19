@@ -17,7 +17,7 @@ With LocalStack for AWS image, you can access all the emulated AWS cloud service
 To use the LocalStack for AWS image, you can pull the image from Docker Hub:
 
 ```bash
-docker pull localstack/localstack-pro:latest
+docker pull localstack/localstack:latest
 ```
 
 To use the LocalStack for AWS image, you must configure an environment variable named `LOCALSTACK_AUTH_TOKEN` to contain your Auth Token.

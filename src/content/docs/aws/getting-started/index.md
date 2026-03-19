@@ -14,7 +14,7 @@ Whether you are testing complex CDK applications or Terraform configurations, or
 
 LocalStack supports a growing number of [AWS services](/aws/services/)
 , like [Lambda](/aws/services/lambda), [S3](/aws/services/s3), [DynamoDB](/aws/services/dynamodb), [Kinesis](/aws/services/kinesis), [SQS](/aws/services/sqs), [SNS](/aws/services/sns), and more!
-[LocalStack for AWS](https://localstack.cloud/pricing) supports additional APIs and advanced features to make your cloud development experience a breeze!
+[LocalStack for AWS](https://localstack.cloud/pricing) also supports APIs and advanced features to make your cloud development experience a breeze.
 
 You can find a comprehensive list of supported APIs on each AWS service page.
 

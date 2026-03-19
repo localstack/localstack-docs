@@ -40,7 +40,7 @@ The table below compares these methods.
 | Deployment approach | Pros | Cons |
 |---------------------|------|------|
 | **Operator** | · Declarative, self-managed control plane<br> · Built-in validation, defaulting, and reconciliation logic | · Requires in-cluster component (controller) |
-| **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> | · Customization is limited to chart values and overrides |
+| **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> · Supports LocalStack for AWS under all Licences | · Customization is limited to chart values and overrides |
 | **DIY (YAML manifests)** | · Full control over Kubernetes configuration and resources | · Time-consuming to set up and maintain<br> · Manual updates and lifecycle management |
 
 ## Limitations
