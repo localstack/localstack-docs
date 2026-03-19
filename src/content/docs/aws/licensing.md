@@ -360,7 +360,7 @@ For any subscription or access-related questions, please reach out to Support.
 | [Amazon EFS](https://docs.localstack.cloud/references/coverage/coverage_efs/) | ✅ | ✅ | 
 | Emulator Enhancements |  |  | 
 | Testing in CI | ✅ | ✅ | 
-| Stack Insights | ✅ For all supported services | ✅ For all supported services | 
+| Stack Insights | ✅ | ✅ | 
 | Local state persistence | ✅ | ✅ | 
 | Cloud-based state persistence via Cloud pods | ❌ | ✅ 1 GB, lifetime per license | 
 | [Cloud Sandbox](https://docs.localstack.cloud/user-guide/cloud-sandbox/) previews & ephemeral instances | ❌ | ✅ 1000 minutes monthly per workspace | 
