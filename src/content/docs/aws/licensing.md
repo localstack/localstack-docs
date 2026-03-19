@@ -369,7 +369,7 @@ For any subscription or access-related questions, please reach out to Support.
 | IAM Policy Streams | ❌ | ❌ | 
 | Fully offline / air-gapped image delivery | ❌ | ❌ | 
 | Custom SSO and SCIM | ❌ | ❌ | 
-| [Chaos Engineering](https://docs.localstack.cloud/user-guide/chaos-engineering/) | ❌ | ❌ | 
+| Resiliency Testing through [Chaos Engineering](https://docs.localstack.cloud/user-guide/chaos-engineering/) | ❌ | ❌ | 
 | Kubernetes Pack ([Operator](https://docs.localstack.cloud/user-guide/localstack-enterprise/k8s-operator/) & [Executor](https://docs.localstack.cloud/user-guide/localstack-enterprise/kubernetes-executor/)) | ❌ | ❌ | 
 |  |  |  | 
 | [Support](https://docs.localstack.cloud/getting-started/help-and-support/) | Standard | Priority | 
