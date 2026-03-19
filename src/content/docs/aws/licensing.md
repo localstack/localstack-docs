@@ -367,7 +367,7 @@ For any subscription or access-related questions, please reach out to Support.
 | AWS Replicator | ❌ | ✅ | 
 | IAM Policy Enforcement | ❌ | ❌ | 
 | IAM Policy Streams | ❌ | ❌ | 
-| Emulator Compliance Pack | ❌ | ❌ | 
+| Fully offline / air-gapped image delivery | ❌ | ❌ | 
 | User Security Pack | ❌ | ❌ | 
 | [Chaos Engineering](https://docs.localstack.cloud/user-guide/chaos-engineering/) | ❌ | ❌ | 
 | Kubernetes Pack ([Operator](https://docs.localstack.cloud/user-guide/localstack-enterprise/k8s-operator/) & [Executor](https://docs.localstack.cloud/user-guide/localstack-enterprise/kubernetes-executor/)) | ❌ | ❌ | 
