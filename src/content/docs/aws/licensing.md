@@ -183,7 +183,7 @@ To learn more about how a service behaves in LocalStack, refer to that individua
 | [AWS Backup](https://docs.localstack.cloud/user-guide/aws/backup/) | ❌ | ❌ | ✅ | ✅ | ✅ |
 | [Amazon EFS](https://docs.localstack.cloud/references/coverage/coverage_efs/) | ❌ | ❌ | ✅ | ✅ | ✅ |
 | Emulator Enhancements |  |  |  |  |  |
-| | Personal Developer Sandbox | 1 | Per License | Per License | Per License | 1 |
+| Personal Developer Sandbox | 1 | Per License | Per License | Per License | 1 | 1 |
 | Testing in CI  | ✅ | ✅ | ✅ | ✅ | ✅ |
 Debug and Inspect through App Inspector | ✅|✅|✅|✅|✅|
 [Extensions](https://docs.localstack.cloud/aws/tooling/extensions/) | ✅ | ✅ | ✅ | ✅ | ✅ |
