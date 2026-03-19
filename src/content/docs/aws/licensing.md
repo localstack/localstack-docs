@@ -368,7 +368,7 @@ For any subscription or access-related questions, please reach out to Support.
 | IAM Policy Enforcement | ❌ | ❌ | 
 | IAM Policy Streams | ❌ | ❌ | 
 | Fully offline / air-gapped image delivery | ❌ | ❌ | 
-| User Security Pack | ❌ | ❌ | 
+| Custom SSO and SCIM | ❌ | ❌ | 
 | [Chaos Engineering](https://docs.localstack.cloud/user-guide/chaos-engineering/) | ❌ | ❌ | 
 | Kubernetes Pack ([Operator](https://docs.localstack.cloud/user-guide/localstack-enterprise/k8s-operator/) & [Executor](https://docs.localstack.cloud/user-guide/localstack-enterprise/kubernetes-executor/)) | ❌ | ❌ | 
 |  |  |  | 
