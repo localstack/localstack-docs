@@ -359,7 +359,7 @@ For any subscription or access-related questions, please reach out to Support.
 | [AWS Backup](https://docs.localstack.cloud/user-guide/aws/backup/) | ✅ | ✅ | 
 | [Amazon EFS](https://docs.localstack.cloud/references/coverage/coverage_efs/) | ✅ | ✅ | 
 | Emulator Enhancements |  |  | 
-| CI Credits | ✅ Up to 240 credits monthly per workspace | ✅ Up to 2400 credits monthly per workspace | 
+| Testing in CI | ✅ | ✅ | 
 | Stack Insights | ✅ For all supported services | ✅ For all supported services | 
 | Local state persistence | ✅ | ✅ | 
 | Cloud-based state persistence via Cloud pods | ❌ | ✅ 1 GB, lifetime per license | 
