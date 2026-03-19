@@ -199,7 +199,7 @@ Debug and Inspect through App Inspector | ✅|✅|✅|✅|✅|
 | [Resiliency Testing](https://docs.localstack.cloud/user-guide/chaos-engineering/) | ❌ | ❌ | ❌| ✅  | ✅ | ✅ |
 | [Kubernetes Delivery Operator](https://docs.localstack.cloud/user-guide/localstack-enterprise/k8s-operator/) & [Executor](https://docs.localstack.cloud/user-guide/localstack-enterprise/kubernetes-executor/)) | ❌ | ❌ | ❌ | ✅ | ❌
 |  |  |  |  |  |
-Telemetry Sharing | enforced | default on | default on | optional | default on |
+[Telemetry Sharing](https://docs.localstack.cloud/aws/capabilities/config/usage-tracking/) | enforced | default on | default on | optional | default on |
 | [Support](https://docs.localstack.cloud/getting-started/help-and-support/) | Basic | Standard | Priority | Enterprise | Basic |
 
 ## Legacy Plans
