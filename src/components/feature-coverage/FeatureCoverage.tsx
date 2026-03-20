@@ -52,13 +52,6 @@ const columns: ColumnDef<any>[] = [
     enableResizing: false,
   },
   {
-    id: 'image',
-    accessorFn: (row) => row[Object.keys(row)[0]].availability,
-    header: () => 'Image',
-    enableSorting: false,
-    enableResizing: false,
-  },
-  {
     id: 'k8s_support',
     accessorFn: (row) => row[Object.keys(row)[0]].k8s_test_suite,
     header: () => 'Verified on Kubernetes',
@@ -66,8 +59,9 @@ const columns: ColumnDef<any>[] = [
     enableSorting: false,
     enableResizing: false,
     meta: {
-      tooltip: 'Indicates whether this operation has passed our internal integration test suite running against a LocalStack pod deployed on a Kubernetes cluster.'
-    }
+      tooltip:
+        'Indicates whether this operation has passed our internal integration test suite running against a LocalStack pod deployed on a Kubernetes cluster.',
+    },
   },
 ];
 
@@ -78,7 +72,7 @@ export default function PersistenceCoverage({ service }: { service: string }) {
     { id: 'operation', desc: false },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
 
   React.useEffect(() => {
@@ -94,8 +88,8 @@ export default function PersistenceCoverage({ service }: { service: string }) {
   const table = useReactTable({
     data: coverage,
     columns,
-    state: { 
-      sorting, 
+    state: {
+      sorting,
       columnFilters,
     },
     onSortingChange: setSorting,
@@ -122,7 +116,7 @@ export default function PersistenceCoverage({ service }: { service: string }) {
           }
           className="border rounded px-2 py-1 w-full max-w-xs"
           style={{
-            color:  '#707385',
+            color: '#707385',
             fontFamily: 'AeonikFono',
             fontSize: '14px',
             fontStyle: 'normal',
@@ -133,9 +127,9 @@ export default function PersistenceCoverage({ service }: { service: string }) {
         />
       </div>
       <div className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden">
-        <Table 
-          className="w-full" 
-          style={{ 
+        <Table
+          className="w-full"
+          style={{
             borderCollapse: 'collapse',
             tableLayout: 'fixed',
             width: '100%',
@@ -146,14 +140,12 @@ export default function PersistenceCoverage({ service }: { service: string }) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header, index) => {
                   const canSort = header.column.getCanSort();
-                  
+
                   const getColumnWidth = (columnId: string) => {
                     switch (columnId) {
                       case 'operation':
                         return '90%';
                       case 'implemented':
-                        return '15%';
-                      case 'image':
                         return '15%';
                       case 'k8s_support':
                         return '15%';
@@ -161,7 +153,7 @@ export default function PersistenceCoverage({ service }: { service: string }) {
                         return '15%';
                     }
                   };
-                  
+
                   return (
                     <TableHead
                       key={header.id}
@@ -173,7 +165,8 @@ export default function PersistenceCoverage({ service }: { service: string }) {
                       className={canSort ? 'cursor-pointer select-none' : ''}
                       style={{
                         width: getColumnWidth(header.id),
-                        textAlign: header.id === 'operation' ? 'left' : 'center',
+                        textAlign:
+                          header.id === 'operation' ? 'left' : 'center',
                         border: '1px solid #999CAD',
                         background: '#AFB2C2',
                         color: 'var(--sl-color-gray-1)',
@@ -188,29 +181,29 @@ export default function PersistenceCoverage({ service }: { service: string }) {
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                       {header.column.columnDef.meta?.tooltip && (
-                          <span
-                            title={header.column.columnDef.meta.tooltip}
-                            style={{
-                                cursor: 'help',
-                                display: 'inline-flex',
-                            }}
-                          >
-                            <CircleHelp
-                              size={20}
-                              className="text-gray-500 dark:text-gray-200 hover:text-gray-300"
-                            />
-                          </span>
+                        <span
+                          title={header.column.columnDef.meta.tooltip}
+                          style={{
+                            cursor: 'help',
+                            display: 'inline-flex',
+                          }}
+                        >
+                          <CircleHelp
+                            size={20}
+                            className="text-gray-500 dark:text-gray-200 hover:text-gray-300"
+                          />
+                        </span>
                       )}
                       {canSort && (
                         <span>
                           {header.column.getIsSorted() === 'asc'
                             ? ' ▲'
                             : header.column.getIsSorted() === 'desc'
-                            ? ' ▼'
-                            : ''}
+                              ? ' ▼'
+                              : ''}
                         </span>
                       )}
                     </TableHead>
@@ -219,15 +212,17 @@ export default function PersistenceCoverage({ service }: { service: string }) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody  style={{
-                        color: 'var(--sl-color-gray-1)',
-                        fontFamily: 'AeonikFono',
-                        fontSize: '14px',
-                        fontStyle: 'normal',
-                        fontWeight: '400',
-                        lineHeight: '16px',
-                        letterSpacing: '-0.15px',
-                      }}>
+          <TableBody
+            style={{
+              color: 'var(--sl-color-gray-1)',
+              fontFamily: 'AeonikFono',
+              fontSize: '14px',
+              fontStyle: 'normal',
+              fontWeight: '400',
+              lineHeight: '16px',
+              letterSpacing: '-0.15px',
+            }}
+          >
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
@@ -235,17 +230,19 @@ export default function PersistenceCoverage({ service }: { service: string }) {
                     <TableCell
                       key={cell.id}
                       style={{
-                        textAlign: cell.column.id === 'operation' ? 'left' : 'center',
+                        textAlign:
+                          cell.column.id === 'operation' ? 'left' : 'center',
                         border: '1px solid #999CAD',
                         padding: '12px 8px',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                        whiteSpace: cell.column.id === 'operation' ? 'normal' : 'nowrap',
+                        whiteSpace:
+                          cell.column.id === 'operation' ? 'normal' : 'nowrap',
                       }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   );
@@ -259,7 +256,7 @@ export default function PersistenceCoverage({ service }: { service: string }) {
         <button
           className="px-3 py-1 border rounded disabled:opacity-50"
           style={{
-            color:  'var(--sl-color-gray-1)',
+            color: 'var(--sl-color-gray-1)',
             fontFamily: 'AeonikFono',
             fontSize: '14px',
             fontStyle: 'normal',
@@ -279,7 +276,7 @@ export default function PersistenceCoverage({ service }: { service: string }) {
         <button
           className="px-3 py-1 border rounded disabled:opacity-50"
           style={{
-            color:  'var(--sl-color-gray-1)',
+            color: 'var(--sl-color-gray-1)',
             fontFamily: 'AeonikFono',
             fontSize: '14px',
             fontStyle: 'normal',
