@@ -15,97 +15,7 @@ It provides convenience features to interact with LocalStack features like Cloud
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
 
-:::note
-**New CLI Preview (lstk)**: We are currently rolling out a new, high-performance CLI written in Go. During this initial phase, the new CLI (`lstk`) supports core lifecycle commands (start, stop, logs). For advanced features such as **Cloud Pods**, **Extensions**, and **Ephemeral Instances**, please continue to use the legacy LocalStack CLI. Both tools can be installed and used on the same machine.
-::: 
-
-## New CLI Preview (lstk)
-The new LocalStack CLI (`lstk`) provides a modern terminal experience with a built-in terminal UI (TUI) and improved performance. 
-
-To install the new CLI and test it out, follow the [installation steps.](https://github.com/localstack/lstk/blob/main/README.md#installation)
-
-### Global Options
-The following global options are available for the `lstk` CLI:
-
-| Option | Description |
-| :--- | :--- |
-| --config string | Path to a specific TOML config file |
-| --non-interactive | Disable the interactive TUI and use plain text output |
-| -v, --version | Show the version and exit |
-| -h, --help | Show help message and exit |
-
-### Commands
-The new CLI uses a flat command structure. Advanced subcommands are not yet available in this preview.
-
-#### start
-Start the LocalStack emulator. If run interactively, it launches the Terminal UI.
- 
-```bash
-Usage: lstk start [OPTIONS]
-
-# Start LocalStack interactively
-lstk
-
-# Start in non-interactive mode (CI/CD)
-lstk start --non-interactive
-```
-
-#### stop
-Stop the running LocalStack emulator.
- 
-```bash
-Usage: lstk stop
-```
-
-#### status
-Show emulator status and a summary of deployed resources.
- 
-```bash
-Usage: lstk status
-```
-
-#### logs
-Show or stream emulator logs.
- 
-```bash
-Usage: lstk logs [OPTIONS]
-
-Options:
-  --follow     Stream logs in real-time
-  --verbose    Show all logs without filtering
-```
-
-#### login / logout
-Manage your LocalStack authentication. `login` will open a browser window to authenticate.
- 
-```bash
-Usage: lstk login
-Usage: lstk logout
-```
-
-#### config
-Manage the CLI configuration. Use `path` to find your active configuration file.
- 
-```bash
-Usage: lstk config COMMAND
-
-Commands:
-  path    Show the path to the current config.toml
-```
-
-#### update
-Check for or install the latest version of the `lstk` binary.
- 
-```bash
-Usage: lstk update [OPTIONS]
-
-Options:
-  --check    Check for updates without installing
-```
-
-
-
-## Legacy CLI
+## LocalStack CLI
 
 :::note
 This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 4.14.0`.
@@ -1433,3 +1343,98 @@ Options:
 ```
 
 </details>
+
+
+
+
+## lstk
+
+:::note
+**lstk**: We are currently rolling out a new, high-performance CLI written in Go. During this initial phase, the new CLI (`lstk`) supports core lifecycle commands (start, stop, logs). For advanced features such as **Cloud Pods**, **Extensions**, and **Ephemeral Instances**, please continue to use the current LocalStack CLI. Both tools can be installed and used on the same machine.
+::: 
+
+`lstk` provides a modern terminal experience with a built-in terminal UI (TUI) and improved performance. 
+
+To install the new CLI and test it out, follow the [installation steps.](https://github.com/localstack/lstk/blob/main/README.md#installation)
+
+### Global Options
+The following global options are available for the `lstk` CLI:
+
+| Option | Description |
+| :--- | :--- |
+| --config string | Path to a specific TOML config file |
+| --non-interactive | Disable the interactive TUI and use plain text output |
+| -v, --version | Show the version and exit |
+| -h, --help | Show help message and exit |
+
+### Commands
+The new CLI uses a flat command structure. Advanced subcommands are not yet available in this preview.
+
+#### lstk
+Start LocalStack interactively.
+
+Running `lstk` automatically handles authentication, updating, and starting LocalStack automatically.
+
+
+#### start
+Start the LocalStack emulator. If run interactively, it launches the Terminal UI.
+ 
+```bash
+Usage: lstk start [OPTIONS]
+
+# Start in non-interactive mode (CI/CD)
+lstk start --non-interactive
+```
+
+#### stop
+Stop the running LocalStack emulator.
+ 
+```bash
+Usage: lstk stop
+```
+
+#### status
+Show emulator status and a summary of deployed resources.
+ 
+```bash
+Usage: lstk status
+```
+
+#### logs
+Show or stream emulator logs.
+ 
+```bash
+Usage: lstk logs [OPTIONS]
+
+Options:
+  --follow     Stream logs in real-time
+  --verbose    Show all logs without filtering
+```
+
+#### login / logout
+Manage your LocalStack authentication. `login` will open a browser window to authenticate.
+ 
+```bash
+Usage: lstk login
+Usage: lstk logout
+```
+
+#### config
+Manage the CLI configuration. Use `path` to find your active configuration file.
+ 
+```bash
+Usage: lstk config COMMAND
+
+Commands:
+  path    Show the path to the current config.toml
+```
+
+#### update
+Check for or install the latest version of the `lstk` binary.
+ 
+```bash
+Usage: lstk update [OPTIONS]
+
+Options:
+  --check    Check for updates without installing
+```
