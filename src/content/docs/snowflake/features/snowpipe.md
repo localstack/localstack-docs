@@ -82,7 +82,7 @@ The `notification.json` file should contain the following configuration:
   "QueueConfigurations": [
     {
       "Id": "test-queue",
-      "QueueArn": "arn:aws:sqs:us-east-1:000000000000:sf-snowpipe-test",
+      "QueueArn": "arn:aws:sqs:us-east-1:000000000000:sf-snowpipe-TEST",
       "Events": ["s3:ObjectCreated:*"]
     }
   ],
@@ -90,7 +90,7 @@ The `notification.json` file should contain the following configuration:
 }
 ```
 
-Replace the `QueueArn` with the ARN of the queue provided in the `SHOW PIPE` query output.
+Replace the `QueueArn` with the ARN of the queue provided in the `DESC PIPE` query output.
 
 ### Copy data to the stage
 
