@@ -4,7 +4,7 @@ description: Getting started with LocalStack Extension for Docker Desktop.
 template: doc
 sidebar:
     order: 7
-tags: ["Free"]
+tags: ["Hobby"]
 ---
 
 ## Introduction

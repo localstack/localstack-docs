@@ -4,7 +4,7 @@ description: Reference guide for LocalStack CLI commands, options, and usage.
 template: doc
 sidebar:
     order: 10
-tags: ["Free"]
+tags: ["Hobby"]
 ---
 
 ## Introduction
