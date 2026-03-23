@@ -1359,6 +1359,35 @@ Advanced features in `lstk` are coming soon.
 
 To install the new CLI and test it out, follow the [installation steps.](https://github.com/localstack/lstk/blob/main/README.md#installation)
 
+### Configuration
+
+`lstk` uses a TOML config file, created automatically on first run. The file itself includes guidance for manual modifications.
+
+**Search Order**
+`lstk` uses the first configuration file found in this priority:
+
+1. **Local**: `./lstk.toml` or `./.lstk/config.toml` (automatically used as the active profile)
+2. **User**: `$HOME/.config/lstk/config.toml`
+3. **OS Default**: 
+   * **macOS**: `$HOME/Library/Application Support/lstk/config.toml`
+   * **Windows**: `%AppData%\lstk\config.toml`
+
+:::note
+On first run, the config is created at path #2 if `$HOME/.config/` exists; otherwise, it uses path #3. By default, the global config is set to pull the latest updates.
+:::
+
+### Commands
+**See active config path:**
+```bash
+lstk config path
+```
+
+**Manual override:**
+```bash
+lstk --config /path/to/config.toml start
+```
+
+
 ### Global Options
 The following global options are available for the `lstk` CLI:
 
