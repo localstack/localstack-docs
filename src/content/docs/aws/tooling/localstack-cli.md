@@ -1351,9 +1351,11 @@ Options:
 
 :::note
 **lstk**: We are currently rolling out a new, high-performance CLI written in Go. During this initial phase, the new CLI (`lstk`) supports core lifecycle commands (start, stop, logs). For advanced features such as **Cloud Pods**, **Extensions**, and **Ephemeral Instances**, please continue to use the current LocalStack CLI. Both tools can be installed and used on the same machine.
+
+Advanced features in `lstk` are coming soon.
 ::: 
 
-`lstk` provides a modern terminal experience with a built-in terminal UI (TUI) and improved performance. 
+`lstk` is meant to provide a modern terminal experience with a built-in terminal UI (TUI). It currently includes some interactivity, but it's not a dashboard-style long-running TUI yet.
 
 To install the new CLI and test it out, follow the [installation steps.](https://github.com/localstack/lstk/blob/main/README.md#installation)
 
@@ -1368,7 +1370,7 @@ The following global options are available for the `lstk` CLI:
 | -h, --help | Show help message and exit |
 
 ### Commands
-The new CLI uses a flat command structure. Advanced subcommands are not yet available in this preview.
+The new CLI uses a flat command structure. Advanced subcommands aren't available in this initial release.
 
 #### lstk
 Start LocalStack interactively.
