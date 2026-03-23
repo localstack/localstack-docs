@@ -47,7 +47,7 @@ helm install localstack localstack/localstack
 
 This creates the LocalStack resources in your cluster using the chart defaults.
 
-### Install LocalStack Pro
+### Install LocalStack for AWS
 
 If you want to use the `localstack-pro` image, create a `values.yaml` file:
 

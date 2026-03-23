@@ -49,7 +49,7 @@ script:
 
 ## Configuring a CI Auth Token
 
-You can easily enable LocalStack Pro by using the `localstack/localstack-pro` image and adding your [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens) to the project's environment variables as `LOCALSTACK_AUTH_TOKEN`.
+You can easily enable LocalStack for AWS by using the `localstack/localstack-pro` image and adding your [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens) to the project's environment variables as `LOCALSTACK_AUTH_TOKEN`.
 The LocalStack CLI will automatically detect it and activate the Pro features.
 
 To configure this in Travis CI, go to the project settings (`More options` → `Settings`), scroll down to the `Environment Variables` section, and add your CI Auth Token as `LOCALSTACK_AUTH_TOKEN`.

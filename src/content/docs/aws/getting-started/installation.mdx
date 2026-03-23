@@ -139,7 +139,12 @@ To verify that the LocalStack CLI was installed correctly, you can check the ver
 
 You are all set!
 
-You can now start LocalStack with the following command:
+
+:::note
+To start LocalStack, you must first [set up your auth token](/aws/getting-started/auth-token).
+:::
+
+Once you've set up your auth token, you can start LocalStack with the following command:
 
 ```bash
 localstack start # start localstack in background with -d flag
@@ -162,10 +167,6 @@ localstack start # start localstack in background with -d flag
 [12:47:15] detaching                                                   bootstrap.py:1262
 ```
 
-:::note
-To use all of LocalStack's features we recommend to [get a LocalStack account and set up your auth token](/aws/getting-started/auth-token).
-Afterwards, check out our [Quickstart guide](/aws/getting-started/quickstart) to start your local development cloud!
-:::
 
 ### Updating LocalStack CLI
 
@@ -275,7 +276,7 @@ services:
       - "127.0.0.1:4510-4559:4510-4559"  # external services port range
       - "127.0.0.1:443:443"              # LocalStack HTTPS Gateway (Pro)
     environment:
-      # Activate LocalStack Pro: https://docs.localstack.cloud/getting-started/auth-token/
+      # Activate LocalStack for AWS: https://docs.localstack.cloud/getting-started/auth-token/
       - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}  # required for Pro
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       - DEBUG=${DEBUG:-0}

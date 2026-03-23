@@ -609,7 +609,7 @@ functions:
           path: /{proxy+}
           method: ANY
           cors: true
-      # Please, note that events are a LocalStack PRO feature
+      # Please, note that events are a LocalStack for AWS feature
       - schedule:
           rate: rate(10 minutes)
           enabled: true
@@ -679,7 +679,6 @@ class ApplicationStack(parent: Construct, name: String) : Stack(parent, name) {
             .event(RuleTargetInput.fromObject(mapOf("httpMethod" to "SCHEDULE", "path" to "warmup")))
             .build()
 
-        // Please note that events is a LocalStack PRO feature
         warmupRule.addTarget(warmupTarget)
 
         SingletonFunction.Builder.create(this, "ExampleFunctionOne")

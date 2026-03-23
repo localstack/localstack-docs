@@ -79,7 +79,7 @@ job:
 
 ### Configure a CI Auth Token
 
-You can easily enable LocalStack Pro by using the `localstack/localstack-pro` image and adding your [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens) to the repository's environment variables as `LOCALSTACK_AUTH_TOKEN`.
+You can easily enable LocalStack for AWS by using the `localstack/localstack-pro` image and adding your [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens) to the repository's environment variables as `LOCALSTACK_AUTH_TOKEN`.
 Go to your project's **Settings > CI/CD** and expand the **Variables** section.
 Select the **Add Variable** button and fill in the necessary details with `LOCALSTACK_AUTH_TOKEN` as the key and your CI Auth Token as the value.
 After you create the variable, you can use it in the `.gitlab-ci.yml` file.

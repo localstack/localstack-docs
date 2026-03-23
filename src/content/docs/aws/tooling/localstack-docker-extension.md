@@ -71,4 +71,4 @@ To configure an Auth Token for the LocalStack Docker Extension, you need to crea
 Navigate to the **Configurations** tab and click the **New +** button.
 Enter the configuration name and add the `LOCALSTACK_AUTH_TOKEN` environment variable with the desired value.
 
-To start the LocalStack Pro container with the Auth Token, select the configuration profile from the drop-down menu and click the **Start** button.
+To start the LocalStack for AWS container with the Auth Token, select the configuration profile from the drop-down menu and click the **Start** button.

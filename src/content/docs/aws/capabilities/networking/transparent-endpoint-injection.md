@@ -48,7 +48,7 @@ This section explains the most important configuration options summarized under 
 
 ### Disable transparent endpoint injection
 
-If you do not wish to use Transparent Endpoint Injection in LocalStack Pro, opt out using:
+If you do not wish to use Transparent Endpoint Injection in LocalStack for AWS, opt out using:
 
 ```bash
 DISABLE_TRANSPARENT_ENDPOINT_INJECTION=1
@@ -56,7 +56,7 @@ DISABLE_TRANSPARENT_ENDPOINT_INJECTION=1
 
 This option disables DNS resolution of AWS domains to the LocalStack container and prevents Lambda from disabling SSL validation.
 If Transparent Endpoint Injection is _not_ used, the AWS SDK within Lambda functions might connect to the real AWS API.
-Transparent Endpoint Injection is only available in LocalStack Pro.
+Transparent Endpoint Injection is only available in LocalStack for AWS.
 
 Alternatively, specific AWS endpoints can be resolved to AWS while continuing to use Transparent Endpoint Injection.
 Refer to the [DNS server configuration](/aws/tooling/dns-server#system-dns-configuration) for skipping selected domain name patterns.
@@ -67,7 +67,7 @@ Use this configuration with caution because we generally do not recommend connec
 
 ## Self-signed certificates
 
-In LocalStack Pro and Lambda, Transparent Endpoint Injection automatically disables SSL certificate validation of the AWS SDK for the
+In LocalStack for AWS and Lambda, Transparent Endpoint Injection automatically disables SSL certificate validation of the AWS SDK for the
 most common Lambda runtimes including Python, Node.js, and Java (SDK v1).
 For other services and unsupported Lambda runtimes, you may have to configure your AWS clients to accept self-signed certificates because
 we are repointing AWS domain names (e.g., `*.amazonaws.com`) to `localhost.localstack.cloud`.
@@ -135,7 +135,6 @@ You need to make two changes:
 
 For more details, see your [DNS server documentation](/aws/tooling/dns-server).
 
-For the community image of LocalStack, you can employ your own DNS server to achieve a similar outcome, but it won't be managed by LocalStack.
 Note that in both cases, SSL verification must be disabled.
 
 ### From a lambda function
