@@ -15,7 +15,7 @@ It provides convenience features to interact with LocalStack features like Cloud
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
 :::note
-**lstk**: We are currently rolling out `lstk`; it's a new, high-performance CLI. Check it out [here](https://docs.localstack.cloud/aws/tooling/localstack-cli/#lstk).
+**lstk**: We are currently rolling out `lstk`; a new, high-performance CLI. Check it out [here](https://docs.localstack.cloud/aws/tooling/localstack-cli/#lstk).
 ::: 
 
 ## LocalStack CLI
