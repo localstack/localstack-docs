@@ -148,6 +148,10 @@ It only includes operations performed with a principal, not as root, so test set
 |                | - ArnLike/ArnEquals                                                                  |
 |                | Supported condition keys:                                                            |
 |                | - aws:SourceArn                                                                      |
+|                | Supported condition tags:                                                                  |
+|                | - aws:ResourceTag                                                                     |
+|                | - aws:RequestTag                                                                     |
+|                | - aws:PrincipalTag                                                                    |
 
 ## Current Limitations
 
