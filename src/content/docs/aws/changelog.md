@@ -9,7 +9,7 @@ pagefind: false
 Browse release notes for official LocalStack major and minor releases since LocalStack v1.0.0.
 If you are looking for information about nightly releases, preview features, or experimental features, pull the [latest Docker image](https://hub.docker.com/r/localstack/localstack).
 
-Our  changelog is updated with every release.
+Our changelog is updated with every release.
 
 Updates that affect only LocalStack Web Application or features in preview or limited release may not be reflected.
 
@@ -26,8 +26,12 @@ Disclaimer: Features under development (i.e., labelled as preview/beta, experime
 
 ## Official Releases
 
-LocalStack follows [Semantic Versioning](https://semver.org/) except for [AWS parity](https://localstack.cloud/blog/2022-08-04-parity-explained) fixes,
-which can be released as patch version because we are committed to make LocalStack behave the same way AWS does.
+Starting with the end-of-March 2026 release, LocalStack for AWS follows
+[calendar versioning](https://calver.org/) using the `YYYY.MM.patch` format.
+For example, `2026.03.0` is the initial March 2026 release and patch releases in the same month increment
+the last segment (`2026.03.1`, `2026.03.2`, and so on).
+
+Releases up to and including `v4.14.0` continue to use [Semantic Versioning](https://semver.org/).
 
 | Version   | Release Date       | Release Notes                                                                                     |
 |-----------|--------------------|---------------------------------------------------------------------------------------------------|

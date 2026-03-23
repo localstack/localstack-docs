@@ -7,6 +7,10 @@ editUrl: false
 
 The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
 
+Starting with the end-of-March 2026 release, LocalStack for Snowflake follows
+[calendar versioning](https://calver.org/) in the `YYYY.MM.patch` format.
+For example, `2026.03.0` is the initial March 2026 release.
+
 ### 1.7.0
 - Add support for `OBJECT_AGG`, `QUERY_HISTORY_BY_USER`, `BOOLAND_AGG`, `BOOLOR_AGG`, `APPROX_PERCENTILE`, `LIKE`, `ILIKE`, and math functions
 - Add support for date arithmetics

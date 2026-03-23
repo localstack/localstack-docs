@@ -35,7 +35,10 @@ The [BigData image](https://hub.docker.com/r/localstack/bigdata/tags), which sta
 
 ## Image tags
 
-We use tags for versions with significant features, enhancements, or bug fixes - following [semantic versioning](https://semver.org).
+Starting with the end-of-March 2026 release, LocalStack version tags follow
+[calendar versioning](https://calver.org/) in the `YYYY.MM.patch` format (for example, `2026.03.0`).
+
+Releases up to and including `v4.14.0` use [semantic versioning](https://semver.org).
 To ensure that we move quickly and steadily, we run nightly builds, where all our updates are available on the `latest` tag of LocalStack's Docker image.
 We intend to announce more significant features and enhancements during major & minor releases.
 We occasionally create patch releases for minor bug fixes and enhancements, to ensure that we can deliver changes quickly while not breaking your existing workflows (in case you prefer not to use `latest`).
