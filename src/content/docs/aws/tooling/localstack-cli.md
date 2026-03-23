@@ -1364,7 +1364,7 @@ To install the new CLI and test it out, follow the [installation steps.](https:/
 **Search Order**
 `lstk` uses the first configuration file found in this priority:
 
-1. **Local**: `./lstk.toml` or `./.lstk/config.toml` (automatically used as the active profile)
+1. **Local**: `./.lstk/config.toml` (automatically used as the active profile)
 2. **User**: `$HOME/.config/lstk/config.toml`
 3. **OS Default**: 
    * **macOS**: `$HOME/Library/Application Support/lstk/config.toml`
