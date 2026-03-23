@@ -207,7 +207,7 @@ Usage: pod list [OPTIONS] [REMOTE]
   A public Cloud Pod is available across the boundary of a user one/or
   organization.
   In other words, any public Cloud Pod can be injected by any
-  other user holding a LocalStack for AWS (or above) license.
+  other user holding a LocalStack for AWS license.
 
 Options:
   -p, --public               List all the available public Cloud Pods
