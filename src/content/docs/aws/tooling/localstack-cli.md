@@ -14,6 +14,9 @@ It provides convenience features to interact with LocalStack features like Cloud
 
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
+:::note
+**lstk**: We are currently rolling out `lstk`; a new, high-performance CLI. Check it out [here](https://docs.localstack.cloud/aws/tooling/localstack-cli/#lstk).
+::: 
 
 ## LocalStack CLI
 
@@ -1364,7 +1367,7 @@ To install the new CLI and test it out, follow the [installation steps.](https:/
 **Search Order**
 `lstk` uses the first configuration file found in this priority:
 
-1. **Local**: `./lstk.toml` or `./.lstk/config.toml` (automatically used as the active profile)
+1. **Local**: `./.lstk/config.toml` (automatically used as the active profile)
 2. **User**: `$HOME/.config/lstk/config.toml`
 3. **OS Default**: 
    * **macOS**: `$HOME/Library/Application Support/lstk/config.toml`
