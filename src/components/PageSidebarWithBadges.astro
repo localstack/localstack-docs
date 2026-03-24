@@ -8,7 +8,7 @@ const isSnowflakePage = route.id.startsWith('snowflake/');
 const tags = route.entry?.data?.tags || [];
 
 const pricingTags = tags.filter((tag) =>
-  ['Free', 'Base', 'Ultimate', 'Enterprise'].includes(tag)
+  ['Hobby', 'Base', 'Ultimate', 'Enterprise'].includes(tag),
 );
 
 const getAvailablePlans = (plans: string[], isSnowflake: boolean) => {
@@ -20,9 +20,9 @@ const getAvailablePlans = (plans: string[], isSnowflake: boolean) => {
   if (isSnowflake) {
     return plans.length > 0 ? ['Base'] : [];
   }
-  // AWS has Free, Base, Ultimate
-  if (plans.includes('Free')) {
-    return ['Free', 'Base', 'Ultimate'];
+  // AWS has Hobby, Base, Ultimate
+  if (plans.includes('Hobby')) {
+    return ['Hobby', 'Base', 'Ultimate'];
   } else if (plans.includes('Base')) {
     return ['Base', 'Ultimate'];
   } else if (plans.includes('Ultimate')) {
@@ -105,7 +105,7 @@ const availablePlans = getAvailablePlans(pricingTags, isSnowflakePage);
     letter-spacing: -0.2px;
   }
 
-  .pricing-badge-free {
+  .pricing-badge-hobby {
     background: #e1e3eb;
     color: #3a3c47;
   }
