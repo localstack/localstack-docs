@@ -11,6 +11,60 @@ Starting with the end-of-March 2026 release, LocalStack for Snowflake follows
 [calendar versioning](https://calver.org/) in the `YYYY.MM.patch` format.
 For example, `2026.03.0` is the initial March 2026 release.
 
+### 2026.3.0
+- Add support for `APPROX_COUNT_DISTINCT`, `APPROX_TOP_K`, `HLL`, `HLL_ACCUMULATE`, `GROUPING_ID`, and `HASH_AGG` aggregate functions
+- Implement `APPROX_PERCENTILE` accumulate/combine/estimate with bounds validation
+- Add support for `DATE_PART`, `DECODE`, `GETDATE`, `GETVARIABLE`, `GET_IGNORE_CASE`, `GETBIT`, `JAROWINKLER_SIMILARITY`, and `REGEXP_SUBSTR_ALL` functions
+- Implement `FL_GET_*` stage file metadata functions and stage utility functions
+- Implement `GET_DDL` function with `TABLE` and `SCHEMA` support
+- Implement string, hash, encoding, datetime, JSON, XML, bitmap, similarity, and statistics SQL functions
+- Add `ENCRYPT_RAW`, `DECRYPT_RAW`, `COMPRESS`, `DECOMPRESS_BINARY`, `DECOMPRESS_STRING` functions
+- Implement stage URL SQL functions
+- Implement conversion functions
+- Implement `SPLIT_TO_TABLE` table function
+- Add `ILIKE` and `NOT ILIKE` to SQL expression coverage
+- Add `FULL JOIN` support via LEFT+RIGHT anti-join CTE rewrite with early-exit for simple equi-joins
+- Support `VALUES` clauses in `FULL JOIN` and regular `JOIN` contexts
+- Support `EXECUTE AS OWNER` and `EXECUTE AS CALLER` clauses in `CREATE PROCEDURE`
+- Support raising and catching custom `EXCEPTION` types in stored procedures
+- Support `IDENTIFIER(:var)` in SQL stored procedures
+- SQL scripting: support `FOR` loop index variable, `WHILE` loop, `LOOP` loop, and `REPEAT UNTIL` loop
+- Implement `UNSET` and `SHOW VARIABLES` for session variables
+- Support `CTAS` with typed column definitions and constraints
+- Add support for `ACCOUNT_USAGE.TABLES` view
+- Initial support for dynamic Iceberg tables
+- Register aggregates for distinct window functions
+- Enhance support for Snowpipe parity
+- Enhance support for `DROP PROCEDURE/FUNCTION` statements
+- Refactor `SHOW TASKS` into PL/SQL function
+- Fix `SQLERRM`, `SQLSTATE`, and `SQLCODE` in procedure exception handlers
+- Fix nested `DECLARE` scope isolation for variables and exceptions
+- Fix `EXECUTE IMMEDIATE` as first statement after `THEN/ELSE` in `IF` blocks
+- Fix procedure parameter/column ambiguity when names collide
+- Fix resolving fully qualified table names in streams
+- Fix resolving identifiers and session variable handling
+- Fix `INFORMATION_SCHEMA` queries with DB-qualified names
+- Fix encoded default values leaking into `INFORMATION_SCHEMA.FUNCTIONS` response
+- Filter emulator-internal functions from `INFORMATION_SCHEMA.FUNCTIONS`
+- Fix `DATEDIFF` boundary-crossing semantics and `DATEADD` return type
+- Fix `FLATTEN` to include sequence number
+- Fix `DATASKETCHES_HLL` aggregate performance with large datasets
+- Fix `MULTI_STATEMENT_COUNT` not honored when set via `ALTER SESSION`
+- Fix `RESULT_SCAN(LAST_QUERY_ID())` error when no prior `SELECT` queries exist
+- Fix `INSERT INTO (SELECT ...)` syntax
+- Fix `SHOW APPLICATIONS LIKE` filter not being applied
+- Fix `USE WAREHOUSE` to reject non-existent warehouses
+- Fix loading JSON arrays in single variant column
+- Fix response for create/drop commands with identifier session parameter
+- Fix `ARRAY_AGG` with `WITHIN GROUP` clauses
+- Fix `IDENTIFIER` parsed as literal in certain contexts
+- Fix date/time display in UI and date conversion rounding bug
+- Drop views dependent on table
+- Bump Apache NiFi version to 2.8.0
+- [UI] Replace Logs tab with Query History
+- [UI] Improve query editor UX and resource tree view
+- [UI] Remove Proxy tab from frontend
+
 ### 1.7.0
 - Add support for `OBJECT_AGG`, `QUERY_HISTORY_BY_USER`, `BOOLAND_AGG`, `BOOLOR_AGG`, `APPROX_PERCENTILE`, `LIKE`, `ILIKE`, and math functions
 - Add support for date arithmetics
