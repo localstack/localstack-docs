@@ -24,14 +24,14 @@ Start your LocalStack container using your preferred method. For more informatio
 :::note
 As an alternative to using the `azlocal` CLI, users can run:
 
-`az start-interception`
+`azlocal start-interception`
 
 This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
 To revert this configuration, run:
 
 `azlocal stop-interception`
 
-This reconfigures the `az` CLI to send commands to the official Azure management REST API. At this time, there is no full parity between `azlocal` and `az` commands after running `az start-interception`. Therefore, this technique is not fully interchangeable.
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
 :::
 
 ### Create a resource group
@@ -39,7 +39,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to contain your storage resources:
 
 ```bash
-azlocal group create \
+az group create \
   --name rg-queue-demo \
   --location westeurope
 ```
@@ -63,7 +63,7 @@ azlocal group create \
 Create a storage account in the resource group:
 
 ```bash
-azlocal storage account create \
+az storage account create \
   --name stqueuedemols \
   --resource-group rg-queue-demo \
   --location westeurope \
@@ -79,9 +79,9 @@ azlocal storage account create \
   ...
   "placement": null,
   "primaryEndpoints": {
-    "blob": "https://stqueuedemolsblob.localhost.localstack.cloud:4566",
+    "blob": "https://stqueuedemols.blob.core.azure.localhost.localstack.cloud:4566",
     ...
-    "queue": "https://stqueuedemolsqueue.localhost.localstack.cloud:4566",
+    "queue": "https://stqueuedemols.queue.core.azure.localhost.localstack.cloud:4566",
     ...
   },
   ....
@@ -97,13 +97,13 @@ There are three ways to authenticate storage queue commands against the emulator
 Retrieve the account key and pass it with `--account-name` and `--account-key`:
 
 ```bash
-ACCOUNT_KEY=$(azlocal storage account keys list \
+ACCOUNT_KEY=$(az storage account keys list \
   --account-name stqueuedemols \
   --resource-group rg-queue-demo \
   --query "[0].value" \
   --output tsv)
 
-azlocal storage queue list \
+az storage queue list \
   --account-name stqueuedemols \
   --account-key "$ACCOUNT_KEY"
 ```
@@ -113,7 +113,7 @@ azlocal storage queue list \
 Use `--auth-mode login` to authenticate with the current session credentials:
 
 ```bash
-azlocal storage queue list \
+az storage queue list \
   --account-name stqueuedemols \
   --auth-mode login
 ```
@@ -123,12 +123,12 @@ azlocal storage queue list \
 Bundle the account name and key into a single value:
 
 ```bash
-CONNECTION_STRING=$(azlocal storage account show-connection-string \
+CONNECTION_STRING=$(az storage account show-connection-string \
   --name stqueuedemols \
   --resource-group rg-queue-demo \
   --query connectionString -o tsv)
 
-azlocal storage queue list \
+az storage queue list \
   --connection-string "$CONNECTION_STRING"
 ```
 
@@ -139,7 +139,7 @@ The remaining examples in this guide use connection strings for brevity.
 Create a queue:
 
 ```bash
-azlocal storage queue create \
+az storage queue create \
   --name app-queue \
   --connection-string "$CONNECTION_STRING"
 ```
@@ -153,7 +153,7 @@ azlocal storage queue create \
 Verify the queue exists:
 
 ```bash
-azlocal storage queue exists \
+az storage queue exists \
   --name app-queue \
   --connection-string "$CONNECTION_STRING"
 ```
@@ -167,7 +167,7 @@ azlocal storage queue exists \
 List queues in the storage account:
 
 ```bash
-azlocal storage queue list \
+az storage queue list \
   --connection-string "$CONNECTION_STRING"
 ```
 
@@ -186,7 +186,7 @@ azlocal storage queue list \
 Add a message to the queue:
 
 ```bash
-azlocal storage message put \
+az storage message put \
   --queue-name app-queue \
   --content "hello-from-localstack" \
   --connection-string "$CONNECTION_STRING"
@@ -204,7 +204,7 @@ azlocal storage message put \
 Peek at messages without consuming them:
 
 ```bash
-azlocal storage message peek \
+az storage message peek \
   --queue-name app-queue \
   --connection-string "$CONNECTION_STRING"
 ```
@@ -224,7 +224,7 @@ azlocal storage message peek \
 Get (dequeue) a message from the queue, which makes it invisible to other consumers for the visibility timeout period:
 
 ```bash
-azlocal storage message get \
+az storage message get \
   --queue-name app-queue \
   --connection-string "$CONNECTION_STRING" \
   --output json
