@@ -4,7 +4,7 @@ description: Learn how to install and use the official MailHog extension.
 template: doc
 sidebar:
   order: 2
-tags: ['Free']
+tags: ['Hobby']
 ---
 
 ## Introduction
