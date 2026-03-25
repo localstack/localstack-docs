@@ -33,10 +33,17 @@ You can enrich the test reports created by your testing framework with traces an
 
 ## CI images
 
-LocalStack Docker images can be used in your CI environment by adding a [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens).
-The images are available on [Docker Hub](https://hub.docker.com/r/localstack/localstack/tags), and comprehensive documentation is available on our [Docker images](https://docs.localstack.cloud/references/docker-images/) documentation.
-Community users can use the `localstack/localstack` image, while licensed users can use the `localstack/localstack-pro` image.
-For Big Data jobs that require services such as EMR, Athena, and Glue, we provide a mono-container that uses the `localstack/localstack-pro:2.0.2-bigdata` image, which bakes in the required dependencies, such as Hadoop, Hive, Presto, into the LocalStack image.
+LocalStack CI images require a [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens) for deployment within your CI environment. 
+
+We exclusively support the [`localstack/localstack` image in Docker Hub](https://hub.docker.com/r/localstack/localstack) for all CI implementations. Detailed configuration and image specifications are available on our [Docker images](https://docs.localstack.cloud/references/docker-images/) documentation.
+
+:::note 
+**Auth Token Requirement**: Using LocalStack in a CI environment requires a valid Auth Token. Ensure your environment variables are configured to include your token to avoid authentication failures during image pull or container initialization.
+:::
+
+ can be used in your CI environment by adding a .
+The LocalStack Docker image is available on [Docker Hub](https://hub.docker.com/r/localstack/localstack/tags), and comprehensive documentation is available on our .
+
 
 ## CI integrations
 
