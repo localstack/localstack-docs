@@ -23,7 +23,7 @@ We offer special subscriptions for select segments:
 - Student, requires a verified GitHub Education student account
 - OSS project sponsorship, requires approval from LocalStack. [Applications can be submitted here]( https://www.localstack.cloud/localstack-open-source).
 
-If you purchased a LocalStack license **before May 8, 2025**, [click here to learn about your available features and legacy entitlements](#legacy-plan-usage-allocations).
+If you purchased a LocalStack license **before May 8, 2025**, [click here to learn about your available features and legacy entitlements](#legacy-plans).
 
 ### Licensing & Access Rules
 
