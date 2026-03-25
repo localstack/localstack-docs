@@ -2,7 +2,6 @@
 (function () {
   'use strict';
 
-  // Configuration object for text-to-class mappings
   const iconMappings = {
     Welcome: 'cube-icon',
     'Getting Started': 'rocket-icon',
@@ -21,103 +20,174 @@
     'Licensing & Tiers': 'pricing-icon',
   };
 
-  // Function to add classes to navigation elements based on text content
+  let sidebarRaf = 0;
+  let sidebarObserver;
+
   function addIconClassesToNavigation() {
-    // Find all navigation elements in the sidebar
     const sidebarContent = document.querySelector('.sidebar-content');
     if (!sidebarContent) {
-      console.warn('Sidebar content not found');
       return;
     }
 
-    // Look for top-level navigation items
     const topLevelNavs = sidebarContent.querySelectorAll('.top-level');
-    if (!topLevelNavs) {
-      console.warn('Top-level navigation not found');
+    if (!topLevelNavs.length) {
       return;
     }
 
-    // Find all navigation links and summary elements (for collapsible sections)
-    let navElements = [];
+    const navElements = [];
     for (const topLevelNav of topLevelNavs) {
       navElements.push(...topLevelNav.querySelectorAll('span'));
     }
 
-    navElements.forEach((element) => {
+    for (const element of navElements) {
       if (element.children && element.children.length > 0) {
-        return;
+        continue;
       }
 
-      // Get the text content, trimming whitespace
       const textContent = element.textContent.trim();
-
-      // Check if this text matches any of our mappings
-      if (iconMappings.hasOwnProperty(textContent)) {
-        const classToAdd = iconMappings[textContent];
-
-        // Add the class to the element
-        element.classList.add(classToAdd);
-
-        console.log(
-          `Added class "${classToAdd}" to element with text "${textContent}"`
-        );
+      if (!Object.prototype.hasOwnProperty.call(iconMappings, textContent)) {
+        continue;
       }
+
+      const classToAdd = iconMappings[textContent];
+      if (!element.classList.contains(classToAdd)) {
+        element.classList.add(classToAdd);
+      }
+    }
+  }
+
+  function scheduleSidebarIcons() {
+    if (sidebarRaf) {
+      cancelAnimationFrame(sidebarRaf);
+    }
+    sidebarRaf = requestAnimationFrame(function () {
+      sidebarRaf = 0;
+      addIconClassesToNavigation();
     });
   }
 
-  // Function to initialize the icon loader
-  function initIconLoader() {
-    // Run immediately if DOM is already loaded
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', addIconClassesToNavigation);
-    } else {
-      // DOM is already loaded
-      addIconClassesToNavigation();
+  let sidebarPendingObserver;
+
+  function attachSidebarObserver() {
+    if (sidebarObserver) {
+      return;
+    }
+    const sidebarContent = document.querySelector('.sidebar-content');
+    if (!sidebarContent) {
+      return;
     }
 
-    // Also run after a short delay to catch any dynamically loaded content
-    setTimeout(addIconClassesToNavigation, 500);
+    if (sidebarPendingObserver) {
+      sidebarPendingObserver.disconnect();
+      sidebarPendingObserver = null;
+    }
+
+    sidebarObserver = new MutationObserver(scheduleSidebarIcons);
+    sidebarObserver.observe(sidebarContent, {
+      childList: true,
+      subtree: true,
+    });
   }
 
-  // Start the icon loader
+  function ensureSidebarWatch() {
+    attachSidebarObserver();
+    if (sidebarObserver || sidebarPendingObserver) {
+      return;
+    }
+    sidebarPendingObserver = new MutationObserver(function () {
+      if (sidebarObserver) {
+        return;
+      }
+      requestAnimationFrame(attachSidebarObserver);
+    });
+    sidebarPendingObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+    window.setTimeout(function () {
+      if (sidebarPendingObserver) {
+        sidebarPendingObserver.disconnect();
+        sidebarPendingObserver = null;
+      }
+    }, 8000);
+  }
+
+  function initIconLoader() {
+    function run() {
+      addIconClassesToNavigation();
+      ensureSidebarWatch();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', run, { once: true });
+    } else {
+      run();
+    }
+  }
+
   initIconLoader();
 
-  // Export function for manual triggering if needed
   window.LocalStackIconLoader = {
-    refresh: addIconClassesToNavigation,
+    refresh: function () {
+      addIconClassesToNavigation();
+    },
     addMapping: function (text, className) {
       iconMappings[text] = className;
       addIconClassesToNavigation();
     },
   };
 
-  function handleDropdownNavigation() {
+  let dropdownAttached = false;
+
+  function attachDropdownOnce() {
+    if (dropdownAttached) {
+      return true;
+    }
     const leftNavSelect = document.querySelector(
       'starlight-multi-sidebar-select select'
     );
-    if (leftNavSelect) {
-      leftNavSelect.addEventListener('change', (event) => {
-        const selectedValue = event.target.value;
-        console.log('Dropdown changed to:', selectedValue);
-        
-        if (selectedValue === 'AWS') {
-          window.location.href = '/aws/';
-        } else if (selectedValue === 'Snowflake') {
-          window.location.href = '/snowflake/';
-        } else if (selectedValue === 'Azure') {
-          window.location.href = '/azure/';
-        }
-        
-        setTimeout(() => {
-          window.LocalStackIconLoader.refresh();
-        }, 100);
-      });
+    if (!leftNavSelect) {
+      return false;
     }
+    dropdownAttached = true;
+    leftNavSelect.addEventListener('change', function (event) {
+      const selectedValue = event.target.value;
+
+      if (selectedValue === 'AWS') {
+        window.location.href = '/aws/';
+      } else if (selectedValue === 'Snowflake') {
+        window.location.href = '/snowflake/';
+      } else if (selectedValue === 'Azure') {
+        window.location.href = '/azure/';
+      }
+
+      requestAnimationFrame(function () {
+        window.LocalStackIconLoader.refresh();
+      });
+    });
+    return true;
   }
+
+  function initDropdownNavigation() {
+    if (attachDropdownOnce()) {
+      return;
+    }
+    const mo = new MutationObserver(function () {
+      if (attachDropdownOnce()) {
+        mo.disconnect();
+      }
+    });
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+    window.setTimeout(function () {
+      mo.disconnect();
+    }, 8000);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', handleDropdownNavigation);
+    document.addEventListener('DOMContentLoaded', initDropdownNavigation, {
+      once: true,
+    });
   } else {
-    handleDropdownNavigation();
+    initDropdownNavigation();
   }
-  setTimeout(handleDropdownNavigation, 500);
 })();

@@ -100,7 +100,7 @@ export default defineConfig({
           attrs: {
             type: 'text/javascript',
             id: 'icon-script-loader',
-            async: true,
+            // defer only: async would win and delay/unorder execution vs parse-complete
             defer: true,
             src: '/js/icon-loader.js',
           },
