@@ -31,7 +31,7 @@ This allows us to maintain clear and consistent internal communication across al
 
 | Plan       | Tier                                                                            |
 | ---------- | ------------------------------------------------------------------------------- |
-| Free       | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
+| Hobby      | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
 | Trial      | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
 | Base       | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
 | Ultimate   | [**Priority Support**](/aws/getting-started/help-support/#priority-support)     |

@@ -12,7 +12,7 @@ tags: ["Hobby"]
 LocalStack extensions allows you to extend and customize LocalStack.
 A LocalStack extension is a Python application that runs together with LocalStack within the LocalStack container.
 
-LocalStack extensions are available across all plans, including Free, and the list of available extensions can be found in the [Extensions Library](https://app.localstack.cloud/extensions/library).
+LocalStack extensions are available across all plans, and the list of available extensions can be found in the [Extensions Library](https://app.localstack.cloud/extensions/library).
 
 ![LocalStack Extensions Library](/images/aws/extensions-library-ui.png)
 
