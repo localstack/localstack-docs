@@ -202,7 +202,7 @@ def generate_documentation(
         "template: doc",
         "sidebar:",
         "    order: 10",
-        'tags: ["Free"]',
+        'tags: ["Hobby"]',
         "---",
         "",
         "## Introduction",
