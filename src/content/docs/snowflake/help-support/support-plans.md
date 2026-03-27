@@ -95,7 +95,7 @@ Support does **not** include:
 | **Channel** | **Standard** | **Priority** | **Enterprise** |
 | --- | --- | --- | --- |
 | Slack community | ✅ | ✅ | ✅ |
-| GitHub issues | ✅ | ✅ | ✅ |
+| GitHub Discussions | ✅ | ✅ | ✅ |
 | Support email | ✅ | ✅ | ✅ |
 | Web application chat | ✅ | ✅ | ✅ |
 | Support ticketing portal |  |  | ✅ |
