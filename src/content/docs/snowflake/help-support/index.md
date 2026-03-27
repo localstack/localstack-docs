@@ -1,190 +1,37 @@
 ---
 title: Overview
-description: How to request Help & Support for LocalStack for Snowflake.
+description: How to get Help and Support for LocalStack for Snowflake.
 template: doc
 sidebar:
     order: 1
 ---
 
+LocalStac for Snowflake provides multiple support options to help you troubleshoot issues, understand features, and integrate the platform into your workflows.
 
-LocalStack provides various support channels to help users troubleshoot issues and integrate the platform into their workflows. The level of support available depends on the plan associated with your account.
+The level of support available depends on your subscription plan.
 
-Our team assists with:
+Our support team can assist with:
 
-- Troubleshooting LocalStack-specific issues
-- Feature usage and functionality questions
-- Integration guidance for using LocalStack in your application
-- Best practices for working with LocalStack services
+- Troubleshooting LocalStack-specific issues  
+- Understanding LocalStack features and functionality  
+- Integration guidance for LocalStack in your application  
+- Best practices for working with LocalStack services  
 
-For non-technical issues, such as billing or account inquiries, please contact support via [support@localstack.cloud](mailto:support@localstack.cloud).
+For non-technical inquiries, such as billing or account-related questions, contact us at [support@localstack.cloud](mailto:support@localstack.cloud).
 
-We welcome any feedback as we continue to improve LocalStack for all users.
+
+## Support options
+
+LocalStack offers different support plans with varying levels of access, response times, and communication channels.
+
+Use the following sections to find the support option that best fits your needs:
+
+- [Support Plans](../support-plans/): Compare available plans and included features.  
+- [Get Help](../get-help/): Learn which support channel to use based on your situation.  
+- [Report an Issue](../report-an-issue/): Submit a support request with the required details.  
+- [Enterprise Support](../enterprise-support/): Explore dedicated support options for enterprise customers.  
 
 :::note
-At the moment, we only provide support in `English`, as we are an international team with members from various regions. This allows us to maintain clear and consistent internal communication across all our locations.
+Support is currently provided in `English` only.  
+As an international team, this ensures clear and consistent communication across all regions.
 :::
-
-
-## Support Coverage
-
-| **Plan** | **Tier** |
-| --- | --- |
-| Trial | [**Standard Support**](https://docs.localstack.cloud/snowflake/help-support/#standard-support) |
-| Base | [**Priority Support**](https://docs.localstack.cloud/snowflake/help-support/#priority-support) |
-| Enterprise | [**Enterprise Support**](https://docs.localstack.cloud/snowflake/help-support/#enterprise-support) |
-
-
-
-## Support features
-
-| **Features** | **Standard** | **Priority** | **Enterprise** |
-| --- | --- | --- | --- |
-| LocalStack for Snowflake documentation | ✅ | ✅ | ✅ |
-| Community support | ✅ | ✅ | ✅ |
-| Operational support | ✅ | ✅ | ✅ |
-| 1v1 technical support | ✅ | ✅ | ✅ |
-| Screen sharing sessions |  | ✅ | ✅ |
-| Third-Party Tools |  | ✅ | ✅ |
-| Faster response times |  | ✅ | ✅ |
-| Real-time chat support* |  |  | ✅ |
-| Support ticketing portal |  |  | ✅ |
-| SLAs |  |  | ✅ |
-| Direct Slack connect channel |  |  | ✅ |
-| Dedicated CSM and TAM |  |  | ✅ |
-
-
-## Support channels
-
-| **Channels** | **Standard** | **Priority** | **Enterprise** |
-| --- | --- | --- | --- |
-| Slack community | ✅ | ✅ | ✅ |
-| GitHub Issues | ✅ | ✅ | ✅ |
-| Support email | ✅ | ✅ | ✅ |
-| Web Application chat | ✅ | ✅ | ✅ |
-| Ticketing portal |  |  | ✅ |
-| Slack connect channel |  |  | ✅ |
-
-
-## Support Resources
-
-Our support team comprises highly qualified experts who possess extensive expertise in Snowflake and other pertinent tools. We utilize a range of resources, including documentation, knowledge bases, and industry best practices, to provide you with accurate and reliable guidance. 
-
-However, please note that our support is provided only in `English`, and our resources are subject to availability. Therefore, our best effort support is provided asynchronously, and inquiries may be prioritized based on urgency and impact.
-
-## Support plans
-
-### Basic support
-
-Basic Support is available to all LocalStack users and includes access to documentation, community support, and account management (operational support).
-
-Community support is available through the following channels:
-
-- [LocalStack Slack Community](https://localstack.cloud/slack)
-- [GitHub Issue](https://github.com/localstack/localstack/issues/new)
-
-Note that community support is provided on a best-effort basis and is not guaranteed. Users are encouraged to help others by sharing their knowledge and experiences.
-
-#### LocalStack Slack Community
-
-LocalStack Slack Community includes LocalStack users, contributors, and maintainers. You can engage with the community of LocalStack through the `#help` channel once subscribed to the [LocalStack Slack Community](https://localstack.cloud/slack).
-
-#### GitHub Issue
-
-You can use GitHub Issue to:
-
-- [Request new features](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+feature%2Cstatus%3A+triage+needed&template=feature-request.yml&title=feature+request%3A+%3Ctitle%3E)
-- [Report existing bugs](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+bug%2Cstatus%3A+triage+needed&template=bug-report.yml&title=bug%3A+%3Ctitle%3E)
-
-Make sure to follow the issue templates and provide as much information as possible.
-
-
-### Standard support
-
-Standard support is available to users with a Trial subscription. This includes 1v1 support on a best-effort basis, without guaranteed response times. However, the support team aims to respond to inquiries within 24–48 hours during [regular business hours](https://docs.localstack.cloud/aws/getting-started/help-support/#support-business-hours).
-
-
-#### Scope
-
-Our objective is to respond to your inquiries and provide guidance on using LocalStack environment with all its features to the best of our abilities. It is important to note that our best effort support may have certain limitations.
-
-LocalStack’s usage is subject to various factors such as the complexity of your IT environment, specific integrations, and dependencies. While we strive to provide comprehensive support for LocalStack, there are certain areas that fall outside our scope:
-
-- **Third-Party Tools**: We do not offer support for third-party tools or software that integrate with or work alongside LocalStack. This includes, but is not limited to external monitoring tools, third-party plugins, development environments and build tools.
-- **Customer-Specific Code**: Our support does not extend to the custom code that customers build using LocalStack. This includes debugging, optimizing, or modifying customer-written scripts, applications, or workflows.
-- **Snowflake in Production**: We do not provide support for the deployment, management, or troubleshooting of Snowflake and it’s features in a production environment. Our focus is solely on the emulated services within LocalStack for Snowflake.
-
-#### Channels
-
-Standard support can be accessed through the following channels:
-
-- [support@localstack.cloud](mailto:support@localstack.cloud)
-- [LocalStack Web Application](https://app.localstack.cloud/?__hstc=108988063.db1b9f760546de73c4f730e19a429eb1.1767872511999.1767885552451.1767972766856.3&__hssc=108988063.1.1767972766856&__hsfp=3587568261)
-
-Providing [detailed information](https://www.notion.so/Snowflake-help-and-support-doc-2e3fc2a234318068aacdf6c1b55e434e?pvs=21) upfront helps our team respond more quickly and efficiently. After submitting, the support team will respond as soon as possible.
-
-#### LocalStack Web Application
-
-To create a support ticket:
-
-- Navigate to the [LocalStack Web Application](http://app.localstack.cloud/?__hstc=108988063.db1b9f760546de73c4f730e19a429eb1.1767872511999.1767885552451.1767972766856.3&__hssc=108988063.1.1767972766856&__hsfp=3587568261).
-- Click on the chat icon in the bottom right corner of the page.
-- Select **Technical Question** from the menu.
-- Fill in the required details and send your message.
-
-### Priority support
-
-Priority support is available for users with active Base LocalStack for Snowflake subscription, offering dedicated 1v1 assistance and fast response times:
-
-- **First response**: within 24 hours
-- **Follow-up responses:** within 24 hours
-
-Please note that all responses are provided during our normal operating hours. While we strive to respond within a 24-hour timeframe, we cannot guarantee that every response will meet this timeline.
-
-#### Scope
-
-As part of our Priority support plan, we offer limited support for third-party tools that integrate with LocalStack. This support is provided on a best-effort basis and covers tools that are officially supported and mentioned in our documentation.
-
-We aim to enhance your development experience by assisting with the integration and basic troubleshooting of these tools. While we strive to provide comprehensive assistance, there are certain limitations to our third-party tools support:
-
-- **Best Effort Basis:** Support for third-party tools is provided on a best-effort basis, meaning that while we will do our utmost to assist, we cannot guarantee resolution for all issues.
-- **Officially Supported Tools Only:** Our support is limited to officially integrated third-party tools with LocalStack. For other tools, we recommend consulting the tool’s official support channels or resources.
-- **Basic Troubleshooting:** Our support focuses on basic troubleshooting and integration guidance. We do not provide in-depth support for advanced configurations, customizations, or optimization of third-party tools.
-
-## Screen sharing sessions**
-
-To enhance issue identification and provide a more efficient troubleshooting experience, our support engineers may offer scheduled live screen sharing sessions. During these sessions, our support engineers can directly observe and diagnose the issues you are encountering, ensuring a quicker and more effective resolution.
-
-## Enterprise support
-
-To learn more about the support available to **Enterprise** plan users, refer to our [Enterprise Support Guide](https://docs.localstack.cloud/snowflake/help-support/enterprise-support).
-
-
-## Support Business Hours
-
-Our support team operates in the CET and ET timezone, Monday to Friday, from 6 AM to 9 PM UTC, excluding the following holidays:
-
-- January 1st,
-- May 1st,
-- November 1st,
-- December 24th, 25th and 31st
-
-## Troubleshooting Guidelines
-
-In case you encounter any issues with LocalStack for Snowflake, follow these troubleshooting guidelines:
-
-- Review the documentation and FAQs for possible solutions.
-- Check the system requirements to ensure compatibility.
-- Verify the configuration settings against the documentation.
-- Consult the error logs for any relevant error messages or warnings.
-- Seek guidance from the community through the user forum.
-
-## Reporting an issue
-
-To speed up the issue identification and resolution, we kindly ask you to provide the following information when reaching out: 
-
-- Snowflake emulator container logs with 
-the environment variables `SF_LOG=trace` and `DEBUG=1` enabled
-- The query that triggered the issue (Optional, but helpful)
-- Client tool or driver used
-- Connection parameters (excluding sensitive information)
-- Client tool or driver logs if available
