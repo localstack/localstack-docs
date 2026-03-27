@@ -25,9 +25,9 @@ LocalStack offers different support plans with varying levels of access, respons
 
 Use the following sections to find the support option that best fits your needs:
 
-- [Support Plans](/snowflake/help-support/support-plans/): Compare available plans and included features.
 - [Get Help](/snowflake/help-support/get-help/): Learn which support channel to use based on your situation.
 - [Report an Issue](/snowflake/help-support/report-issue/): Submit a support request with the required details.
+- [Support Plans](/snowflake/help-support/support-plans/): Compare available plans and included features.
 - [Enterprise Support](/snowflake/help-support/enterprise-support/): Explore dedicated support options for enterprise customers.
 
 :::note
