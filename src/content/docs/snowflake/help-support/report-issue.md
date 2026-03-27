@@ -62,16 +62,6 @@ You can report an issue using one of the following methods:
 Send your request to [support@localstack.cloud](mailto:support@localstack.cloud).
 
 
-### GitHub Issues
-
-For bugs and feature requests, you can also use GitHub:
-
-- [Report a bug](https://github.com/localstack/localstack/issues/new?template=bug-report.yml)  
-- [Request a feature](https://github.com/localstack/localstack/issues/new?template=feature-request.yml)  
-
-Make sure to follow the issue templates and include as much detail as possible.
-
-
 ## What happens next
 
 After submitting your request:
