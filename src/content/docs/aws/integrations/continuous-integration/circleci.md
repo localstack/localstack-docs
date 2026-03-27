@@ -19,6 +19,8 @@ This guide shows how to run LocalStack in CircleCI using the LocalStack Docker i
 
 ```yaml showshowLineNumbers
 version: '2.1'
+orbs:
+  python: circleci/python@4.0.0
 jobs:
   localstack-test:
     machine:
@@ -27,10 +29,14 @@ jobs:
       - checkout
       - run:
           name: Install LocalStack CLI and awslocal
-          command: python3 -m pip install localstack awscli-local[ver1]
+          command: |
+            python3 -m pip install --user --upgrade pip
+            python3 -m pip install --user localstack awscli-local[ver1]
+            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
       - run:
           name: Start LocalStack
           command: |
+            source "$BASH_ENV"
             docker pull localstack/localstack:latest
             localstack start -d
             localstack wait -t 60
@@ -49,6 +55,8 @@ workflows:
 
 ```yaml showshowLineNumbers
 version: '2.1'
+orbs:
+  python: circleci/python@4.0.0
 jobs:
   localstack-test:
     machine:
@@ -57,15 +65,20 @@ jobs:
       - checkout
       - run:
           name: Install LocalStack CLI and awslocal
-          command: python3 -m pip install localstack awscli-local[ver1]
+          command: |
+            python3 -m pip install --user --upgrade pip
+            python3 -m pip install --user localstack awscli-local[ver1]
+            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
       - run:
           name: Start LocalStack in background
           command: |
+            source "$BASH_ENV"
             docker pull localstack/localstack:latest
             localstack start -d
       - run:
           name: Execute setup and tests
           command: |
+            source "$BASH_ENV"
             localstack wait -t 60
             awslocal sqs create-queue --queue-name test-queue
             awslocal sqs list-queues
@@ -129,24 +142,27 @@ To add the CI Auth Token to your CircleCI project, follow these steps:
 - Paste your CI Auth Token into the input field.
 
 After adding the variable, CircleCI injects `LOCALSTACK_AUTH_TOKEN` into your job environment.
-The following example maps it explicitly at the job level and starts LocalStack.
 
 ```yaml showshowLineNumbers
 version: '2.1'
+orbs:
+  python: circleci/python@4.0.0
 jobs:
   localstack-test:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
     steps:
       - checkout
       - run:
           name: Install LocalStack CLI and awslocal
-          command: python3 -m pip install localstack awscli-local[ver1]
+          command: |
+            python3 -m pip install --user --upgrade pip
+            python3 -m pip install --user localstack awscli-local[ver1]
+            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
       - run:
           name: Start LocalStack
           command: |
+            source "$BASH_ENV"
             docker pull localstack/localstack:latest
             localstack start -d
             localstack wait -t 60
@@ -188,7 +204,6 @@ _Note: For best result we recommend to use a combination of the below techniques
 #### Cloud Pods
 
 Cloud Pods providing an easy solution to persist LocalStack's state, even between workflows or projects.
-Add `LOCALSTACK_AUTH_TOKEN` to every job that starts LocalStack when using Cloud Pods.
 
 Find more information about [Cloud Pods](/aws/capabilities/state-management/cloud-pods).
 
@@ -204,8 +219,7 @@ jobs:
   localstack-update-cloud-pod:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
+
     steps:
       - run: python3 -m pip install localstack awscli-local[ver1]
       - run: |
@@ -238,8 +252,7 @@ jobs:
   localstack-use-cloud-pod:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
+
     steps:
       - run: python3 -m pip install localstack awscli-local[ver1]
       - run: |
@@ -286,8 +299,7 @@ jobs:
   localstack-update-state:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
+
     steps:
       - run: python3 -m pip install localstack awscli-local[ver1]
       - run: |
@@ -318,8 +330,7 @@ jobs:
   localstack-use-state:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
+
     steps:
       - run: python3 -m pip install localstack awscli-local[ver1]
       - run: |
@@ -362,8 +373,6 @@ jobs:
   do-work:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
     steps:
       - run:
           name: Create Ephemeral Instance
@@ -399,8 +408,6 @@ jobs:
   setup-instance:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
     steps:
       - run:
           name: Create Ephemeral Instance
@@ -428,8 +435,6 @@ jobs:
   run-test:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
     steps:
       - attach_workspace:
           at: .
@@ -470,8 +475,6 @@ jobs:
   localstack-save-state:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
     steps:
       - run: python3 -m pip install localstack awscli-local[ver1]
       - run: |
@@ -494,8 +497,6 @@ jobs:
   localstack-load-state:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
     steps:
       - run: python3 -m pip install localstack awscli-local[ver1]
       - run: |
@@ -531,8 +532,6 @@ jobs:
   localstack-update-state:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
     steps:
       - run: python3 -m pip install localstack awscli-local[ver1]
       - run: |
@@ -561,8 +560,6 @@ jobs:
   localstack-do-work:
     machine:
       image: ubuntu-2204:current
-    environment:
-      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN}
     steps:
       - run: python3 -m pip install localstack awscli-local[ver1]
       - run: |
