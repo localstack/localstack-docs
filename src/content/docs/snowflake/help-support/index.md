@@ -28,7 +28,7 @@ Use the following sections to find the support option that best fits your needs:
 
 - [Support Plans](/snowflake/help-support/support-plans/): Compare available plans and included features.  
 - [Get Help](/snowflake/help-support/get-help/): Learn which support channel to use based on your situation.  
-- [Report an Issue](/snowflake/help-support/report-an-issue/): Submit a support request with the required details.  
+- [Report an Issue](/snowflake/help-support/report-issue/): Submit a support request with the required details.  
 - [Enterprise Support](/snowflake/help-support/enterprise-support/): Explore dedicated support options for enterprise customers.  
 
 :::note
