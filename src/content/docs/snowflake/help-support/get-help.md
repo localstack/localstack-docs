@@ -29,30 +29,19 @@ Best for:
 Community support is provided on a best-effort basis and is not guaranteed.
 :::
 
-
-### GitHub Issues
-
-Use [GitHub Issues](https://github.com/localstack/localstack/issues/new) for:
-
-- Reporting bugs  
-- Requesting new features  
-
-Best for:
-- Reproducible issues  
-- Tracking known problems or feature requests  
-
-Make sure to follow the issue templates and include as much detail as possible.
-
-
 ### Support email
 
 Contact [support@localstack.cloud](mailto:support@localstack.cloud) for:
 
+- Reporting bugs  
+- Requesting new features 
 - Technical questions  
 - Account-related inquiries  
 - Issues requiring direct support  
 
 Best for:
+- Reproducible issues  
+- Tracking known problems or feature requests 
 - Ongoing issues that require follow-up  
 - Questions that are not suited for public channels  
 
