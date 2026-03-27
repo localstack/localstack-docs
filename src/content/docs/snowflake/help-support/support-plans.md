@@ -107,8 +107,7 @@ Support does **not** include:
 Support is available:
 
 - Monday to Friday  
-- 6:00 AM – 9:00 PM UTC  
-- CET and ET time zones  
+- 6:00 AM – 9:00 PM UTC , CET, and ET time zones  
 
 Excludes:
 
