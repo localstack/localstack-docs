@@ -3,7 +3,7 @@ title: Support Plans
 description: Compare LocalStack support plans, features, and response expectations.
 template: doc
 sidebar:
-    order: 1
+    order: 3
 ---
 
 LocalStack offers multiple support plans with different levels of access, response times, and communication channels.

@@ -3,7 +3,7 @@ title: Get Help
 description: Choose the right support channel for your LocalStack issue or question.
 template: doc
 sidebar:
-    order: 2
+    order: 1
 ---
 
 If you need help with LocalStack, choosing the right support channel can help you get a faster and more effective response.

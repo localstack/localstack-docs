@@ -3,7 +3,7 @@ title: Report an Issue
 description: Submit a support request with the right information to help resolve your issue faster.
 template: doc
 sidebar:
-    order: 3
+    order: 2
 ---
 
 If you’re experiencing an issue with LocalStack for Snowflake, providing clear and complete information helps our team identify and resolve the problem more quickly.
