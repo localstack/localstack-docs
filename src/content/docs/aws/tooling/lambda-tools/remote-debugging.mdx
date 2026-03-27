@@ -4,7 +4,7 @@ description: Attach a debugger to your Lambda functions from within your IDE.
 template: doc
 sidebar:
     order: 3
-tags: ["Free"]
+tags: ["Hobby"]
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
@@ -48,7 +48,7 @@ This guide describes how to use the AWS Toolkit for VS Code to debug Lambda func
 * [LocalStack Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=LocalStack.localstack) (>= v1.2.0)
 * [Docker](https://www.docker.com/)
 * A valid LocalStack Auth Token. Sign up for a [free LocalStack account](https://app.localstack.cloud/sign-up).
-* A valid **auth token** with an assigned **Free Tier or higher license**.
+* A valid **auth token** 
 * VS Code running on the **same machine** as LocalStack (container-based setups like Kubernetes are not yet supported).
 
 ### Setup Steps
@@ -159,12 +159,12 @@ UnsupportedLocalStackVersion: Your current LocalStack version does not support L
 
 Here's how to fix it:
 
-1. Make sure you are running **LocalStack Pro >= v4.8.0**
+1. Make sure you are running **LocalStack for AWS >= v4.8.0**
 
    ```bash
    docker pull localstack/localstack-pro:latest
    ```
-2. Ensure your **auth token is valid** and has an **assigned license** (Free Tier or higher).
+2. Ensure your **auth token is valid** and has an **assigned license**.
 
    * You can re-run the **LocalStack Setup Wizard** in VS Code to verify.
    * Or log into [app.localstack.cloud](https://app.localstack.cloud) and check your token and [license status](https://docs.localstack.cloud/aws/licensing/).
@@ -229,7 +229,7 @@ localstack start --volume /path/to/debug-config.yaml:/tmp/lambda_debug_mode_conf
 services:
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
-    image: localstack/localstack-pro  # required for Pro
+    image: localstack/localstack-pro
     ports:
       - "127.0.0.1:4566:4566"            # LocalStack Gateway
       - "127.0.0.1:4510-4559:4510-4559"  # external services port range

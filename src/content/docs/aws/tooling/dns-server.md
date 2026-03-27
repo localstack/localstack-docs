@@ -2,7 +2,7 @@
 title: DNS Server
 description: Use LocalStack as DNS server to resolve AWS queries to LocalStack.
 template: doc
-tags: ["Free"]
+tags: ["Hobby"]
 ---
 
 LocalStack includes a DNS server that enables seamless connectivity to LocalStack from different environments using `localhost.localstack.cloud`.
@@ -12,7 +12,7 @@ This configuration happens automatically for containers created by LocalStack, i
 Your container can be configured to use the DNS server as demonstrated in the [Network Troubleshooting guide](/aws/capabilities/networking/accessing-endpoint-url/#from-the-same-computer).
 If you wish to use the DNS server on your host system, follow the instructions under [System DNS configuration](#system-dns-configuration).
 
-LocalStack Pro additionally offers [Transparent Endpoint Injection](/aws/capabilities/networking/transparent-endpoint-injection/) (active by default),
+LocalStack for AWS additionally offers [Transparent Endpoint Injection](/aws/capabilities/networking/transparent-endpoint-injection/) (active by default),
 which enables seamless connectivity to LocalStack without changing your application code targeting AWS.
 The DNS server resolves AWS domains such as `*.amazonaws.com` including subdomains to the LocalStack container.
 Therefore, your application seamlessly accesses the LocalStack APIs instead of the real AWS APIs.
@@ -183,7 +183,7 @@ On many modern systemd-based distributions, like Ubuntu, systemd-resolved is use
 LocalStack provides a CLI command for exactly this scenario.
 To use systemd-resolved and the LocalStack domain resolution, try the following steps.
 
-Start LocalStack Pro with `DNS_ADDRESS=127.0.0.1` as environment variable.
+Start LocalStack for AWS with `DNS_ADDRESS=127.0.0.1` as environment variable.
 This makes LocalStack bind port 53 on 127.0.0.1, whereas systemd-resolved binds its stub resolver to 127.0.0.53:53, which prevents a conflict.
 Once LocalStack is started, you can test the DNS server using `dig @127.0.0.1 s3.amazonaws.com` versus `dig @127.0.0.53 s3.amazonaws.com`, the former should return an A record `127.0.0.1`, the latter the real AWS DNS result.
 

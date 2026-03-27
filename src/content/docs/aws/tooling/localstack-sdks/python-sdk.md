@@ -4,7 +4,7 @@ description: Use the LocalStack SDK for Python.
 template: doc
 sidebar:
     order: 3
-tags: ["Free"]
+tags: ["Hobby"]
 ---
 
 ## Introduction

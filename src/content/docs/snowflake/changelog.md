@@ -7,6 +7,31 @@ editUrl: false
 
 The LocalStack for Snowflake changelog tracks updates to LocalStack’s Snowflake support, including new features, enhancements, and compatibility fixes. Stay up to date on changes across official versioned releases of LocalStack’s Snowflake support.
 
+:::note
+Starting with the end-of-March 2026 release, LocalStack for Snowflake follows [calendar versioning](https://calver.org/) in the `YYYY.MM.patch` format.
+
+For example, `2026.03.0` is the initial March 2026 release.
+:::
+
+### 2026.03.0
+- Add support for `GET_DDL` for tables, views, and databases
+- Add support for `FULL JOIN` and complex join conditions
+- Add support for looping constructs (`WHILE`, `LOOP`, `FOR`, `REPEAT`) in Snowflake scripting
+- Add support for custom `EXCEPTION` handling, `RAISE`, and `SQLERRM/SQLSTATE/SQLCODE`
+- Add support for 50+ functions including `HLL`, `APPROX_TOP_K`, `REGEXP_SUBSTR_ALL`, and `JAROWINKLER_SIMILARITY`
+- Add support for encryption (`ENCRYPT_RAW`) and compression (`COMPRESS`) functions
+- Add support for stage metadata and URL functions (`BUILD_STAGE_FILE_URL`, `FL_GET_SIZE`, etc.)
+- Add support for `SHOW/UNSET VARIABLES` and session variable management
+- Add initial support for `CREATE DYNAMIC ICEBERG TABLE`
+- Support `CTAS` with inline column constraints (`NOT NULL`, `PRIMARY KEY`)
+- Support nested `DECLARE` blocks and `IDENTIFIER()` references in stored procedures
+- Support `INSERT INTO ... (SELECT ...)` with parenthesized subqueries
+- Enhance Web App with Monaco SQL editor, Query History, and hierarchical Resource Tree
+- Enhance `CALL` parsing and `EXECUTE AS OWNER/CALLER` parity
+- Enhance performance for `DATASKETCHES_HLL` on large datasets
+- Improve Snowpipe latency for large JSON uploads
+- Fix dropping of dependent views when dropping tables
+
 ### 1.7.0
 - Add support for `OBJECT_AGG`, `QUERY_HISTORY_BY_USER`, `BOOLAND_AGG`, `BOOLOR_AGG`, `APPROX_PERCENTILE`, `LIKE`, `ILIKE`, and math functions
 - Add support for date arithmetics

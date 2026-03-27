@@ -40,22 +40,10 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
   const extractCleanMarkdown = (element: Element): string => {
     const lines: string[] = [];
     
-    const processNode = (node: Node, depth: number = 0): void => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.textContent?.trim();
-        if (text) {
-          lines.push(text);
-        }
-        return;
-      }
-      
-      if (node.nodeType !== Node.ELEMENT_NODE) return;
-      
-      const el = node as Element;
+    // Helper to check if element should be skipped
+    const shouldSkip = (el: Element): boolean => {
       const tagName = el.tagName.toLowerCase();
-      
-      // Skip unwanted elements
-      if (
+      return (
         el.classList.contains('sl-banner') ||
         el.classList.contains('copy-page-dropdown') ||
         el.classList.contains('pagination-links') ||
@@ -76,22 +64,181 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
         tagName === 'textarea' ||
         tagName === 'svg' ||
         el.getAttribute('aria-hidden') === 'true' ||
-        // Skip "Section titled" links and "Edit page" links
         (tagName === 'a' && el.textContent?.includes('Section titled')) ||
         (tagName === 'a' && el.textContent?.includes('Edit page'))
-      ) {
+      );
+    };
+
+    // Helper to extract inline content with formatting preserved
+    const extractInlineContent = (node: Node): string => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent || '';
+      }
+      
+      if (node.nodeType !== Node.ELEMENT_NODE) return '';
+      
+      const el = node as Element;
+      const tagName = el.tagName.toLowerCase();
+      
+      if (shouldSkip(el)) return '';
+      
+      // Handle images (including those in custom elements like starlight-image-zoom)
+      if (tagName === 'img') {
+        const alt = el.getAttribute('alt') || '';
+        const src = el.getAttribute('src') || '';
+        if (src) {
+          const fullUrl = src.startsWith('http') ? src : `https://docs.localstack.cloud${src}`;
+          return `\n\n![${alt}](${fullUrl})\n\n`;
+        }
+        return '';
+      }
+      
+      // Handle inline code
+      if (tagName === 'code' && !el.closest('pre')) {
+        return `\`${el.textContent}\``;
+      }
+      
+      // Handle bold/strong
+      if (tagName === 'strong' || tagName === 'b') {
+        const innerContent = Array.from(el.childNodes).map(extractInlineContent).join('');
+        return `**${innerContent}**`;
+      }
+      
+      // Handle italic/emphasis
+      if (tagName === 'em' || tagName === 'i') {
+        const innerContent = Array.from(el.childNodes).map(extractInlineContent).join('');
+        return `*${innerContent}*`;
+      }
+      
+      // Handle links
+      if (tagName === 'a' && !el.textContent?.includes('Section titled')) {
+        const href = el.getAttribute('href');
+        const innerContent = Array.from(el.childNodes).map(extractInlineContent).join('');
+        if (innerContent && href && !href.startsWith('#')) {
+          // Clean URL by removing tracking parameters
+          let cleanUrl = href.startsWith('http') ? href : `https://docs.localstack.cloud${href}`;
+          try {
+            const url = new URL(cleanUrl);
+            // Remove common tracking parameters
+            ['__hstc', '__hssc', '__hsfp', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
+              url.searchParams.delete(param);
+            });
+            cleanUrl = url.toString();
+          } catch (e) {
+            // If URL parsing fails, use the original
+          }
+          return `[${innerContent}](${cleanUrl})`;
+        }
+        return innerContent;
+      }
+      
+      // Handle line breaks
+      if (tagName === 'br') {
+        return '\n';
+      }
+      
+      // For other inline elements, just extract children
+      return Array.from(el.childNodes).map(extractInlineContent).join('');
+    };
+    
+    // Helper to process list items recursively
+    const processListItem = (li: Element, prefix: string, indentLevel: number): string[] => {
+      const result: string[] = [];
+      const indent = '  '.repeat(indentLevel);
+      let mainContent = '';
+      let nestedLists: Element[] = [];
+      
+      // Separate main content from nested lists
+      li.childNodes.forEach(child => {
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          const el = child as Element;
+          const tagName = el.tagName.toLowerCase();
+          if (tagName === 'ul' || tagName === 'ol') {
+            nestedLists.push(el);
+          } else {
+            mainContent += extractInlineContent(child);
+          }
+        } else {
+          mainContent += extractInlineContent(child);
+        }
+      });
+      
+      // Clean up main content
+      mainContent = mainContent.trim().replace(/\s+/g, ' ');
+      
+      if (mainContent) {
+        result.push(`${indent}${prefix} ${mainContent}`);
+      }
+      
+      // Process nested lists
+      nestedLists.forEach(nestedList => {
+        const nestedTagName = nestedList.tagName.toLowerCase();
+        const nestedItems = nestedList.querySelectorAll(':scope > li');
+        nestedItems.forEach((nestedLi, idx) => {
+          const nestedPrefix = nestedTagName === 'ol' ? `${idx + 1}.` : '-';
+          result.push(...processListItem(nestedLi, nestedPrefix, indentLevel + 1));
+        });
+      });
+      
+      return result;
+    };
+
+    const processNode = (node: Node, depth: number = 0): void => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        // Only add standalone text if it has meaningful content
+        const text = node.textContent?.trim();
+        if (text && node.parentElement?.tagName.toLowerCase() === 'main') {
+          lines.push(text);
+        }
         return;
       }
+      
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      
+      const el = node as Element;
+      const tagName = el.tagName.toLowerCase();
+      
+      if (shouldSkip(el)) return;
       
       // Handle headings
       if (/^h[1-6]$/.test(tagName)) {
         const level = parseInt(tagName[1]);
         const prefix = '#'.repeat(level);
-        const text = el.textContent?.replace(/Section titled "[^"]*"/g, '').trim();
+        const text = extractInlineContent(el).replace(/Section titled "[^"]*"/g, '').trim();
         if (text) {
           lines.push('');
           lines.push(`${prefix} ${text}`);
           lines.push('');
+        }
+        return;
+      }
+      
+      // Handle images
+      if (tagName === 'img') {
+        const alt = el.getAttribute('alt') || '';
+        const src = el.getAttribute('src') || '';
+        if (src) {
+          // Make relative URLs absolute
+          const fullUrl = src.startsWith('http') ? src : `https://docs.localstack.cloud${src}`;
+          lines.push('');
+          lines.push(`![${alt}](${fullUrl})`);
+          lines.push('');
+        }
+        return;
+      }
+      
+      // Handle figure elements (which often wrap images)
+      if (tagName === 'figure') {
+        const img = el.querySelector('img');
+        if (img) {
+          const alt = img.getAttribute('alt') || '';
+          const src = img.getAttribute('src') || '';
+          if (src) {
+            const fullUrl = src.startsWith('http') ? src : `https://docs.localstack.cloud${src}`;
+            lines.push('');
+            lines.push(`![${alt}](${fullUrl})`);
+            lines.push('');
+          }
         }
         return;
       }
@@ -101,7 +248,6 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
         const codeEl = el.querySelector('code');
         if (codeEl) {
           const code = codeEl.textContent?.trim() || '';
-          // Try to detect language from class
           const langClass = Array.from(codeEl.classList).find(c => c.startsWith('language-'));
           const lang = langClass ? langClass.replace('language-', '') : '';
           lines.push('');
@@ -113,22 +259,10 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
         return;
       }
       
-      // Handle inline code
+      // Handle inline code (standalone)
       if (tagName === 'code' && !el.closest('pre')) {
         lines.push(`\`${el.textContent}\``);
         return;
-      }
-      
-      // Handle links
-      if (tagName === 'a' && !el.textContent?.includes('Section titled')) {
-        const href = el.getAttribute('href');
-        const text = el.textContent?.trim();
-        if (text && href && !href.startsWith('#')) {
-          // Make relative URLs absolute
-          const fullUrl = href.startsWith('http') ? href : `https://docs.localstack.cloud${href}`;
-          lines.push(`[${text}](${fullUrl})`);
-          return;
-        }
       }
       
       // Handle lists
@@ -137,10 +271,8 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
         const items = el.querySelectorAll(':scope > li');
         items.forEach((li, idx) => {
           const prefix = tagName === 'ol' ? `${idx + 1}.` : '-';
-          const text = li.textContent?.trim();
-          if (text) {
-            lines.push(`${prefix} ${text}`);
-          }
+          const listLines = processListItem(li, prefix, 0);
+          lines.push(...listLines);
         });
         lines.push('');
         return;
@@ -148,10 +280,23 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
       
       // Handle paragraphs
       if (tagName === 'p') {
-        const text = el.textContent?.trim();
-        if (text) {
+        const content = extractInlineContent(el).trim();
+        if (content) {
           lines.push('');
-          lines.push(text);
+          lines.push(content);
+        }
+        return;
+      }
+      
+      // Handle blockquotes
+      if (tagName === 'blockquote') {
+        const content = extractInlineContent(el).trim();
+        if (content) {
+          lines.push('');
+          content.split('\n').forEach(line => {
+            lines.push(`> ${line}`);
+          });
+          lines.push('');
         }
         return;
       }
@@ -162,7 +307,7 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
         const rows = el.querySelectorAll('tr');
         rows.forEach((row, rowIdx) => {
           const cells = row.querySelectorAll('th, td');
-          const cellTexts = Array.from(cells).map(cell => cell.textContent?.trim() || '');
+          const cellTexts = Array.from(cells).map(cell => extractInlineContent(cell).trim() || '');
           lines.push('| ' + cellTexts.join(' | ') + ' |');
           if (rowIdx === 0) {
             lines.push('| ' + cellTexts.map(() => '---').join(' | ') + ' |');
@@ -172,7 +317,15 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
         return;
       }
       
-      // Recursively process children for other elements
+      // Handle horizontal rules
+      if (tagName === 'hr') {
+        lines.push('');
+        lines.push('---');
+        lines.push('');
+        return;
+      }
+      
+      // Recursively process children for other elements (div, section, article, etc.)
       el.childNodes.forEach(child => processNode(child, depth + 1));
     };
     

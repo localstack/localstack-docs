@@ -37,8 +37,8 @@ This approach simplifies the development and testing cycle, making it more effic
 
 For this tutorial, you will need:
 
-- [LocalStack Pro](/aws/getting-started/auth-token) to emulate the AWS services and to use LocalStack Extensions.
-  If you don't have LocalStack Pro yet, you can sign up on our [webapp](https://app.localstack.cloud) to get a trial license for free.
+- [LocalStack for AWS](/aws/getting-started/auth-token) to emulate the AWS services and to use LocalStack Extensions.
+  If you don't have LocalStack for AWS yet, you can sign up on our [webapp](https://app.localstack.cloud) to get a trial license for free.
 - [Docker](https://docker.io/)
 - [LocalStack CLI](/aws/getting-started/installation)
 - [AWS CLI](https://aws.amazon.com/cli/)
@@ -105,7 +105,7 @@ services:
             - "127.0.0.1:4510-4559:4510-4559"  # external services port range
             - "127.0.0.1:443:443"              # LocalStack HTTPS Gateway (Pro)
         environment:
-            # Activate LocalStack Pro: https://docs.localstack.cloud/getting-started/auth-token/
+            # Activate LocalStack for AWS: https://docs.localstack.cloud/getting-started/auth-token/
             - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}  # required for Pro
             # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
             - DEBUG=1
@@ -119,7 +119,7 @@ services:
 ```
 
 Environment Variables:
-- **LOCALSTACK_AUTH_TOKEN**: Required for using LocalStack Pro.
+- **LOCALSTACK_AUTH_TOKEN**: Required for using LocalStack for AWS.
 - **DEBUG**: Set to 1 to enable verbose logging of the container.
 - **EXTENSION_AUTO_INSTALL**: Automatically installs specified LocalStack [extensions](/aws/tooling/extensions/), in this case, `localstack-extension-terraform-init` which allows Terraform files to be directly used as init hooks.
 

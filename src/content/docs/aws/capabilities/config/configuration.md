@@ -28,7 +28,6 @@ Options that affect the core LocalStack system.
 | - | - | - |
 | `DEBUG` | `0` (default) \|`1`| Flag to increase log level and print more verbose logs (useful for troubleshooting issues)|
 | `IMAGE_NAME`| `localstack/localstack` (default), `localstack/localstack:0.11.0` | Specific name and tag of LocalStack Docker image to use.|
-| `GATEWAY_LISTEN`| `0.0.0.0:4566` (default in Docker mode) `127.0.0.1:4566` (default in host mode) | Configures the bind addresses of LocalStack. It has the form `<ip address>:<port>(,<ip address>:<port>)*`. LocalStack Pro adds port `443`. |
 | `LOCALSTACK_HOST`| `localhost.localstack.cloud:4566` (default) | This is interpolated into URLs and addresses that are returned by LocalStack. It has the form `<hostname>:<port>`. |
 | `USE_SSL` | `0` (default) | Whether to return URLs using HTTP (`0`) or HTTPS (`1`). Changed with 3.0.0. In earlier versions this was toggling SSL support on or off. |
 | `PERSISTENCE` | `0` (default) | Enable persistence. See [Persistence Mechanism](/aws/capabilities/state-management/persistence) and [Filesystem Layout](/aws/capabilities/config/filesystem). |
@@ -182,7 +181,7 @@ This section covers configuration options that are specific to certain AWS servi
 | - | - | - |
 | `EC2_DOCKER_FLAGS` | `--privileged` | Additional flags passed to Docker when launching containerized instances. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 | `EC2_DOCKER_INIT` | `0`\|`1` (default) | Start container instances with docker-init system, learn more [here](https://docs.docker.com/reference/cli/docker/container/run/#init). Disable this if you want to use a custom init system. |
-| `EC2_DOWNLOAD_DEFAULT_IMAGES` | `0`\|`1` (default) | At startup, LocalStack Pro downloads latest Ubuntu images from Docker Hub for use as AMIs. This can be disabled for security reasons. |
+| `EC2_DOWNLOAD_DEFAULT_IMAGES` | `0`\|`1` (default) | At startup, LocalStack for AWS downloads latest Ubuntu images from Docker Hub for use as AMIs. This can be disabled for security reasons. |
 | `EC2_EBS_MAX_VOLUME_SIZE` | `1000` (default) | Maximum size (in MiBs) of user-specified EBS block devices mounted into EC2 container instances. |
 | `EC2_HYPERVISOR_URI` | `qemu:///system` (default) | [Libvirt connection URI](https://libvirt.org/uri.html#remote-uris) that indicates the hypervisor host. Only QEMU drivers are supported at this time. |
 | `EC2_LIBVIRT_NETWORK` | `default` (default) | Name of the Libvirt network to use for all instances when using the Libvirt VM manager. |
@@ -190,7 +189,7 @@ This section covers configuration options that are specific to certain AWS servi
 | `EC2_MOUNT_BLOCK_DEVICES` | `1`\|`0` (default) | Whether to create and mount user-specified EBS block devices into EC2 container instances. |
 | `EC2_REFERENCE_DOMAIN` | `my-template-vm` | Name of a shut-off Libvirt domain whose configuration will be cloned for all new VMs created by LocalStack. If unset or the domain is not found/not shut-off, LocalStack uses a generic configuration. |
 | `EC2_REMOVE_CONTAINERS` | `0`\|`1` (default) | Controls whether created Docker containers are removed at instance termination or LocalStack shuts down. Disable this if there is a need to examine the container filesystem for debugging. |
-| `EC2_VM_MANAGER` | `docker`(default)\|`libvirt`\|`mock` | Emulation method to use in LocalStack Pro. This option is not available in LocalStack community. |
+| `EC2_VM_MANAGER` | `docker`(default)\|`libvirt`\|`mock` | Emulation method to use in LocalStack for AWS. |
 
 ### EKS
 
@@ -461,13 +460,13 @@ To learn more about these configuration options, see [DNS Server](/aws/tooling/d
 | - | - | - |
 | `DISABLE_TRANSPARENT_ENDPOINT_INJECTION` | `0` (default in Pro) \| `1` | Whether to disable DNS resolution of AWS hostnames to the LocalStack container. Pro feature. (see [Transparent Endpoint Injection](/aws/capabilities/networking/transparent-endpoint-injection))
 
-## LocalStack Pro
+## LocalStack for AWS
 
 | Variable             | Example Values | Description |
 |----------------------|----------------|-------------|
 | `ACTIVATE_PRO`       | `0` \| `1`&nbsp;(default)    | Whether Pro should be activated or not. This is set to true by default if using the `localstack/localstack-pro` container image. If set to `1`, LocalStack will fail to start if the license key activation did not work. If set to `0`, an attempt is made to start LocalStack without Pro features. |
-| `LOCALSTACK_AUTH_TOKEN` |             | [Auth token](/aws/getting-started/auth-token) to activate LocalStack Pro. |
-| `LOCALSTACK_API_KEY` |                | **Deprecated since 3.0.0** API key to activate LocalStack Pro.<br/> **Use the `LOCALSTACK_AUTH_TOKEN` instead (except for [CI environments](/aws/integrations/continuous-integration/)).** |
+| `LOCALSTACK_AUTH_TOKEN` |             | [Auth token](/aws/getting-started/auth-token) to activate LocalStack for AWS. |
+| `LOCALSTACK_API_KEY` |                | **Deprecated since 3.0.0** API key to activate LocalStack for AWS.<br/> **Use the `LOCALSTACK_AUTH_TOKEN` instead (except for [CI environments](/aws/integrations/continuous-integration/)).** |
 | `LOG_LICENSE_ISSUES` | `0` \| `1`&nbsp;(default)    | Whether to log issues with the license activation to the console. |
 
 ## Legacy
@@ -484,7 +483,7 @@ These configurations have already been removed and **won't have any effect** on 
 | `PROVIDER_OVERRIDE_STEPFUNCTIONS` | 4.0.0 | `v2` (default) \| `legacy` | The new LocalStack-native StepFunctions provider (v2) is active by default since LocalStack 3.0. |
 | `STEPFUNCTIONS_LAMBDA_ENDPOINT` | 4.0.0 | `default` | This is only supported for the `legacy` provider. URL to use as the Lambda service endpoint in Step Functions. By default this is the LocalStack Lambda endpoint. Use default to select the original AWS Lambda endpoint. |
 | `LOCAL_PORT_STEPFUNCTIONS` | 4.0.0 | `8083` (default) | This is only supported for the legacy provider. It defines the local port to which Step Functions traffic is redirected. By default, LocalStack routes Step Functions traffic to its internal runtime. Use this variable only if you need to redirect traffic to a different local Step Functions runtime. |
-| `S3_DIR` | 4.0.0 | `/path/to/root` | This was only supported for the `legacy_v2` provider. Configure a global parent directory that contains all buckets as sub-directories (`S3_DIR=/path/to/root`) or an individual directory that will get mounted as special bucket names (`S3_DIR=/path/to/root/bucket1:bucket1`). Only available for Localstack Pro.
+| `S3_DIR` | 4.0.0 | `/path/to/root` | This was only supported for the `legacy_v2` provider. Configure a global parent directory that contains all buckets as sub-directories (`S3_DIR=/path/to/root`) or an individual directory that will get mounted as special bucket names (`S3_DIR=/path/to/root/bucket1:bucket1`). Only available for LocalStack for AWS.
 | `<SERVICE>_BACKEND` | 3.0.0 | `http://localhost:7577` |  Custom endpoint URL to use for a specific service, where `<SERVICE>` is the uppercase service name. |
 | `<SERVICE>_PORT_EXTERNAL` | 3.0.0 | `4567` | Port number to expose a specific service externally . `SQS_PORT_EXTERNAL`, e.g. , is used when returning queue URLs from the SQS service to the client. |
 | `ACTIVATE_NEW_POD_CLIENT` | 3.0.0 | `0`\|`1` (default) |  Whether to use the new Cloud Pods client leveraging LocalStack container's APIs. |
@@ -535,8 +534,6 @@ These configurations have already been removed and **won't have any effect** on 
 | `SYNCHRONOUS_SNS_EVENTS` | 2.0.0 | `1`  \| `0` (default) | Whether or not to handle SNS Lambda event sources as synchronous invocations. |
 | `TMPDIR`| 2.0.0 | `/tmp` (default) |  Temporary folder on the host running the CLI and inside the LocalStack container .|
 | `USE_LIGHT_IMAGE` | 2.0.0 | `1` (default) | Whether to use the light-weight Docker image. Overwritten by `IMAGE_NAME`.|
-| `LEGACY_PERSISTENCE` | 1.0.0 | `true` (default) | Whether to enable legacy persistence mechanism based on API calls record & replay. Only relevant for Community image, not relevant for advanced persistence mechanism in Pro. |
-| `PERSISTENCE_SINGLE_FILE` | 1.0.0 | `true` (default)| Specify if persistence files should be combined (only relevant for legacy persistence in Community image, not relevant for advanced persistence in Pro version). |
 | `PORT_WEB_UI` | 0.12.8 | `8080` (default) | Port for the legacy Web UI. Replaced by our [Web Application](https://app.localstack.cloud) |
 
 ## Profiles

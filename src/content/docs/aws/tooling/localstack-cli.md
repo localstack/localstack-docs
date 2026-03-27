@@ -4,7 +4,7 @@ description: Reference guide for LocalStack CLI commands, options, and usage.
 template: doc
 sidebar:
     order: 10
-tags: ["Free"]
+tags: ["Hobby"]
 ---
 
 ## Introduction
@@ -15,10 +15,16 @@ It provides convenience features to interact with LocalStack features like Cloud
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
 :::note
-This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 4.13.1`.
+**lstk**: We are currently rolling out `lstk`; a new, high-performance CLI. Check it out [here](https://docs.localstack.cloud/aws/tooling/localstack-cli/#lstk).
+::: 
+
+## LocalStack CLI
+
+:::note
+This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 4.14.0`.
 :::
 
-## Global Options
+### Global Options
 
 The following global options are available for the `localstack` CLI:
 
@@ -29,7 +35,7 @@ The following global options are available for the `localstack` CLI:
 | `-p`, `--profile TEXT` | Set the configuration profile |
 | `-h`, `--help` | Show help message and exit |
 
-## Commands
+### Commands
 
 The following commands are available for managing your LocalStack instance.
 
@@ -79,10 +85,8 @@ Set your Localstack auth token to allow you to start LocalStack
 ```bash
 Usage: localstack auth set-token [OPTIONS] AUTH_TOKEN
 
-  Configure your auth token. Your auth token is used the license activation to
-  activate LocalStack Pro. This is different from `localstack auth login`
-  which enables platform features such as pushing cloud pods to your webapp
-  account.
+Set up your auth token to activate your LocalStack for AWS license.
+This differs from localstack auth login, which is used for platform features such as syncing Cloud Pods with your web account.
 
   The auth token you configure here will be passed to the
   `LOCALSTACK_AUTH_TOKEN` environment variable of the LocalStack container
@@ -751,7 +755,7 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  dev
+  dev        Developer tools for developing LocalStack extensions.
   init       Initialize the LocalStack extensions environment.
   install    Install a LocalStack extension.
   list       List installed extension.
@@ -763,10 +767,12 @@ Commands:
 
 #### `extensions dev`
 
-
+Developer tools for developing LocalStack extensions.
 
 ```bash
 Usage: localstack extensions dev [OPTIONS] COMMAND [ARGS]...
+
+  Developer tools for developing LocalStack extensions.
 
 Options:
   -h, --help  Show this message and exit.
@@ -957,7 +963,7 @@ Usage: localstack pod list [OPTIONS] [REMOTE]
   With the --public flag, it lists the all the available public Cloud Pods. A
   public Cloud Pod is available across the boundary of a user and/or
   organization. In other words, any public Cloud Pod can be injected by any
-  other user holding a LocalStack Pro (or above) license.
+  other user holding a LocalStack for AWS license.
 
 Options:
   -p, --public               List all the available public Cloud Pods
@@ -1338,3 +1344,129 @@ Options:
 ```
 
 </details>
+
+
+
+
+## lstk
+
+:::note
+**lstk**: We are currently rolling out a new, high-performance CLI written in Go. During this initial phase, the new CLI (`lstk`) supports core lifecycle commands (start, stop, logs). For advanced features such as **Cloud Pods**, **Extensions**, and **Ephemeral Instances**, please continue to use the current LocalStack CLI. Both tools can be installed and used on the same machine.
+
+Advanced features in `lstk` are coming soon.
+::: 
+
+`lstk` is meant to provide a modern terminal experience with a built-in terminal UI (TUI). It currently includes some interactivity, but it's not a dashboard-style long-running TUI yet.
+
+To install the new CLI and test it out, follow the [installation steps.](https://github.com/localstack/lstk/blob/main/README.md#installation)
+
+### Configuration
+
+`lstk` uses a TOML config file, created automatically on first run. The file itself includes guidance for manual modifications.
+
+**Search Order**
+`lstk` uses the first configuration file found in this priority:
+
+1. **Local**: `./.lstk/config.toml` (automatically used as the active profile)
+2. **User**: `$HOME/.config/lstk/config.toml`
+3. **OS Default**: 
+   * **macOS**: `$HOME/Library/Application Support/lstk/config.toml`
+   * **Windows**: `%AppData%\lstk\config.toml`
+
+:::note
+On first run, the config is created at path #2 if `$HOME/.config/` exists; otherwise, it uses path #3. By default, the global config is set to pull the latest updates.
+:::
+
+### Commands
+**See active config path:**
+```bash
+lstk config path
+```
+
+**Manual override:**
+```bash
+lstk --config /path/to/config.toml start
+```
+
+
+### Global Options
+The following global options are available for the `lstk` CLI:
+
+| Option | Description |
+| :--- | :--- |
+| --config string | Path to a specific TOML config file |
+| --non-interactive | Disable the interactive TUI and use plain text output |
+| -v, --version | Show the version and exit |
+| -h, --help | Show help message and exit |
+
+### Commands
+The new CLI uses a flat command structure. Advanced subcommands aren't available in this initial release.
+
+#### lstk
+Start LocalStack interactively.
+
+Running `lstk` automatically handles authentication, updating, and starting LocalStack automatically.
+
+
+#### start
+Start the LocalStack emulator. If run interactively, it launches the Terminal UI.
+ 
+```bash
+Usage: lstk start [OPTIONS]
+
+# Start in non-interactive mode (CI/CD)
+lstk start --non-interactive
+```
+
+#### stop
+Stop the running LocalStack emulator.
+ 
+```bash
+Usage: lstk stop
+```
+
+#### status
+Show emulator status and a summary of deployed resources.
+ 
+```bash
+Usage: lstk status
+```
+
+#### logs
+Show or stream emulator logs.
+ 
+```bash
+Usage: lstk logs [OPTIONS]
+
+Options:
+  --follow     Stream logs in real-time
+  --verbose    Show all logs without filtering
+```
+
+#### login / logout
+Manage your LocalStack authentication. `login` will open a browser window to authenticate.
+ 
+```bash
+Usage: lstk login
+Usage: lstk logout
+```
+
+#### config
+Manage the CLI configuration. Use `path` to find your active configuration file.
+ 
+```bash
+Usage: lstk config COMMAND
+
+Commands:
+  path    Show the path to the current config.toml
+```
+
+#### update
+Check for or install the latest version of the `lstk` binary.
+ 
+```bash
+Usage: lstk update [OPTIONS]
+
+Options:
+  --check    Check for updates without installing
+```

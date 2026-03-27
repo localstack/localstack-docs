@@ -3,14 +3,14 @@ title: FAQ
 description: Frequently asked questions about LocalStack for Snowflake
 template: doc
 sidebar:
-    order: 3
+  order: 3
 ---
 
 ## Core FAQs
 
 ### Are Snowflake v2 APIs supported?
 
-Yes, the LocalStack for Snowflake supports the Snowflake v2 SQL API (`/api/v2/*` endpoints), as well as the legacy v1 SQL API (which is still being used by a large portion of Snowflake client libraries and SDKs) 
+Yes, the LocalStack for Snowflake supports the Snowflake v2 SQL API (`/api/v2/*` endpoints), as well as the legacy v1 SQL API (which is still being used by a large portion of Snowflake client libraries and SDKs)
 
 ### Why are my Snowflake tests failing?
 
@@ -24,18 +24,12 @@ Note: In case you are deploying the LocalStack for Snowflake in a Kubernetes clu
 
 ## Integration FAQs
 
-### Why are my CI pipelines failing with `license.not_enough_credits` error?
-
-If you are using the LocalStack for Snowflake in your CI pipelines consistently, you may encounter the `license.not_enough_credits` error. This error occurs when the LocalStack for Snowflake is unable to process the requests due to the lack of LocalStack CI credits.
-
-A CI key allows you to use LocalStack in your CI environment. Every activation of a CI key consumes one CI credit. This means that with every build triggered through the LocalStack container you will consume one credit. To use more credits, you can [contact us](https://localstack.cloud/contact) to discuss your requirements.
-
 ### How do I enable detailed debug logs?
 
 You can set the `SF_LOG=trace` environment variable in the Snowflake container to enable detailed trace logs that show all the request/response message.
 
 When using `docker-compose` then simply add this variable to the `environment` section of the YAML configuration file.
-If you're starting up via the `localstack start` CLI, then make sure to start up via the following configuration: 
+If you're starting up via the `localstack start` CLI, then make sure to start up via the following configuration:
 
 ```bash
 DOCKER_FLAGS='-e SF_LOG=trace' DEBUG=1 localstack start --stack snowflake

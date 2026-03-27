@@ -1,0 +1,98 @@
+---
+title: "Resource Groups Tagging API"
+tags: ["Base"]
+description: Get started with Resource Groups Tagging API on LocalStack
+---
+
+import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+
+## Introduction
+
+Resource Groups Tagging API helps you centrally manage tags across AWS resources.
+You can apply and remove tags for multiple resources at once, and query resources by tag keys and values.
+You can also query tagged resources by AWS service, by resource type within a service, or directly by specific resource ARNs.
+
+LocalStack allows you to use the Resource Groups Tagging API in your local environment to test tagging workflows end-to-end.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Resource Groups Tagging API's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Resource Groups Tagging API and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+
+Start your LocalStack container using your preferred method.
+We will demonstrate how to create resources, tag them, and query them using the Resource Groups Tagging API.
+
+### Create resources to tag
+
+Create an S3 bucket and an SQS queue:
+
+```bash
+BUCKET_NAME="rg-tagging-bucket"
+QUEUE_NAME="rg-tagging-queue"
+
+awslocal s3api create-bucket --bucket "$BUCKET_NAME"
+QUEUE_URL=$(awslocal sqs create-queue --queue-name "$QUEUE_NAME" | jq -r '.QueueUrl')
+```
+
+Retrieve the resource ARNs:
+
+```bash
+BUCKET_ARN="arn:aws:s3:::$BUCKET_NAME"
+QUEUE_ARN=$(awslocal sqs get-queue-attributes \
+  --queue-url "$QUEUE_URL" \
+  --attribute-names QueueArn | jq -r '.Attributes.QueueArn')
+```
+
+### Tag multiple resources
+
+Use the [`TagResources`](https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_TagResources.html) API to apply tags:
+
+```bash
+awslocal resourcegroupstaggingapi tag-resources \
+  --resource-arn-list "$BUCKET_ARN" "$QUEUE_ARN" \
+  --tags '{"Environment":"dev","Team":"platform"}'
+```
+
+### Query resources by tags
+
+Use the [`GetResources`](https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html) API to list resources with a specific tag:
+
+```bash
+awslocal resourcegroupstaggingapi get-resources \
+  --tag-filters Key=Environment,Values=dev
+```
+
+You can also inspect available keys and values:
+
+```bash
+awslocal resourcegroupstaggingapi get-tag-keys
+awslocal resourcegroupstaggingapi get-tag-values --key Environment
+```
+
+### Remove tags from resources
+
+Use the [`UntagResources`](https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_UntagResources.html) API to remove one or more tag keys:
+
+```bash
+awslocal resourcegroupstaggingapi untag-resources \
+  --resource-arn-list "$BUCKET_ARN" "$QUEUE_ARN" \
+  --tag-keys Team
+```
+
+## Supported services
+
+LocalStack's Resource Groups Tagging API supports tagging for the following services:
+
+- [AWS Key Management Service (KMS)](/aws/services/kms/)
+- [Amazon S3](/aws/services/s3/)
+- [AWS Lambda](/aws/services/lambda/)
+- [Amazon Route 53](/aws/services/route53/)
+- [Amazon SNS](/aws/services/sns/)
+- [Amazon SQS](/aws/services/sqs/)
+- [Amazon OpenSearch Service](/aws/services/opensearch/)
+- [AWS Elastic Beanstalk](/aws/services/elasticbeanstalk/)
+- [Amazon EC2](/aws/services/ec2/)
+
+## API Coverage
+
+<FeatureCoverage service="resourcegroupstaggingapi" client:load />

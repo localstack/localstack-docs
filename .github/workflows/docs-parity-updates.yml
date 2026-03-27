@@ -77,7 +77,7 @@ jobs:
         run: /tmp/get_latest_github_metrics.sh ./target main
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack
+          REPOSITORY_NAME: localstack-core
           ARTIFACT_ID: parity-metric-raw-amd*
           WORKFLOW: "AWS / Build, Test, Push"
           PREFIX_ARTIFACT: community-integration-test
@@ -87,7 +87,7 @@ jobs:
         run: /tmp/get_latest_github_metrics.sh ./target main
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack
+          REPOSITORY_NAME: localstack-core
           ARTIFACT_ID: capture-notimplemented
           WORKFLOW: "AWS / Build, Test, Push"
           RESOURCE_FOLDER: "metrics-implementation-details/community"
@@ -139,12 +139,6 @@ jobs:
           python3 -m scripts.create_data_coverage -i target/metrics-implementation-details -r target/metrics-raw -o target/updated_coverage -s src/data/coverage/service_display_name.json
           mv -f target/updated_coverage/data/*.json src/data/coverage
      
-      - name: Generate CloudFormation Coverage Tables
-        working-directory: docs
-        continue-on-error: true
-        run: |
-            python3 scripts/create_cfn_coverage_table.py --cfn-json target/iac-catalog-assets/cfn_resources.json
-
       - name: Check for changes
         id: check-for-changes
         working-directory: docs

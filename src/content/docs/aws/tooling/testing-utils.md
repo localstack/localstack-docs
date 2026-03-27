@@ -2,18 +2,18 @@
 title: Testing Utils
 description: Tools to simplify application testing on LocalStack.
 template: doc
-tags: ['Free']
+tags: ['Hobby']
 nav:
 ---
 
 ## Introduction
 
 LocalStack provides a set of tools to simplify application testing on LocalStack.
-These tools are available for Python and JVM (Java and Kotlin) and can be used to integrate with various unit testing frameworks and simplify the setup of AWS clients with LocalStack.
+These tools are available for Python and can be used to integrate with various unit testing frameworks and simplify the setup of AWS clients with LocalStack.
 
 ## Python
 
-This Python Testing Utils streamlines the integration of Localstack with your unit tests.
+This [Python Testing Utils](https://github.com/localstack/localstack-python-utils) streamlines the integration of Localstack with your unit tests.
 
 ### Installation
 

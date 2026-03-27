@@ -31,7 +31,7 @@ This allows us to maintain clear and consistent internal communication across al
 
 | Plan       | Tier                                                                            |
 | ---------- | ------------------------------------------------------------------------------- |
-| Free       | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
+| Hobby      | [**Basic Support**](/aws/getting-started/help-support/#basic-support)           |
 | Trial      | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
 | Base       | [**Standard Support**](/aws/getting-started/help-support/#standard-support)     |
 | Ultimate   | [**Priority Support**](/aws/getting-started/help-support/#priority-support)     |
@@ -71,7 +71,7 @@ This allows us to maintain clear and consistent internal communication across al
 | Channels              | Basic | Standard | Priority | Enterprise |
 | --------------------- | :---: | :------: | :------: | :--------: |
 | Slack community       |  ✅   |    ✅    |    ✅    |     ✅     |
-| GitHub Issues         |  ✅   |    ✅    |    ✅    |     ✅     |
+| GitHub Discussions    |  ✅   |    ✅    |    ✅    |     ✅     |
 | Support email         |       |    ✅    |    ✅    |     ✅     |
 | Web Application chat  |       |    ✅    |    ✅    |     ✅     |
 | Ticketing portal      |       |          |          |     ✅     |
@@ -93,7 +93,7 @@ Basic Support is available to all LocalStack users and includes access to docume
 Community support is available through the following channels:
 
 - [LocalStack Slack Community](https://localstack.cloud/slack)
-- [GitHub Issue](https://github.com/localstack/localstack/issues/new)
+- [GitHub Discussions board](https://github.com/orgs/localstack/discussions)
 
 Note that community support is provided on a best-effort basis and is not guaranteed.
 Users are encouraged to help others by sharing their knowledge and experiences.
@@ -104,12 +104,13 @@ LocalStack Slack Community includes LocalStack users, contributors, and maintain
 If you need help with the community version of LocalStack, please use the `#help` channel.
 You can sign up for the [LocalStack Slack Community](https://localstack.cloud/slack) by creating an account.
 
-#### GitHub Issue
+#### GitHub Discussions
 
-You can use GitHub Issue to:
+((
+You can use our [GitHub Discussions board](https://github.com/orgs/localstack/discussions) to:
 
-- [Request new features](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+feature%2Cstatus%3A+triage+needed&template=feature-request.yml&title=feature+request%3A+%3Ctitle%3E)
-- [Report existing bugs](https://github.com/localstack/localstack/issues/new?assignees=&labels=type%3A+bug%2Cstatus%3A+triage+needed&template=bug-report.yml&title=bug%3A+%3Ctitle%3E)
+- [Request new features](https://github.com/orgs/localstack/discussions/categories/feature-requests)
+- [Report existing bugs](https://github.com/orgs/localstack/discussions/categories/bugs)
 
 Make sure to follow the issue templates and provide as much information as possible.
 If you have encountered outdated documentation, please report it on our [documentation repository](https://github.com/localstack/localstack-docs).

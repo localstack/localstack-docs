@@ -59,8 +59,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": true,
-        "terraform_test_suite": true,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
@@ -85,8 +85,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": true,
-        "terraform_test_suite": true,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
@@ -98,8 +98,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": true,
-        "terraform_test_suite": true,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
@@ -228,8 +228,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": true,
-        "terraform_test_suite": true,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
@@ -241,8 +241,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": true,
-        "terraform_test_suite": true,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
@@ -436,8 +436,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": true,
-        "terraform_test_suite": true,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
@@ -670,8 +670,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": true,
-        "terraform_test_suite": true,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
@@ -748,8 +748,8 @@
         "implemented": true,
         "availability": "community",
         "internal_test_suite": true,
-        "external_test_suite": true,
-        "terraform_test_suite": true,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
@@ -760,13 +760,13 @@
       "ListTagsForResources": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -1267,7 +1267,7 @@
             "test": "test_register_instance_in_private_dns_namespace",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Service.CreateDate', '$..Service.Type', '$..Instances..HealthStatus', '$..Instances..NamespaceName', '$..Instances..ServiceName', '$..InstancesRevision', '$..MaxItems']",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1281,6 +1281,66 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudcontrol/services/test_route53/test_route53_hostedzone.py::test_read_hosted_zone_tags",
             "test": "test_read_hosted_zone_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource",
+            "test": "test_change_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_deleting_route53_resources_removes_all_tags",
+            "test": "test_deleting_route53_resources_removes_all_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_multiple_resources",
+            "test": "test_list_tags_for_multiple_resources",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource",
+            "test": "test_list_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_rgta_tagging_against_route53",
+            "test": "test_rgta_tagging_against_route53",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_route53_tagging_against_rgta",
+            "test": "test_route53_tagging_against_rgta",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -1327,6 +1387,60 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource_invalid_resource_type",
+            "test": "test_change_tags_for_resource_invalid_resource_type",
+            "response": "400",
+            "error": "InvalidInput",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource_no_such_resource[healthcheck]",
+            "test": "test_change_tags_for_resource_no_such_resource[healthcheck]",
+            "response": "404",
+            "error": "NoSuchHealthCheck",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource_no_such_resource[hostedzone]",
+            "test": "test_change_tags_for_resource_no_such_resource[hostedzone]",
+            "response": "404",
+            "error": "NoSuchHostedZone",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "RemoveTagKeys, ResourceId, ResourceType": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_rgta_tagging_against_route53",
+            "test": "test_rgta_tagging_against_route53",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_route53_tagging_against_rgta",
+            "test": "test_route53_tagging_against_rgta",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       }
@@ -1374,6 +1488,26 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource",
+            "test": "test_change_tags_for_resource",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource",
+            "test": "test_list_tags_for_resource",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -1473,7 +1607,7 @@
             "test": "test_dns_namespace_private",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1483,7 +1617,7 @@
             "test": "test_dns_namespace_private_hosted_zone",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1493,7 +1627,7 @@
             "test": "test_dns_namespace_with_and_without_dot[private-invalid name]",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1503,7 +1637,7 @@
             "test": "test_dns_namespace_with_and_without_dot[private-test-<rnd>.com]",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1513,7 +1647,7 @@
             "test": "test_dns_namespace_with_and_without_dot[private-test-domain-<rnd>]",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1523,7 +1657,7 @@
             "test": "test_register_instance_in_private_dns_namespace",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Service.CreateDate', '$..Service.Type', '$..Instances..HealthStatus', '$..Instances..NamespaceName', '$..Instances..ServiceName', '$..InstancesRevision', '$..MaxItems']",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1608,6 +1742,16 @@
             "response": "201",
             "error": "",
             "snapshot_skipped": "['$..DelegationSet.Id', '$..HostedZone.CallerReference']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/route53/test_route53.py::TestRoute53::test_delete_hosted_zone",
+            "test": "test_delete_hosted_zone",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1737,6 +1881,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestRoute53Integrations::test_route53_elb_integration[port-80]",
             "test": "test_route53_elb_integration[port-80]",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resourcegroupstaggingapi/test_resourcegroupstaggingapi.py::TestResourceGroupsTaggingApi::test_tag_and_untag_resources_not_allowed_in_certain_regions_for_global_resources",
+            "test": "test_tag_and_untag_resources_not_allowed_in_certain_regions_for_global_resources",
             "response": "201",
             "error": "",
             "snapshot_skipped": "",
@@ -1892,6 +2046,66 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource",
+            "test": "test_change_tags_for_resource",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_deleting_route53_resources_removes_all_tags",
+            "test": "test_deleting_route53_resources_removes_all_tags",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_multiple_resources",
+            "test": "test_list_tags_for_multiple_resources",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource",
+            "test": "test_list_tags_for_resource",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_rgta_tagging_against_route53",
+            "test": "test_rgta_tagging_against_route53",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_route53_tagging_against_rgta",
+            "test": "test_route53_tagging_against_rgta",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -2147,6 +2361,26 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource",
+            "test": "test_change_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource",
+            "test": "test_list_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       }
@@ -2215,6 +2449,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Community: tests/aws/services/route53/test_route53.py::TestRoute53::test_delete_hosted_zone",
+            "test": "test_delete_hosted_zone",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Community: tests/aws/services/route53/resource_providers/test_aws_route53_recordset.py::test_create_record_set_via_name",
             "test": "test_create_record_set_via_name",
             "response": "400",
@@ -2233,15 +2477,25 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws/services/route53/test_route53.py::TestRoute53::test_delete_hosted_zone",
+            "test": "test_delete_hosted_zone",
+            "response": "404",
+            "error": "CommonServiceException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ],
         "ls_pro": [
           {
-            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_private.py::TestApigatewayV2PrivateIntegration::test_apigatewayv2_servicediscovery_validation",
-            "test": "test_apigatewayv2_servicediscovery_validation",
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_websockets/test_websockets_context.py::TestWebsocketsContext::test_websocket_aws_proxy_event_shape",
+            "test": "test_websocket_aws_proxy_event_shape",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..requestContext.domainName']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2379,6 +2633,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestRoute53Integrations::test_route53_elb_integration[port-80]",
             "test": "test_route53_elb_integration[port-80]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resourcegroupstaggingapi/test_resourcegroupstaggingapi.py::TestResourceGroupsTaggingApi::test_tag_and_untag_resources_not_allowed_in_certain_regions_for_global_resources",
+            "test": "test_tag_and_untag_resources_not_allowed_in_certain_regions_for_global_resources",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -2537,6 +2801,66 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource",
+            "test": "test_change_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_deleting_route53_resources_removes_all_tags",
+            "test": "test_deleting_route53_resources_removes_all_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_multiple_resources",
+            "test": "test_list_tags_for_multiple_resources",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource",
+            "test": "test_list_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_rgta_tagging_against_route53",
+            "test": "test_rgta_tagging_against_route53",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_route53_tagging_against_rgta",
+            "test": "test_route53_tagging_against_rgta",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::test_elb_routing[dot]",
             "test": "test_elb_routing[dot]",
             "response": "200",
@@ -2591,7 +2915,7 @@
             "test": "test_dns_namespace_private",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2601,7 +2925,7 @@
             "test": "test_dns_namespace_private_hosted_zone",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2611,7 +2935,7 @@
             "test": "test_dns_namespace_with_and_without_dot[private-test-<rnd>.com]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2621,7 +2945,7 @@
             "test": "test_dns_namespace_with_and_without_dot[private-test-domain-<rnd>]",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2691,7 +3015,7 @@
             "test": "test_register_instance_in_private_dns_namespace",
             "response": "400",
             "error": "CommonServiceException",
-            "snapshot_skipped": "['$..Service.CreateDate', '$..Service.Type', '$..Instances..HealthStatus', '$..Instances..NamespaceName', '$..Instances..ServiceName', '$..InstancesRevision', '$..MaxItems']",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2701,7 +3025,7 @@
             "test": "test_create_service_exceptions",
             "response": "404",
             "error": "CommonServiceException",
-            "snapshot_skipped": "['$..Service.CreateDate', '$..Service.DnsConfig', '$..Service.Type', '$..CreatorRequestId']",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2711,7 +3035,7 @@
             "test": "test_dns_namespace_public",
             "response": "404",
             "error": "CommonServiceException",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2721,7 +3045,7 @@
             "test": "test_dns_namespace_with_and_without_dot[public-test-<rnd>.com]",
             "response": "404",
             "error": "CommonServiceException",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2731,7 +3055,7 @@
             "test": "test_register_instance",
             "response": "404",
             "error": "CommonServiceException",
-            "snapshot_skipped": "['$..Service.CreateDate', '$..Service.Type', '$..Instances..HealthStatus', '$..Instances..NamespaceName', '$..Instances..ServiceName', '$..InstancesRevision']",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -2741,7 +3065,7 @@
             "test": "test_register_instance_exceptions",
             "response": "404",
             "error": "CommonServiceException",
-            "snapshot_skipped": "['$..InstancesRevision']",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -3571,6 +3895,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_custom_domain.py::TestApigatewayV2CustomDomainCrud::test_custom_domain_v2_multiple_config",
+            "test": "test_custom_domain_v2_multiple_config",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_custom_domain.py::TestApigatewayV2CustomDomainCrud::test_custom_domains_crud",
             "test": "test_custom_domains_crud",
             "response": "200",
@@ -3581,8 +3915,38 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_custom_domain.py::TestApigatewayV2CustomDomainCrud::test_custom_domains_no_configuration",
+            "test": "test_custom_domains_no_configuration",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_custom_domain.py::TestApigatewayV2CustomDomainCrud::test_custom_domains_regional_no_cert_exc",
             "test": "test_custom_domains_regional_no_cert_exc",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_custom_domain.py::TestApigatewayV2CustomDomainCrud::test_custom_domains_v2_endpoint_edge_not_supported",
+            "test": "test_custom_domains_v2_endpoint_edge_not_supported",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/apigatewayv2/test_apigatewayv2_custom_domain.py::TestApigatewayV2CustomDomainCrud::test_update_custom_domain_configuration_validation",
+            "test": "test_update_custom_domain_configuration_validation",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -3723,7 +4087,7 @@
             "test": "test_dns_namespace_private_hosted_zone",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3991,6 +4355,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/resourcegroupstaggingapi/test_resourcegroupstaggingapi.py::TestResourceGroupsTaggingApi::test_tag_and_untag_resources_not_allowed_in_certain_regions_for_global_resources",
+            "test": "test_tag_and_untag_resources_not_allowed_in_certain_regions_for_global_resources",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53::test_alias_lifecycle_with_dns_resolution",
             "test": "test_alias_lifecycle_with_dns_resolution",
             "response": "200",
@@ -4141,6 +4515,56 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_change_tags_for_resource",
+            "test": "test_change_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_multiple_resources",
+            "test": "test_list_tags_for_multiple_resources",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource",
+            "test": "test_list_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_rgta_tagging_against_route53",
+            "test": "test_rgta_tagging_against_route53",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_route53_tagging_against_rgta",
+            "test": "test_route53_tagging_against_rgta",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::test_elb_routing[dot]",
             "test": "test_elb_routing[dot]",
             "response": "200",
@@ -4185,7 +4609,7 @@
             "test": "test_register_instance_in_private_dns_namespace",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Service.CreateDate', '$..Service.Type', '$..Instances..HealthStatus', '$..Instances..NamespaceName', '$..Instances..ServiceName', '$..InstancesRevision', '$..MaxItems']",
+            "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4226,6 +4650,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$.source-hosted-zone.ChangeInfo.Status', '$.source-hosted-zone.DelegationSet.Id']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_deleting_route53_resources_removes_all_tags",
+            "test": "test_deleting_route53_resources_removes_all_tags",
+            "response": "404",
+            "error": "CommonServiceException",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4293,6 +4727,36 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource",
+            "test": "test_list_tags_for_resource",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_rgta_tagging_against_route53",
+            "test": "test_rgta_tagging_against_route53",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_route53_tagging_against_rgta",
+            "test": "test_route53_tagging_against_rgta",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/integration/replicator/services/route53/test_route53_replication.py::TestHostedZoneReplication::test_replication_private_zone",
             "test": "test_replication_private_zone",
             "response": "200",
@@ -4338,6 +4802,82 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$.source-hosted-zone.ChangeInfo.Status', '$.source-hosted-zone.DelegationSet.Id']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource_invalid_resource_type",
+            "test": "test_list_tags_for_resource_invalid_resource_type",
+            "response": "400",
+            "error": "InvalidInput",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource_no_such_resource[healthcheck]",
+            "test": "test_list_tags_for_resource_no_such_resource[healthcheck]",
+            "response": "404",
+            "error": "NoSuchHealthCheck",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_resource_no_such_resource[hostedzone]",
+            "test": "test_list_tags_for_resource_no_such_resource[hostedzone]",
+            "response": "404",
+            "error": "NoSuchHostedZone",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "ListTagsForResources": {
+      "ResourceIds, ResourceType": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_multiple_resources",
+            "test": "test_list_tags_for_multiple_resources",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_multiple_resources_invalid_resource_type",
+            "test": "test_list_tags_for_multiple_resources_invalid_resource_type",
+            "response": "400",
+            "error": "InvalidInput",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_multiple_resources_no_such_resource[healthcheck]",
+            "test": "test_list_tags_for_multiple_resources_no_such_resource[healthcheck]",
+            "response": "404",
+            "error": "NoSuchHealthCheck",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/route53/test_route53.py::TestRoute53Tagging::test_list_tags_for_multiple_resources_no_such_resource[hostedzone]",
+            "test": "test_list_tags_for_multiple_resources_no_such_resource[hostedzone]",
+            "response": "404",
+            "error": "NoSuchHostedZone",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"

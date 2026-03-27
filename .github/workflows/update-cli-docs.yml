@@ -40,6 +40,8 @@ jobs:
         working-directory: docs
         run: |
           python3 scripts/generate_cli_docs.py
+        env:
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 
       - name: Check for changes
         id: check-for-changes

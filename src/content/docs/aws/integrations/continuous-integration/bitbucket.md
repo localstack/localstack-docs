@@ -55,7 +55,7 @@ pipelines:
 
 ## Configuring a CI Auth Token
 
-You can enable LocalStack Pro by using the `localstack/localstack-pro` image and adding your CI Auth Token to the project's environment variables.
+You can enable LocalStack for AWS by using the `localstack/localstack-pro` image and adding your CI Auth Token to the project's environment variables.
 The LocalStack container will automatically pick it up and activate the Pro features.
 
 Go to the [CI Auth Token page](https://app.localstack.cloud/workspace/auth-tokens) and copy your CI Auth Token.

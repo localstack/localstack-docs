@@ -1,5 +1,5 @@
 ---
-title: "Cross-Account and Cross-Region Access"
+title: 'Cross-Account and Cross-Region Access'
 description: Accessing resources in another account or region
 ---
 
@@ -11,7 +11,7 @@ This document provides information to help design such setups.
 
 :::note
 Cross-account support in LocalStack is being actively developed.
-Please report any issues on our [GitHub issue tracker](https://github.com/localstack/localstack/issues/new/choose).
+Please report any issues on our [GitHub Discussions board](https://github.com/orgs/localstack/discussions/categories/bugs).
 :::
 
 Cross-account/cross-region access happens when a client attempts to access a resource in another account or region than what it is configured with:
@@ -25,7 +25,7 @@ AWS_ACCESS_KEY_ID=111111111111 awslocal sqs create-queue \
 
 ```json title="Output"
 {
-    "QueueUrl": "http://sqs.ap-south-1.localhost.localstack.cloud:443/111111111111/my-queue"
+  "QueueUrl": "http://sqs.ap-south-1.localhost.localstack.cloud:443/111111111111/my-queue"
 }
 ```
 
@@ -46,9 +46,9 @@ AWS_ACCESS_KEY_ID=222222222222 awslocal sqs get-queue-attributes \
 
 ```json title="Output"
 {
-    "Attributes": {
-        "VisibilityTimeout": "60"
-    }
+  "Attributes": {
+    "VisibilityTimeout": "60"
+  }
 }
 ```
 

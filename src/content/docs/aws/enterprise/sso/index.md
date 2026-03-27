@@ -36,6 +36,163 @@ Select **Enable IdP sign out flow** if you want your users to be logged out from
 
 ![Configuring SSO using SAML](/images/aws/saml-sso.png)
 
+
+## Configuring SSO with Okta
+
+This section provides a reference configuration for setting up SAML-based SSO with **Okta**. 
+
+The steps below mirror the fields required in the LocalStack UI and can be used as a template when configuring your Okta application.
+
+### 1. Create a SAML 2.0 App in Okta
+
+In your Okta Admin Dashboard, create a new application under:
+
+> **Applications → Create App Integration → SAML 2.0**
+
+During setup, Okta will ask for:
+
+* **Single sign-on URL**
+* **Audience URI (SP Entity ID)**
+
+You can copy these values directly from your LocalStack SSO provider creation screen.
+
+Example mapping:
+
+| LocalStack name        | Okta field name             |
+| ---------------------- | --------------------------- |
+| Callback URL           | Single sign-on URL          |
+| Identifier (Entity Id) | Audience URI (SP Entity ID) |
+
+
+### 2. Configure SAML Attribute Statements
+
+LocalStack supports mapping the following user attributes:
+
+* **email**
+* **firstName**
+* **lastName**
+
+In Okta, add these under **Attribute Statements (optional)**:
+
+| Name      | Name format | Value            |
+| --------- | ----------- | ---------------- |
+| email     | Unspecified | `user.email`     |
+| firstName | Unspecified | `user.firstName` |
+| lastName  | Unspecified | `user.lastName`  |
+
+> **Note:** In some setups, Okta may not always populate `firstName` or `lastName` during signup. This is usually a configuration mismatch on the IdP side. Users can still manually enter these fields during signup if needed.
+
+![Configuring SSO using Okta with SAML Attribute Statements](/images/aws/sso-okta-attribute-statements.png)
+
+![Configuring SSO using Okta with SAML Attribute Statements](/images/aws/sso-okta-attribute-statements-2.png)
+
+### 3. Retrieve the Okta Metadata URL
+
+Once the application is created, navigate to:
+
+> **Applications → Sign On → SAML 2.0 → Metadata URL**
+
+Copy this URL.
+
+![Retrieve Okta Metadata URL](/images/aws/retrieve-okta-metadata-url.png)
+
+This URL should be used in the LocalStack UI under:
+
+> **Metadata File → URL**
+
+LocalStack will automatically import the SAML metadata and map the endpoints required for SSO.
+
+### 4. Configure LocalStack Identity Provider
+
+In the LocalStack SSO configuration screen:
+
+* Select **Provider type: SAML**
+* Enter an **Identity provider name** (e.g., “Okta”)
+* Paste the **Metadata URL** from Okta
+* Fill in attribute mappings:
+
+| Your attributes (from Okta) | LocalStack attributes |
+| --------------------------- | --------------------- |
+| email                       | Email                 |
+| firstName                   | First Name            |
+| lastName                    | Last Name             |
+
+Once completed, LocalStack will display:
+
+* **Callback URL**
+* **Identifier (Entity Id)**
+* **Sign Up Portal URL**
+
+These values are used in the Okta app configuration and for distributing the signup link to end-users.
+
+![Place Okta Metadata URL in LocalStack UI](/images/aws/import-metadata-file.png)
+
+### 5. Assign Users to the Okta Application
+
+Ensure that the correct users and groups have access to the Okta SAML app. Only assigned users will be able to authenticate into LocalStack via SSO.
+
+
+
+## SSO for JumpCloud
+
+This example outlines the required configuration when using **JumpCloud** as a SAML Identity Provider for LocalStack.
+
+### 1. Create a Custom SAML Application
+
+In the JumpCloud Admin Portal:
+
+1. Go to **SSO Applications → Add New Application**
+2. Select **Custom Application**
+3. Open **Manage Single Sign-On (SSO)** and choose **Configure SSO with SAML**
+
+![JumpCloud Admin Portal Custom Application](/images/aws/jumpcloud-step1.jpg)
+
+
+### 2. Map Required Fields
+
+Copy the fields from the LocalStack SSO configuration screen into the corresponding JumpCloud fields.
+
+| JumpCloud field   | LocalStack value       |
+| ----------------- | ---------------------- |
+| **IdP Entity ID** | Identity provider name |
+| **SP Entity ID**  | Identifier (Entity Id) |
+| **ACS URLs**      | Callback URL           |
+| **Login URL**     | Sign Up Portal         |
+
+![JumpCloud Map Required Fields](/images/aws/jumpcloud-step2.png)
+
+
+### 3. Attribute Mapping
+
+Add the following user attributes:
+
+| Service Provider Attribute | JumpCloud Attribute |
+| -------------------------- | ------------------- |
+| email                      | email               |
+| firstname                  | firstname           |
+| lastname                   | lastname            |
+
+
+### 4. Required Options
+
+Ensure the following options are enabled:
+
+* **Declare Redirect Endpoint**
+* **Include Group Attribute** with the name:
+
+  ```
+  memberOf
+  ```
+
+![JumpCloud Map Required Fields](/images/aws/jumpcloud-step4.png)
+
+
+### 5. Assign Users
+
+Save the application and assign users or groups who should access LocalStack via SSO.
+
+
+
 ## Attribute mapping
 
 These attributes can be defined to automatically map attributes of user entities in your internal IdP to user attributes in the LocalStack platform.

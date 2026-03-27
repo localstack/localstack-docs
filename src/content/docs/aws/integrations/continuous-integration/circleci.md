@@ -9,7 +9,7 @@ sidebar:
 ## Introduction
 
 [CircleCI](https://circleci.com) is a continuous integration and continuous delivery (CI/CD) platform which uses a configuration file (usually named `.circleci/config.yml`) to define the build, test, and deployment workflows.
-LocalStack supports CircleCI out of the box and can be easily integrated into your pipeline to run your tests against a local cloud emulator.
+This guide shows how to run LocalStack in CircleCI using the LocalStack Docker image and the LocalStack CLI.
 
 ## Snippets
 
@@ -20,18 +20,35 @@ LocalStack supports CircleCI out of the box and can be easily integrated into yo
 ```yaml showshowLineNumbers
 version: '2.1'
 orbs:
-  localstack: localstack/platform@2.2
+  python: circleci/python@4.0.0
 jobs:
   localstack-test:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
-      - localstack/startup
-      ...
+      - checkout
+      - run:
+          name: Install LocalStack CLI and awslocal
+          command: |
+            python3 -m pip install --user --upgrade pip
+            python3 -m pip install --user localstack awscli-local[ver1]
+            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
+      - run:
+          name: Start LocalStack
+          command: |
+            source "$BASH_ENV"
+            docker pull localstack/localstack:latest
+            localstack start -d
+            localstack wait -t 60
+      - run:
+          name: Test LocalStack
+          command: |
+            awslocal s3 mb s3://test-bucket
+            awslocal s3 ls
 workflows:
   localstack-test:
     jobs:
       - localstack-test
-
 ```
 
 #### Async
@@ -39,14 +56,32 @@ workflows:
 ```yaml showshowLineNumbers
 version: '2.1'
 orbs:
-  localstack: localstack/platform@2.2
+  python: circleci/python@4.0.0
 jobs:
   localstack-test:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
-      - localstack/start
-      ...
-      - localstack/wait
+      - checkout
+      - run:
+          name: Install LocalStack CLI and awslocal
+          command: |
+            python3 -m pip install --user --upgrade pip
+            python3 -m pip install --user localstack awscli-local[ver1]
+            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
+      - run:
+          name: Start LocalStack in background
+          command: |
+            source "$BASH_ENV"
+            docker pull localstack/localstack:latest
+            localstack start -d
+      - run:
+          name: Execute setup and tests
+          command: |
+            source "$BASH_ENV"
+            localstack wait -t 60
+            awslocal sqs create-queue --queue-name test-queue
+            awslocal sqs list-queues
 workflows:
   localstack-test:
     jobs:
@@ -65,11 +100,14 @@ Read more about the [configuration options](/aws/capabilities/config/configurati
 ...
 jobs:
   localstack-test:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     environment:
       DEBUG: 1
+      LS_LOG: trace
     steps:
-      - localstack/startup
+      ...
+      - run: localstack start -d
 ...
 ```
 
@@ -79,17 +117,20 @@ jobs:
 ...
 jobs:
   localstack-test:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
       - run:
           name: Configure LocalStack
-          command: echo 'export DEBUG=1' >> "$BASH_ENV"
+          command: |
+            echo 'export DEBUG=1' >> "$BASH_ENV"
+            echo 'export LS_LOG=trace' >> "$BASH_ENV"
 ...
 ```
 
 ### Configuring a CI Auth Token
 
-To enable LocalStack Pro+, you need to add your LocalStack CI Auth Token to the project's environment variables.
+To enable LocalStack for AWS, you need to add your LocalStack CI Auth Token to the project's environment variables.
 The LocalStack container will automatically pick it up and activate the licensed features.
 
 Go to the [CI Auth Token page](https://app.localstack.cloud/workspace/auth-tokens) and copy your CI Auth Token.
@@ -101,7 +142,39 @@ To add the CI Auth Token to your CircleCI project, follow these steps:
 - Name your environment variable `LOCALSTACK_AUTH_TOKEN`.
 - Paste your CI Auth Token into the input field.
 
-After the above steps, just start up LocalStack using our official orb as usual.
+After adding the variable, CircleCI injects `LOCALSTACK_AUTH_TOKEN` into your job environment.
+
+```yaml showshowLineNumbers
+version: '2.1'
+orbs:
+  python: circleci/python@4.0.0
+jobs:
+  localstack-test:
+    machine:
+      image: ubuntu-2204:current
+    steps:
+      - checkout
+      - run:
+          name: Install LocalStack CLI and awslocal
+          command: |
+            python3 -m pip install --user --upgrade pip
+            python3 -m pip install --user localstack awscli-local[ver1]
+            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
+      - run:
+          name: Start LocalStack
+          command: |
+            source "$BASH_ENV"
+            docker pull localstack/localstack:latest
+            localstack start -d
+            localstack wait -t 60
+      - run:
+          name: Verify LocalStack setup
+          command: localstack logs | rg "activated|auth token|ready"
+workflows:
+  localstack-test:
+    jobs:
+      - localstack-test
+```
 
 ### Dump LocalStack logs
 
@@ -109,7 +182,8 @@ After the above steps, just start up LocalStack using our official orb as usual.
 ...
 jobs:
   localstack-test:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
 ...
       - run:
@@ -141,23 +215,28 @@ Update or create the Cloud Pod in it's own project (ie in a separate Infrastruct
 _Note: If there is a previously created Cloud Pod which doesn't need updating this step can be skipped._
 
 ```yaml showshowLineNumbers
-orbs:
-  localstack: localstack/platform@2.2
 ...
 jobs:
   localstack-update-cloud-pod:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
+
     steps:
+      - run: python3 -m pip install localstack awscli-local[ver1]
+      - run: |
+          docker pull localstack/localstack:latest
+          localstack start -d
+          localstack wait -t 60
       ...
-      # LocalStack already running
       - run:
-        name: Load state if exists
-        command: localstack pod load <POD_NAME> || true # Not allowed to fail yet
+          name: Load state if exists
+          command: localstack pod load <POD_NAME> || true
       ...
       # Deploy infrastructure changes
       ...
-      - localstack/cloud_pods:
-          pod_name: <POD_NAME>
+      - run:
+          name: Save Cloud Pod
+          command: localstack pod save <POD_NAME>
 
 
 workflows:
@@ -169,18 +248,22 @@ workflows:
 In a separate project use the previously created base Cloud Pod as below:
 
 ```yaml showshowLineNumbers
-orbs:
-  localstack: localstack/platform@2.2
 ...
 jobs:
   localstack-use-cloud-pod:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
+
     steps:
+      - run: python3 -m pip install localstack awscli-local[ver1]
+      - run: |
+          docker pull localstack/localstack:latest
+          localstack start -d
+          localstack wait -t 60
       ...
-      # LocalStack already running
-      - localstack/cloud_pods:
-          pod_name: <POD_NAME>
-          pod_action: load
+      - run:
+          name: Load Cloud Pod
+          command: localstack pod load <POD_NAME>
       ...
       # Run some tests
 
@@ -197,8 +280,6 @@ To use a dynamically updated Cloud Pod in multiple workflows but in the same pro
 Before you are able to use any stored artifacts in your pipeline, you must provide either a valid [project API token](https://circleci.com/docs/managing-api-tokens/#creating-a-project-api-token) or a [personal API token](https://circleci.com/docs/managing-api-tokens/#creating-a-personal-api-token) to CircleCI.
 
 ```yaml showshowLineNumbers
-orbs:
-  localstack: localstack/platform@2.2
 ...
 parameters:
   run_workflow_build:
@@ -217,19 +298,25 @@ parameters:
 
 jobs:
   localstack-update-state:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
+
     steps:
+      - run: python3 -m pip install localstack awscli-local[ver1]
+      - run: |
+          docker pull localstack/localstack:latest
+          localstack start -d
+          localstack wait -t 60
       ...
-      # LocalStack already running
-      - localstack/cloud_pods:
-          pod_name: <POD_NAME>
-          pod_action: load
+      - run:
+          name: Load Cloud Pod
+          command: localstack pod load <POD_NAME> || true
       ...
       # Deploy infrastructure
       ...
-      - localstack/cloud_pods:
-          pod_name: <POD_NAME>
-          pod_action: save  # Optional as this is the default
+      - run:
+          name: Save Cloud Pod
+          command: localstack pod save <POD_NAME>
       - run:
           name: Trigger other workflows
           # Replace placeholders with right values
@@ -242,13 +329,19 @@ jobs:
 
 
   localstack-use-state:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
+
     steps:
+      - run: python3 -m pip install localstack awscli-local[ver1]
+      - run: |
+          docker pull localstack/localstack:latest
+          localstack start -d
+          localstack wait -t 60
       ...
-      # LocalStack already running
       - run:
-        name: Load state if exists
-        command: localstack pod load <POD_NAME> || true
+          name: Load state if exists
+          command: localstack pod load <POD_NAME> || true
       ...
 
 
@@ -276,19 +369,27 @@ Find out more about [Ephemeral Instances](/aws/capabilities/cloud-sandbox/epheme
 ##### Same job
 
 ```yaml showshowLineNumbers
-orbs:
-  localstack: localstack/platform@2.2
 ...
 jobs:
   do-work:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
-      - localstack/ephemeral:
-          auto_load_pod: <POD_NAME>  # Pod to load (optional)
-          # Commands to run (optional)
-          preview-cmd: |
-            awslocal sqs create-queue --queue-name=test-queue
-            awslocal s3 mb s3://test-bucket
+      - run:
+          name: Create Ephemeral Instance
+          command: |
+            response=$(curl -X POST \
+              -H "ls-api-key: $LOCALSTACK_AUTH_TOKEN" \
+              -H "authorization: token $LOCALSTACK_AUTH_TOKEN" \
+              -H "content-type: application/json" \
+              -d '{"auto_load_pod":"false"}' \
+              https://api.localstack.cloud/v1/previews/my-circleci-state)
+            endpoint_url=$(echo "$response" | jq -r '.endpointUrl')
+            if [ -z "$endpoint_url" ] || [ "$endpoint_url" = "null" ]; then
+              echo "Unable to create preview environment. API response: $response"
+              exit 1
+            fi
+            echo "export AWS_ENDPOINT_URL=$endpoint_url" >> "$BASH_ENV"
       - run:
         name: Output the ephemeral instance address
         command: echo "$AWS_ENDPOINT_URL"
@@ -306,22 +407,35 @@ workflows:
 ...
 jobs:
   setup-instance:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
-      - localstack/ephemeral:
-          ephemeral_action: start
-          # Script to run (optional)
-          preview-cmd: bin/deploy.sh
+      - run:
+          name: Create Ephemeral Instance
+          command: |
+            response=$(curl -X POST \
+              -H "ls-api-key: $LOCALSTACK_AUTH_TOKEN" \
+              -H "authorization: token $LOCALSTACK_AUTH_TOKEN" \
+              -H "content-type: application/json" \
+              -d '{"auto_load_pod":"false"}' \
+              https://api.localstack.cloud/v1/previews/my-circleci-state)
+            endpoint_url=$(echo "$response" | jq -r '.endpointUrl')
+            if [ -z "$endpoint_url" ] || [ "$endpoint_url" = "null" ]; then
+              echo "Unable to create preview environment. API response: $response"
+              exit 1
+            fi
+            echo "export AWS_ENDPOINT_URL=$endpoint_url" >> ls-env-vars
       - run:
         name: Persist AWS Endpoint URL
-        command: echo "export AWS_ENDPOINT_URL=$endpointUrl" >> ls-env-vars
+        command: cat ls-env-vars
       - persist_to_workspace:
           root: .
           paths:
             - ls-env-vars
 
   run-test:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
       - attach_workspace:
           at: .
@@ -332,10 +446,16 @@ jobs:
         name: Output the ephemeral instance address
         command: echo "$AWS_ENDPOINT_URL"
 ...
-    # Run any logic against the Ephemeral Instance,
-    # then stop when not needed anymore
-      - localstack/ephemeral:
-          ephemeral_action: stop
+      # Run any logic against the Ephemeral Instance,
+      # then stop when not needed anymore
+      - run:
+          name: Stop Ephemeral Instance
+          command: |
+            # Replace <PREVIEW_ID> with the id returned by the API in setup-instance.
+            curl -X DELETE \
+              -H "ls-api-key: $LOCALSTACK_AUTH_TOKEN" \
+              -H "authorization: token $LOCALSTACK_AUTH_TOKEN" \
+              https://api.localstack.cloud/v1/previews/<PREVIEW_ID>
 
 ...
 workflows:
@@ -354,8 +474,14 @@ This strategy persist LocalStack's state between jobs for the current workflow.
 ...
 jobs:
   localstack-save-state:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
+      - run: python3 -m pip install localstack awscli-local[ver1]
+      - run: |
+          docker pull localstack/localstack:latest
+          localstack start -d
+          localstack wait -t 60
       ...
       # LocalStack already running and deployed infrastructure
       - run:
@@ -370,8 +496,14 @@ jobs:
           paths: ls-state.zip
 ...
   localstack-load-state:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
+      - run: python3 -m pip install localstack awscli-local[ver1]
+      - run: |
+          docker pull localstack/localstack:latest
+          localstack start -d
+          localstack wait -t 60
       ...
       # LocalStack already running
       - attach_workspace:
@@ -399,8 +531,14 @@ This strategy will persist LocalStack's state for every workflow re-runs, but no
 ...
 jobs:
   localstack-update-state:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
+      - run: python3 -m pip install localstack awscli-local[ver1]
+      - run: |
+          docker pull localstack/localstack:latest
+          localstack start -d
+          localstack wait -t 60
       ...
       # LocalStack already running
       # Let's restore previous workflow run's LocalStack state
@@ -421,8 +559,14 @@ jobs:
           paths: ls-state.zip
   ...
   localstack-do-work:
-    executor: localstack/default
+    machine:
+      image: ubuntu-2204:current
     steps:
+      - run: python3 -m pip install localstack awscli-local[ver1]
+      - run: |
+          docker pull localstack/localstack:latest
+          localstack start -d
+          localstack wait -t 60
       # LocalStack already running
       - restore_cache:
           # Use latest "ls-state" prefixed cache

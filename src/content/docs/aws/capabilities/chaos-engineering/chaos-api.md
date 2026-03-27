@@ -33,7 +33,8 @@ If you'd like to try it out, please [contact us](https://www.localstack.cloud/de
 
 The prerequisites for this guide are:
 
-- LocalStack Pro with [LocalStack CLI](/aws/getting-started/installation/) & [LocalStack Auth Token](/aws/getting-started/auth-token/)
+- LocalStack for AWS and [LocalStack CLI](/aws/getting-started/installation/) 
+- [LocalStack Auth Token](/aws/getting-started/auth-token/)
 - [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
 - [Python](https://www.python.org/downloads/)
 

@@ -57,6 +57,7 @@ export default defineConfig({
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
         LanguageSelect: './src/components/LanguageSelectWithGetStarted.astro',
         Banner: './src/components/BannerWithPersistentAnnouncement.astro',
+        Footer: './src/components/FooterWithFeedback.astro',
       },
       expressiveCode: {
         themes: ['one-light', 'one-dark-pro'],
@@ -99,7 +100,7 @@ export default defineConfig({
           attrs: {
             type: 'text/javascript',
             id: 'icon-script-loader',
-            async: true,
+            // defer only: async would win and delay/unorder execution vs parse-complete
             defer: true,
             src: '/js/icon-loader.js',
           },
@@ -107,16 +108,19 @@ export default defineConfig({
         {
           tag: 'script',
           attrs: {
+            type: 'text/javascript',
+            id: 'multi-sidebar-azure-loader',
             async: true,
-            src: 'https://widget.kapa.ai/kapa-widget.bundle.js',
-            'data-website-id': '3dfbd0ac-9e56-4664-8315-032e17917ab6',
-            'data-project-name': 'LocalStack',
-            'data-project-color': '#281763',
-            'data-project-logo':
-              'https://avatars.githubusercontent.com/u/28732122?s=280&v=4',
-            'data-user-analytics-fingerprint-enabled': 'true',
-            'data-modal-disclaimer':
-              'This is a custom LocalStack LLM to help you find the information you need by searching across all LocalStack documentation. Give it a try and let us know what you think!',
+            defer: true,
+            src: '/js/multi-sidebar-azure.js',
+          },
+        },
+        {
+          tag: 'script',
+          attrs: {
+            src: 'https://crawlchat.app/embed.js',
+            id: 'crawlchat-script',
+            'data-id': '698f2c11e688991df3c7e020',
           },
         },
         {
@@ -192,7 +196,7 @@ export default defineConfig({
         starlightLlmsTxt({
           projectName: 'LocalStack',
           description:
-            'LocalStack is a cloud service emulator that runs in a single container on your laptop or in your CI environment. It provides an easy-to-use test/mocking framework for developing cloud applications, with support for AWS services and Snowflake.',
+            'LocalStack is a cloud service emulator that runs in a single container on your laptop or in your CI environment. It provides an easy-to-use test/mocking framework for developing cloud applications, with support for AWS services, Snowflake, and Azure.',
           customSets: [
             {
               label: 'AWS',
@@ -204,8 +208,13 @@ export default defineConfig({
               description: 'Documentation for LocalStack Snowflake emulation',
               paths: ['snowflake/**'],
             },
+            {
+              label: 'Azure',
+              description: 'Documentation for LocalStack Azure emulation',
+              paths: ['azure/**'],
+            },
           ],
-          exclude: ['aws/changelog', 'snowflake/changelog'],
+          exclude: ['aws/changelog', 'snowflake/changelog', 'azure/changelog'],
           rawContent: true,
         }),
         starlightImageZoom({
@@ -216,7 +225,7 @@ export default defineConfig({
         }),
         starlightLinksValidator({
           errorOnRelativeLinks: true,
-          errorOnLocalLinks: false,  // Allow localhost links in tutorials (they're instructional)
+          errorOnLocalLinks: false, // Allow localhost links in tutorials (they're instructional)
           errorOnInvalidHashes: true,
         }),
         starlightUtils({
@@ -466,12 +475,13 @@ export default defineConfig({
                   slug: 'aws/enterprise',
                 },
                 {
-                  label: 'Single Sign-On',
-                  autogenerate: { directory: '/aws/enterprise/sso' },
+                  label: 'Kubernetes',
+                  autogenerate: { directory: '/aws/enterprise/kubernetes' },
+                  collapsed: true,
                 },
                 {
-                  label: 'Kubernetes Executor',
-                  slug: 'aws/enterprise/kubernetes-executor',
+                  label: 'Single Sign-On',
+                  autogenerate: { directory: '/aws/enterprise/sso' },
                 },
                 {
                   label: 'Enterprise Image',
@@ -554,6 +564,34 @@ export default defineConfig({
               label: 'Help & Support',
               collapsed: true,
               autogenerate: { directory: '/snowflake/help-support' },
+            },
+          ],
+        },
+        {
+          label: 'Azure',
+          collapsed: true,
+          items: [
+            {
+              label: 'Welcome',
+              slug: 'azure',
+            },
+            {
+              label: 'Getting Started',
+              autogenerate: { directory: 'azure/getting-started' },
+              collapsed: true,
+            },
+            {
+              label: 'Local Azure Services',
+              slug: 'azure/services',
+            },
+            {
+              label: 'Integrations',
+              autogenerate: { directory: 'azure/integrations' },
+              collapsed: true,
+            },
+            {
+              label: 'Changelog',
+              slug: 'azure/changelog',
             },
           ],
         },
