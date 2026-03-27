@@ -18,6 +18,7 @@
     Changelog: 'change-icon',
     'SQL Functions': 'sql-icon',
     'Licensing & Tiers': 'pricing-icon',
+    'Help & Support': 'help-icon',
   };
 
   let sidebarRaf = 0;
@@ -144,7 +145,7 @@
       return true;
     }
     const leftNavSelect = document.querySelector(
-      'starlight-multi-sidebar-select select'
+      'starlight-multi-sidebar-select select',
     );
     if (!leftNavSelect) {
       return false;

@@ -46,9 +46,6 @@ If you are encountering network issues and your Snowflake client drivers are una
 
 ## Support FAQs
 
-### How can I get help with LocalStack for Snowflake?
+### How can I get help or support with LocalStack for Snowflake?
 
-LocalStack for Snowflake is now GA. To get help, you can join the [Slack community](https://localstack.cloud/slack) and share your feedback, questions, and suggestions with the LocalStack team on the `#help` channel.
-
-If your team is using LocalStack for Snowflake, you can also request support by [contacting us](https://localstack.cloud/contact) or
-[opening a GitHub Discussion](https://github.com/orgs/localstack/discussions).
+If you're experiencing an issue with LocalStack for Snowflake, read our [Help & Support Guide](https://docs.localstack.cloud/snowflake/help-support/) for developers and enterprise teams.
