@@ -121,26 +121,6 @@ rancher-desktop --start
 
 Modify your Docker Compose configuration to work with Rancher Desktop:
 
-<Tabs>
-<TabItem label="Community">
-```yml showshowLineNumbers
-services:
-  localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
-    image: localstack/localstack
-    ports:
-      - "127.0.0.1:4566:4566"
-      - "127.0.0.1:4510-4559:4510-4559"
-    networks:
-      - rancher
-    environment:
-      - DEBUG=${DEBUG:-0}
-    volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-```
-</TabItem>
-<TabItem label="Pro">
 ```yml showshowLineNumbers
 services:
   localstack:
@@ -160,8 +140,6 @@ services:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
       ```
-</TabItem>
-</Tabs>
 
 Finally, start the services using `docker compose up` or `nerdctl compose up`, depending on your configuration.
 This will launch your LocalStack instance configured to interact with Rancher Desktop.

@@ -101,7 +101,7 @@ Users are encouraged to help others by sharing their knowledge and experiences.
 #### LocalStack Slack Community
 
 LocalStack Slack Community includes LocalStack users, contributors, and maintainers.
-If you need help with the community version of LocalStack, please use the `#help` channel.
+If you need help, please use the `#help` channel.
 You can sign up for the [LocalStack Slack Community](https://localstack.cloud/slack) by creating an account.
 
 #### GitHub Discussions
