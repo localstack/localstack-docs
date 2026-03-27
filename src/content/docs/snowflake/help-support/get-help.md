@@ -84,7 +84,7 @@ Enterprise customers have access to additional support options, including:
 - Support ticketing portal  
 - Real-time chat support  
 
-For more details, see [Enterprise Support](../enterprise-support/).
+For more details, see [Enterprise Support](/snowflake/help-support/enterprise-support/).
 
 ## Before you reach out
 

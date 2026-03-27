@@ -58,7 +58,7 @@ Choose the plan that best fits your needs based on the level of support and resp
 
 Enterprise support includes custom SLAs and dedicated communication channels.
 
-For full details, see [Enterprise Support](../enterprise-support/).
+For full details, see [Enterprise Support](/snowflake/help-support/enterprise-support/).
 
 
 ## Support scope

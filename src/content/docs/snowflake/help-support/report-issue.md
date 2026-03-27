@@ -81,4 +81,4 @@ After submitting your request:
 - Issues are prioritized based on urgency and impact  
 
 Response times depend on your support plan.  
-For details, see [Support Plans](../support-plans/).
+For details, see [Support Plans](/snowflake/help-support/support-plans/).
