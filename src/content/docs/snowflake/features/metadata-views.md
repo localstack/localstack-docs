@@ -189,7 +189,7 @@ The function accepts the following parameters:
 | RESULT_LIMIT | NUMBER | 100 | Maximum number of rows to return (range: 1–10000) |
 | END_TIME_RANGE_START | TIMESTAMP_LTZ | NULL | Return queries whose end time is at or after this value |
 | END_TIME_RANGE_END | TIMESTAMP_LTZ | NULL | Return queries whose end time is before this value |
-| INCLUDE_CLIENT_GENERATED_STATEMENT | BOOLEAN | NULL | Whether to include client-generated statements |
+| INCLUDE_CLIENT_GENERATED_STATEMENT | BOOLEAN | NULL | Whether to include client-generated statements (while an accepted parameter, it's not available yet in the emulator, so it defaults to False) |
 
 :::note
 The `END_TIME_RANGE_START` and `END_TIME_RANGE_END` parameters are accepted but time-based filtering is not yet applied in the emulator.
@@ -222,7 +222,7 @@ The function accepts the following positional parameters:
 
 ## ACCOUNT_USAGE
 
-The `ACCOUNT_USAGE` schema is available in the special `SNOWFLAKE` database and provides views with account-wide visibility across all databases. Query it using `SNOWFLAKE.ACCOUNT_USAGE.<view_name>`.
+The `ACCOUNT_USAGE` schema is available in the special `SNOWFLAKE` database and provides views with account-wide visibility across all databases. Query it using `SNOWFLAKE.ACCOUNT_USAGE.<view_name>`. You can also use the `TABLES` view to audit metadata for all tables in your account, `account_usage.tables`.
 
 ### TAG_REFERENCES
 
