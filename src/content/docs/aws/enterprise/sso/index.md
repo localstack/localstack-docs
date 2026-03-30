@@ -218,6 +218,23 @@ After configuring the base details for your Identity Provider (IdP), the followi
 
 ![Callback URL, Sign Up Portal URL, and Identifier (Entity Id)](/images/aws/additional-information-page.png)
 
+## Strict SSO Mode
+
+Strict SSO Mode is an optional security enhancement that requires all members of your organization to authenticate exclusively through the configured Identity Provider (IdP). Once enabled, standard username/password login is disabled for your organization and the configured IdP becomes the only permitted way to sign in.
+
+This provides two key security benefits:
+
+- **Leaked credential protection**: Even if a user's LocalStack password is compromised, attackers cannot log in without going through your IdP.
+- **Revocation enforcement**: When an employee's account is removed or suspended in your IdP, they immediately lose access to LocalStack.
+
+### Enabling Strict SSO Mode
+
+To enable strict mode, open the identity provider configuration in your LocalStack Web Application profile settings under **Single Sign-on**, and toggle the **Enable Strict SSO Mode** checkbox in the identity provider settings.
+
+:::caution
+Before enabling strict mode, ensure all team members have linked their accounts to the configured Identity Provider. Once strict mode is active, any user who has not completed SSO setup will be unable to sign in via password.
+:::
+
 ## User Roles and Permissions
 
 For each new member that joins your org, you can specify user roles and permissions that should be assigned to them.
