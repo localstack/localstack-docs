@@ -29,6 +29,7 @@ Options that affect the core LocalStack system.
 | `DEBUG` | `0` (default) \|`1`| Flag to increase log level and print more verbose logs (useful for troubleshooting issues)|
 | `IMAGE_NAME`| `localstack/localstack` (default), `localstack/localstack:0.11.0` | Specific name and tag of LocalStack Docker image to use.|
 | `LOCALSTACK_HOST`| `localhost.localstack.cloud:4566` (default) | This is interpolated into URLs and addresses that are returned by LocalStack. It has the form `<hostname>:<port>`. |
+| `GATEWAY_LISTEN` | `0.0.0.0:4566` (default in Docker mode), `127.0.0.1:4566` (default in host mode) | Configures the bind addresses of LocalStack. It has the form `<ip address>:<port>(,<ip address>:<port>)*`. LocalStack for AWS adds port `443`. |
 | `USE_SSL` | `0` (default) | Whether to return URLs using HTTP (`0`) or HTTPS (`1`). Changed with 3.0.0. In earlier versions this was toggling SSL support on or off. |
 | `PERSISTENCE` | `0` (default) | Enable persistence. See [Persistence Mechanism](/aws/capabilities/state-management/persistence) and [Filesystem Layout](/aws/capabilities/config/filesystem). |
 | `MAIN_CONTAINER_NAME` | `localstack-main` (default) | Specify the main docker container name |
