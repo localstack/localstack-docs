@@ -28,7 +28,37 @@ This offline functionality is enabled by:
 - After the image is pushed to the customer-specific ECR repository, the customer can pull and push it to their internal Docker registry.
 - Developers within the customer’s network can then pull the image from this registry.
 - To use the image from the command line interface (CLI), set the `IMAGE_NAME` configuration to the name of the Enterprise image, typically using the command:
-
     ```bash
     IMAGE_NAME=localstack-enterprise localstack start
     ```
+
+## "Online" vs "Offline" image
+
+This section compares the standard [LocalStack for AWS Docker image](/aws/capabilities/config/docker-images) ("online") with the customer-specific Enterprise image ("offline").
+
+### Key differences
+
+| Area | Standard image | Enterprise image |
+|---|---|---|
+| Internet requirement for core startup | Requires network access for normal [license activation](/aws/getting-started/auth-token). | Designed to run without internet access in air-gapped environments. |
+| License behavior | Activates via LocalStack licensing endpoints. If unreachable, LocalStack attempts offline activation and requires re-activation every 24 hours. | Includes an embedded keypair/decryption key so LocalStack can run without contacting the license server. |
+| Service dependencies | Some services may download dependencies on demand during runtime. | Service dependencies are pre-baked into the image for offline usage. |
+| Cloud Pods | Platform remote integration can sync state with your LocalStack account. | LocalStack Platform remotes are typically unavailable in fully air-gapped setups. Use self-managed remotes (for example S3 or ORAS) when available in your environment. |
+| Ephemeral instances | Available via Web App/CLI as cloud-hosted LocalStack runtimes. | Not available in air-gapped/offline deployments because they run on LocalStack Cloud infrastructure. |
+| Telemetry | Can send usage events for features such as [Stack Insights](/aws/capabilities/web-app/stack-insights). | Keep event reporting disabled (`DISABLE_EVENTS=1`) for strict offline setups. |
+
+### What communicates with LocalStack Cloud?
+
+The main integrations are:
+
+- **License activation**: The standard image performs online activation using your `LOCALSTACK_AUTH_TOKEN`. See [Auth Token](/aws/getting-started/auth-token) for activation behavior and fallbacks.
+- **Event reporting (telemetry)**: Used for Stack Insights and related usage analytics. You can disable this via `DISABLE_EVENTS=1`.
+- **Cloud Pods (platform remote)**: Saving/loading pods against the default platform remote uses LocalStack-managed infrastructure. For stricter data residency, configure your own Cloud Pods [remote storage](/aws/capabilities/state-management/cloud-pods#remotes).
+- **Ephemeral instances**: These are managed cloud instances and therefore require connectivity to LocalStack Cloud services.
+
+### Recommended setup for offline environments
+
+- Use the **offline Enterprise image** when no outbound connectivity is permitted.
+- Keep `DISABLE_EVENTS=1` to prevent event reporting.
+- Prefer local persistence or self-managed Cloud Pod remotes instead of platform remotes.
+- Do not rely on Ephemeral Instances in fully isolated networks; run LocalStack directly in your controlled environment instead.
