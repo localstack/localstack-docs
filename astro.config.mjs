@@ -331,6 +331,10 @@ export default defineConfig({
                   slug: 'aws/tooling/localstack-cli',
                 },
                 {
+                  label: 'LocalStack MCP Server',
+                  slug: 'aws/tooling/mcp-server',
+                },
+                {
                   label: 'LocalStack SDKs',
                   autogenerate: {
                     directory: '/aws/tooling/localstack-sdks',
