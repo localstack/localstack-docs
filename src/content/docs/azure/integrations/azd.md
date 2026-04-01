@@ -30,7 +30,6 @@ You now have access to the following LocalStack tools:
 |-----------|-----------------|-------------------------------|
 | az        | azlocal         | Interact with Azure resources |
 | azd       | azdlocal        | Deploy ARM/Bicep templates    |
-| func      | funclocal       | Deploy Azure Functions        |
 
 The LocalStack variants are wrappers around the existing tools, so you keep the full functionality of the original tool. It will just redirect all commands to the running LocalStack Emulator.
 
