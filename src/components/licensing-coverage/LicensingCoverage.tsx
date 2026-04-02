@@ -48,7 +48,7 @@ const headerStyle: React.CSSProperties = {
   border: '1px solid #999CAD',
   background: '#AFB2C2',
   color: 'var(--sl-color-gray-1)',
-  fontFamily: 'AeonikFono',
+  fontFamily: 'var(--font-aeonik-fono)',
   fontSize: '14px',
   fontWeight: '500',
   lineHeight: '16px',
@@ -58,7 +58,7 @@ const headerStyle: React.CSSProperties = {
 
 const bodyFont: React.CSSProperties = {
   color: 'var(--sl-color-gray-1)',
-  fontFamily: 'AeonikFono',
+  fontFamily: 'var(--font-aeonik-fono)',
   fontSize: '14px',
   fontWeight: '400',
   lineHeight: '16px',
@@ -75,7 +75,7 @@ const cellStyle: React.CSSProperties = {
 const categoryRowStyle: React.CSSProperties = {
   border: '1px solid #999CAD',
   padding: '10px 8px',
-  fontFamily: 'AeonikFono',
+  fontFamily: 'var(--font-aeonik-fono)',
   fontSize: '14px',
   fontWeight: '600',
   color: 'var(--sl-color-gray-1)',
@@ -84,7 +84,7 @@ const categoryRowStyle: React.CSSProperties = {
 
 const inputStyle: React.CSSProperties = {
   color: '#707385',
-  fontFamily: 'AeonikFono',
+  fontFamily: 'var(--font-aeonik-fono)',
   fontSize: '14px',
   fontWeight: '500',
   lineHeight: '24px',

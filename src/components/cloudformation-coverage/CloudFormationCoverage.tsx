@@ -124,7 +124,7 @@ export default function CloudFormationCoverage() {
           className="border rounded px-3 py-2 w-full max-w-sm"
           style={{
             color: '#707385',
-            fontFamily: 'AeonikFono',
+            fontFamily: 'var(--font-aeonik-fono)',
             fontSize: '14px',
             fontWeight: '500',
             lineHeight: '24px',
@@ -175,7 +175,7 @@ export default function CloudFormationCoverage() {
                         border: '1px solid #999CAD',
                         background: '#AFB2C2',
                         color: 'var(--sl-color-gray-1)',
-                        fontFamily: 'AeonikFono',
+                        fontFamily: 'var(--font-aeonik-fono)',
                         fontSize: '14px',
                         fontWeight: '500',
                         lineHeight: '16px',
@@ -206,7 +206,7 @@ export default function CloudFormationCoverage() {
           <tbody
             style={{
               color: 'var(--sl-color-gray-1)',
-              fontFamily: 'AeonikFono',
+              fontFamily: 'var(--font-aeonik-fono)',
               fontSize: '14px',
               fontWeight: '400',
               lineHeight: '16px',
@@ -246,7 +246,7 @@ export default function CloudFormationCoverage() {
           className="px-3 py-1 border rounded disabled:opacity-50"
           style={{
             color: 'var(--sl-color-gray-1)',
-            fontFamily: 'AeonikFono',
+            fontFamily: 'var(--font-aeonik-fono)',
             fontSize: '14px',
             fontWeight: '500',
             lineHeight: '24px',
@@ -259,7 +259,7 @@ export default function CloudFormationCoverage() {
         </button>
         <span
           style={{
-            fontFamily: 'AeonikFono',
+            fontFamily: 'var(--font-aeonik-fono)',
             fontSize: '14px',
           }}
         >
@@ -269,7 +269,7 @@ export default function CloudFormationCoverage() {
           className="px-3 py-1 border rounded disabled:opacity-50"
           style={{
             color: 'var(--sl-color-gray-1)',
-            fontFamily: 'AeonikFono',
+            fontFamily: 'var(--font-aeonik-fono)',
             fontSize: '14px',
             fontWeight: '500',
             lineHeight: '24px',

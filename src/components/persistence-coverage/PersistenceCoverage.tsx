@@ -114,7 +114,7 @@ export default function PersistenceCoverage() {
           className="border rounded px-2 py-1 w-full max-w-xs"
           style={{
             color: '#707385',
-            fontFamily: 'AeonikFono',
+            fontFamily: 'var(--font-aeonik-fono)',
             fontSize: '14px',
             fontStyle: 'normal',
             fontWeight: '500',
@@ -187,7 +187,7 @@ export default function PersistenceCoverage() {
                         border: '1px solid #999CAD',
                         background: '#AFB2C2',
                         color: 'var(--sl-color-gray-1)',
-                        fontFamily: 'AeonikFono',
+                        fontFamily: 'var(--font-aeonik-fono)',
                         fontSize: '14px',
                         fontStyle: 'normal',
                         fontWeight: '500',
@@ -216,7 +216,7 @@ export default function PersistenceCoverage() {
             ))}
           </TableHeader>
           <TableBody style={{
-            fontFamily: 'AeonikFono',
+            fontFamily: 'var(--font-aeonik-fono)',
             fontSize: '14px',
             fontStyle: 'normal',
             fontWeight: '400',
@@ -293,7 +293,7 @@ export default function PersistenceCoverage() {
           className="px-3 py-1 border rounded disabled:opacity-50"
           style={{
             color: 'var(--sl-color-gray-1)',
-            fontFamily: 'AeonikFono',
+            fontFamily: 'var(--font-aeonik-fono)',
             fontSize: '14px',
             fontStyle: 'normal',
             fontWeight: '500',
@@ -313,7 +313,7 @@ export default function PersistenceCoverage() {
           className="px-3 py-1 border rounded disabled:opacity-50"
           style={{
             color: 'var(--sl-color-gray-1)',
-            fontFamily: 'AeonikFono',
+            fontFamily: 'var(--font-aeonik-fono)',
             fontSize: '14px',
             fontStyle: 'normal',
             fontWeight: '500',

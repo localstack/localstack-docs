@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, envField } from 'astro/config';
+import { defineConfig, envField, fontProviders } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import starlightDocSearch from '@astrojs/starlight-docsearch';
@@ -25,9 +25,97 @@ const response = await fetch(
 const data = await response.json();
 const latestVersion = data.tag_name.replace('v', '');
 
+const aeonikProVariants = [
+  {
+    src: [
+      './src/fonts/AeonikPro/AeonikPro-Regular.woff2',
+      './src/fonts/AeonikPro/AeonikPro-Regular.woff',
+    ],
+    weight: 400,
+    style: 'normal',
+  },
+  {
+    src: [
+      './src/fonts/AeonikPro/AeonikPro-RegularItalic.woff2',
+      './src/fonts/AeonikPro/AeonikPro-RegularItalic.woff',
+    ],
+    weight: 400,
+    style: 'italic',
+  },
+  {
+    src: [
+      './src/fonts/AeonikPro/AeonikPro-Medium.woff2',
+      './src/fonts/AeonikPro/AeonikPro-Medium.woff',
+    ],
+    weight: 500,
+    style: 'normal',
+  },
+  {
+    src: [
+      './src/fonts/AeonikPro/AeonikPro-MediumItalic.woff2',
+      './src/fonts/AeonikPro/AeonikPro-MediumItalic.woff',
+    ],
+    weight: 500,
+    style: 'italic',
+  },
+];
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://docs.localstack.cloud',
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: 'Aeonik Pro',
+      cssVariable: '--font-aeonik-pro',
+      fallbacks: ['sans-serif'],
+      options: { variants: aeonikProVariants },
+    },
+    {
+      provider: fontProviders.local(),
+      name: 'Aeonik Fono',
+      cssVariable: '--font-aeonik-fono',
+      fallbacks: ['sans-serif'],
+      options: {
+        variants: [
+          {
+            src: [
+              './src/fonts/AeonikFono/aeonikfonopro-regular.woff2',
+              './src/fonts/AeonikFono/aeonikfonopro-regular.woff',
+            ],
+            weight: 400,
+            style: 'normal',
+          },
+          {
+            src: [
+              './src/fonts/AeonikFono/aeonikfonopro-medium.woff2',
+              './src/fonts/AeonikFono/aeonikfonopro-medium.woff',
+            ],
+            weight: 500,
+            style: 'normal',
+          },
+        ],
+      },
+    },
+    {
+      provider: fontProviders.local(),
+      name: 'Aeonik Mono',
+      cssVariable: '--font-aeonik-mono',
+      fallbacks: ['ui-monospace', 'monospace'],
+      options: {
+        variants: [
+          {
+            src: [
+              './src/fonts/AeonikMono/AeonikMono-Regular.woff2',
+              './src/fonts/AeonikMono/AeonikMono-Regular.woff',
+            ],
+            weight: 400,
+            style: 'normal',
+          },
+        ],
+      },
+    },
+  ],
   env: {
     schema: {
       LOCALSTACK_VERSION: envField.string({
@@ -44,15 +132,12 @@ export default defineConfig({
       title: 'Docs',
       favicon: '/images/favicons/favicon.ico',
       routeMiddleware: './src/routeData.ts',
-      customCss: [
-        './src/fonts/font-face.css',
-        './src/styles/global.css',
-        './src/styles/custom.css',
-      ],
+      customCss: ['./src/styles/global.css', './src/styles/custom.css'],
       editLink: {
         baseUrl: 'https://github.com/localstack/localstack-docs/edit/main/',
       },
       components: {
+        Head: './src/components/StarlightHead.astro',
         PageTitle: './src/components/PageTitleWithCopyButton.astro',
         PageSidebar: './src/components/PageSidebarWithBadges.astro',
         LanguageSelect: './src/components/LanguageSelectWithGetStarted.astro',
@@ -62,7 +147,7 @@ export default defineConfig({
       expressiveCode: {
         themes: ['one-light', 'one-dark-pro'],
         styleOverrides: {
-          codeFontFamily: 'AeonikMono, ui-monospace',
+          codeFontFamily: 'var(--font-aeonik-mono), ui-monospace',
           borderRadius: '0.5rem',
         },
       },
