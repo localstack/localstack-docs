@@ -3,8 +3,9 @@ title: Spring Cloud Function
 description: Use the Spring Cloud Function framework with LocalStack.
 template: doc
 sidebar:
-    order: 4
+  order: 4
 ---
+
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { Badge } from '@astrojs/starlight/components';
 
@@ -40,7 +41,7 @@ any other JVM setup.
   - [Add Request/Response utilities](#add-requestresponse-utilities)
   - [Creating a sample Model / DTO](#creating-a-sample-model--dto)
   - [Creating Rest API endpoints](#creating-rest-api-endpoints)
-    - [Cold Start and Warmup](#cold-start-and-warmup)
+    - [Cold Start and Warmup](#cold-start-and-warmup-)
   - [Creating other lambda Handlers](#creating-other-lambda-handlers)
 - [Setting up Deployment](#setting-up-deployment)
 - [Testing, Debugging and Hot Reloading](#testing-debugging-and-hot-reloading)
@@ -95,23 +96,25 @@ Now we need to define our dependencies.
 Here's a list of what we will be using in our project.
 
 Gradle plugins:
-* [java](https://docs.gradle.org/current/userguide/java_plugin.html)
-* [kotlin jvm](https://kotlinlang.org/docs/gradle.html#targeting-the-jvm)
-* [kotlin spring plugin](https://kotlinlang.org/docs/all-open-plugin.html#spring-support)
-* [spring boot plugin](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/)
-* [spring dependency management plugin](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#managing-dependencies)
-* [shadow plugin](https://github.com/johnrengelman/shadow)
+
+- [java](https://docs.gradle.org/current/userguide/java_plugin.html)
+- [kotlin jvm](https://kotlinlang.org/docs/gradle.html#targeting-the-jvm)
+- [kotlin spring plugin](https://kotlinlang.org/docs/all-open-plugin.html#spring-support)
+- [spring boot plugin](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/)
+- [spring dependency management plugin](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#managing-dependencies)
+- [shadow plugin](https://github.com/johnrengelman/shadow)
 
 Dependencies:
-* [kotlin stdlib](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib)
-* [spring cloud starter function web](https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-function-web)
-* [spring cloud function adapter for aws](https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-function-adapter-aws)
-* [lambda log4j2](https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-log4j2)
-* [lambda events](https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-events)
-* [jackson core](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core)
-* [jackson databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind)
-* [jackson annotations](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations)
-* [jackson module kotlin](https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin)
+
+- [kotlin stdlib](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib)
+- [spring cloud starter function web](https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-function-web)
+- [spring cloud function adapter for aws](https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-function-adapter-aws)
+- [lambda log4j2](https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-log4j2)
+- [lambda events](https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-events)
+- [jackson core](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core)
+- [jackson databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind)
+- [jackson annotations](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations)
+- [jackson module kotlin](https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin)
 
 In order to deploy our application to AWS, we need to build so-called "fat jar"
 which contains all application dependencies.
@@ -276,7 +279,6 @@ The easiest way to get started with JSON is to use the Jackson library.
 Let's configure it by creating a new configuration class `JacksonConfiguration.kt` under
 `src/main/kotlin/org/localstack/sampleproject/config`:
 
-
 ```kotlin title="JacksonConfiguration.kt" showshowLineNumbers
 package org.localstack.sampleproject.config
 
@@ -335,14 +337,15 @@ open class Logger {
 
 To reduce the amount of boilerplate code, we are going to introduce three
 utility functions for our Rest API communications:
-* to build regular json response
-* to build error json response
-* to parse request payload using ObjectMapper.
-Note that ObjectMapper does not necessarily need to be a JSON only.
-It could also be XML or any other Mapper extended from standard ObjectMapper.
-Your application may even support multiple protocols with different request/response formats at once.
 
-Let's define utility functions to to build  API gateway responses:
+- to build regular json response
+- to build error json response
+- to parse request payload using ObjectMapper.
+  Note that ObjectMapper does not necessarily need to be a JSON only.
+  It could also be XML or any other Mapper extended from standard ObjectMapper.
+  Your application may even support multiple protocols with different request/response formats at once.
+
+Let's define utility functions to to build API gateway responses:
 
 ```kotlin showshowLineNumbers
 package org.localstack.sampleproject.util
@@ -402,7 +405,7 @@ To transfer data from requests into something more meaningful than JSON strings
 (and back) you will be using a lot of Models and Data Transfer Objects (DTOs).
 It's time to define our first one.
 
-```kotlin showshowLineNumbers title="SampleModel.kt"    
+```kotlin showshowLineNumbers title="SampleModel.kt"
 package org.localstack.sampleproject.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -500,8 +503,8 @@ This way, you can define any other scheduled events, but we recommend using pure
 
 ```json
 {
-    "httpMethod": "SCHEDULE",
-    "path": "warmup"
+  "httpMethod": "SCHEDULE",
+  "path": "warmup"
 }
 ```
 
@@ -580,53 +583,51 @@ for usage examples.
 service: localstack-sampleproject-serverless
 
 provider:
-  name: aws
-  runtime: java11
-  stage: ${opt:stage}
-  region: us-west-1
-  lambdaHashingVersion: 20201221
-  deploymentBucket:
-    name: deployment-bucket
+name: aws
+runtime: java11
+stage: ${opt:stage}
+region: us-west-1
+lambdaHashingVersion: 20201221
+deploymentBucket:
+name: deployment-bucket
 
 package:
-  artifact: build/libs/localstack-sampleproject-all.jar
+artifact: build/libs/localstack-sampleproject-all.jar
 
 plugins:
-* serverless-localstack
-* serverless-deployment-bucket
+
+- serverless-localstack
+- serverless-deployment-bucket
 
 custom:
-  localstack:
-    stages:
-      - local
+localstack:
+stages: - local
 
 functions:
-  http_proxy:
-    timeout: 30
-    handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
-    events:
-      - http:
-          path: /{proxy+}
-          method: ANY
-          cors: true
-      # Please, note that events are a LocalStack for AWS feature
-      - schedule:
-          rate: rate(10 minutes)
-          enabled: true
-          input:
-            httpMethod: SCHEDULE
-            path: warmup
-  lambda_helloOne:
-    timeout: 30
-    handler: org.localstack.sampleproject.api.LambdaApi
-    environment:
-      FUNCTION_NAME: functionOne
-  lambda_helloTwo:
-    timeout: 30
-    handler: org.localstack.sampleproject.api.LambdaApi
-    environment:
-      FUNCTION_NAME: functionTwo
-```
+http_proxy:
+timeout: 30
+handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
+events: - http:
+path: /{proxy+}
+method: ANY
+cors: true # Please, note that events are a LocalStack for AWS feature - schedule:
+rate: rate(10 minutes)
+enabled: true
+input:
+httpMethod: SCHEDULE
+path: warmup
+lambda_helloOne:
+timeout: 30
+handler: org.localstack.sampleproject.api.LambdaApi
+environment:
+FUNCTION_NAME: functionOne
+lambda_helloTwo:
+timeout: 30
+handler: org.localstack.sampleproject.api.LambdaApi
+environment:
+FUNCTION_NAME: functionTwo
+
+````
 </TabItem>
 <TabItem label="AWS CDK">
 ```java title="ApplicationStack.kt" showshowLineNumbers
@@ -700,7 +701,8 @@ class ApplicationStack(parent: Construct, name: String) : Stack(parent, name) {
             .build()
     }
 }
-```
+````
+
 </TabItem>
 <TabItem label="Terraform">
 ```hcl title="variables.tf" showshowLineNumbers
@@ -710,22 +712,22 @@ variable "STAGE" {
 }
 
 variable "AWS_REGION" {
-    type    = string
-    default = "us-east-1"
+type = string
+default = "us-east-1"
 }
 
 variable "JAR_PATH" {
-    type    = string
-    default = "build/libs/localstack-sampleproject-all.jar"
+type = string
+default = "build/libs/localstack-sampleproject-all.jar"
 }
 
 provider "aws" {
-    access_key                  = "test_access_key"
-    secret_key                  = "test_secret_key"
-    region                      = var.AWS_REGION
-    s3_force_path_style         = true
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
+access_key = "test_access_key"
+secret_key = "test_secret_key"
+region = var.AWS_REGION
+s3_force_path_style = true
+skip_credentials_validation = true
+skip_metadata_api_check = true
 
     endpoints {
         apigateway       = var.STAGE == "local" ? "http://localhost:4566" : null
@@ -736,120 +738,124 @@ provider "aws" {
         lambda           = var.STAGE == "local" ? "http://localhost:4566" : null
         s3               = var.STAGE == "local" ? "http://localhost:4566" : null
     }
+
 }
 
 resource "aws_iam_role" "lambda-execution-role" {
-    name = "lambda-execution-role"
+name = "lambda-execution-role"
 
     assume_role_policy = <<EOF
+
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+"Version": "2012-10-17",
+"Statement": [
+{
+"Action": "sts:AssumeRole",
+"Principal": {
+"Service": "lambda.amazonaws.com"
+},
+"Effect": "Allow",
+"Sid": ""
+}
+]
 }
 EOF
 }
 
 resource "aws_lambda_function" "restApiLambdaFunction" {
-    filename      = var.JAR_PATH
-    function_name = "RestApiFunction"
-    role          = aws_iam_role.lambda-execution-role.arn
-    handler       = "org.springframework.cloud.function.adapter.aws.FunctionInvoker"
-    runtime       = "java11"
-    timeout       = 30
-    source_code_hash = filebase64sha256(var.JAR_PATH)
+filename = var.JAR_PATH
+function_name = "RestApiFunction"
+role = aws_iam_role.lambda-execution-role.arn
+handler = "org.springframework.cloud.function.adapter.aws.FunctionInvoker"
+runtime = "java11"
+timeout = 30
+source_code_hash = filebase64sha256(var.JAR_PATH)
 }
 
 resource "aws_api_gateway_rest_api" "rest-api" {
-    name = "ExampleRestApi"
+name = "ExampleRestApi"
 }
 
 resource "aws_api_gateway_resource" "proxy" {
-    rest_api_id = aws_api_gateway_rest_api.rest-api.id
-    parent_id   = aws_api_gateway_rest_api.rest-api.root_resource_id
-    path_part   = "{proxy+}"
+rest_api_id = aws_api_gateway_rest_api.rest-api.id
+parent_id = aws_api_gateway_rest_api.rest-api.root_resource_id
+path_part = "{proxy+}"
 }
 
 resource "aws_api_gateway_method" "proxy" {
-    rest_api_id   = aws_api_gateway_rest_api.rest-api.id
-    resource_id   = aws_api_gateway_resource.proxy.id
-    http_method   = "ANY"
-    authorization = "NONE"
+rest_api_id = aws_api_gateway_rest_api.rest-api.id
+resource_id = aws_api_gateway_resource.proxy.id
+http_method = "ANY"
+authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "proxy" {
-    rest_api_id = aws_api_gateway_rest_api.rest-api.id
-    resource_id = aws_api_gateway_method.proxy.resource_id
-    http_method = aws_api_gateway_method.proxy.http_method
+rest_api_id = aws_api_gateway_rest_api.rest-api.id
+resource_id = aws_api_gateway_method.proxy.resource_id
+http_method = aws_api_gateway_method.proxy.http_method
 
     integration_http_method = "POST"
     type                    = "AWS_PROXY"
     uri                     = aws_lambda_function.restApiLambdaFunction.invoke_arn
+
 }
 
 resource "aws_api_gateway_deployment" "rest-api-deployment" {
-    depends_on = [aws_api_gateway_integration.proxy]
-    rest_api_id = aws_api_gateway_rest_api.rest-api.id
-    stage_name  = var.STAGE
+depends_on = [aws_api_gateway_integration.proxy]
+rest_api_id = aws_api_gateway_rest_api.rest-api.id
+stage_name = var.STAGE
 }
 
 resource "aws_cloudwatch_event_rule" "warmup" {
-    name = "warmup-event-rule"
-    schedule_expression = "rate(10 minutes)"
+name = "warmup-event-rule"
+schedule_expression = "rate(10 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "warmup" {
-    target_id = "warmup"
-    rule = aws_cloudwatch_event_rule.warmup.name
-    arn = aws_lambda_function.restApiLambdaFunction.arn
-    input = "{\"httpMethod\": \"SCHEDULE\", \"path\": \"warmup\"}"
+target_id = "warmup"
+rule = aws_cloudwatch_event_rule.warmup.name
+arn = aws_lambda_function.restApiLambdaFunction.arn
+input = "{\"httpMethod\": \"SCHEDULE\", \"path\": \"warmup\"}"
 }
 
 resource "aws_lambda_permission" "warmup-permission" {
-    statement_id = "AllowExecutionFromCloudWatch"
-    action = "lambda:InvokeFunction"
-    function_name = aws_lambda_function.restApiLambdaFunction.function_name
-    principal = "events.amazonaws.com"
-    source_arn = aws_cloudwatch_event_rule.warmup.arn
+statement_id = "AllowExecutionFromCloudWatch"
+action = "lambda:InvokeFunction"
+function_name = aws_lambda_function.restApiLambdaFunction.function_name
+principal = "events.amazonaws.com"
+source_arn = aws_cloudwatch_event_rule.warmup.arn
 }
 
 resource "aws_lambda_function" "exampleFunctionOne" {
-    filename      = var.JAR_PATH
-    function_name = "ExampleFunctionOne"
-    role          = aws_iam_role.lambda-execution-role.arn
-    handler       = "org.localstack.sampleproject.api.LambdaApi"
-    runtime       = "java11"
-    timeout       = 30
-    source_code_hash = filebase64sha256(var.JAR_PATH)
-    environment {
-        variables = {
-            FUNCTION_NAME = "functionOne"
-        }
-    }
+filename = var.JAR_PATH
+function_name = "ExampleFunctionOne"
+role = aws_iam_role.lambda-execution-role.arn
+handler = "org.localstack.sampleproject.api.LambdaApi"
+runtime = "java11"
+timeout = 30
+source_code_hash = filebase64sha256(var.JAR_PATH)
+environment {
+variables = {
+FUNCTION_NAME = "functionOne"
+}
+}
 }
 
 resource "aws_lambda_function" "exampleFunctionTwo" {
-    filename      = var.JAR_PATH
-    function_name = "ExampleFunctionTwo"
-    role          = aws_iam_role.lambda-execution-role.arn
-    handler       = "org.localstack.sampleproject.api.LambdaApi"
-    runtime       = "java11"
-    timeout       = 30
-    source_code_hash = filebase64sha256(var.JAR_PATH)
-    environment {
-        variables = {
-            FUNCTION_NAME = "functionTwo"
-        }
-    }
+filename = var.JAR_PATH
+function_name = "ExampleFunctionTwo"
+role = aws_iam_role.lambda-execution-role.arn
+handler = "org.localstack.sampleproject.api.LambdaApi"
+runtime = "java11"
+timeout = 30
+source_code_hash = filebase64sha256(var.JAR_PATH)
+environment {
+variables = {
+FUNCTION_NAME = "functionTwo"
 }
+}
+}
+
 ```
 </TabItem>
 </Tabs>
@@ -862,3 +868,4 @@ for JVM Lambda functions.
 ## Useful Links
 
 * [Spring Cloud Function on LocalStack (Kotlin JVM)](https://github.com/localstack/localstack-pro-samples/tree/master/sample-archive/spring-cloud-function-microservice)
+```
