@@ -1,0 +1,15 @@
+---
+import { Font } from 'astro:assets';
+
+const { head } = Astro.locals.starlightRoute;
+---
+
+<Font cssVariable="--font-aeonik-pro" preload />
+<Font cssVariable="--font-aeonik-mono" preload />
+<Font cssVariable="--font-aeonik-fono" />
+
+{
+  head.map(({ tag: Tag, attrs, content }) => (
+    <Tag {...attrs} set:html={content} />
+  ))
+}
