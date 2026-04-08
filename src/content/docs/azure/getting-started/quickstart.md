@@ -26,7 +26,7 @@ Before you begin, make sure that the Emulator is running, see the [installation 
 To instruct the regular `az` CLI tool to communicate with the Azure emulator, run the following command:
 
 ```
-$ azlocal start_interception
+$ azlocal start-interception
 ```
 
 You may see some warnings about experimental commands, you can safely ignore these.
@@ -36,17 +36,17 @@ You may see some warnings about experimental commands, you can safely ignore the
 To create a resource group, you can now the same `az` command as you would normally:
 
 ```
-$ az group create --name MyResourceGroup --location westeurope
+$ az group create --name myResourceGroup --location westeurope
 ```
 
 The following output would be displayed:
 
 ```bash
 {
-  "id": "/subscriptions/some-generated-id/resourceGroups/MyResourceGroup",
+  "id": "/subscriptions/some-generated-id/resourceGroups/myResourceGroup",
   "location": "westeurope",
   "managedBy": null,
-  "name": "MyResourceGroup",
+  "name": "myResourceGroup",
   "properties": {
     "provisioningState": "Succeeded"
   },
@@ -60,7 +60,7 @@ The following output would be displayed:
 To check the resource group details, run the following command:
 
 ```
-$ az group show --name MyResourceGroup
+$ az group show --name myResourceGroup
 ```
 
 To list all the resource groups, run the following command:
@@ -74,7 +74,7 @@ $ azlocal group list
 To delete the resource group, run the following command:
 
 ```
-$ az group delete --name MyResourceGroup --yes
+$ az group delete --name myResourceGroup --yes
 ```
 
 ### Teardown
