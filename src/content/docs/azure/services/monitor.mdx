@@ -193,14 +193,48 @@ azlocal monitor diagnostic-settings update \
 ```bash title="Output"
 {
   "name": "rg-monitor-demo",
-  "logs": [
+ "logs": [
     {
-      "category": "Administrative",
-      "enabled": true
+      "category": "StorageRead",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
     },
     {
-      "category": "Security",
-      "enabled": false
+      "category": "StorageWrite",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    },
+    {
+      "category": "StorageDelete",
+      "enabled": false,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "category": "Transaction",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    },
+    {
+      "category": "Capacity",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
     }
   ],
   ...
