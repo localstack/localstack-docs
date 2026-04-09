@@ -1,0 +1,266 @@
+---
+title: "Resource Manager"
+description: Get started with Azure Resource Manager on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Resource Manager (ARM) is the unified deployment and management layer for Azure resources, providing a consistent control-plane API for resource organization and lifecycle management. It enables idempotent, declarative infrastructure as code (IaC) through JSON-based ARM templates and Bicep modules, allowing for automated resource group orchestration and provider registrations.
+
+For more information, see:
+- [[What is Azure Resource Manager?](https://learn.microsoft.com/azure/azure-resource-manager/management/overview)](https://learn.microsoft.com/azure/azure-resource-manager/management/overview)
+- [[What are ARM templates?](https://learn.microsoft.com/azure/azure-resource-manager/templates/overview)](https://learn.microsoft.com/azure/azure-resource-manager/templates/overview)
+- [[What is Bicep?](https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview)](https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview)
+
+LocalStack for Azure enables seamless interaction with the emulator’s management REST API via Azure Resource Manager. It also provides native support for Bicep and ARM templates, allowing for standardized Infrastructure as Code (IaC) deployments within your local environment.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Resource Manager's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Resource Manager and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group:
+
+```bash
+az group create \
+  --name rg-resources-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "name": "rg-resources-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resources-demo",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "..."
+}
+```
+
+### Get and list resource groups
+
+Get the resource group details:
+
+```bash
+az group show --name rg-resources-demo
+```
+
+```bash title="Output"
+{
+  "name": "rg-resources-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resources-demo",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "..."
+}
+```
+
+List matching resource groups:
+
+```bash
+az group list --query "[?name=='rg-resources-demo']"
+```
+
+```bash title="Output"
+[
+  {
+    "name": "rg-resources-demo",
+    "location": "westeurope",
+    "..."
+  }
+]
+```
+
+### Query resource providers
+
+Get a specific provider:
+
+```bash
+az provider show --namespace Microsoft.Resources
+```
+
+```bash title="Output"
+{
+  "namespace": "Microsoft.Resources",
+  "registrationState": "Registered",
+  "registrationPolicy": "RegistrationFree",
+  "resourceTypes": [
+    {
+      "resourceType": "resourceGroups",
+      "apiVersions": ["2023-07-01", "..."],
+      "..."
+    }
+    ...
+  ],
+  "..."
+}
+```
+
+List provider registration state:
+
+```bash
+az provider list --query "[?namespace=='Microsoft.Resources'].{namespace:namespace,registrationState:registrationState}"
+```
+
+```bash title="Output"
+[
+  {
+    "namespace": "Microsoft.Resources",
+    "registrationState": "Registered"
+  }
+]
+```
+
+### Deploy a Bicep template
+
+Create a Bicep file named `main.bicep` that provisions a storage account inside the resource group:
+
+```bicep
+param location string = resourceGroup().location
+param storageAccountName string = 'stbicep${uniqueString(resourceGroup().id)}'
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+}
+
+output storageAccountId string = storageAccount.id
+```
+
+Deploy the template into the resource group:
+
+```bash
+az deployment group create \
+  --resource-group rg-resources-demo \
+  --template-file main.bicep
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resources-demo/providers/Microsoft.Resources/deployments/main",
+  "name": "main",
+  "properties": {
+    "correlationId": "...",
+    "mode": "Incremental",
+    "provisioningState": "Succeeded",
+    "outputResources": [
+      {
+        ...
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resources-demo/providers/Microsoft.Storage/storageAccounts/..."
+      }
+    ],
+    "outputs": {
+      "storageAccountId": {
+        "type": "String",
+        "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resources-demo/providers/Microsoft.Storage/storageAccounts/..."
+      }
+    },
+    "..."
+  },
+  "type": "Microsoft.Resources/deployments",
+  "..."
+}
+```
+
+Verify the deployment status:
+
+```bash
+az deployment group show \
+  --resource-group rg-resources-demo \
+  --name main
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resources-demo/providers/Microsoft.Resources/deployments/main",
+  "name": "main",
+  "properties": {
+    "correlationId": "...",
+    "mode": "Incremental",
+    "provisioningState": "Succeeded",
+    ...
+  },
+  "type": "Microsoft.Resources/deployments",
+  "..."
+}
+```
+
+## Features
+
+The Resource Manager emulator supports the following features:
+
+- **Resource group lifecycle**: Create, update, get, list, delete, and check existence of resource groups. Deletion cascades to all contained resources.
+- **Resource listing and filtering**: List resources across a subscription or within a resource group, with support for `$filter` and `$expand` query parameters.
+- **Resource move**: Move top-level resources between resource groups with validation of source and destination groups, resource locks, and resource hierarchy.
+- **ARM template deployments**: Create or update deployments at the resource group scope and at the subscription scope. Templates are parsed and resources are provisioned in dependency order.
+- **Bicep support**: Bicep files compiled by the Azure CLI are accepted as ARM JSON templates. The emulator handles Bicep 2.0 symbolic names, `languageVersion`, and `definitions` sections.
+- **Nested deployments**: Inner-scoped and outer-scoped nested templates (`Microsoft.Resources/deployments`) are supported, including parameter passing between scopes.
+- **ARM template functions**: Over 60 built-in functions are evaluated locally, including `resourceId`, `reference`, `listKeys`, `concat`, `format`, `uniqueString`, `resourceGroup`, `subscription`, `copyIndex`, `if`, `union`, `createObject`, and others.
+- **Template validation**: Validate ARM templates at the resource group scope and subscription scope without creating resources.
+- **Copy loops and conditional resources**: The `copy` element and `condition` property are supported, enabling iterative resource creation and conditional deployment logic.
+- **Deployment operations**: List deployment operations at the resource group scope and at the subscription scope, including provisioning state and target resource details.
+- **Deployment outputs**: Template outputs are evaluated after deployment completes, with full ARM expression resolution.
+- **Subscription management**: List and get subscriptions, and list available Azure locations with metadata.
+- **Tenant listing**: List tenant identifiers associated with the emulator environment.
+- **Provider registry**: List, get, register, and unregister resource providers, including resource type details, API versions, and zone mappings.
+- **Resource group locks**: Lock and unlock resource groups to prevent accidental deletion or modification of contained resources.
+
+## Limitations
+
+- **Single subscription**: The emulator exposes a single subscription. Multiple subscriptions are not supported.
+- **Template validation is a no-op**: The `deployments validate` and `deployments validate at subscription scope` endpoints return a success response without performing syntactic or semantic validation.
+- **No management group or tenant-scoped deployments**: Deployments are supported only at the resource group and subscription scopes.
+- **No what-if analysis**: The `az deployment group what-if` operation is not implemented.
+- **ARM template function coverage**: While over 60 functions are supported, some less common functions or advanced overloads may not be fully implemented.
+- **No resource tags on generic resource listings**: Tags and extended properties may not be fully populated when listing resources across a subscription.
+- **No RBAC enforcement on resource operations**: All API calls succeed without role-based access control checks.
+- **Deployment concurrency**: Resources within a single deployment are created sequentially with dependency resolution, not in full parallel as in Azure.
+- **No deployment cancellation**: Running deployments cannot be cancelled.
+- **No deployment deletion**: Deployments are retained in memory and cannot be explicitly deleted via the API.
+
+## Samples
+
+The following samples demonstrate how to use Azure Resource Manager and Bicep with LocalStack for Azure:
+
+- [Function App and Storage](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-storage-http/dotnet/)
+- [Function App and Front Door](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-front-door/python/)
+- [Function App and Managed Identities](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-managed-identity/python/)
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/)
+- [Web App and Cosmos DB for NoSQL API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-nosql-api/python/)
+- [Web App and Managed Identities](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-managed-identity/python/)
+- [Web App and SQL Database](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-sql-database/python/)
+- [ACI and Blob Storage](https://github.com/localstack/localstack-azure-samples/tree/main/samples/aci-blob-storage/python/)
+- [Azure Service Bus with Spring Boot](https://github.com/localstack/localstack-azure-samples/tree/main/samples/servicebus/java/)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Resources" client:load />
