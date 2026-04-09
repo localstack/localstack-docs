@@ -16,33 +16,33 @@ LocalStack for Azure provides a local environment for building and testing appli
 - [Queue Storage](/azure/services/queue-storage)
 - [Table Storage](/azure/services/table-storage)
 
-The supported APIs are listed in the [API Coverage](#api-coverage) section.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Storage Account's integration with LocalStack.
 
 ## Getting started
 
-This guide is designed for users new to Azure Storage Accounts and Blob Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+This guide is designed for users new to Azure Storage Accounts and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
 
-Start your LocalStack container using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/).
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
-:::note
-As an alternative to using the `azlocal` CLI, users can run:
+```bash
+azlocal start-interception
+```
 
-`azlocal start-interception`
-
-This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator REST API.
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
 To revert this configuration, run:
 
-`azlocal stop-interception`
+```bash
+azlocal stop-interception
+```
 
-This reconfigures the `az` CLI to send commands to the official Azure management REST API. At this time, there is no full parity between `azlocal` and `az` commands after running `az start-interception`. Therefore, this technique is not fully interchangeable.
-:::
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
 
 ### Create a resource group
 
 Create a resource group for your storage account resources:
 
 ```bash
-azlocal group create \
+az group create \
   --name rg-storage-demo \
   --location westeurope
 ```
@@ -66,7 +66,7 @@ azlocal group create \
 Create a storage account with the `StorageV2` kind and `Standard_LRS` SKU:
 
 ```bash
-azlocal storage account create \
+az storage account create \
   --name stordoc86acct \
   --resource-group rg-storage-demo \
   --location westeurope \
@@ -96,20 +96,20 @@ azlocal storage account create \
 
 ### Authentication
 
-There are three ways to authenticate storage blob commands against the emulator:
+There are three ways to authenticate storage commands against the emulator:
 
 #### Storage account key
 
 Retrieve the account key and pass it with `--account-name` and `--account-key`:
 
 ```bash
-ACCOUNT_KEY=$(azlocal storage account keys list \
+ACCOUNT_KEY=$(az storage account keys list \
   --account-name stordoc86acct \
   --resource-group rg-storage-demo \
   --query "[0].value" \
   --output tsv)
 
-azlocal storage container list \
+az storage container list \
   --account-name stordoc86acct \
   --account-key "$ACCOUNT_KEY"
 ```
@@ -119,7 +119,7 @@ azlocal storage container list \
 Use `--auth-mode login` to authenticate with the current session credentials:
 
 ```bash
-azlocal storage container list \
+az storage container list \
   --account-name stordoc86acct \
   --auth-mode login
 ```
@@ -129,12 +129,12 @@ azlocal storage container list \
 Bundle the account name and key into a single value:
 
 ```bash
-CONNECTION_STRING=$(azlocal storage account show-connection-string \
+CONNECTION_STRING=$(az storage account show-connection-string \
   --name stordoc86acct \
   --resource-group rg-storage-demo \
   --query connectionString -o tsv)
 
-azlocal storage container list \
+az storage container list \
   --connection-string "$CONNECTION_STRING"
 ```
 
@@ -145,7 +145,7 @@ The remaining examples in this guide use connection strings for brevity.
 List the storage account access keys:
 
 ```bash
-azlocal storage account keys list \
+az storage account keys list \
   --account-name stordoc86acct \
   --resource-group rg-storage-demo
 ```
@@ -170,7 +170,7 @@ azlocal storage account keys list \
 Regenerate the primary key:
 
 ```bash
-azlocal storage account keys renew \
+az storage account keys renew \
   --account-name stordoc86acct \
   --resource-group rg-storage-demo \
   --key key1
@@ -179,7 +179,7 @@ azlocal storage account keys renew \
 Fetch a connection string for data-plane operations:
 
 ```bash
-azlocal storage account show-connection-string \
+az storage account show-connection-string \
   --name stordoc86acct \
   --resource-group rg-storage-demo
 ```
@@ -191,6 +191,9 @@ azlocal storage account show-connection-string \
 ```
 
 ## Features
+
+The Storage Account emulator supports the following features:
+
 - **Control plane REST API**: Storage account CRUD (create, read, update, delete, list), account key management, and name availability checks via Azure Resource Manager.
 - **Multiple authentication modes**: Storage account key, login credentials, and connection strings.
 - **Storage account management**: Create, update, delete, and list storage accounts. Supports `StorageV2`, `BlobStorage`, and `Storage` account kinds with configurable SKU, access tier, and TLS version.
@@ -198,6 +201,7 @@ azlocal storage account show-connection-string \
 - **Connection string generation**: Retrieve ready-to-use connection strings containing all service endpoints (Blob, Queue, Table, File).
 
 ## Limitations
+
 - **Header validation**: Unsupported request headers or parameters are silently accepted instead of being rejected.
 - **API version enforcement**: The emulator does not validate the `x-ms-version` header; all API versions are accepted.
 
