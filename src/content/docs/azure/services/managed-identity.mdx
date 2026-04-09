@@ -1,10 +1,298 @@
 ---
 title: "Managed Identity"
-description: API coverage for Microsoft.ManagedIdentity in LocalStack for Azure.
+description: Get started with Azure Managed Identity on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Managed Identity provides identities for Azure resources so applications can authenticate without storing credentials in code. The Azure platform supports two types of identities: 
+
+- **System-assigned**: Tied directly to the lifecycle of a specific resource; when the resource is deleted, Azure automatically cleans up the identity.
+- **User-assigned**: Created as a standalone Azure resource that can be assigned to one or more instances, making it ideal for shared workloads and scale sets.
+
+Managed identities are commonly used to access Azure services securely from apps and automation workflows. For more information, see [What are managed identities for Azure resources?](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview).
+
+LocalStack for Azure allows you to build and emulate applications that make use of system-assigned or user-assigned Managed Identities directly in your local environment. This enables you to validate your secret-less authentication logic with high fidelity, ensuring your code is production-ready without needing to provision live cloud resources.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Managed Identity's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Managed Identity and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group for the identity resources:
+
+```bash
+az group create \
+  --name rg-managedidentity-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "name": "rg-managedidentity-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-managedidentity-demo",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### User-assigned managed identity
+
+Create a user-assigned managed identity:
+
+```bash
+az identity create \
+  --name mi-doc77 \
+  --resource-group rg-managedidentity-demo \
+  --location westeurope \
+  --tags environment=test
+```
+
+```bash title="Output"
+{
+  "name": "mi-doc77",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-managedidentity-demo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mi-doc77",
+  "location": "westeurope",
+  "principalId": "a55f8986-0187-48fd-ac82-e87db6b80376",
+  "clientId": "216de8da-baf0-4403-925d-ac69c6ad67e3",
+  "tenantId": "00000000-0000-0000-0000-000000000000",
+  "tags": {
+    "environment": "test"
+  },
+  ...
+}
+```
+
+Get the new user-assigned managed identity:
+
+```bash
+az identity show \
+  --name mi-doc77 \
+  --resource-group rg-managedidentity-demo
+```
+
+```bash title="Output"
+{
+  "name": "mi-doc77",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-managedidentity-demo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mi-doc77",
+  "principalId": "a55f8986-0187-48fd-ac82-e87db6b80376",
+  "clientId": "216de8da-baf0-4403-925d-ac69c6ad67e3",
+  "tags": {
+    "environment": "test"
+  },
+  ...
+}
+```
+
+List user-assigned managed identities by resource group:
+
+```bash
+az identity list --resource-group rg-managedidentity-demo
+```
+
+```bash title="Output"
+[
+  {
+    "name": "mi-doc77",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-managedidentity-demo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mi-doc77",
+    "resourceGroup": "rg-managedidentity-demo",
+    "tags": {"environment": "test"},
+    ...
+  }
+]
+```
+
+List identities by subscription:
+
+```bash
+az identity list
+```
+
+```bash title="Output"
+[
+  {
+    "name": "mi-doc77",
+    "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+    "resourceGroup": "rg-managedidentity-demo",
+    ...
+  }
+]
+```
+
+Update identity tags:
+
+```bash
+az identity update \
+  --name mi-doc77 \
+  --resource-group rg-managedidentity-demo \
+  --tags environment=dev
+```
+
+```bash title="Output"
+{
+  "name": "mi-doc77",
+  "tags": {
+    "environment": "dev"
+  },
+  ...
+}
+```
+
+Delete the identity and verify it no longer appears in the resource group:
+
+```bash
+az identity delete --name mi-doc77 --resource-group rg-managedidentity-demo
+az identity list --resource-group rg-managedidentity-demo
+```
+
+```bash title="Output"
+[]
+```
+
+### System-assigned managed identity
+
+Create an app service plan and a web app:
+
+```bash
+az appservice plan create \
+  --name asp-doc77 \
+  --resource-group rg-managedidentity-demo \
+  --location westeurope \
+  --sku F1
+
+az webapp create \
+  --name ls-app-doc77 \
+  --resource-group rg-managedidentity-demo \
+  --plan asp-doc77 \
+  --runtime "PYTHON:3.11"
+```
+
+```bash title="Output"
+{
+  "name": "asp-doc77",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-managedidentity-demo/providers/Microsoft.Web/serverfarms/asp-doc77",
+  "location": "westeurope",
+  "provisioningState": "Succeeded",
+  ...
+}
+{
+  "name": "ls-app-doc77",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-managedidentity-demo/providers/Microsoft.Web/sites/ls-app-doc77",
+  "type": "Microsoft.Web/sites",
+  "location": "westeurope",
+  ...
+}
+```
+
+Enable the system-assigned managed identity on the web app
+
+```bash
+az webapp identity assign \
+  --name ls-app-doc77 \
+  --resource-group rg-managedidentity-demo
+```
+
+```bash title="Output"
+{
+  "type": "SystemAssigned",
+  "principalId": "78b44418-f917-4f3a-ac29-a9821d3d8e7c",
+  "tenantId": "00000000-0000-0000-0000-000000000000",
+  ...
+}
+```
+
+Retrieve the system-assigned managed identity by scope:
+
+```bash
+az webapp identity show \
+	--name ls-app-doc77 \
+	--resource-group rg-managedidentity-demo
+```
+
+```bash title="Output"
+{
+  "type": "SystemAssigned",
+  "principalId": "78b44418-f917-4f3a-ac29-a9821d3d8e7c",
+  "tenantId": "00000000-0000-0000-0000-000000000000",
+  ...
+}
+```
+
+You can also retrieve the system-assigned managed identity of a web app by calling the control plane REST API as follows:
+
+```bash
+SITE_ID=$(az webapp show --name ls-app-doc77 --resource-group rg-managedidentity-demo --query id -o tsv)
+az rest --method get \
+  --url "http://management.localhost.localstack.cloud:4566${SITE_ID}/providers/Microsoft.ManagedIdentity/identities/default?api-version=2024-11-30"
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-managedidentity-demo/providers/microsoft.web/sites/ls-app-doc77",
+  "name": "ls-app-doc77",
+  "type": "microsoft.web/sites",
+  "location": "westeurope",
+  "properties": {
+    "principalId": "78b44418-f917-4f3a-ac29-a9821d3d8e7c",
+    "clientId": "4364940c-ede7-43d8-8043-3dbad79377ee",
+    "tenantId": "00000000-0000-0000-0000-000000000000",
+    ...
+  }
+}
+```
+
+## Features
+
+The Managed Identity emulator supports the following features:
+
+- **User-assigned identity lifecycle**: Full create, read, update, and delete operations for user-assigned managed identities, including tag management and cross-region relocation.
+- **System-assigned identity retrieval**: Retrieve the system-assigned identity of any resource by scope, returning the associated principal ID, client ID, and tenant ID.
+- **Service principal auto-provisioning**: When a managed identity is created, a corresponding service principal is automatically registered in the Microsoft Graph store, mirroring Azure's built-in identity-to-directory integration.
+- **Role assignments**: Create, retrieve, delete, and list role assignments at subscription and scope levels. Scope-based filtering matches assignments by resource hierarchy.
+- **Role definitions**: Create and manage custom role definitions with granular permissions and assignable scopes. Over 549 builtin Azure role definitions are preloaded and available for immediate use.
+- **Management locks**: Create, delete, retrieve, and list management locks at the resource group level. Supported lock levels are `CanNotDelete` and `ReadOnly`.
+- **Microsoft Graph service principal queries**: List, create, and delete service principals through the Microsoft Graph `/v1.0/servicePrincipals` endpoint with OData query support including `$filter`, `$select`, `$top`, `$count`, and `$orderby`.
+- **Directory object lookups**: Resolve multiple directory objects by ID through the `/v1.0/directoryObjects/getByIds` endpoint.
+
+## Limitations
+
+The Managed Identity emulator has the following limitations:
+
+- **Federated identity credentials**: Federated identity credential operations (create, get, delete, list) are not yet implemented.
+- **No token issuance**: The emulator does not issue actual OAuth 2.0 tokens or enforce authentication. Identity objects are created and stored, but no real credential exchange occurs.
+- **Management locks scope**: Management locks are supported only at the resource group level. Subscription-level and individual-resource-level locks are not implemented.
+- **Microsoft Graph pagination**: The `@odata.nextLink` pagination mechanism is not implemented. Large result sets are returned in a single response.
+- **No data persistence across restarts**: Identity, role assignment, role definition, and service principal data is held in memory and is lost when the emulator is stopped or restarted.
+
+## Samples
+
+The following samples demonstrate how to use Managed Identity with LocalStack for Azure:
+
+- [Azure Functions App with Managed Identity](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-managed-identity/python)
+- [Azure Web App with Managed Identity](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-managed-identity/python)
 
 ## API Coverage
 
