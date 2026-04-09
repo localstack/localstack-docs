@@ -9,7 +9,7 @@ import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureF
 ## Introduction
 
 Azure Service Bus Data Plane APIs let you operate messaging entities through the namespace endpoint directly.
-These APIs are useful for programmatic queue, topic, and subscription operations in integration and messaging workflows.
+This data plane REST API allows for direct interaction with queues, topics, and subscriptions. It supports core messaging operations including sending, peeking, and receiving messages, as well as batch processing. For more information, see [Azure Service Bus REST API](https://learn.microsoft.com/rest/api/servicebus/service-bus-runtime-rest).
 In LocalStack, they are useful for validating data-plane behavior without calling Azure cloud endpoints.
 
 LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Service Bus Data Plane APIs.
@@ -193,6 +193,39 @@ curl -s -X DELETE "$SB_ENDPOINT/dptopic?api-version=2017-04"
 
 curl -s -X DELETE "$SB_ENDPOINT/dpqueue?api-version=2017-04"
 ```
+
+## Features
+
+The emulator includes the following core capabilities:
+
+- **Data Plane REST API**: Supports message-level operations, including Send, Receive, and Peek.
+- **Control Plane REST API**: Enables CRUD operations for namespaces and messaging entities (queues, topics, and subscriptions) via Azure Resource Manager (ARM).
+- **Multiple Authentication Modes**: Supports both Connection String and Managed Identity authentication.
+- **Containerized Deployment**: Runs as a lightweight, Linux-based Docker container.
+- **Cross-Platform Compatibility**: Fully compatible with Windows, macOS, and Linux environments.
+- **Flexible Configuration**: Manage Service Bus entities via the Service Bus Administration Client or through JSON-based configuration files.
+- **Advanced Streaming**: Supports message streaming via the Advanced Message Queuing Protocol (AMQP).
+
+## Limitations
+
+The current version of the emulator does **not** support the following:
+
+- **Protocols**: JMS protocol streaming and AMQP Web Sockets (AMQP over TCP is the only supported transport).
+- **Messaging Patterns**: Transactions, auto-forwarding (queue chaining), and message lock renewal.
+- **Validation**: Enforcements such as maximum entity counts or maximum message sizes.
+- **Metrics**: Property-based message counts for queues, topics, and subscriptions may be inaccurate.
+
+The following Azure-native features are currently unavailable in the emulator:
+
+- **Scaling & Resiliency**: Autoscale, Geo-disaster recovery, and Large Message support.
+- **Monitoring**: Visual metrics, alerts, and telemetry dashboards.
+
+## Samples
+
+Explore the following samples to get started with Service Bus on LocalStack:
+
+- [Azure Functions App with Service Bus Messaging](https://github.com/localstack/localstack-azure-samples/blob/main/samples/function-app-service-bus/dotnet/)
+- [Azure Service Bus with Spring Boot](https://github.com/localstack/localstack-azure-samples/tree/main/samples/servicebus/java)
 
 ## Features
 
