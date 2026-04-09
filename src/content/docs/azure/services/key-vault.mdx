@@ -19,12 +19,20 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 This guide is designed for users new to Key Vault and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
 
-Start your LocalStack container using your preferred method.
-Then start CLI interception:
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
 ```bash
-azlocal start_interception
+azlocal start-interception
 ```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
 
 ### Create a resource group
 
