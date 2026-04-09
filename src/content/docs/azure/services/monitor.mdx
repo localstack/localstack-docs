@@ -1,0 +1,315 @@
+---
+title: "Monitor"
+description: Get started with Azure Monitor on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor is a platform service for collecting, analyzing, and acting on telemetry from Azure resources and applications.
+It helps you inspect activity logs and configure diagnostic settings for operational visibility.
+These capabilities are useful for troubleshooting, auditing, and observability workflows. For more information, see [Azure Monitor overview](https://learn.microsoft.com/azure/azure-monitor/fundamentals/overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Monitor's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Azure Monitor and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to contain your Monitor demo resources:
+
+```bash
+az group create \
+  --name rg-monitor-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monitor-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-monitor-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a storage account
+
+Create a storage account to use as a diagnostic settings destination:
+
+```bash
+az storage account create \
+  --name mystore \
+  --resource-group rg-monitor-demo \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+```bash title="Output"
+{
+  ...
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monitor-demo/providers/Microsoft.Storage/storageAccounts/mystore",
+  ...
+  "name": "stmonitordoc79",
+  ...
+  "primaryEndpoints": {
+    "blob": "https://mystore.blob.core.azure.localhost.localstack.cloud:4566",
+    ...
+    "table": "https://mystore.table.core.azure.localhost.localstack.cloud:4566",
+    ...
+  },
+  ...
+}
+```
+
+### List activity logs
+
+List recent activity logs from the subscription:
+
+```bash
+azlocal monitor activity-log list --max-events 5
+```
+
+```bash title="Output"
+[
+  {
+    "caller": "00000000-0000-0000-0000-000000000000",
+    "category": {
+      "value": "Administrative",
+      ...
+    },
+    "eventName": {
+      "value": "EndRequest",
+      ...
+    },
+    "eventTimestamp": "2026-03-17T07:34:43.230050",
+    "resourceGroupName": "rg-monitor-demo",
+    "resourceProviderName": {
+      "value": "Microsoft.Resources",
+      ...
+    },
+    ...
+  },
+  ...
+]
+```
+
+### Create and inspect diagnostic settings
+
+Get the resource ID of the storage account:
+
+```bash
+RESOURCE_ID=$(az storage account show \
+  --name mystore \
+  --resource-group rg-monitor-demo \
+  --query id \
+  --output tsv)
+```
+
+Create a diagnostic setting for the bob service of the storage account. For more information, see [Diagnostic settings in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/platform/diagnostic-settings):
+
+```bash
+az monitor diagnostic-settings create \
+  --name rg-monitor-demo \
+  --resource "${RESOURCE_ID}/blobServices/default" \
+  --storage-account mystore \
+  --logs '[{"category":"StorageRead","enabled":true},{"category":"StorageWrite","enabled":true}]' \
+  --metrics '[{"category":"Transaction","enabled":true},{"category":"Capacity","enabled":true}]' 
+```
+
+```bash title="Output"
+{
+  "id": "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monitor-demo/providers/microsoft.insights/diagnosticSettings/rg-monitor-demo",
+  "name": "rg-monitor-demo",
+  "logs": [
+    {
+      "category": "Administrative",
+      "enabled": true
+    }
+  ],
+  "metrics": [],
+  "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monitor-demo/providers/microsoft.Storage/storageAccounts/stmonitordoc79",
+  "type": "microsoft.insights/diagnosticSettings"
+}
+```
+
+Get the diagnostic setting:
+
+```bash
+az monitor diagnostic-settings show \
+  --name rg-monitor-demo \
+ --resource "${RESOURCE_ID}/blobServices/default"
+```
+
+```bash title="Output"
+{
+  "id": "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monitor-demo/providers/microsoft.insights/diagnosticSettings/rg-monitor-demo",
+  "name": "rg-monitor-demo",
+  "logs": [
+    {
+      "category": "StorageRead",
+      "enabled": true
+    },
+    {
+      "category": "StorageWrite",
+      "enabled": true
+    }
+  ],
+ "metrics": [
+    {
+      "category": "Transaction",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    },
+    {
+      "category": "Capacity",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    }
+  ],
+  ...
+}
+```
+
+### Update and delete diagnostic settings
+
+Update diagnostic settings to include an additional category:
+
+```bash
+az monitor diagnostic-settings update \
+  --name rg-monitor-demo \
+  --resource"${RESOURCE_ID}/blobServices/default" \
+  --logs '[{"category":"StorageRead","enabled":true},{"category":"StorageWrite","enabled":true},,{"category":"StorageDelete","enabled":true}]' \
+  --metrics '[{"category":"Transaction","enabled":true},{"category":"Capacity","enabled":true}]'
+```
+
+```bash title="Output"
+{
+  "name": "rg-monitor-demo",
+ "logs": [
+    {
+      "category": "StorageRead",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    },
+    {
+      "category": "StorageWrite",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    },
+    {
+      "category": "StorageDelete",
+      "enabled": false,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "category": "Transaction",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    },
+    {
+      "category": "Capacity",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    }
+  ],
+  ...
+}
+```
+
+Delete the diagnostic setting:
+
+```bash
+az monitor diagnostic-settings delete \
+  --name rg-monitor-demo \
+  --resource "${RESOURCE_ID}/blobServices/default"
+```
+
+## Features
+
+The Azure Monitor emulator supports the following features:
+
+- **Activity logs**: List activity log entries for a subscription, with optional filtering by resource ID and time range.
+- **Diagnostic settings**: Create, get, update, and delete diagnostic settings on any ARM resource.
+- **Application Insights components**: Create, get, update tags, list, delete, and purge Application Insights components. Billing features (get and update) are also supported.
+- **Action groups**: Create, get, update, list (by resource group or subscription), and delete action groups.
+- **Metric alerts**: Create, get, update, list (by resource group or subscription), and delete metric alert rules.
+- **Activity log alerts**: Create, get, update, list (by resource group or subscription), and delete activity log alert rules.
+- **Autoscale settings**: Create, get, update, list (by resource group or subscription), and delete autoscale settings.
+- **Scheduled query rules**: Create, get, update, list (by resource group or subscription), and delete scheduled query rules.
+- **Data collection rules and endpoints**: Create, get, update, list (by resource group or subscription), and delete data collection rules and data collection endpoints. Create, get, list (by resource, by rule, or by endpoint), and delete data collection rule associations.
+- **Web tests**: Create, get, update tags, list (by resource group, subscription, or component), and delete availability web tests.
+- **Workbooks and workbook templates**: Create, get, update, list (by resource group or subscription), and delete workbooks. Create, get, update, list (by resource group), and delete workbook templates. Workbook revisions (get and list) are also supported.
+- **Telemetry ingestion (data plane)**: Accept Application Insights SDK telemetry payloads (`track`), custom metrics publish, and live metrics subscription checks.
+- **Query API (data plane)**: Execute and get log analytics queries, retrieve metrics, and list events.
+
+## Limitations
+
+- **No data persistence across restarts**: Activity logs, diagnostic settings, and all resource state are held in memory and lost when the emulator is stopped or restarted.
+- **Activity log recording**: Only non-read (non-GET) control plane operations are recorded. Data plane operations and read requests do not produce activity log entries.
+- **Diagnostic settings are not enforced**: Diagnostic settings are stored but do not route logs or metrics to the specified destination (storage account, Log Analytics workspace, or event hub).
+- **Telemetry ingestion is a no-op**: The data plane telemetry endpoints (`track`, `publish`, `isSubscribed`) accept payloads and return success responses, but telemetry data is not stored or queryable.
+- **Query API returns empty results**: Log analytics queries, metrics, and event queries return structurally valid but empty responses.
+- **Autoscale rules are not evaluated**: Autoscale settings are stored but scaling actions are never triggered.
+- **Alert rule evaluation**: Metric alerts, activity log alerts, and scheduled query rules are stored as resources but are never evaluated or fired.
+- **Workbook revision history**: Revisions always return the current version of a workbook; historical revision tracking is not implemented.
+- **Components purge**: The purge endpoint accepts requests and returns an operation ID, but no data is actually purged.
+
+## Samples
+
+Explore the following samples to get started with Service Bus on LocalStack:
+
+- [Azure Functions App with Service Bus Messaging](https://github.com/localstack/localstack-azure-samples/blob/main/samples/function-app-service-bus/dotnet/)
+- [Azure Web App with Azure Cosmos DB for MongoDB](https://github.com/localstack/localstack-azure-samples/blob/main/samples/web-app-cosmosdb-mongodb-api/python/)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />
