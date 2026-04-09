@@ -333,8 +333,7 @@ export default defineConfig({
             },
             {
               label: 'Getting Started',
-              autogenerate: { directory: '/aws/getting-started' },
-              collapsed: true,
+              slug: 'azure/services',
             },
             {
               label: 'Local AWS Services',
