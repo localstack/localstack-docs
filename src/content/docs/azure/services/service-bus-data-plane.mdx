@@ -19,20 +19,20 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 This guide is designed for users new to Service Bus Data Plane APIs and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
 
-Start your LocalStack container using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/).
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
-:::note
-As an alternative to using the `azlocal` CLI, users can run:
-
-`azlocal start-interception`
+```bash
+azlocal start-interception
+```
 
 This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
 To revert this configuration, run:
 
-`azlocal stop-interception`
+```bash
+azlocal stop-interception
+```
 
-This reconfigures the `az` CLI to send commands to the official Azure management REST API. At this time, there is no full parity between `azlocal` and `az` commands after running `az start-interception`. Therefore, this technique is not fully interchangeable.
-:::
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
 
 ### Create a resource group
 
