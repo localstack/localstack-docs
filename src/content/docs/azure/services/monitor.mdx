@@ -43,7 +43,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to contain your Monitor demo resources:
 
 ```bash
-azlocal group create \
+az group create \
   --name rg-monitor-demo \
   --location westeurope
 ```
@@ -67,7 +67,7 @@ azlocal group create \
 Create a storage account to use as a diagnostic settings destination:
 
 ```bash
-azlocal storage account create \
+az storage account create \
   --name mystore \
   --resource-group rg-monitor-demo \
   --location westeurope \
@@ -84,7 +84,7 @@ azlocal storage account create \
   "primaryEndpoints": {
     "blob": "https://mystore.blob.core.azure.localhost.localstack.cloud:4566",
     ...
-    "table": "https://stmonitordoc79table.localhost.localstack.cloud:4566",
+    "table": "https://mystore.table.core.azure.localhost.localstack.cloud:4566",
     ...
   },
   ...
@@ -125,23 +125,25 @@ azlocal monitor activity-log list --max-events 5
 
 ### Create and inspect diagnostic settings
 
-Get the resource group resource ID:
+Get the resource ID of the storage account:
 
 ```bash
-RESOURCE_ID=$(azlocal group show \
-  --name rg-monitor-demo \
+RESOURCE_ID=$(az storage account show \
+  --name mystore \
+  --resource-group rg-monitor-demo \
   --query id \
   --output tsv)
 ```
 
-Create diagnostic settings for the resource group:
+Create a diagnostic setting for the bob service of the storage account. For more information, see [Diagnostic settings in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/platform/diagnostic-settings):
 
 ```bash
-azlocal monitor diagnostic-settings create \
+az monitor diagnostic-settings create \
   --name rg-monitor-demo \
-  --resource "$RESOURCE_ID" \
-  --storage-account stmonitordoc79 \
-  --logs '[{"category":"Administrative","enabled":true}]'
+  --resource "${RESOURCE_ID}/blobServices/default" \
+  --storage-account mystore \
+  --logs '[{"category":"StorageRead","enabled":true},{"category":"StorageWrite","enabled":true}]' \
+  --metrics '[{"category":"Transaction","enabled":true},{"category":"Capacity","enabled":true}]' 
 ```
 
 ```bash title="Output"
@@ -163,9 +165,9 @@ azlocal monitor diagnostic-settings create \
 Get the diagnostic setting:
 
 ```bash
-azlocal monitor diagnostic-settings show \
+az monitor diagnostic-settings show \
   --name rg-monitor-demo \
-  --resource "$RESOURCE_ID"
+ --resource "${RESOURCE_ID}/blobServices/default"
 ```
 
 ```bash title="Output"
@@ -174,11 +176,32 @@ azlocal monitor diagnostic-settings show \
   "name": "rg-monitor-demo",
   "logs": [
     {
-      "category": "Administrative",
+      "category": "StorageRead",
+      "enabled": true
+    },
+    {
+      "category": "StorageWrite",
       "enabled": true
     }
   ],
-  "metrics": [],
+ "metrics": [
+    {
+      "category": "Transaction",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    },
+    {
+      "category": "Capacity",
+      "enabled": true,
+      "retentionPolicy": {
+        "days": 0,
+        "enabled": false
+      }
+    }
+  ],
   ...
 }
 ```
@@ -188,10 +211,11 @@ azlocal monitor diagnostic-settings show \
 Update diagnostic settings to include an additional category:
 
 ```bash
-azlocal monitor diagnostic-settings update \
+az monitor diagnostic-settings update \
   --name rg-monitor-demo \
-  --resource "$RESOURCE_ID" \
-  --logs '[{"category":"Administrative","enabled":true},{"category":"Security","enabled":false}]'
+  --resource"${RESOURCE_ID}/blobServices/default" \
+  --logs '[{"category":"StorageRead","enabled":true},{"category":"StorageWrite","enabled":true},,{"category":"StorageDelete","enabled":true}]' \
+  --metrics '[{"category":"Transaction","enabled":true},{"category":"Capacity","enabled":true}]'
 ```
 
 ```bash title="Output"
