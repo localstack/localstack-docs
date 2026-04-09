@@ -1,10 +1,231 @@
 ---
 title: "Service Bus Data Plane"
-description: API coverage for Microsoft.ServiceBus.DataPlane in LocalStack for Azure.
+description: Get started with Azure Service Bus Data Plane on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Service Bus Data Plane APIs let you operate messaging entities through the namespace endpoint directly.
+This data plane REST API allows for direct interaction with queues, topics, and subscriptions. It supports core messaging operations including sending, peeking, and receiving messages, as well as batch processing. For more information, see [Azure Service Bus REST API](https://learn.microsoft.com/rest/api/servicebus/service-bus-runtime-rest).
+In LocalStack, they are useful for validating data-plane behavior without calling Azure cloud endpoints.
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Service Bus Data Plane APIs.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Service Bus Data Plane integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Service Bus Data Plane APIs and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group for your Service Bus resources:
+
+```bash
+az group create \
+  --name rg-servicebus-dp-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-servicebus-dp-demo",
+  "location": "westeurope",
+  "name": "rg-servicebus-dp-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create a Service Bus namespace
+
+Create a namespace and capture its data-plane endpoint:
+
+```bash
+az servicebus namespace create \
+  --resource-group rg-servicebus-dp-demo \
+  --name sbnsdoc84 \
+  --location westeurope \
+  --sku Standard
+```
+
+```bash title="Output"
+{
+  "name": "sbnsdoc84",
+  "serviceBusEndpoint": "https://sbnsdoc84.localhost.localstack.cloud:4511",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Store the HTTP endpoint for data-plane REST calls:
+
+```bash
+SB_ENDPOINT="http://sbnsdoc84.localhost.localstack.cloud:4511"
+```
+
+### Create and inspect a queue entity
+
+Create a queue via the data-plane Entity `Put` API:
+
+```bash
+curl -s -X PUT "$SB_ENDPOINT/dpqueue?api-version=2017-04" \
+  -H "Content-Type: application/atom+xml;type=entry;charset=utf-8" \
+  -d '<?xml version="1.0" encoding="utf-8"?><entry xmlns="http://www.w3.org/2005/Atom"><title type="text">dpqueue</title><content type="application/xml"><QueueDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect" /></content></entry>'
+```
+
+```xml title="Output"
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">dpqueue</title>
+  <content type="application/xml">
+    <QueueDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
+      <Status>Active</Status>
+      ...
+    </QueueDescription>
+  </content>
+</entry>
+```
+
+Get the queue entity via Entity `Get`:
+
+```bash
+curl -s -X GET "$SB_ENDPOINT/dpqueue?api-version=2017-04"
+```
+
+```xml title="Output"
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">dpqueue</title>
+  <content type="application/xml">
+    <QueueDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
+      <MessageCount>0</MessageCount>
+      <Status>Active</Status>
+      ...
+    </QueueDescription>
+  </content>
+</entry>
+```
+
+### Create and inspect a topic subscription
+
+Create a topic entity:
+
+```bash
+curl -s -X PUT "$SB_ENDPOINT/dptopic?api-version=2017-04" \
+  -H "Content-Type: application/atom+xml;type=entry;charset=utf-8" \
+  -d '<?xml version="1.0" encoding="utf-8"?><entry xmlns="http://www.w3.org/2005/Atom"><title type="text">dptopic</title><content type="application/xml"><TopicDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect" /></content></entry>'
+```
+
+Create a subscription via Subscription `Put`:
+
+```bash
+curl -s -X PUT "$SB_ENDPOINT/dptopic/subscriptions/dpsub?api-version=2017-04" \
+  -H "Content-Type: application/atom+xml;type=entry;charset=utf-8" \
+  -d '<?xml version="1.0" encoding="utf-8"?><entry xmlns="http://www.w3.org/2005/Atom"><title type="text">dpsub</title><content type="application/xml"><SubscriptionDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect" /></content></entry>'
+```
+
+```xml title="Output"
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">dpsub</title>
+  <content type="application/xml">
+    <SubscriptionDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
+      <Status>Active</Status>
+      <MaxDeliveryCount>10</MaxDeliveryCount>
+      ...
+    </SubscriptionDescription>
+  </content>
+</entry>
+```
+
+Get the subscription via Subscription `Get`:
+
+```bash
+curl -s -X GET "$SB_ENDPOINT/dptopic/subscriptions/dpsub?api-version=2017-04"
+```
+
+```xml title="Output"
+<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">dpsub</title>
+  <content type="application/xml">
+    <SubscriptionDescription xmlns="http://schemas.microsoft.com/netservices/2010/10/servicebus/connect">
+      <MessageCount>0</MessageCount>
+      <Status>Active</Status>
+      ...
+    </SubscriptionDescription>
+  </content>
+</entry>
+```
+
+### Delete subscription and entities
+
+Delete the subscription via Subscription `Delete`:
+
+```bash
+curl -s -X DELETE "$SB_ENDPOINT/dptopic/subscriptions/dpsub?api-version=2017-04"
+```
+
+Delete entities via Entity `Delete`:
+
+```bash
+curl -s -X DELETE "$SB_ENDPOINT/dptopic?api-version=2017-04"
+
+curl -s -X DELETE "$SB_ENDPOINT/dpqueue?api-version=2017-04"
+```
+
+## Features
+
+The emulator includes the following core capabilities:
+
+- **Data Plane REST API**: Supports message-level operations, including Send, Receive, and Peek.
+- **Control Plane REST API**: Enables CRUD operations for namespaces and messaging entities (queues, topics, and subscriptions) via Azure Resource Manager (ARM).
+- **Multiple Authentication Modes**: Supports both Connection String and Managed Identity authentication.
+- **Containerized Deployment**: Runs as a lightweight, Linux-based Docker container.
+- **Cross-Platform Compatibility**: Fully compatible with Windows, macOS, and Linux environments.
+- **Flexible Configuration**: Manage Service Bus entities via the Service Bus Administration Client or through JSON-based configuration files.
+- **Advanced Streaming**: Supports message streaming via the Advanced Message Queuing Protocol (AMQP).
+
+## Limitations
+
+The current version of the emulator does **not** support the following:
+
+- **Protocols**: JMS protocol streaming and AMQP Web Sockets (AMQP over TCP is the only supported transport).
+- **Messaging Patterns**: Transactions, auto-forwarding (queue chaining), and message lock renewal.
+- **Validation**: Enforcements such as maximum entity counts or maximum message sizes.
+- **Metrics**: Property-based message counts for queues, topics, and subscriptions may be inaccurate.
+
+The following Azure-native features are currently unavailable in the emulator:
+
+- **Scaling & Resiliency**: Autoscale, Geo-disaster recovery, and Large Message support.
+- **Monitoring**: Visual metrics, alerts, and telemetry dashboards.
+
+## Samples
+
+Explore the following samples to get started with Service Bus on LocalStack:
+
+- [Azure Functions App with Service Bus Messaging](https://github.com/localstack/localstack-azure-samples/blob/main/samples/function-app-service-bus/dotnet/)
+- [Azure Service Bus with Spring Boot](https://github.com/localstack/localstack-azure-samples/tree/main/samples/servicebus/java)
 
 ## API Coverage
 
