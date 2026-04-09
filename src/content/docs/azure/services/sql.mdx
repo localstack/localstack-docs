@@ -1,10 +1,338 @@
 ---
 title: "SQL"
-description: API coverage for Microsoft.Sql in LocalStack for Azure.
+description: Get started with Azure SQL in LocalStack for Azure.
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure SQL is a managed relational database service for building cloud-native applications with familiar SQL Server tooling.
+It supports creating logical servers, provisioning databases, and configuring operational features such as firewall access and retention policies.
+This makes it a common choice for transactional workloads and application backends. For more information, see [What is Azure SQL Database?](https://learn.microsoft.com/azure/azure-sql/database/sql-database-paas-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure SQL Database.
+The supported APIs are listed in the [API Coverage](#api-coverage) section.
+
+## Getting started
+
+This guide is designed for users new to Azure SQL Database and assumes basic knowledge of the Azure CLI and `azlocal`. The following example creates a SQL server and database, configures firewall access, and defines retention and encryption settings.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to contain your SQL resources:
+
+```bash
+az group create --name rg-sql-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo",
+  "location": "westeurope",
+  "name": "rg-sql-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create and inspect a SQL server
+
+Create a logical SQL server to host your databases:
+
+```bash
+az sql server create \
+  --name sqlsrvdoc85 \
+  --resource-group rg-sql-demo \
+  --location westeurope \
+  --admin-user lsadmin \
+  --admin-password "LocalstackSqlPassw0rd"
+```
+
+```bash title="Output"
+{
+  "administratorLogin": "lsadmin",
+  ...
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85",
+  ...
+  "location": "westeurope",
+  ...
+  "name": "sqlsrvdoc85",
+ ...
+  "type": "Microsoft.Sql/servers",
+ ...
+}
+```
+
+Get the SQL server details to verify it is ready:
+
+```bash
+az sql server show --name sqlsrvdoc85 --resource-group rg-sql-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85",
+  "name": "sqlsrvdoc85",
+  "location": "westeurope",
+  "state": "Ready",
+  "publicNetworkAccess": "Enabled",
+  "type": "Microsoft.Sql/servers",
+  ...
+}
+```
+
+### Create and query a database
+
+Create a database on the SQL server:
+
+```bash
+az sql db create \
+	--name sqldbdoc85 \
+	--resource-group rg-sql-demo \
+	--server sqlsrvdoc85 \
+	--service-objective S0 \
+	--compute-model Provisioned
+```
+
+```bash title="Output"
+{
+  ...
+  "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+  "collation": "SQL_Latin1_General_CP1_CI_AS",
+  "creationDate": "2026-03-24T09:32:54.177434+00:00",
+  "currentBackupStorageRedundancy": "Geo",
+  "currentServiceObjectiveName": "GP_Gen5_2",
+  "currentSku": {
+    "capacity": 2,
+    "family": "Gen5",
+    "name": "S0",
+    "size": null,
+    "tier": "GeneralPurpose"
+  },
+  "databaseId": "62951a4b-e3b7-41ce-b7e7-1d4860801828",
+  ...
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85",
+  ...
+  "name": "sqldbdoc85",
+  ...
+  "sku": {
+    "capacity": 2,
+    "family": "Gen5",
+    "name": "S0",
+    "size": null,
+    "tier": "GeneralPurpose"
+  },
+  ...
+  "status": "Online",
+  ...
+}
+```
+
+Verify the database status to confirm successful creation:
+
+```bash
+az sql db show \
+	--name sqldbdoc85 \
+	--resource-group rg-sql-demo
+```
+
+```bash title="Output"
+{
+  ...
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85",
+  ...
+  "name": "sqldbdoc85",
+  ...
+  "status": "Online",
+  ...
+}
+```
+
+List the databases on the SQL server:
+
+```bash
+az sql db list \
+	--resource-group rg-sql-demo \
+	--server sqlsrvdoc85
+```
+
+```bash title="Output"
+[
+  {
+    ...
+    "name": "master",
+    ...
+  },
+  {
+    ...
+    "name": "sqldbdoc85",
+    ...
+  }
+]
+```
+
+### Add a firewall rule
+
+Create a firewall rule to allow client access:
+
+```bash
+az sql server firewall-rule create \
+  --resource-group rg-sql-demo \
+  --server sqlsrvdoc85 \
+  --name AllowLocal \
+  --start-ip-address 0.0.0.0 \
+  --end-ip-address 255.255.255.255
+```
+
+```bash title="Output"
+{
+  "name": "AllowLocal",
+  "startIpAddress": "0.0.0.0",
+  "endIpAddress": "255.255.255.255",
+  "type": "Microsoft.Sql/servers/firewallRules",
+  ...
+}
+```
+
+### Configure transparent data encryption
+
+Enable transparent data encryption on the database:
+
+```bash
+az sql db tde set \
+	--database sqldbdoc85 \
+	--server sqlsrvdoc85 \
+	--resource-group rg-sql-demo \
+	--status Enabled
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85/transparentDataEncryption/current",
+  "name": "current",
+  "resourceGroup": "rg-sql-demo",
+  ...
+  "state": "Enabled",
+  "type": "Microsoft.Sql/servers/databases/transparentDataEncryption"
+}
+```
+
+### Configure backup retention policies
+
+Configure a short-term backup retention policy:
+
+```bash
+az sql db str-policy set \
+	--name sqldbdoc85 \
+	--server sqlsrvdoc85 \
+	--resource-group rg-sql-demo \
+	--retention-days 7 \
+	--diffbackup-hours 24
+```
+
+```bash title="Output"
+{
+  "diffBackupIntervalInHours": 24,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85/backupShortTermRetentionPolicies/default",
+  "name": "default",
+  "resourceGroup": "rg-sql-demo",
+  "retentionDays": 7,
+  "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies"
+}
+```
+
+Configure a long-term backup retention policy:
+
+```bash
+az sql db ltr-policy set \
+	--name sqldbdoc85 \
+	--server sqlsrvdoc85 \
+	--resource-group rg-sql-demo \
+	--weekly-retention "P4W" \
+	--monthly-retention "P12M" \
+	--yearly-retention "P5Y" \
+	--week-of-year 16
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sql-demo/providers/Microsoft.Sql/servers/sqlsrvdoc85/databases/sqldbdoc85/backupLongTermRetentionPolicies/default",
+  "monthlyRetention": "P12M",
+  "name": "default",
+  "resourceGroup": "rg-sql-demo",
+  "timeBasedImmutability": null,
+  "timeBasedImmutabilityMode": null,
+  "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+  "weekOfYear": 16,
+  "weeklyRetention": "P4W",
+  "yearlyRetention": "P5Y"
+}
+```
+
+## Features
+
+The Azure SQL emulator supports the following features:
+
+- **Server lifecycle management**: Create, update, delete, get, and list logical SQL servers.
+- **Database CRUD**: Create, update, delete, get, list, and rename databases on a logical server.
+- **Firewall rules**: Create, update, delete, get, and list server-level firewall rules.
+- **Transparent data encryption (TDE)**: Create or update, get, and list TDE configurations per database.
+- **Short-term backup retention policies**: Create or update, get, update, and list short-term retention policies per database.
+- **Long-term backup retention policies**: Create or update, get, and list long-term retention policies per database.
+- **Database security alert policies**: Create or update, get, and list security alert policies per database.
+- **Server connection policies**: Create or update, get, and list connection policies per server.
+- **SQL vulnerability assessments**: Create or update, get, and list vulnerability assessment settings per server.
+- **Database schema introspection**: Get and list schemas, tables, and columns by querying the live SQL Server instance.
+- **Server name availability check**: Check whether a server name is available for use.
+- **Restorable dropped databases**: Get and list restorable dropped databases (stub: always returns an empty list).
+- **Replication links**: List replication links for a database (stub: always returns an empty list).
+- **Asynchronous provisioning**: Server and database creation use async operations with polling headers, matching real Azure behavior.
+
+## Limitations
+
+- **No data persistence across restarts**: SQL Server containers are ephemeral. All databases, schemas, and data are lost when the LocalStack emulator is stopped or restarted.
+- **Backup retention policies are metadata-only**: Short-term and long-term retention policies are stored but no actual backup or restore operations are performed.
+- **Transparent data encryption is metadata-only**: TDE settings are stored but no actual encryption is applied to the database files.
+- **Security alert policies are metadata-only**: Alert policies are stored but do not trigger notifications or log monitoring.
+- **Vulnerability assessments are metadata-only**: Assessment settings are stored but no scans are executed.
+- **Server connection policies are metadata-only**: Connection policies are stored but do not affect network behavior.
+- **Replication links always empty**: No geo-replication or active replication is supported.
+- **Elastic pools, failover groups, and geo-replication are not supported**: These features are not implemented.
+- **MSSQL EULA acceptance required**: The `MSSQL_ACCEPT_EULA` environment variable must be set to `Y` before creating any SQL server.
+
+## Configuration
+
+The behavior of the Azure SQL emulator can be customized using the environment variables listed below.
+
+| **Variable**                           | **Description**                                                                                           | **Type** | **Default** |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------- | ----------- |
+| `MSSQL_ACCEPT_EULA`                   | Accept the Microsoft SQL Server End-User License Agreement. Must be set to `Y` to create SQL servers.     | String   | (unset)     |
+| `ALLOW_MULTIPLE_SQL_SERVER_DEPLOYMENTS`| Allow provisioning more than one SQL Server Docker container. Set to `1` or `true` to enable.             | Boolean  | `0`         |
+
+## Samples
+
+The following sample demonstrates how to use Azure SQL Database with LocalStack for Azure:
+
+- [Web App and SQL Database](https://github.com/localstack/localstack-azure-samples/blob/main/samples/web-app-sql-database/python/)
 
 ## API Coverage
 
