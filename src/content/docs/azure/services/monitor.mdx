@@ -215,6 +215,43 @@ az monitor diagnostic-settings delete \
   --resource "$RESOURCE_ID"
 ```
 
+## Features
+
+The Azure Monitor emulator supports the following features:
+
+- **Activity logs**: List activity log entries for a subscription, with optional filtering by resource ID and time range.
+- **Diagnostic settings**: Create, get, update, and delete diagnostic settings on any ARM resource.
+- **Application Insights components**: Create, get, update tags, list, delete, and purge Application Insights components. Billing features (get and update) are also supported.
+- **Action groups**: Create, get, update, list (by resource group or subscription), and delete action groups.
+- **Metric alerts**: Create, get, update, list (by resource group or subscription), and delete metric alert rules.
+- **Activity log alerts**: Create, get, update, list (by resource group or subscription), and delete activity log alert rules.
+- **Autoscale settings**: Create, get, update, list (by resource group or subscription), and delete autoscale settings.
+- **Scheduled query rules**: Create, get, update, list (by resource group or subscription), and delete scheduled query rules.
+- **Data collection rules and endpoints**: Create, get, update, list (by resource group or subscription), and delete data collection rules and data collection endpoints. Create, get, list (by resource, by rule, or by endpoint), and delete data collection rule associations.
+- **Web tests**: Create, get, update tags, list (by resource group, subscription, or component), and delete availability web tests.
+- **Workbooks and workbook templates**: Create, get, update, list (by resource group or subscription), and delete workbooks. Create, get, update, list (by resource group), and delete workbook templates. Workbook revisions (get and list) are also supported.
+- **Telemetry ingestion (data plane)**: Accept Application Insights SDK telemetry payloads (`track`), custom metrics publish, and live metrics subscription checks.
+- **Query API (data plane)**: Execute and get log analytics queries, retrieve metrics, and list events.
+
+## Limitations
+
+- **No data persistence across restarts**: Activity logs, diagnostic settings, and all resource state are held in memory and lost when the emulator is stopped or restarted.
+- **Activity log recording**: Only non-read (non-GET) control plane operations are recorded. Data plane operations and read requests do not produce activity log entries.
+- **Diagnostic settings are not enforced**: Diagnostic settings are stored but do not route logs or metrics to the specified destination (storage account, Log Analytics workspace, or event hub).
+- **Telemetry ingestion is a no-op**: The data plane telemetry endpoints (`track`, `publish`, `isSubscribed`) accept payloads and return success responses, but telemetry data is not stored or queryable.
+- **Query API returns empty results**: Log analytics queries, metrics, and event queries return structurally valid but empty responses.
+- **Autoscale rules are not evaluated**: Autoscale settings are stored but scaling actions are never triggered.
+- **Alert rule evaluation**: Metric alerts, activity log alerts, and scheduled query rules are stored as resources but are never evaluated or fired.
+- **Workbook revision history**: Revisions always return the current version of a workbook; historical revision tracking is not implemented.
+- **Components purge**: The purge endpoint accepts requests and returns an operation ID, but no data is actually purged.
+
+## Samples
+
+Explore the following samples to get started with Service Bus on LocalStack:
+
+- [Azure Functions App with Service Bus Messaging](https://github.com/localstack/localstack-azure-samples/blob/main/samples/function-app-service-bus/dotnet/)
+- [Azure Web App with Azure Cosmos DB for MongoDB](https://github.com/localstack/localstack-azure-samples/blob/main/samples/web-app-cosmosdb-mongodb-api/python/)
+
 ## API Coverage
 
 <AzureFeatureCoverage service="Microsoft.Insights" client:load />
