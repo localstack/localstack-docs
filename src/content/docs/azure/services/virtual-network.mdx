@@ -21,6 +21,19 @@ This guide is designed for users new to Virtual Network and assumes basic knowle
 
 Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
 
 ### Create a resource group
 
@@ -220,6 +233,7 @@ az network vnet list --resource-group rg-vnet-demo
 ```bash title="Output"
 []
 ```
+
 ## Features
 
 The Virtual Network emulator supports the following features:
