@@ -39,7 +39,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to contain your Service Bus resources:
 
 ```bash
-azlocal group create \
+az group create \
   --name rg-servicebus-demo \
   --location westeurope
 ```
@@ -63,7 +63,7 @@ azlocal group create \
 Create a Service Bus namespace in the resource group:
 
 ```bash
-azlocal servicebus namespace create \
+az servicebus namespace create \
   --resource-group rg-servicebus-demo \
   --name sbnsdoc83 \
   --location westeurope \
@@ -88,11 +88,11 @@ azlocal servicebus namespace create \
 Get and list namespaces:
 
 ```bash
-azlocal servicebus namespace show \
+az servicebus namespace show \
   --resource-group rg-servicebus-demo \
   --name sbnsdoc83
 
-azlocal servicebus namespace list \
+az servicebus namespace list \
   --resource-group rg-servicebus-demo
 ```
 
@@ -101,7 +101,7 @@ azlocal servicebus namespace list \
 Create a queue in the namespace:
 
 ```bash
-azlocal servicebus queue create \
+az servicebus queue create \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --name orders-queue
@@ -122,7 +122,7 @@ azlocal servicebus queue create \
 Get and list queues:
 
 ```bash
-azlocal servicebus queue show \
+az servicebus queue show \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --name orders-queue
@@ -149,7 +149,7 @@ azlocal servicebus queue show \
 ```
 
 ```bash
-azlocal servicebus queue list \
+az servicebus queue list \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83
 ```
@@ -185,12 +185,12 @@ The values under `countDetails` may not be accurate in the emulator.
 Create a topic and a subscription:
 
 ```bash
-azlocal servicebus topic create \
+az servicebus topic create \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --name orders-topic
 
-azlocal servicebus topic subscription create \
+az servicebus topic subscription create \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --topic-name orders-topic \
@@ -215,7 +215,7 @@ azlocal servicebus topic subscription create \
 Get and list subscriptions:
 
 ```bash
-azlocal servicebus topic subscription show \
+az servicebus topic subscription show \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --topic-name orders-topic \
@@ -243,7 +243,7 @@ azlocal servicebus topic subscription show \
 ```
 
 ```bash
-azlocal servicebus topic subscription list \
+az servicebus topic subscription list \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --topic-name orders-topic
@@ -280,7 +280,7 @@ The values under `countDetails` may not be accurate in the emulator.
 Create a SQL filter rule for the subscription:
 
 ```bash
-azlocal servicebus topic subscription rule create \
+az servicebus topic subscription rule create \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --topic-name orders-topic \
@@ -304,7 +304,7 @@ azlocal servicebus topic subscription rule create \
 List rules for the subscription:
 
 ```bash
-azlocal servicebus topic subscription rule list \
+az servicebus topic subscription rule list \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --topic-name orders-topic \
@@ -316,7 +316,7 @@ azlocal servicebus topic subscription rule list \
 Create an authorization rule:
 
 ```bash
-azlocal servicebus namespace authorization-rule create \
+az servicebus namespace authorization-rule create \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --name app-policy \
@@ -337,7 +337,7 @@ azlocal servicebus namespace authorization-rule create \
 List authorization rules:
 
 ```bash
-azlocal servicebus namespace authorization-rule list \
+az servicebus namespace authorization-rule list \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83
 ```
@@ -345,12 +345,12 @@ azlocal servicebus namespace authorization-rule list \
 List and regenerate keys:
 
 ```bash
-azlocal servicebus namespace authorization-rule keys list \
+az servicebus namespace authorization-rule keys list \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --name app-policy
 
-azlocal servicebus namespace authorization-rule keys renew \
+az servicebus namespace authorization-rule keys renew \
   --resource-group rg-servicebus-demo \
   --namespace-name sbnsdoc83 \
   --name app-policy \
