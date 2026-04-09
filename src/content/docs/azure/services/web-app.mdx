@@ -1,0 +1,332 @@
+---
+title: "App Services"
+description: Get started with Azure App Services on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure App Service is a fully managed platform for hosting web applications, mobile backends, and RESTful APIs without infrastructure overhead. It supports multiple runtimes including .NET, Java, Node.js, Python, and PHP on both Windows and Linux, or as custom containers. For more information, see the [App Service overview](https://learn.microsoft.com/azure/app-service/overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure App Services.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Web App's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Web App and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group for your Web App resources:
+
+```bash
+az group create \
+  --name rg-web-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "name": "rg-web-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-web-demo",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create an App Service plan
+
+Create an App Service plan that will host the web app:
+
+```bash
+az appservice plan create \
+  --name asp-web-doc89 \
+  --resource-group rg-web-demo \
+  --location westeurope \
+  --sku B1
+```
+
+```bash title="Output"
+{
+  "name": "asp-web-doc89",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-web-demo/providers/Microsoft.Web/serverfarms/asp-web-doc89",
+  "location": "westeurope",
+  "provisioningState": "Succeeded",
+  "sku": {
+    "name": "B1",
+    "tier": "Basic",
+    ...
+  },
+  ...
+}
+```
+
+### Create and inspect a Web App
+
+Create a web app using a Python runtime:
+
+```bash
+az webapp create \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo \
+  --plan asp-web-doc89 \
+  --runtime "PYTHON:3.11"
+```
+
+```bash title="Output"
+{
+  "name": "ls-web-doc89",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-web-demo/providers/Microsoft.Web/sites/ls-web-doc89",
+  "type": "Microsoft.Web/sites",
+  "location": "westeurope",
+  "defaultHostName": "ls-web-doc89.azurewebsites.azure.localhost.localstack.cloud:4566",
+  "state": "Running",
+  ...
+}
+```
+
+Get the web app:
+
+```bash
+az webapp show \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo
+```
+
+### Read and update web app configuration
+
+Read the current web app configuration:
+
+```bash
+az webapp config show \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-web-demo/providers/Microsoft.Web/sites/ls-web-doc89/config/web",
+  "linuxFxVersion": "PYTHON|3.11",
+  "http20Enabled": true,
+  "alwaysOn": false,
+  "ftpsState": "FtpsOnly",
+  ...
+}
+```
+
+Update the web app configuration:
+
+```bash
+az webapp config set \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo \
+  --always-on false \
+  --http20-enabled true
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-web-demo/providers/Microsoft.Web/sites/ls-web-doc89",
+  "http20Enabled": true,
+  "alwaysOn": false,
+  ...
+}
+```
+
+### Configure application settings
+
+Set an application setting that instructs the SCM endpoint to build the application during deployment:
+
+```bash
+az webapp config appsettings set \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo \
+  --settings SCM_DO_BUILD_DURING_DEPLOYMENT="true"
+```
+
+```bash title="Output"
+[
+  {
+    "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+    "slotSetting": false,
+    "value": "true"
+  }
+]
+```
+
+Verify the setting was applied:
+
+```bash
+az webapp config appsettings list \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo \
+  --query "[?name=='SCM_DO_BUILD_DURING_DEPLOYMENT']"
+```
+
+```bash title="Output"
+[
+  {
+    "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+    "slotSetting": false,
+    "value": "true"
+  }
+]
+```
+
+### Deploy a Python application
+
+Create a minimal Flask application and package it as a zip archive for deployment:
+
+```bash
+mkdir python_webapp && cd python_webapp
+cat > app.py << 'EOF'
+import json
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def index():
+    return json.dumps({"status": "Great Success!"})
+if __name__ == "__main__":
+    app.run()
+EOF
+cat > requirements.txt << 'EOF'
+Flask==3.0.3
+gunicorn==23.0.0
+Werkzeug==3.0.4
+EOF
+zip -r ../python_webapp.zip .
+cd ..
+```
+
+Deploy the zip package to the web app:
+
+```bash
+az webapp deploy \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo \
+  --src-path python_webapp.zip \
+  --type zip \
+  --async true
+```
+
+```bash title="Output"
+{
+  "status": 4,
+  "complete": true,
+  "active": true,
+  ...
+}
+```
+
+Verify that the web app is in the `Running` state:
+
+```bash
+az webapp show \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo \
+  --query "state" \
+  --output tsv
+```
+
+```bash title="Output"
+Running
+```
+
+### Delete and verify
+
+Delete the web app and verify it no longer appears:
+
+```bash
+az webapp delete \
+  --name ls-web-doc89 \
+  --resource-group rg-web-demo
+az webapp list --resource-group rg-web-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+The App Service emulator supports the following features:
+- **App Service Plans**: Create, get, list (subscription-wide and by resource group), and delete App Service Plans.
+- **Web Apps**: Create, get, list (subscription-wide and by resource group), and delete web apps.
+- **Application settings**: List and update application settings via `az webapp config appsettings set` and `az webapp config appsettings list`.
+- **Site configuration**: Read and update site configuration properties including `http20Enabled`, `alwaysOn`, `ftpsState`, and `linuxFxVersion`.
+- **Zip deployment**: Deploy application packages via `az webapp deploy --type zip`, triggering an Oryx-based container build.
+- **SCM deployment endpoints**: Zip deploy and publish endpoints accessible via the SCM subdomain.
+- **Deployment lifecycle**: Create, get, list, delete, and retrieve logs for individual deployments.
+- **Deployment status**: Poll production site deployment status for async deployments.
+- **Source control integration**: Create, get, update, delete, and sync source control configuration.
+- **Function App support**: List functions, list function keys, sync function triggers, sync functions, and query sync status.
+- **Publishing credentials**: Retrieve publishing credentials and publishing profile XML.
+- **Diagnostic logs configuration**: Get and update HTTP and application log settings.
+- **Azure Storage account mounts**: List and update Azure Storage account configurations on a site.
+- **Authentication settings**: Read auth settings (v1 and v2) for a site.
+- **Publishing policy controls**: Get and update FTP and SCM publishing credential policies.
+- **Connection strings**: List connection strings for a site.
+- **Managed identity**: System-assigned and user-assigned managed identities for web apps.
+- **Instance identifiers**: List web app instance identifiers.
+- **Slot configuration names**: List the names of settings and connection strings that are slot-specific.
+- **Runtime stack enumeration**: List available web app and Function App runtime stacks for both Linux and Windows.
+- **Geo region listing**: List available geographic regions for App Service deployments.
+- **Name availability check**: Validate that a web app name is available within the subscription.
+
+## Limitations
+
+- **Deployment slots**: Only the production slot is supported. Staging slots and slot-swap operations are not implemented.
+- **Custom domains**: Binding custom hostnames to a web app is not supported. Apps are accessible only via the emulator-assigned `*.azurewebsites.azure.localhost.localstack.cloud` hostname.
+- **Managed TLS certificates**: SSL/TLS certificate provisioning and binding are not implemented.
+- **VNet integration and private endpoints**: Network isolation features are not enforced.
+- **Autoscaling**: App Service Plan capacity settings are accepted but not enforced by the emulator.
+- **Backup and restore**: The backup configuration endpoint returns an empty response. No backup or restore operations are performed.
+- **EasyAuth (authentication and authorization)**: Auth settings endpoints return fixed defaults. No identity provider flow or token validation is active.
+- **FTP/S deployments**: FTP publishing is not available. Use `az webapp deploy --type zip` or the SCM zip-deploy endpoint instead.
+- **Publishing policy persistence**: The `update_ftp_allowed` and `update_scm_allowed` endpoints accept requests but do not persist policy changes.
+- **No data persistence across restarts**: Web App state is held in memory and is lost when the LocalStack emulator is stopped or restarted.
+
+## Configuration
+
+The behavior of the App Service emulator can be customized using the following environment variables.
+| **Variable**                            | **Default**                     | **Type**          | **Description**                                                            |
+| --------------------------------------- | ------------------------------- | ----------------- | -------------------------------------------------------------------------- |
+| `ALLOW_MULTIPLE_ORYX_DEPLOYMENTS`       | `"0"`                           | Boolean           | Allow multiple Oryx build containers to run concurrently for a single app. |
+| `CONTAINER_CREATION_RETRIES`            | `"5"` (web) / `"3"` (functions) | Integer           | Number of attempts to create a container if the initial attempt fails.     |
+| `DOCKER_PULL_TIMEOUT`                   | `"120"`                         | Integer (seconds) | Maximum time to wait for a Docker image pull to complete.                  |
+| `PORT_RESERVATION_DURATION`             | `"120"`                         | Integer (seconds) | Duration for which a host port is reserved during container startup.       |
+| `ORYX_BUILD_CONTAINER_IMAGE_TO_USE`     | Oryx LTS build image            | String            | Specific Oryx build image to use when building application containers.     |
+| `USE_LATEST_ORYX_BUILD_CONTAINER_IMAGE` | `"0"`                           | Boolean           | Automatically fetch and use the latest Oryx build container image.         |
+| `AZURE_FUNCTIONS_CORE_TOOLS_VERSION`    | `"4.2.2"`                       | String            | Version of Azure Functions Core Tools used for Function App deployments.   |
+
+## Samples
+
+The following samples demonstrate how to use App Services with LocalStack for Azure:
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/)
+- [Web App and Cosmos DB for NoSQL API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-nosql-api/python/)
+- [Web App and Managed Identities](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-managed-identity/python/)
+- [Web App and SQL Database](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-sql-database/python/)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Web" client:load />
