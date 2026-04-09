@@ -1,0 +1,276 @@
+---
+title: "Virtual Network"
+description: Get started with Azure Virtual Network on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Virtual Network (VNet) is the core networking service for isolating and routing Azure resources in private IP address spaces.
+It lets you define address ranges, create subnets, and control network behavior for applications.
+Virtual networks are commonly used to model secure, segmented network topologies in cloud environments. For more information, see [What is Azure Virtual Network?](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview).
+
+LocalStack for Azure provides a local environment to build and test Azure networking resources, such as virtual networks, private endpoints, and private DNS zones.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Virtual Network's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Virtual Network and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group for your networking resources:
+
+```bash
+az group create \
+  --name rg-vnet-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-vnet-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-vnet-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create and inspect a virtual network
+
+Create a virtual network with a `10.0.0.0/16` address space:
+
+```bash
+az network vnet create \
+  --name vnet-doc78 \
+  --resource-group rg-vnet-demo \
+  --location westeurope \
+  --address-prefixes 10.0.0.0/16
+```
+
+```bash title="Output"
+{
+  "newVNet": {
+    "name": "vnet-doc78",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-vnet-demo/providers/Microsoft.Network/virtualNetworks/vnet-doc78",
+    "location": "westeurope",
+    "addressSpace": {
+      "addressPrefixes": ["10.0.0.0/16"]
+    },
+    "provisioningState": "Succeeded",
+    ...
+  }
+}
+```
+
+Get the virtual network (VNet) details:
+
+```bash
+az network vnet show \
+  --name vnet-doc78 \
+  --resource-group rg-vnet-demo
+```
+
+```bash title="Output"
+{
+  "name": "vnet-doc78",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-vnet-demo/providers/Microsoft.Network/virtualNetworks/vnet-doc78",
+  "location": "westeurope",
+  "addressSpace": {
+    "addressPrefixes": ["10.0.0.0/16"]
+  },
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+### Create and manage subnets
+
+Create a subnet:
+
+```bash
+az network vnet subnet create \
+  --name subnet1 \
+  --resource-group rg-vnet-demo \
+  --vnet-name vnet-doc78 \
+  --address-prefixes 10.0.1.0/24
+```
+
+```bash title="Output"
+{
+  "name": "subnet1",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-vnet-demo/providers/Microsoft.Network/virtualNetworks/vnet-doc78/subnets/subnet1",
+  "addressPrefix": "10.0.1.0/24",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Retrieve new subnet details and list all VNet subnets
+
+```bash
+az network vnet subnet show \
+  --name subnet1 \
+  --resource-group rg-vnet-demo \
+  --vnet-name vnet-doc78
+
+az network vnet subnet list \
+  --resource-group rg-vnet-demo \
+  --vnet-name vnet-doc78
+```
+
+```bash title="Output"
+{
+  "name": "subnet1",
+  "addressPrefix": "10.0.1.0/24",
+  ...
+}
+[
+  {
+    "name": "subnet1",
+    "addressPrefix": "10.0.1.0/24",
+    ...
+  }
+]
+```
+
+Add a second subnet to the virtual network, remove the first , and relist all subnets:
+
+```bash
+az network vnet subnet create \
+  --name subnet2 \
+  --resource-group rg-vnet-demo \
+  --vnet-name vnet-doc78 \
+  --address-prefixes 10.0.2.0/24
+
+az network vnet subnet delete \
+  --name subnet1 \
+  --resource-group rg-vnet-demo \
+  --vnet-name vnet-doc78
+
+az network vnet subnet list \
+  --resource-group rg-vnet-demo \
+  --vnet-name vnet-doc78
+```
+
+```bash title="Output"
+{
+  "name": "subnet2",
+  "addressPrefix": "10.0.2.0/24",
+  ...
+}
+[
+  {
+    "name": "subnet2",
+    "addressPrefix": "10.0.2.0/24",
+    ...
+  }
+]
+```
+
+### Update virtual network properties
+
+Update DNS servers and tags on the VNet:
+
+```bash
+az network vnet update \
+  --name vnet-doc78 \
+  --resource-group rg-vnet-demo \
+  --dns-servers 8.8.8.8 8.8.4.4 \
+  --set tags.environment=test tags.project=localstack
+```
+
+```bash title="Output"
+{
+  "name": "vnet-doc78",
+  "dhcpOptions": {
+    "dnsServers": ["8.8.8.8", "8.8.4.4"]
+  },
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-vnet-demo/providers/Microsoft.Network/virtualNetworks/vnet-doc78",
+  "provisioningState": "Succeeded",
+  "tags": {
+    "environment": "test",
+    "project": "localstack"
+  },
+  ...
+}
+```
+
+### Delete and verify
+
+Delete the VNet and validate that no virtual networks remain in the resource group:
+
+```bash
+az network vnet delete \
+  --name vnet-doc78 \
+  --resource-group rg-vnet-demo
+
+az network vnet list --resource-group rg-vnet-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+The Virtual Network emulator supports the following features:
+
+- **Virtual networks**: Create, update, delete, list, and get virtual networks with configurable address spaces, DNS servers, and DDoS protection settings.
+- **Subnets**: Full lifecycle management of subnets within virtual networks, including address prefix allocation, service endpoint configuration, and NSG/route table associations.
+- **Network security groups**: Create and manage network security groups with custom security rules. Default rules (AllowVnetInBound, AllowAzureLoadBalancerInBound, DenyAllInBound, AllowVnetOutBound, AllowInternetOutBound, DenyAllOutBound) are automatically provisioned.
+- **Route tables**: Create and manage route tables with custom route entries supporting next hop types such as VirtualAppliance, VirtualNetworkGateway, Internet, and VnetLocal.
+- **Public IP addresses**: Create and manage public IP addresses with Static or Dynamic allocation methods, Standard or Basic SKUs, and availability zone configuration.
+- **Public IP prefixes**: Create and manage public IP prefixes with configurable prefix lengths and SKU settings.
+- **NAT gateways**: Create and manage NAT gateways with public IP address and public IP prefix associations.
+- **Network interfaces**: Create and manage network interfaces with IP configurations, dynamic IP allocation from subnets, accelerated networking, and IP forwarding settings.
+- **Private DNS zones**: Create and manage private DNS zones with virtual network links, registration enablement, and A record sets.
+- **Private endpoints**: Create and manage private endpoints with automatic network interface provisioning, private link service connections, and private DNS zone group integration.
+- **Bastion hosts**: Create and manage bastion hosts with IP configuration validation, SKU selection (Basic, Standard, Premium), and scale unit configuration.
+
+## Limitations
+
+- **No network traffic routing**: The emulator does not route network traffic or enforce security rules. Resources are stored and returned with correct metadata, but no packet-level behavior is applied.
+- **IPv6**: IPv6 fields are accepted in requests but are not functional. All IP allocation operates on IPv4 address spaces only.
+- **Private DNS record types**: Only A record sets are supported in private DNS zones. Other record types (CNAME, MX, TXT, SRV, AAAA) are not available.
+- **Public IP addresses**: Addresses are locally generated and do not represent routable IPs on the public internet.
+- **Bastion host connectivity**: Feature flags such as tunneling, file copy, and Kerberos authentication are stored as configuration but do not provide actual connectivity.
+- **VNet peering**: Virtual network peering is not supported.
+- **VPN and ExpressRoute gateways**: VPN gateways and ExpressRoute circuits are not implemented.
+- **Load balancers**: Azure Load Balancer resources are not implemented.
+- **Application gateways**: Application Gateway resources are not implemented.
+- **Network watchers**: Network Watcher and flow log resources are not implemented.
+- **No data persistence**: Network resources are not persisted and are lost when the emulator is stopped or restarted.
+
+## Samples
+
+The following samples demonstrate how to use Virtual Network with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Network" client:load />
