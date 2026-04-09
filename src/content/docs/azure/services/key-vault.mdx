@@ -1,10 +1,135 @@
 ---
 title: "Key Vault"
-description: API coverage for Microsoft.KeyVault in LocalStack for Azure.
+description: Get started with Azure Key Vault on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Key Vault is a managed service for securely storing and accessing secrets, keys, and certificates.
+It helps centralize sensitive configuration and credentials for your applications and services.
+Key Vault also supports secure key management and certificate lifecycle operations. For more information, see [About Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Key Vault.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Key Vault's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Key Vault and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Start your LocalStack container using your preferred method.
+Then start CLI interception:
+
+```bash
+azlocal start_interception
+```
+
+### Create a resource group
+
+Create a resource group that will contain your Key Vault resources:
+
+```bash
+az group create \
+  --name rg-keyvault-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "name": "rg-keyvault-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-keyvault-demo",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded"
+  }
+}
+```
+
+### Create a Key Vault
+
+Create a Key Vault in your resource group:
+
+```bash
+az keyvault create \
+  --name kv-demo-localstack \
+  --resource-group rg-keyvault-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "name": "kv-demo-localstack",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-keyvault-demo/providers/Microsoft.KeyVault/vaults/kv-demo-localstack",
+  "location": "westeurope",
+  "properties": {
+    "provisioningState": "Succeeded",
+    "vaultUri": "https://kv-demo-localstack.localhost.localstack.cloud:4566"
+  }
+  ...
+}
+```
+
+### Add and read a secret
+
+Create a secret in the vault:
+
+```bash
+az keyvault secret set \
+  --vault-name kv-demo-localstack \
+  --name app-secret \
+  --value "super-secret-value"
+```
+
+```bash title="Output"
+{
+  "name": "app-secret",
+  "id": "https://kv-demo-localstack.localhost.localstack.cloud:4566/secrets/app-secret/d8a709f96aee4bea901bd8825f28a281",
+  "attributes": {
+    "enabled": true
+  },
+  "value": "super-secret-value"
+  ...
+}
+```
+
+Read the secret value:
+
+```bash
+az keyvault secret show \
+  --vault-name kv-demo-localstack \
+  --name app-secret
+```
+
+```bash title="Output"
+{
+  "name": "app-secret",
+  "id": "https://kv-demo-localstack.localhost.localstack.cloud:4566/secrets/app-secret/d8a709f96aee4bea901bd8825f28a281",
+  "attributes": {
+    "enabled": true
+  },
+  "value": "super-secret-value"
+  ...
+}
+```
+
+List all secrets in the vault:
+
+```bash
+az keyvault secret list \
+  --vault-name kv-demo-localstack
+```
+
+```bash title="Output"
+[
+  {
+    "name": "app-secret",
+    "id": "https://kv-demo-localstack.localhost.localstack.cloud:4566/secrets/app-secret"
+    ...
+  }
+]
+```
 
 ## API Coverage
 
