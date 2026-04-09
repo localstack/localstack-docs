@@ -333,7 +333,8 @@ export default defineConfig({
             },
             {
               label: 'Getting Started',
-              slug: 'azure/services',
+              autogenerate: { directory: '/aws/getting-started' },
+              collapsed: true,
             },
             {
               label: 'Local AWS Services',
@@ -674,8 +675,7 @@ export default defineConfig({
             },
             {
               label: 'Local Azure Services',
-              autogenerate: { directory: '/azure/services' },
-              collapsed: true,
+              slug: 'azure/services',
             },
             {
               label: 'Integrations',
