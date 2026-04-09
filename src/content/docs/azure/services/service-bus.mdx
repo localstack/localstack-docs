@@ -1,10 +1,441 @@
 ---
 title: "Service Bus"
-description: API coverage for Microsoft.ServiceBus in LocalStack for Azure.
+description: Get started with Azure Service Bus on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Service Bus is a fully managed enterprise message broker that supports queues and publish/subscribe topics.
+It helps decouple distributed systems and build reliable asynchronous messaging workflows.
+Service Bus is commonly used for command processing, event distribution, and integration between independent services. For more information, see [What is Azure Service Bus?](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview)
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Service Bus.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Service Bus's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Service Bus and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to contain your Service Bus resources:
+
+```bash
+az group create \
+  --name rg-servicebus-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-servicebus-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-servicebus-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a Service Bus namespace
+
+Create a Service Bus namespace in the resource group:
+
+```bash
+az servicebus namespace create \
+  --resource-group rg-servicebus-demo \
+  --name sbnsdoc83 \
+  --location westeurope \
+  --sku Standard
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-servicebus-demo/providers/Microsoft.ServiceBus/namespaces/sbnsdoc83",
+  "name": "sbnsdoc83",
+  "location": "westeurope",
+  "provisioningState": "Succeeded",
+  "serviceBusEndpoint": "https://sbnsdoc83.localhost.localstack.cloud:4511",
+  "sku": {
+    "name": "Standard",
+    "tier": "Standard"
+  },
+  ...
+}
+```
+
+Get and list namespaces:
+
+```bash
+az servicebus namespace show \
+  --resource-group rg-servicebus-demo \
+  --name sbnsdoc83
+
+az servicebus namespace list \
+  --resource-group rg-servicebus-demo
+```
+
+### Create and inspect a queue
+
+Create a queue in the namespace:
+
+```bash
+az servicebus queue create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name orders-queue
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-servicebus-demo/providers/Microsoft.ServiceBus/namespaces/sbnsdoc83/queues/orders-queue",
+  "name": "orders-queue",
+  "location": "westeurope",
+  "status": "Active",
+  "messageCount": 0,
+  "maxSizeInMegabytes": 1024,
+  ...
+}
+```
+
+Get and list queues:
+
+```bash
+az servicebus queue show \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name orders-queue
+```
+
+```bash title="Output"
+{
+  "accessedAt": "2026-03-18T10:13:18.3906198Z",
+  "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+  "countDetails": {
+    "activeMessageCount": 0,
+    "deadLetterMessageCount": 0,
+    "scheduledMessageCount": 0,
+    "transferDeadLetterMessageCount": 0,
+    "transferMessageCount": 0
+  },
+  ...
+  "name": "orders-queue",
+  ...
+  "status": "Active",
+  "type": "Microsoft.ServiceBus/namespaces/queues",
+  ...
+}
+```
+
+```bash
+az servicebus queue list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83
+```
+
+```bash title="Output"
+[
+  {
+    "accessedAt": "2026-03-18T10:14:44.3808099Z",
+    "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+    "countDetails": {
+      "activeMessageCount": 0,
+      "deadLetterMessageCount": 0,
+      "scheduledMessageCount": 0,
+      "transferDeadLetterMessageCount": 0,
+      "transferMessageCount": 0
+    },
+    ...
+    "name": "orders-queue",
+    ...
+    "status": "Active",
+    "type": "Microsoft.ServiceBus/namespaces/queues",
+    ...
+  }
+]
+```
+
+:::note
+The values under `countDetails` may not be accurate in the emulator.
+:::
+
+### Create topic and subscription
+
+Create a topic and a subscription:
+
+```bash
+az servicebus topic create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name orders-topic
+
+az servicebus topic subscription create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic \
+  --name orders-sub
+```
+
+```bash title="Output"
+{
+  "name": "orders-topic",
+  "status": "Active",
+  "subscriptionCount": 0,
+  ...
+}
+{
+  "name": "orders-sub",
+  "status": "Active",
+  "messageCount": 0,
+  ...
+}
+```
+
+Get and list subscriptions:
+
+```bash
+az servicebus topic subscription show \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic \
+  --name orders-sub
+```
+
+```bash title="Output"
+{
+  "accessedAt": "2026-03-18T10:13:18.3906198Z",
+  "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+  "countDetails": {
+    "activeMessageCount": 0,
+    "deadLetterMessageCount": 0,
+    "scheduledMessageCount": 0,
+    "transferDeadLetterMessageCount": 0,
+    "transferMessageCount": 0
+  },
+  ...
+  "name": "orders-sub",
+  ...
+  "status": "Active",
+  "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+  ...
+}
+```
+
+```bash
+az servicebus topic subscription list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic
+```
+
+```bash title="Output"
+[
+  {
+    "accessedAt": "2026-03-18T10:14:44.3808099Z",
+    "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+    "countDetails": {
+      "activeMessageCount": 0,
+      "deadLetterMessageCount": 0,
+      "scheduledMessageCount": 0,
+      "transferDeadLetterMessageCount": 0,
+      "transferMessageCount": 0
+    },
+    ...
+    "name": "orders-sub",
+    ...
+    "status": "Active",
+    "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+    ...
+  }
+]
+```
+
+:::note
+The values under `countDetails` may not be accurate in the emulator.
+:::
+
+### Create and list subscription rules
+
+Create a SQL filter rule for the subscription:
+
+```bash
+az servicebus topic subscription rule create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic \
+  --subscription-name orders-sub \
+  --name high-priority \
+  --filter-sql-expression "priority = 'high'"
+```
+
+```bash title="Output"
+{
+  "name": "high-priority",
+  "filterType": "SqlFilter",
+  "sqlFilter": {
+    "sqlExpression": "priority = 'high'",
+    ...
+  },
+  ...
+}
+```
+
+List rules for the subscription:
+
+```bash
+az servicebus topic subscription rule list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --topic-name orders-topic \
+  --subscription-name orders-sub
+```
+
+### Create and manage namespace authorization rules
+
+Create an authorization rule:
+
+```bash
+az servicebus namespace authorization-rule create \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name app-policy \
+  --rights Listen Send
+```
+
+```bash title="Output"
+{
+  "name": "app-policy",
+  "rights": [
+    "Listen",
+    "Send"
+  ],
+  ...
+}
+```
+
+List authorization rules:
+
+```bash
+az servicebus namespace authorization-rule list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83
+```
+
+List and regenerate keys:
+
+```bash
+az servicebus namespace authorization-rule keys list \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name app-policy
+
+az servicebus namespace authorization-rule keys renew \
+  --resource-group rg-servicebus-demo \
+  --namespace-name sbnsdoc83 \
+  --name app-policy \
+  --key PrimaryKey
+```
+
+```bash title="Output"
+{
+  "keyName": "app-policy",
+  "primaryConnectionString": "Endpoint=https://sbnsdoc83.localhost.localstack.cloud:4511/;SharedAccessKeyName=app-policy;SharedAccessKey=...;UseDevelopmentEmulator=true",
+  "secondaryConnectionString": "Endpoint=https://sbnsdoc83.localhost.localstack.cloud:4511/;SharedAccessKeyName=app-policy;SharedAccessKey=...;UseDevelopmentEmulator=true",
+  ...
+}
+{
+  "keyName": "app-policy",
+  "primaryConnectionString": "Endpoint=https://sbnsdoc83.localhost.localstack.cloud:4511/;SharedAccessKeyName=app-policy;SharedAccessKey=...;UseDevelopmentEmulator=true",
+  ...
+}
+```
+
+## Features
+
+The emulator includes the following core capabilities:
+
+- **Data Plane REST API**: Supports message-level operations, including Send, Receive, and Peek.
+- **Control Plane REST API**: Enables CRUD operations for namespaces and messaging entities (queues, topics, and subscriptions) via Azure Resource Manager (ARM).
+- **Multiple Authentication Modes**: Supports both Connection String and Managed Identity authentication.
+- **Containerized Deployment**: Runs as a lightweight, Linux-based Docker container.
+- **Cross-Platform Compatibility**: Fully compatible with Windows, macOS, and Linux environments.
+- **Flexible Configuration**: Manage Service Bus entities via the Service Bus Administration Client or through JSON-based configuration files.
+- **Advanced Streaming**: Supports message streaming via the Advanced Message Queuing Protocol (AMQP).
+
+## Limitations
+
+The current version of the emulator does **not** support the following:
+
+- **Protocols**: JMS protocol streaming and AMQP Web Sockets (AMQP over TCP is the only supported transport).
+- **Messaging Patterns**: Transactions, auto-forwarding (queue chaining), and message lock renewal.
+- **Validation**: Enforcements such as maximum entity counts or maximum message sizes.
+- **Metrics**: Property-based message counts for queues, topics, and subscriptions may be inaccurate.
+
+The following Azure-native features are currently unavailable in the emulator:
+
+- **Scaling & Resiliency**: Autoscale, Geo-disaster recovery, and Large Message support.
+- **Monitoring**: Visual metrics, alerts, and telemetry dashboards.
+
+## Samples
+
+Explore the following samples to get started with Service Bus on LocalStack:
+
+- [Azure Functions App with Service Bus Messaging](https://github.com/localstack/localstack-azure-samples/blob/main/samples/function-app-service-bus/dotnet/)
+- [Azure Service Bus with Spring Boot](https://github.com/localstack/localstack-azure-samples/tree/main/samples/servicebus/java)
+
+## Features
+
+The emulator includes the following core capabilities:
+
+- **Data Plane REST API**: Supports message-level operations, including Send, Receive, and Peek.
+- **Control Plane REST API**: Enables CRUD operations for namespaces and messaging entities (queues, topics, and subscriptions) via Azure Resource Manager (ARM).
+- **Multiple Authentication Modes**: Supports both Connection String and Managed Identity authentication.
+- **Containerized Deployment**: Runs as a lightweight, Linux-based Docker container.
+- **Cross-Platform Compatibility**: Fully compatible with Windows, macOS, and Linux environments.
+- **Flexible Configuration**: Manage Service Bus entities via the Service Bus Administration Client or through JSON-based configuration files.
+- **Advanced Streaming**: Supports message streaming via the Advanced Message Queuing Protocol (AMQP).
+
+## Limitations
+
+The current version of the emulator does **not** support the following:
+
+- **Protocols**: JMS protocol streaming and AMQP Web Sockets (AMQP over TCP is the only supported transport).
+- **Messaging Patterns**: Transactions, auto-forwarding (queue chaining), and message lock renewal.
+- **Validation**: Enforcements such as maximum entity counts or maximum message sizes.
+- **Metrics**: Property-based message counts for queues, topics, and subscriptions may be inaccurate.
+
+The following Azure-native features are currently unavailable in the emulator:
+
+- **Scaling & Resiliency**: Autoscale, Geo-disaster recovery, and Large Message support.
+- **Monitoring**: Visual metrics, alerts, and telemetry dashboards.
+
+## Samples
+
+Explore the following samples to get started with Service Bus on LocalStack:
+
+- [Azure Functions App with Service Bus Messaging](https://github.com/localstack/localstack-azure-samples/blob/main/samples/function-app-service-bus/dotnet/)
+- [Azure Service Bus with Spring Boot](https://github.com/localstack/localstack-azure-samples/tree/main/samples/servicebus/java)
 
 ## API Coverage
 
