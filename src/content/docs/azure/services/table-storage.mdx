@@ -1,11 +1,320 @@
 ---
 title: "Table Storage"
-description: API coverage for Microsoft.TableStorage in LocalStack for Azure.
+description: Get started with Azure Table Storage in LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
 
+## Introduction
+
+Azure Table Storage is a NoSQL key-value store designed for large volumes of semi-structured data, useful for lightweight metadata, lookup records, and simple operational datasets.
+Data is organized into tables, partitions, and entities addressed by PartitionKey and RowKey.
+It offers schemaless flexibility at a fraction of the cost of traditional SQL, making it easy to adapt as your application evolves. For more information, see [What is Azure Table storage?](https://learn.microsoft.com/en-us/azure/storage/tables/table-storage-overview)
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Table Storage.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Table Storage's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Table Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to contain your storage resources:
+
+```bash
+az group create \
+  --name rg-table-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-table-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-table-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a storage account
+
+Create a storage account in the resource group:
+
+```bash
+az storage account create \
+  --name sttabledemols \
+  --resource-group rg-table-demo \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+```bash title="Output"
+{
+  ...
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-table-demo/providers/Microsoft.Storage/storageAccounts/sttabledemols",
+  ...
+  "name": "sttabledemols",
+  ...
+  "placement": null,
+  "primaryEndpoints": {
+    "blob": "https://sttabledemols.blob.core.azure.localhost.localstack.cloud:4566",
+    ...
+    "table": "https://sttabledemols.table.core.azure.localhost.localstack.cloud:4566",
+    ...
+  },
+  ....
+}
+```
+
+### Authentication
+
+There are three ways to authenticate storage table commands against the emulator:
+
+#### Storage account key
+
+Retrieve the account key and pass it with `--account-name` and `--account-key`:
+
+```bash
+ACCOUNT_KEY=$(az storage account keys list \
+  --account-name sttabledemols \
+  --resource-group rg-table-demo \
+  --query "[0].value" \
+  --output tsv)
+
+az storage table list \
+  --account-name sttabledemols \
+  --account-key "$ACCOUNT_KEY"
+```
+
+#### Login credentials
+
+Use `--auth-mode login` to authenticate with the current session credentials:
+
+```bash
+az storage table list \
+  --account-name sttabledemols \
+  --auth-mode login
+```
+
+#### Connection string
+
+Bundle the account name and key into a single value:
+
+```bash
+CONNECTION_STRING=$(az storage account show-connection-string \
+  --name sttabledemols \
+  --resource-group rg-table-demo \
+  --query connectionString -o tsv)
+
+az storage table list \
+  --connection-string "$CONNECTION_STRING"
+```
+
+The remaining examples in this guide use connection strings for brevity.
+
+### Create and inspect a table
+
+Create a table:
+
+```bash
+az storage table create \
+  --name apptable \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "created": true
+}
+```
+
+Verify the table exists:
+
+```bash
+az storage table exists \
+  --name apptable \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "exists": true
+}
+```
+
+List tables in the storage account:
+
+```bash
+az storage table list \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+[
+  {
+    "name": "apptable"
+  }
+]
+```
+
+### Insert and query entities
+
+Insert an entity into the table:
+
+```bash
+az storage entity insert \
+  --table-name apptable \
+  --entity PartitionKey=demo RowKey=1 name=Alice score=100 \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "content": {
+    "PartitionKey": "demo",
+    "RowKey": "1",
+    "name": "Alice",
+    "score": 100,
+    ...
+  },
+  "etag": "W/\"datetime'...'\"",
+  ...
+}
+```
+
+Retrieve the entity by its partition key and row key:
+
+```bash
+az storage entity show \
+  --table-name apptable \
+  --partition-key demo \
+  --row-key 1 \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "PartitionKey": "demo",
+  "RowKey": "1",
+  "name": "Alice",
+  "score": 100,
+  ...
+}
+```
+
+Query entities by partition key:
+
+```bash
+az storage entity query \
+  --table-name apptable \
+  --filter "PartitionKey eq 'demo'" \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "items": [
+    {
+      "PartitionKey": "demo",
+      "RowKey": "1",
+      "name": "Alice",
+      "score": 100,
+      ...
+    }
+  ],
+  "nextMarker": {}
+}
+```
+
+### Update, merge, and delete entities
+
+Update the entity with a merge operation:
+
+```bash
+az storage entity merge \
+  --table-name apptable \
+  --entity PartitionKey=demo RowKey=1 score=101 \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "etag": "W/\"datetime'...'\"",
+  ...
+}
+```
+
+Delete the entity and verify the table is empty:
+
+```bash
+az storage entity delete \
+  --table-name apptable \
+  --partition-key demo \
+  --row-key 1 \
+  --connection-string "$CONNECTION_STRING"
+
+az storage entity query \
+  --table-name apptable \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "deleted": null
+}
+{
+  "items": [],
+  "nextMarker": {}
+}
+```
+
+## Features
+
+The Table Storage emulator supports the following features:
+
+- **Data plane REST API**: Table CRUD, entity operations (insert, query, merge, replace, delete), OData query filters, and batch/transaction requests.
+- **Control plane REST API**: Create and get tables, get and set table service properties via Azure Resource Manager.
+- **Multiple authentication modes**: Storage account key, login credentials, and connection strings.
+- **Entity operations**: Insert, query, show, merge, replace, and delete entities with schemaless, key-value data addressed by `PartitionKey` and `RowKey`.
+- **OData query support**: Filter and project entities using OData expressions (e.g., `PartitionKey eq 'demo'`).
+- **Batch operations**: Entity batch (transaction) requests are proxied with correct URL and authorization rewriting.
+
+## Limitations
+
+- **No data persistence across restarts**: Table data is not persisted and is lost when the LocalStack emulator is stopped or restarted.
+- **Table service properties**: `set_service_properties` is a no-op and `get_service_properties` returns empty defaults, unlike Azure where CORS, logging, and metrics settings are persisted and applied.
+- **Storage account keys**: Keys are emulator-generated rather than managed by Azure.
+- **Header validation**: Unsupported request headers or parameters are silently accepted (Azurite runs in loose mode) instead of being rejected.
+- **API version enforcement**: The emulator does not validate the `x-ms-version` header; all API versions are accepted.
+
+## Samples
+
+The following sample demonstrates how to use Table Storage with LocalStack for Azure:
+
+- [Azure Functions Sample with LocalStack for Azure](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-storage-http/dotnet)
+
 ## API Coverage
 
-<AzureFeatureCoverage service="Microsoft.TableStorage" client:load />
+<AzureFeatureCoverage service="Microsoft.Tables" client:load />
