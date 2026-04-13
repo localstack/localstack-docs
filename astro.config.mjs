@@ -193,16 +193,6 @@ export default defineConfig({
         {
           tag: 'script',
           attrs: {
-            type: 'text/javascript',
-            id: 'multi-sidebar-azure-loader',
-            async: true,
-            defer: true,
-            src: '/js/multi-sidebar-azure.js',
-          },
-        },
-        {
-          tag: 'script',
-          attrs: {
             src: 'https://crawlchat.app/embed.js',
             id: 'crawlchat-script',
             'data-id': '698f2c11e688991df3c7e020',
