@@ -1,10 +1,300 @@
 ---
 title: "Resource Graph"
-description: API coverage for Microsoft.ResourceGraph in LocalStack for Azure.
+description: Get started with Azure Resource Graph on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Resource Graph is a service for querying Azure resources at scale using a structured query language.
+It helps you search, filter, and project resource metadata across subscriptions.
+Resource Graph is useful for inventory, governance checks, and automated analysis workflows.
+For more information, see [Azure Resource Graph overview](https://learn.microsoft.com/en-us/azure/governance/resource-graph/overview).
+
+LocalStack for Azure enables users to explore resources deployed within the local environment using [Kusto Query Language (KQL)](https://learn.microsoft.com/en-us/azure/governance/resource-graph/concepts/query-language#supported-tabulartop-level-operators).
+
+## Getting started
+
+This guide is designed for users new to Resource Graph and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group for the resources you want to query:
+
+```bash
+az group create \
+  --name rg-resourcegraph-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resourcegraph-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-resourcegraph-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create sample web resources
+
+Create an App Service plan and a Web App, which we will query using Resource Graph:
+
+```bash
+az appservice plan create \
+  --name asp-doc81 \
+  --resource-group rg-resourcegraph-demo \
+  --location westeurope \
+  --sku F1
+
+az webapp create \
+  --name ls-app-doc81 \
+  --resource-group rg-resourcegraph-demo \
+  --plan asp-doc81 \
+  --runtime "PYTHON:3.11"
+```
+
+```bash title="Output"
+{
+  "asyncScalingEnabled": false,
+  "elasticScaleEnabled": false,
+  "geoRegion": "West Europe",
+  "hyperV": false,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resourcegraph-demo/providers/Microsoft.Web/serverfarms/asp-doc81",
+  ...
+  "name": "asp-doc81",
+  ...
+  "status": "Ready",
+  "subscription": "00000000-0000-0000-0000-000000000000",
+  ...
+}
+{
+  ...
+  "enabledHostNames": [
+    "ls-app-doc81.azurewebsites.net",
+    "ls-app-doc81.scm.azurewebsites.net"
+  ],
+  ...
+  "hostNameSslStates": [
+    {
+      "hostType": "Standard",
+      "name": "ls-app-doc81.azurewebsites.net",
+      "sslState": "Disabled",
+      "thumbprint": null,
+      "toUpdate": null,
+      "virtualIp": null
+    },
+    ...
+  ],
+  "hostNames": [
+    "ls-app-doc81.azurewebsites.net"
+  ],
+  ...
+}
+```
+
+### Query resources with Resource Graph
+
+The Resource Graph extension must be installed to use `az graph` commands. Refer to the [official installation instructions](https://learn.microsoft.com/en-us/azure/governance/resource-graph/first-query-azurecli#install-the-extension). Use the [az graph query](https://learn.microsoft.com/en-us/cli/azure/graph?view=azure-cli-latest#az-graph-query) command to run Kusto Query language (KQL) queries against the emulator.
+The following examples demonstrate common query patterns:
+
+```bash
+az graph query \
+  --graph-query "Resources | where type =~ 'Microsoft.Web/sites'"
+```
+
+```bash title="Output"
+{
+  "count": 1,
+  "data": [
+    {
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resourcegraph-demo/providers/Microsoft.Web/sites/ls-app-doc81",
+      "location": "westeurope",
+      "name": "ls-app-doc81",
+      "properties": {},
+      "resourceGroup": "rg-resourcegraph-demo",
+      "subscriptionId": "00000000-0000-0000-0000-000000000000",
+      "type": "Microsoft.Web/sites"
+    }
+  ],
+  "skip_token": null,
+  "total_records": 1
+}
+```
+
+Query a web site by type and name, projecting only the `id` column:
+
+```bash
+az graph query \
+  --graph-query "Resources | where type =~ 'Microsoft.Web/sites' and name =~ 'ls-app-doc81' | project id"
+```
+
+```bash title="Output"
+{
+  "count": 1,
+  "data": [
+    {
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resourcegraph-demo/providers/Microsoft.Web/sites/ls-app-doc81",
+      "resourceGroup": "rg-resourcegraph-demo"
+    }
+  ],
+  "skip_token": null,
+  "total_records": 1
+}
+```
+
+Count all resources in a resource group:
+
+```bash
+az graph query \
+  --graph-query "Resources | where resourceGroup =~ 'rg-resourcegraph-demo' | count"
+```
+
+```bash title="Output"
+{
+  "count": 1,
+  "data": [
+    {
+      "Count": 2
+    }
+  ],
+  "skip_token": null,
+  "total_records": 1
+}
+```
+
+List resources sorted by name with a row limit:
+
+```bash
+az graph query \
+  --graph-query "Resources | where resourceGroup =~ 'rg-resourcegraph-demo' | project name, type | order by name asc | limit 5"
+```
+
+```bash title="Output"
+{
+  "count": 2,
+  "data": [
+    {
+      "name": "asp-doc81",
+      "type": "Microsoft.Web/serverfarms"
+    },
+    {
+      "name": "ls-app-doc81",
+      "type": "Microsoft.Web/sites"
+    }
+  ],
+  "skip_token": null,
+  "total_records": 2
+}
+```
+
+Query a resource that does not exist:
+
+```bash
+az graph query \
+  --graph-query "Resources | where type =~ 'Microsoft.Web/sites' and name =~ 'doesnotexist'"
+```
+
+```bash title="Output"
+{
+  "count": 0,
+  "data": [],
+  "skip_token": null,
+  "total_records": 0
+}
+```
+
+### Query resources with the REST API
+
+An alternative way to invoke Azure Resource Graph is to call its REST API directly using the [`az rest`](https://learn.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-rest) command:
+
+```bash
+az rest --method post \
+  --url "http://azure.localhost.localstack.cloud:4566/providers/Microsoft.ResourceGraph/resources?api-version=2024-04-01" \
+  --headers "Content-Type=application/json" \
+  --body "{\"subscriptions\":[\"00000000-0000-0000-0000-000000000000\"],\"query\":\"Resources | where type=~'Microsoft.Web/sites'\", \"options\":{\"resultFormat\":\"objectArray\"}}"
+```
+
+```bash title="Output"
+{
+  "count": 1,
+  "data": [
+    {
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-resourcegraph-demo/providers/Microsoft.Web/sites/ls-app-doc81",
+      "location": "westeurope",
+      "name": "ls-app-doc81",
+      "properties": {},
+      "resourceGroup": "rg-resourcegraph-demo",
+      "subscriptionId": "00000000-0000-0000-0000-000000000000",
+      "type": "Microsoft.Web/sites"
+    }
+  ],
+  "facets": [],
+  "resultTruncated": "false",
+  "totalRecords": 1
+}
+```
+
+## Features
+
+The Resource Graph emulator supports the following features:
+
+- **KQL query engine**: A built-in parser and executor for the Kusto Query Language (KQL) subset used by Azure Resource Graph.
+- **Tabular and object result formats**: The `resultFormat` option controls whether results are returned as a column/row table or as an array of objects.
+- **Scalar functions**: Built-in functions including `tolower`, `toupper`, `strlen`, `trim`, `substring`, `strcat`, `isnull`, `isnotnull`, `isempty`, `isnotempty`, `tostring`, `toint`, `tolong`, `todouble`, and `coalesce`.
+- **Comparison operators**: Full support for `==`, `!=`, `=~`, `!~`, `contains`, `!contains`, `contains_cs`, `!contains_cs`, `startswith`, `!startswith`, `endswith`, `!endswith`, `has`, `!has`, `in`, `!in`, and `matches regex`.
+- **Aggregate functions**: `count()`, `dcount()`, `countif()`, `sum()`, `sumif()`, `avg()`, `min()`, and `max()` for use in `summarize` stages.
+
+## Limitations
+
+- **Single table only**: The emulator queries the `Resources` table. Other Resource Graph tables (such as `ResourceContainers`, `AdvisorResources`, and `SecurityResources`) are not available.
+- **No data persistence across restarts**: Resource metadata is not persisted and is lost when the LocalStack emulator is stopped or restarted.
+
+### Supported tabular operators
+
+The table below lists the KQL tabular operators supported by Azure Resource Graph and their availability in the LocalStack emulator.
+For the full reference, see [Supported tabular/top-level operators](https://learn.microsoft.com/en-us/azure/governance/resource-graph/concepts/query-language#supported-tabulartop-level-operators).
+
+| Operator | Supported | Notes |
+|---|---|---|
+| `count` | Yes | Returns a single row with the total number of input rows. |
+| `distinct` | Yes | Deduplicates rows by the specified columns. |
+| `extend` | Yes | Adds computed columns to the result set. |
+| `join` | No | Cross-table joins are not supported. The emulator does not implement `ResourceContainers` or other secondary tables. |
+| `limit` | Yes | Synonym of `take`. |
+| `mv-expand` | No | Array expansion into multiple rows is not supported. |
+| `order` | Yes | Synonym of `sort`. Supports `asc` and `desc` directions. |
+| `parse` | No | String parsing with pattern matching is not supported. |
+| `project` | Yes | Supports column selection and aliased expressions. |
+| `project-away` | Yes | Removes specified columns from the result set. |
+| `sort` | Yes | Synonym of `order`. |
+| `summarize` | Yes | Supports aggregate functions with an optional `by` clause. |
+| `take` | Yes | Synonym of `limit`. |
+| `top` | Yes | Returns the first N rows sorted by specified columns. |
+| `union` | No | Combining results from multiple tables is not supported. |
+| `where` | Yes | Filters rows using comparison, logical, and string operators. |
 
 ## API Coverage
 
