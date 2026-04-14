@@ -1,10 +1,203 @@
 ---
 title: "API Management"
-description: API coverage for Microsoft.ApiManagement in LocalStack for Azure.
+description: Get started with Azure API Management on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure API Management is a managed service for publishing, securing, transforming, and monitoring APIs.
+It helps you build a centralized API gateway in front of backend services while applying consistent policies and access controls.
+API Management is commonly used to expose internal services to external consumers and manage API lifecycle operations. For more information, see [Azure API Management overview](https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure API Management.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of API Management's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to API Management and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group for your API Management resources:
+
+```bash
+az group create \
+  --name rg-apim-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo",
+  "location": "westeurope",
+  "name": "rg-apim-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create an API Management service
+
+Create an API Management service in the resource group:
+
+```bash
+az apim create \
+  --name apimdoc86 \
+  --resource-group rg-apim-demo \
+  --location westeurope \
+  --publisher-name "LocalStack" \
+  --publisher-email "dev@localstack.cloud"
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/apimdoc86",
+  "name": "apimdoc86",
+  "location": "West Europe",
+  "provisioningState": "Succeeded",
+  "publisherName": "LocalStack",
+  "publisherEmail": "dev@localstack.cloud",
+  "gatewayUrl": "https://apimdoc86.azure-api.net",
+  "sku": {
+    "capacity": 1,
+    "name": "Developer"
+  },
+  ...
+}
+```
+
+Get and list API Management services:
+
+```bash
+az apim show \
+  --name apimdoc86 \
+  --resource-group rg-apim-demo
+
+az apim list \
+  --resource-group rg-apim-demo
+```
+
+### Create and inspect an API
+
+Create an API in API Management:
+
+```bash
+az apim api create \
+  --resource-group rg-apim-demo \
+  --service-name apimdoc86 \
+  --api-id orders-api \
+  --path orders \
+  --display-name "Orders API" \
+  --protocols https
+```
+
+```bash title="Output"
+{
+  "displayName": "Orders API",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/apimdoc86/apis/orders-api",
+  "name": "orders-api",
+  "path": "orders",
+  "protocols": [
+    "https"
+  ],
+  "subscriptionRequired": true,
+  ...
+}
+```
+
+Get the API:
+
+```bash
+az apim api show \
+  --resource-group rg-apim-demo \
+  --service-name apimdoc86 \
+  --api-id orders-api
+```
+
+```bash title="Output"
+{
+  "displayName": "Orders API",
+  "name": "orders-api",
+  "path": "orders",
+  "protocols": [
+    "https"
+  ],
+  ...
+}
+```
+
+### Create and update an API operation
+
+Create an operation on the API:
+
+```bash
+az apim api operation create \
+  --resource-group rg-apim-demo \
+  --service-name apimdoc86 \
+  --api-id orders-api \
+  --operation-id get-orders \
+  --display-name "Get orders" \
+  --method GET \
+  --url-template "/orders"
+```
+
+```bash title="Output"
+{
+  "displayName": "Get orders",
+  "method": "GET",
+  "name": "get-orders",
+  "type": "Microsoft.ApiManagement/service/apis/operations",
+  "urlTemplate": "/orders",
+  ...
+}
+```
+
+Update the operation and verify the change:
+
+```bash
+az apim api operation update \
+  --resource-group rg-apim-demo \
+  --service-name apimdoc86 \
+  --api-id orders-api \
+  --operation-id get-orders \
+  --set displayName="Get all orders"
+
+az apim api operation show \
+  --resource-group rg-apim-demo \
+  --service-name apimdoc86 \
+  --api-id orders-api \
+  --operation-id get-orders
+```
+
+```bash title="Output"
+{
+  "displayName": "Get all orders",
+  "method": "GET",
+  "name": "get-orders",
+  "urlTemplate": "/orders",
+  ...
+}
+```
 
 ## API Coverage
 
