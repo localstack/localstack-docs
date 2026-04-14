@@ -1,10 +1,236 @@
 ---
 title: "Event Grid"
-description: API coverage for Microsoft.EventGrid in LocalStack for Azure.
+description: Get started with Azure Event Grid on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Event Grid is a fully managed event routing service for reactive and event-driven architectures.
+It helps publish events from producers to consumers through topics, domains, and event subscriptions.
+Event Grid is commonly used to decouple services and automate workflows based on event notifications. For more information, see [What is Event Grid?](https://learn.microsoft.com/en-us/azure/event-grid/overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Event Grid.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Event Grid's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Event Grid and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to contain your Event Grid resources:
+
+```bash
+az group create \
+  --name rg-eventgrid-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventgrid-demo",
+  "location": "westeurope",
+  "name": "rg-eventgrid-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create and inspect a custom topic
+
+Create an Event Grid custom topic:
+
+```bash
+az eventgrid topic create \
+  --name egtopicdoc95 \
+  --resource-group rg-eventgrid-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventgrid-demo/providers/Microsoft.EventGrid/topics/egtopicdoc95",
+  "name": "egtopicdoc95",
+  "location": "westeurope",
+  "endpoint": "https://egtopicdoc95.localhost.localstack.cloud:4566/api/events",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Get and list topics:
+
+```bash
+az eventgrid topic show \
+  --name egtopicdoc95 \
+  --resource-group rg-eventgrid-demo
+
+az eventgrid topic list \
+  --resource-group rg-eventgrid-demo
+```
+
+```bash title="Output"
+{
+  "name": "egtopicdoc95",
+  "endpoint": "https://egtopicdoc95.localhost.localstack.cloud:4566/api/events",
+  "provisioningState": "Succeeded",
+  ...
+}
+[
+  {
+    "name": "egtopicdoc95",
+    "endpoint": "https://egtopicdoc95.localhost.localstack.cloud:4566/api/events",
+    "provisioningState": "Succeeded",
+    ...
+  }
+]
+```
+
+### Manage topic access keys
+
+List topic keys:
+
+```bash
+az eventgrid topic key list \
+  --name egtopicdoc95 \
+  --resource-group rg-eventgrid-demo
+```
+
+Regenerate the primary key and list keys again:
+
+```bash
+az eventgrid topic key regenerate \
+  --name egtopicdoc95 \
+  --resource-group rg-eventgrid-demo \
+  --key-name key1
+
+az eventgrid topic key list \
+  --name egtopicdoc95 \
+  --resource-group rg-eventgrid-demo
+```
+
+```bash title="Output"
+{
+  "key1": "...",
+  "key2": "..."
+}
+{
+  "key1": "...",
+  "key2": "..."
+}
+```
+
+### Create and inspect an event subscription
+
+Get the topic resource ID and create an event subscription:
+
+```bash
+TOPIC_ID=$(az eventgrid topic show \
+  --name egtopicdoc95 \
+  --resource-group rg-eventgrid-demo \
+  --query id \
+  --output tsv)
+
+az eventgrid event-subscription create \
+  --name egsubdoc95 \
+  --source-resource-id "$TOPIC_ID" \
+  --endpoint "https://webhook.localhost.localstack.cloud:4566/events"
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventgrid-demo/providers/Microsoft.EventGrid/topics/egtopicdoc95/providers/Microsoft.EventGrid/eventSubscriptions/egsubdoc95",
+  "name": "egtopicdoc95/providers/Microsoft.EventGrid/eventSubscriptions/egsubdoc95",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Show the event subscription:
+
+```bash
+az eventgrid event-subscription show \
+  --name egsubdoc95 \
+  --source-resource-id "$TOPIC_ID"
+```
+
+```bash title="Output"
+{
+  "name": "egtopicdoc95/providers/Microsoft.EventGrid/eventSubscriptions/egsubdoc95",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+### Create and inspect a domain
+
+Create an Event Grid domain:
+
+```bash
+az eventgrid domain create \
+  --name egdomaindoc95 \
+  --resource-group rg-eventgrid-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventgrid-demo/providers/Microsoft.EventGrid/domains/egdomaindoc95",
+  "name": "egdomaindoc95",
+  "location": "westeurope",
+  "endpoint": "https://egdomaindoc95.westeurope-1.eventgrid.azure.net/api/events",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Get and list domains:
+
+```bash
+az eventgrid domain show \
+  --name egdomaindoc95 \
+  --resource-group rg-eventgrid-demo
+
+az eventgrid domain list \
+  --resource-group rg-eventgrid-demo
+```
+
+```bash title="Output"
+{
+  "name": "egdomaindoc95",
+  "endpoint": "https://egdomaindoc95.westeurope-1.eventgrid.azure.net/api/events",
+  "provisioningState": "Succeeded",
+  ...
+}
+[
+  {
+    "name": "egdomaindoc95",
+    "endpoint": "https://egdomaindoc95.westeurope-1.eventgrid.azure.net/api/events",
+    "provisioningState": "Succeeded",
+    ...
+  }
+]
+```
 
 ## API Coverage
 
