@@ -1,10 +1,137 @@
 ---
 title: "Authorization"
-description: API coverage for Microsoft.Authorization in LocalStack for Azure.
+description: Get started with Azure Authorization on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Authorization (Azure RBAC) is the access control system used to grant permissions to users, groups, and service principals for Azure resources.
+It helps you manage who can perform specific actions at subscription, resource group, or individual resource scope.
+Authorization is commonly used to enforce least-privilege access and delegate operational responsibilities across teams. For more information, see [What is Azure role-based access control (Azure RBAC)?](https://learn.microsoft.com/en-us/azure/role-based-access-control/overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Authorization.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Authorization's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Authorization and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to use as the RBAC assignment scope:
+
+```bash
+az group create \
+  --name rg-authorization-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-authorization-demo",
+  "location": "westeurope",
+  "name": "rg-authorization-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Inspect a built-in role definition
+
+List the Contributor role definition:
+
+```bash
+az role definition list \
+  --name Contributor \
+  --query "[].{roleName:roleName,id:id,roleType:roleType,description:description}"
+```
+
+```bash title="Output"
+[
+  {
+    "description": "Grants full access to manage all resources, but does not allow you to assign roles in Azure RBAC, manage assignments in Azure Blueprints, or share image galleries.",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+    "roleName": "Contributor",
+    "roleType": "BuiltInRole"
+  }
+]
+```
+
+### Create a role assignment
+
+Create a role assignment at resource group scope:
+
+```bash
+SCOPE="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-authorization-demo"
+
+az role assignment create \
+  --assignee-object-id "55555555-5555-5555-5555-555555555555" \
+  --assignee-principal-type ServicePrincipal \
+  --role Contributor \
+  --scope "$SCOPE" \
+  --query "{id:id,name:name,principalId:principalId,principalType:principalType,roleDefinitionId:roleDefinitionId,scope:scope,type:type}"
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/c73c81fa-2d43-4124-9a12-a78f55d15b79",
+  "name": "c73c81fa-2d43-4124-9a12-a78f55d15b79",
+  "principalId": "55555555-5555-5555-5555-555555555555",
+  "principalType": "ServicePrincipal",
+  "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+  "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-authorization-demo",
+  "type": "Microsoft.Authorization/roleAssignments"
+}
+```
+
+### Delete a role assignment
+
+Create a temporary role assignment, then delete it by assignment ID:
+
+```bash
+ASSIGNMENT_ID=$(az role assignment create \
+  --assignee-object-id "44444444-4444-4444-4444-444444444444" \
+  --assignee-principal-type ServicePrincipal \
+  --role Reader \
+  --scope "$SCOPE" \
+  --query id \
+  --output tsv)
+
+az role assignment delete \
+  --ids "$ASSIGNMENT_ID"
+```
+
+Check recent role assignment changelogs:
+
+```bash
+az role assignment list-changelogs \
+  --start-time 2026-01-01T00:00:00Z \
+  --end-time 2026-12-31T00:00:00Z
+```
+
+```bash title="Output"
+[]
+```
 
 ## API Coverage
 
