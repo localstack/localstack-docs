@@ -1,10 +1,160 @@
 ---
 title: "Container Registry"
-description: API coverage for Microsoft.ContainerRegistry in LocalStack for Azure.
+description: Get started with Azure Container Registry on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Container Registry is a managed registry for storing and managing container images and related OCI artifacts.
+It helps you keep container images close to your deployments while controlling access and registry policies.
+Container Registry is commonly used as the private image source for containerized applications and CI/CD workflows. For more information, see [Azure Container Registry documentation](https://learn.microsoft.com/en-us/azure/container-registry/).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Container Registry.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Container Registry's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Container Registry and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to contain your Container Registry resources:
+
+```bash
+az group create \
+  --name rg-acr-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-acr-demo",
+  "location": "westeurope",
+  "name": "rg-acr-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create a container registry
+
+Create a Basic SKU registry in the resource group:
+
+```bash
+az acr create \
+  --name acrdoc89 \
+  --resource-group rg-acr-demo \
+  --location westeurope \
+  --sku Basic
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-acr-demo/providers/Microsoft.ContainerRegistry/registries/acrdoc89",
+  "location": "westeurope",
+  "name": "acrdoc89",
+  "loginServer": "acrdoc89.azurecr.azure.localhost.localstack.cloud:4566",
+  "provisioningState": "Succeeded",
+  "sku": {
+    "name": "Basic",
+    "tier": "Basic"
+  },
+  ...
+}
+```
+
+Get and list registries:
+
+```bash
+az acr show \
+  --name acrdoc89 \
+  --resource-group rg-acr-demo
+
+az acr list \
+  --resource-group rg-acr-demo
+```
+
+```bash title="Output"
+{
+  "name": "acrdoc89",
+  "loginServer": "acrdoc89.azurecr.azure.localhost.localstack.cloud:4566",
+  "adminUserEnabled": false,
+  "provisioningState": "Succeeded",
+  ...
+}
+[
+  {
+    "name": "acrdoc89",
+    "loginServer": "acrdoc89.azurecr.azure.localhost.localstack.cloud:4566",
+    "provisioningState": "Succeeded",
+    ...
+  }
+]
+```
+
+### Enable admin user and view credentials
+
+Enable the admin user on the registry:
+
+```bash
+az acr update \
+  --name acrdoc89 \
+  --resource-group rg-acr-demo \
+  --admin-enabled true
+```
+
+```bash title="Output"
+{
+  "name": "acrdoc89",
+  "adminUserEnabled": true,
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Show admin credentials:
+
+```bash
+az acr credential show \
+  --name acrdoc89 \
+  --resource-group rg-acr-demo
+```
+
+```bash title="Output"
+{
+  "username": "acrdoc89",
+  "passwords": [
+    {
+      "name": "password",
+      "value": "..."
+    },
+    {
+      "name": "password2",
+      "value": "..."
+    }
+  ]
+}
+```
 
 ## API Coverage
 
