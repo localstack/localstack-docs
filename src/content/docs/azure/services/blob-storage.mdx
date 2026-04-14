@@ -1,10 +1,277 @@
 ---
 title: "Blob Storage"
-description: API coverage for Microsoft.BlobStorage in LocalStack for Azure.
+description: Get started with Azure Blob Storage on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Blob Storage is a highly scalable object storage solution optimized for storing massive volumes of unstructured data, such as text and binary content. It supports block blobs, append blobs, and page blobs, and is commonly used for serving documents, images, and streaming media. For more information, see [Introduction to Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Blob Storage.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Blob Storage's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Blob Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+:::note
+As an alternative to using the `azlocal` CLI, users can run:
+
+`azlocal start-interception`
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator REST API.
+To revert this configuration, run:
+
+`azlocal stop-interception`
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API
+:::
+
+### Create a resource group
+
+Create a resource group to contain your storage resources:
+
+```bash
+az group create \
+  --name rg-blob-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-blob-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-blob-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a storage account
+
+Create a storage account in the resource group:
+
+```bash
+az storage account create \
+  --name stblobdemols \
+  --resource-group rg-blob-demo \
+  --location westeurope \
+  --sku Standard_LRS \
+  --only-show-errors
+```
+
+```bash title="Output"
+{
+  ...
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-blob-demo/providers/Microsoft.Storage/storageAccounts/stblobdemols",
+  ...
+  "name": "stblobdemols",
+  ...
+  "placement": null,
+  "primaryEndpoints": {
+    "blob": "https://stblobdemols.blob.core.azure.localhost.localstack.cloud:456",
+    ...
+  },
+  ....
+}
+```
+
+### Authentication
+
+There are three ways to authenticate storage container commands against the emulator:
+
+#### Storage account key
+
+Retrieve the account key and pass it with `--account-name` and `--account-key`:
+
+```bash
+ACCOUNT_KEY=$(az storage account keys list \
+  --account-name stblobdemols \
+  --resource-group rg-blob-demo \
+  --query "[0].value" \
+  --output tsv)
+
+az storage container list \
+  --account-name stblobdemols \
+  --account-key "$ACCOUNT_KEY"
+```
+
+#### Login credentials
+
+Use `--auth-mode login` to authenticate with the current session credentials:
+
+```bash
+az storage container list \
+  --account-name stblobdemols \
+  --auth-mode login
+```
+
+#### Connection string
+
+Bundle the account name and key into a single value:
+
+```bash
+CONNECTION_STRING=$(az storage account show-connection-string \
+  --name stblobdemols \
+  --resource-group rg-blob-demo \
+  --query connectionString -o tsv)
+
+az storage container list \
+  --connection-string "$CONNECTION_STRING"
+```
+
+The remaining examples in this guide use connection strings for brevity.
+
+### Create and inspect a blob container
+
+Create a container in the storage account:
+
+```bash
+az storage container create \
+  --name documents \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "created": true
+}
+```
+
+Verify the container exists:
+
+```bash
+az storage container exists \
+  --name documents \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "exists": true
+}
+```
+
+List containers in the storage account:
+
+```bash
+az storage container list \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+[
+  {
+    ...
+    "name": "documents",
+    "properties": {
+      ...
+      "lease": {
+        ...
+      },
+      ...
+    },
+    ...
+  }
+]
+```
+
+### Upload, list, and download blobs
+
+Upload a local file as a block blob:
+
+```bash
+echo "Hello from LocalStack" > /tmp/hello.txt
+
+az storage blob upload \
+  --container-name documents \
+  --name hello.txt \
+  --file /tmp/hello.txt \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+{
+  "client_request_id": "...",
+  "content_md5": "...",
+  "date": "...",
+  "etag": "...
+  ...
+}
+```
+
+List blobs in the container:
+
+```bash
+az storage blob list \
+  --container-name documents \
+  --connection-string "$CONNECTION_STRING" \
+  --output table
+```
+
+Download the blob to a local file:
+
+```bash
+az storage blob download \
+  --container-name documents \
+  --name hello.txt \
+  --file /tmp/hello-downloaded.txt \
+  --connection-string "$CONNECTION_STRING"
+```
+
+```bash title="Output"
+Finished[#############################################################]  100.0000%
+{
+  "container": "documents",
+  ...
+}
+```
+
+Delete the blob:
+
+```bash
+az storage blob delete \
+  --container-name documents \
+  --name hello.txt \
+  --connection-string "$CONNECTION_STRING"
+```
+
+## Features
+
+The Blob Storage emulator supports the following features:
+
+- **Data plane REST API**: Blob CRUD, message operations (put, peek, get, delete), container metadata, stored access policies, and SAS token generation.
+- **Control plane REST API**: Create, update, delete, and get containers, get and set container service properties via Azure Resource Manager.
+- **Multiple authentication modes**: Storage account key, login credentials, and connection strings.
+
+## Limitations
+
+- **No data persistence across restarts**: Blob data is not persisted and is lost when the LocalStack emulator is stopped or restarted.
+- **Blob service properties**: `set_service_properties` is a no-op and `get_service_properties` returns empty defaults, unlike Azure where CORS, logging, and metrics settings are persisted and applied.
+- **Storage account keys**: Keys are emulator-generated rather than managed by Azure.
+- **Header validation**: Unsupported request headers or parameters are silently accepted instead of being rejected.
+- **API version enforcement**: The emulator does not validate the `x-ms-version` header; all API versions are accepted.
+
+## Samples
+
+The following samples demonstrate how to use Blob Storage with LocalStack for Azure:
+
+- [Azure Functions Sample with LocalStack for Azure](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-storage-http/dotnet)
+- [Azure Functions App with Managed Identity](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-managed-identity/python)
+- [Azure Web App with Managed Identity](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-managed-identity/python)
 
 ## API Coverage
 
