@@ -1,10 +1,189 @@
 ---
 title: "Container Service"
-description: API coverage for Microsoft.ContainerService in LocalStack for Azure.
+description: Get started with Azure Container Service on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Container Service powers managed Kubernetes clusters through Azure Kubernetes Service (AKS).
+It helps you provision, inspect, and manage Kubernetes control plane resources using Azure APIs.
+Container Service is commonly used to run containerized workloads with managed cluster operations. For more information, see [Azure Kubernetes Service (AKS) documentation](https://learn.microsoft.com/en-us/azure/aks/).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Container Service resources.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Container Service's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Container Service and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group for your AKS resources:
+
+```bash
+az group create \
+  --name rg-aks-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aks-demo",
+  "location": "westeurope",
+  "name": "rg-aks-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create an AKS cluster
+
+Create an AKS cluster with a single node pool:
+
+```bash
+az aks create \
+  --name aksdoc90 \
+  --resource-group rg-aks-demo \
+  --location westeurope \
+  --node-count 1 \
+  --generate-ssh-keys
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-aks-demo/providers/Microsoft.ContainerService/managedClusters/aksdoc90",
+  "name": "aksdoc90",
+  "location": "westeurope",
+  "kubernetesVersion": "1.33",
+  "provisioningState": "Succeeded",
+  "powerState": {
+    "code": "Running"
+  },
+  ...
+}
+```
+
+### Show and list clusters
+
+Show a cluster:
+
+```bash
+az aks show \
+  --name aksdoc90 \
+  --resource-group rg-aks-demo
+```
+
+```bash title="Output"
+{
+  "name": "aksdoc90",
+  "location": "westeurope",
+  "kubernetesVersion": "1.33",
+  "nodeResourceGroup": "MC_rg-aks-demo_aksdoc90_westeurope",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Create a second cluster and list all clusters in the resource group:
+
+```bash
+az aks create \
+  --name aksdoc91 \
+  --resource-group rg-aks-demo \
+  --location westeurope \
+  --node-count 1 \
+  --generate-ssh-keys \
+  --no-wait
+
+az aks list \
+  --resource-group rg-aks-demo
+```
+
+```bash title="Output"
+[
+  {
+    "name": "aksdoc90",
+    "location": "westeurope",
+    "provisioningState": "Succeeded",
+    ...
+  },
+  {
+    "name": "aksdoc91",
+    "location": "westeurope",
+    "provisioningState": "Succeeded",
+    ...
+  }
+]
+```
+
+### Get credentials and inspect node pools
+
+Merge AKS credentials into your local kubeconfig and list node pools:
+
+```bash
+az aks get-credentials \
+  --name aksdoc90 \
+  --resource-group rg-aks-demo \
+  --overwrite-existing
+
+az aks nodepool list \
+  --cluster-name aksdoc90 \
+  --resource-group rg-aks-demo
+```
+
+```bash title="Output"
+WARNING: Merged "aksdoc90" as current context in /Users/harshcasper/.kube/config
+[
+  {
+    "name": "nodepool1",
+    "count": 1,
+    "orchestratorVersion": "1.33",
+    "osType": "Linux",
+    "provisioningState": "Succeeded",
+    ...
+  }
+]
+```
+
+Show node pool details:
+
+```bash
+az aks nodepool show \
+  --cluster-name aksdoc90 \
+  --resource-group rg-aks-demo \
+  --name nodepool1
+```
+
+```bash title="Output"
+{
+  "name": "nodepool1",
+  "count": 1,
+  "mode": "System",
+  "orchestratorVersion": "1.33",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
 
 ## API Coverage
 
