@@ -270,12 +270,12 @@ az cosmosdb sql database create \
 #### Create a container with a partition key:
 
 ```bash
-az cosmosdb sql container create \\
-  --account-name cosmos-demo-acct \\
-  --resource-group rg-cosmos-demo \\
-  --database-name MyDatabase \\
-  --name MyContainer \\
-  --partition-key-path "/partitionKey" \\
+az cosmosdb sql container create \
+  --account-name cosmos-demo-acct \
+  --resource-group rg-cosmos-demo \
+  --database-name MyDatabase \
+  --name MyContainer \
+  --partition-key-path "/partitionKey" \
   --throughput 400
 ```
 
@@ -348,8 +348,8 @@ az cosmosdb sql container create \\
 ### Emulator container and Data Explorer
 
 The emulator is comprised of two components:
-- **Data explorer - interactively explore the data in the emulator. This runs on the local port mapped to the container's port 1234
-- **Azure Cosmos DB emulator - a local version of the Azure Cosmos DB database service. This runs on the local port mapped to the container's port 8081.
+- **Data explorer** - interactively explore the data in the emulator. This runs on the local port mapped to the container's port 1234
+- **Azure Cosmos DB emulator** - a local version of the Azure Cosmos DB database service. This runs on the local port mapped to the container's port 8081.
 
 ![You can navigate to the data explorer by clicking the port mapping in Docker Desktop](../../../../assets/images/azure/docs/cosmosdb_port_mappings.png)
 
@@ -357,29 +357,29 @@ The emulator is comprised of two components:
 
 The Cosmos DB emulator supports the following features:
 
-- **Resource Management: Create, update, and delete accounts, databases, and containers via ARM templates or CLI.
+- **Resource Management**: Create, update, and delete accounts, databases, and containers via ARM templates or CLI.
 
-- **SQL (NoSQL) API: Full support for CRUD operations, queries, and stored procedures.
+- **SQL (NoSQL) API**: Full support for CRUD operations, queries, and stored procedures.
 
-- **Fixed Master Key: Supports the standard well-known master key for ease of local configuration.
+- **Fixed Master Key**: Supports the standard well-known master key for ease of local configuration.
 
-- **Instant Provisioning: Accounts and resources are available immediately upon creation commands.
+- **Instant Provisioning**: Accounts and resources are available immediately upon creation commands.
 
 ## Limitations
 
-- **Consistency Models: While multiple consistency levels can be configured, the local environment behaves as 'Session' consistency by default.
+- **Consistency Models**: While multiple consistency levels can be configured, the local environment behaves as 'Session' consistency by default.
 
-- **API Support: Only the API for NoSQL and API for MongoDB are supported. Cassandra, Gremlin, and Table APIs are currently unavailable.
+- **API Support**: Only the API for NoSQL and API for MongoDB are supported. Cassandra, Gremlin, and Table APIs are currently unavailable.
 
-- **Throughput Modes: Only provisioned throughput is supported; serverless throughput mode is not available.
+- **Throughput Modes**: Only provisioned throughput is supported; serverless throughput mode is not available.
 
-- **Key Management: The master key is fixed upon startup and cannot be regenerated during runtime.
+- **Key Management**: The master key is fixed upon startup and cannot be regenerated during runtime.
 
-- **Scaling and Replication: Geo-replication, multi-region configurations, and horizontal scaling (scaling out) are not supported.
+- **Scaling and Replication**: Geo-replication, multi-region configurations, and horizontal scaling (scaling out) are not supported.
 
-- **Multi-region Simulation: While you can specify multiple locations, traffic is routed to the local instance, and there is no true geographic latency simulation.
+- **Multi-region Simulation**: While you can specify multiple locations, traffic is routed to the local instance, and there is no true geographic latency simulation.
 
-- **Infrastructure-as-Code: Bicep and Terraform deployments are planned, but not supported at this time.
+- **Infrastructure-as-Code**: Bicep and Terraform deployments are planned, but not supported at this time.
 
 ## Samples
 
