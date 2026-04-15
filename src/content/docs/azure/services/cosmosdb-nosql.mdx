@@ -359,18 +359,6 @@ The emulator is comprised of two components:
 
 ## Features
 
-The CosmosDB emulator supports the following features:
-
-- **Resource Management**: Create, update, and delete accounts, databases, and containers via ARM templates or CLI.
-
-- **SQL (NoSQL) API**: Support for CRUD operations and queries.
-
-- **Fixed Master Key**: Supports the standard well-known master key for ease of local configuration.
-
-- **Instant Provisioning**: Accounts and resources are available immediately upon creation commands.
-
-### Feature Support Matrix
-
 | Feature | Support Status |
 | :--- | :--- |
 | **Document Operations** | |
@@ -386,10 +374,6 @@ The CosmosDB emulator supports the following features:
 | Create collection twice (conflict) | ✅ Supported |
 | Create collection with TTL expiration | ✅ Supported |
 | Create partitioned collection | ✅ Supported |
-| Create collection with custom index policy | ⚠️ Not yet implemented |
-| Update collection | ⚠️ Not yet implemented |
-| Get and change collection performance | ⚠️ Not yet implemented |
-| Read database/collection feed | ⚠️ Not yet implemented |
 | **Query Operations** | |
 | Query with equality / equals on ID | ✅ Supported |
 | Query with AND filter and projection | ✅ Supported |
@@ -400,21 +384,16 @@ The CosmosDB emulator supports the following features:
 | Query with Joins (Single, Two, with Filter) | ✅ Supported |
 | Query with subdocuments | ✅ Supported |
 | Query with string, math, and array operators | ✅ Supported |
-| Query partitioned collection in parallel | ⚠️ Not yet implemented |
 | **Advanced Features** | |
 | Batch API | ✅ Supported |
 | Bulk API | ✅ Supported |
 | Change Feed | ✅ Supported |
-| Request Units (RU) | ⚠️ Not yet implemented |
-| Stored procedures | ❌ Not planned |
-| Triggers | ❌ Not planned |
-| User Defined Functions (UDFs) | ❌ Not planned |
 
 ## Limitations
 
 - **Consistency Models**: While multiple consistency levels can be configured, the local environment behaves as 'Session' consistency by default.
 
-- **API Support**: Only the API for NoSQL and API for MongoDB are supported. Cassandra, Gremlin, and Table APIs are currently unavailable.
+- **API Support**: Cassandra, Gremlin, and Table APIs are currently unavailable.
 
 - **Throughput Modes**: Only provisioned throughput is supported; serverless throughput mode is not available.
 
@@ -424,7 +403,18 @@ The CosmosDB emulator supports the following features:
 
 - **Multi-region Simulation**: While you can specify multiple locations, traffic is routed to the local instance, and there is no true geographic latency simulation.
 
-- **Infrastructure-as-Code**: Bicep and Terraform deployments are planned, but not supported at this time.
+- **Infrastructure-as-Code**: Bicep and Terraform deployment support is planned, but not supported at this time.
+
+| Feature | Support Status |
+| Create collection with custom index policy | ⚠️ Not yet implemented |
+| Update collection | ⚠️ Not yet implemented |
+| Get and change collection performance | ⚠️ Not yet implemented |
+| Read database/collection feed | ⚠️ Not yet implemented |
+| Query partitioned collection in parallel | ⚠️ Not yet implemented |
+| Request Units (RU) | ⚠️ Not yet implemented |
+| Stored procedures | ❌ Not planned |
+| Triggers | ❌ Not planned |
+| User Defined Functions (UDFs) | ❌ Not planned |
 
 ## Samples
 
