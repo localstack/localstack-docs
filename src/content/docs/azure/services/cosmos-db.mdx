@@ -1,0 +1,357 @@
+---
+title: "Cosmos DB"
+description: Get started with Azure Cosmos DB on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Cosmos DB is a globally distributed, multi-model NoSQL database service designed for high availability and low latency.
+It supports multiple APIs including SQL (NoSQL), MongoDB, Cassandra, Gremlin, and Table, enabling teams to choose the data model that best fits their application.
+Cosmos DB is commonly used for real-time applications, globally replicated datasets, and multi-tenant SaaS platforms that require predictable performance at any scale. For more information, see [Welcome to Azure Cosmos DB](https://learn.microsoft.com/en-us/azure/cosmos-db/introduction).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Cosmos DB.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Cosmos DB's integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating Cosmos DB accounts, databases, and containers using the SQL and MongoDB APIs.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### SQL (NoSQL) API
+
+This section walks through creating a Cosmos DB account with the SQL API, creating a database and a container, and listing resources.
+
+#### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-cosmos-demo --location eastus
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo",
+  "location": "eastus",
+  "name": "rg-cosmos-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+#### Create a Cosmos DB account
+
+Create a Cosmos DB account configured for the SQL API:
+
+```bash
+az cosmosdb create \
+  --name mycosmosaccount \
+  --resource-group rg-cosmos-demo \
+  --locations regionName=eastus
+```
+
+```bash title="Output"
+{
+  "databaseAccountOfferType": "Standard",
+  "documentEndpoint": "https://mycosmosaccount.documents.azure.com:8081/",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mycosmosaccount",
+  "kind": "GlobalDocumentDB",
+  "location": "East US",
+  "name": "mycosmosaccount",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-cosmos-demo",
+  "type": "Microsoft.DocumentDB/databaseAccounts",
+  ...
+}
+```
+
+#### List account keys
+
+Retrieve the primary and secondary access keys for the account:
+
+```bash
+az cosmosdb keys list \
+  --name mycosmosaccount \
+  --resource-group rg-cosmos-demo
+```
+
+```bash title="Output"
+{
+  "primaryMasterKey": "C2y6yDjf5/R+ob0N8A7C...",
+  "primaryReadonlyMasterKey": "C2y6yDjf5/R+ob0N8A7C...",
+  "secondaryMasterKey": "C2y6yDjf5/R+ob0N8A7C...",
+  "secondaryReadonlyMasterKey": "C2y6yDjf5/R+ob0N8A7C..."
+}
+```
+
+#### Create a SQL database
+
+Create a SQL API database within the Cosmos DB account:
+
+```bash
+az cosmosdb sql database create \
+  --account-name mycosmosaccount \
+  --resource-group rg-cosmos-demo \
+  --name mydb
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mycosmosaccount/sqlDatabases/mydb",
+  "name": "mydb",
+  "resourceGroup": "rg-cosmos-demo",
+  "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases"
+...
+}
+```
+
+#### Create a SQL container
+
+Create a SQL container with a partition key path of `/id`:
+
+```bash
+az cosmosdb sql container create \
+  --account-name mycosmosaccount \
+  --resource-group rg-cosmos-demo \
+  --database-name mydb \
+  --name mycontainer \
+  --partition-key-path /id
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mycosmosaccount/sqlDatabases/mydb/containers/mycontainer",
+  "name": "mycontainer",
+  "resourceGroup": "rg-cosmos-demo",
+  "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers"
+...
+}
+```
+
+#### List databases and containers
+
+List all SQL databases in the account and all containers within the database:
+
+```bash
+az cosmosdb sql database list \
+  --account-name mycosmosaccount \
+  --resource-group rg-cosmos-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mycosmosaccount/sqlDatabases/mydb",
+    "name": "mydb",
+    "resourceGroup": "rg-cosmos-demo",
+    "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases"
+  }
+]
+```
+
+
+Then list all containers in the database:
+
+```bash
+az cosmosdb sql container list \
+  --account-name mycosmosaccount \
+  --resource-group rg-cosmos-demo \
+  --database-name mydb
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mycosmosaccount/sqlDatabases/mydb/containers/mycontainer",
+    "name": "mycontainer",
+    "resourceGroup": "rg-cosmos-demo",
+    "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers"
+  }
+]
+```
+
+### MongoDB API
+
+This section walks through creating a Cosmos DB account with the MongoDB API, creating a database, and connecting with a MongoDB client.
+
+#### Create a MongoDB Cosmos DB account
+
+Create a second Cosmos DB account configured for the MongoDB API:
+
+```bash
+az cosmosdb create \
+  --name mymongoacccount \
+  --resource-group rg-cosmos-demo \
+  --locations regionName=eastus \
+  --kind MongoDB
+```
+
+```bash title="Output"
+{
+  "databaseAccountOfferType": "Standard",
+  "documentEndpoint": "https://mymongoacccount.documents.azure.com:443/",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoacccount",
+  "kind": "MongoDB",
+  "location": "East US",
+  "name": "mymongoacccount",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-cosmos-demo",
+  "type": "Microsoft.DocumentDB/databaseAccounts",
+  ...
+}
+```
+
+#### Retrieve connection string
+
+Retrieve the MongoDB-compatible connection string for the account:
+
+```bash
+az cosmosdb keys list \
+  --name mymongoacccount \
+  --resource-group rg-cosmos-demo \
+  --type connection-strings \
+  --query "connectionStrings[0].connectionString" \
+  --output tsv
+```
+
+```bash title="Output"
+mongodb://primary:<key>@172.17.0.10:27017/
+```
+
+#### Create a MongoDB database
+
+Create a MongoDB database within the account:
+
+```bash
+az cosmosdb mongodb database create \
+  --account-name mymongoacccount \
+  --resource-group rg-cosmos-demo \
+  --name mymongodb
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoacccount/mongodbDatabases/mymongodb",
+  "name": "mymongodb",
+  "resourceGroup": "rg-cosmos-demo",
+  "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases"
+...
+}
+```
+
+#### Create a MongoDB collection
+
+Create a MongoDB collection inside the database with a shard key:
+
+```bash
+az cosmosdb mongodb collection create \
+  --account-name mymongoacccount \
+  --resource-group rg-cosmos-demo \
+  --database-name mymongodb \
+  --name mycollection \
+  --shard /userId \
+  --throughput 400
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoacccount/mongodbDatabases/mymongodb/collections/mycollection",
+  "name": "mycollection",
+  "resourceGroup": "rg-cosmos-demo",
+  "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections"
+...
+}
+```
+
+#### Connect with the MongoDB client
+
+Extract the connection string and connect to the MongoDB database using `mongosh`:
+
+```bash
+CONN_STR=$(az cosmosdb keys list \
+  --name mymongoacccount \
+  --resource-group rg-cosmos-demo \
+  --type connection-strings \
+  --query "connectionStrings[0].connectionString" \
+  --output tsv)
+
+mongosh "$CONN_STR"
+```
+
+### Delete and verify
+
+Delete the Cosmos DB account and confirm it no longer appears in the list:
+
+```bash
+az cosmosdb delete \
+  --name mycosmosaccount \
+  --resource-group rg-cosmos-demo \
+  --yes
+
+az cosmosdb list --resource-group rg-cosmos-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoacccount",
+    "kind": "MongoDB",
+    "name": "mymongoacccount",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-cosmos-demo",
+    "type": "Microsoft.DocumentDB/databaseAccounts"
+  }
+]
+```
+
+## Features
+
+- **Account lifecycle:** Create, read, list, and delete Cosmos DB accounts for both SQL and MongoDB API kinds.
+- **Account key management:** Retrieve primary and secondary master keys and read-only keys.
+- **Connection strings:** Retrieve connection strings for MongoDB accounts via `az cosmosdb keys list --type connection-strings`.
+- **Name availability check:** Validate account name uniqueness.
+- **SQL databases:** Create, read, list, and delete SQL (NoSQL) databases within an account.
+- **SQL containers:** Create, read, list, and delete SQL containers with partition key configuration.
+- **SQL indexing policy:** Create containers with custom indexing policies.
+- **MongoDB databases:** Create, read, list, and delete MongoDB databases within an account.
+- **MongoDB collections:** Create, read, list, and delete MongoDB collections with shard key and throughput settings.
+- **Native MongoDB access:** Connect directly to the local MongoDB backend using a standard MongoDB client.
+
+## Limitations
+
+- **PostgreSQL API not supported:** The Azure Cosmos DB for PostgreSQL (formerly Citus) API is not emulated.
+- **Table API not supported:** The Cosmos DB Table API is not emulated.
+- **Cassandra API not supported:** The Cosmos DB Cassandra API is not emulated.
+- **Gremlin API not supported:** The Cosmos DB Gremlin (graph) API is not emulated.
+- **Global distribution not emulated:** Multi-region replication and conflict resolution are accepted at the model level but not executed.
+- **Change feed and triggers:** Change feed processing and Cosmos DB triggers for Azure Functions are not emulated.
+- **Throughput and RU metering:** Request unit (RU) consumption is not tracked or enforced.
+- **RBAC for data plane:** Data plane RBAC (built-in Cosmos DB roles) is not enforced.
+
+## Samples
+
+Explore end-to-end examples in the [localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) repository:
+
+- Provisioning a Cosmos DB SQL account and inserting documents with the Azure SDK.
+- Connecting to the Cosmos DB MongoDB API with a standard MongoDB driver.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.DocumentDB" client:load />

@@ -1,0 +1,199 @@
+---
+title: "Web Test"
+description: Get started with Azure Monitor Web Tests on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor Web Tests (availability tests) send HTTP probes to a URL from multiple geographic locations and alert when the endpoint is unavailable or slow.
+Web Tests are associated with an Application Insights component and report availability data alongside application telemetry.
+They are commonly used to monitor public-facing APIs and web applications for uptime and response time from a global perspective. For more information, see [Application Insights availability tests](https://learn.microsoft.com/en-us/azure/azure-monitor/app/availability-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Web Tests.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Web Tests' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating a web test linked to an Application Insights component.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-webtest-demo --location eastus
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo",
+  "location": "eastus",
+  "name": "rg-webtest-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create an Application Insights component
+
+Create an Application Insights component to attach the web test to:
+
+```bash
+az monitor app-insights component create \
+  --app my-app-insights \
+  --resource-group rg-webtest-demo \
+  --location eastus \
+  --kind web
+```
+
+```bash title="Output"
+{
+  "appId": "c62300bc-c7ae-5dd1-9f6c-08016bcbfbd9",
+  "applicationType": "web",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/components/my-app-insights",
+  "kind": "web",
+  "location": "eastus",
+  "name": "my-app-insights",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-webtest-demo",
+  "type": "microsoft.insights/components",
+  ...
+}
+```
+
+### Create a web test
+
+Use the REST API to create a standard availability test:
+
+```bash
+AI_ID=$(az monitor app-insights component show \
+  --app my-app-insights \
+  --resource-group rg-webtest-demo \
+  --query id \
+  --output tsv)
+
+az rest --method PUT \
+  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/webtests/my-web-test?api-version=2022-06-15" \
+  --body '{
+    "location": "eastus",
+    "kind": "standard",
+    "properties": {
+      "Name": "my-web-test",
+      "Enabled": true,
+      "Frequency": 300,
+      "Timeout": 30,
+      "Kind": "standard",
+      "Locations": [{"Id": "us-tx-sn1-azr"}],
+      "Request": {
+        "RequestUrl": "https://example.com",
+        "HttpVerb": "GET"
+      },
+      "HiddenLink": "'"$AI_ID"'"
+    }
+  }'
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/webtests/my-web-test",
+  "kind": "standard",
+  "location": "eastus",
+  "name": "my-web-test",
+  "properties": {
+    "Enabled": true,
+    "Frequency": 300,
+    "Kind": "standard",
+    "Name": "my-web-test",
+    "Request": { "HttpVerb": "GET", "RequestUrl": "https://example.com" },
+    "Timeout": 30
+  },
+  "type": "Microsoft.Insights/webtests"
+...
+}
+```
+
+### List web tests
+
+List all web tests associated with the Application Insights component using the REST API:
+
+```bash
+az rest --method GET \
+  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/webtests?api-version=2022-06-15"
+```
+
+```bash title="Output"
+{
+  "value": [
+    {
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/Microsoft.Insights/webtests/my-web-test",
+      "kind": "standard",
+      "location": "eastus",
+      "name": "my-web-test",
+      "properties": {
+        "Enabled": true,
+        "Frequency": 300,
+        "Kind": "standard",
+        "Name": "my-web-test",
+        "Request": { "HttpVerb": "GET", "RequestUrl": "https://example.com" },
+        ...
+      },
+      "type": "Microsoft.Insights/webtests"
+    }
+  ]
+...
+}
+```
+
+### Delete a web test
+
+Delete the web test using the REST API and verify it no longer appears in the list:
+
+```bash
+az rest --method DELETE \
+  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/webtests/my-web-test?api-version=2022-06-15"
+```
+
+## Features
+
+- **Web test lifecycle:** Create, read, list, and delete web test resources.
+- **Classic ping and standard test kinds:** Accept `ping`, `multistep`, and `standard` test kinds.
+- **Test location configuration:** Accept one or more agent location IDs per test.
+- **Request configuration:** Define URL, HTTP verb, headers, and body for standard tests.
+- **Frequency and timeout settings:** Configure probing frequency and response timeout.
+- **Application Insights linking:** Associate web tests with an Application Insights component via the `HiddenLink` tag.
+- **Enable/disable flag:** Enable or disable a web test without deleting it.
+
+## Limitations
+
+- **No HTTP probes sent:** LocalStack does not send HTTP requests to the configured URL.
+- **No availability data collected:** Pass, fail, and response time data is not recorded.
+- **No availability alerts fired:** Alert rules associated with a web test are not triggered.
+- **No synthetic transactions:** Multi-step and Playwright-based tests are stored but not executed.
+
+## Samples
+
+Explore end-to-end examples in the [localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) repository:
+
+- Configuring web tests linked to Application Insights components for IaC testing.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />

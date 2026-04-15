@@ -1,0 +1,250 @@
+---
+title: "Function Apps"
+description: Get started with Azure Function Apps on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Function Apps are serverless compute resources that host and execute Azure Functions in response to events.
+They support multiple runtime environments including Python, Node.js, and .NET, and integrate with a wide range of trigger sources such as HTTP requests, queues, and timers.
+Function Apps are commonly used to build event-driven microservices, scheduled background jobs, and lightweight API backends. For more information, see [Introduction to Azure Functions](https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Function Apps.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Function Apps' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating a Function App backed by a Storage Account, deploying a Python HTTP-trigger function, and invoking it.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-func-demo --location eastus
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-func-demo",
+  "location": "eastus",
+  "name": "rg-func-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a storage account
+
+Function Apps require a Storage Account for internal bookkeeping.
+
+```bash
+az storage account create \
+  --name safuncdemo \
+  --resource-group rg-func-demo \
+  --location eastus \
+  --sku Standard_LRS
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-func-demo/providers/Microsoft.Storage/storageAccounts/safuncdemo",
+  "kind": "StorageV2",
+  "location": "eastus",
+  "name": "safuncdemo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-func-demo",
+  "sku": { "name": "Standard_LRS", "tier": "Standard" },
+  "type": "Microsoft.Storage/storageAccounts",
+  ...
+}
+```
+
+### Create a function app
+
+Create a function app and associate it with the storage account and App Service plan:
+
+```bash
+az functionapp create \
+  --name my-func-app \
+  --resource-group rg-func-demo \
+  --consumption-plan-location eastus \
+  --runtime python \
+  --runtime-version 3.11 \
+  --functions-version 4 \
+  --os-type linux \
+  --storage-account safuncdemo
+```
+
+```bash title="Output"
+{
+  "defaultHostName": "my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-func-demo/providers/Microsoft.Web/sites/my-func-app",
+  "kind": "functionapp,linux",
+  "location": "eastus",
+  "name": "my-func-app",
+  "resourceGroup": "rg-func-demo",
+  "state": "Running",
+  "type": "Microsoft.Web/sites",
+  ...
+}
+```
+
+### Configure app settings
+
+Add environment variables as application settings on the function app:
+
+```bash
+az functionapp config appsettings set \
+  --name my-func-app \
+  --resource-group rg-func-demo \
+  --settings \
+    FUNCTIONS_WORKER_RUNTIME=python \
+    MY_CUSTOM_SETTING=hello-world
+```
+
+```bash title="Output"
+[
+  { "name": "FUNCTIONS_WORKER_RUNTIME", "slotSetting": false, "value": "python" },
+  { "name": "MY_CUSTOM_SETTING", "slotSetting": false, "value": "hello-world" },
+  { "name": "AzureWebJobsStorage", "slotSetting": false, "value": "DefaultEndpointsProtocol=https;..." },
+  ...
+]
+```
+
+### List application settings
+
+List all application settings currently configured on the function app:
+
+```bash
+az functionapp config appsettings list \
+  --name my-func-app \
+  --resource-group rg-func-demo
+```
+
+```bash title="Output"
+[
+  { "name": "FUNCTIONS_WORKER_RUNTIME", "slotSetting": false, "value": "python" },
+  { "name": "FUNCTIONS_EXTENSION_VERSION", "slotSetting": false, "value": "~4" },
+  { "name": "AzureWebJobsStorage", "slotSetting": false, "value": "DefaultEndpointsProtocol=https;..." },
+  { "name": "MY_CUSTOM_SETTING", "slotSetting": false, "value": "hello-world" },
+  ...
+]
+```
+
+### Deploy function code
+
+Use the Azure Functions Core Tools to deploy a zip package containing your function code:
+
+```bash
+az functionapp deploy \
+  --resource-group rg-func-demo \
+  --name my-func-app \
+  --src-path ./my_func.zip \
+  --type zip
+```
+
+### Invoke an HTTP-trigger function
+
+After deployment, invoke the function via its default hostname:
+
+```bash
+curl "http://my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566/api/MyHttpTrigger?name=LocalStack"
+```
+
+### List and inspect function apps
+
+List all function apps in the resource group in table format and retrieve the full configuration of the app:
+
+```bash
+az functionapp list --resource-group rg-func-demo --output table
+```
+
+```bash title="Output"
+Name         Location    State    ResourceGroup    DefaultHostName                                                   AppServicePlan
+-----------  ----------  -------  ---------------  ----------------------------------------------------------------  ----------------
+my-func-app  East US     Running  rg-func-demo     my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566   Default1pn
+```
+
+
+Then retrieve the full configuration of the function app:
+
+```bash
+az functionapp show --name my-func-app --resource-group rg-func-demo
+```
+
+```bash title="Output"
+{
+  "defaultHostName": "my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-func-demo/providers/Microsoft.Web/sites/my-func-app",
+  "kind": "functionapp,linux",
+  "location": "East US",
+  "name": "my-func-app",
+  "resourceGroup": "rg-func-demo",
+  "state": "Running",
+  "type": "Microsoft.Web/sites"
+...
+}
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears in the list:
+
+```bash
+az functionapp delete --name my-func-app --resource-group rg-func-demo
+az functionapp list --resource-group rg-func-demo --output table
+```
+
+## Features
+
+- **Full CRUD lifecycle:** Create, read, update, and delete Function App resources using the Azure CLI or ARM API.
+- **App settings management:** Set and list application settings via `az functionapp config appsettings`.
+- **Site configuration:** Configure site properties including `linuxFxVersion`, `use32BitWorkerProcess`, and `alwaysOn`.
+- **Publishing credentials:** Retrieve deployment credentials via the `listPublishingCredentials` action.
+- **Publishing profile:** Download publish profiles via the `listPublishingProfileXmlWithSecrets` action.
+- **SCM access control:** Get and configure source control manager (SCM) access policy.
+- **Diagnostic logs:** Configure logging via `az functionapp log config`.
+- **Consumption plan auto-provisioning:** An App Service Plan is automatically created for the Function App when using a consumption plan location.
+- **Docker container execution:** Actual function execution is backed by a Docker container spawned on deploy.
+- **HTTP trigger invocation:** HTTP-triggered functions are accessible via the default host name after deployment.
+- **Multiple runtimes:** Python, Node.js, and .NET function runtimes are supported for execution.
+
+## Limitations
+
+- **Docker required for execution:** Function code execution requires Docker to be running. Without Docker, the Function App resource can be created and managed, but code will not run.
+- **Durable Functions not supported:** Stateful orchestration via Durable Functions is not emulated.
+- **Timer and non-HTTP triggers:** Timer, Blob, Queue, Service Bus, Event Hub, Event Grid, and Cosmos DB triggers are not automatically fired by LocalStack. They must be invoked manually or by external tooling.
+- **Deployment slots:** Staging slots and slot swaps are not supported.
+- **Log streaming:** Live log streaming via `az functionapp log tail` is not supported.
+- **Managed identities for functions:** Assigning a managed identity to a Function App is accepted at the ARM level but authentication tokens are not issued for bindings.
+
+## Samples
+
+Explore end-to-end examples in the [localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) repository:
+
+- Python HTTP-trigger function deployed with the Azure Functions Core Tools.
+- Node.js function app with `func azure functionapp publish`.
+- .NET isolated worker function app deployment.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Web" client:load />

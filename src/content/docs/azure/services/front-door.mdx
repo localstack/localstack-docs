@@ -1,0 +1,436 @@
+---
+title: "Front Door"
+description: Get started with Azure Front Door on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Front Door is a global content delivery network and load balancer that routes client traffic to the fastest available origin using Microsoft's global network.
+It combines HTTP load balancing, SSL offloading, URL-based routing, and traffic acceleration into a single entry point for your web applications.
+Front Door Standard and Premium profiles are configured through the `Microsoft.Cdn` resource provider and managed using the `az afd` CLI command group. For more information, see [What is Azure Front Door?](https://learn.microsoft.com/en-us/azure/frontdoor/front-door-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that use Azure Front Door.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Front Door's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Azure Front Door and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold your Front Door resources:
+
+```bash
+az group create \
+  --name rg-afd-demo \
+  --location global
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo",
+  "location": "global",
+  "name": "rg-afd-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a Front Door profile
+
+Create a Front Door Standard profile to serve as the top-level container for all Front Door resources:
+
+```bash
+az afd profile create \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo \
+  --sku Standard_AzureFrontDoor
+```
+
+```bash title="Output"
+{
+  "frontDoorId": "a3664ef5-d8cb-4930-b7f8-8a762d24acf9",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
+  "kind": "frontdoor",
+  "location": "Global",
+  "name": "afd-demo",
+  "originResponseTimeoutSeconds": 30,
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-afd-demo",
+  "resourceState": "Active",
+  "sku": {
+    "name": "Standard_AzureFrontDoor"
+  },
+  "tags": {},
+  "type": "Microsoft.Cdn/profiles"
+}
+```
+
+### Create an endpoint
+
+Create an endpoint to expose a publicly accessible hostname for your Front Door profile:
+
+```bash
+az afd endpoint create \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo \
+  --endpoint-name my-endpoint \
+  --enabled-state Enabled
+```
+
+```bash title="Output"
+{
+  "deploymentStatus": "NotStarted",
+  "enabledState": "Enabled",
+  "hostName": "my-endpoint-08621c35aa0147f0.z01.azurefd.net",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/afdendpoints/my-endpoint",
+  "location": "Global",
+  "name": "my-endpoint",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-afd-demo",
+  "tags": {},
+  "type": "Microsoft.Cdn/profiles/afdendpoints"
+}
+```
+
+The `hostName` field contains the generated `*.azurefd.net` domain assigned to this endpoint.
+
+### Create an origin group
+
+Create an origin group to define the set of backend servers that Front Door will load-balance across, including a health probe configuration:
+
+```bash
+az afd origin-group create \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo \
+  --origin-group-name my-origin-group \
+  --probe-path "/health" \
+  --probe-request-type GET \
+  --probe-protocol Http \
+  --probe-interval-in-seconds 120 \
+  --sample-size 2 \
+  --successful-samples-required 2
+```
+
+```bash title="Output"
+{
+  "deploymentStatus": "NotStarted",
+  "healthProbeSettings": {
+    "probeIntervalInSeconds": 120,
+    "probePath": "/health",
+    "probeProtocol": "Http",
+    "probeRequestType": "GET"
+  },
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/origingroups/my-origin-group",
+  "loadBalancingSettings": {
+    "additionalLatencyInMilliseconds": 0,
+    "sampleSize": 2,
+    "successfulSamplesRequired": 2
+  },
+  "name": "my-origin-group",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-afd-demo",
+  "sessionAffinityState": "Disabled",
+  "type": "Microsoft.Cdn/profiles/origingroups"
+}
+```
+
+### Add an origin
+
+Add an origin to the origin group to specify the backend host that Front Door will forward traffic to:
+
+```bash
+az afd origin create \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo \
+  --origin-group-name my-origin-group \
+  --origin-name my-origin \
+  --host-name example.com \
+  --http-port 80 \
+  --https-port 443
+```
+
+```bash title="Output"
+{
+  "deploymentStatus": "NotStarted",
+  "enabledState": "Enabled",
+  "enforceCertificateNameCheck": true,
+  "hostName": "example.com",
+  "httpPort": 80,
+  "httpsPort": 443,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/origingroups/my-origin-group/origins/my-origin",
+  "name": "my-origin",
+  "originGroupName": "my-origin-group",
+  "priority": 1,
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-afd-demo",
+  "type": "Microsoft.Cdn/profiles/origingroups/origins",
+  "weight": 50
+}
+```
+
+### Create a route
+
+Create a route to wire the endpoint to the origin group and define which protocols and path patterns are accepted.
+The `--origin-group` flag requires the full ARM resource ID:
+
+```bash
+SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+ORIGIN_GROUP_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/originGroups/my-origin-group"
+
+az afd route create \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo \
+  --endpoint-name my-endpoint \
+  --route-name my-route \
+  --origin-group "$ORIGIN_GROUP_ID" \
+  --supported-protocols Http Https \
+  --link-to-default-domain Enabled \
+  --https-redirect Disabled
+```
+
+```bash title="Output"
+{
+  "customDomains": [],
+  "deploymentStatus": "NotStarted",
+  "enabledState": "Enabled",
+  "forwardingProtocol": "MatchRequest",
+  "httpsRedirect": "Disabled",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/afdendpoints/my-endpoint/routes/my-route",
+  "linkToDefaultDomain": "Enabled",
+  "name": "my-route",
+  "originGroup": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/originGroups/my-origin-group",
+    "resourceGroup": "rg-afd-demo"
+  },
+  "patternsToMatch": [
+    "/*"
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-afd-demo",
+  "ruleSets": [],
+  "supportedProtocols": [
+    "Http",
+    "Https"
+  ],
+  "type": "Microsoft.Cdn/profiles/afdendpoints/routes"
+}
+```
+
+### Work with rule sets and rules
+
+Create a rule set to group related routing rules under the profile.
+Rule set names must be alphanumeric only:
+
+```bash
+az afd rule-set create \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo \
+  --rule-set-name myruleset
+```
+
+```bash title="Output"
+{
+  "deploymentStatus": "NotStarted",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset",
+  "name": "myruleset",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-afd-demo",
+  "type": "Microsoft.Cdn/profiles/rulesets"
+}
+```
+
+Add a rule to the rule set with an execution order and match processing behaviour:
+
+```bash
+az afd rule create \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo \
+  --rule-set-name myruleset \
+  --rule-name myrule \
+  --order 1 \
+  --match-processing-behavior Continue
+```
+
+```bash title="Output"
+{
+  "actions": [],
+  "conditions": [],
+  "deploymentStatus": "NotStarted",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset/rules/myrule",
+  "matchProcessingBehavior": "Continue",
+  "name": "myrule",
+  "order": 1,
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-afd-demo",
+  "ruleSetName": "myruleset",
+  "type": "Microsoft.Cdn/profiles/rulesets/rules"
+}
+```
+
+List all rule sets and rules under the profile to confirm their state:
+
+```bash
+az afd rule-set list \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo
+```
+
+```bash title="Output"
+[
+  {
+    "deploymentStatus": "NotStarted",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset",
+    "name": "myruleset",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-afd-demo",
+    "type": "Microsoft.Cdn/profiles/rulesets"
+  }
+]
+```
+
+```bash
+az afd rule list \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo \
+  --rule-set-name myruleset
+```
+
+```bash title="Output"
+[
+  {
+    "actions": [],
+    "conditions": [],
+    "deploymentStatus": "NotStarted",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset/rules/myrule",
+    "matchProcessingBehavior": "Continue",
+    "name": "myrule",
+    "order": 1,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-afd-demo",
+    "ruleSetName": "myruleset",
+    "type": "Microsoft.Cdn/profiles/rulesets/rules"
+  }
+]
+```
+
+### Show and list
+
+Show the Front Door profile to inspect its current state:
+
+```bash
+az afd profile show \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
+  "kind": "frontdoor",
+  "location": "Global",
+  "name": "afd-demo",
+  "provisioningState": "Succeeded",
+  "resourceState": "Active",
+  "sku": {
+    "name": "Standard_AzureFrontDoor"
+  },
+  "type": "Microsoft.Cdn/profiles"
+}
+```
+
+List all profiles in the resource group to verify the profile appears in results:
+
+```bash
+az afd profile list --resource-group rg-afd-demo
+```
+
+```bash title="Output"
+[
+  {
+    "frontDoorId": "083e606f-cec4-481b-b1d2-781b4428e52c",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
+    "kind": "frontdoor",
+    "location": "Global",
+    "name": "afd-demo",
+    "originResponseTimeoutSeconds": 30,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-afd-demo",
+    "resourceState": "Active",
+    "sku": {
+      "name": "Standard_AzureFrontDoor"
+    },
+    "tags": {},
+    "type": "Microsoft.Cdn/profiles"
+  }
+]
+```
+
+### Delete and verify
+
+Delete the Front Door profile to remove the profile and all child resources from the emulator:
+
+```bash
+az afd profile delete \
+  --resource-group rg-afd-demo \
+  --profile-name afd-demo
+```
+
+Verify the resource group no longer contains any profiles:
+
+```bash
+az afd profile list --resource-group rg-afd-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Full resource hierarchy:** Profiles, endpoints, origin groups, origins, routes, rule sets, and rules can all be created, updated, listed, and deleted under `Microsoft.Cdn/profiles`.
+- **Hostname generation:** A realistic `*.azurefd.net` hostname is generated for each endpoint, matching the format used by the real Azure service.
+- **Health probe settings:** Origin group health probe configuration — path, protocol, request type, and probe interval — is stored and returned on all get and list operations.
+- **Load balancing settings:** `sampleSize`, `successfulSamplesRequired`, and `additionalLatencyInMilliseconds` are stored and returned correctly.
+- **Route configuration:** Pattern matching, supported protocols, HTTPS redirect behaviour, and origin group linkage are fully supported.
+- **Rule sets and rules:** Match processing behaviour and ordering are stored and returned.
+- **Endpoint name availability:** Availability checks via `afd_profiles__check_endpoint_name_availability` reflect the real availability state.
+
+## Limitations
+
+- **Rules not enforced at data plane:** Rule conditions and actions are stored by the management plane but are not evaluated; rules do not affect how requests are proxied.
+- **No custom domain validation:** Custom domain binding is stored but DNS validation and certificate provisioning are not performed.
+- **No HTTPS certificate management:** Managed certificates and bring-your-own-certificate flows are not emulated.
+- **Classic CDN data plane not emulated:** Classic CDN profiles (`az cdn`) can be created under the same `Microsoft.Cdn` namespace, but traffic acceleration behaviour is not emulated.
+- **Deployment status always `NotStarted`:** There is no asynchronous deployment pipeline behind profile or endpoint state changes.
+- **No WAF policy support:** WAF policy association is not supported.
+
+## Samples
+
+The following samples demonstrate how to use Azure Front Door with LocalStack for Azure:
+
+- [Azure Front Door quickstart](https://learn.microsoft.com/en-us/azure/frontdoor/create-front-door-cli)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Cdn" client:load />

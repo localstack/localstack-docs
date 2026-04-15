@@ -1,0 +1,243 @@
+---
+title: "Autoscale Setting"
+description: Get started with Azure Monitor Autoscale Settings on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor Autoscale Settings manage automatic scaling of compute resources based on schedule or metric-driven rules.
+Autoscale settings can target Virtual Machine Scale Sets, App Service plans, and other scalable resources.
+They are commonly used to adjust capacity in response to traffic patterns, reducing costs during off-peak periods while maintaining performance under load. For more information, see [Overview of autoscale in Azure](https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Autoscale Settings.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Autoscale Settings' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating an autoscale setting targeting an App Service plan.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-autoscale-demo --location eastus
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo",
+  "location": "eastus",
+  "name": "rg-autoscale-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create an App Service plan
+
+Create an App Service plan to use as the autoscale target:
+
+```bash
+az appservice plan create \
+  --name my-plan \
+  --resource-group rg-autoscale-demo \
+  --sku S1 \
+  --is-linux
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo/providers/Microsoft.Web/serverfarms/my-plan",
+  "kind": "linux",
+  "location": "eastus",
+  "name": "my-plan",
+  "resourceGroup": "rg-autoscale-demo",
+  "sku": { "capacity": 1, "name": "B1", "tier": "Basic" },
+  "type": "Microsoft.Web/serverfarms"
+...
+}
+```
+
+### Create an autoscale setting
+
+Create an autoscale setting linked to the App Service plan:
+
+```bash
+az monitor autoscale create \
+  --name my-autoscale \
+  --resource-group rg-autoscale-demo \
+  --resource my-plan \
+  --resource-type Microsoft.Web/serverfarms \
+  --min-count 1 \
+  --max-count 5 \
+  --count 2
+```
+
+```bash title="Output"
+{
+  "enabled": true,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo/providers/microsoft.insights/autoscalesettings/my-autoscale",
+  "name": "my-autoscale",
+  "profiles": [
+    {
+      "capacity": { "default": "2", "maximum": "5", "minimum": "1" },
+      "name": "default",
+      "rules": []
+    }
+  ],
+  "resourceGroup": "rg-autoscale-demo",
+  "targetResourceUri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo/providers/Microsoft.Web/serverfarms/my-plan",
+  "type": "Microsoft.Insights/autoscaleSettings"
+...
+}
+```
+
+### Add a scale-out rule
+
+Add a scale-out rule that increases the instance count when average CPU usage rises above 70%:
+
+```bash
+az monitor autoscale rule create \
+  --autoscale-name my-autoscale \
+  --resource-group rg-autoscale-demo \
+  --scale out 1 \
+  --condition "CpuPercentage > 70 avg 5m"
+```
+
+```bash title="Output"
+{
+  "metricTrigger": {
+    "metricName": "CpuPercentage",
+    "operator": "GreaterThan",
+    "statistic": "Average",
+    "threshold": 70.0,
+    "timeAggregation": "Average",
+    "timeGrain": "PT1M",
+    "timeWindow": "PT5M"
+  },
+  "scaleAction": {
+    "cooldown": "PT5M",
+    "direction": "Increase",
+    "type": "ChangeCount",
+    "value": "1"
+  }
+}
+```
+
+### Show and list autoscale settings
+
+Retrieve the details of the autoscale setting and list all settings in the resource group:
+
+```bash
+az monitor autoscale show \
+  --name my-autoscale \
+  --resource-group rg-autoscale-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo/providers/microsoft.insights/autoscalesettings/my-autoscale",
+  "name": "my-autoscale",
+  "profiles": [
+    {
+      "capacity": { "default": "2", "maximum": "5", "minimum": "1" },
+      "name": "default",
+      "rules": [
+        {
+          "metricTrigger": { "metricName": "CpuPercentage", "operator": "GreaterThan", "threshold": 70.0, ... },
+          "scaleAction": { "direction": "Increase", "type": "ChangeCount", "value": "1" }
+        }
+      ]
+    }
+  ],
+  "resourceGroup": "rg-autoscale-demo",
+  "targetResourceUri": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo/providers/Microsoft.Web/serverfarms/my-plan",
+  "type": "Microsoft.Insights/autoscaleSettings"
+...
+}
+```
+
+
+Then list all autoscale settings in the resource group:
+
+```bash
+az monitor autoscale list \
+  --resource-group rg-autoscale-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo/providers/microsoft.insights/autoscalesettings/my-autoscale",
+    "name": "my-autoscale",
+    "resourceGroup": "rg-autoscale-demo",
+    "type": "Microsoft.Insights/autoscaleSettings"
+  }
+]
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears in the list:
+
+```bash
+az monitor autoscale delete \
+  --name my-autoscale \
+  --resource-group rg-autoscale-demo
+```
+
+
+Then list all autoscale settings to confirm the resource group is now empty:
+
+```bash
+az monitor autoscale list --resource-group rg-autoscale-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Autoscale setting lifecycle:** Create, read, list, update, and delete autoscale settings.
+- **Profile configuration:** Define default, fixed date, and recurring schedule profiles.
+- **Scale rules:** Add metric-based scale-out and scale-in rules per profile.
+- **Capacity bounds:** Define minimum, maximum, and default instance counts.
+- **Notification configuration:** Attach email and webhook notifications on scale events (stored, not dispatched).
+- **Resource targeting:** Attach autoscale settings to any scalable resource ID.
+
+## Limitations
+
+- **No scaling actions:** Instance counts are not changed by LocalStack. Scale-out and scale-in rules are stored but never executed.
+- **No metric evaluation:** CPU, memory, and custom metric conditions in scale rules are not evaluated.
+- **No scale history:** `az monitor autoscale history list` is not supported.
+- **No notifications dispatched:** Email and webhook scale notifications are stored but not sent.
+
+## Samples
+
+Explore end-to-end examples in the [localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) repository:
+
+- Defining autoscale policies for App Service plans in infrastructure as code templates.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />

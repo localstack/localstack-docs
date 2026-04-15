@@ -1,0 +1,215 @@
+---
+title: "Action Group"
+description: Get started with Azure Monitor Action Groups on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor Action Groups define a collection of notification preferences and actions to execute when an alert fires.
+Action Groups are referenced by alert rules such as metric alerts and activity log alerts.
+They support a variety of notification channels including email, SMS, voice calls, webhooks, and Azure Functions, making them the central dispatch mechanism for Azure Monitor alerts. For more information, see [Create and manage action groups](https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/action-groups).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Action Groups.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Action Groups' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating an Action Group with an email receiver and associating it with an alert.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-monit-demo --location eastus
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monit-demo",
+  "location": "eastus",
+  "name": "rg-monit-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create an action group
+
+Create an action group with an email receiver as the notification endpoint:
+
+```bash
+az monitor action-group create \
+  --name my-action-group \
+  --resource-group rg-monit-demo \
+  --short-name myag \
+  --action email myemail admin@example.com
+```
+
+```bash title="Output"
+{
+  "emailReceivers": [
+    {
+      "emailAddress": "admin@example.com",
+      "name": "myemail",
+      "useCommonAlertSchema": false
+    }
+  ],
+  "groupShortName": "myag",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monit-demo/providers/microsoft.insights/actionGroups/my-action-group",
+  "name": "my-action-group",
+  "resourceGroup": "rg-monit-demo",
+  "type": "Microsoft.Insights/ActionGroups"
+...
+}
+```
+
+### Show and list action groups
+
+Retrieve the details of the action group, then list all action groups in the resource group:
+
+```bash
+az monitor action-group show \
+  --name my-action-group \
+  --resource-group rg-monit-demo
+```
+
+```bash title="Output"
+{
+  "emailReceivers": [
+    {
+      "emailAddress": "admin@example.com",
+      "name": "myemail",
+      "useCommonAlertSchema": false
+    }
+  ],
+  "groupShortName": "myag",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monit-demo/providers/microsoft.insights/actionGroups/my-action-group",
+  "name": "my-action-group",
+  "resourceGroup": "rg-monit-demo",
+  "type": "Microsoft.Insights/ActionGroups"
+...
+}
+```
+
+
+Then list all action groups in the resource group to confirm it appears:
+
+```bash
+az monitor action-group list \
+  --resource-group rg-monit-demo
+```
+
+```bash title="Output"
+[
+  {
+    "emailReceivers": [
+      {
+        "emailAddress": "admin@example.com",
+        "name": "myemail",
+        "useCommonAlertSchema": false
+      }
+    ],
+    "groupShortName": "myag",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monit-demo/providers/microsoft.insights/actionGroups/my-action-group",
+    "name": "my-action-group",
+    "resourceGroup": "rg-monit-demo",
+    "type": "Microsoft.Insights/ActionGroups"
+  }
+]
+```
+
+### Update an action group
+
+Update the action group to add a second email receiver:
+
+```bash
+az monitor action-group update \
+  --name my-action-group \
+  --resource-group rg-monit-demo \
+  --add-action email newcontact ops@example.com
+```
+
+```bash title="Output"
+{
+  "emailReceivers": [
+    { "emailAddress": "admin@example.com", "name": "myemail", "useCommonAlertSchema": false },
+    { "emailAddress": "ops@example.com", "name": "newcontact", "useCommonAlertSchema": false }
+  ],
+  "groupShortName": "myag",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-monit-demo/providers/microsoft.insights/actionGroups/my-action-group",
+  "name": "my-action-group",
+  "resourceGroup": "rg-monit-demo",
+  "type": "Microsoft.Insights/ActionGroups"
+...
+}
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears in the list:
+
+```bash
+az monitor action-group delete \
+  --name my-action-group \
+  --resource-group rg-monit-demo
+```
+
+
+Then list all action groups to confirm the resource group is now empty:
+
+```bash
+az monitor action-group list --resource-group rg-monit-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Action group lifecycle:** Create, read, list, update, and delete action groups.
+- **Email receivers:** Define one or more email receiver addresses.
+- **SMS receivers:** Define SMS receiver phone numbers.
+- **Webhook receivers:** Define webhook receiver URLs (stored, not invoked).
+- **Azure app push receivers:** Define Azure app push notification receivers.
+- **Voice receivers:** Define voice notification receivers.
+- **Logic app receivers:** Define Logic App action receivers.
+- **Azure function receivers:** Define Azure Function receivers.
+- **Event hub receivers:** Define Event Hub receivers.
+- **Short name support:** Each action group has a short name (max 12 characters) for SMS and push notifications.
+
+## Limitations
+
+- **No notifications sent:** Emails, SMS messages, voice calls, and push notifications are not dispatched when an alert is triggered.
+- **No webhook invocation:** Webhook URLs are stored but not called.
+- **No Logic App or Azure Function invocation:** Logic App and Azure Function actions are stored but not executed.
+- **No test alert simulation:** The `az monitor action-group test` command is not supported.
+
+## Samples
+
+Explore end-to-end examples in the [localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) repository:
+
+- Creating action groups and referencing them from metric alert rules.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />

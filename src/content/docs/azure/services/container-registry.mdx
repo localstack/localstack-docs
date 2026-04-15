@@ -1,10 +1,222 @@
 ---
 title: "Container Registry"
-description: API coverage for Microsoft.ContainerRegistry in LocalStack for Azure.
+description: Get started with Azure Container Registry on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Container Registry (ACR) is a managed, private OCI-compatible registry for storing container images and Helm charts.
+It integrates natively with Azure Kubernetes Service, Azure Container Instances, and Azure App Service to streamline container-based application deployments.
+ACR is commonly used to build, store, and manage container images as part of a continuous integration and deployment pipeline. For more information, see [What is Azure Container Registry?](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-intro).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Container Registry.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Container Registry's integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating a registry, logging in with Docker, pushing an image, and listing repositories.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-acr-demo --location eastus
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-acr-demo",
+  "location": "eastus",
+  "name": "rg-acr-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a container registry
+
+Create a Standard-tier Azure Container Registry:
+
+```bash
+az acr create \
+  --name myacrdemo \
+  --resource-group rg-acr-demo \
+  --sku Basic \
+  --admin-enabled true
+```
+
+```bash title="Output"
+{
+  "adminUserEnabled": true,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-acr-demo/providers/Microsoft.ContainerRegistry/registries/myacrdemo",
+  "location": "eastus",
+  "loginServer": "myacrdemo.azurecr.azure.localhost.localstack.cloud:4566",
+  "name": "myacrdemo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-acr-demo",
+  "sku": { "name": "Basic", "tier": "Basic" },
+  "type": "Microsoft.ContainerRegistry/registries"
+...
+}
+```
+
+### Log in with Docker
+
+Authenticate the local Docker daemon to the registry using the Azure CLI:
+
+```bash
+az acr login --name myacrdemo
+```
+
+### Build and push an image
+
+Build a local Docker image and push it to the registry endpoint:
+
+```bash
+docker build -t myacrdemo.azurecr.io/hello:v1 .
+docker push myacrdemo.azurecr.io/hello:v1
+```
+
+Alternatively build directly within the emulated registry:
+
+```bash
+az acr build \
+  --image hello:v1 \
+  --registry myacrdemo \
+  .
+```
+
+### Pull an image
+
+Pull the image back from the registry to confirm it was pushed correctly:
+
+```bash
+docker pull myacrdemo.azurecr.io/hello:v1
+```
+
+### List repositories
+
+List all image repositories stored in the registry:
+
+```bash
+az acr repository list --name myacrdemo
+```
+
+```bash title="Output"
+[]
+```
+
+### Check name availability
+
+Check that the registry name is globally available before creating:
+
+```bash
+az acr check-name --name myacrdemo
+```
+
+```bash title="Output"
+{
+  "message": "The registry myacrdemo is already in use.",
+  "nameAvailable": false,
+  "reason": "AlreadyExists"
+}
+```
+
+### Update registry settings
+
+Enable the admin user account on the registry:
+
+```bash
+az acr update --name myacrdemo --resource-group rg-acr-demo --admin-enabled false
+```
+
+```bash title="Output"
+{
+  "adminUserEnabled": false,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-acr-demo/providers/Microsoft.ContainerRegistry/registries/myacrdemo",
+  "loginServer": "myacrdemo.azurecr.azure.localhost.localstack.cloud:4566",
+  "name": "myacrdemo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-acr-demo",
+  "sku": { "name": "Basic", "tier": "Basic" },
+  "type": "Microsoft.ContainerRegistry/registries"
+...
+}
+```
+
+### Show registry usage
+
+Show current storage usage statistics for the registry:
+
+```bash
+az acr show-usage --name myacrdemo --resource-group rg-acr-demo
+```
+
+```bash title="Output"
+{
+  "value": [
+    { "currentValue": 0, "limit": 10737418240, "name": "Size", "unit": "Bytes" },
+    { "currentValue": 0, "limit": 2, "name": "Webhooks", "unit": "Count" },
+    { "currentValue": 0, "limit": 100, "name": "ScopeMaps", "unit": "Count" },
+    { "currentValue": 0, "limit": 100, "name": "Tokens", "unit": "Count" }
+  ]
+}
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears in the list:
+
+```bash
+az acr delete --name myacrdemo --resource-group rg-acr-demo --yes
+az acr list --resource-group rg-acr-demo
+```
+
+## Features
+
+- **Full CRUD lifecycle:** Create, read, update, and delete registry resources using the Azure CLI or ARM API.
+- **Admin user management:** Enable or disable admin user access and retrieve admin credentials.
+- **Name availability check:** Validate registry name uniqueness via `az acr check-name`.
+- **Image push and pull:** Push and pull OCI-compliant container images using the standard Docker CLI.
+- **In-registry builds:** Build images directly in the emulated registry using `az acr build`.
+- **Repository listing:** List repositories and image tags stored in the registry.
+- **Registry usage reporting:** Retrieve storage and limit usage via `az acr show-usage`.
+- **Registry update:** Modify registry properties such as admin enabled and SKU.
+- **Multiple SKUs accepted:** Basic, Standard, and Premium SKU names are accepted (all backed by the same local registry).
+
+## Limitations
+
+- **Geo-replication not supported:** Multi-region registry replication is not emulated.
+- **ACR Tasks beyond basic build:** Task scheduling, triggers, and multi-step task workflows are mocked at the ARM level but not executed.
+- **Private endpoints for ACR:** Private Link–based network isolation is not supported.
+- **Webhook notifications:** Registry webhooks defined via the ARM API are stored but not fired on push events.
+- **Content trust and quarantine:** Image signing and quarantine policies are not enforced.
+
+## Samples
+
+Explore end-to-end examples in the [localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) repository:
+
+- Pushing and pulling Docker images from a local container registry.
+- Building and running containerized applications using ACR and Azure Container Instances.
 
 ## API Coverage
 

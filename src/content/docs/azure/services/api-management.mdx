@@ -1,10 +1,213 @@
 ---
 title: "API Management"
-description: API coverage for Microsoft.ApiManagement in LocalStack for Azure.
+description: Get started with Azure API Management on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure API Management (APIM) is a fully managed service for publishing, securing, and analyzing APIs at scale.
+It acts as a gateway between clients and backend services, providing features such as rate limiting, policy enforcement, authentication, and developer portal integration.
+APIM is commonly used to expose internal services as managed APIs, implement API versioning, and monitor API usage across organizations. For more information, see [What is Azure API Management?](https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure API Management.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of API Management's integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating an API Management service, adding an API, and registering a backend.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-apim-demo --location eastus
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo",
+  "location": "eastus",
+  "name": "rg-apim-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create an API Management service instance
+
+Create an API Management instance in the Consumption tier:
+
+```bash
+az apim create \
+  --name my-apim \
+  --resource-group rg-apim-demo \
+  --location eastus \
+  --sku-name Consumption \
+  --publisher-email admin@example.com \
+  --publisher-name "My Organization"
+```
+
+```bash title="Output"
+{
+  "gatewayUrl": "https://my-apim.azure-api.net",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/my-apim",
+  "location": "East US",
+  "name": "my-apim",
+  "provisioningState": "Succeeded",
+  "publisherEmail": "admin@example.com",
+  "publisherName": "My Organization",
+  "resourceGroup": "rg-apim-demo",
+  "sku": { "capacity": 0, "name": "Consumption" },
+  "type": "Microsoft.ApiManagement/service",
+  ...
+}
+```
+
+### Show and list services
+
+Retrieve the details of the service instance and list all instances in the resource group:
+
+```bash
+az apim show --name my-apim --resource-group rg-apim-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/my-apim",
+  "location": "East US",
+  "name": "my-apim",
+  "provisioningState": "Succeeded",
+  "publisherEmail": "admin@example.com",
+  "publisherName": "My Organization",
+  "resourceGroup": "rg-apim-demo",
+  "sku": { "capacity": 0, "name": "Consumption" },
+  "type": "Microsoft.ApiManagement/service"
+...
+}
+```
+
+
+Then list all API Management services in the resource group:
+
+```bash
+az apim list --resource-group rg-apim-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/my-apim",
+    "name": "my-apim",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-apim-demo",
+    "sku": { "capacity": 0, "name": "Consumption" },
+    "type": "Microsoft.ApiManagement/service"
+  }
+]
+```
+
+### Check service name availability
+
+Check whether the service name is globally available before creating:
+
+```bash
+az apim check-name --name my-apim
+```
+
+```bash title="Output"
+{
+  "message": "",
+  "nameAvailable": true,
+  "reason": "Valid"
+}
+```
+
+### Create an API
+
+Use the REST API or Azure SDK directly to create an API definition within the service:
+
+```bash
+az rest --method PUT \
+  --url "https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/my-apim/apis/my-api?api-version=2022-08-01" \
+  --body '{
+    "properties": {
+      "displayName": "My API",
+      "path": "myapi",
+      "protocols": ["https"],
+      "serviceUrl": "https://backend.example.com"
+    }
+  }'
+```
+
+### Create an API gateway
+
+Create an API gateway resource within the service instance using the REST API:
+
+```bash
+az rest --method PUT \
+  --url "https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/gateways/my-gateway?api-version=2022-08-01" \
+  --body '{
+    "location": "eastus",
+    "properties": {
+      "description": "Local test gateway"
+    }
+  }'
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears in the list:
+
+```bash
+az apim delete --name my-apim --resource-group rg-apim-demo --yes
+az apim list --resource-group rg-apim-demo
+```
+
+## Features
+
+- **Full CRUD lifecycle:** Create, read, update, and delete APIM service instances.
+- **API management:** Create, read, and delete API definitions within a service.
+- **API operations:** Register and retrieve API operation definitions.
+- **Backend management:** Define and manage backend service configurations.
+- **API gateway management:** Create and manage self-hosted API gateways.
+- **API policies:** Attach XML policy documents to APIs (stored but not evaluated).
+- **Name availability check:** Validate service name uniqueness via the `checkNameAvailability` action.
+- **Service listing:** List all APIM services in a subscription or resource group.
+
+## Limitations
+
+- **No gateway proxy:** Incoming API calls are not proxied through LocalStack. The APIM gateway does not process requests, apply policies, or forward traffic to backends.
+- **No policy evaluation:** Inbound, outbound, and error policies are stored in the ARM model but are not executed.
+- **No developer portal:** The APIM developer portal and its OAuth/subscription flows are not emulated.
+- **No subscription keys:** API subscriptions and key-based authentication are not enforced.
+- **No rate limiting or quotas:** Throttling, quota, and cache policies have no effect.
+- **Consumption plan only for creation:** SKU differences between Developer, Basic, Standard, Premium, and Consumption tiers are not emulated.
+
+## Samples
+
+Explore end-to-end examples in the [localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) repository:
+
+- Creating an API Management service and registering API definitions.
+- Defining backends and associating them with API operations.
 
 ## API Coverage
 
