@@ -37,8 +37,6 @@ This is useful when your cluster enforces pod security policies or security admi
 K8S_CONTAINER_SECURITY_CONTEXT='{"runAsNonRoot": true, "runAsUser": 1000, "allowPrivilegeEscalation": false}'
 ```
 
-<!-- TODO: confirm with engineering: does this apply to all child pods (Lambda, ECS, RDS, EC2) or only a subset? -->
-
 ### Init images
 
 LocalStack uses init containers in some child pods to perform setup tasks before the main container starts. The following variables let you override the default images used for these init containers:
