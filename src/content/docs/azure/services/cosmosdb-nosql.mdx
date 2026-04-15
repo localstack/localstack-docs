@@ -1,6 +1,6 @@
 ---
-title: "Cosmos DB"
-description: Get started with Azure Cosmos DB in LocalStack
+title: "CosmosDB"
+description: Get started with Azure CosmosDB in LocalStack
 template: doc
 ---
 
@@ -8,11 +8,11 @@ import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureF
 
 ## Introduction
 
-Azure Cosmos DB is a fully managed NoSQL database service designed for modern app development. It offers high availability, scalability, and support for multiple data models including NoSQL, MongoDB, Gremlin, and Table. For more information, see [Overview of Azure Cosmos DB](https://learn.microsoft.com/en-us/azure/cosmos-db/introduction).
+Azure CosmosDB is a fully managed NoSQL database service designed for modern app development. It offers high availability, scalability, and support for multiple data models including NoSQL, MongoDB, Gremlin, and Table. For more information, see [Overview of Azure CosmosDB](https://learn.microsoft.com/en-us/azure/cosmos-db/introduction).
 
-LocalStack for Azure provides a local environment to build and test applications using the Cosmos DB SQL (NoSQL) API. This allows developers to iterate quickly without incurring costs or needing an active internet connection.
+LocalStack for Azure provides a local environment to build and test applications using the CosmosDB SQL (NoSQL) API. This allows developers to iterate quickly without incurring costs or needing an active internet connection.
 
-The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Cosmos DB's integration with LocalStack.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of CosmosDB's integration with LocalStack.
 
 ## Getting started
 
@@ -33,7 +33,7 @@ azlocal stop-interception
 
 ### Create a resource group
 
-Create a resource group for your Cosmos DB resources:
+Create a resource group for your CosmosDB resources:
 
 ```bash
 az group create \
@@ -55,9 +55,9 @@ az group create \
 }
 ```
 
-### Create a Cosmos DB account
+### Create a CosmosDB account
 
-Create a Cosmos DB account, the default is the NoSQL API:
+Create a CosmosDB account, the default is the NoSQL API:
 
 ```bash
 az cosmosdb create \
@@ -205,7 +205,7 @@ az cosmosdb create \
 
 ### Authentication
 
-There are two primary ways to authenticate against the Cosmos DB emulator in LocalStack:
+There are two primary ways to authenticate against the CosmosDB emulator in LocalStack:
 
 #### Account key
 
@@ -224,7 +224,7 @@ az cosmosdb keys list \
 
 #### Connection string
 
-Retrieve a full connection string that can be used directly with the Azure Cosmos DB SDKs:
+Retrieve a full connection string that can be used directly with the Azure CosmosDB SDKs:
 
 ```bash
 az cosmosdb keys list \
@@ -232,6 +232,10 @@ az cosmosdb keys list \
   --name cosmos-demo-acct \
   --resource-group rg-cosmos-demo \
   --query "connectionStrings[0].connectionString"
+```
+
+```bash title="Output"
+"AccountEndpoint=https://cosmos-demo-acct.documents.azure.com:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;"
 ```
 
 ### Manage Databases and Containers
@@ -348,22 +352,63 @@ az cosmosdb sql container create \
 ### Emulator container and Data Explorer
 
 The emulator is comprised of two components:
-- **Data explorer** - interactively explore the data in the emulator. This runs on the local port mapped to the container's port 1234
-- **Azure Cosmos DB emulator** - a local version of the Azure Cosmos DB database service. This runs on the local port mapped to the container's port 8081.
+- **Data explorer** - interactively explore the data in the emulator. This runs on the local port mapped to the container's port 1234. You can navigate to the data explorer by clicking on the port mapping in your container desktop app.
+- **Azure CosmosDB emulator** - a local version of the Azure CosmosDB database service. This runs on the local port mapped to the container's port 8081.
 
-![You can navigate to the data explorer by clicking the port mapping in Docker Desktop](../../../../assets/images/azure/docs/cosmosdb_port_mappings.png)
+![](../../../../assets/images/azure/docs/cosmosdb_port_mappings.png)
 
 ## Features
 
-The Cosmos DB emulator supports the following features:
+The CosmosDB emulator supports the following features:
 
 - **Resource Management**: Create, update, and delete accounts, databases, and containers via ARM templates or CLI.
 
-- **SQL (NoSQL) API**: Full support for CRUD operations, queries, and stored procedures.
+- **SQL (NoSQL) API**: Support for CRUD operations and queries.
 
 - **Fixed Master Key**: Supports the standard well-known master key for ease of local configuration.
 
 - **Instant Provisioning**: Accounts and resources are available immediately upon creation commands.
+
+### Feature Support Matrix
+
+| Feature | Support Status |
+| :--- | :--- |
+| **Document Operations** | |
+| Create, Read, Update, Delete (CRUD) document | ✅ Supported |
+| Patch document | ✅ Supported |
+| Insert large document | ✅ Supported |
+| Create and read document with UTF data | ✅ Supported |
+| Read document feed | ✅ Supported |
+| **Collection & Database Management** | |
+| Create, Read, and Delete database | ✅ Supported |
+| Create database twice (conflict) | ✅ Supported |
+| Create, Read, and Delete collection | ✅ Supported |
+| Create collection twice (conflict) | ✅ Supported |
+| Create collection with TTL expiration | ✅ Supported |
+| Create partitioned collection | ✅ Supported |
+| Create collection with custom index policy | ⚠️ Not yet implemented |
+| Update collection | ⚠️ Not yet implemented |
+| Get and change collection performance | ⚠️ Not yet implemented |
+| Read database/collection feed | ⚠️ Not yet implemented |
+| **Query Operations** | |
+| Query with equality / equals on ID | ✅ Supported |
+| Query with AND filter and projection | ✅ Supported |
+| Query with order by (Numbers, Strings, Partitioned) | ✅ Supported |
+| Query with paging | ✅ Supported |
+| Query with range operators (Numbers, Strings, DateTimes) | ✅ Supported |
+| Query with aggregates | ✅ Supported |
+| Query with Joins (Single, Two, with Filter) | ✅ Supported |
+| Query with subdocuments | ✅ Supported |
+| Query with string, math, and array operators | ✅ Supported |
+| Query partitioned collection in parallel | ⚠️ Not yet implemented |
+| **Advanced Features** | |
+| Batch API | ✅ Supported |
+| Bulk API | ✅ Supported |
+| Change Feed | ✅ Supported |
+| Request Units (RU) | ⚠️ Not yet implemented |
+| Stored procedures | ❌ Not planned |
+| Triggers | ❌ Not planned |
+| User Defined Functions (UDFs) | ❌ Not planned |
 
 ## Limitations
 
@@ -383,7 +428,7 @@ The Cosmos DB emulator supports the following features:
 
 ## Samples
 
-The following samples demonstrate how to use Cosmos DB with LocalStack for Azure:
+The following samples demonstrate how to use CosmosDB with LocalStack for Azure:
 
 - [Azure CosmosDB NoSQL API Sample with LocalStack for Azure](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-nosql-api/python)
 
