@@ -1,10 +1,238 @@
 ---
 title: "DB for PostgreSQL"
-description: API coverage for Microsoft.DBforPostgreSQL in LocalStack for Azure.
+description: Get started with Azure DB for PostgreSQL on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure DB for PostgreSQL is a managed relational database service built on the PostgreSQL engine.
+It helps provision and operate PostgreSQL servers with Azure control plane APIs for server, database, and network management.
+This service is commonly used for application backends that require PostgreSQL compatibility with managed infrastructure workflows. For more information, see [Azure Database for PostgreSQL documentation](https://learn.microsoft.com/en-us/azure/postgresql/).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure DB for PostgreSQL.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of DB for PostgreSQL integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Azure DB for PostgreSQL and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group for your PostgreSQL resources:
+
+```bash
+az group create \
+  --name rg-postgres-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo",
+  "location": "westeurope",
+  "name": "rg-postgres-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create and inspect a PostgreSQL flexible server
+
+Create a flexible server:
+
+```bash
+az resource create \
+  --resource-group rg-postgres-demo \
+  --namespace Microsoft.DBforPostgreSQL \
+  --resource-type flexibleServers \
+  --name pgdoc96 \
+  --location westeurope \
+  --api-version 2024-08-01 \
+  --properties '{"administratorLogin":"pgadmin","administratorLoginPassword":"P@ssword1234!","version":"16","storage":{"storageSizeGB":32},"sku":{"name":"Standard_B1ms","tier":"Burstable"}}'
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/pgdoc96",
+  "name": "pgdoc96",
+  "location": "westeurope",
+  "properties": {
+    "administratorLogin": "pgadmin",
+    "state": "Ready",
+    "version": "16",
+    ...
+  },
+  "sku": {
+    "name": "Standard_D2s_v3",
+    "tier": "GeneralPurpose"
+  },
+  ...
+}
+```
+
+Get and list flexible servers:
+
+```bash
+az postgres flexible-server show \
+  --name pgdoc96 \
+  --resource-group rg-postgres-demo
+
+az postgres flexible-server list \
+  --resource-group rg-postgres-demo
+```
+
+```bash title="Output"
+{
+  "name": "pgdoc96",
+  "location": "westeurope",
+  "state": "Ready",
+  "version": "16",
+  "fullyQualifiedDomainName": "172.17.0.4",
+  ...
+}
+[
+  {
+    "name": "pgdoc96",
+    "state": "Ready",
+    "version": "16",
+    ...
+  }
+]
+```
+
+### Create and inspect a database
+
+Create a database in the server:
+
+```bash
+az postgres flexible-server db create \
+  --resource-group rg-postgres-demo \
+  --server-name pgdoc96 \
+  --database-name appdb
+```
+
+```bash title="Output"
+{
+  "charset": "utf8",
+  "collation": "en_US.utf8",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/pgdoc96/databases/appdb",
+  "name": "appdb",
+  ...
+}
+```
+
+Get and list databases:
+
+```bash
+az postgres flexible-server db show \
+  --resource-group rg-postgres-demo \
+  --server-name pgdoc96 \
+  --database-name appdb
+
+az postgres flexible-server db list \
+  --resource-group rg-postgres-demo \
+  --server-name pgdoc96
+```
+
+```bash title="Output"
+{
+  "name": "appdb",
+  "charset": "utf8",
+  "collation": "en_US.utf8",
+  ...
+}
+[
+  {
+    "name": "postgres",
+    ...
+  },
+  {
+    "name": "azure_sys",
+    ...
+  },
+  {
+    "name": "azure_maintenance",
+    ...
+  },
+  {
+    "name": "appdb",
+    ...
+  }
+]
+```
+
+### Create and inspect a firewall rule
+
+Create a firewall rule:
+
+```bash
+az postgres flexible-server firewall-rule create \
+  --resource-group rg-postgres-demo \
+  --name pgdoc96 \
+  --rule-name allow-local \
+  --start-ip-address 0.0.0.0 \
+  --end-ip-address 0.0.0.0
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/pgdoc96/firewallRules/allow-local",
+  "name": "allow-local",
+  "startIpAddress": "0.0.0.0",
+  "endIpAddress": "0.0.0.0",
+  ...
+}
+```
+
+Get and list firewall rules:
+
+```bash
+az postgres flexible-server firewall-rule show \
+  --resource-group rg-postgres-demo \
+  --name pgdoc96 \
+  --rule-name allow-local
+
+az postgres flexible-server firewall-rule list \
+  --resource-group rg-postgres-demo \
+  --name pgdoc96
+```
+
+```bash title="Output"
+{
+  "name": "allow-local",
+  "startIpAddress": "0.0.0.0",
+  "endIpAddress": "0.0.0.0",
+  ...
+}
+[
+  {
+    "name": "allow-local",
+    "startIpAddress": "0.0.0.0",
+    "endIpAddress": "0.0.0.0",
+    ...
+  }
+]
+```
 
 ## API Coverage
 
