@@ -35,7 +35,8 @@ azlocal stop-interception
 
 Create a resource group for your Cosmos DB resources:
 
-```az group create \
+```bash
+az group create \
   --name rg-cosmos-demo \
   --location westeurope
 ```
@@ -58,7 +59,8 @@ Create a resource group for your Cosmos DB resources:
 
 Create a Cosmos DB account, the default is the NoSQL API:
 
-```az cosmosdb create \
+```bash
+az cosmosdb create \
   --name cosmos-demo-acct \
   --resource-group rg-cosmos-demo \
   --locations regionName=westeurope failoverPriority=0 \
@@ -209,7 +211,8 @@ There are two primary ways to authenticate against the Cosmos DB emulator in Loc
 
 Retrieve the primary master key and use it in your application's connection settings:
 
-```az cosmosdb keys list \
+```bash
+az cosmosdb keys list \
   --name cosmos-demo-acct \
   --resource-group rg-cosmos-demo \
   --query "primaryMasterKey"
@@ -223,7 +226,8 @@ Retrieve the primary master key and use it in your application's connection sett
 
 Retrieve a full connection string that can be used directly with the Azure Cosmos DB SDKs:
 
-```az cosmosdb keys list \
+```bash
+az cosmosdb keys list \
   --type connection-strings \
   --name cosmos-demo-acct \
   --resource-group rg-cosmos-demo \
@@ -234,7 +238,8 @@ Retrieve a full connection string that can be used directly with the Azure Cosmo
 
 #### Create a SQL database
 
-```az cosmosdb sql database create \
+```bash
+az cosmosdb sql database create \
   --account-name cosmos-demo-acct \
   --resource-group rg-cosmos-demo \
   --name MyDatabase
@@ -264,7 +269,8 @@ Retrieve a full connection string that can be used directly with the Azure Cosmo
 
 #### Create a container with a partition key:
 
-```az cosmosdb sql container create \\
+```bash
+az cosmosdb sql container create \\
   --account-name cosmos-demo-acct \\
   --resource-group rg-cosmos-demo \\
   --database-name MyDatabase \\
