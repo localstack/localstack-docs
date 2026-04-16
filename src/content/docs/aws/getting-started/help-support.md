@@ -106,7 +106,6 @@ You can sign up for the [LocalStack Slack Community](https://localstack.cloud/sl
 
 #### GitHub Discussions
 
-((
 You can use our [GitHub Discussions board](https://github.com/orgs/localstack/discussions) to:
 
 - [Request new features](https://github.com/orgs/localstack/discussions/categories/feature-requests)
