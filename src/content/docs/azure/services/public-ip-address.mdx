@@ -151,11 +151,22 @@ az network public-ip list \
 
 List every public IP address across the entire subscription:
 
+```bash
+az network public-ip list \
+  --output table
+```
+
+```bash title="Output"
+Name      ResourceGroup    Location    Zones    Address        IdleTimeoutInMinutes    ProvisioningState
+--------  ---------------  ----------  -------  -------------  ----------------------  -------------------
+pip-demo  rg-pip-demo      westeurope           20.115.40.220  4                       Succeeded
+```
 
 Then list all public IP addresses in the resource group:
 
 ```bash
 az network public-ip list \
+  --resource-group rg-pip-demo \
   --output table
 ```
 
@@ -173,6 +184,16 @@ Delete the public IP address and verify it no longer appears in the list:
 az network public-ip delete \
   --name pip-demo \
   --resource-group rg-pip-demo
+```
+
+Then list all public IP addresses to confirm the resource group is now empty:
+
+```bash
+az network public-ip list --resource-group rg-pip-demo
+```
+
+```bash title="Output"
+[]
 ```
 
 ## Features

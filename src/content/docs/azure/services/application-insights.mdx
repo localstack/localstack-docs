@@ -39,7 +39,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-insights-demo --location eastus
+az group create --name rg-insights-demo --location westeurope
 ```
 
 ```bash title="Output"
@@ -60,7 +60,7 @@ Create an Application Insights component linked to a Log Analytics workspace:
 az monitor app-insights component create \
   --app my-app-insights \
   --resource-group rg-insights-demo \
-  --location eastus \
+  --location westeurope \
   --kind web \
   --application-type web
 ```
@@ -103,17 +103,6 @@ az monitor app-insights component show \
   "type": "microsoft.insights/components"
 ...
 }
-```
-
-
-Then list all Application Insights components in the resource group:
-
-
-Then list all components to confirm the resource group is now empty:
-
-```bash
-az monitor app-insights component list \
-  --resource-group rg-insights-demo
 ```
 
 ### Retrieve billing features
@@ -168,23 +157,7 @@ Delete the resource and confirm it no longer appears in the list:
 ```bash
 az monitor app-insights component delete \
   --app my-app-insights \
-  --resource-group rg-insights-demo \
-  --yes
-```
-
-
-Then list all Application Insights components in the resource group:
-
-
-Then list all components to confirm the resource group is now empty:
-
-```bash
-az monitor app-insights component list \
   --resource-group rg-insights-demo
-```
-
-```bash title="Output"
-[]
 ```
 
 ## Features

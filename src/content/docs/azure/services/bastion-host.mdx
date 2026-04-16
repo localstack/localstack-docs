@@ -223,8 +223,7 @@ az network bastion show \
 Then list all Bastion instances in the resource group:
 
 ```bash
-az network bastion list \
-  --resource-group rg-bastion-demo
+az network bastion list --resource-group rg-bastion-demo
 ```
 
 ```bash title="Output"
@@ -257,7 +256,18 @@ Delete the Bastion host and verify it no longer appears in the list:
 ```bash
 az network bastion delete \
   --name bastion-demo \
-  --resource-group rg-bastion-demo
+  --resource-group rg-bastion-demo \
+  --yes
+```
+
+Then list all bastion hosts to confirm the resource group is now empty:
+
+```bash
+az network bastion list --resource-group rg-bastion-demo
+```
+
+```bash title="Output"
+[]
 ```
 
 ## Features

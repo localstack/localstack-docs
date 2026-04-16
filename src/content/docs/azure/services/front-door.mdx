@@ -41,13 +41,13 @@ Create a resource group to hold your Front Door resources:
 ```bash
 az group create \
   --name rg-afd-demo \
-  --location global
+  --location westeurope
 ```
 
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo",
-  "location": "global",
+  "location": "westeurope",
   "name": "rg-afd-demo",
   "properties": {
     "provisioningState": "Succeeded"
@@ -100,7 +100,7 @@ az afd endpoint create \
 
 ```bash title="Output"
 {
-  "deploymentStatus": "NotStarted",
+  "deploymentStatus": "Succeeded",
   "enabledState": "Enabled",
   "hostName": "my-endpoint-08621c35aa0147f0.z01.azurefd.net",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/afdendpoints/my-endpoint",
@@ -134,7 +134,7 @@ az afd origin-group create \
 
 ```bash title="Output"
 {
-  "deploymentStatus": "NotStarted",
+  "deploymentStatus": "Succeeded",
   "healthProbeSettings": {
     "probeIntervalInSeconds": 120,
     "probePath": "/health",
@@ -172,7 +172,7 @@ az afd origin create \
 
 ```bash title="Output"
 {
-  "deploymentStatus": "NotStarted",
+  "deploymentStatus": "Succeeded",
   "enabledState": "Enabled",
   "enforceCertificateNameCheck": true,
   "hostName": "example.com",
@@ -212,7 +212,7 @@ az afd route create \
 ```bash title="Output"
 {
   "customDomains": [],
-  "deploymentStatus": "NotStarted",
+  "deploymentStatus": "Succeeded",
   "enabledState": "Enabled",
   "forwardingProtocol": "MatchRequest",
   "httpsRedirect": "Disabled",
@@ -251,7 +251,7 @@ az afd rule-set create \
 
 ```bash title="Output"
 {
-  "deploymentStatus": "NotStarted",
+  "deploymentStatus": "Succeeded",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset",
   "name": "myruleset",
   "provisioningState": "Succeeded",
@@ -276,7 +276,7 @@ az afd rule create \
 {
   "actions": [],
   "conditions": [],
-  "deploymentStatus": "NotStarted",
+  "deploymentStatus": "Succeeded",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset/rules/myrule",
   "matchProcessingBehavior": "Continue",
   "name": "myrule",
@@ -299,7 +299,7 @@ az afd rule-set list \
 ```bash title="Output"
 [
   {
-    "deploymentStatus": "NotStarted",
+    "deploymentStatus": "Succeeded",
     "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset",
     "name": "myruleset",
     "provisioningState": "Succeeded",
@@ -321,7 +321,7 @@ az afd rule list \
   {
     "actions": [],
     "conditions": [],
-    "deploymentStatus": "NotStarted",
+    "deploymentStatus": "Succeeded",
     "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset/rules/myrule",
     "matchProcessingBehavior": "Continue",
     "name": "myrule",
@@ -422,7 +422,7 @@ az afd profile list --resource-group rg-afd-demo
 - **No custom domain validation:** Custom domain binding is stored but DNS validation and certificate provisioning are not performed.
 - **No HTTPS certificate management:** Managed certificates and bring-your-own-certificate flows are not emulated.
 - **Classic CDN data plane not emulated:** Classic CDN profiles (`az cdn`) can be created under the same `Microsoft.Cdn` namespace, but traffic acceleration behaviour is not emulated.
-- **Deployment status always `NotStarted`:** There is no asynchronous deployment pipeline behind profile or endpoint state changes.
+- **Deployment status always `Succeeded`:** There is no asynchronous deployment pipeline behind profile or endpoint state changes.
 - **No WAF policy support:** WAF policy association is not supported.
 
 ## Samples

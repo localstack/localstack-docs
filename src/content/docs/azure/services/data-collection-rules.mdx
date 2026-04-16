@@ -39,7 +39,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-dcr-demo --location eastus
+az group create --name rg-dcr-demo --location westeurope
 ```
 
 ```bash title="Output"
@@ -60,7 +60,7 @@ Create a data collection endpoint (DCE) to serve as the ingestion target:
 az monitor data-collection endpoint create \
   --name my-dce \
   --resource-group rg-dcr-demo \
-  --location eastus \
+  --location westeurope \
   --public-network-access Enabled
 ```
 
@@ -116,14 +116,13 @@ Save the following JSON to `my-dcr.json`:
 }
 ```
 
-
 Create the data collection rule from the configuration file:
 
 ```bash
 az monitor data-collection rule create \
   --name my-dcr \
   --resource-group rg-dcr-demo \
-  --location eastus \
+  --location westeurope \
   --rule-file my-dcr.json
 ```
 
@@ -207,9 +206,9 @@ Delete the resource and confirm it no longer appears in the list:
 ```bash
 az monitor data-collection rule delete \
   --name my-dcr \
-  --resource-group rg-dcr-demo
+  --resource-group rg-dcr-demo \
+  --yes
 ```
-
 
 Then list all data collection rules to confirm the resource group is now empty:
 

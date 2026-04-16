@@ -39,13 +39,13 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-webtest-demo --location eastus
+az group create --name rg-webtest-demo --location westeurope
 ```
 
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-webtest-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -60,7 +60,7 @@ Create an Application Insights component to attach the web test to:
 az monitor app-insights component create \
   --app my-app-insights \
   --resource-group rg-webtest-demo \
-  --location eastus \
+  --location westeurope \
   --kind web
 ```
 
@@ -70,7 +70,7 @@ az monitor app-insights component create \
   "applicationType": "web",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/components/my-app-insights",
   "kind": "web",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "my-app-insights",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-webtest-demo",
@@ -81,7 +81,7 @@ az monitor app-insights component create \
 
 ### Create a web test
 
-Use the REST API to create a standard availability test:
+Retrieve the Application Insights resource ID, then create a standard availability test linked to it via a `hidden-link` tag:
 
 ```bash
 AI_ID=$(az monitor app-insights component show \
@@ -90,85 +90,136 @@ AI_ID=$(az monitor app-insights component show \
   --query id \
   --output tsv)
 
-az rest --method PUT \
-  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/webtests/my-web-test?api-version=2022-06-15" \
-  --body '{
-    "location": "eastus",
-    "kind": "standard",
-    "properties": {
-      "Name": "my-web-test",
-      "Enabled": true,
-      "Frequency": 300,
-      "Timeout": 30,
-      "Kind": "standard",
-      "Locations": [{"Id": "us-tx-sn1-azr"}],
-      "Request": {
-        "RequestUrl": "https://example.com",
-        "HttpVerb": "GET"
-      },
-      "HiddenLink": "'"$AI_ID"'"
-    }
-  }'
+az monitor app-insights web-test create \
+  --name my-web-test \
+  --resource-group rg-webtest-demo \
+  --location westeurope \
+  --defined-web-test-name "My Web Test" \
+  --web-test-kind standard \
+  --enabled true \
+  --frequency 300 \
+  --timeout 30 \
+  --locations Id=us-tx-sn1-azr \
+  --request-url "https://example.com" \
+  --http-verb GET \
+  --tags "hidden-link:$AI_ID=Resource"
 ```
 
 ```bash title="Output"
 {
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/webtests/my-web-test",
-  "kind": "standard",
-  "location": "eastus",
+  "enabled": true,
+  "frequency": 300,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/Microsoft.Insights/webtests/my-web-test",
+  "kind": "ping",
+  "location": "westeurope",
+  "locations": [
+    {
+      "location": "us-tx-sn1-azr"
+    }
+  ],
   "name": "my-web-test",
-  "properties": {
-    "Enabled": true,
-    "Frequency": 300,
-    "Kind": "standard",
-    "Name": "my-web-test",
-    "Request": { "HttpVerb": "GET", "RequestUrl": "https://example.com" },
-    "Timeout": 30
+  "request": {
+    "httpVerb": "GET",
+    "requestUrl": "https://example.com"
   },
-  "type": "Microsoft.Insights/webtests"
-...
+  "tags": {
+    "hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/components/my-app-insights": "Resource"
+  },
+  "timeout": 30,
+  "type": "Microsoft.Insights/webtests",
+  "webTestKind": "standard",
+  "webTestName": "My Web Test"
+}
+```
+
+### Show a web test
+
+Retrieve the details of a specific web test:
+
+```bash
+az monitor app-insights web-test show \
+  --name my-web-test \
+  --resource-group rg-webtest-demo
+```
+
+```bash title="Output"
+{
+  "enabled": true,
+  "frequency": 300,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/Microsoft.Insights/webtests/my-web-test",
+  "kind": "ping",
+  "location": "westeurope",
+  "locations": [
+    {
+      "location": "us-tx-sn1-azr"
+    }
+  ],
+  "name": "my-web-test",
+  "request": {
+    "httpVerb": "GET",
+    "requestUrl": "https://example.com"
+  },
+  "timeout": 30,
+  "type": "Microsoft.Insights/webtests",
+  "webTestKind": "standard",
+  "webTestName": "My Web Test"
 }
 ```
 
 ### List web tests
 
-List all web tests associated with the Application Insights component using the REST API:
+List all web tests in the resource group:
 
 ```bash
-az rest --method GET \
-  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/webtests?api-version=2022-06-15"
+az monitor app-insights web-test list \
+  --resource-group rg-webtest-demo
 ```
 
 ```bash title="Output"
-{
-  "value": [
-    {
-      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/Microsoft.Insights/webtests/my-web-test",
-      "kind": "standard",
-      "location": "eastus",
-      "name": "my-web-test",
-      "properties": {
-        "Enabled": true,
-        "Frequency": 300,
-        "Kind": "standard",
-        "Name": "my-web-test",
-        "Request": { "HttpVerb": "GET", "RequestUrl": "https://example.com" },
-        ...
-      },
-      "type": "Microsoft.Insights/webtests"
-    }
-  ]
-...
-}
+[
+  {
+    "enabled": true,
+    "frequency": 300,
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/Microsoft.Insights/webtests/my-web-test",
+    "kind": "ping",
+    "location": "westeurope",
+    "locations": [
+      {
+        "location": "us-tx-sn1-azr"
+      }
+    ],
+    "name": "my-web-test",
+    "request": {
+      "httpVerb": "GET",
+      "requestUrl": "https://example.com"
+    },
+    "timeout": 30,
+    "type": "Microsoft.Insights/webtests",
+    "webTestKind": "standard",
+    "webTestName": "My Web Test"
+  }
+]
 ```
 
 ### Delete a web test
 
-Delete the web test using the REST API and verify it no longer appears in the list:
+Delete the web test and verify it no longer appears in the list:
 
 ```bash
-az rest --method DELETE \
-  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/webtests/my-web-test?api-version=2022-06-15"
+az monitor app-insights web-test delete \
+  --name my-web-test \
+  --resource-group rg-webtest-demo \
+  --yes
+```
+
+Then list all web tests to confirm the resource group is now empty:
+
+```bash
+az monitor app-insights web-test list --resource-group rg-webtest-demo
+```
+
+```bash title="Output"
+[]
 ```
 
 ## Features

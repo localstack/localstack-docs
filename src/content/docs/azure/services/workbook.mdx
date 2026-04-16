@@ -39,13 +39,13 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-workbook-demo --location eastus
+az group create --name rg-workbook-demo --location westeurope
 ```
 
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-workbook-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -54,74 +54,70 @@ az group create --name rg-workbook-demo --location eastus
 
 ### Create a workbook
 
-Create a workbook using the ARM REST API, passing a JSON-serialized content body:
+Generate a UUID for the workbook name, then create a shared workbook:
 
 ```bash
-az rest --method PUT \
-  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbooks/my-workbook?api-version=2022-04-01" \
-  --body '{
-    "location": "eastus",
-    "kind": "shared",
-    "properties": {
-      "displayName": "My Workbook",
-      "description": "A sample workbook.",
-      "category": "workbook",
-      "serializedData": "{\"version\":\"Notebook/1.0\",\"items\":[],\"isLocked\":false}",
-      "version": "1.0",
-      "sourceId": "Azure Monitor"
-    }
-  }'
+WORKBOOK_ID=$(python3 -c "import uuid; print(uuid.uuid4())")
+
+az monitor app-insights workbook create \
+  --name "$WORKBOOK_ID" \
+  --resource-group rg-workbook-demo \
+  --display-name "My Workbook" \
+  --kind shared \
+  --category workbook \
+  --serialized-data '{"version":"Notebook/1.0","items":[{"type":1,"content":{"json":"## My Workbook\nHello, world!"},"name":"text-0"}],"isLocked":false}' \
+  --location westeurope
 ```
 
 ```bash title="Output"
 {
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbooks/my-workbook",
+  "category": "workbook",
+  "displayName": "My Workbook",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-workbook-demo/providers/microsoft.insights/workbooks/de747180-ecea-4b97-bef4-f8376fc72abe",
   "kind": "shared",
-  "location": "eastus",
-  "name": "my-workbook",
-  "properties": {
-    "category": "workbook",
-    "description": "A sample workbook.",
-    "displayName": "My Workbook",
-    "serializedData": "{\"version\":\"Notebook/1.0\",\"items\":[],\"isLocked\":false}",
-    "sourceId": "Azure Monitor",
-    "version": "1.0"
-  }
+  "location": "westeurope",
+  "name": "de747180-ecea-4b97-bef4-f8376fc72abe",
+  "resourceGroup": "rg-workbook-demo",
+  "serializedData": "{\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":{\"json\":\"## My Workbook\\nHello, world!\"},\"name\":\"text-0\"}],\"isLocked\":false}"
 }
 ```
 
 ### List workbooks
 
-List all workbooks in the resource group by querying the ARM REST API:
+List all workbooks in the resource group filtered by category:
 
 ```bash
-az rest --method GET \
-  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbooks?api-version=2022-04-01&category=workbook"
+az monitor app-insights workbook list \
+  --resource-group rg-workbook-demo \
+  --category workbook
 ```
 
 ```bash title="Output"
-{
-  "value": [
-    {
-      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbooks/my-workbook",
-      "kind": "shared",
-      "location": "eastus",
-      "name": "my-workbook",
-      "properties": {
-        "category": "workbook",
-        "description": "A sample workbook.",
-        "displayName": "My Workbook",
-        ...
-      }
-    }
-  ]
-}
+[
+  {
+    "category": "workbook",
+    "displayName": "My Workbook",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-workbook-demo/providers/microsoft.insights/workbooks/de747180-ecea-4b97-bef4-f8376fc72abe",
+    "kind": "shared",
+    "location": "westeurope",
+    "name": "de747180-ecea-4b97-bef4-f8376fc72abe",
+    "resourceGroup": "rg-workbook-demo",
+    "serializedData": "..."
+  }
+]
+```
+
+### Create a workbook template
+
+Workbook templates do not have a dedicated Azure CLI subcommand. Use `az rest` pointed at the LocalStack resource manager endpoint:
 
 ```bash
+RM=$(az cloud show --query "endpoints.resourceManager" -o tsv | sed 's|/$||')
+
 az rest --method PUT \
-  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbookTemplates/my-template?api-version=2020-11-20" \
+  --url "${RM}/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbookTemplates/my-template?api-version=2020-11-20" \
   --body '{
-    "location": "eastus",
+    "location": "westeurope",
     "properties": {
       "priority": 1,
       "author": "My Team",
@@ -142,7 +138,7 @@ az rest --method PUT \
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbooktemplates/my-template",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "my-template",
   "properties": {
     "author": "My Team",
@@ -159,17 +155,21 @@ az rest --method PUT \
     "templateData": {}
   },
   "type": "microsoft.insights/workbooktemplates"
-...
 }
 ```
 
 ### Delete resources
 
-Delete the workbook using the ARM REST API, then delete the resource group:
+Delete the workbook and workbook template, then delete the resource group:
 
 ```bash
+az monitor app-insights workbook delete \
+  --name "$WORKBOOK_ID" \
+  --resource-group rg-workbook-demo \
+  --yes
+
 az rest --method DELETE \
-  --url "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbooks/my-workbook?api-version=2022-04-01"
+  --url "${RM}/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbookTemplates/my-template?api-version=2020-11-20"
 ```
 
 ## Features

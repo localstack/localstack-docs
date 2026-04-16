@@ -39,7 +39,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-acr-demo --location eastus
+az group create --name rg-acr-demo --location westeurope
 ```
 
 ```bash title="Output"
@@ -87,13 +87,25 @@ Authenticate the local Docker daemon to the registry using the Azure CLI:
 az acr login --name myacrdemo
 ```
 
+The emulator does not issue an AAD challenge, so the CLI prints an informational warning before confirming `Login Succeeded`. This is expected behaviour.
+
 ### Build and push an image
 
-Build a local Docker image and push it to the registry endpoint:
+Create a minimal `Dockerfile` for the demo image:
 
 ```bash
-docker build -t myacrdemo.azurecr.io/hello:v1 .
-docker push myacrdemo.azurecr.io/hello:v1
+cat > Dockerfile <<'EOF'
+FROM alpine:latest
+CMD ["echo", "Hello from LocalStack ACR!"]
+EOF
+```
+
+Capture the registry login server returned by the emulator, then build and push the image using that address:
+
+```bash
+LOGIN_SERVER=$(az acr show --name myacrdemo --resource-group rg-acr-demo --query loginServer -o tsv)
+docker build -t $LOGIN_SERVER/hello:v1 .
+docker push $LOGIN_SERVER/hello:v1
 ```
 
 Alternatively build directly within the emulated registry:
@@ -110,7 +122,7 @@ az acr build \
 Pull the image back from the registry to confirm it was pushed correctly:
 
 ```bash
-docker pull myacrdemo.azurecr.io/hello:v1
+docker pull $LOGIN_SERVER/hello:v1
 ```
 
 ### List repositories
@@ -122,7 +134,9 @@ az acr repository list --name myacrdemo
 ```
 
 ```bash title="Output"
-[]
+[
+  "hello"
+]
 ```
 
 ### Check name availability
@@ -184,11 +198,11 @@ az acr show-usage --name myacrdemo --resource-group rg-acr-demo
 
 ### Delete and verify
 
-Delete the resource and confirm it no longer appears in the list:
+Delete the registry and remove the demo `Dockerfile` created earlier:
 
 ```bash
 az acr delete --name myacrdemo --resource-group rg-acr-demo --yes
-az acr list --resource-group rg-acr-demo
+rm -f Dockerfile
 ```
 
 ## Features
@@ -210,6 +224,7 @@ az acr list --resource-group rg-acr-demo
 - **Private endpoints for ACR:** Private Link–based network isolation is not supported.
 - **Webhook notifications:** Registry webhooks defined via the ARM API are stored but not fired on push events.
 - **Content trust and quarantine:** Image signing and quarantine policies are not enforced.
+- **Delete is not persisted:** `az acr delete` returns HTTP 200 and exits cleanly, but the registry record is not removed from the in-memory store in the current emulator version.
 
 ## Samples
 

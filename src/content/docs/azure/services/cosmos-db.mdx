@@ -43,7 +43,7 @@ This section walks through creating a Cosmos DB account with the SQL API, creati
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-cosmos-demo --location eastus
+az group create --name rg-cosmos-demo --location westeurope
 ```
 
 ```bash title="Output"
@@ -99,6 +99,20 @@ az cosmosdb keys list \
   "secondaryMasterKey": "C2y6yDjf5/R+ob0N8A7C...",
   "secondaryReadonlyMasterKey": "C2y6yDjf5/R+ob0N8A7C..."
 }
+```
+
+Retrieve the connection string for the account:
+
+```bash
+az cosmosdb keys list \
+  --type connection-strings \
+  --name mycosmosaccount \
+  --resource-group rg-cosmos-demo \
+  --query "connectionStrings[0].connectionString"
+```
+
+```bash title="Output"
+"AccountEndpoint=https://mycosmosaccount.documents.azure.com:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;"
 ```
 
 #### Create a SQL database
@@ -319,6 +333,25 @@ az cosmosdb list --resource-group rg-cosmos-demo
     "type": "Microsoft.DocumentDB/databaseAccounts"
   }
 ]
+```
+
+Delete the second Cosmos DB account configured for the MongoDB API:
+
+```bash
+az cosmosdb delete \
+  --name mymongoacccount \
+  --resource-group rg-cosmos-demo \
+  --yes
+```
+
+Then list all Cosmos DB accounts to confirm the resource group is now empty:
+
+```bash
+az monitor action-group list --resource-group rg-monit-demo
+```
+
+```bash title="Output"
+[]
 ```
 
 ## Features

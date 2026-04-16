@@ -39,13 +39,13 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-sqr-demo --location eastus
+az group create --name rg-sqr-demo --location westeurope
 ```
 
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-sqr-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -60,18 +60,18 @@ Create a Log Analytics workspace to use as the scheduled query target:
 az monitor log-analytics workspace create \
   --name my-workspace \
   --resource-group rg-sqr-demo \
-  --location eastus
+  --location westeurope
 ```
 
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "my-workspace",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-sqr-demo",
+  "sku": { "name": "PerGB2018" },
   "type": "Microsoft.OperationalInsights/workspaces"
-...
 }
 ```
 
@@ -89,11 +89,16 @@ az monitor action-group create \
 
 ```bash title="Output"
 {
+  "emailReceivers": [
+    { "emailAddress": "admin@example.com", "name": "admin", "useCommonAlertSchema": false }
+  ],
+  "enabled": true,
+  "groupShortName": "myag",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/actionGroups/my-ag",
+  "location": "Global",
   "name": "my-ag",
   "resourceGroup": "rg-sqr-demo",
-  "type": "microsoft.insights/actionGroups"
-...
+  "type": "Microsoft.Insights/ActionGroups"
 }
 ```
 
@@ -118,17 +123,22 @@ az monitor scheduled-query create \
   --name my-sqr \
   --resource-group rg-sqr-demo \
   --scopes "$WORKSPACE_ID" \
-  --condition "count 'Placeholder' from 'Heartbeat | where TimeGenerated > ago(5m)' greater than 5" \
-  --condition-query "Heartbeat | where TimeGenerated > ago(5m)" \
+  --condition "count 'Placeholder_1' > 5" \
+  --condition-query "Placeholder_1=Heartbeat | where TimeGenerated > ago(5m)" \
   --description "Alert on Heartbeat count" \
   --action-groups "$AG_ID" \
-  --evaluation-frequency PT5M \
-  --window-size PT5M \
+  --evaluation-frequency 5m \
+  --window-size 5m \
   --severity 2
 ```
 
 ```bash title="Output"
 {
+  "actions": {
+    "actionGroups": [
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/actionGroups/my-ag"
+    ]
+  },
   "criteria": {
     "allOf": [
       {
@@ -139,17 +149,19 @@ az monitor scheduled-query create \
       }
     ]
   },
+  "description": "Alert on Heartbeat count",
   "enabled": true,
   "evaluationFrequency": "0:05:00",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "my-sqr",
   "resourceGroup": "rg-sqr-demo",
-  "scopes": [ "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace" ],
+  "scopes": [
+    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace"
+  ],
   "severity": 2,
   "type": "Microsoft.Insights/scheduledQueryRules",
   "windowSize": "0:05:00"
-...
 }
 ```
 
@@ -165,16 +177,31 @@ az monitor scheduled-query show \
 
 ```bash title="Output"
 {
-  "criteria": { "allOf": [ { "operator": "GreaterThan", "query": "Heartbeat | where TimeGenerated > ago(5m)", "threshold": 5.0, "timeAggregation": "Count" } ] },
+  "actions": {
+    "actionGroups": [
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/actionGroups/my-ag"
+    ]
+  },
+  "criteria": {
+    "allOf": [
+      {
+        "operator": "GreaterThan",
+        "query": "Heartbeat | where TimeGenerated > ago(5m)",
+        "threshold": 5.0,
+        "timeAggregation": "Count"
+      }
+    ]
+  },
+  "description": "Alert on Heartbeat count",
   "enabled": true,
   "evaluationFrequency": "0:05:00",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
+  "location": "westeurope",
   "name": "my-sqr",
   "resourceGroup": "rg-sqr-demo",
   "severity": 2,
   "type": "Microsoft.Insights/scheduledQueryRules",
-  "windowSize": "0:05:00",
-  ...
+  "windowSize": "0:05:00"
 }
 ```
 
@@ -189,12 +216,30 @@ az monitor scheduled-query list \
 ```bash title="Output"
 [
   {
+    "actions": {
+      "actionGroups": [
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/actionGroups/my-ag"
+      ]
+    },
+    "criteria": {
+      "allOf": [
+        {
+          "operator": "GreaterThan",
+          "query": "Heartbeat | where TimeGenerated > ago(5m)",
+          "threshold": 5.0,
+          "timeAggregation": "Count"
+        }
+      ]
+    },
+    "enabled": true,
+    "evaluationFrequency": "0:05:00",
     "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
+    "location": "westeurope",
     "name": "my-sqr",
     "resourceGroup": "rg-sqr-demo",
     "severity": 2,
     "type": "Microsoft.Insights/scheduledQueryRules",
-    ...
+    "windowSize": "0:05:00"
   }
 ]
 ```

@@ -39,7 +39,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-apim-demo --location eastus
+az group create --name rg-apim-demo --location westeurope
 ```
 
 ```bash title="Output"
@@ -60,7 +60,7 @@ Create an API Management instance in the Consumption tier:
 az apim create \
   --name my-apim \
   --resource-group rg-apim-demo \
-  --location eastus \
+  --location westeurope \
   --sku-name Consumption \
   --publisher-email admin@example.com \
   --publisher-name "My Organization"
@@ -141,45 +141,106 @@ az apim check-name --name my-apim
 }
 ```
 
-### Create an API
+### Create and inspect an API
 
-Use the REST API or Azure SDK directly to create an API definition within the service:
+Create an API in API Management:
 
 ```bash
-az rest --method PUT \
-  --url "https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/my-apim/apis/my-api?api-version=2022-08-01" \
-  --body '{
-    "properties": {
-      "displayName": "My API",
-      "path": "myapi",
-      "protocols": ["https"],
-      "serviceUrl": "https://backend.example.com"
-    }
-  }'
+az apim api create \
+  --resource-group rg-apim-demo \
+  --service-name my-apim \
+  --api-id orders-api \
+  --path orders \
+  --display-name "Orders API" \
+  --protocols https
 ```
 
-### Create an API gateway
-
-Create an API gateway resource within the service instance using the REST API:
-
-```bash
-az rest --method PUT \
-  --url "https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/gateways/my-gateway?api-version=2022-08-01" \
-  --body '{
-    "location": "eastus",
-    "properties": {
-      "description": "Local test gateway"
-    }
-  }'
+```bash title="Output"
+{
+  "displayName": "Orders API",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/my-apim/apis/orders-api",
+  "name": "orders-api",
+  "path": "orders",
+  "protocols": [
+    "https"
+  ],
+  "subscriptionRequired": true,
+  ...
+}
 ```
 
-### Delete and verify
-
-Delete the resource and confirm it no longer appears in the list:
+Get the API:
 
 ```bash
-az apim delete --name my-apim --resource-group rg-apim-demo --yes
-az apim list --resource-group rg-apim-demo
+az apim api show \
+  --resource-group rg-apim-demo \
+  --service-name my-apim \
+  --api-id orders-api
+```
+
+```bash title="Output"
+{
+  "displayName": "Orders API",
+  "name": "orders-api",
+  "path": "orders",
+  "protocols": [
+    "https"
+  ],
+  ...
+}
+```
+
+### Create and update an API operation
+
+Create an operation on the API:
+
+```bash
+az apim api operation create \
+  --resource-group rg-apim-demo \
+  --service-name my-apim \
+  --api-id orders-api \
+  --operation-id get-orders \
+  --display-name "Get orders" \
+  --method GET \
+  --url-template "/orders"
+```
+
+```bash title="Output"
+{
+  "displayName": "Get orders",
+  "method": "GET",
+  "name": "get-orders",
+  "type": "Microsoft.ApiManagement/service/apis/operations",
+  "urlTemplate": "/orders",
+  ...
+}
+```
+
+Update the operation and verify the change:
+
+```bash
+az apim api operation update \
+  --resource-group rg-apim-demo \
+  --service-name my-apim \
+  --api-id orders-api \
+  --operation-id get-orders \
+  --set displayName="Get all orders"
+
+az apim api operation show \
+  --resource-group rg-apim-demo \
+  --service-name my-apim \
+  --api-id orders-api \
+  --operation-id get-orders
+```
+
+```bash title="Output"
+{
+  "displayName": "Get all orders",
+  "method": "GET",
+  "name": "get-orders",
+  "urlTemplate": "/orders",
+  ...
+}
 ```
 
 ## Features

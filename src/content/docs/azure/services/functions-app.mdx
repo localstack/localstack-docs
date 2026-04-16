@@ -39,7 +39,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-func-demo --location eastus
+az group create --name rg-func-demo --location westeurope
 ```
 
 ```bash title="Output"
@@ -60,7 +60,7 @@ Function Apps require a Storage Account for internal bookkeeping.
 az storage account create \
   --name safuncdemo \
   --resource-group rg-func-demo \
-  --location eastus \
+  --location westeurope \
   --sku Standard_LRS
 ```
 
@@ -88,7 +88,7 @@ az functionapp create \
   --resource-group rg-func-demo \
   --consumption-plan-location eastus \
   --runtime python \
-  --runtime-version 3.11 \
+  --runtime-version 3.13 \
   --functions-version 4 \
   --os-type linux \
   --storage-account safuncdemo
@@ -150,15 +150,58 @@ az functionapp config appsettings list \
 ]
 ```
 
+### Create the function package
+
+Create a directory for the function source and add the required files:
+
+```bash
+mkdir my_func && cd my_func
+```
+
+Create `function_app.py` with an HTTP-triggered function:
+
+```python title="function_app.py"
+import azure.functions as func
+
+app = func.FunctionApp()
+
+@app.function_name(name="HelloWorld")
+@app.route(route="public", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
+def public(req: func.HttpRequest) -> func.HttpResponse:
+    name = req.params.get("name", "World")
+    return func.HttpResponse(f"Hello, {name}!")
+```
+
+Create `host.json`:
+
+```json title="host.json"
+{
+  "version": "2.0"
+}
+```
+
+Create `requirements.txt`:
+
+```text title="requirements.txt"
+azure-functions
+```
+
+Package everything into a zip archive and return to the parent directory:
+
+```bash
+zip my_func.zip function_app.py host.json requirements.txt
+cd ..
+```
+
 ### Deploy function code
 
-Use the Azure Functions Core Tools to deploy a zip package containing your function code:
+Deploy the zip package to the function app:
 
 ```bash
 az functionapp deploy \
   --resource-group rg-func-demo \
   --name my-func-app \
-  --src-path ./my_func.zip \
+  --src-path ./my_func/my_func.zip \
   --type zip
 ```
 
@@ -167,7 +210,11 @@ az functionapp deploy \
 After deployment, invoke the function via its default hostname:
 
 ```bash
-curl "http://my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566/api/MyHttpTrigger?name=LocalStack"
+curl "http://my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566/api/public?name=LocalStack"
+```
+
+```bash title="Output"
+Hello, LocalStack!
 ```
 
 ### List and inspect function apps
@@ -211,7 +258,16 @@ Delete the resource and confirm it no longer appears in the list:
 
 ```bash
 az functionapp delete --name my-func-app --resource-group rg-func-demo
-az functionapp list --resource-group rg-func-demo --output table
+```
+
+Then list all function apps to confirm the resource group is now empty:
+
+```bash
+az functionapp list --resource-group rg-func-demo
+```
+
+```bash title="Output"
+[]
 ```
 
 ## Features

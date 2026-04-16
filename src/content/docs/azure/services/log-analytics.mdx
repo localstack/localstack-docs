@@ -39,7 +39,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-laws-demo --location eastus
+az group create --name rg-laws-demo --location westeurope
 ```
 
 ```bash title="Output"
@@ -60,7 +60,7 @@ Create a Log Analytics workspace with a 30-day data retention period:
 az monitor log-analytics workspace create \
   --name my-workspace \
   --resource-group rg-laws-demo \
-  --location eastus
+  --location westeurope
 ```
 
 ```bash title="Output"
@@ -141,23 +141,6 @@ az monitor log-analytics workspace show \
   "type": "Microsoft.OperationalInsights/workspaces"
 ...
 }
-```
-
-### Query Activity Logs
-
-Activity Logs from within the emulator can be queried using the Azure Monitor Activity Log API:
-
-```bash
-az monitor activity-log list \
-  --resource-group rg-laws-demo \
-  --output table
-```
-
-```bash title="Output"
-Caller                                  EventTimestamp              Level    OperationId                            ResourceGroup
---------------------------------------  --------------------------  -------  -------------------------------------  ---------------
-00000000-0000-0000-0000-000000000000    2026-04-15T08:30:33.177...  default  bc6c4768-1af7-49a0-9088-00bb57ea5bb0  rg-laws-demo
-...
 ```
 
 ### Delete and verify

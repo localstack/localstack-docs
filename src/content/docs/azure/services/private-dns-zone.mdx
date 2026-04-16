@@ -223,7 +223,6 @@ az network private-dns link vnet show \
 }
 ```
 
-
 Then list all virtual network links for the zone:
 
 ```bash
@@ -248,46 +247,129 @@ az network private-dns link vnet list \
 ]
 ```
 
-### Create the same zone name across different resource groups
+### Integrate with a private endpoint
 
-Private DNS zones with the same name can coexist in different resource groups:
+Private DNS zones are most useful when paired with a private endpoint, which automatically registers an A record in the zone when a DNS zone group is created. Create a subnet to host the private endpoint and a storage account as the target resource:
 
 ```bash
-az group create \
-  --name rg-dns-demo-2 \
-  --location westeurope
+az network vnet subnet create \
+  --name subnet-pe \
+  --resource-group rg-dns-demo \
+  --vnet-name vnet-dns-demo \
+  --address-prefixes 10.0.1.0/24
+```
+
+```bash
+az storage account create \
+  --name stdnsdemo \
+  --resource-group rg-dns-demo \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+Create a private endpoint for the blob service of the storage account:
+
+```bash
+STORAGE_ID=$(az storage account show \
+  --name stdnsdemo \
+  --resource-group rg-dns-demo \
+  --query id \
+  --output tsv)
+
+az network private-endpoint create \
+  --name pe-blob-dns \
+  --resource-group rg-dns-demo \
+  --location westeurope \
+  --vnet-name vnet-dns-demo \
+  --subnet subnet-pe \
+  --private-connection-resource-id "$STORAGE_ID" \
+  --group-id blob \
+  --connection-name stdnsdemo-blob-connection
+```
+
+Create a DNS zone group that links the private endpoint to the private DNS zone. The emulator automatically registers an A record for the storage account name in the zone:
+
+```bash
+az network private-endpoint dns-zone-group create \
+  --name default \
+  --resource-group rg-dns-demo \
+  --endpoint-name pe-blob-dns \
+  --private-dns-zone privatelink.blob.core.windows.net \
+  --zone-name blob-zone
 ```
 
 ```bash title="Output"
 {
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo-2",
-  "location": "westeurope",
-  "name": "rg-dns-demo-2",
-  "properties": { "provisioningState": "Succeeded" },
-  "type": "Microsoft.Resources/resourceGroups"
-}
-```
-
-
-Create a DNS zone in the second resource group to demonstrate cleanup:
-
-```bash
-az network private-dns zone create \
-  --name privatelink.blob.core.windows.net \
-  --resource-group rg-dns-demo-2
-```
-
-```bash title="Output"
-{
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo-2/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
-  "location": "global",
-  "name": "privatelink.blob.core.windows.net",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateEndpoints/pe-blob-dns/privateDnsZoneGroups/default",
+  "name": "default",
+  "privateDnsZoneConfigs": [
+    {
+      "name": "blob-zone",
+      "privateDnsZoneId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+      "recordSets": [
+        {
+          "fqdn": "stdnsdemo.privatelink.blob.core.windows.net",
+          "ipAddresses": [ "10.0.1.4" ],
+          "provisioningState": "Succeeded",
+          "recordSetName": "stdnsdemo",
+          "recordType": "A",
+          "ttl": 10
+        }
+      ]
+    }
+  ],
   "provisioningState": "Succeeded",
-  "resourceGroup": "rg-dns-demo-2",
-  "type": "Microsoft.Network/privateDnsZones"
-...
+  "resourceGroup": "rg-dns-demo"
 }
 ```
+
+### Verify IP address consistency
+
+Confirm that the private endpoint's network interface IP, the DNS zone group's embedded record set (shown above), and the A record in the private DNS zone all report the same address.
+
+Retrieve the IP address assigned to the private endpoint's network interface:
+
+```bash
+NIC_ID=$(az network private-endpoint show \
+  --name pe-blob-dns \
+  --resource-group rg-dns-demo \
+  --query "networkInterfaces[0].id" \
+  --output tsv)
+
+az network nic show \
+  --ids "$NIC_ID" \
+  --query "ipConfigurations[0].privateIPAddress" \
+  --output tsv
+```
+
+```bash title="Output"
+10.0.1.4
+```
+
+List the A records in the private DNS zone:
+
+```bash
+az network private-dns record-set a list \
+  --resource-group rg-dns-demo \
+  --zone-name privatelink.blob.core.windows.net
+```
+
+```bash title="Output"
+[
+  {
+    "aRecords": [
+      { "ipv4Address": "10.0.1.4" }
+    ],
+    "fqdn": "stdnsdemo.privatelink.blob.core.windows.net",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net/A/stdnsdemo",
+    "name": "stdnsdemo",
+    "ttl": 10,
+    "type": "Microsoft.Network/privateDnsZones/A"
+  }
+]
+```
+
+The IP address `10.0.1.4` — the first usable address in the `10.0.1.0/24` subnet — is consistent across all three: the network interface IP configuration, the DNS zone group record set, and the A record in the private DNS zone.
 
 ### Delete a virtual network link and DNS zone
 
@@ -318,7 +400,7 @@ The Private DNS Zone emulator supports the following features:
 ## Limitations
 
 - **No DNS resolution**: Private DNS Zone is a mock implementation. DNS queries are not resolved using the zone's records; no actual DNS lookup behavior is simulated.
-- **No record set management**: Creating DNS records (A, AAAA, CNAME, etc.) within a private DNS zone is not currently supported.
+- **Limited record set management**: A records are automatically created in a private DNS zone when a private endpoint DNS zone group is created. Manual record set management (AAAA, CNAME, MX, and other record types) is not supported.
 - **No auto-registration**: The `registrationEnabled` flag is stored and returned, but no automatic DNS record registration from linked VMs is performed.
 - **No data persistence**: Private DNS zone resources are not persisted and are lost when the emulator is stopped or restarted.
 
