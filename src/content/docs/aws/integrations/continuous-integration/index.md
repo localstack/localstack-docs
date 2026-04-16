@@ -12,7 +12,7 @@ LocalStack supports:
 
 - Native integration with platforms like CircleCI
 - A generic CI driver for other CI/CD systems
-- Advanced features like Cloud Pods and CI analytics to track performance and test coverage
+- Advanced features like Cloud Pods to track performance and test coverage
 
 With LocalStack in your CI pipeline, you can eliminate slow and costly staging environments while ensuring realistic, high-fidelity cloud testing before deploying to production.
 
