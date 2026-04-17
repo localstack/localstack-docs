@@ -15,17 +15,10 @@ It provides convenience features to interact with LocalStack features like Cloud
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
 :::note
-**lstk**: We are currently rolling out `lstk`, a new, high-performance CLI built in Go.
-Check it out [here](/aws/tooling/lstk/).
+This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 2026.3.0`.
 :::
 
-## LocalStack CLI
-
-:::note
-This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 4.14.0`.
-:::
-
-### Global Options
+## Global Options
 
 The following global options are available for the `localstack` CLI:
 
@@ -36,7 +29,7 @@ The following global options are available for the `localstack` CLI:
 | `-p`, `--profile TEXT` | Set the configuration profile |
 | `-h`, `--help` | Show help message and exit |
 
-### Commands
+## Commands
 
 The following commands are available for managing your LocalStack instance.
 
@@ -86,8 +79,10 @@ Set your Localstack auth token to allow you to start LocalStack
 ```bash
 Usage: localstack auth set-token [OPTIONS] AUTH_TOKEN
 
-Set up your auth token to activate your LocalStack for AWS license.
-This differs from localstack auth login, which is used for platform features such as syncing Cloud Pods with your web account.
+  Configure your auth token. Your auth token is used the license activation to
+  activate LocalStack Pro. This is different from `localstack auth login`
+  which enables platform features such as pushing cloud pods to your webapp
+  account.
 
   The auth token you configure here will be passed to the
   `LOCALSTACK_AUTH_TOKEN` environment variable of the LocalStack container
@@ -964,7 +959,7 @@ Usage: localstack pod list [OPTIONS] [REMOTE]
   With the --public flag, it lists the all the available public Cloud Pods. A
   public Cloud Pod is available across the boundary of a user and/or
   organization. In other words, any public Cloud Pod can be injected by any
-  other user holding a LocalStack for AWS license.
+  other user holding a LocalStack Pro (or above) license.
 
 Options:
   -p, --public               List all the available public Cloud Pods
@@ -1163,10 +1158,13 @@ Usage: localstack replicator start [OPTIONS]
   be set. `AWS_ENDPOINT_URL` and `AWS_SESSION_TOKEN` are optional.
 
 Options:
-  --replication-type [MOCK|SINGLE_RESOURCE|BATCH]
-                                  Type of replication job: MOCK,
-                                  SINGLE_RESOURCE, BATCH  [default:
-                                  SINGLE_RESOURCE]
+  --replication-type [SINGLE_RESOURCE|BATCH]
+                                  Type of replication job: SINGLE_RESOURCE,
+                                  BATCH  [default: SINGLE_RESOURCE]
+  --explore-strategy [SIMPLE|TREE]
+                                  How we explore the resource tree. SIMPLE
+                                  only replicates the resource requested.
+                                  [default: SIMPLE]
   --resource-arn TEXT             ARN of the resource to recreate. Optional
                                   for SINGLE_RESOURCE replication
   --resource-type TEXT            CloudControl type of the resource to
