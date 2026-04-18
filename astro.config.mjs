@@ -709,9 +709,10 @@ export default defineConfig({
   // Do not load the Cloudflare adapter during `astro dev`: its Vite integration serves
   // the app through workerd/miniflare and breaks normal CSS/asset handling for Starlight.
   //
-  // Cloudflare Pages: committed `wrangler.toml` sets `pages_build_output_dir = "./dist"` so
-  // Pages does not skip Wrangler (generated `dist/server/wrangler.json` alone is invalid for
-  // Pages). Static-only upload: use `dist/client`. Worker + middleware: `npm run deploy:cf`.
+  // Cloudflare: Astro 6 + @astrojs/cloudflare targets Workers (`wrangler deploy --config
+  // dist/server/wrangler.json`), not classic Pages uploads. `pages_build_output_dir` in
+  // wrangler.toml triggers Pages validation that conflicts with the adapter (ASSETS binding).
+  // See https://github.com/withastro/astro/issues/16107 and the Pages → Workers migration guide.
   adapter: useCloudflareAdapter
     ? cloudflare({
         imageService: { build: 'compile', runtime: 'passthrough' },

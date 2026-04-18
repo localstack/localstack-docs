@@ -1,7 +1,12 @@
-# Cloudflare Pages: required so CI accepts this project as a valid Pages Wrangler project.
-# Without `pages_build_output_dir`, Pages skips Wrangler config and static upload misses the Worker layout.
-# Do not set `main` here — that path only exists after `astro build` (see dist/server/wrangler.json).
+# Optional metadata for local Wrangler / Workers deploys. After `astro build`, deploy with:
+#   npx wrangler deploy --config dist/server/wrangler.json
+#
+# Do NOT set `pages_build_output_dir` here: with @astrojs/cloudflare on Astro 6, that puts Wrangler
+# into "Cloudflare Pages" mode, which reserves the ASSETS binding and rejects the adapter’s
+# generated dist/server/wrangler.json (see https://github.com/withastro/astro/issues/16107).
+# Use a Cloudflare *Worker* (Workers Builds + wrangler deploy), not a classic Pages static upload.
+#
+# Migration: https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/
 name = "localstack-docs"
-pages_build_output_dir = "./dist"
 compatibility_date = "2026-04-18"
 compatibility_flags = ["nodejs_compat"]
