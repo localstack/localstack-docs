@@ -15,6 +15,8 @@ import react from '@astrojs/react';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import cloudflare from '@astrojs/cloudflare';
+
 // Fetch the latest release version from GitHub
 const response = await fetch(
   'https://api.github.com/repos/localstack/localstack/releases/latest',
@@ -59,6 +61,11 @@ const aeonikProVariants = [
     style: 'italic',
   },
 ];
+
+// `defineConfig` does not invoke a function; only pass a plain object. Skip the Cloudflare
+// adapter during `astro dev` (see argv) so Vite serves CSS/assets normally; use the adapter
+// for `astro build`, `astro preview`, etc.
+const useCloudflareAdapter = !process.argv.includes('dev');
 
 // https://astro.build/config
 export default defineConfig({
@@ -688,4 +695,24 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  // Cloudflare Workers: compile-time images; runtime uses passthrough (no IMAGES binding).
+  //
+  // Markdown for agents (Accept: text/markdown): prerendered HTML is usually served from
+  // the ASSETS binding before Astro middleware runs. Enable Cloudflare "Markdown for
+  // Agents" in the zone (Dashboard → AI Crawl Control) so the edge handles negotiation
+  // for all static doc pages. See:
+  // https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/
+  // App middleware still returns text/markdown + x-markdown-tokens when a response is
+  // produced via app.render (e.g. some errors and on-demand routes).
+  //
+  // Do not load the Cloudflare adapter during `astro dev`: its Vite integration serves
+  // the app through workerd/miniflare and breaks normal CSS/asset handling for Starlight.
+  adapter: useCloudflareAdapter
+    ? cloudflare({
+        imageService: { build: 'compile', runtime: 'passthrough' },
+        // Prerender in Node: workerd prerender cannot resolve some deps pulled by middleware/unified.
+        prerenderEnvironment: 'node',
+      })
+    : undefined,
 });
