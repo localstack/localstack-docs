@@ -21,6 +21,12 @@ function applyHomepageLink(response: Response, pathname: string): Response {
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context;
 
+  // Avoid reading request headers during static prerender (build); see Astro `isPrerendered`.
+  if (context.isPrerendered) {
+    const response = await next();
+    return applyHomepageLink(response, url.pathname);
+  }
+
   if (request.method !== 'GET') {
     const response = await next();
     return applyHomepageLink(response, url.pathname);
