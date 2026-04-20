@@ -97,10 +97,11 @@ PRINCIPAL_ID=$(az identity show \
 Assign the `Contributor` role to the identity at the resource group scope:
 
 ```bash
+SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 az role assignment create \
   --assignee "$PRINCIPAL_ID" \
   --role Contributor \
-  --scope "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo"
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/rg-rbac-demo"
 ```
 
 ```bash title="Output"
@@ -129,7 +130,7 @@ List all role assignments scoped to the resource group:
 
 ```bash
 az role assignment list \
-  --scope "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo"
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/rg-rbac-demo"
 ```
 
 ```bash title="Output"
