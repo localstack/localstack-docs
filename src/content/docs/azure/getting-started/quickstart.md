@@ -82,7 +82,7 @@ $ az group delete --name myResourceGroup --yes
 When you're done using the Azure Emulator, you can run the following command:
 
 ```
-$ azlocal stop_interception
+$ azlocal stop-interception
 ```
 
 All invocations of the `az` CLI tool will now talk to the real Azure Cloud again.
