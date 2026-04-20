@@ -688,4 +688,8 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  // Static site (SSG): deploy the `dist/` folder to any static host (e.g. Cloudflare Pages
+  // with build output directory `dist`). Agent discovery uses `public/_headers` and
+  // `public/.well-known/` — no Worker or middleware required.
 });
