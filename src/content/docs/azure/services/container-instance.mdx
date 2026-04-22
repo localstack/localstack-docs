@@ -1,0 +1,353 @@
+---
+title: "Container Instances"
+description: Get started with Azure Container Instances on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Container Instances is a serverless container service that lets you run Docker containers on demand without managing any underlying virtual machines or orchestration infrastructure.
+Each deployment unit is called a container group and can host one or more containers that share a network and lifecycle.
+Container Instances is well-suited for short-lived tasks, CI workloads, and event-driven processing. For more information, see [About Azure Container Instances](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that use Azure Container Instances.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Container Instances' integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Container Instances and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group that will contain your Container Instances resources:
+
+```bash
+az group create \
+  --name rg-aci-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aci-demo",
+  "location": "eastus",
+  "name": "rg-aci-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a container group
+
+Create a container group with a single container, a public IP address, and port 80 exposed:
+
+```bash
+az container create \
+  --name mycontainer \
+  --resource-group rg-aci-demo \
+  --image mcr.microsoft.com/cbl-mariner/base/core:2.0 \
+  --cpu 1 --memory 1 \
+  --ports 80 \
+  --ip-address Public \
+  --restart-policy Never \
+  --command-line "/bin/sh -c 'echo hello && sleep 3600'"
+```
+
+```bash title="Output"
+{
+  "containers": [
+    {
+      "command": [
+        "/bin/sh",
+        "-c",
+        "echo hello && sleep 3600"
+      ],
+      "environmentVariables": [],
+      "image": "mcr.microsoft.com/cbl-mariner/base/core:2.0",
+      "instanceView": {
+        "currentState": {
+          "detailStatus": "",
+          "exitCode": null,
+          "finishTime": null,
+          "startTime": "2026-04-15T13:05:28+00:00",
+          "state": "Running"
+        },
+        "events": [],
+        "previousState": null,
+        "restartCount": 0
+      },
+      "name": "mycontainer",
+      "ports": [
+        {
+          "port": 80,
+          "protocol": null
+        }
+      ],
+      "resources": {
+        "limits": null,
+        "requests": {
+          "cpu": 1.0,
+          "memoryInGb": 1.0
+        }
+      }
+    }
+  ],
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aci-demo/providers/Microsoft.ContainerInstance/containerGroups/mycontainer",
+  "instanceView": {
+    "events": [],
+    "state": "Running"
+  },
+  "ipAddress": {
+    "ip": "10.0.0.1",
+    "ports": [
+      {
+        "port": 80,
+        "protocol": "TCP"
+      }
+    ],
+    "type": "Public"
+  },
+  "location": "eastus",
+  "name": "mycontainer",
+  "osType": "Linux",
+  "provisioningState": "Succeeded",
+  "restartPolicy": "Never",
+  "sku": "Standard",
+  "type": "Microsoft.ContainerInstance/containerGroups"
+  ...
+}
+```
+
+### Show and list container groups
+
+Retrieve the full details of the container group to inspect its current state:
+
+```bash
+az container show \
+  --name mycontainer \
+  --resource-group rg-aci-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aci-demo/providers/Microsoft.ContainerInstance/containerGroups/mycontainer",
+  "instanceView": {
+    "events": [],
+    "state": "Running"
+  },
+  "ipAddress": {
+    "ip": "10.0.0.1",
+    "ports": [
+      {
+        "port": 80,
+        "protocol": "TCP"
+      }
+    ],
+    "type": "Public"
+  },
+  "location": "eastus",
+  "name": "mycontainer",
+  "osType": "Linux",
+  "provisioningState": "Succeeded",
+  "restartPolicy": "Never",
+  "type": "Microsoft.ContainerInstance/containerGroups"
+  ...
+}
+```
+
+List all container groups within the resource group to see a summary of each one:
+
+```bash
+az container list \
+  --resource-group rg-aci-demo
+```
+
+```bash title="Output"
+[
+  {
+    "ipAddress": {
+      "ip": "10.0.0.1",
+      "ports": [
+        {
+          "port": 80,
+          "protocol": "TCP"
+        }
+      ],
+      "type": "Public"
+    },
+    "location": "eastus",
+    "name": "mycontainer",
+    "osType": "Linux",
+    "provisioningState": "Succeeded"
+  }
+]
+```
+
+### Retrieve container logs
+
+Fetch the standard output from a running container to verify it started correctly:
+
+```bash
+az container logs \
+  --name mycontainer \
+  --resource-group rg-aci-demo \
+  --container-name mycontainer
+```
+
+```bash title="Output"
+hello
+```
+
+### Stop, start, and restart
+
+Stop a running container group to release its compute resources without deleting the group:
+
+```bash
+az container stop \
+  --name mycontainer \
+  --resource-group rg-aci-demo
+```
+
+Verify that the container group state has changed to `Stopped`:
+
+```bash
+az container show \
+  --name mycontainer \
+  --resource-group rg-aci-demo \
+  --query "{name:name, provisioningState:provisioningState, instanceView:instanceView}"
+```
+
+```bash title="Output"
+{
+  "instanceView": {
+    "events": [],
+    "state": "Stopped"
+  },
+  "name": "mycontainer",
+  "provisioningState": "Succeeded"
+}
+```
+
+Start the container group again to resume the containers from their stopped state:
+
+```bash
+az container start \
+  --name mycontainer \
+  --resource-group rg-aci-demo
+```
+
+Verify the container group is running again:
+
+```bash
+az container show \
+  --name mycontainer \
+  --resource-group rg-aci-demo \
+  --query "{name:name, provisioningState:provisioningState, instanceView:instanceView}"
+```
+
+```bash title="Output"
+{
+  "instanceView": {
+    "events": [],
+    "state": "Running"
+  },
+  "name": "mycontainer",
+  "provisioningState": "Succeeded"
+}
+```
+
+Restart all containers in the group without re-creating the group itself:
+
+```bash
+az container restart \
+  --name mycontainer \
+  --resource-group rg-aci-demo
+```
+
+Confirm the group is running after the restart:
+
+```bash
+az container show \
+  --name mycontainer \
+  --resource-group rg-aci-demo \
+  --query "{name:name, provisioningState:provisioningState, instanceView:instanceView}"
+```
+
+```bash title="Output"
+{
+  "instanceView": {
+    "events": [],
+    "state": "Running"
+  },
+  "name": "mycontainer",
+  "provisioningState": "Succeeded"
+}
+```
+
+### Delete and verify
+
+Delete the container group to remove all associated containers and Docker resources from the emulator:
+
+```bash
+az container delete \
+  --name mycontainer \
+  --resource-group rg-aci-demo \
+  --yes
+```
+
+Verify the resource group is now empty:
+
+```bash
+az container list \
+  --resource-group rg-aci-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Real Docker execution:** Container groups are backed by real Docker containers running on the local Docker engine.
+- **Full container group lifecycle:** Stop, start, and restart operations are supported.
+- **Container logs:** Logs are streamed directly from the Docker container and returned via the `containers__list_logs` API.
+- **Volume types:** Both `emptyDir` and `secret` volume types are implemented using bind mounts from temporary directories on the host.
+- **Private registries:** Image registry credentials passed via `--registry-login-server`, `--registry-username`, and `--registry-password` are used to pull images from private registries.
+- **Init containers:** Init containers run sequentially before main containers and must exit with code 0 for group creation to succeed.
+
+## Limitations
+
+- **No interactive exec sessions:** `az container exec` and the `containers__execute_command` API return a stub WebSocket URI but do not provide a real terminal session.
+- **No interactive attach:** `containers__attach` returns a stub WebSocket URI and does not stream container output interactively.
+- **Linux containers only:** Windows containers are not supported.
+- **No VNet integration:** Subnet-based networking is not emulated; all container groups are assigned an IP address from a local address pool.
+- **No `az container update`:** Tag updates must be performed via `az rest PATCH`.
+
+## Samples
+
+The following samples demonstrate how to use Azure Container Instances with LocalStack for Azure:
+
+- [Azure Container Instances, Key Vault, and Storage](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-quickstart)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.ContainerInstance" client:load />
