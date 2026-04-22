@@ -1,0 +1,416 @@
+---
+title: "Private DNS Zone"
+description: Get started with Azure Private DNS Zone on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Private DNS Zone provides a reliable and secure DNS service to manage and resolve domain names in a virtual network without the need to add a custom DNS solution.
+Private DNS zones allow you to use your own custom domain names instead of the Azure-provided names, and to resolve DNS names across linked virtual networks.
+They are commonly paired with Private Endpoints to enable name resolution for privately-accessed PaaS services within a virtual network. For more information, see [What is an Azure Private DNS Zone?](https://learn.microsoft.com/en-us/azure/dns/private-dns-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Private DNS Zones.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Private DNS Zone's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Private DNS Zone and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group and virtual network
+
+Create a resource group and a virtual network to link to the private DNS zone:
+
+```bash
+az group create \
+  --name rg-dns-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-dns-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+
+Create a virtual network to link to the private DNS zone:
+
+```bash
+az network vnet create \
+  --name vnet-dns-demo \
+  --resource-group rg-dns-demo \
+  --location westeurope \
+  --address-prefixes 10.0.0.0/16
+```
+
+```bash title="Output"
+{
+  "newVNet": {
+    "addressSpace": { "addressPrefixes": [ "10.0.0.0/16" ] },
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/virtualNetworks/vnet-dns-demo",
+    "location": "westeurope",
+    "name": "vnet-dns-demo",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dns-demo",
+    "subnets": [],
+    "type": "Microsoft.Network/virtualNetworks",
+    ...
+  }
+}
+```
+
+### Create a private DNS zone
+
+Create a private DNS zone and link it to the virtual network for internal name resolution:
+
+
+Create a DNS zone in the second resource group to demonstrate cleanup:
+
+```bash
+az network private-dns zone create \
+  --name privatelink.blob.core.windows.net \
+  --resource-group rg-dns-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+  "location": "global",
+  "name": "privatelink.blob.core.windows.net",
+  "numberOfRecordSets": 1,
+  "numberOfVirtualNetworkLinks": 0,
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-dns-demo",
+  "type": "Microsoft.Network/privateDnsZones"
+...
+}
+```
+
+### Link the DNS zone to a virtual network
+
+Create a virtual network link to enable DNS resolution from the linked VNet:
+
+```bash
+VNET_ID=$(az network vnet show \
+  --name vnet-dns-demo \
+  --resource-group rg-dns-demo \
+  --query id \
+  --output tsv)
+
+az network private-dns link vnet create \
+  --name link-to-vnet-dns-demo \
+  --resource-group rg-dns-demo \
+  --zone-name privatelink.blob.core.windows.net \
+  --virtual-network "$VNET_ID" \
+  --registration-enabled false
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net/virtualNetworkLinks/link-to-vnet-dns-demo",
+  "location": "global",
+  "name": "link-to-vnet-dns-demo",
+  "provisioningState": "Succeeded",
+  "registrationEnabled": false,
+  "resourceGroup": "rg-dns-demo",
+  "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+  "virtualNetwork": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/virtualNetworks/vnet-dns-demo"
+  },
+  "virtualNetworkLinkState": "Completed"
+...
+}
+```
+
+### Show and list DNS zones
+
+Retrieve the details of the DNS zone and list all private DNS zones in the resource group:
+
+```bash
+az network private-dns zone show \
+  --name privatelink.blob.core.windows.net \
+  --resource-group rg-dns-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+  "location": "global",
+  "name": "privatelink.blob.core.windows.net",
+  "numberOfRecordSets": 1,
+  "numberOfVirtualNetworkLinks": 1,
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-dns-demo",
+  "type": "Microsoft.Network/privateDnsZones"
+...
+}
+```
+
+
+Then list all private DNS zones in the resource group:
+
+```bash
+az network private-dns zone list \
+  --resource-group rg-dns-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+    "location": "global",
+    "name": "privatelink.blob.core.windows.net",
+    "numberOfRecordSets": 1,
+    "numberOfVirtualNetworkLinks": 1,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dns-demo",
+    "type": "Microsoft.Network/privateDnsZones"
+  }
+]
+```
+
+### Show and list virtual network links
+
+Retrieve the details of the virtual network link and list all links for the zone:
+
+```bash
+az network private-dns link vnet show \
+  --name link-to-vnet-dns-demo \
+  --resource-group rg-dns-demo \
+  --zone-name privatelink.blob.core.windows.net
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net/virtualNetworkLinks/link-to-vnet-dns-demo",
+  "location": "global",
+  "name": "link-to-vnet-dns-demo",
+  "provisioningState": "Succeeded",
+  "registrationEnabled": false,
+  "resourceGroup": "rg-dns-demo",
+  "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+  "virtualNetwork": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/virtualNetworks/vnet-dns-demo"
+  },
+  "virtualNetworkLinkState": "Completed"
+...
+}
+```
+
+Then list all virtual network links for the zone:
+
+```bash
+az network private-dns link vnet list \
+  --resource-group rg-dns-demo \
+  --zone-name privatelink.blob.core.windows.net
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net/virtualNetworkLinks/link-to-vnet-dns-demo",
+    "location": "global",
+    "name": "link-to-vnet-dns-demo",
+    "provisioningState": "Succeeded",
+    "registrationEnabled": false,
+    "resourceGroup": "rg-dns-demo",
+    "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+    "virtualNetwork": { "id": "...vnet-dns-demo...", "resourceGroup": "rg-dns-demo" },
+    "virtualNetworkLinkState": "Completed"
+  }
+]
+```
+
+### Integrate with a private endpoint
+
+Private DNS zones are most useful when paired with a private endpoint, which automatically registers an A record in the zone when a DNS zone group is created. Create a subnet to host the private endpoint and a storage account as the target resource:
+
+```bash
+az network vnet subnet create \
+  --name subnet-pe \
+  --resource-group rg-dns-demo \
+  --vnet-name vnet-dns-demo \
+  --address-prefixes 10.0.1.0/24
+```
+
+```bash
+az storage account create \
+  --name stdnsdemo \
+  --resource-group rg-dns-demo \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+Create a private endpoint for the blob service of the storage account:
+
+```bash
+STORAGE_ID=$(az storage account show \
+  --name stdnsdemo \
+  --resource-group rg-dns-demo \
+  --query id \
+  --output tsv)
+
+az network private-endpoint create \
+  --name pe-blob-dns \
+  --resource-group rg-dns-demo \
+  --location westeurope \
+  --vnet-name vnet-dns-demo \
+  --subnet subnet-pe \
+  --private-connection-resource-id "$STORAGE_ID" \
+  --group-id blob \
+  --connection-name stdnsdemo-blob-connection
+```
+
+Create a DNS zone group that links the private endpoint to the private DNS zone. The emulator automatically registers an A record for the storage account name in the zone:
+
+```bash
+az network private-endpoint dns-zone-group create \
+  --name default \
+  --resource-group rg-dns-demo \
+  --endpoint-name pe-blob-dns \
+  --private-dns-zone privatelink.blob.core.windows.net \
+  --zone-name blob-zone
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateEndpoints/pe-blob-dns/privateDnsZoneGroups/default",
+  "name": "default",
+  "privateDnsZoneConfigs": [
+    {
+      "name": "blob-zone",
+      "privateDnsZoneId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+      "recordSets": [
+        {
+          "fqdn": "stdnsdemo.privatelink.blob.core.windows.net",
+          "ipAddresses": [ "10.0.1.4" ],
+          "provisioningState": "Succeeded",
+          "recordSetName": "stdnsdemo",
+          "recordType": "A",
+          "ttl": 10
+        }
+      ]
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-dns-demo"
+}
+```
+
+### Verify IP address consistency
+
+Confirm that the private endpoint's network interface IP, the DNS zone group's embedded record set (shown above), and the A record in the private DNS zone all report the same address.
+
+Retrieve the IP address assigned to the private endpoint's network interface:
+
+```bash
+NIC_ID=$(az network private-endpoint show \
+  --name pe-blob-dns \
+  --resource-group rg-dns-demo \
+  --query "networkInterfaces[0].id" \
+  --output tsv)
+
+az network nic show \
+  --ids "$NIC_ID" \
+  --query "ipConfigurations[0].privateIPAddress" \
+  --output tsv
+```
+
+```bash title="Output"
+10.0.1.4
+```
+
+List the A records in the private DNS zone:
+
+```bash
+az network private-dns record-set a list \
+  --resource-group rg-dns-demo \
+  --zone-name privatelink.blob.core.windows.net
+```
+
+```bash title="Output"
+[
+  {
+    "aRecords": [
+      { "ipv4Address": "10.0.1.4" }
+    ],
+    "fqdn": "stdnsdemo.privatelink.blob.core.windows.net",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dns-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net/A/stdnsdemo",
+    "name": "stdnsdemo",
+    "ttl": 10,
+    "type": "Microsoft.Network/privateDnsZones/A"
+  }
+]
+```
+
+The IP address `10.0.1.4` — the first usable address in the `10.0.1.0/24` subnet — is consistent across all three: the network interface IP configuration, the DNS zone group record set, and the A record in the private DNS zone.
+
+### Delete a virtual network link and DNS zone
+
+Delete the virtual network link first, then delete the DNS zone:
+
+```bash
+az network private-dns link vnet delete \
+  --name link-to-vnet-dns-demo \
+  --resource-group rg-dns-demo \
+  --zone-name privatelink.blob.core.windows.net
+
+az network private-dns zone delete \
+  --name privatelink.blob.core.windows.net \
+  --resource-group rg-dns-demo
+```
+
+## Features
+
+The Private DNS Zone emulator supports the following features:
+
+- **Create and manage private DNS zones**: Full lifecycle management including create, get, list, and delete.
+- **Virtual network links**: Create, get, list, and delete virtual network links that associate a DNS zone with a virtual network.
+- **Auto-registration**: Store and return the `registrationEnabled` flag on virtual network links.
+- **Zone isolation by resource group**: The same DNS zone name can exist independently in multiple resource groups.
+- **Tags**: Apply and update resource tags on private DNS zone resources.
+- **Cross-virtual-network support**: Link a single DNS zone to multiple virtual networks.
+
+## Limitations
+
+- **No DNS resolution**: Private DNS Zone is a mock implementation. DNS queries are not resolved using the zone's records; no actual DNS lookup behavior is simulated.
+- **Limited record set management**: A records are automatically created in a private DNS zone when a private endpoint DNS zone group is created. Manual record set management (AAAA, CNAME, MX, and other record types) is not supported.
+- **No auto-registration**: The `registrationEnabled` flag is stored and returned, but no automatic DNS record registration from linked VMs is performed.
+- **No data persistence**: Private DNS zone resources are not persisted and are lost when the emulator is stopped or restarted.
+
+## Samples
+
+The following samples demonstrate how to use Azure Private DNS Zones with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
+- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Network" client:load />
