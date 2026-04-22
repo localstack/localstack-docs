@@ -1,0 +1,291 @@
+---
+title: "Scheduled Query Rules"
+description: Get started with Azure Monitor Scheduled Query Rules on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor Scheduled Query Rules (SQR) evaluate KQL log queries stored in a Log Analytics Workspace on a defined schedule.
+When query results meet a configured condition, an alert is fired and routed through an Action Group.
+Scheduled Query Rules are commonly used to detect patterns in application logs, audit events, and custom metrics that cannot be captured by standard metric alerts. For more information, see [Log alerts in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-log).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Scheduled Query Rules.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Scheduled Query Rules' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating a Scheduled Query Rule that targets a Log Analytics workspace.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-sqr-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo",
+  "location": "westeurope",
+  "name": "rg-sqr-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a Log Analytics workspace
+
+Create a Log Analytics workspace to use as the scheduled query target:
+
+```bash
+az monitor log-analytics workspace create \
+  --name my-workspace \
+  --resource-group rg-sqr-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace",
+  "location": "westeurope",
+  "name": "my-workspace",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-sqr-demo",
+  "sku": { "name": "PerGB2018" },
+  "type": "Microsoft.OperationalInsights/workspaces"
+}
+```
+
+### Create an action group
+
+Create an action group to serve as the notification target when the alert fires:
+
+```bash
+az monitor action-group create \
+  --name my-ag \
+  --resource-group rg-sqr-demo \
+  --short-name myag \
+  --action email admin admin@example.com
+```
+
+```bash title="Output"
+{
+  "emailReceivers": [
+    { "emailAddress": "admin@example.com", "name": "admin", "useCommonAlertSchema": false }
+  ],
+  "enabled": true,
+  "groupShortName": "myag",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/actionGroups/my-ag",
+  "location": "Global",
+  "name": "my-ag",
+  "resourceGroup": "rg-sqr-demo",
+  "type": "Microsoft.Insights/ActionGroups"
+}
+```
+
+### Create a scheduled query rule
+
+Retrieve the workspace and action group resource IDs, then create a scheduled query rule that fires when the error count exceeds the threshold:
+
+```bash
+WORKSPACE_ID=$(az monitor log-analytics workspace show \
+  --workspace-name my-workspace \
+  --resource-group rg-sqr-demo \
+  --query id \
+  --output tsv)
+
+AG_ID=$(az monitor action-group show \
+  --name my-ag \
+  --resource-group rg-sqr-demo \
+  --query id \
+  --output tsv)
+
+az monitor scheduled-query create \
+  --name my-sqr \
+  --resource-group rg-sqr-demo \
+  --scopes "$WORKSPACE_ID" \
+  --condition "count 'Placeholder_1' > 5" \
+  --condition-query "Placeholder_1=Heartbeat | where TimeGenerated > ago(5m)" \
+  --description "Alert on Heartbeat count" \
+  --action-groups "$AG_ID" \
+  --evaluation-frequency 5m \
+  --window-size 5m \
+  --severity 2
+```
+
+```bash title="Output"
+{
+  "actions": {
+    "actionGroups": [
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/actionGroups/my-ag"
+    ]
+  },
+  "criteria": {
+    "allOf": [
+      {
+        "operator": "GreaterThan",
+        "query": "Heartbeat | where TimeGenerated > ago(5m)",
+        "threshold": 5.0,
+        "timeAggregation": "Count"
+      }
+    ]
+  },
+  "description": "Alert on Heartbeat count",
+  "enabled": true,
+  "evaluationFrequency": "0:05:00",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
+  "location": "westeurope",
+  "name": "my-sqr",
+  "resourceGroup": "rg-sqr-demo",
+  "scopes": [
+    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace"
+  ],
+  "severity": 2,
+  "type": "Microsoft.Insights/scheduledQueryRules",
+  "windowSize": "0:05:00"
+}
+```
+
+### Show and list query rules
+
+Retrieve the details of the scheduled query rule and list all rules in the resource group:
+
+```bash
+az monitor scheduled-query show \
+  --name my-sqr \
+  --resource-group rg-sqr-demo
+```
+
+```bash title="Output"
+{
+  "actions": {
+    "actionGroups": [
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/actionGroups/my-ag"
+    ]
+  },
+  "criteria": {
+    "allOf": [
+      {
+        "operator": "GreaterThan",
+        "query": "Heartbeat | where TimeGenerated > ago(5m)",
+        "threshold": 5.0,
+        "timeAggregation": "Count"
+      }
+    ]
+  },
+  "description": "Alert on Heartbeat count",
+  "enabled": true,
+  "evaluationFrequency": "0:05:00",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
+  "location": "westeurope",
+  "name": "my-sqr",
+  "resourceGroup": "rg-sqr-demo",
+  "severity": 2,
+  "type": "Microsoft.Insights/scheduledQueryRules",
+  "windowSize": "0:05:00"
+}
+```
+
+
+Then list all scheduled query rules in the resource group:
+
+```bash
+az monitor scheduled-query list \
+  --resource-group rg-sqr-demo
+```
+
+```bash title="Output"
+[
+  {
+    "actions": {
+      "actionGroups": [
+        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/actionGroups/my-ag"
+      ]
+    },
+    "criteria": {
+      "allOf": [
+        {
+          "operator": "GreaterThan",
+          "query": "Heartbeat | where TimeGenerated > ago(5m)",
+          "threshold": 5.0,
+          "timeAggregation": "Count"
+        }
+      ]
+    },
+    "enabled": true,
+    "evaluationFrequency": "0:05:00",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
+    "location": "westeurope",
+    "name": "my-sqr",
+    "resourceGroup": "rg-sqr-demo",
+    "severity": 2,
+    "type": "Microsoft.Insights/scheduledQueryRules",
+    "windowSize": "0:05:00"
+  }
+]
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears in the list:
+
+```bash
+az monitor scheduled-query delete \
+  --name my-sqr \
+  --resource-group rg-sqr-demo \
+  --yes
+```
+
+Then list all scheduled query rules to confirm the resource group is now empty:
+
+```bash
+az monitor scheduled-query list --resource-group rg-sqr-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Scheduled Query Rule lifecycle:** Create, read, list, update, and delete SQR resources.
+- **KQL query storage:** Store the KQL query definition within the rule (not executed).
+- **Condition configuration:** Define threshold, operator, time aggregation, and evaluation period.
+- **Action group references:** Associate one or more action groups with a query rule.
+- **Severity levels:** Set alert severity from 0 (Critical) to 4 (Verbose).
+- **Evaluation frequency:** Configure how often the rule is evaluated via ISO 8601 duration.
+- **Cross-resource queries:** Define rules targeting multiple scopes.
+
+## Limitations
+
+- **No KQL execution:** The query defined in the rule is never run against Log Analytics data.
+- **No alert firing:** Alert thresholds are never evaluated and no alerts are triggered.
+- **No notifications dispatched:** Action group notifications are not sent even when the rule fires.
+- **No alert history:** Alert instance history and state transitions are not recorded.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />
