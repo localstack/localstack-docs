@@ -1,0 +1,196 @@
+---
+title: "Public IP Prefix"
+description: Get started with Azure Public IP Prefix on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Public IP Prefix is a contiguous range of Standard SKU static public IP addresses.
+When you create a public IP address from a prefix, the address is guaranteed to stay within the prefix range, making it useful for allow-listing IP ranges in external firewalls.
+Public IP Prefixes are commonly used with NAT Gateway to provide predictable outbound IP addresses for entire subnets. For more information, see [Public IP address prefixes](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Public IP Prefixes.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Public IP Prefix's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Public IP Prefixes and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create \
+  --name rg-pip-prefix-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-prefix-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-pip-prefix-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a public IP prefix
+
+Create a /29 public IP prefix (8 IP addresses):
+
+```bash
+az network public-ip prefix create \
+  --name pip-prefix-demo \
+  --resource-group rg-pip-prefix-demo \
+  --location westeurope \
+  --length 29
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-prefix-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-demo",
+  "ipPrefix": "20.184.13.0/29",
+  "ipTags": [],
+  "location": "westeurope",
+  "name": "pip-prefix-demo",
+  "prefixLength": 29,
+  "provisioningState": "Succeeded",
+  "publicIPAddressVersion": "IPv4",
+  "resourceGroup": "rg-pip-prefix-demo",
+  "sku": {
+    "name": "Standard",
+    "tier": "Regional"
+  },
+  "type": "Microsoft.Network/publicIPPrefixes",
+  "zones": []
+...
+}
+```
+
+### Get and list public IP prefixes
+
+Retrieve the details of the public IP prefix and list all prefixes in the resource group:
+
+```bash
+az network public-ip prefix show \
+  --name pip-prefix-demo \
+  --resource-group rg-pip-prefix-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-prefix-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-demo",
+  "ipPrefix": "20.184.13.0/29",
+  "ipTags": [],
+  "location": "westeurope",
+  "name": "pip-prefix-demo",
+  "prefixLength": 29,
+  "provisioningState": "Succeeded",
+  "publicIPAddressVersion": "IPv4",
+  "resourceGroup": "rg-pip-prefix-demo",
+  "sku": {
+    "name": "Standard",
+    "tier": "Regional"
+  },
+  "type": "Microsoft.Network/publicIPPrefixes",
+  "zones": []
+...
+}
+```
+
+Then list all public IP prefixes in the resource group:
+
+```bash
+az network public-ip prefix list \
+  --resource-group rg-pip-prefix-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-prefix-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-demo",
+    "ipPrefix": "20.184.13.0/29",
+    "ipTags": [],
+    "location": "westeurope",
+    "name": "pip-prefix-demo",
+    "prefixLength": 29,
+    "provisioningState": "Succeeded",
+    "publicIPAddressVersion": "IPv4",
+    "resourceGroup": "rg-pip-prefix-demo",
+    "sku": { "name": "Standard", "tier": "Regional" },
+    "type": "Microsoft.Network/publicIPPrefixes",
+    "zones": []
+  }
+]
+```
+
+### Delete the public IP prefix
+
+Delete the public IP prefix and verify it no longer appears in the list:
+
+```bash
+az network public-ip prefix delete \
+  --name pip-prefix-demo \
+  --resource-group rg-pip-prefix-demo
+```
+
+Then list all public IP prefixes to confirm the resource group is now empty:
+
+```bash
+az network public-ip prefix list --resource-group rg-pip-prefix-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+The Public IP Prefix emulator supports the following features:
+
+- **Create and manage prefixes**: Full lifecycle management including create, get, update, list, and delete.
+- **Configurable prefix length**: Set any prefix length from /28 to /31 to define the size of the IP range.
+- **Tags**: Apply and update resource tags on public IP prefix resources.
+- **Subscription-scoped listing**: List all public IP prefixes across a subscription.
+- **Multiple prefix lengths**: Create prefixes of different lengths within the same resource group.
+
+## Limitations
+
+- **No real IP range allocation**: Public IP Prefix is a mock implementation. No actual IP address ranges are allocated from Azure's public IP pools, and no public internet connectivity is provided.
+- **No IP address derivation**: Creating individual public IP addresses from a prefix is not enforced; both resources are stored independently.
+- **No data persistence**: Public IP prefix resources are not persisted and are lost when the emulator is stopped or restarted.
+
+## Samples
+
+The following samples demonstrate how to use Azure Public IP Prefixes with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
+- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Network" client:load />
