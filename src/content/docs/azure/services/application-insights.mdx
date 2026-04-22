@@ -1,0 +1,189 @@
+---
+title: "Application Insights"
+description: Get started with Azure Application Insights on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Application Insights is an application performance management (APM) service for monitoring live applications.
+It automatically collects request rates, response times, failure rates, and dependency traces, surfacing them in a unified monitoring experience.
+Application Insights is commonly used to diagnose production issues, track custom business metrics, and set up availability alerts for distributed applications. For more information, see [What is Application Insights?](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Application Insights.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Application Insights' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating an Application Insights component and retrieving its instrumentation key.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-insights-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo",
+  "location": "eastus",
+  "name": "rg-insights-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create an Application Insights component
+
+Create an Application Insights component linked to a Log Analytics workspace:
+
+```bash
+az monitor app-insights component create \
+  --app my-app-insights \
+  --resource-group rg-insights-demo \
+  --location westeurope \
+  --kind web \
+  --application-type web
+```
+
+```bash title="Output"
+{
+  "appId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "connectionString": "InstrumentationKey=xxxxxxxx-...;IngestionEndpoint=https://eastus.in.applicationinsights.azure.com/;...",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/microsoft.insights/components/my-app-insights",
+  "instrumentationKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "kind": "web",
+  "location": "eastus",
+  "name": "my-app-insights",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-insights-demo",
+  "type": "microsoft.insights/components"
+...
+}
+```
+
+### Show and list components
+
+Retrieve the details of the component and list all components in the resource group:
+
+```bash
+az monitor app-insights component show \
+  --app my-app-insights \
+  --resource-group rg-insights-demo
+```
+
+```bash title="Output"
+{
+  "appId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/microsoft.insights/components/my-app-insights",
+  "instrumentationKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "kind": "web",
+  "name": "my-app-insights",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-insights-demo",
+  "type": "microsoft.insights/components"
+...
+}
+```
+
+### Retrieve billing features
+
+Retrieve the current billing features and daily data volume cap for the component:
+
+```bash
+az monitor app-insights component billing show \
+  --app my-app-insights \
+  --resource-group rg-insights-demo
+```
+
+```bash title="Output"
+{
+  "currentBillingFeatures": ["Basic"],
+  "dataVolumeCap": {
+    "cap": 100.0,
+    "maxHistoryCap": 1000.0,
+    "resetTime": 0,
+    "warningThreshold": 90
+  }
+}
+```
+
+### Update billing features
+
+Update the daily data volume cap to limit ingestion costs:
+
+```bash
+az monitor app-insights component billing update \
+  --app my-app-insights \
+  --resource-group rg-insights-demo \
+  --cap 100
+```
+
+```bash title="Output"
+{
+  "currentBillingFeatures": ["Basic"],
+  "dataVolumeCap": {
+    "cap": 100.0,
+    "maxHistoryCap": 1000.0,
+    "resetTime": 0,
+    "warningThreshold": 90
+  }
+}
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears in the list:
+
+```bash
+az monitor app-insights component delete \
+  --app my-app-insights \
+  --resource-group rg-insights-demo
+```
+
+## Features
+
+- **Component lifecycle:** Create, read, list, and delete Application Insights components.
+- **Instrumentation key generation:** Each component is assigned an instrumentation key returned on creation.
+- **App ID assignment:** Each component is assigned a unique application ID.
+- **Billing feature configuration:** Get and update billing features such as data caps.
+- **Application type support:** Accept `web`, `other`, `ios`, `java`, `phone`, `store`, and `Node.JS` application types.
+- **Kind field support:** Accept `web`, `ios`, `phone`, `store`, `java`, and `other` kind values.
+
+## Limitations
+
+- **No telemetry ingestion:** The Application Insights SDK endpoint (`/v2/track`) is not emulated. Telemetry sent from instrumented applications is not stored or queryable.
+- **No Live Metrics stream:** The Live Metrics (QuickPulse) endpoint is not emulated.
+- **No Logs (KQL) queries:** Running KQL queries via `az monitor app-insights query` is not supported.
+- **No transaction search:** Individual telemetry records are not stored or searchable.
+- **No availability tests via this resource:** Availability tests are managed as a separate `web-test` resource type.
+- **No continuous export:** Continuous export to Storage is not supported.
+
+## Samples
+
+The following sample demonstrates how to use Azure Application Insights with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/samples/function-app-service-bus/dotnet/README.md)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />
