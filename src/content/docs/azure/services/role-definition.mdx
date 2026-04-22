@@ -1,0 +1,168 @@
+---
+title: "Role Definition"
+description: Get started with Azure Role Definitions on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Role Definitions are the building blocks of Azure role-based access control (RBAC).
+A role definition is a collection of permissions that can be assigned to identities at a specific scope.
+They allow organizations to grant least-privilege access to Azure resources by defining precisely which operations an identity is permitted to perform. For more information, see [What is Azure RBAC?](https://learn.microsoft.com/en-us/azure/role-based-access-control/overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Role Definitions.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Role Definitions' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating a custom role definition, listing role definitions, and deleting the custom role.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### List built-in role definitions
+
+List all built-in Azure role definitions available in the current subscription:
+
+```bash
+az role definition list --output table
+```
+
+```bash title="Output"
+Name                                     Type                                     Description
+---------------------------------------  ---------------------------------------  -----------------------------------------------------------
+Contributor                              Microsoft.Authorization/roleDefinitions  Grants full access to manage all resources...
+Owner                                    Microsoft.Authorization/roleDefinitions  Grants full access to manage all resources...
+Reader                                   Microsoft.Authorization/roleDefinitions  View all resources, but does not allow you to make changes.
+...
+```
+
+### Create a custom role definition
+
+Save the following JSON to `custom-role.json`:
+
+```json title="custom-role.json"
+{
+  "Name": "Custom Storage Reader",
+  "Description": "Can read storage blobs.",
+  "Actions": [
+    "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+    "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read"
+  ],
+  "NotActions": [],
+  "AssignableScopes": [
+    "/subscriptions/00000000-0000-0000-0000-000000000000"
+  ]
+}
+```
+
+Then create the role:
+
+```bash
+az role definition create --role-definition @custom-role.json
+```
+
+```bash title="Output"
+{
+  "assignableScopes": ["/subscriptions/00000000-0000-0000-0000-000000000000"],
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "permissions": [
+    {
+      "actions": [
+        "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+        "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read"
+      ],
+      "notActions": []
+    }
+  ],
+  "roleName": "Custom Storage Reader",
+  "roleType": "CustomRole",
+  "type": "Microsoft.Authorization/roleDefinitions"
+...
+}
+```
+
+### List role definitions
+
+List all role definitions that match the custom role name:
+
+```bash
+az role definition list --name "Custom Storage Reader"
+```
+
+```bash title="Output"
+[
+  {
+    "assignableScopes": ["/subscriptions/00000000-0000-0000-0000-000000000000"],
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "permissions": [
+      {
+        "actions": [
+          "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+          "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read"
+        ],
+        "notActions": []
+      }
+    ],
+    "roleName": "Custom Storage Reader",
+    "roleType": "CustomRole",
+    "type": "Microsoft.Authorization/roleDefinitions"
+  }
+]
+```
+
+### Update a custom role definition
+
+Update the custom role definition by passing a modified JSON definition file:
+
+```bash
+az role definition update --role-definition @custom-role.json
+```
+
+### Delete a custom role definition
+
+Delete the custom role definition by name:
+
+```bash
+az role definition delete --name "Custom Storage Reader"
+az role definition list --name "Custom Storage Reader"
+```
+
+## Features
+
+- **Custom role creation:** Create custom role definitions with `Actions`, `NotActions`, `DataActions`, and `NotDataActions`.
+- **Built-in roles pre-populated:** Standard Azure built-in roles are available via `az role definition list`.
+- **Role listing and filtering:** List role definitions by name, scope, or custom flag.
+- **Role update:** Update existing custom role definitions including permissions and assignable scopes.
+- **Role deletion:** Delete custom role definitions by name or ID.
+- **Assignable scopes support:** Roles specify assignable scopes at subscription or resource group level.
+
+## Limitations
+
+- **RBAC not enforced:** Role definitions and assignments are stored in the emulator but are not enforced. All API calls succeed regardless of whether the caller has the required permissions.
+- **No built-in role permission evaluation:** Checking effective permissions via `az role assignment list-access` is not supported.
+- **Management group scopes:** Management group–level assignable scopes are not supported.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Authorization" client:load />
