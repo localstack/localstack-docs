@@ -1,23 +1,24 @@
 ---
-title: "API Management"
+title: 'API Management'
 description: Get started with Azure API Management on LocalStack
 template: doc
 ---
 
-import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+import AzureFeatureCoverage from '../../../../components/feature-coverage/AzureFeatureCoverage';
 
 ## Introduction
 
-Azure API Management is a managed service for publishing, securing, transforming, and monitoring APIs.
-It helps you build a centralized API gateway in front of backend services while applying consistent policies and access controls.
-API Management is commonly used to expose internal services to external consumers and manage API lifecycle operations. For more information, see [Azure API Management overview](https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts).
+Azure API Management (APIM) is a managed service for publishing, securing, and analyzing APIs at scale.
+It acts as a gateway between clients and backend services, providing features such as rate limiting, policy enforcement, authentication, and developer portal integration.
+
+APIM is commonly used to expose internal services as managed APIs, implement API versioning, and monitor API usage across organizations. For more information, see [Azure API Management overview](https://learn.microsoft.com/en-us/azure/api-management/api-management-key-concepts).
 
 LocalStack for Azure provides a local environment for building and testing applications that make use of Azure API Management.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of API Management's integration with LocalStack.
 
 ## Getting started
 
-This guide is designed for users new to API Management and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+This guide walks you through creating an API Management service, adding an API, and defining and updating an operation. It is designed for users new to API Management and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
 
 Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
@@ -56,7 +57,7 @@ az group create \
 }
 ```
 
-### Create an API Management service
+### Create an API Management service instance
 
 Create an API Management service in the resource group:
 
@@ -65,6 +66,7 @@ az apim create \
   --name apimdoc86 \
   --resource-group rg-apim-demo \
   --location westeurope \
+  --sku-name Consumption \
   --publisher-name "LocalStack" \
   --publisher-email "dev@localstack.cloud"
 ```
@@ -79,8 +81,8 @@ az apim create \
   "publisherEmail": "dev@localstack.cloud",
   "gatewayUrl": "https://apimdoc86.azure-api.net",
   "sku": {
-    "capacity": 1,
-    "name": "Developer"
+    "capacity": 0,
+    "name": "Consumption"
   },
   ...
 }
@@ -92,9 +94,55 @@ Get and list API Management services:
 az apim show \
   --name apimdoc86 \
   --resource-group rg-apim-demo
+```
 
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/apimdoc86",
+  "location": "West Europe",
+  "name": "apimdoc86",
+  "provisioningState": "Succeeded",
+  "publisherEmail": "dev@localstack.cloud",
+  "publisherName": "LocalStack",
+  "resourceGroup": "rg-apim-demo",
+  "sku": { "capacity": 0, "name": "Consumption" },
+  "type": "Microsoft.ApiManagement/service"
+...
+}
+```
+
+```bash
 az apim list \
   --resource-group rg-apim-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-apim-demo/providers/Microsoft.ApiManagement/service/apimdoc86",
+    "name": "apimdoc86",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-apim-demo",
+    "sku": { "capacity": 0, "name": "Consumption" },
+    "type": "Microsoft.ApiManagement/service"
+  }
+]
+```
+
+### Check service name availability
+
+Check whether the service name is globally available before creating:
+
+```bash
+az apim check-name --name apimdoc86
+```
+
+```bash title="Output"
+{
+  "message": "",
+  "nameAvailable": true,
+  "reason": "Valid"
+}
 ```
 
 ### Create and inspect an API
@@ -180,7 +228,7 @@ az apim api operation update \
   --service-name apimdoc86 \
   --api-id orders-api \
   --operation-id get-orders \
-  --set displayName="Get all orders"
+  --display-name "Get all orders"
 
 az apim api operation show \
   --resource-group rg-apim-demo \
@@ -198,6 +246,30 @@ az apim api operation show \
   ...
 }
 ```
+
+## Features
+
+- **Full CRUD lifecycle:** Create, read, update, and delete APIM service instances.
+- **API management:** Create, read, and delete API definitions within a service.
+- **API operations:** Register and retrieve API operation definitions.
+- **Backend management:** Define and manage backend service configurations.
+- **API gateway management:** Create and manage self-hosted API gateways.
+- **API policies:** Attach XML policy documents to APIs (stored but not evaluated).
+- **Name availability check:** Validate service name uniqueness via the `checkNameAvailability` action.
+- **Service listing:** List all APIM services in a subscription or resource group.
+
+## Limitations
+
+- **No gateway proxy:** Incoming API calls are not proxied through LocalStack. The APIM gateway does not process requests, apply policies, or forward traffic to backends.
+- **No policy evaluation:** Inbound, outbound, and error policies are stored in the ARM model but are not executed.
+- **No developer portal:** The APIM developer portal and its OAuth/subscription flows are not emulated.
+- **No subscription keys:** API subscriptions and key-based authentication are not enforced.
+- **No rate limiting or quotas:** Throttling, quota, and cache policies have no effect.
+- **Consumption plan only for creation:** SKU differences between Developer, Basic, Standard, Premium, and Consumption tiers are not emulated.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
 
 ## API Coverage
 
