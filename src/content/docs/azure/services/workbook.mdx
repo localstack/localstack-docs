@@ -1,0 +1,196 @@
+---
+title: "Workbook"
+description: Get started with Azure Monitor Workbooks on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor Workbooks are interactive reports that combine text, KQL queries, metrics, and visualizations into a single shareable document.
+Workbook Templates allow organizations to share reusable workbook definitions across workspaces and resource groups.
+They are commonly used to create operational dashboards, cost reports, and compliance summaries that surface data from multiple Azure Monitor sources. For more information, see [Azure Workbooks overview](https://learn.microsoft.com/en-us/azure/azure-monitor/visualize/workbooks-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Workbooks.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Workbooks' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating a workbook and a workbook template.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-workbook-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo",
+  "location": "westeurope",
+  "name": "rg-workbook-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a workbook
+
+Generate a UUID for the workbook name, then create a shared workbook:
+
+```bash
+WORKBOOK_ID=$(python3 -c "import uuid; print(uuid.uuid4())")
+
+az monitor app-insights workbook create \
+  --name "$WORKBOOK_ID" \
+  --resource-group rg-workbook-demo \
+  --display-name "My Workbook" \
+  --kind shared \
+  --category workbook \
+  --serialized-data '{"version":"Notebook/1.0","items":[{"type":1,"content":{"json":"## My Workbook\nHello, world!"},"name":"text-0"}],"isLocked":false}' \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "category": "workbook",
+  "displayName": "My Workbook",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-workbook-demo/providers/microsoft.insights/workbooks/de747180-ecea-4b97-bef4-f8376fc72abe",
+  "kind": "shared",
+  "location": "westeurope",
+  "name": "de747180-ecea-4b97-bef4-f8376fc72abe",
+  "resourceGroup": "rg-workbook-demo",
+  "serializedData": "{\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":{\"json\":\"## My Workbook\\nHello, world!\"},\"name\":\"text-0\"}],\"isLocked\":false}"
+}
+```
+
+### List workbooks
+
+List all workbooks in the resource group filtered by category:
+
+```bash
+az monitor app-insights workbook list \
+  --resource-group rg-workbook-demo \
+  --category workbook
+```
+
+```bash title="Output"
+[
+  {
+    "category": "workbook",
+    "displayName": "My Workbook",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-workbook-demo/providers/microsoft.insights/workbooks/de747180-ecea-4b97-bef4-f8376fc72abe",
+    "kind": "shared",
+    "location": "westeurope",
+    "name": "de747180-ecea-4b97-bef4-f8376fc72abe",
+    "resourceGroup": "rg-workbook-demo",
+    "serializedData": "..."
+  }
+]
+```
+
+### Create a workbook template
+
+Workbook templates do not have a dedicated Azure CLI subcommand. Use `az rest` pointed at the LocalStack resource manager endpoint:
+
+```bash
+RM=$(az cloud show --query "endpoints.resourceManager" -o tsv | sed 's|/$||')
+
+az rest --method PUT \
+  --url "${RM}/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbookTemplates/my-template?api-version=2020-11-20" \
+  --body '{
+    "location": "westeurope",
+    "properties": {
+      "priority": 1,
+      "author": "My Team",
+      "templateData": {},
+      "galleries": [
+        {
+          "name": "My Template",
+          "category": "General",
+          "type": "workbook",
+          "order": 100,
+          "resourceType": "Azure Monitor"
+        }
+      ]
+    }
+  }'
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbooktemplates/my-template",
+  "location": "westeurope",
+  "name": "my-template",
+  "properties": {
+    "author": "My Team",
+    "galleries": [
+      {
+        "category": "General",
+        "name": "My Template",
+        "order": 100,
+        "resourceType": "Azure Monitor",
+        "type": "workbook"
+      }
+    ],
+    "priority": 1,
+    "templateData": {}
+  },
+  "type": "microsoft.insights/workbooktemplates"
+}
+```
+
+### Delete resources
+
+Delete the workbook and workbook template, then delete the resource group:
+
+```bash
+az monitor app-insights workbook delete \
+  --name "$WORKBOOK_ID" \
+  --resource-group rg-workbook-demo \
+  --yes
+
+az rest --method DELETE \
+  --url "${RM}/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbookTemplates/my-template?api-version=2020-11-20"
+```
+
+## Features
+
+- **Workbook lifecycle:** Create, read, list, update, and delete workbooks.
+- **Workbook template lifecycle:** Create, read, list, update, and delete workbook templates.
+- **Shared and private workbooks:** Accept both `shared` and `user` kind values.
+- **Category filtering:** List workbooks by category such as `workbook`, `sentinel`, or `vm-insights`.
+- **Serialized data storage:** Store the full workbook JSON definition in the `serializedData` field.
+- **Gallery configuration:** Define workbook templates with gallery metadata for easy discovery.
+
+## Limitations
+
+- **No rendering or query execution:** The workbook content is stored as a JSON string but KQL queries within the workbook are not executed.
+- **No Azure Portal integration:** Workbooks cannot be previewed or rendered via LocalStack.
+- **No linked resource validation:** Source ID references to Application Insights components or subscriptions are accepted but not validated.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />
