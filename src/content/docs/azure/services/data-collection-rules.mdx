@@ -1,0 +1,244 @@
+---
+title: "Data Collection Rules"
+description: Get started with Azure Monitor Data Collection Rules on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor Data Collection Rules (DCR) define the data to collect, how to transform it, and where to send it.
+Data Collection Endpoints (DCE) provide the ingestion URL used to receive data in DCR-based pipelines, while Data Collection Rule Associations (DCRA) link a DCR to a specific monitored resource.
+Together, DCRs, DCEs, and DCRAs form the foundation of the Azure Monitor Logs ingestion pipeline. For more information, see [Data collection rules in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-collection-rule-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Data Collection Rules.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Data Collection Rules' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating a Data Collection Endpoint, a Data Collection Rule, and associating the rule with a virtual machine.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-dcr-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo",
+  "location": "eastus",
+  "name": "rg-dcr-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a data collection endpoint
+
+Create a data collection endpoint (DCE) to serve as the ingestion target:
+
+```bash
+az monitor data-collection endpoint create \
+  --name my-dce \
+  --resource-group rg-dcr-demo \
+  --location westeurope \
+  --public-network-access Enabled
+```
+
+```bash title="Output"
+{
+  "configurationAccess": { "endpoint": "https://my-dce.eastus-1.handler.control.monitor.azure.com" },
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.Insights/dataCollectionEndpoints/my-dce",
+  "immutableId": "dce-82f06343382a4872ba2270b5dba2eee7",
+  "location": "eastus",
+  "logsIngestion": { "endpoint": "https://my-dce.eastus-1.ingest.monitor.azure.com" },
+  "name": "my-dce",
+  "networkAcls": { "publicNetworkAccess": "Enabled" },
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-dcr-demo",
+  "type": "Microsoft.Insights/dataCollectionEndpoints"
+...
+}
+```
+
+### Create a data collection rule
+
+Save the following JSON to `my-dcr.json`:
+
+```json title="my-dcr.json"
+{
+  "location": "eastus",
+  "properties": {
+    "dataSources": {
+      "performanceCounters": [
+        {
+          "name": "perfCounterDataSource",
+          "samplingFrequencyInSeconds": 60,
+          "counterSpecifiers": ["\\Processor(_Total)\\% Processor Time"],
+          "streams": ["Microsoft-Perf"]
+        }
+      ]
+    },
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace",
+          "name": "myWorkspace"
+        }
+      ]
+    },
+    "dataFlows": [
+      {
+        "streams": ["Microsoft-Perf"],
+        "destinations": ["myWorkspace"]
+      }
+    ]
+  }
+}
+```
+
+Create the data collection rule from the configuration file:
+
+```bash
+az monitor data-collection rule create \
+  --name my-dcr \
+  --resource-group rg-dcr-demo \
+  --location westeurope \
+  --rule-file my-dcr.json
+```
+
+```bash title="Output"
+{
+  "dataFlows": [ { "destinations": ["myWorkspace"], "streams": ["Microsoft-Perf"] } ],
+  "dataSources": {
+    "performanceCounters": [
+      { "counterSpecifiers": ["\\Processor(_Total)\\% Processor Time"], "name": "perfCounterDataSource", "samplingFrequencyInSeconds": 60, "streams": ["Microsoft-Perf"] }
+    ]
+  },
+  "destinations": {
+    "logAnalytics": [
+      { "name": "myWorkspace", "workspaceResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace" }
+    ]
+  },
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.Insights/dataCollectionRules/my-dcr",
+  "immutableId": "dcr-d7f9c291105845b8b470d40631e5c883",
+  "location": "eastus",
+  "name": "my-dcr",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-dcr-demo",
+  "type": "Microsoft.Insights/dataCollectionRules"
+...
+}
+```
+
+### List data collection rules
+
+List all data collection rules in the resource group:
+
+
+Then list all data collection rules to confirm the resource group is now empty:
+
+```bash
+az monitor data-collection rule list --resource-group rg-dcr-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.Insights/dataCollectionRules/my-dcr",
+    "location": "eastus",
+    "name": "my-dcr",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-dcr-demo",
+    "type": "Microsoft.Insights/dataCollectionRules",
+    ...
+  }
+]
+```
+
+### Create a data collection rule association
+
+Associate the rule with a virtual machine:
+
+```bash
+VM_ID="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.Compute/virtualMachines/my-vm"
+
+az monitor data-collection rule association create \
+  --name my-dcra \
+  --resource "$VM_ID" \
+  --rule-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.Insights/dataCollectionRules/my-dcr"
+```
+
+```bash title="Output"
+{
+  "dataCollectionRuleId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.Insights/dataCollectionRules/my-dcr",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-dcr-demo/providers/Microsoft.Compute/virtualMachines/my-vm/providers/Microsoft.Insights/dataCollectionRuleAssociations/my-dcra",
+  "name": "my-dcra",
+  "resourceGroup": "rg-dcr-demo",
+  "type": "Microsoft.Insights/dataCollectionRuleAssociations"
+...
+}
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears in the list:
+
+```bash
+az monitor data-collection rule delete \
+  --name my-dcr \
+  --resource-group rg-dcr-demo \
+  --yes
+```
+
+Then list all data collection rules to confirm the resource group is now empty:
+
+```bash
+az monitor data-collection rule list --resource-group rg-dcr-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Data Collection Rule lifecycle:** Create, read, list, update, and delete DCRs.
+- **Data Collection Endpoint lifecycle:** Create, read, list, and delete DCEs.
+- **Data Collection Rule Association lifecycle:** Create, read, list, and delete DCRAs linking a DCR to a resource.
+- **Data source configuration:** Accept performance counter, Windows event log, Syslog, and custom log data sources.
+- **Destination configuration:** Accept Log Analytics workspace and storage account destinations.
+- **Data flow configuration:** Define stream-to-destination routing in the data flow section.
+
+## Limitations
+
+- **No data ingestion:** Data sent to a DCE ingestion URL is not processed or stored.
+- **No transformation:** KQL-based data transformations defined in DCRs are not executed.
+- **No agent-managed collection:** The Azure Monitor Agent (AMA) interacting with LocalStack does not collect or forward real metrics or logs.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />
