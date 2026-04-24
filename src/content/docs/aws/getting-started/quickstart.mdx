@@ -5,6 +5,7 @@ template: doc
 sidebar:
   order: 2
 ---
+
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
@@ -24,7 +25,7 @@ Choose your preferred deployment style below: **AWS CLI** (`awslocal`) or **Terr
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) installed and running
-- A [LocalStack account](https://app.localstack.cloud/sign-up) (free tier works)
+- A [LocalStack account](https://app.localstack.cloud/sign-up)
 
 ## Step 1 — Install and start LocalStack
 
@@ -54,6 +55,7 @@ The fastest way to get LocalStack running locally is with `lstk`, a lightweight 
     `lstk` currently supports core lifecycle commands (start, stop, logs, status).
     For advanced features like Cloud Pods, Extensions, and Ephemeral Instances, use the [LocalStack CLI](/aws/getting-started/installation/#localstack-cli) instead.
     :::
+
   </TabItem>
   <TabItem label="LocalStack CLI">
     If you prefer the full-featured LocalStack CLI, [install it first](/aws/getting-started/installation/#localstack-cli), then [configure your auth token](/aws/getting-started/auth-token/), and start LocalStack:
@@ -61,6 +63,7 @@ The fastest way to get LocalStack running locally is with `lstk`, a lightweight 
     ```bash
     localstack start
     ```
+
   </TabItem>
 </Tabs>
 
@@ -143,6 +146,7 @@ Now deploy a Lambda function and a DynamoDB table. Pick the tooling you prefer:
       --output text)
     echo $LAMBDA_URL
     ```
+
   </TabItem>
   <TabItem label="Terraform (tflocal)">
     Install Terraform and the `tflocal` wrapper:
@@ -241,6 +245,7 @@ Now deploy a Lambda function and a DynamoDB table. Pick the tooling you prefer:
     LAMBDA_URL=$(tflocal output -raw function_url)
     echo $LAMBDA_URL
     ```
+
   </TabItem>
 </Tabs>
 
@@ -257,7 +262,7 @@ curl -X POST "$LAMBDA_URL" \
 You should get back a response like:
 
 ```json
-{"id": "a1b2c3d4-...", "message": "Hello, LocalStack!"}
+{ "id": "a1b2c3d4-...", "message": "Hello, LocalStack!" }
 ```
 
 List all messages:
