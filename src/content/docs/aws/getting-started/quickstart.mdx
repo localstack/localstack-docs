@@ -1,361 +1,294 @@
 ---
 title: Quickstart
-description: How to run an AWS application on your local machine and test local cloud development with LocalStack.
+description: Deploy a serverless API locally with LocalStack in under 10 minutes using Lambda and DynamoDB.
 template: doc
 sidebar:
-  order: 4
+  order: 2
 ---
-import { Code, LinkButton, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
-In this quickstart guide, we'll walk you through the process of starting LocalStack on your local machine and deploying a [serverless image resizer application](https://github.com/localstack-samples/sample-serverless-image-resizer-s3-lambda) that utilizes several AWS services.
-This guide aims to help you understand how to use LocalStack for the development and testing of your AWS applications locally.
-It introduces you to the following key concepts:
+In this quickstart you'll start LocalStack and deploy a simple serverless API — a **Lambda function backed by DynamoDB** — entirely on your local machine.
+No AWS account needed.
 
-- Starting a LocalStack instance on your local machine.
-- Deploying an AWS serverless application infrastructure locally.
-- Running an automated integration test suite against local infrastructure.
-- Exploring the LocalStack Web Application to view deployed resources.
-- Destroying the local infrastructure you have provisioned.
+By the end you will have:
 
-## Architecture
+- LocalStack running locally in Docker
+- A Lambda function deployed and invokable via a public URL
+- A DynamoDB table storing data written by the Lambda
+- Confirmed that your local environment behaves like real AWS
 
-The following diagram shows the architecture that we will deploy locally using LocalStack:
-
-![An AWS architecture demonstrating a sample serverless image resizer application](https://user-images.githubusercontent.com/3996682/229322761-92f52eec-5bfb-412a-a3cb-8af4ee1fed24.png)
-
-The architecture:
-
-- Configures S3 bucket notifications to invoke a Lambda function.
-- Provides S3 pre-signed POST URLs for direct uploads to the S3 bucket.
-- Creates S3 website hosting for serving the static application client.
-- Configures direct invocation URLs for Lambda functions accessible to the client.
-- Establishes Lambda SNS to SNS topic notifications for failure handling.
-- Creates SNS to SES subscriptions for email notifications triggered by specific events.
-
-An internal SES LocalStack testing endpoint (`/_localstack/aws/ses`) is configured as well, to test email sending functionality while running our local integration test suite.
+Choose your preferred deployment style below: **AWS CLI** (`awslocal`) or **Terraform** (`tflocal`).
 
 ## Prerequisites
 
-- [LocalStack CLI](/aws/getting-started/installation/#installing-localstack-cli)
-- [LocalStack Web Application account](https://app.localstack.cloud/sign-up) & [Auth Token](/aws/getting-started/auth-token/)
-- [Docker](https://docs.docker.com/get-docker/)
-- [Python 3.11+](https://www.python.org/downloads/) & `pip`
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) & [`awslocal` wrapper](/aws/integrations/aws-native-tools/aws-cli/#localstack-aws-cli-awslocal)
-- `jq`, `zip` & `curl`
+- [Docker](https://docs.docker.com/get-docker/) installed and running
+- A [LocalStack account](https://app.localstack.cloud/sign-up) (free tier works)
 
-You can start LocalStack using the `localstack` CLI.
-Start the LocalStack for AWS container with your `LOCALSTACK_AUTH_TOKEN` pre-configured:
+## Step 1 — Install and start LocalStack
+
+The fastest way to get LocalStack running locally is with `lstk`, a lightweight CLI that handles authentication and image setup automatically.
 
 <Tabs>
-  <TabItem label="macOS/Linux">
-    <Code code={`localstack auth set-token <your-auth-token>\nlocalstack start`} lang="shell" />
-  </TabItem>
-  <TabItem label="Windows">
-    <Code code={`localstack auth set-token <your-auth-token>\nlocalstack start`} lang="shell" />
-  </TabItem>
-</Tabs>
+  <TabItem label="lstk (recommended)">
+    Install `lstk`:
 
-If you prefer running LocalStack in detached mode, you can add the `-d` flag to the `localstack start` command, and use Docker Desktop to view the logs.
-
-## Instructions
-
-To get started, clone the sample application repository from GitHub:
-
-```bash
-git clone https://github.com/localstack-samples/sample-serverless-image-resizer-s3-lambda.git
-cd sample-serverless-image-resizer-s3-lambda
-```
-
-You can now follow the instructions below to start LocalStack, deploy the sample application, and test the application.
-
-### Setup a virtual environment
-
-To deploy the sample application, you need to have specific Python packages are installed.
-It is advisable to utilize a virtual environment for the installation process, allowing the packages to be installed in an isolated environment.
-Execute the following commands to create a virtual environment and install the packages in `requirements-dev.txt`:
-
-<Tabs>
-  <TabItem label="macOS/Linux">
-    ```shell
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install -r requirements-dev.txt
+    ```bash
+    brew install localstack/tap/lstk   # macOS / Linux with Homebrew
     ```
+
+    ```bash
+    npm install -g @localstack/lstk    # or via npm
+    ```
+
+    Then start LocalStack:
+
+    ```bash
+    lstk start
+    ```
+
+    On first run, `lstk` opens a browser login to authenticate, then pulls the image and starts the container automatically.
+
+    :::note[Early release]
+    `lstk` currently supports core lifecycle commands (start, stop, logs, status).
+    For advanced features like Cloud Pods, Extensions, and Ephemeral Instances, use the [LocalStack CLI](/aws/getting-started/installation/#localstack-cli) instead.
+    :::
   </TabItem>
-  <TabItem label="Windows">
-    ```shell
-    python -m venv .venv
-    .venv\Scripts\activate
-    pip install -r requirements-dev.txt
+  <TabItem label="LocalStack CLI">
+    If you prefer the full-featured LocalStack CLI, [install it first](/aws/getting-started/installation/#localstack-cli), then [configure your auth token](/aws/getting-started/auth-token/), and start LocalStack:
+
+    ```bash
+    localstack start
     ```
   </TabItem>
 </Tabs>
 
-:::tip
-If you are encountering issues with the installation of the packages, such as Pillow, ensure you use the same version as the Python Lambdas (3.11.6) for Pillow to work.
-If you're using <a href="https://github.com/pyenv/pyenv">pyenv</a>, install and activate Python 3.11 with the following commands:
-```bash
-pyenv install 3.11
-pyenv global 3.11
-```
-:::
-
-### Setup the serverless image resizer
-
-This application enables serverless image resizing using [S3](/aws/services/s3/), [SSM](/aws/services/ssm/), [Lambda](/aws/services/lambda/), [SNS](/aws/services/sns/), and [SES](/aws/services/ses/).
-A simple web interface allows users to upload and view resized images.
-A Lambda function generates S3 pre-signed URLs for direct uploads, while S3 bucket notifications trigger image resizing.
-Another Lambda function lists and provides pre-signed URLs for browser display.
-The application also handles Lambda failures through SNS and SES email notifications.
-
-The sample application uses AWS CLI and our `awslocal` wrapper to deploy the application to LocalStack.
-Before going further, you need to build your Lambda functions.
-You can use the following script that will cover all three of them:
+Wait for the container to report ready — you'll see a log line like `Ready.` or you can verify with:
 
 ```bash
-deployment/build-lambdas.sh
+curl -s http://localhost:4566/_localstack/health | grep '"running"'
 ```
 
-You can now deploy the sample application on LocalStack by running the following command:
+## Step 2 — Deploy the serverless API
 
-```bash
-deployment/awslocal/deploy.sh
-```
-
-Alternatively, you can follow these instructions to deploy the sample application manually step-by-step.
-
-:::tip
-In absence of the `awslocal` wrapper, you can use the `aws` CLI directly, by configuring an [endpoint URL](/aws/integrations/aws-native-tools/aws-cli/#configuring-an-endpoint-url) or a [custom profile](/aws/integrations/aws-native-tools/aws-cli/#configuring-a-custom-profile) like `localstack`.
-You can then swap `awslocal` with `aws --endpoint-url=http://localhost:4566` or `aws --profile=localstack` in the commands below.
-:::
-
-#### Create the S3 buckets
-
-```bash
-awslocal s3 mb s3://localstack-thumbnails-app-images
-awslocal s3 mb s3://localstack-thumbnails-app-resized
-```
-
-#### Add bucket names into the parameter store
-
-```bash
-awslocal ssm put-parameter \
- --name /localstack-thumbnail-app/buckets/images \
- --type "String" \
- --value "localstack-thumbnails-app-images"
-awslocal ssm put-parameter \
- --name /localstack-thumbnail-app/buckets/resized \
- --type "String" \
- --value "localstack-thumbnails-app-resized"
-```
-
-#### Create SNS DLQ Topic for failed lambda invocations
-
-```bash
-awslocal sns create-topic --name failed-resize-topic
-```
-
-To receive immediate alerts in case of image resize failures, subscribe an email address to the system.
-You can use the following command to subscribe an email address to the SNS topic:
-
-```bash
-awslocal sns subscribe \
- --topic-arn arn:aws:sns:us-east-1:000000000000:failed-resize-topic \
- --protocol email \
- --notification-endpoint my-email@example.com
-```
-
-#### Create the Presign Lambda
-
-```bash showshowLineNumbers
-(cd lambdas/presign; rm -f lambda.zip; zip lambda.zip handler.py)
-awslocal lambda create-function \
-    --function-name presign \
-    --runtime python3.11 \
-    --timeout 10 \
-    --zip-file fileb://lambdas/presign/lambda.zip \
-    --handler handler.handler \
-    --role arn:aws:iam::000000000000:role/lambda-role \
-    --environment Variables="{STAGE=local}"
-awslocal lambda wait function-active-v2 --function-name presign
-awslocal lambda create-function-url-config \
-    --function-name presign \
-    --auth-type NONE
-```
-
-#### Create the Image List Lambda
-
-```bash showshowLineNumbers
-(cd lambdas/list; rm -f lambda.zip; zip lambda.zip handler.py)
-awslocal lambda create-function \
-    --function-name list \
-    --handler handler.handler \
-    --zip-file fileb://lambdas/list/lambda.zip \
-    --runtime python3.11 \
-    --timeout 10 \
-    --role arn:aws:iam::000000000000:role/lambda-role \
-    --environment Variables="{STAGE=local}"
-awslocal lambda wait function-active-v2 --function-name list
-awslocal lambda create-function-url-config \
-    --function-name list \
-    --auth-type NONE
-```
-
-#### Build the Image Resizer Lambda
+Now deploy a Lambda function and a DynamoDB table. Pick the tooling you prefer:
 
 <Tabs>
-  <TabItem label="macOS">
-    ```bash showshowLineNumbers
-    cd lambdas/resize
-    rm -rf libs lambda.zip
-    docker run --platform linux/x86_64 -v "$PWD":/var/task "public.ecr.aws/sam/build-python3.11" /bin/sh -c "pip install -r requirements.txt -t libs; exit"
-    cd libs && zip -r ../lambda.zip . && cd ..
-    zip lambda.zip handler.py
-    rm -rf libs
-    cd ../..
+  <TabItem label="AWS CLI (awslocal)">
+    Install the `awslocal` wrapper if you haven't already:
+
+    ```bash
+    pip install awscli-local
+    ```
+
+    **Create the Lambda function:**
+
+    ```bash
+    mkdir -p /tmp/localstack-demo
+    cat > /tmp/localstack-demo/handler.py << 'EOF'
+    import json, boto3, os, uuid
+
+    def handler(event, context):
+        table = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
+        method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
+        if method == 'POST':
+            item = {'id': str(uuid.uuid4()), **json.loads(event.get('body', '{}'))}
+            table.put_item(Item=item)
+            return {'statusCode': 200, 'body': json.dumps(item)}
+        result = table.scan()
+        return {'statusCode': 200, 'body': json.dumps(result['Items'])}
+    EOF
+    cd /tmp/localstack-demo && zip handler.zip handler.py
+    ```
+
+    **Create the DynamoDB table:**
+
+    ```bash
+    awslocal dynamodb create-table \
+      --table-name Messages \
+      --attribute-definitions AttributeName=id,AttributeType=S \
+      --key-schema AttributeName=id,KeyType=HASH \
+      --billing-mode PAY_PER_REQUEST
+    ```
+
+    **Deploy the Lambda:**
+
+    ```bash
+    awslocal lambda create-function \
+      --function-name messages-api \
+      --runtime python3.12 \
+      --handler handler.handler \
+      --zip-file fileb:///tmp/localstack-demo/handler.zip \
+      --role arn:aws:iam::000000000000:role/lambda-role \
+      --environment Variables={TABLE_NAME=Messages}
+
+    awslocal lambda wait function-active --function-name messages-api
+    ```
+
+    **Create a public function URL:**
+
+    ```bash
+    awslocal lambda create-function-url-config \
+      --function-name messages-api \
+      --auth-type NONE
+    ```
+
+    **Retrieve the URL:**
+
+    ```bash
+    LAMBDA_URL=$(awslocal lambda list-function-url-configs \
+      --function-name messages-api \
+      --query 'FunctionUrlConfigs[0].FunctionUrl' \
+      --output text)
+    echo $LAMBDA_URL
     ```
   </TabItem>
-  <TabItem label="Linux">
-    ```bash showshowLineNumbers
-    cd lambdas/resize
-    rm -rf package lambda.zip
-    mkdir package
-    pip install -r requirements.txt -t package --platform manylinux_2_28_x86_64 --python-version 3.11 --no-deps
-    zip lambda.zip handler.py
-    cd package
-    zip -r ../lambda.zip *;
-    cd ../..
+  <TabItem label="Terraform (tflocal)">
+    Install Terraform and the `tflocal` wrapper:
+
+    ```bash
+    brew install hashicorp/tap/terraform   # or see https://developer.hashicorp.com/terraform/install
+    pip install terraform-local
     ```
-  </TabItem>
-  <TabItem label="Windows">
-    ```bash showshowLineNumbers
-    cd lambdas/resize
-    rm -rf package lambda.zip
-    mkdir package
-    pip install -r requirements.txt -t package
-    zip lambda.zip handler.py
-    cd package
-    zip -r ../lambda.zip\_;
-    cd ../..
+
+    Create a project directory and `main.tf`:
+
+    ```bash
+    mkdir -p /tmp/localstack-demo && cd /tmp/localstack-demo
+    ```
+
+    ```hcl
+    # main.tf
+    terraform {
+      required_providers {
+        aws     = { source = "hashicorp/aws" }
+        archive = { source = "hashicorp/archive" }
+      }
+    }
+
+    resource "aws_dynamodb_table" "messages" {
+      name         = "Messages"
+      billing_mode = "PAY_PER_REQUEST"
+      hash_key     = "id"
+      attribute {
+        name = "id"
+        type = "S"
+      }
+    }
+
+    data "archive_file" "lambda" {
+      type        = "zip"
+      output_path = "${path.module}/handler.zip"
+      source {
+        filename = "handler.py"
+        content  = <<-EOF
+          import json, boto3, os, uuid
+          def handler(event, context):
+              table = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
+              method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
+              if method == 'POST':
+                  item = {'id': str(uuid.uuid4()), **json.loads(event.get('body', '{}'))}
+                  table.put_item(Item=item)
+                  return {'statusCode': 200, 'body': json.dumps(item)}
+              result = table.scan()
+              return {'statusCode': 200, 'body': json.dumps(result['Items'])}
+        EOF
+      }
+    }
+
+    resource "aws_iam_role" "lambda_role" {
+      name = "lambda-role"
+      assume_role_policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [{ Action = "sts:AssumeRole", Effect = "Allow",
+          Principal = { Service = "lambda.amazonaws.com" } }]
+      })
+    }
+
+    resource "aws_lambda_function" "messages_api" {
+      function_name    = "messages-api"
+      runtime          = "python3.12"
+      handler          = "handler.handler"
+      filename         = data.archive_file.lambda.output_path
+      source_code_hash = data.archive_file.lambda.output_base64sha256
+      role             = aws_iam_role.lambda_role.arn
+      environment {
+        variables = { TABLE_NAME = aws_dynamodb_table.messages.name }
+      }
+    }
+
+    resource "aws_lambda_function_url" "messages_api" {
+      function_name      = aws_lambda_function.messages_api.function_name
+      authorization_type = "NONE"
+    }
+
+    output "function_url" {
+      value = aws_lambda_function_url.messages_api.function_url
+    }
+    ```
+
+    **Deploy:**
+
+    ```bash
+    tflocal init
+    tflocal apply -auto-approve
+    ```
+
+    **Retrieve the URL:**
+
+    ```bash
+    LAMBDA_URL=$(tflocal output -raw function_url)
+    echo $LAMBDA_URL
     ```
   </TabItem>
 </Tabs>
 
-#### Create the Image Resizer Lambda
+## Step 3 — Test the API
 
-```bash showshowLineNumbers
-awslocal lambda create-function \
-    --function-name resize \
-    --runtime python3.11 \
-    --timeout 10 \
-    --zip-file fileb://lambdas/resize/lambda.zip \
-    --handler handler.handler \
-    --dead-letter-config TargetArn=arn:aws:sns:us-east-1:000000000000:failed-resize-topic \
-    --role arn:aws:iam::000000000000:role/lambda-role \
-    --environment Variables="{STAGE=local}"
-awslocal lambda wait function-active-v2 --function-name resize
-awslocal lambda put-function-event-invoke-config \
-    --function-name resize \
-    --maximum-event-age-in-seconds 3600 \
-    --maximum-retry-attempts 0
-```
-
-#### Connect S3 bucket to Resizer Lambda
+Store a message:
 
 ```bash
-awslocal s3api put-bucket-notification-configuration \
- --bucket localstack-thumbnails-app-images \
- --notification-configuration "{\"LambdaFunctionConfigurations\": [{\"LambdaFunctionArn\": \"$(awslocal lambda get-function --function-name resize --output json | jq -r .Configuration.FunctionArn)\", \"Events\": [\"s3:ObjectCreated:*\"]}]}"
+curl -X POST "$LAMBDA_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello, LocalStack!"}'
 ```
 
-#### Create the S3 static website
+You should get back a response like:
+
+```json
+{"id": "a1b2c3d4-...", "message": "Hello, LocalStack!"}
+```
+
+List all messages:
 
 ```bash
-awslocal s3 mb s3://webapp
-awslocal s3 sync --delete ./website s3://webapp
-awslocal s3 website s3://webapp --index-document index.html
+curl "$LAMBDA_URL"
 ```
 
-#### Retrieve the Lambda Function URLs
+**That's the win.** You just invoked a real Lambda function that wrote to a real DynamoDB table — all running locally, with no AWS account and no cloud costs.
 
-Retrieve the Lambda function URLs for the `presign` and `list` Lambda functions using the following commands:
+## Step 4 — Inspect your resources
+
+You can browse the resources you just deployed in the [LocalStack Web Application](https://app.localstack.cloud/).
+Navigate to your [Default Instance](https://app.localstack.cloud/inst/default/status) and click through to [Lambda](https://app.localstack.cloud/inst/default/resources/lambda/functions) or [DynamoDB](https://app.localstack.cloud/inst/default/resources/dynamodb) to see your running infrastructure.
+
+## Step 5 — Clean up
+
+When you're done, stop LocalStack to tear down all local resources:
 
 ```bash
-awslocal lambda list-function-url-configs --function-name presign --output json | jq -r '.FunctionUrlConfigs[0].FunctionUrl'
-awslocal lambda list-function-url-configs --function-name list --output json | jq -r '.FunctionUrlConfigs[0].FunctionUrl'
+lstk stop        # if using lstk
+localstack stop  # if using the LocalStack CLI
 ```
 
-Save these URLs for later use in the sample application.
+LocalStack is ephemeral by default — stopping it removes all provisioned resources.
+To persist state across restarts, see [Persistence](/aws/capabilities/state-management/persistence/) or [Cloud Pods](/aws/capabilities/state-management/cloud-pods/).
 
-### Run the sample AWS application
+## Next steps
 
-To access the application, go to [**https://webapp.s3-website.localhost.localstack.cloud:4566**](https://webapp.s3-website.localhost.localstack.cloud:4566) in your browser.
-
-![Serverless image resizer application](/images/aws/serverless-image-resizer-application.png)
-
-Paste the `presign` and `list` Lambda function URLs into the application and click **Apply**.
-Alternatively, click on **Load from API** to automatically load the URLs.
-
-Upload an image, and click **Upload**.
-The upload form uses the `presign` Lambda to request an S3 pre-signed POST URL, forwarding the POST request to S3.
-Asynchronous resizing (maximum 400x400 pixels) occurs through S3 bucket notifications.
-
-If successful, the application displays a **success!** alert.
-Click **Refresh** to trigger your browser to request the `list` Lambda URL, returning a JSON document of all items in the images (`localstack-thumbnails-app-images`) and resized images (`localstack-thumbnails-app-resized`) bucket.
-
-![Serverless image resizer application displaying a resized image](/images/aws/resized-image-sample-application.png)
-
-### View the deployed resources
-
-You can inspect the resources deployed as part of the sample application by accessing the [**LocalStack Web Application**](https://app.localstack.cloud/).
-Navigate to your [**Default Instance**](https://app.localstack.cloud/inst/default/status) to view the deployed resources.
-
-![Status Page of the LocalStack Web Application"](/images/aws/localstack-web-application-status.png)
-
-Click on [S3](https://app.localstack.cloud/inst/default/resources/s3) or [Lambda](https://app.localstack.cloud/inst/default/resources/lambda/functions) to view the S3 buckets and Lambda functions respectively.
-
-![The Lambda Resource Browser Page of the LocalStack Web Application](/images/aws/localstack-web-application-lambda.png)
-
-### Run integration tests
-
-To run automated integration tests against the sample application, use the following command:
-
-```bash
-pytest -v
-```
-
-Additionally, you can verify that when the `resize` Lambda fails, an SNS message is sent to a topic that an SES subscription listens to, triggering an email with the raw failure message.
-Since there's no real email server involved, you can use the LocalStack SES developer endpoint to list messages sent via SES:
-
-```bash
-curl -s http://localhost.localstack.cloud:4566/_aws/ses | jq
-```
-
-An alternative option is to use a service like MailHog or `smtp4dev`.
-Start LocalStack with `SMTP_HOST=host.docker.internal:1025`, pointing to the mock SMTP server.
-
-### Destroy the local infrastructure
-
-Now that you've learned how to deploy a local AWS infrastructure for your sample application, let's clean up and tear down the resources associated with the project:
-
-```bash
-localstack stop
-```
-
-LocalStack is ephemeral, meaning it doesn't persist any data across restarts.
-It runs inside a Docker container, and once it's stopped, all locally created resources are automatically removed.
-
-To persist the local cloud resources across restarts, navigate to our [persistence documentation](/aws/capabilities/state-management/persistence) or learn about [Cloud Pods](/aws/capabilities/state-management/cloud-pods), our next generation state management utility.
-
-## Next Steps
-
-Congratulations on deploying an AWS application locally using LocalStack!
-To expand your LocalStack capabilities, explore the following based on your expertise:
-
-- [Tutorials](/aws/tutorials): Check out our tutorials to learn how to use LocalStack across various AWS services and application stacks.
-- [Supported Services](/aws/services): Explore LocalStack's emulated AWS services.
-- [Capabilities](/aws/capabilities/): Learn about LocalStack's capabilities including features like IAM policy stream, state management, and more.
-- [Tooling](/aws/tooling/): Get details on LocalStack's tooling and integrations.
-- [Blog](https://blog.localstack.cloud): Read our blog posts about LocalStack and the latest enhancements for a better local development and testing experience.
+- [Tutorials](/aws/tutorials/) — Deeper dives into specific AWS services and application stacks
+- [Supported Services](/aws/services/) — Full list of emulated AWS services
+- [CI/CD Setup](/aws/getting-started/ci-cd/) — Run LocalStack in GitHub Actions and other pipelines
+- [AI & Agent Workflows](/aws/getting-started/ai-workflows/) — Use LocalStack with AI coding tools and agents
+- [Tooling](/aws/tooling/) — `awslocal`, `tflocal`, LocalStack Desktop, and more

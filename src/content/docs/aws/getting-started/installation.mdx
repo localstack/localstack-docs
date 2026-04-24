@@ -1,24 +1,68 @@
 ---
 title: Installation
-description: Basic installation guide to get started with LocalStack on your local machine.
+description: All installation methods for LocalStack — lstk, LocalStack CLI, Docker Compose, Docker, and Helm.
 template: doc
 sidebar:
-  order: 2
+  order: 3
 ---
 
 import { Code, LinkButton, Tabs, TabItem } from '@astrojs/starlight/components';
 import { LOCALSTACK_VERSION } from "astro:env/server";
 
-## LocalStack CLI
+## Local development
 
-The quickest way get started with LocalStack is by using the LocalStack CLI.
-It allows you to start LocalStack from your command line.
+There are two CLI options for running LocalStack on your laptop. Start with `lstk` if you want the fastest path to a running instance, or use the LocalStack CLI if you need full feature support.
+
+### lstk
+
+`lstk` is a lightweight, Go-based CLI that handles the full startup sequence in one command: browser-based login, image pull, and container launch.
+It's the fastest way to get LocalStack running locally.
+
+:::caution[Early release]
+`lstk` currently supports core lifecycle commands (`start`, `stop`, `logs`, `status`).
+For advanced features like Cloud Pods, Extensions, and Ephemeral Instances, use the [LocalStack CLI](#localstack-cli) instead.
+Both tools can coexist on the same system.
+:::
+
+Install `lstk`:
+
+<Tabs>
+  <TabItem label="Homebrew (macOS/Linux)">
+    ```bash
+    brew install localstack/tap/lstk
+    ```
+  </TabItem>
+  <TabItem label="npm">
+    ```bash
+    npm install -g @localstack/lstk
+    ```
+  </TabItem>
+  <TabItem label="Binary">
+    Download a pre-built binary for your platform from [GitHub Releases](https://github.com/localstack/lstk/releases) and add it to your `PATH`.
+  </TabItem>
+</Tabs>
+
+Start LocalStack:
+
+```bash
+lstk start
+```
+
+On first run, `lstk` opens a browser login flow.
+After authenticating, it pulls the LocalStack image and starts the container.
+Subsequent starts use the stored credential from your system keyring — no manual token management needed.
+
+---
+
+### LocalStack CLI
+
+The full-featured LocalStack CLI gives you access to all LocalStack capabilities.
 Please make sure that you have a working [Docker installation](https://docs.docker.com/get-docker/) on your machine before moving on.
 
 ### Installing LocalStack CLI
 
 The CLI starts and manages the LocalStack Docker container.
-For alternative methods of managing the LocalStack container, see our [alternative installation instructions](#alternatives).
+For alternative methods of managing the LocalStack container, see our [alternative installation instructions](#ci-and-server-environments).
 
 <Tabs>
 
@@ -196,30 +240,25 @@ Updating the LocalStack CLI using `localstack update localstack-cli` and `locals
 If it was installed using the pre-built binary or via Brew, please run the installation steps again to update to the latest version.
 :::
 
-## Alternatives
+## CI and server environments
 
-Besides using the CLI, there are other ways of starting and managing your LocalStack instance:
+For CI pipelines and server deployments, you'll manage the LocalStack container directly rather than using a local CLI.
+See the [CI/CD Setup guide](/aws/getting-started/ci-cd/) for a complete walkthrough including GitHub Actions examples.
 
-- [LocalStack Desktop](#localstack-desktop)\
-  Get a desktop experience and work with your local LocalStack instance via the UI.
+The options below cover the main container management approaches:
 
-- [LocalStack Docker Extension](#localstack-docker-extension)\
-  Use the LocalStack extension for Docker Desktop to work with your LocalStack instance.
+- [Docker Compose](#docker-compose) — recommended for CI and team environments
+- [Docker](#docker) — direct container control for scripted setups
+- [Helm](#helm) — deploy LocalStack in a Kubernetes cluster
 
-- [Docker-Compose](#docker-compose)\
-  Use Docker Compose to configure and start your LocalStack Docker container.
+The LocalStack emulator is available on Docker Hub as `localstack/localstack-pro`.
 
-- [Docker](#docker)\
-  Use the Docker CLI to manually start the LocalStack Docker container.
+For a comprehensive overview of LocalStack images, see the [Docker images documentation](/aws/capabilities/config/docker-images).
 
-- [Helm](#helm)\
-  Use Helm to create a LocalStack deployment in a Kubernetes cluster.
+## GUI tools
 
-LocalStack runs inside a Docker container, and the above options are different ways to start and manage the LocalStack Docker container.
-
-The LocalStack emulator is available on Docker Hub (`localstack/localstack-pro`).
-
-For a comprehensive overview of the LocalStack images, check out our [Docker images documentation](/aws/capabilities/config/docker-images).
+- [LocalStack Desktop](#localstack-desktop) — desktop UI for managing your local instance
+- [LocalStack Docker Extension](#localstack-docker-extension) — manage LocalStack from Docker Desktop
 
 ### LocalStack Desktop
 

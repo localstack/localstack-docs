@@ -1,0 +1,185 @@
+---
+title: CI/CD Setup
+description: Run LocalStack in CI pipelines — auth tokens, Docker Compose, and GitHub Actions examples.
+template: doc
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Overview
+
+LocalStack works great in CI environments.
+The setup differs from local development in a few important ways:
+
+- **Use a CI Auth Token**, not your personal Developer token
+- **Manage the container directly** via Docker Compose or `docker run` — `lstk` and the LocalStack Desktop are local-only tools
+- **LocalStack is ephemeral by default** — each CI run starts fresh, which is usually exactly what you want for reproducible tests
+
+## Step 1 — Get a CI Auth Token
+
+CI pipelines should use a dedicated CI Auth Token, not a Developer token tied to a specific user.
+
+1. Go to the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application
+2. Create a new **CI Auth Token**
+3. Add it as a secret in your CI provider (e.g., `LOCALSTACK_AUTH_TOKEN`)
+
+:::danger[Keep your token secret]
+Never commit an auth token to source control.
+Always inject it via your CI provider's secrets or environment variable mechanism.
+If a token is compromised, rotate it immediately on the Auth Tokens page — old tokens are invalidated instantly.
+:::
+
+See the [Auth Token documentation](/aws/getting-started/auth-token/) for full details on token types and configuration.
+
+## Step 2 — Start LocalStack in CI
+
+<Tabs>
+  <TabItem label="GitHub Actions">
+    The recommended approach is to start LocalStack as a service container or as a step using the official GitHub Action:
+
+    ```yaml
+    # .github/workflows/integration-tests.yml
+    name: Integration Tests
+
+    on: [push, pull_request]
+
+    jobs:
+      test:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+
+          - name: Start LocalStack
+            uses: LocalStack/setup-localstack@v0.2
+            with:
+              image-tag: latest
+            env:
+              LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+
+          - name: Run tests
+            run: |
+              # Your test commands here, e.g.:
+              pip install awscli-local
+              awslocal s3 mb s3://my-test-bucket
+              pytest tests/integration/
+    ```
+
+    The `setup-localstack` action handles pulling the image, starting the container, and waiting for LocalStack to be ready.
+  </TabItem>
+  <TabItem label="Docker Compose">
+    Add LocalStack as a service in your `docker-compose.yml`:
+
+    ```yaml
+    services:
+      localstack:
+        container_name: localstack-main
+        image: localstack/localstack-pro
+        ports:
+          - "127.0.0.1:4566:4566"
+          - "127.0.0.1:4510-4559:4510-4559"
+          - "127.0.0.1:443:443"
+        environment:
+          - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
+          - DEBUG=${DEBUG:-0}
+        volumes:
+          - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+    ```
+
+    Start it and wait for readiness:
+
+    ```bash
+    docker compose up -d localstack
+    # Wait for LocalStack to be ready
+    until curl -s http://localhost:4566/_localstack/health | grep -q '"running"'; do sleep 1; done
+    ```
+
+    :::note
+    Mounting `/var/run/docker.sock` is required for Lambda emulation, which uses Docker to run function containers.
+    :::
+  </TabItem>
+  <TabItem label="Docker">
+    Start LocalStack directly with `docker run`:
+
+    ```bash
+    docker run \
+      --rm -d \
+      --name localstack-main \
+      -p 127.0.0.1:4566:4566 \
+      -p 127.0.0.1:4510-4559:4510-4559 \
+      -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      localstack/localstack-pro
+
+    # Wait for readiness
+    until curl -s http://localhost:4566/_localstack/health | grep -q '"running"'; do sleep 1; done
+    ```
+  </TabItem>
+  <TabItem label="CircleCI">
+    Add LocalStack as a service in your CircleCI config:
+
+    ```yaml
+    version: 2.1
+
+    jobs:
+      integration-tests:
+        docker:
+          - image: cimg/python:3.12
+          - image: localstack/localstack-pro
+            environment:
+              LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
+        steps:
+          - checkout
+          - run:
+              name: Wait for LocalStack
+              command: |
+                until curl -s http://localhost:4566/_localstack/health | grep -q '"running"'; do sleep 1; done
+          - run:
+              name: Run tests
+              command: pytest tests/integration/
+    ```
+
+    Set `LOCALSTACK_AUTH_TOKEN` in your CircleCI project's environment variables.
+  </TabItem>
+</Tabs>
+
+## Verify activation
+
+After LocalStack starts, confirm the license is active:
+
+```bash
+curl -s http://localhost:4566/_localstack/info | jq '.is_license_activated'
+# Should return: true
+```
+
+## Key differences from local development
+
+| | Local development | CI/CD |
+|---|---|---|
+| **CLI** | `lstk` or LocalStack CLI | Docker Compose / `docker run` |
+| **Auth** | Browser login or stored token | `LOCALSTACK_AUTH_TOKEN` env var |
+| **Token type** | Developer token | CI token |
+| **State** | Optional persistence | Ephemeral (fresh per run) |
+| **Startup** | Interactive TUI | `--non-interactive` / `-d` flag |
+
+## Persisting state across runs
+
+By default, LocalStack starts fresh on every run — all resources are gone when the container stops.
+This is ideal for most CI use cases (clean, reproducible tests).
+
+If you need to share state across runs (e.g., seed data, pre-built infrastructure), look at [Cloud Pods](/aws/capabilities/state-management/cloud-pods/), which let you snapshot and restore LocalStack state.
+
+## More CI integrations
+
+LocalStack has dedicated integration guides for many CI providers:
+
+- [GitHub Actions](/aws/integrations/continuous-integration/github-actions/)
+- [GitLab CI](/aws/integrations/continuous-integration/gitlab-ci/)
+- [CircleCI](/aws/integrations/continuous-integration/circleci/)
+- [AWS CodeBuild](/aws/integrations/continuous-integration/codebuild/)
+- [Travis CI](/aws/integrations/continuous-integration/travis-ci/)
+- [Bitbucket Pipelines](/aws/integrations/continuous-integration/bitbucket/)
+
+See the full [CI/CD integrations](/aws/integrations/continuous-integration/) section for details.

@@ -3,7 +3,7 @@ title: Help & Support
 description: Get help and support with LocalStack.
 template: doc
 sidebar:
-  order: 6
+  order: 8
 ---
 
 ## Introduction
