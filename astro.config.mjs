@@ -570,10 +570,6 @@ export default defineConfig({
                   label: 'Enterprise Image',
                   slug: 'aws/enterprise/enterprise-image',
                 },
-                {
-                  label: 'Enterprise Support',
-                  slug: 'aws/enterprise/enterprise-support',
-                },
               ],
             },
             {
