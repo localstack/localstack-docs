@@ -17,6 +17,32 @@ To access this page:
 
 ![Users & Licenses management screen](/images/aws/users-licenses-page.png)
 
+## User Roles
+
+Each member of a workspace is either a **Workspace Admin** or a **Workspace Member**. The role determines which parts of the workspace they can access and manage.
+
+The table below summarizes what each role can do:
+
+| Action                                         | Workspace Admin | Workspace Member |
+| ---------------------------------------------- | :-------------: | :--------------: |
+| Invite new users                               |       ✅        |        ❌        |
+| Remove users from workspace                    |       ✅        |        ❌        |
+| Assign or unassign licenses                    |       ✅        |        ❌        |
+| Change user roles (e.g., promote to Admin)     |       ✅        |        ❌        |
+| Configure advanced permissions                 |       ✅        |        ❌        |
+| Access Auth Tokens                             |       ✅        |        ✅        |
+| Use assigned LocalStack licenses               |       ✅        |        ✅        |
+
+:::note
+Admins manage the overall pool of licenses for the workspace. Each user is still responsible for configuring their own local environment to use their Auth Token.
+:::
+
+### Key differences
+
+- **Administrative control:** Only Admins can open the **Administration** section of Settings to manage workspace membership and the license pool.
+- **License management:** Admins distribute available licenses from the subscription plan to specific members through the **Users & Licenses** dashboard.
+- **Role management:** Admins can switch any member between **Admin** and **Member**.
+
 ## Managing Users
 
 ### Inviting Users
