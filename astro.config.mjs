@@ -588,6 +588,11 @@ export default defineConfig({
               label: 'Licensing & Tiers',
               slug: 'aws/licensing',
             },
+            {
+              label: 'Help & Support',
+              collapsed: true,
+              autogenerate: { directory: '/aws/help-support' },
+            },
           ],
         },
         {
