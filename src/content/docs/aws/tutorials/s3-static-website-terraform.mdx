@@ -53,10 +53,15 @@ In this architecture:
 We will create a simple static website using plain HTML to get started.
 To create a static website deployed over S3, we need to create an index document and a custom error document.
 We will name our index document `index.html` and our error document `error.html`.
-Optionally, you can create a folder called `assets` to store images and other assets.
 
-Let's create a directory named `s3-static-website-localstack` where we'll store our static website files.
-If you don't have an `index.html` file, you can use the following code to create one:
+Let's create a directory named `s3-static-website-localstack` where we'll store our project files, with a `www/` subdirectory that holds the website content:
+
+```bash
+mkdir -p s3-static-website-localstack/www
+cd s3-static-website-localstack
+```
+
+Inside `www/`, create an `index.html` file with the following content:
 
 ```html showLineNumbers
 <!DOCTYPE html>
@@ -74,7 +79,7 @@ If you don't have an `index.html` file, you can use the following code to create
 
 S3 will serve this file when a user visits the root URL of your static website, serving as the default page.
 In a similar fashion, you can configure a custom error document that contains a user-friendly error message.
-Let's create a file named `error.html` and add the following code:
+Create a file named `error.html` next to `index.html` inside `www/` and add the following code:
 
 ```html showLineNumbers
 <!DOCTYPE html>
@@ -105,7 +110,7 @@ awslocal s3api create-bucket --bucket testwebsite
 ```
 
 With the bucket created, we can now attach a policy to it to allow public access and its contents.
-Let's create a file named `bucket_policy.json` in the root directory and add the following code:
+Let's create a file named `bucket_policy.json` in the project root (next to the `www/` folder) and add the following code:
 
 ```json showLineNumbers
 {
@@ -128,10 +133,10 @@ Let's now attach the policy to the bucket:
 awslocal s3api put-bucket-policy --bucket testwebsite --policy file://bucket_policy.json
 ```
 
-With the policy attached, we can now sync the contents of our root directory to the bucket:
+With the policy attached, we can now sync the contents of our `www/` directory to the bucket:
 
 ```bash
-awslocal s3 sync ./ s3://testwebsite
+awslocal s3 sync ./www/ s3://testwebsite
 ```
 
 We'll now enable static website hosting on the bucket and configure the index and error documents:
@@ -169,7 +174,7 @@ provider "aws" {
 We would also need to avoid issues with routing and authentication (as we do not need it).
 Therefore we need to supply some general parameters.
 Additionally, we have to point the individual services to LocalStack.
-We can do this by specifying the `endpoints` parameter for each service, that we intend to use.
+We can do this by specifying the `endpoints` parameter for each service that we intend to use.
 Our `provider.tf` file should look like this:
 
 ```hcl showLineNumbers
@@ -179,13 +184,14 @@ provider "aws" {
   region                      = "us-east-1"
 
   # only required for non virtual hosted-style endpoint use case.
-  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs#s3_force_path_style
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs#s3_use_path_style
   s3_use_path_style           = false
   skip_credentials_validation = true
   skip_metadata_api_check     = true
 
   endpoints {
-    s3             = "http://s3.localhost.localstack.cloud:4566"
+    s3        = "http://s3.localhost.localstack.cloud:4566"
+    s3control = "http://localhost.localstack.cloud:4566"
   }
 }
 ```
@@ -195,6 +201,11 @@ We use `localhost.localstack.cloud` as the recommended endpoint for the S3 to en
 Users can rely on the `localhost.localstack.cloud` domain to be publicly resolvable.
 We also publish an SSL certificate which is automatically used inside LocalStack to enable HTTPS endpoints with valid certificates.
 For most of the other services, it is fine to use `localhost:4566`.
+:::
+
+:::note
+The `s3control` endpoint is required because recent versions of the AWS Terraform provider use the S3 Control API to read bucket tags.
+We point it at `localhost.localstack.cloud` so the account-id-prefixed hostname (`<account-id>.localhost.localstack.cloud`) resolves to LocalStack.
 :::
 
 With the provider configured, we can now configure the variables for our S3 bucket.
@@ -230,15 +241,18 @@ output "name" {
 
 output "domain" {
   description = "Domain name of the bucket"
-  value       = aws_s3_bucket_website_configuration.s3_bucket.website_domain
+  value       = "s3-website.localhost.localstack.cloud:4566"
 }
 
 output "website_endpoint" {
-  value = aws_s3_bucket_website_configuration.s3_bucket.website_endpoint
+  description = "Website endpoint URL"
+  value       = "http://${aws_s3_bucket.s3_bucket.id}.s3-website.localhost.localstack.cloud:4566"
 }
 ```
 
-The output variables are the ARN, name, domain name, and website endpoint of the bucket.
+The output variables are the ARN, name, LocalStack S3 website domain, and the full website endpoint URL of the bucket.
+We hardcode the `domain` and `website_endpoint` values to point at LocalStack so that the outputs surface a URL you can open directly.
+The native `aws_s3_bucket_website_configuration` attributes return the AWS-formatted endpoint (`<bucket>.s3-website-<region>.amazonaws.com`), which would be misleading in a LocalStack-only setup.
 With all the configuration files in place, we can now create the S3 bucket.
 Create a new file named `main.tf` and create the S3 bucket using the following code:
 
@@ -305,7 +319,7 @@ Add the following code to the `main.tf` file:
 ```hcl showLineNumbers
 resource "aws_s3_object" "object_www" {
   depends_on   = [aws_s3_bucket.s3_bucket]
-  for_each     = fileset("${path.root}", "*.html")
+  for_each     = fileset("${path.root}", "www/*.html")
   bucket       = var.bucket_name
   key          = basename(each.value)
   source       = each.value
@@ -315,22 +329,7 @@ resource "aws_s3_object" "object_www" {
 }
 ```
 
-The above code uploads all our html files to the bucket.
-We are also setting the ACL of the files to `public-read`.
-Optionally, if you have static assets like images, CSS, and JavaScript files, you can upload them to the bucket using the same `aws_s3_bucket_object` resource by adding the following code to the `main.tf` file:
-
-```hcl showLineNumbers
-resource "aws_s3_object" "object_assets" {
-  depends_on = [aws_s3_bucket.s3_bucket]
-  for_each   = fileset(path.module, "assets/*")
-  bucket     = var.bucket_name
-  key        = each.value
-  source     = "${each.value}"
-  etag       = filemd5("${each.value}")
-  acl        = "public-read"
-}
-```
-
+The above code uploads every `.html` file under `www/` to the bucket and sets each object's ACL to `public-read`.
 With all the configuration files in place, we can now initialize the Terraform configuration.
 Run the following command to initialize the Terraform configuration:
 
@@ -359,20 +358,18 @@ var.bucket_name
   Name of the s3 bucket.
 Must be unique.
 
-  Enter a value: testbucket
+  Enter a value: testwebsite
 ...
-arn = "arn:aws:s3:::testbucket"
-domain = "s3-website-us-east-1.amazonaws.com"
-name = "testbucket"
-website_endpoint = "testbucket.s3-website-us-east-1.amazonaws.com"
+arn = "arn:aws:s3:::testwebsite"
+domain = "s3-website.localhost.localstack.cloud:4566"
+name = "testwebsite"
+website_endpoint = "http://testwebsite.s3-website.localhost.localstack.cloud:4566"
 ```
 
-In the above command, we specified `testbucket` as the bucket name.
+In the above command, we specified `testwebsite` as the bucket name to keep it consistent with the `awslocal` flow above and the testing commands further down.
 You can specify any bucket name since LocalStack is ephemeral, and stopping your LocalStack container will delete all the created resources.
-The above command output includes the ARN, name, domain name, and website endpoint of the bucket.
-You can see the `website_endpoint` configured to use AWS S3 Website Endpoint.
-You can now access the website using the bucket name in the following format: `http://<BUCKET_NAME>.s3-website.localhost.localstack.cloud:4566`.
-Since the endpoint is configured to use `localhost.localstack.cloud`, no real AWS resources have been created.
+The above command output includes the ARN, name, LocalStack website domain, and the website endpoint URL of the bucket.
+You can navigate directly to the printed `website_endpoint` to view your site, since the endpoint uses `localhost.localstack.cloud`, no real AWS resources have been created.
 
 You can optionally use the `tflocal` CLI as a drop-in replacement for the official Terraform CLI. `tflocal` uses the Terraform Override mechanism to create a temporary `localstack_providers_override.tf` file, which is deleted after the infrastructure is created.
 It mitigates the need to create the `provider.tf` file manually.
