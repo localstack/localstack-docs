@@ -669,6 +669,10 @@ Loading a Cloud Pod with mismatching version might lead to a corrupted state of 
 Do you want to continue? [y/N]:
 ```
 
+In addition to this prompt, Cloud Pods are subject to the [state compatibility rules](/aws/capabilities/state-management/persistence#state-compatibility) shared with snapshot-based persistence.
+Pods that were saved before `v2026.03` cannot be loaded into LocalStack `v2026.03` or later, because persistence was rewritten for several services in that release.
+Set `DISABLE_COMPATIBILITY_RULES=1` to bypass the checks at your own risk.
+
 We are working to extend Cloud Pods support to all AWS services emulated in LocalStack.
 However, state management might not yet work reliably for every service.
 

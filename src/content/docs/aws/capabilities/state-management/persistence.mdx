@@ -52,8 +52,7 @@ docker run \
 
 :::note
 Snapshots may not be compatible across different versions of LocalStack.
-It is possible that snapshots from older versions can be restored, but there are no guarantees to whether LocalStack will start into a consistent state.
-We are actively working on a solution for this problem.
+LocalStack applies [state compatibility rules](#state-compatibility) that block loading state files known to be incompatible with the running LocalStack version.
 :::
 
 ### Save strategies
@@ -115,6 +114,63 @@ curl -X POST localhost:4566/_localstack/state/save
 {"service": "sqs", "status": "ok"}
 {"service": "s3", "status": "ok"}
 ```
+
+## State compatibility
+
+The internal state format of LocalStack changes over time as services evolve.
+To prevent silently loading state into an incompatible runtime, LocalStack ships a set of compatibility rules that compare the LocalStack version recorded in the saved state with the version of the running container.
+The same rules apply to both [snapshot-based persistence](#configuration) and [Cloud Pods](/aws/capabilities/state-management/cloud-pods).
+
+If a rule rejects the state, LocalStack does not load it and logs the reason.
+The rules currently enforced are:
+
+| Rule | Behavior |
+| - | - |
+| Forward compatibility | Reject loading a state into a LocalStack version older than the one that produced it. |
+| First CalVer release (`v2026.03`) | Reject loading state saved before `v2026.03` into LocalStack `v2026.03` or later. Persistence was rewritten for several services in the first calendar-versioned release. |
+
+Loading a state saved with `v2026.03` or later into a newer LocalStack version of the same series remains supported.
+For example, a state saved with `v2026.03` can be loaded into `v2026.03.1` or `v2026.04`.
+
+### Disable compatibility checks
+
+If you understand the risks and want LocalStack to load state regardless of these rules, start the container with `DISABLE_COMPATIBILITY_RULES=1`.
+This bypasses every compatibility rule and lets LocalStack attempt to load the state as-is.
+
+<Tabs>
+<TabItem label="LocalStack CLI">
+```bash
+DISABLE_COMPATIBILITY_RULES=1 PERSISTENCE=1 localstack start
+```
+</TabItem>
+<TabItem label="Docker Compose">
+```yaml showLineNumbers
+image: localstack/localstack-pro
+environment:
+  - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
+  - PERSISTENCE=1
+  - DISABLE_COMPATIBILITY_RULES=1
+volumes:
+  - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+```
+</TabItem>
+<TabItem label="Docker">
+```bash
+docker run \
+  -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} \
+  -e PERSISTENCE=1 \
+  -e DISABLE_COMPATIBILITY_RULES=1 \
+  -v ./volume:/var/lib/localstack \
+  -p 4566:4566 \
+  localstack/localstack-pro
+```
+</TabItem>
+</Tabs>
+
+:::caution
+Disabling compatibility rules can leave LocalStack in an inconsistent state.
+Use this option only for debugging or when migrating data with a tested workaround in place.
+:::
 
 ## Service coverage
 
