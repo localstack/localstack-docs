@@ -686,6 +686,17 @@ The default version is `1.35`.
 
 Users can specify the desired version when creating an EKS cluster in LocalStack using the `EKS_K3S_IMAGE_TAG` configuration variable when starting LocalStack.
 
+## Configuring the k3d Cluster Token
+
+When LocalStack creates a k3d-backed EKS cluster, it starts the k3s server with an explicit cluster token. This token is used to authenticate agent nodes joining the cluster, enabling dynamic node registration.
+By default, LocalStack uses `localstack-k3d-cluster-token` as the cluster token. You can override this value using the `EKS_K3D_CLUSTER_TOKEN` configuration variable:
+
+```bash
+EKS_K3D_CLUSTER_TOKEN=my-custom-token localstack start
+```
+
+Any agent nodes added to the cluster — whether via k3d node create or k3s agent — will use the same token to authenticate with the k3s server.
+
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing EKS clusters.
