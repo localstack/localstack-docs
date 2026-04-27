@@ -170,8 +170,6 @@ We would also need to avoid issues with routing and authentication (as we do not
 Therefore we need to supply some general parameters.
 Additionally, we have to point the individual services to LocalStack.
 We can do this by specifying the `endpoints` parameter for each service that we intend to use.
-
-When using LocalStack, set `s3_use_path_style = true` so that S3 requests use path-style URLs, which LocalStack expects for the local endpoint.
 Our `provider.tf` file should look like this:
 
 ```hcl showLineNumbers
@@ -181,14 +179,14 @@ provider "aws" {
   region                      = "us-east-1"
 
   # only required for non virtual hosted-style endpoint use case.
-  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs#s3_force_path_style
-  s3_use_path_style           = true
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs#s3_use_path_style
+  s3_use_path_style           = false
   skip_credentials_validation = true
   skip_metadata_api_check     = true
 
   endpoints {
-    s3             = "http://s3.localhost.localstack.cloud:4566"
-    s3control      = "http://localhost.localstack.cloud:4566"
+    s3        = "http://s3.localhost.localstack.cloud:4566"
+    s3control = "http://localhost.localstack.cloud:4566"
   }
 }
 ```
@@ -198,6 +196,11 @@ We use `localhost.localstack.cloud` as the recommended endpoint for the S3 to en
 Users can rely on the `localhost.localstack.cloud` domain to be publicly resolvable.
 We also publish an SSL certificate which is automatically used inside LocalStack to enable HTTPS endpoints with valid certificates.
 For most of the other services, it is fine to use `localhost:4566`.
+:::
+
+:::note
+The `s3control` endpoint is required because recent versions of the AWS Terraform provider use the S3 Control API to read bucket tags.
+We point it at `localhost.localstack.cloud` so the account-id-prefixed hostname (`<account-id>.localhost.localstack.cloud`) resolves to LocalStack.
 :::
 
 With the provider configured, we can now configure the variables for our S3 bucket.
