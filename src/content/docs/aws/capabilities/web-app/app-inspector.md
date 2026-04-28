@@ -72,16 +72,15 @@ By clicking on an operation in the graph or list, you can drill down into the sp
 
 ![App Inspector operation details panel showing service, resource, payloads, and status for a Lambda invocation](/src/assets/images/aws/app-inspector/app-inspector-operation-details.png)
 
-## Plans & Tiers
-
-| Feature | Hobby | Base / Ultimate / Enterprise |
-|---|---|---|
-| Maximum operations stored | 10 | 1,000 |
-| Error analysis | — | ✓ |
-| Request payload | ✓ | ✓ |
-| Response payload | — | ✓ |
-
 ## Supported Services
+
+```suggestion
+
+:::note
+Visit our [Licensing & Tiers](https://docs.localstack.cloud/aws/licensing/) doc to explore usage with App Inspector.
+
+:::
+
 
 All service operations appear in App Inspector. The following services have been optimized for improved visual layout in the graph view:
 
