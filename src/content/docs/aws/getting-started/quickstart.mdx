@@ -1,16 +1,16 @@
 ---
-title: Quickstart
+title: Local Development
 description: Deploy a serverless API locally with LocalStack in under 10 minutes using Lambda and DynamoDB.
 template: doc
 sidebar:
-  order: 2
+  order: 3
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
 ## Introduction
 
-In this quickstart you'll start LocalStack and deploy a simple serverless API — a **Lambda function backed by DynamoDB** — entirely on your local machine.
+In this quickstart you'll start LocalStack and deploy a simple serverless API including a Lambda function backed by DynamoDB, entirely on your local machine.
 No AWS account needed.
 
 By the end you will have:
@@ -18,9 +18,9 @@ By the end you will have:
 - LocalStack running locally in Docker
 - A Lambda function deployed and invokable via a public URL
 - A DynamoDB table storing data written by the Lambda
-- Confirmed that your local environment behaves like real AWS
+- A local environment that behaves like real AWS
 
-Choose your preferred deployment style below: **AWS CLI** (`awslocal`) or **Terraform** (`tflocal`).
+Choose your preferred deployment style below: **AWS CLI** or **Terraform**.
 
 ## Prerequisites
 
@@ -46,10 +46,19 @@ The fastest way to get LocalStack running locally is with `lstk`, a lightweight 
     Then start LocalStack:
 
     ```bash
-    lstk start
+    lstk
     ```
 
-    On first run, `lstk` opens a browser login to authenticate, then pulls the image and starts the container automatically.
+    On first run, `lstk` opens a browser window to authenticate. It also pulls the LocalStack image and starts the container automatically.
+
+    When the container is ready, you'll see log lines like:
+
+    ```bash
+    ✔︎ LocalStack ready (containerId: 400b3e61f3c6)
+    • Endpoint: localhost.localstack.cloud:4566
+    • Web app: https://app.localstack.cloud
+    > Tip: View deployed resources: lstk status
+    ```
 
     :::note[Early release]
     `lstk` currently supports core lifecycle commands (start, stop, logs, status).
@@ -64,188 +73,213 @@ The fastest way to get LocalStack running locally is with `lstk`, a lightweight 
     localstack start
     ```
 
+    When the container is ready, you'll see log lines like:
+
+    ```bash
+        __                     _______ __             __
+        / /   ____  _________ _/ / ___// /_____ ______/ /__
+      / /   / __ \/ ___/ __ `/ /\__ \/ __/ __ `/ ___/ //_/
+      / /___/ /_/ / /__/ /_/ / /___/ / /_/ /_/ / /__/ ,<
+    /_____/\____/\___/\__,_/_//____/\__/\__,_/\___/_/|_|
+
+    💻 LocalStack CLI ${LOCALSTACK_VERSION}
+    👤 Profile: default
+
+    [12:47:13] starting LocalStack in Docker mode 🐳                       localstack.py:494
+              preparing environment                                       bootstrap.py:1240
+              configuring container                                       bootstrap.py:1248
+              starting container                                          bootstrap.py:1258
+    [12:47:15] detaching                                                   bootstrap.py:1262
+    ```
+
   </TabItem>
 </Tabs>
 
-Wait for the container to report ready — you'll see a log line like `Ready.` or you can verify with:
-
-```bash
-curl -s http://localhost:4566/_localstack/health | grep '"running"'
-```
-
 ## Step 2 — Deploy the serverless API
 
-Now deploy a Lambda function and a DynamoDB table. Pick the tooling you prefer:
+Now deploy a Lambda function and a DynamoDB table. For this tutorial, you can choose between creating resources using the AWS CLI via our `awslocal` wrapper or Terraform via our `tflocal` wrapper.
 
 <Tabs>
   <TabItem label="AWS CLI (awslocal)">
-    Install the `awslocal` wrapper if you haven't already:
+    <Steps>
 
-    ```bash
-    pip install awscli-local
-    ```
+1. Install the `awslocal` wrapper if you haven't already:
 
-    **Create the Lambda function:**
+   ```bash
+   pip install awscli-local
+   ```
 
-    ```bash
-    mkdir -p /tmp/localstack-demo
-    cat > /tmp/localstack-demo/handler.py << 'EOF'
-    import json, boto3, os, uuid
+2. Create the Lambda function
 
-    def handler(event, context):
-        table = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
-        method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
-        if method == 'POST':
-            item = {'id': str(uuid.uuid4()), **json.loads(event.get('body', '{}'))}
-            table.put_item(Item=item)
-            return {'statusCode': 200, 'body': json.dumps(item)}
-        result = table.scan()
-        return {'statusCode': 200, 'body': json.dumps(result['Items'])}
-    EOF
-    cd /tmp/localstack-demo && zip handler.zip handler.py
-    ```
+   The below code creates a Lambda function using Python and zips the code to be ready for deployment.
 
-    **Create the DynamoDB table:**
+   ```bash
+     mkdir -p /tmp/localstack-demo
+     cat > /tmp/localstack-demo/handler.py << 'EOF'
+     import json, boto3, os, uuid
 
-    ```bash
-    awslocal dynamodb create-table \
-      --table-name Messages \
-      --attribute-definitions AttributeName=id,AttributeType=S \
-      --key-schema AttributeName=id,KeyType=HASH \
-      --billing-mode PAY_PER_REQUEST
-    ```
+     def handler(event, context):
+         table = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
+         method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
+         if method == 'POST':
+             item = {'id': str(uuid.uuid4()), **json.loads(event.get('body', '{}'))}
+             table.put_item(Item=item)
+             return {'statusCode': 200, 'body': json.dumps(item)}
+         result = table.scan()
+         return {'statusCode': 200, 'body': json.dumps(result['Items'])}
+     EOF
+     cd /tmp/localstack-demo && zip handler.zip handler.py
+   ```
 
-    **Deploy the Lambda:**
+3. Create the DynamoDB table
 
-    ```bash
-    awslocal lambda create-function \
-      --function-name messages-api \
-      --runtime python3.12 \
-      --handler handler.handler \
-      --zip-file fileb:///tmp/localstack-demo/handler.zip \
-      --role arn:aws:iam::000000000000:role/lambda-role \
-      --environment Variables={TABLE_NAME=Messages}
+   ```bash
+   awslocal dynamodb create-table \
+     --table-name Messages \
+     --attribute-definitions AttributeName=id,AttributeType=S \
+     --key-schema AttributeName=id,KeyType=HASH \
+     --billing-mode PAY_PER_REQUEST
+   ```
 
-    awslocal lambda wait function-active --function-name messages-api
-    ```
+4. Deploy the Lambda
 
-    **Create a public function URL:**
+   ```bash
+   awslocal lambda create-function \
+     --function-name messages-api \
+     --runtime python3.12 \
+     --handler handler.handler \
+     --zip-file fileb:///tmp/localstack-demo/handler.zip \
+     --role arn:aws:iam::000000000000:role/lambda-role \
+     --environment Variables={TABLE_NAME=Messages}
 
-    ```bash
-    awslocal lambda create-function-url-config \
-      --function-name messages-api \
-      --auth-type NONE
-    ```
+   awslocal lambda wait function-active --function-name messages-api
+   ```
 
-    **Retrieve the URL:**
+5. Create a public function URL
 
-    ```bash
-    LAMBDA_URL=$(awslocal lambda list-function-url-configs \
-      --function-name messages-api \
-      --query 'FunctionUrlConfigs[0].FunctionUrl' \
-      --output text)
-    echo $LAMBDA_URL
-    ```
+   ```bash
+   awslocal lambda create-function-url-config \
+     --function-name messages-api \
+     --auth-type NONE
+   ```
+
+6. Retrieve the URL
+
+   ```bash
+   LAMBDA_URL=$(awslocal lambda list-function-url-configs \
+     --function-name messages-api \
+     --query 'FunctionUrlConfigs[0].FunctionUrl' \
+     --output text)
+   echo $LAMBDA_URL
+   ```
+
+  </Steps>
 
   </TabItem>
   <TabItem label="Terraform (tflocal)">
-    Install Terraform and the `tflocal` wrapper:
+    <Steps>
+1. Install Terraform and the `tflocal` wrapper:
 
     ```bash
-    brew install hashicorp/tap/terraform   # or see https://developer.hashicorp.com/terraform/install
+    brew install hashicorp/tap/terraform
     pip install terraform-local
     ```
 
-    Create a project directory and `main.tf`:
+    For additional installation options, see the [Terraform installation guide](https://developer.hashicorp.com/terraform/install).
 
-    ```bash
-    mkdir -p /tmp/localstack-demo && cd /tmp/localstack-demo
-    ```
+2. Create a project directory.
 
-    ```hcl
-    # main.tf
-    terraform {
-      required_providers {
-        aws     = { source = "hashicorp/aws" }
-        archive = { source = "hashicorp/archive" }
-      }
-    }
+   ```bash
+   mkdir -p /tmp/localstack-demo && cd /tmp/localstack-demo
+   ```
 
-    resource "aws_dynamodb_table" "messages" {
-      name         = "Messages"
-      billing_mode = "PAY_PER_REQUEST"
-      hash_key     = "id"
-      attribute {
-        name = "id"
-        type = "S"
-      }
-    }
+   Then create a `main.tf` file with the following content:
 
-    data "archive_file" "lambda" {
-      type        = "zip"
-      output_path = "${path.module}/handler.zip"
-      source {
-        filename = "handler.py"
-        content  = <<-EOF
-          import json, boto3, os, uuid
-          def handler(event, context):
-              table = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
-              method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
-              if method == 'POST':
-                  item = {'id': str(uuid.uuid4()), **json.loads(event.get('body', '{}'))}
-                  table.put_item(Item=item)
-                  return {'statusCode': 200, 'body': json.dumps(item)}
-              result = table.scan()
-              return {'statusCode': 200, 'body': json.dumps(result['Items'])}
-        EOF
-      }
-    }
+   ```hcl
+   # main.tf
+   terraform {
+     required_providers {
+       aws     = { source = "hashicorp/aws" }
+       archive = { source = "hashicorp/archive" }
+     }
+   }
 
-    resource "aws_iam_role" "lambda_role" {
-      name = "lambda-role"
-      assume_role_policy = jsonencode({
-        Version = "2012-10-17"
-        Statement = [{ Action = "sts:AssumeRole", Effect = "Allow",
-          Principal = { Service = "lambda.amazonaws.com" } }]
-      })
-    }
+   resource "aws_dynamodb_table" "messages" {
+     name         = "Messages"
+     billing_mode = "PAY_PER_REQUEST"
+     hash_key     = "id"
+     attribute {
+       name = "id"
+       type = "S"
+     }
+   }
 
-    resource "aws_lambda_function" "messages_api" {
-      function_name    = "messages-api"
-      runtime          = "python3.12"
-      handler          = "handler.handler"
-      filename         = data.archive_file.lambda.output_path
-      source_code_hash = data.archive_file.lambda.output_base64sha256
-      role             = aws_iam_role.lambda_role.arn
-      environment {
-        variables = { TABLE_NAME = aws_dynamodb_table.messages.name }
-      }
-    }
+   data "archive_file" "lambda" {
+     type        = "zip"
+     output_path = "${path.module}/handler.zip"
+     source {
+       filename = "handler.py"
+       content  = <<-EOF
+         import json, boto3, os, uuid
+         def handler(event, context):
+             table = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
+             method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
+             if method == 'POST':
+                 item = {'id': str(uuid.uuid4()), **json.loads(event.get('body', '{}'))}
+                 table.put_item(Item=item)
+                 return {'statusCode': 200, 'body': json.dumps(item)}
+             result = table.scan()
+             return {'statusCode': 200, 'body': json.dumps(result['Items'])}
+       EOF
+     }
+   }
 
-    resource "aws_lambda_function_url" "messages_api" {
-      function_name      = aws_lambda_function.messages_api.function_name
-      authorization_type = "NONE"
-    }
+   resource "aws_iam_role" "lambda_role" {
+     name = "lambda-role"
+     assume_role_policy = jsonencode({
+       Version = "2012-10-17"
+       Statement = [{ Action = "sts:AssumeRole", Effect = "Allow",
+         Principal = { Service = "lambda.amazonaws.com" } }]
+     })
+   }
 
-    output "function_url" {
-      value = aws_lambda_function_url.messages_api.function_url
-    }
-    ```
+   resource "aws_lambda_function" "messages_api" {
+     function_name    = "messages-api"
+     runtime          = "python3.12"
+     handler          = "handler.handler"
+     filename         = data.archive_file.lambda.output_path
+     source_code_hash = data.archive_file.lambda.output_base64sha256
+     role             = aws_iam_role.lambda_role.arn
+     environment {
+       variables = { TABLE_NAME = aws_dynamodb_table.messages.name }
+     }
+   }
 
-    **Deploy:**
+   resource "aws_lambda_function_url" "messages_api" {
+     function_name      = aws_lambda_function.messages_api.function_name
+     authorization_type = "NONE"
+   }
 
-    ```bash
-    tflocal init
-    tflocal apply -auto-approve
-    ```
+   output "function_url" {
+     value = aws_lambda_function_url.messages_api.function_url
+   }
+   ```
 
-    **Retrieve the URL:**
+3. Deploy
 
-    ```bash
-    LAMBDA_URL=$(tflocal output -raw function_url)
-    echo $LAMBDA_URL
-    ```
+   ```bash
+   tflocal init
+   tflocal apply -auto-approve
+   ```
 
+4. Retrieve the URL
+
+   ```bash
+   LAMBDA_URL=$(tflocal output -raw function_url)
+   echo $LAMBDA_URL
+   ```
+
+  </Steps>
   </TabItem>
 </Tabs>
 
@@ -280,15 +314,24 @@ Navigate to your [Default Instance](https://app.localstack.cloud/inst/default/st
 
 ## Step 5 — Clean up
 
-When you're done, stop LocalStack to tear down all local resources:
+First, stop LocalStack to tear down all local resources:
 
-```bash
-lstk stop        # if using lstk
-localstack stop  # if using the LocalStack CLI
-```
+{/* prettier-ignore-start */}
+
+<Tabs>
+  <TabItem label="lstk">```bash lstk stop ```</TabItem>
+  <TabItem label="LocalStack CLI">```bash localstack stop ```</TabItem>
+</Tabs>
+{/* prettier-ignore-end */}
 
 LocalStack is ephemeral by default — stopping it removes all provisioned resources.
 To persist state across restarts, see [Persistence](/aws/capabilities/state-management/persistence/) or [Cloud Pods](/aws/capabilities/state-management/cloud-pods/).
+
+Now that you're done, you can remove the tutorial files from your machine (the Lambda source, zip, and, if you used Terraform, `main.tf` and state under the same folder):
+
+```bash
+rm -rf /tmp/localstack-demo
+```
 
 ## Next steps
 

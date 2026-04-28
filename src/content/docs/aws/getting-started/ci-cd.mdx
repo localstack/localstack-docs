@@ -1,16 +1,16 @@
 ---
-title: CI/CD Setup
+title: CI/CD
 description: Run LocalStack in CI pipelines — auth tokens, Docker Compose, and GitHub Actions examples.
 template: doc
 sidebar:
-  order: 5
+  order: 4
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Overview
 
-LocalStack works great in CI environments.
+LocalStack works great in CI environments, allowing your integration tests to run incredibly fast and with no cloud costs.
 The setup differs from local development in a few important ways:
 
 - **Use a CI Auth Token**, not your personal Developer token
@@ -67,6 +67,7 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
     ```
 
     The `setup-localstack` action handles pulling the image, starting the container, and waiting for LocalStack to be ready.
+
   </TabItem>
   <TabItem label="Docker Compose">
     Add LocalStack as a service in your `docker-compose.yml`:
@@ -99,6 +100,7 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
     :::note
     Mounting `/var/run/docker.sock` is required for Lambda emulation, which uses Docker to run function containers.
     :::
+
   </TabItem>
   <TabItem label="Docker">
     Start LocalStack directly with `docker run`:
@@ -116,6 +118,7 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
     # Wait for readiness
     until curl -s http://localhost:4566/_localstack/health | grep -q '"running"'; do sleep 1; done
     ```
+
   </TabItem>
   <TabItem label="CircleCI">
     Add LocalStack as a service in your CircleCI config:
@@ -142,6 +145,7 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
     ```
 
     Set `LOCALSTACK_AUTH_TOKEN` in your CircleCI project's environment variables.
+
   </TabItem>
 </Tabs>
 
@@ -156,13 +160,13 @@ curl -s http://localhost:4566/_localstack/info | jq '.is_license_activated'
 
 ## Key differences from local development
 
-| | Local development | CI/CD |
-|---|---|---|
-| **CLI** | `lstk` or LocalStack CLI | Docker Compose / `docker run` |
-| **Auth** | Browser login or stored token | `LOCALSTACK_AUTH_TOKEN` env var |
-| **Token type** | Developer token | CI token |
-| **State** | Optional persistence | Ephemeral (fresh per run) |
-| **Startup** | Interactive TUI | `--non-interactive` / `-d` flag |
+|                | Local development             | CI/CD                           |
+| -------------- | ----------------------------- | ------------------------------- |
+| **CLI**        | `lstk` or LocalStack CLI      | Docker Compose / `docker run`   |
+| **Auth**       | Browser login or stored token | `LOCALSTACK_AUTH_TOKEN` env var |
+| **Token type** | Developer token               | CI token                        |
+| **State**      | Optional persistence          | Ephemeral (fresh per run)       |
+| **Startup**    | Interactive TUI               | `--non-interactive` / `-d` flag |
 
 ## Persisting state across runs
 
