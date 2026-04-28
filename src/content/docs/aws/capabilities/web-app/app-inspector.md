@@ -30,11 +30,11 @@ When a service call doesn't reach its intended target, App Inspector shows exact
 
 **Verifying service-to-service payloads**
 
-Inspect the exact data passed between services at every hop of your workflow. For example, confirming that a Lambda is passing the right payload to SNS, or that an SQS message body matches what the downstream consumer expects — before it becomes a production issue.
+Inspect the exact data passed between services at every hop of your workflow. For example, confirming that a Lambda function is passing the correct payload to SNS, or that an SQS message body matches what the downstream consumer expects — before it becomes a production issue.
 
 **Catching IAM misconfigurations early**
 
-App Inspector runs against the real LocalStack emulator, which enforces IAM policies. Missing or overly restrictive permissions show up immediately — in your local environment, where they're fast and cheap to fix, rather than at deployment time in the cloud.
+App Inspector runs against the LocalStack emulator, which monitors use of IAM policies. Missing or overly restrictive permissions show up immediately — in your local environment, where they're fast and cheap to fix, rather than at deployment time in the cloud.
 
 
 ## LocalStack Toolkit for VS Code
