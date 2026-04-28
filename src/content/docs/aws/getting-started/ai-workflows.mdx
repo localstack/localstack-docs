@@ -8,39 +8,61 @@ sidebar:
 
 ## Overview
 
-LocalStack is a natural fit for AI-assisted development workflows.
-Whether you're using an AI coding assistant to generate infrastructure code, running an agent that deploys AWS resources, or validating AI-generated Terraform before applying it to real AWS — LocalStack gives you a safe, fast, cost-free environment to do it in.
+AI-assisted development workflows need a fast and secure environment to develop and test in.
+Whether you're using an AI coding assistant to generate infrastructure code, running an agent that deploys AWS resources, or validating AI-generated IaC before applying it to real AWS — LocalStack gives you a safe, fast, cost-free environment to run these workflows in.
 
 ## Connect an AI coding assistant via MCP
 
-The [LocalStack MCP Server](https://github.com/localstack/localstack-mcp-server) exposes LocalStack's API as an MCP (Model Context Protocol) tool server.
-This lets AI assistants like Claude, Cursor, Windsurf, or any MCP-compatible tool inspect and interact with your running LocalStack instance directly.
+The [LocalStack MCP Server](https://github.com/localstack/localstack-mcp-server) is a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server that connects compatible clients (Claude, Cursor, Windsurf, and others) to your LocalStack environment.
+It gives agents tools to run the full local cloud lifecycle—not only generating infrastructure code, but starting the container, deploying and tearing down IaC, analyzing logs, and more.
+See [Introducing the LocalStack MCP Server](https://blog.localstack.cloud/introducing-localstack-mcp-server/) for the original announcement and walkthrough.
 
-With the MCP server connected, your AI assistant can:
+With the MCP server configured, your assistant can use tools such as:
 
-- List running AWS services and deployed resources
-- Create, update, and delete resources in your local environment
-- Query resource state to understand what's already deployed
-- Help you debug issues by inspecting live infrastructure
+- **Lifecycle** — Start, stop, restart, or check status of the LocalStack container
+- **Deploy** — Deploy or destroy CDK, Terraform, SAM, or CloudFormation projects on LocalStack
+- **Operations** — Analyze logs, run AWS CLI commands via `awslocal`, manage [Cloud Pods](/aws/capabilities/state-management/cloud-pods/), and (where supported) IAM policy analysis, chaos injection, and docs search
 
-**Quick setup:**
+...and many more.
 
-```bash
-# Install the LocalStack MCP server
-pip install localstack-mcp-server
+### MCP Server Prerequisites
+
+Before you begin, make sure these are installed and in your system's `PATH`:
+
+- [Node.js](https://nodejs.org/en/) (v20.x or later) to run the `npx` command.
+- [LocalStack CLI](https://docs.localstack.cloud/user-guide/cli/) and [Docker](https://docs.docker.com/get-docker/) to manage the LocalStack container itself.
+- [`cdklocal`](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/) or [`tflocal`](https://docs.localstack.cloud/user-guide/integrations/terraform/) to use the `localstack-deployer` tool. (optional)
+- A [LocalStack Auth Token](https://docs.localstack.cloud/getting-started/auth-token/) to enable licensed features. (optional)
+
+### MCP Server Configuration
+
+Add a server entry like this to your client's MCP configuration—for **Cursor**, this would typically be `~/.cursor/mcp.json`.
+For **Claude Code**, register the server with `claude mcp add` (it is saved to your project-level MCP configuration)..
+
+```json
+{
+  "mcpServers": {
+    "localstack-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@localstack/localstack-mcp-server"],
+      "env": {
+        "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>"
+      }
+    }
+  }
+}
 ```
 
-Then add it to your AI tool's MCP configuration.
-See the [localstack-mcp-server README](https://github.com/localstack/localstack-mcp-server) for tool-specific setup instructions for Claude, Cursor, and others.
+Full prerequisites, Cursor/VS Code/Claude Code variants, custom endpoints (`LOCALSTACK_HOSTNAME`, `LOCALSTACK_PORT`), troubleshooting, and the complete tool reference are on [LocalStack MCP Server](/aws/tooling/mcp-server/).
 
 :::note
-The MCP server connects to a running LocalStack instance — make sure LocalStack is started first with `lstk start` or `localstack start`.
+You do not need to start LocalStack manually before using MCP: an agent can start the container using the **localstack-management** tool once this configuration is in place.
+If LocalStack already runs elsewhere, point the MCP server at it via the `env` block as described in [Connecting to a custom LocalStack endpoint](/aws/tooling/mcp-server/#connecting-to-a-custom-localstack-endpoint).
 :::
 
 ## Deploy with agent-driven automation using Skills
 
 [LocalStack Skills](https://github.com/localstack/skills) are pre-built agent skill definitions for deploying common AWS architectures locally.
-Instead of stepping through manual CLI commands, you describe what you want and an agent handles the deployment.
 
 Skills are useful when:
 
@@ -66,8 +88,8 @@ See [Tooling](/aws/tooling/) for the full list of LocalStack-aware wrappers for 
 
 ## Summary
 
-| Use case                                               | Tool                                                                         |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| AI assistant that can inspect & manage local resources | [LocalStack MCP Server](https://github.com/localstack/localstack-mcp-server) |
-| Agent-driven infrastructure deployment                 | [LocalStack Skills](https://github.com/localstack/skills)                    |
-| Validate AI-generated IaC safely                       | LocalStack + `tflocal` / `cdklocal` / `awslocal`                             |
+| Use case                                               | Tool                                                      |
+| ------------------------------------------------------ | --------------------------------------------------------- |
+| AI assistant that can inspect & manage local resources | [LocalStack MCP Server](/aws/tooling/mcp-server/)         |
+| Agent-driven infrastructure deployment                 | [LocalStack Skills](https://github.com/localstack/skills) |
+| Validate AI-generated IaC safely                       | LocalStack + `tflocal` / `cdklocal` / `awslocal`          |
