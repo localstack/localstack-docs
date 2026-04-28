@@ -20,7 +20,7 @@ With App Inspector, you can:
 
 ## Requirements
 
-App Inspector requires **LocalStack 2026.03.0** or later.
+App Inspector requires **LocalStack 2026.04.0** or later.
 
 ## Use Cases
 
