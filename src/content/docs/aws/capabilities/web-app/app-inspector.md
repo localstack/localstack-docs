@@ -66,7 +66,7 @@ The interface enables you to trace the flow of operations, identify relationship
 
 ### Graph View and Operation Details
 
-Click **View Graph** to visualize the relationships between AWS services in your application as an interactive graph. Each node represents a service, and each edge represents a call between them, making it easy to follow the path of a request across your architecture.
+Click **View Detail** to visualize the relationships between AWS services in your application as an interactive graph. Each node represents a service, and each edge represents a call between them, making it easy to follow the path of a request across your architecture.
 
 By clicking on an operation in the graph or list, you can drill down into the specifics of each interaction. App Inspector displays detailed payloads, metadata, and status for each operation, and highlights errors, warnings, and potential IAM permission issues, enabling precise debugging and troubleshooting.
 
