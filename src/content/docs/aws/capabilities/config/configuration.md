@@ -203,6 +203,7 @@ This section covers configuration options that are specific to certain AWS servi
 | `EKS_K3S_IMAGE_REPOSITORY` | `rancher/k3s` (default) | Custom repository of the `rancher/k3s` image used to spin up Kubernetes clusters locally. |
 | `EKS_START_K3D_LB_INGRESS` |      `0` (default)     |  Whether to start the k3d load balancer and Traefik ingress controller automatically when creating an EKS cluster. Set to `1` to enable.  |
 | `EKS_PERSIST_CLUSTER_CONTENTS` | `0` (default) | When Persistence is enabled or when saving/loading Cloud Pods, this flag can be used to control whether the content deployed to EKS clusters will be persisted. Set to `1` to enable. |
+| `EKS_K3D_CLUSTER_TOKEN` | `localstack-k3d-cluster-token` (default) | Token used to authenticate agent nodes joining a k3d-backed EKS cluster. Setting an explicit token ensures consistent node authentication across k3d versions, which is required for dynamic agent assignment. Can be overridden via the `EKS_K3D_CLUSTER_TOKEN` environment variable. |
 
 ### ElastiCache
 

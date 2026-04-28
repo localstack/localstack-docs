@@ -174,6 +174,38 @@ The following columns are returned:
 | REPLICABLE_WITH_FAILOVER_GROUPS | TEXT | Whether the database can be replicated with failover groups |
 | OWNER_ROLE_TYPE | TEXT | Type of role that owns the database |
 
+### PROCEDURES
+
+The `PROCEDURES` view returns metadata about user-defined stored procedures in the current database.
+
+The following columns are returned:
+
+| Column | Data Type | Description |
+| --- | --- | --- |
+| PROCEDURE_CATALOG | TEXT | Name of the database containing the procedure |
+| PROCEDURE_SCHEMA | TEXT | Name of the schema containing the procedure |
+| PROCEDURE_NAME | TEXT | Name of the procedure |
+| PROCEDURE_OWNER | TEXT | Role that owns the procedure |
+| ARGUMENT_SIGNATURE | TEXT | Snowflake-style argument signature, e.g. `(INPUT_VAR VARCHAR, SCORE FLOAT)` |
+| DATA_TYPE | TEXT | Return type of the procedure |
+| CHARACTER_MAXIMUM_LENGTH | INTEGER | Maximum length when the return type is `VARCHAR` |
+| CHARACTER_OCTET_LENGTH | INTEGER | Maximum octet length when the return type is `VARCHAR` |
+| NUMERIC_PRECISION | INTEGER | Precision when the return type is `NUMBER` |
+| NUMERIC_PRECISION_RADIX | INTEGER | Radix used to express precision (always `10` for `NUMBER`) |
+| NUMERIC_SCALE | INTEGER | Scale when the return type is `NUMBER` |
+| PROCEDURE_LANGUAGE | TEXT | Language the procedure is written in (e.g., `SQL`, `JAVASCRIPT`, `PYTHON`) |
+| PROCEDURE_DEFINITION | TEXT | Body of the procedure as provided at creation time |
+| CREATED | TIMESTAMP_LTZ | Timestamp when the procedure was created |
+| LAST_ALTERED | TIMESTAMP_LTZ | Timestamp when the procedure was last modified |
+| COMMENT | TEXT | Comment on the procedure |
+| EXTERNAL_ACCESS_INTEGRATIONS | TEXT | External access integrations referenced by the procedure |
+| SECRETS | TEXT | Secrets referenced by the procedure |
+| RUNTIME_VERSION | TEXT | Runtime version of the procedure |
+| PACKAGES | TEXT | Packages referenced by the procedure |
+| INSTALLED_PACKAGES | TEXT | Packages installed for the procedure |
+
+The view only returns procedures and skips functions with the same name.
+
 ## INFORMATION_SCHEMA Table Functions
 
 In addition to views, `INFORMATION_SCHEMA` provides table functions that return tabular results. These are invoked using the `TABLE()` syntax.
