@@ -1,6 +1,6 @@
 ---
 title: CI/CD
-description: Run LocalStack in CI pipelines — auth tokens, Docker Compose, and GitHub Actions examples.
+description: Run LocalStack in CI pipelines — auth tokens, Docker Compose, GitHub Actions examples, and persisting state with Cloud Pods or state export.
 template: doc
 sidebar:
   order: 4
@@ -11,15 +11,16 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 ## Overview
 
 LocalStack works great in CI environments, allowing your integration tests to run incredibly fast and with no cloud costs.
-The setup differs from local development in a few important ways:
+The setup differs slighty from local development in a few important ways:
 
 - **Use a CI Auth Token**, not your personal Developer token
 - **Manage the container directly** via Docker Compose or `docker run` — `lstk` and the LocalStack Desktop are local-only tools
-- **LocalStack is ephemeral by default** — each CI run starts fresh, which is usually exactly what you want for reproducible tests
+- **Runs are often isolated per job** — many pipelines start from an empty LocalStack instance for reproducible tests
+- **Persistence in CI is supported** — [Cloud Pods](/aws/capabilities/state-management/cloud-pods/), snapshot-based [persistence](/aws/capabilities/state-management/persistence/) with a mounted volume, or `localstack state export` / `localstack state import` with artifacts or cache.
 
 ## Step 1 — Get a CI Auth Token
 
-CI pipelines should use a dedicated CI Auth Token, not a Developer token tied to a specific user.
+CI pipelines should use a dedicated CI Auth Token, not a developer token tied to a specific user.
 
 1. Go to the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application
 2. Create a new **CI Auth Token**
@@ -52,9 +53,10 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
           - uses: actions/checkout@v4
 
           - name: Start LocalStack
-            uses: LocalStack/setup-localstack@v0.2
+            uses: LocalStack/setup-localstack@v0.2.2
             with:
               image-tag: latest
+              install-awslocal: "true"
             env:
               LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 
@@ -160,20 +162,24 @@ curl -s http://localhost:4566/_localstack/info | jq '.is_license_activated'
 
 ## Key differences from local development
 
-|                | Local development             | CI/CD                           |
-| -------------- | ----------------------------- | ------------------------------- |
-| **CLI**        | `lstk` or LocalStack CLI      | Docker Compose / `docker run`   |
-| **Auth**       | Browser login or stored token | `LOCALSTACK_AUTH_TOKEN` env var |
-| **Token type** | Developer token               | CI token                        |
-| **State**      | Optional persistence          | Ephemeral (fresh per run)       |
-| **Startup**    | Interactive TUI               | `--non-interactive` / `-d` flag |
+|                | Local development             | CI/CD                                                                               |
+| -------------- | ----------------------------- | ----------------------------------------------------------------------------------- |
+| **CLI**        | `lstk` or LocalStack CLI      | Docker Compose / `docker run`                                                       |
+| **Auth**       | Browser login or stored token | `LOCALSTACK_AUTH_TOKEN` env var                                                     |
+| **Token type** | Developer token               | CI token                                                                            |
+| **State**      | Optional persistence          | Optional persistence (same mechanisms; typical pattern is a fresh instance per job) |
+| **Startup**    | Interactive TUI               | `--non-interactive` / `-d` flag                                                     |
 
 ## Persisting state across runs
 
-By default, LocalStack starts fresh on every run — all resources are gone when the container stops.
-This is ideal for most CI use cases (clean, reproducible tests).
+If you tear down the container at the end of a job, nothing is left on disk unless you save it — which is why many teams use a clean instance every time.
+When you **do** need to reuse infrastructure or data between pipeline runs or steps, CI is fully supported:
 
-If you need to share state across runs (e.g., seed data, pre-built infrastructure), look at [Cloud Pods](/aws/capabilities/state-management/cloud-pods/), which let you snapshot and restore LocalStack state.
+- **[Cloud Pods](/aws/capabilities/state-management/cloud-pods/)** — save and load snapshots; the [`setup-localstack`](https://github.com/localstack/setup-localstack) action can load and save pods via `state-backend: cloud-pods` (see [GitHub Actions](/aws/integrations/continuous-integration/github-actions/) — _Store Localstack state_).
+- **Snapshot-based [persistence](/aws/capabilities/state-management/persistence/)** — enable `PERSISTENCE=1` and mount a volume so state survives container restarts on the same runner or workspace.
+- **State export/import** — run `localstack state export` and `localstack state import` and pass the file through your CI provider’s **artifacts**, **cache**, or attached storage (for example, see [GitLab CI](/aws/integrations/continuous-integration/gitlab-ci/) — _Store Localstack state_).
+
+Choose the approach that fits your runner model: for example, multi-job GitLab pipelines often need explicit state handoff because services do not carry between jobs.
 
 ## More CI integrations
 
