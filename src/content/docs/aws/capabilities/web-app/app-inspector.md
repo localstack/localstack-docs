@@ -74,7 +74,6 @@ By clicking on an operation in the graph or list, you can drill down into the sp
 
 ## Supported Services
 
-```suggestion
 
 :::note
 Visit our [Licensing & Tiers](https://docs.localstack.cloud/aws/licensing/) doc to explore usage with App Inspector.
