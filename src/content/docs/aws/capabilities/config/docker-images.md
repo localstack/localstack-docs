@@ -22,7 +22,7 @@ docker pull localstack/localstack:latest
 
 To use the LocalStack for AWS image, you must configure an environment variable named `LOCALSTACK_AUTH_TOKEN` to contain your Auth Token.
 The LocalStack for AWS image will display a warning if you do not set an Auth Token (or if the license is invalid/expired) and will not activate the Pro features.
-LocalStack for AWS gives you access to the complete set of LocalStack features, including the [LocalStack Web Application](https://app.localstack.cloud) and [dedicated customer support](/aws/getting-started/help-support/#enterprise-support).
+LocalStack for AWS gives you access to the complete set of LocalStack features, including the [LocalStack Web Application](https://app.localstack.cloud) and [dedicated customer support](/aws/help-support/get-help/).
 
 You can use the LocalStack for AWS image to start your LocalStack container using various [installation methods](/aws/getting-started/installation/).
 While configuring to run LocalStack with Docker or Docker Compose, run the `localstack/localstack-pro` image with the appropriate tag you have pulled (if not `latest`).
