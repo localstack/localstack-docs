@@ -10,10 +10,16 @@ import { Code, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
-The Auth Token is required to activate the LocalStack for AWS core cloud emulator. It identifies and authenticates users outside the LocalStack Web Application.
-It primarily accesses your workspace and advanced services & features.
+The Auth Token activates LocalStack for AWS. It ties the running instance to your workspace and license and is required whenever you use LocalStack for AWS.
 
-Auth tokens come in two types: a **Developer Auth Token** and a **CI Auth Token**:
+**Whether you need to configure a token by hand** depends on how you run LocalStack:
+
+- **[`lstk`](/aws/tooling/lstk)** (early release) — For most local development, the Auth Token is present but easy to overlook. On first run or after `lstk login`, the CLI completes a browser login flow, stores your **Developer Auth Token** in the system keyring (or a config-directory fallback when no keyring is available), and injects it into the container whenever you start LocalStack. You are still using an Auth Token for activation; `lstk` obtains and reuses it after login instead of asking you to set `LOCALSTACK_AUTH_TOKEN` yourself.
+- **LocalStack CLI (`localstack`)** — You configure the token yourself: set `LOCALSTACK_AUTH_TOKEN` or run `localstack auth set-token` (see [Configuring your Auth Token](#configuring-your-auth-token)). [`lstk`](/aws/tooling/lstk) is currently in early release and missing some core features, so the `localstack` CLI is still the right tool for Cloud Pods, Extensions, Ephemeral Instances, and other advanced features, so many workflows keep using it and therefore set an Auth Token explicitly. For personal development, use your **Developer Auth Token** from the web app.
+- **Docker or Docker Compose** — You pass `LOCALSTACK_AUTH_TOKEN` into the container (see [Configuring your Auth Token](#configuring-your-auth-token)). Use your **Developer Auth Token** for local runs unless you are in CI.
+- **CI pipelines and other automated, non-interactive environments** — You must set `LOCALSTACK_AUTH_TOKEN` to a **CI Auth Token**. Developer Auth Tokens should not be used in CI. See [CI Environments](#ci-environments).
+
+Auth tokens come in two types: a **Developer Auth Token** and a **CI Auth Token**.
 
 - The **Developer Auth Token** is linked to a specific user within a specific workspace.
   Every user has their own Auth Token.
@@ -204,25 +210,6 @@ Another way to confirm this is by checking the logs of the LocalStack container 
 ```
 
 Otherwise, check our [troubleshooting](#troubleshooting) section.
-
-## FAQ
-
-### How do I activate older versions of LocalStack (Before v3.0)?
-
-Prior to the introduction of Auth Tokens, LocalStack used **API keys** managed through the `LOCALSTACK_API_KEY` environment variable for activation.
-
-For backwards compatibility, we've updated our back-end to accept new Auth Tokens within the `LOCALSTACK_API_KEY` variable.
-You can use the new Auth Token in the same way you previously used the API key.
-
-### When will the legacy API keys be phased out?
-
-In early 2025, we will begin phasing out legacy API keys entirely.
-After the sunsetting period, legacy API and legacy CI keys will no longer activate or work with LocalStack.
-
-During the sunsetting period, the legacy service will experience scheduled downtimes.
-These are planned to encourage users to transition to new Auth Tokens while minimizing impact for those who have not yet updated.
-
-The downtime schedule will be communicated well in advance, allowing users ample time to switch to the new Auth Tokens.
 
 ## Troubleshooting
 
