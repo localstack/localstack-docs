@@ -35,6 +35,7 @@ Releases up to and including `v4.14.0` continue to use [Semantic Versioning](htt
 
 | Version   | Release Date       | Release Notes                                                                                     |
 |-----------|--------------------|---------------------------------------------------------------------------------------------------|
+| `v2026.04`| April 29, 2026     | [v2026.04](https://blog.localstack.cloud/localstack-for-aws-release-2026-04-0/)                   |
 | `v2026.03`| March 23, 2026     | [v2026.03](https://blog.localstack.cloud/localstack-for-aws-release-2026-03-0/)                   |
 | `v4.14.0` | February 26, 2026  | [v4.14.0](https://blog.localstack.cloud/localstack-for-aws-release-v-4-14-0/)                     |
 | `v4.13.0` | January 29, 2026   | [v4.13.0](https://blog.localstack.cloud/localstack-for-aws-release-v-4-13-0/)                     |
