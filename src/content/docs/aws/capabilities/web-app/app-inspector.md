@@ -43,7 +43,7 @@ App Inspector is built into the [LocalStack Toolkit for VS Code](/aws/tooling/vs
 
 If you haven't set up the toolkit yet, see [LocalStack Toolkit for VS Code](/aws/tooling/vscode-extension) to get started.
 
-![App Inspector panel in the LocalStack Toolkit for VS Code showing a live event stream](/src/assets/images/aws/app-inspector/app-inspector-vscode.png)
+![App Inspector panel in the LocalStack Toolkit for VS Code showing a live event stream](/images/aws/app-inspector/app-inspector-vscode.png)
 
 
 ## Web Application
@@ -62,7 +62,7 @@ You can view a detailed list of operations in your application, including the **
 
 The interface enables you to trace the flow of operations, identify relationships between services, and analyze patterns for debugging or optimization.
 
-![App Inspector event list showing a fanout pipeline across EventBridge, Lambda, SQS, and SNS](/src/assets/images/aws/app-inspector/app-inspector-fanout-pipeline.png)
+![App Inspector event list showing a fanout pipeline across EventBridge, Lambda, SQS, and SNS](/images/aws/app-inspector/app-inspector-fanout-pipeline.png)
 
 ### Graph View and Operation Details
 
@@ -70,7 +70,7 @@ Click **View Detail** to visualize the relationships between AWS services in you
 
 By clicking on an operation in the graph or list, you can drill down into the specifics of each interaction. App Inspector displays detailed payloads, metadata, and status for each operation, and highlights errors, warnings, and potential IAM permission issues, enabling precise debugging and troubleshooting.
 
-![App Inspector operation details panel showing service, resource, payloads, and status for a Lambda invocation](/src/assets/images/aws/app-inspector/app-inspector-operation-details.png)
+![App Inspector operation details panel showing service, resource, payloads, and status for a Lambda invocation](/images/aws/app-inspector/app-inspector-operation-details.png)
 
 ## Supported Services
 
