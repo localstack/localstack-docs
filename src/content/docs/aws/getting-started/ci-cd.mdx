@@ -14,7 +14,7 @@ LocalStack works great in CI environments, allowing your integration tests to ru
 The setup differs slighty from local development in a few important ways:
 
 - **Use a CI Auth Token**, not your personal Developer token
-- **Manage the container directly** via Docker Compose or `docker run` — `lstk` and the LocalStack Desktop are local-only tools
+- **Start LocalStack without a browser** — Docker Compose, `docker run`, or CI helpers such as [`setup-localstack`](https://github.com/localstack/setup-localstack) are common; [`lstk`](/aws/tooling/lstk/) also works in CI when you set `LOCALSTACK_AUTH_TOKEN` and use [`--non-interactive`](/aws/tooling/lstk/#interactive-and-non-interactive-mode) (or rely on automatic non-interactive detection). LocalStack Desktop remains a local-only GUI.
 - **Runs are often isolated per job** — many pipelines start from an empty LocalStack instance for reproducible tests
 - **Persistence in CI is supported** — [Cloud Pods](/aws/capabilities/state-management/cloud-pods/), snapshot-based [persistence](/aws/capabilities/state-management/persistence/) with a mounted volume, or `localstack state export` / `localstack state import` with artifacts or cache.
 
@@ -162,13 +162,13 @@ curl -s http://localhost:4566/_localstack/info | jq '.is_license_activated'
 
 ## Key differences from local development
 
-|                | Local development             | CI/CD                                                                               |
-| -------------- | ----------------------------- | ----------------------------------------------------------------------------------- |
-| **CLI**        | `lstk` or LocalStack CLI      | Docker Compose / `docker run`                                                       |
-| **Auth**       | Browser login or stored token | `LOCALSTACK_AUTH_TOKEN` env var                                                     |
-| **Token type** | Developer token               | CI token                                                                            |
-| **State**      | Optional persistence          | Optional persistence (same mechanisms; typical pattern is a fresh instance per job) |
-| **Startup**    | Interactive TUI               | `--non-interactive` / `-d` flag                                                     |
+|                | Local development                | CI/CD                                                                               |
+| -------------- | -------------------------------- | ----------------------------------------------------------------------------------- |
+| **CLI**        | `lstk` or LocalStack CLI         | Docker Compose / `docker run`, or `lstk --non-interactive`                          |
+| **Auth**       | Browser login or stored token    | `LOCALSTACK_AUTH_TOKEN` env var                                                     |
+| **Token type** | Developer token                  | CI token                                                                            |
+| **State**      | Optional persistence             | Optional persistence (same mechanisms; typical pattern is a fresh instance per job) |
+| **Startup**    | Interactive TUI (default `lstk`) | Non-interactive (`docker compose`, `docker run -d`, `lstk --non-interactive`)       |
 
 ## Persisting state across runs
 
