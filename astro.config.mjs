@@ -458,10 +458,6 @@ export default defineConfig({
                   collapsed: true,
                 },
                 {
-                  label: 'Event Studio',
-                  slug: 'aws/tooling/event-studio',
-                },
-                {
                   label: 'AWS Replicator',
                   slug: 'aws/tooling/aws-replicator',
                 },
