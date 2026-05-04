@@ -237,6 +237,10 @@ If you are using `HTTP_PROXY` or `HTTPS_PROXY` environment variables to configur
 
 In the example above, add `NO_PROXY=192.168.0.1` to your pod environment variables.
 
+For Lambda child pods, LocalStack automatically extends the Lambda execution environment's `no_proxy` value with the configured `LOCALSTACK_HOST` host, such as `localhost.localstack.cloud`.
+This ensures Lambda runtime traffic to LocalStack bypasses corporate proxies.
+If your cluster uses an admission controller or webhook to inject proxy variables into pods, ensure that it does not overwrite this value, or configure it to include the LocalStack host in `no_proxy`/`NO_PROXY`.
+
 ### Docker runtime errors
 
 ```text
