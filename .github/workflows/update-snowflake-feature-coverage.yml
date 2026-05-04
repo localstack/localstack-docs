@@ -4,9 +4,6 @@ on:
   schedule:
     # "At 00:00 on Sunday."
     - cron: "0 0 * * 0"
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -44,38 +41,38 @@ jobs:
           pip install localstack-core lxml requests
           python ./etc/coverage.py
 
-      # - name: Move the generated files
-      #   run: |
-      #     cd localstack-docs
-      #     mv ../snowflake/coverage-features.md src/content/docs/snowflake/feature-coverage.md
-      #     mv ../snowflake/coverage-functions.md src/content/docs/snowflake/sql-functions.md
-      #     mv ../snowflake/coverage-restapi.md src/content/docs/snowflake/features/rest-api-endpoints.md
+      - name: Move the generated files
+        run: |
+          cd localstack-docs
+          mv ../snowflake/coverage-features.md src/content/docs/snowflake/feature-coverage.md
+          mv ../snowflake/coverage-functions.md src/content/docs/snowflake/sql-functions.md
+          mv ../snowflake/coverage-restapi.md src/content/docs/snowflake/features/rest-api-endpoints.md
 
-      # - name: Parse SQL functions to JSON
-      #   working-directory: localstack-docs
-      #   run: node scripts/snowflake/parse-sql-functions.mjs
+      - name: Parse SQL functions to JSON
+        working-directory: localstack-docs
+        run: node scripts/snowflake/parse-sql-functions.mjs
 
-      # - name: Check for changes
-      #   id: check-for-changes
-      #   working-directory: localstack-docs
-      #   run: |
-      #     git add .
-      #     if git diff --staged --quiet; then
-      #       echo "diff-count=0" >> $GITHUB_OUTPUT
-      #     else
-      #       echo "diff-count=1" >> $GITHUB_OUTPUT
-      #     fi
+      - name: Check for changes
+        id: check-for-changes
+        working-directory: localstack-docs
+        run: |
+          git add .
+          if git diff --staged --quiet; then
+            echo "diff-count=0" >> $GITHUB_OUTPUT
+          else
+            echo "diff-count=1" >> $GITHUB_OUTPUT
+          fi
       
-      # - name: Create PR
-      #   uses: peter-evans/create-pull-request@v7
-      #   if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
-      #   with:
-      #     path: localstack-docs
-      #     title: "Update function coverage documentation"
-      #     body: "Automated update of snowflake feature coverage docs"
-      #     branch: "snowflake-feature-coverage-updates"
-      #     author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
-      #     committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
-      #     commit-message: "automated update of snowflake feature coverage docs"
-      #     token: ${{ secrets.PRO_ACCESS_TOKEN }}
-      #     reviewers: hovaesco, quetzalliwrites
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+        with:
+          path: localstack-docs
+          title: "Update function coverage documentation"
+          body: "Automated update of snowflake feature coverage docs"
+          branch: "snowflake-feature-coverage-updates"
+          author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+          commit-message: "automated update of snowflake feature coverage docs"
+          token: ${{ secrets.PRO_ACCESS_TOKEN }}
+          reviewers: hovaesco, quetzalliwrites
