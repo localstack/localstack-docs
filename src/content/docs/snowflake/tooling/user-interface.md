@@ -41,6 +41,15 @@ Use the **Local Resources** panel on the right to explore available databases, s
 
 You can run the current statement by placing your cursor inside it, or execute only a selected portion of SQL from the editor.
 
+#### Multi-statement query support
+
+![Multi Statement Query](/images/snowflake/snow-ui-multi-statement-query.png)
+
+The SQL Worksheet supports executing multiple SQL statements in a single run. When a multi-statement query is submitted, results are displayed in a scrollable tabbed interface, with each tab labeled **Statement 1**, **Statement 2**, and so on. If a statement fails, its corresponding tab is highlighted to make it easy to identify errors.
+
+:::note
+A truncation banner is displayed when query results exceed 100 rows, indicating that only the first 100 rows are shown.
+:::
 
 ### View Query History
 
