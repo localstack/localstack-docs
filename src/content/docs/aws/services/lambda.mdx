@@ -537,6 +537,17 @@ Some noteworthy configurations include:
 The full list of configurations is defined in the Golang function
 [InitLsOpts](https://github.com/localstack/lambda-runtime-init/blob/localstack/cmd/localstack/main.go#L43).
 
+### Proxy configuration
+
+Lambda execution environments communicate back to the LocalStack container for runtime APIs, credentials, logs, and calls to emulated AWS services.
+If your host, Docker daemon, or Kubernetes cluster injects `http_proxy` or `https_proxy` into Lambda containers, that internal traffic must bypass the proxy.
+
+LocalStack automatically adds the configured `LOCALSTACK_HOST` host, and the runtime `LOCALSTACK_HOSTNAME` when present, to the Lambda execution environment's `no_proxy` variable.
+If your function already defines `no_proxy`, LocalStack preserves the existing entries and prepends the LocalStack hosts.
+
+In Kubernetes deployments, make sure admission controllers or proxy-injection policies do not overwrite the `no_proxy` value after LocalStack creates Lambda pods.
+If your cluster-level policy manages `no_proxy`, include the LocalStack host used by your deployment, for example `localhost.localstack.cloud` or the host configured through `LOCALSTACK_HOST`.
+
 ## Special Tools
 
 LocalStack provides various tools to help you develop, debug, and test your AWS Lambda functions more efficiently.
