@@ -65,7 +65,7 @@ To query the list of S3 buckets in the Ephemeral Instance, run the following com
 aws --endpoint-url=<EPHEMERAL_INSTANCE_ENDPOINT_URL> s3 ls
 ```
 
-You can also use integrations, such as [CDK](/aws/integrations/aws-native-tools/aws-cdk/), [SAM CLI](/aws/integrations/aws-native-tools/aws-sam/), and [Terraform](/aws/integrations/infrastructure-as-code/terraform/), to interact with the Ephemeral Instance.
+You can also use integrations, such as [CDK](/aws/connecting-to-localstack/infrastructure-as-code/aws-cdk/), [SAM CLI](/aws/connecting-to-localstack/infrastructure-as-code/aws-sam/), and [Terraform](/aws/connecting-to-localstack/infrastructure-as-code/terraform/), to interact with the Ephemeral Instance.
 In these integrations, you can change the `AWS_ENDPOINT_URL` environment variable to the endpoint URL of the Ephemeral Instance.
 
 ### View the Logs of the Ephemeral Instance

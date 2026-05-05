@@ -335,6 +335,48 @@ export default defineConfig({
               slug: 'aws/sample-apps',
             },
             {
+              label: 'Connecting',
+              collapsed: true,
+              items: [
+                {
+                  label: 'Overview',
+                  slug: 'aws/connecting-to-localstack',
+                },
+                {
+                  label: 'AWS CLI',
+                  slug: 'aws/connecting-to-localstack/aws-cli',
+                },
+                {
+                  label: 'AWS SDKs',
+                  autogenerate: {
+                    directory: '/aws/connecting-to-localstack/aws-sdks',
+                  },
+                  collapsed: true,
+                },
+                {
+                  label: 'Infrastructure as Code',
+                  autogenerate: {
+                    directory: '/aws/connecting-to-localstack/infrastructure-as-code',
+                  },
+                  collapsed: true,
+                },
+                {
+                  label: 'LocalStack Console',
+                  autogenerate: {
+                    directory: '/aws/connecting-to-localstack/console',
+                  },
+                  collapsed: true,
+                },
+                {
+                  label: 'LocalStack Toolkit (IDEs)',
+                  autogenerate: {
+                    directory: '/aws/connecting-to-localstack/ides',
+                  },
+                  collapsed: true,
+                },
+              ],
+            },
+            {
               label: 'Capabilities',
               collapsed: true,
               items: [
@@ -447,10 +489,6 @@ export default defineConfig({
                   collapsed: true,
                 },
                 {
-                  label: 'LocalStack Toolkit VS Code',
-                  slug: 'aws/tooling/vscode-extension',
-                },
-                {
                   label: 'Lambda Tools',
                   autogenerate: {
                     directory: '/aws/tooling/lambda-tools',
@@ -491,27 +529,6 @@ export default defineConfig({
                   label: 'Continuous Integration',
                   autogenerate: {
                     directory: '/aws/integrations/continuous-integration',
-                  },
-                  collapsed: true,
-                },
-                {
-                  label: 'AWS SDKs',
-                  autogenerate: {
-                    directory: '/aws/integrations/aws-sdks',
-                  },
-                  collapsed: true,
-                },
-                {
-                  label: 'AWS Native Tools',
-                  autogenerate: {
-                    directory: '/aws/integrations/aws-native-tools',
-                  },
-                  collapsed: true,
-                },
-                {
-                  label: 'Infrastructure as Code',
-                  autogenerate: {
-                    directory: '/aws/integrations/infrastructure-as-code',
                   },
                   collapsed: true,
                 },
