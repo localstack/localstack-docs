@@ -11,7 +11,6 @@ LocalStack integrates with a variety of container-based tools and platforms to s
 This section covers how to use LocalStack with:
 
 - DevContainers
-- Gitpod
 - Kubernetes
 - OpenShift
 - eksctl
