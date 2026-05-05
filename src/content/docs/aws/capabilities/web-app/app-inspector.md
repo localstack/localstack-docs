@@ -39,9 +39,9 @@ App Inspector runs against the LocalStack emulator, which monitors use of IAM po
 
 ## LocalStack Toolkit for VS Code
 
-App Inspector is built into the [LocalStack Toolkit for VS Code](/aws/connecting-to-localstack/ides/vscode-extension), so you can trace operation flows and inspect payloads without leaving your editor. Once LocalStack is running, open the App Inspector panel directly in the LocalStack Toolkit extension to view operations and drill into service interactions.
+App Inspector is built into the [LocalStack Toolkit for VS Code](/aws/connecting/ides/vscode-extension), so you can trace operation flows and inspect payloads without leaving your editor. Once LocalStack is running, open the App Inspector panel directly in the LocalStack Toolkit extension to view operations and drill into service interactions.
 
-If you haven't set up the toolkit yet, see [LocalStack Toolkit for VS Code](/aws/connecting-to-localstack/ides/vscode-extension) to get started.
+If you haven't set up the toolkit yet, see [LocalStack Toolkit for VS Code](/aws/connecting/ides/vscode-extension) to get started.
 
 ![App Inspector panel in the LocalStack Toolkit for VS Code showing a live event stream](/images/aws/app-inspector/app-inspector-vscode.png)
 

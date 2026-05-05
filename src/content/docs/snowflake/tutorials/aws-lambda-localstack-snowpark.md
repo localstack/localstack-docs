@@ -21,7 +21,7 @@ The code in this tutorial is available on [GitHub](https://github.com/localstack
 
 - [`localstack` CLI](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/aws/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`awslocal` wrapper](/aws/connecting-to-localstack/aws-cli/#localstack-aws-cli-awslocal)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`awslocal` wrapper](/aws/connecting/aws-cli/#localstack-aws-cli-awslocal)
 - Python 3.10 installed locally
 
 ## Create the Lambda function

@@ -340,37 +340,37 @@ export default defineConfig({
               items: [
                 {
                   label: 'Overview',
-                  slug: 'aws/connecting-to-localstack',
+                  slug: 'aws/connecting',
                 },
                 {
                   label: 'AWS CLI',
-                  slug: 'aws/connecting-to-localstack/aws-cli',
+                  slug: 'aws/connecting/aws-cli',
                 },
                 {
                   label: 'AWS SDKs',
                   autogenerate: {
-                    directory: '/aws/connecting-to-localstack/aws-sdks',
+                    directory: '/aws/connecting/aws-sdks',
                   },
                   collapsed: true,
                 },
                 {
                   label: 'Infrastructure as Code',
                   autogenerate: {
-                    directory: '/aws/connecting-to-localstack/infrastructure-as-code',
+                    directory: '/aws/connecting/infrastructure-as-code',
                   },
                   collapsed: true,
                 },
                 {
                   label: 'LocalStack Console',
                   autogenerate: {
-                    directory: '/aws/connecting-to-localstack/console',
+                    directory: '/aws/connecting/console',
                   },
                   collapsed: true,
                 },
                 {
-                  label: 'LocalStack Toolkit (IDEs)',
+                  label: 'IDE Extensions',
                   autogenerate: {
-                    directory: '/aws/connecting-to-localstack/ides',
+                    directory: '/aws/connecting/ides',
                   },
                   collapsed: true,
                 },
