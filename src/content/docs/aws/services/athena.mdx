@@ -218,6 +218,168 @@ s3://mybucket/prefix/metadata/snap-9068645333036463050-1-2f8d3628-bb13-4081-b5a9
 s3://mybucket/prefix/temp/
 ```
 
+## S3 Tables
+
+LocalStack Athena can query [S3 Tables](/aws/services/s3tables/) through Glue federated catalogs, mirroring the AWS workflow that bridges S3 Tables, Glue, and Athena into a single query path.
+This lets you point Athena at a table bucket and run SQL against the Iceberg tables it manages without copying data into a separate warehouse.
+
+The flow is the same as on AWS:
+
+1. Create a table bucket and namespaces in S3 Tables.
+2. Register a Glue federated catalog (conventionally named `s3tablescatalog`) that delegates metadata to S3 Tables.
+3. Register an Athena data catalog with `Type=GLUE` whose `catalog-id` parameter points to a specific table bucket via the federated catalog (`s3tablescatalog/<bucket-name>`).
+4. Reference the Athena data catalog in `QueryExecutionContext` when running queries.
+
+### Create S3 Tables resources
+
+Create a table bucket and a namespace in S3 Tables.
+The bucket holds your Iceberg tables and the namespace organizes them.
+
+```bash
+awslocal s3tables create-table-bucket --name athena-doc-bucket
+```
+
+```bash title="Output"
+{
+    "arn": "arn:aws:s3tables:us-east-1:000000000000:bucket/athena-doc-bucket"
+}
+```
+
+```bash
+awslocal s3tables create-namespace \
+    --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/athena-doc-bucket \
+    --namespace sales
+```
+
+```bash title="Output"
+{
+    "tableBucketARN": "arn:aws:s3tables:us-east-1:000000000000:bucket/athena-doc-bucket",
+    "namespace": [
+        "sales"
+    ]
+}
+```
+
+### Register a Glue federated catalog
+
+Register a Glue catalog that federates to S3 Tables using the [`CreateCatalog`](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-Catalogs.html#aws-glue-api-catalog-CreateCatalog) API.
+The catalog name `s3tablescatalog` matches the AWS convention used by Athena, EMR, and Redshift.
+
+```bash
+awslocal glue create-catalog \
+    --name s3tablescatalog \
+    --catalog-input '{
+        "FederatedCatalog": {
+            "Identifier": "arn:aws:s3tables:us-east-1:000000000000:bucket/*",
+            "ConnectionName": "aws:s3tables"
+        }
+    }'
+```
+
+You can verify the federated catalog with:
+
+```bash
+awslocal glue get-catalogs
+```
+
+### Register an Athena data catalog
+
+Register an Athena data catalog that points at a specific table bucket using the [`CreateDataCatalog`](https://docs.aws.amazon.com/athena/latest/APIReference/API_CreateDataCatalog.html) API.
+The `catalog-id` parameter follows the format `s3tablescatalog/<bucket-name>` so that Athena routes queries through the federated catalog path.
+
+```bash
+awslocal athena create-data-catalog \
+    --name s3tables-catalog \
+    --type GLUE \
+    --parameters "catalog-id=s3tablescatalog/athena-doc-bucket"
+```
+
+Confirm the data catalog status:
+
+```bash
+awslocal athena get-data-catalog --name s3tables-catalog
+```
+
+```bash title="Output"
+{
+    "DataCatalog": {
+        "Name": "s3tables-catalog",
+        "Type": "GLUE",
+        "Parameters": {
+            "catalog-id": "s3tablescatalog/athena-doc-bucket"
+        },
+        "Status": "CREATE_COMPLETE"
+    }
+}
+```
+
+### Resolve metadata through the catalog
+
+Once the data catalog is registered, Athena resolves S3 Tables namespaces as databases and S3 Tables as tables.
+List the databases exposed by the federated catalog:
+
+```bash
+awslocal athena list-databases --catalog-name s3tables-catalog
+```
+
+```bash title="Output"
+{
+    "DatabaseList": [
+        {
+            "Name": "sales",
+            "Parameters": {
+                "createdBy": "000000000000",
+                "ownerAccountId": "000000000000"
+            }
+        }
+    ]
+}
+```
+
+You can also describe a single namespace with [`GetDatabase`](https://docs.aws.amazon.com/athena/latest/APIReference/API_GetDatabase.html):
+
+```bash
+awslocal athena get-database \
+    --catalog-name s3tables-catalog \
+    --database-name sales
+```
+
+### Run queries via the federated catalog
+
+To query S3 Tables data from Athena, reference the data catalog name in the `QueryExecutionContext`.
+The `Catalog` field maps to the Athena data catalog you registered, and `Database` maps to the S3 Tables namespace:
+
+```bash
+awslocal athena start-query-execution \
+    --query-string "CREATE TABLE orders (id int, customer string, amount double) TBLPROPERTIES ('table_type' = 'ICEBERG')" \
+    --query-execution-context "Catalog=s3tables-catalog,Database=sales" \
+    --result-configuration "OutputLocation=s3://athena-doc-output/results/"
+```
+
+Insert and read data using the same `QueryExecutionContext`:
+
+```bash
+awslocal athena start-query-execution \
+    --query-string "INSERT INTO orders VALUES (1, 'alice', 100.0), (2, 'bob', 250.5)" \
+    --query-execution-context "Catalog=s3tables-catalog,Database=sales" \
+    --result-configuration "OutputLocation=s3://athena-doc-output/results/"
+```
+
+```bash
+awslocal athena start-query-execution \
+    --query-string "SELECT * FROM orders ORDER BY id" \
+    --query-execution-context "Catalog=s3tables-catalog,Database=sales" \
+    --result-configuration "OutputLocation=s3://athena-doc-output/results/"
+```
+
+You can also use the catalog-id reference (`s3tablescatalog/<bucket-name>`) directly in `QueryExecutionContext.Catalog` if you prefer not to register a named Athena data catalog.
+
+:::note
+Query execution against the federated catalog routes through Trino's Iceberg connector inside the LocalStack bigdata container.
+The first query may take several minutes while LocalStack downloads and starts the bigdata dependencies.
+Subsequent queries reuse the running services.
+:::
+
 ## Client configuration
 
 You can configure the Athena service in LocalStack with various clients, such as [PyAthena](https://github.com/laughingman7743/PyAthena/), [awswrangler](https://github.com/aws/aws-sdk-pandas), among others!
