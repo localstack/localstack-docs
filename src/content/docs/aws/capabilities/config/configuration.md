@@ -40,6 +40,7 @@ Options that affect the core LocalStack system.
 | `SERVICES`| `s3,sqs` | A comma-delimited string of services. Check the [internal health endpoint](/aws/capabilities/networking/internal-endpoints#localstack-endpoints) `/_localstack/health` for valid service names. If `SERVICES` is set LocalStack will only load the listed services. All other services will be disabled and cannot be used. |
 | `ALLOW_NONSTANDARD_REGIONS` | `0` (default) | Allows the use of non-standard AWS regions. By default, LocalStack only accepts [standard AWS regions](https://docs.aws.amazon.com/general/latest/gr/rande.html). |
 | `PARITY_AWS_ACCESS_KEY_ID` | `0` (default) | Enables the use production-like access key IDs. By default, LocalStack issues keys with `LSIA...` and `LKIA...` prefix, and will reject keys that start with `ASIA...` or `AKIA...`. |
+| `LOCALSTACK_RESPONSE_HEADER_ENABLED` | `1` (default) \| `0` | Whether LocalStack adds the [`x-localstack` response header](/aws/capabilities/networking/internal-endpoints#x-localstack-response-header) to every AWS API response. The header value is the LocalStack version and lets client tools detect LocalStack and its version. |
 
 ## CLI
 

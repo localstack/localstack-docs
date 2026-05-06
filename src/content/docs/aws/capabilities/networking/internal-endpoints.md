@@ -37,3 +37,21 @@ curl -v --request POST --header "Content-Type: application/json"  --data '{"acti
 The API path for the AWS internal resources is `/_aws`.
 These endpoints offer LocalStack-specific features in addition to the ones offered by the AWS services.
 For instance, `/aws/services/sqs/messages` conveniently access all messages within a SQS queue, without deleting them.
+
+### `x-localstack` response header
+
+LocalStack adds an `x-localstack` HTTP header to every response served by its AWS gateway.
+The header value is the LocalStack version string (for example, `2026.3.1.dev65`), so client tools can detect both that they are talking to LocalStack and which version is running in a single round-trip.
+
+```bash
+curl -s -i http://localhost.localstack.cloud:4566/_localstack/health | grep -i x-localstack
+# x-localstack: 2026.3.1.dev65
+```
+
+:::note
+Before LocalStack `v2026.04`, the header value was the static string `true`.
+Starting with `v2026.04`, it returns the LocalStack version instead.
+Clients that only check for the *presence* of the header remain compatible.
+:::
+
+The header is enabled by default and can be disabled by setting [`LOCALSTACK_RESPONSE_HEADER_ENABLED`](/aws/capabilities/config/configuration#core) to `0`.
