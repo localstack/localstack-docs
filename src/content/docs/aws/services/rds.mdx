@@ -295,6 +295,44 @@ You can now connect to the database utilizing the user you generated and the tok
 PGPASSWORD=$TOKEN psql -d $DB_NAME -U myiam -w -p $PORT -h $HOST
 ```
 
+## SSL/TLS Support
+
+LocalStack's RDS PostgreSQL emulation supports SSL/TLS-encrypted client connections, so you can test applications that require `sslmode=require` (or stricter modes) the same way they would connect to AWS RDS.
+SSL/TLS support is currently available for the `postgres` engine.
+
+### Connect using SSL
+
+Once your DB instance is running, request an encrypted connection from any PostgreSQL client by passing the `sslmode` parameter.
+With `psql`:
+
+```bash
+PGPASSWORD=$MASTER_PW psql "host=$HOST port=$PORT dbname=$DB_NAME user=$MASTER_USER sslmode=require"
+```
+
+The DB instance uses a self-signed certificate, so clients that pin certificate authorities (`sslmode=verify-ca` or `sslmode=verify-full`) will need to disable certificate verification or supply their own trust anchors.
+
+### Force SSL connections
+
+To require every client to connect over SSL, set the `rds.force_ssl` parameter on a DB parameter group and associate it with your instance:
+
+```bash
+awslocal rds create-db-parameter-group \
+    --db-parameter-group-name force-ssl \
+    --db-parameter-group-family postgres17 \
+    --description "Force SSL connections"
+
+awslocal rds modify-db-parameter-group \
+    --db-parameter-group-name force-ssl \
+    --parameters "ParameterName=rds.force_ssl,ParameterValue=1,ApplyMethod=pending-reboot"
+```
+
+Pass `--db-parameter-group-name force-ssl` when creating the DB instance, or attach the parameter group to an existing instance and reboot it.
+Setting `rds.force_ssl=0` disables the SSL requirement, allowing clients to connect with `sslmode=disable`.
+
+:::note
+The `pg_stat_ssl` view always reports `ssl = false`, even when the client connection is encrypted.
+:::
+
 ## Global Database Support
 
 LocalStack extends support for [Aurora Global Database](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html) with certain limitations:
