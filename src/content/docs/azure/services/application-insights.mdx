@@ -18,6 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 ## Getting started
 
 This guide walks you through creating an Application Insights component and retrieving its instrumentation key.
+The Azure CLI commands below use the [`application-insights` extension](https://learn.microsoft.com/en-us/cli/azure/azure-cli-extensions-overview); it is installed automatically the first time you run an `az monitor app-insights` command (Azure CLI 2.71.0 or later).
 
 Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
@@ -45,7 +46,7 @@ az group create --name rg-insights-demo --location westeurope
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-insights-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -54,7 +55,7 @@ az group create --name rg-insights-demo --location westeurope
 
 ### Create an Application Insights component
 
-Create an Application Insights component linked to a Log Analytics workspace:
+Create an Application Insights component in the resource group where you intend to emit telemetry ([`--workspace`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/component?view=azure-cli-latest#optional-parameters), for a workspace-based component linked to Log Analytics, is optional and omitted here).
 
 ```bash
 az monitor app-insights component create \
@@ -68,22 +69,22 @@ az monitor app-insights component create \
 ```bash title="Output"
 {
   "appId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "connectionString": "InstrumentationKey=xxxxxxxx-...;IngestionEndpoint=https://eastus.in.applicationinsights.azure.com/;...",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/microsoft.insights/components/my-app-insights",
+  "connectionString": "InstrumentationKey=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;IngestionEndpoint=https://westeurope.in.applicationinsights.azure.com/",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/Microsoft.Insights/components/my-app-insights",
   "instrumentationKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "kind": "web",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "my-app-insights",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-insights-demo",
-  "type": "microsoft.insights/components"
+  "type": "Microsoft.Insights/components"
 ...
 }
 ```
 
 ### Show and list components
 
-Retrieve the details of the component and list all components in the resource group:
+There is no `az monitor app-insights component list` command in the Azure CLI. Retrieve one component with `component show`, and list all Application Insights components in the resource group with [`az resource list`](https://learn.microsoft.com/en-us/cli/azure/resource?view=azure-cli-latest#az-resource-list) and the `Microsoft.Insights/components` resource type:
 
 ```bash
 az monitor app-insights component show \
@@ -94,15 +95,34 @@ az monitor app-insights component show \
 ```bash title="Output"
 {
   "appId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/microsoft.insights/components/my-app-insights",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/Microsoft.Insights/components/my-app-insights",
   "instrumentationKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "kind": "web",
+  "location": "westeurope",
   "name": "my-app-insights",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-insights-demo",
-  "type": "microsoft.insights/components"
+  "type": "Microsoft.Insights/components"
 ...
 }
+```
+
+```bash
+az resource list \
+  --resource-group rg-insights-demo \
+  --resource-type Microsoft.Insights/components
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/Microsoft.Insights/components/my-app-insights",
+    "name": "my-app-insights",
+    "resourceGroup": "rg-insights-demo",
+    "location": "westeurope",
+    "type": "Microsoft.Insights/components"
+  }
+]
 ```
 
 ### Retrieve billing features
@@ -152,7 +172,7 @@ az monitor app-insights component billing update \
 
 ### Delete and verify
 
-Delete the resource and confirm it no longer appears in the list:
+Delete the resource and confirm it no longer appears when listing `Microsoft.Insights/components` in the resource group:
 
 ```bash
 az monitor app-insights component delete \
@@ -160,22 +180,32 @@ az monitor app-insights component delete \
   --resource-group rg-insights-demo
 ```
 
+```bash
+az resource list \
+  --resource-group rg-insights-demo \
+  --resource-type Microsoft.Insights/components
+```
+
+```bash title="Output"
+[]
+```
+
 ## Features
 
-- **Component lifecycle:** Create, read, list, and delete Application Insights components.
+- **Component lifecycle:** Create, show, and delete Application Insights components; discover instances in a resource group with `az resource list` and `--resource-type Microsoft.Insights/components` (see [Azure CLI — `az monitor app-insights component`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/component?view=azure-cli-latest)).
 - **Instrumentation key generation:** Each component is assigned an instrumentation key returned on creation.
-- **App ID assignment:** Each component is assigned a unique application ID.
-- **Billing feature configuration:** Get and update billing features such as data caps.
-- **Application type support:** Accept `web`, `other`, `ios`, `java`, `phone`, `store`, and `Node.JS` application types.
-- **Kind field support:** Accept `web`, `ios`, `phone`, `store`, `java`, and `other` kind values.
+- **App ID assignment:** Each component is assigned a unique application ID (for example [`properties.AppId`](https://learn.microsoft.com/en-us/rest/api/application-insights/components/create-or-update) / `appId` in CLI output).
+- **Billing feature configuration:** Get and update billing features such as daily data volume caps (`currentBillingFeatures`, `dataVolumeCap`); see [Azure CLI — `component billing`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/component/billing?view=azure-cli-latest).
+- **Application type (`--application-type` / `Application_Type`):** Accepted values documented for the CLI are **`web`** and **`other`** (default `web`).
+- **Kind (`--kind`):** Typical values **`web`**, **`ios`**, **`other`**, **`store`**, **`java`**, **`phone`** (free-form string for UI customization; see [Azure CLI — `component create`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/component?view=azure-cli-latest#az-monitor-app-insights-component-create)).
 
 ## Limitations
 
 - **No telemetry ingestion:** The Application Insights SDK endpoint (`/v2/track`) is not emulated. Telemetry sent from instrumented applications is not stored or queryable.
 - **No Live Metrics stream:** The Live Metrics (QuickPulse) endpoint is not emulated.
-- **No Logs (KQL) queries:** Running KQL queries via `az monitor app-insights query` is not supported.
+- **No Logs (KQL) queries:** Running queries via [`az monitor app-insights query`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights?view=azure-cli-latest#az-monitor-app-insights-query) (KQL over stored application data) is not supported.
 - **No transaction search:** Individual telemetry records are not stored or searchable.
-- **No availability tests via this resource:** Availability tests are managed as a separate `web-test` resource type.
+- **No availability tests via this component:** Availability tests are separate **[`Microsoft.Insights/webtests`](https://learn.microsoft.com/en-us/azure/azure-monitor/app/monitor-web-app-availability)** resources (CLI group [`web-test`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/web-test?view=azure-cli-latest)), not capabilities of an Application Insights component alone.
 - **No continuous export:** Continuous export to Storage is not supported.
 
 ## Samples
