@@ -45,7 +45,7 @@ az group create --name rg-autoscale-demo --location westeurope
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-autoscale-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -68,10 +68,10 @@ az appservice plan create \
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-autoscale-demo/providers/Microsoft.Web/serverfarms/my-plan",
   "kind": "linux",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "my-plan",
   "resourceGroup": "rg-autoscale-demo",
-  "sku": { "capacity": 1, "name": "B1", "tier": "Basic" },
+  "sku": { "capacity": 1, "name": "S1", "tier": "Standard" },
   "type": "Microsoft.Web/serverfarms"
 ...
 }
@@ -113,7 +113,7 @@ az monitor autoscale create \
 
 ### Add a scale-out rule
 
-Add a scale-out rule that increases the instance count when average CPU usage rises above 70%:
+Add a scale-out rule that increases the instance count when average CPU usage rises above 70%. For App Service plans, the metric name is **CpuPercentage** ([common autoscale metrics](https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-common-metrics#web-apps-metrics)); VM and Virtual Machine Scale Sets often use **Percentage CPU** in rule conditions instead.
 
 ```bash
 az monitor autoscale rule create \
@@ -223,13 +223,13 @@ az monitor autoscale list --resource-group rg-autoscale-demo
 - **Scale rules:** Add metric-based scale-out and scale-in rules per profile.
 - **Capacity bounds:** Define minimum, maximum, and default instance counts.
 - **Notification configuration:** Attach email and webhook notifications on scale events (stored, not dispatched).
-- **Resource targeting:** Attach autoscale settings to any scalable resource ID.
+- **Resource targeting:** Point autoscale settings at the resource ID of a [supported scalable resource](https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-overview#supported-services-for-autoscale).
 
 ## Limitations
 
 - **No scaling actions:** Instance counts are not changed by LocalStack. Scale-out and scale-in rules are stored but never executed.
 - **No metric evaluation:** CPU, memory, and custom metric conditions in scale rules are not evaluated.
-- **No scale history:** `az monitor autoscale history list` is not supported.
+- **No scale history:** Autoscale run history (for example the portal run history view, diagnostic logs, or PowerShell [`Get-AzAutoscaleHistory`](https://learn.microsoft.com/en-us/powershell/module/az.monitor/get-azautoscalehistory)) is not available.
 - **No notifications dispatched:** Email and webhook scale notifications are stored but not sent.
 
 ## Samples
