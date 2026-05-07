@@ -95,7 +95,7 @@ services.AddAwsService<IAmazonS3>();
 services.AddAwsService<IAmazonDynamoDB>();
 ```
 
-This automatically configures AWS service clients to use the LocalStack endpoint when running locally. See the [.NET](/aws/connecting/aws-sdks/net/) guide for more information.
+This automatically configures AWS service clients to use the LocalStack endpoint when running locally. See the [.NET](/aws/connecting/aws-sdks/dotnet/) guide for more information.
 
 ## Infrastructure Provisioning
 
