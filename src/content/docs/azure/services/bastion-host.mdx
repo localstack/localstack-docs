@@ -36,7 +36,7 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 
 ### Create a resource group and virtual network
 
-Bastion Host requires a subnet named exactly `AzureBastionSubnet` and a Standard SKU public IP address. Create the prerequisites first:
+For dedicated Bastion SKUs on Azure (Basic, Standard, or Premium), you need a subnet named exactly `AzureBastionSubnet` (with a prefix of /26 or larger) and a Standard SKU public IP address with static allocation. Create the prerequisites first:
 
 ```bash
 az group create \
@@ -86,19 +86,21 @@ az network vnet create \
 ```
 
 
-Create the `AzureBastionSubnet` subnet, which is required by Azure Bastion:
+Create the `AzureBastionSubnet` subnet, which is required by Azure Bastion for dedicated deployments (Basic, Standard, or Premium SKUs).
+
+Microsoft requires this subnet to be **/26 or larger** (/25, /24, and so on); smaller prefixes such as /27 are not valid for Bastion on Azure. See [Choose the right Azure Bastion SKU](https://learn.microsoft.com/en-us/azure/bastion/bastion-sku-comparison) and [Bastion configuration settings](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet).
 
 ```bash
 az network vnet subnet create \
   --name AzureBastionSubnet \
   --resource-group rg-bastion-demo \
   --vnet-name vnet-bastion-demo \
-  --address-prefixes 10.0.255.0/27
+  --address-prefixes 10.0.255.0/26
 ```
 
 ```bash title="Output"
 {
-  "addressPrefix": "10.0.255.0/27",
+  "addressPrefix": "10.0.255.0/26",
   "delegations": [],
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/virtualNetworks/vnet-bastion-demo/subnets/AzureBastionSubnet",
   "name": "AzureBastionSubnet",
@@ -260,7 +262,7 @@ az network bastion delete \
   --yes
 ```
 
-Then list all bastion hosts to confirm the resource group is now empty:
+Then list all bastion hosts in the resource group to confirm none remain:
 
 ```bash
 az network bastion list --resource-group rg-bastion-demo
@@ -275,11 +277,11 @@ az network bastion list --resource-group rg-bastion-demo
 The Bastion Host emulator supports the following features:
 
 - **Create and manage bastion hosts**: Full lifecycle management including create, get, update, list, and delete.
-- **Subnet name validation**: Enforces that the target subnet is named `AzureBastionSubnet`, matching Azure's requirement.
+- **Subnet name validation**: Enforces that the target subnet is named `AzureBastionSubnet`. On Azure, dedicated Bastion deployments (Basic, Standard, or Premium SKUs) also require this subnet to be `/26` or larger—see [Bastion subnet requirements](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet).
 - **Standard SKU public IP validation**: Enforces that the associated public IP address uses the Standard SKU and Static allocation.
 - **IP configuration storage**: Records and returns the subnet and public IP address associations in `ipConfigurations`.
 - **Tags**: Apply and update resource tags on bastion host resources.
-- **SKU tiers**: Support for `Basic` and `Standard` bastion SKUs.
+- **SKU tiers**: Support for `Basic` and `Standard` bastion SKUs. Azure also provides `Developer` and `Premium` SKUs; see [Azure Bastion SKUs](https://learn.microsoft.com/en-us/azure/bastion/bastion-sku-comparison).
 
 ## Limitations
 
