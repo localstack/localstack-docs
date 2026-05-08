@@ -45,7 +45,7 @@ az group create --name rg-func-demo --location westeurope
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-func-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-func-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -68,7 +68,7 @@ az storage account create \
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-func-demo/providers/Microsoft.Storage/storageAccounts/safuncdemo",
   "kind": "StorageV2",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "safuncdemo",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-func-demo",
@@ -86,7 +86,7 @@ Create a function app and associate it with the storage account and App Service 
 az functionapp create \
   --name my-func-app \
   --resource-group rg-func-demo \
-  --consumption-plan-location eastus \
+  --consumption-plan-location westeurope \
   --runtime python \
   --runtime-version 3.13 \
   --functions-version 4 \
@@ -99,7 +99,7 @@ az functionapp create \
   "defaultHostName": "my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-func-demo/providers/Microsoft.Web/sites/my-func-app",
   "kind": "functionapp,linux",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "my-func-app",
   "resourceGroup": "rg-func-demo",
   "state": "Running",
@@ -226,9 +226,9 @@ az functionapp list --resource-group rg-func-demo --output table
 ```
 
 ```bash title="Output"
-Name         Location    State    ResourceGroup    DefaultHostName                                                   AppServicePlan
------------  ----------  -------  ---------------  ----------------------------------------------------------------  ----------------
-my-func-app  East US     Running  rg-func-demo     my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566   Default1pn
+Name         Location     State    ResourceGroup    DefaultHostName                                                   AppServicePlan
+-----------  -----------  -------  ---------------  ----------------------------------------------------------------  ----------------
+my-func-app  West Europe  Running  rg-func-demo     my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566   Default1pn
 ```
 
 
@@ -243,7 +243,7 @@ az functionapp show --name my-func-app --resource-group rg-func-demo
   "defaultHostName": "my-func-app.azurewebsites.azure.localhost.localstack.cloud:4566",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-func-demo/providers/Microsoft.Web/sites/my-func-app",
   "kind": "functionapp,linux",
-  "location": "East US",
+  "location": "westeurope",
   "name": "my-func-app",
   "resourceGroup": "rg-func-demo",
   "state": "Running",
@@ -278,7 +278,7 @@ az functionapp list --resource-group rg-func-demo
 - **Publishing credentials:** Retrieve deployment credentials via the `listPublishingCredentials` action.
 - **Publishing profile:** Download publish profiles via the `listPublishingProfileXmlWithSecrets` action.
 - **SCM access control:** Get and configure source control manager (SCM) access policy.
-- **Diagnostic logs:** Configure logging via `az functionapp log config`.
+- **Diagnostic logs:** Configure logging via `az webapp log config`.
 - **Consumption plan auto-provisioning:** An App Service Plan is automatically created for the Function App when using a consumption plan location.
 - **Docker container execution:** Actual function execution is backed by a Docker container spawned on deploy.
 - **HTTP trigger invocation:** HTTP-triggered functions are accessible via the default host name after deployment.
@@ -290,7 +290,7 @@ az functionapp list --resource-group rg-func-demo
 - **Durable Functions not supported:** Stateful orchestration via Durable Functions is not emulated.
 - **Timer and non-HTTP triggers:** Timer, Blob, Queue, Service Bus, Event Hub, Event Grid, and Cosmos DB triggers are not automatically fired by LocalStack. They must be invoked manually or by external tooling.
 - **Deployment slots:** Staging slots and slot swaps are not supported.
-- **Log streaming:** Live log streaming via `az functionapp log tail` is not supported.
+- **Log streaming:** Live log streaming via `az webapp log tail` is not supported.
 - **Managed identities for functions:** Assigning a managed identity to a Function App is accepted at the ARM level but authentication tokens are not issued for bindings.
 
 ## Samples
