@@ -31,16 +31,25 @@ Navigate to [**https://app.localstack.cloud/inst/default/snowflake**](https://ap
 
 ### Run SQL queries
 
-The User Interface provides a **SQL Worksheet** tab that allows you to run SQL queries and view results. The editor includes SQL syntax highlighting and autocomplete to help you write queries faster.
+The User Interface provides a **SQL Worksheet** tab that allows you to run SQL queries and view results. The editor includes SQL syntax highlighting and autocomplete for SQL keywords, Snowflake built-in functions, and schema objects such as databases, tables, and columns.
 
 ![Running SQL queries](/images/snowflake/new-run-sql-queries.png)
 
-Use the **Local Resources** panel on the right to explore available databases, schemas, tables, and columns in a hierarchical view.
+Use the **Local Resources** panel on the right to explore your schema objects in a hierarchical tree. Each node type — database, schema, table, view, column, and folder — is represented by a dedicated icon. Views are displayed as a distinct category alongside tables within each schema.
 
 ![Local Resources](/images/snowflake/local-resources.png)
 
 You can run the current statement by placing your cursor inside it, or execute only a selected portion of SQL from the editor.
 
+#### Multi-statement query support
+
+![Multi Statement Query](/images/snowflake/snow-ui-multi-statement-query.png)
+
+The SQL Worksheet supports executing multiple SQL statements in a single run. When a multi-statement query is submitted, results are displayed in a scrollable tabbed interface, with each tab labeled **Statement 1**, **Statement 2**, and so on. If a statement fails, its corresponding tab is highlighted to make it easy to identify errors.
+
+:::note
+A truncation banner is displayed when query results exceed 100 rows, indicating that only the first 100 rows are shown.
+:::
 
 ### View Query History
 

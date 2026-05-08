@@ -12,7 +12,7 @@ LocalStack supports:
 
 - Native integration with platforms like CircleCI
 - A generic CI driver for other CI/CD systems
-- Advanced features like Cloud Pods and CI analytics to track performance and test coverage
+- Advanced features like Cloud Pods to track performance and test coverage
 
 With LocalStack in your CI pipeline, you can eliminate slow and costly staging environments while ensuring realistic, high-fidelity cloud testing before deploying to production.
 
@@ -41,8 +41,9 @@ We exclusively support the [`localstack/localstack` image in Docker Hub](https:/
 **Auth Token Requirement**: Using LocalStack in a CI environment requires a valid Auth Token. Ensure your environment variables are configured to include your token to avoid authentication failures during image pull or container initialization.
 :::
 
- can be used in your CI environment by adding a .
-The LocalStack Docker image is available on [Docker Hub](https://hub.docker.com/r/localstack/localstack/tags), and comprehensive documentation is available on our .
+LocalStack Docker images can be used in your CI environment by adding an [Auth Token](https://docs.localstack.cloud/aws/getting-started/auth-token/).
+
+The LocalStack Docker image is available on [Docker Hub](https://hub.docker.com/r/localstack/localstack/tags), and here is our [Docker images documentation](https://docs.localstack.cloud/references/docker-images/).
 
 
 ## CI integrations

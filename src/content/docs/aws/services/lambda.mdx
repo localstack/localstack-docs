@@ -429,7 +429,7 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@
 [^1]: Read more at [Control which events Lambda sends to your function](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html)
 [^2]: The available Metadata properties may not have full parity with AWS depending on the event source (read more at [Understanding event filtering basics](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics)).
 
-Create a [GitHub issue](https://github.com/localstack/localstack/issues/new/choose) or reach out to [LocalStack support](/aws/getting-started/help-support) if you experience any challenges.
+Create a [GitHub issue](https://github.com/localstack/localstack/issues/new/choose) or reach out to [LocalStack Support](/aws/help-support/get-help/) if you experience any challenges.
 
 ## Lambda Layers <Badge text="Pro" size="large" />
 
@@ -536,6 +536,17 @@ Some noteworthy configurations include:
 
 The full list of configurations is defined in the Golang function
 [InitLsOpts](https://github.com/localstack/lambda-runtime-init/blob/localstack/cmd/localstack/main.go#L43).
+
+### Proxy configuration
+
+Lambda execution environments communicate back to the LocalStack container for runtime APIs, credentials, logs, and calls to emulated AWS services.
+If your host, Docker daemon, or Kubernetes cluster injects `http_proxy` or `https_proxy` into Lambda containers, that internal traffic must bypass the proxy.
+
+LocalStack automatically adds the configured `LOCALSTACK_HOST` host, and the runtime `LOCALSTACK_HOSTNAME` when present, to the Lambda execution environment's `no_proxy` variable.
+If your function already defines `no_proxy`, LocalStack preserves the existing entries and prepends the LocalStack hosts.
+
+In Kubernetes deployments, make sure admission controllers or proxy-injection policies do not overwrite the `no_proxy` value after LocalStack creates Lambda pods.
+If your cluster-level policy manages `no_proxy`, include the LocalStack host used by your deployment, for example `localhost.localstack.cloud` or the host configured through `LOCALSTACK_HOST`.
 
 ## Special Tools
 

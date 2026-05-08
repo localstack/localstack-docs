@@ -458,10 +458,6 @@ export default defineConfig({
                   collapsed: true,
                 },
                 {
-                  label: 'Event Studio',
-                  slug: 'aws/tooling/event-studio',
-                },
-                {
                   label: 'AWS Replicator',
                   slug: 'aws/tooling/aws-replicator',
                 },
@@ -570,10 +566,6 @@ export default defineConfig({
                   label: 'Enterprise Image',
                   slug: 'aws/enterprise/enterprise-image',
                 },
-                {
-                  label: 'Enterprise Support',
-                  slug: 'aws/enterprise/enterprise-support',
-                },
               ],
             },
             {
@@ -587,6 +579,11 @@ export default defineConfig({
             {
               label: 'Licensing & Tiers',
               slug: 'aws/licensing',
+            },
+            {
+              label: 'Help & Support',
+              collapsed: true,
+              autogenerate: { directory: '/aws/help-support' },
             },
           ],
         },
@@ -688,4 +685,8 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  // Static site (SSG): deploy the `dist/` folder to any static host (e.g. Cloudflare Pages
+  // with build output directory `dist`). Agent discovery uses `public/_headers` and
+  // `public/.well-known/` — no Worker or middleware required.
 });

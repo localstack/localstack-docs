@@ -1894,9 +1894,6 @@
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 
-### ✅ AWS: /user-guide/tools/event-studio/
-- **Expected:** /aws/tooling/event-studio/
-- **Final URL:** https://localstack-docs.pages.dev/aws/tooling/event-studio/
 - **Status Code:** 200
 - **Message:** ✅ Redirect successful
 

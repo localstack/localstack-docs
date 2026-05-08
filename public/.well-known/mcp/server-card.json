@@ -1,0 +1,41 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  "name": "io.github.localstack/localstack-mcp-server",
+  "version": "0.3.0",
+  "title": "LocalStack MCP Server",
+  "description": "Model Context Protocol server for LocalStack for AWS: manage containers, deploy CDK/Terraform/SAM, search LocalStack documentation, analyze logs, IAM policies, chaos experiments, Cloud Pods, extensions, ephemeral instances, and AWS CLI via awslocal. Runs locally via stdio; requires a LocalStack Auth Token.",
+  "websiteUrl": "https://docs.localstack.cloud/",
+  "repository": {
+    "url": "https://github.com/localstack/localstack-mcp-server",
+    "source": "github"
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": false,
+    "prompts": false
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@localstack/localstack-mcp-server",
+      "version": "0.3.0",
+      "supportedProtocolVersions": ["2025-06-18"],
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "LOCALSTACK_AUTH_TOKEN",
+          "description": "LocalStack Auth Token (required for all MCP tools). See https://docs.localstack.cloud/aws/getting-started/auth-token/",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "io.localstack.mcp/installation": "https://github.com/localstack/localstack-mcp-server#installation",
+    "io.localstack.mcp/npm": "https://www.npmjs.com/package/@localstack/localstack-mcp-server"
+  }
+}
