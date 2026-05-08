@@ -139,6 +139,7 @@ az network public-ip list \
     "location": "westeurope",
     "name": "pip-demo",
     "provisioningState": "Succeeded",
+    "publicIPAddressVersion": "IPv4",
     "publicIPAllocationMethod": "Static",
     "sku": { "name": "Standard", "tier": "Regional" },
     "type": "Microsoft.Network/publicIPAddresses",
@@ -157,12 +158,12 @@ az network public-ip list \
 ```
 
 ```bash title="Output"
-Name      ResourceGroup    Location    Zones    Address        IdleTimeoutInMinutes    ProvisioningState
---------  ---------------  ----------  -------  -------------  ----------------------  -------------------
-pip-demo  rg-pip-demo      westeurope           20.115.40.220  4                       Succeeded
+Name      ResourceGroup    Location    Zones    Address        AddressVersion    AllocationMethod    IdleTimeoutInMinutes    ProvisioningState
+--------  ---------------  ----------  -------  -------------  ----------------  ------------------  ----------------------  -------------------
+pip-demo  rg-pip-demo      westeurope           20.115.40.220  IPv4              Static              4                       Succeeded
 ```
 
-Then list all public IP addresses in the resource group:
+To show the same resources scoped to one resource group:
 
 ```bash
 az network public-ip list \
@@ -171,9 +172,9 @@ az network public-ip list \
 ```
 
 ```bash title="Output"
-Name      ResourceGroup    Location    Zones    Address        IdleTimeoutInMinutes    ProvisioningState
---------  ---------------  ----------  -------  -------------  ----------------------  -------------------
-pip-demo  rg-pip-demo      westeurope           20.115.40.220  4                       Succeeded
+Name      ResourceGroup    Location    Zones    Address        AddressVersion    AllocationMethod    IdleTimeoutInMinutes    ProvisioningState
+--------  ---------------  ----------  -------  -------------  ----------------  ------------------  ----------------------  -------------------
+pip-demo  rg-pip-demo      westeurope           20.115.40.220  IPv4              Static              4                       Succeeded
 ```
 
 ### Delete the public IP address
@@ -220,7 +221,7 @@ The Public IP Address emulator supports the following features:
 The following samples demonstrate how to use Azure Public IP Addresses with LocalStack for Azure:
 
 - [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
-- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/)
 
 ## API Coverage
 
