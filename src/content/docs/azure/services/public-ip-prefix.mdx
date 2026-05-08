@@ -73,13 +73,17 @@ az network public-ip prefix create \
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-prefix-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-demo",
-  "ipPrefix": "20.184.13.0/29",
-  "ipTags": [],
   "location": "westeurope",
   "name": "pip-prefix-demo",
-  "prefixLength": 29,
-  "provisioningState": "Succeeded",
-  "publicIPAddressVersion": "IPv4",
+  "properties": {
+    "ipPrefix": "20.184.13.0/29",
+    "ipTags": [],
+    "prefixLength": 29,
+    "provisioningState": "Succeeded",
+    "publicIPAddressVersion": "IPv4",
+    "resourceGuid": "00000000-0000-0000-0000-000000000000"
+    ...
+  },
   "resourceGroup": "rg-pip-prefix-demo",
   "sku": {
     "name": "Standard",
@@ -87,7 +91,7 @@ az network public-ip prefix create \
   },
   "type": "Microsoft.Network/publicIPPrefixes",
   "zones": []
-...
+  ...
 }
 ```
 
@@ -104,13 +108,17 @@ az network public-ip prefix show \
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-prefix-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-demo",
-  "ipPrefix": "20.184.13.0/29",
-  "ipTags": [],
   "location": "westeurope",
   "name": "pip-prefix-demo",
-  "prefixLength": 29,
-  "provisioningState": "Succeeded",
-  "publicIPAddressVersion": "IPv4",
+  "properties": {
+    "ipPrefix": "20.184.13.0/29",
+    "ipTags": [],
+    "prefixLength": 29,
+    "provisioningState": "Succeeded",
+    "publicIPAddressVersion": "IPv4",
+    "resourceGuid": "00000000-0000-0000-0000-000000000000"
+    ...
+  },
   "resourceGroup": "rg-pip-prefix-demo",
   "sku": {
     "name": "Standard",
@@ -118,7 +126,7 @@ az network public-ip prefix show \
   },
   "type": "Microsoft.Network/publicIPPrefixes",
   "zones": []
-...
+  ...
 }
 ```
 
@@ -133,13 +141,15 @@ az network public-ip prefix list \
 [
   {
     "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-prefix-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-demo",
-    "ipPrefix": "20.184.13.0/29",
-    "ipTags": [],
     "location": "westeurope",
     "name": "pip-prefix-demo",
-    "prefixLength": 29,
-    "provisioningState": "Succeeded",
-    "publicIPAddressVersion": "IPv4",
+    "properties": {
+      "ipPrefix": "20.184.13.0/29",
+      "ipTags": [],
+      "prefixLength": 29,
+      "provisioningState": "Succeeded",
+      "publicIPAddressVersion": "IPv4"
+    },
     "resourceGroup": "rg-pip-prefix-demo",
     "sku": { "name": "Standard", "tier": "Regional" },
     "type": "Microsoft.Network/publicIPPrefixes",
@@ -173,7 +183,7 @@ az network public-ip prefix list --resource-group rg-pip-prefix-demo
 The Public IP Prefix emulator supports the following features:
 
 - **Create and manage prefixes**: Full lifecycle management including create, get, update, list, and delete.
-- **Configurable prefix length**: Set any prefix length from /28 to /31 to define the size of the IP range.
+- **Configurable prefix length**: For IPv4, set prefix length /28 through /31 to define how many addresses the range contains (/28 = 16, /29 = 8, /30 = 4, /31 = 2 addresses), matching Azure’s [published prefix sizes](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix#prefix-sizes). IPv6 uses /124–/127 for the same address counts when you configure an IPv6 prefix in Azure.
 - **Tags**: Apply and update resource tags on public IP prefix resources.
 - **Subscription-scoped listing**: List all public IP prefixes across a subscription.
 - **Multiple prefix lengths**: Create prefixes of different lengths within the same resource group.
@@ -189,7 +199,7 @@ The Public IP Prefix emulator supports the following features:
 The following samples demonstrate how to use Azure Public IP Prefixes with LocalStack for Azure:
 
 - [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
-- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/)
 
 ## API Coverage
 
