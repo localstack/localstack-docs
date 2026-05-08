@@ -70,7 +70,7 @@ az afd profile create \
 ```bash title="Output"
 {
   "frontDoorId": "a3664ef5-d8cb-4930-b7f8-8a762d24acf9",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
   "kind": "frontdoor",
   "location": "Global",
   "name": "afd-demo",
@@ -103,13 +103,13 @@ az afd endpoint create \
   "deploymentStatus": "Succeeded",
   "enabledState": "Enabled",
   "hostName": "my-endpoint-08621c35aa0147f0.z01.azurefd.net",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/afdendpoints/my-endpoint",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/afdEndpoints/my-endpoint",
   "location": "Global",
   "name": "my-endpoint",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-afd-demo",
   "tags": {},
-  "type": "Microsoft.Cdn/profiles/afdendpoints"
+  "type": "Microsoft.Cdn/profiles/afdEndpoints"
 }
 ```
 
@@ -141,7 +141,7 @@ az afd origin-group create \
     "probeProtocol": "Http",
     "probeRequestType": "GET"
   },
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/origingroups/my-origin-group",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/originGroups/my-origin-group",
   "loadBalancingSettings": {
     "additionalLatencyInMilliseconds": 0,
     "sampleSize": 2,
@@ -151,7 +151,7 @@ az afd origin-group create \
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-afd-demo",
   "sessionAffinityState": "Disabled",
-  "type": "Microsoft.Cdn/profiles/origingroups"
+  "type": "Microsoft.Cdn/profiles/originGroups"
 }
 ```
 
@@ -178,13 +178,13 @@ az afd origin create \
   "hostName": "example.com",
   "httpPort": 80,
   "httpsPort": 443,
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/origingroups/my-origin-group/origins/my-origin",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/originGroups/my-origin-group/origins/my-origin",
   "name": "my-origin",
   "originGroupName": "my-origin-group",
   "priority": 1,
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-afd-demo",
-  "type": "Microsoft.Cdn/profiles/origingroups/origins",
+  "type": "Microsoft.Cdn/profiles/originGroups/origins",
   "weight": 50
 }
 ```
@@ -192,18 +192,15 @@ az afd origin create \
 ### Create a route
 
 Create a route to wire the endpoint to the origin group and define which protocols and path patterns are accepted.
-The `--origin-group` flag requires the full ARM resource ID:
+Per the [`az afd route create`](https://learn.microsoft.com/en-us/cli/azure/afd/route#az-afd-route-create) reference, `--origin-group` accepts either the origin group resource name within the profile or its full ARM resource ID (this example passes the origin group name, `my-origin-group`).
 
 ```bash
-SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-ORIGIN_GROUP_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/originGroups/my-origin-group"
-
 az afd route create \
   --resource-group rg-afd-demo \
   --profile-name afd-demo \
   --endpoint-name my-endpoint \
   --route-name my-route \
-  --origin-group "$ORIGIN_GROUP_ID" \
+  --origin-group my-origin-group \
   --supported-protocols Http Https \
   --link-to-default-domain Enabled \
   --https-redirect Disabled
@@ -216,7 +213,7 @@ az afd route create \
   "enabledState": "Enabled",
   "forwardingProtocol": "MatchRequest",
   "httpsRedirect": "Disabled",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/afdendpoints/my-endpoint/routes/my-route",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/afdEndpoints/my-endpoint/routes/my-route",
   "linkToDefaultDomain": "Enabled",
   "name": "my-route",
   "originGroup": {
@@ -233,14 +230,14 @@ az afd route create \
     "Http",
     "Https"
   ],
-  "type": "Microsoft.Cdn/profiles/afdendpoints/routes"
+  "type": "Microsoft.Cdn/profiles/afdEndpoints/routes"
 }
 ```
 
 ### Work with rule sets and rules
 
 Create a rule set to group related routing rules under the profile.
-Rule set names must be alphanumeric only:
+Rule set names must be globally unique within the CDN resource provider ([`az afd rule-set create`](https://learn.microsoft.com/en-us/cli/azure/afd/rule-set#az-afd-rule-set-create)). Microsoft's naming overview documents patterns for sibling `Microsoft.Cdn` entities such as [origin groups and routes](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules#microsoftcdn).
 
 ```bash
 az afd rule-set create \
@@ -252,11 +249,11 @@ az afd rule-set create \
 ```bash title="Output"
 {
   "deploymentStatus": "Succeeded",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/ruleSets/myruleset",
   "name": "myruleset",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-afd-demo",
-  "type": "Microsoft.Cdn/profiles/rulesets"
+  "type": "Microsoft.Cdn/profiles/ruleSets"
 }
 ```
 
@@ -277,14 +274,14 @@ az afd rule create \
   "actions": [],
   "conditions": [],
   "deploymentStatus": "Succeeded",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset/rules/myrule",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/ruleSets/myruleset/rules/myrule",
   "matchProcessingBehavior": "Continue",
   "name": "myrule",
   "order": 1,
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-afd-demo",
   "ruleSetName": "myruleset",
-  "type": "Microsoft.Cdn/profiles/rulesets/rules"
+  "type": "Microsoft.Cdn/profiles/ruleSets/rules"
 }
 ```
 
@@ -300,11 +297,11 @@ az afd rule-set list \
 [
   {
     "deploymentStatus": "Succeeded",
-    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/ruleSets/myruleset",
     "name": "myruleset",
     "provisioningState": "Succeeded",
     "resourceGroup": "rg-afd-demo",
-    "type": "Microsoft.Cdn/profiles/rulesets"
+    "type": "Microsoft.Cdn/profiles/ruleSets"
   }
 ]
 ```
@@ -322,14 +319,14 @@ az afd rule list \
     "actions": [],
     "conditions": [],
     "deploymentStatus": "Succeeded",
-    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/rulesets/myruleset/rules/myrule",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo/ruleSets/myruleset/rules/myrule",
     "matchProcessingBehavior": "Continue",
     "name": "myrule",
     "order": 1,
     "provisioningState": "Succeeded",
     "resourceGroup": "rg-afd-demo",
     "ruleSetName": "myruleset",
-    "type": "Microsoft.Cdn/profiles/rulesets/rules"
+    "type": "Microsoft.Cdn/profiles/ruleSets/rules"
   }
 ]
 ```
@@ -346,7 +343,7 @@ az afd profile show \
 
 ```bash title="Output"
 {
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
   "kind": "frontdoor",
   "location": "Global",
   "name": "afd-demo",
@@ -369,7 +366,7 @@ az afd profile list --resource-group rg-afd-demo
 [
   {
     "frontDoorId": "083e606f-cec4-481b-b1d2-781b4428e52c",
-    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-afd-demo/providers/Microsoft.Cdn/profiles/afd-demo",
     "kind": "frontdoor",
     "location": "Global",
     "name": "afd-demo",
@@ -414,7 +411,7 @@ az afd profile list --resource-group rg-afd-demo
 - **Load balancing settings:** `sampleSize`, `successfulSamplesRequired`, and `additionalLatencyInMilliseconds` are stored and returned correctly.
 - **Route configuration:** Pattern matching, supported protocols, HTTPS redirect behaviour, and origin group linkage are fully supported.
 - **Rule sets and rules:** Match processing behaviour and ordering are stored and returned.
-- **Endpoint name availability:** Availability checks via `afd_profiles__check_endpoint_name_availability` reflect the real availability state.
+- **Endpoint name availability:** **`checkEndpointNameAvailability`** (`POST .../Microsoft.Cdn/profiles/{profileName}/checkEndpointNameAvailability`); see Microsoft's [REST reference](https://learn.microsoft.com/en-us/rest/api/frontdoor/azurefrontdoorstandardpremium/afd-profiles/check-endpoint-name-availability).
 
 ## Limitations
 
