@@ -10,7 +10,7 @@ import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureF
 
 Azure Cosmos DB is a globally distributed, multi-model NoSQL database service designed for high availability and low latency.
 It supports multiple APIs including SQL (NoSQL), MongoDB, Cassandra, Gremlin, and Table, enabling teams to choose the data model that best fits their application.
-Cosmos DB is commonly used for real-time applications, globally replicated datasets, and multi-tenant SaaS platforms that require predictable performance at any scale. For more information, see [Welcome to Azure Cosmos DB](https://learn.microsoft.com/en-us/azure/cosmos-db/introduction).
+Cosmos DB is commonly used for real-time applications, globally replicated datasets, and multi-tenant SaaS platforms that require predictable performance at any scale. For more information, see [Introduction to Azure Cosmos DB](https://learn.microsoft.com/en-us/azure/cosmos-db/introduction).
 
 LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Cosmos DB.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Cosmos DB's integration with LocalStack.
@@ -43,7 +43,7 @@ This section walks through creating a Cosmos DB account with the SQL API, creati
 Create a resource group to hold all resources created in this guide:
 
 ```bash
-az group create --name rg-cosmos-demo --location westeurope
+az group create --name rg-cosmos-demo --location eastus
 ```
 
 ```bash title="Output"
@@ -211,7 +211,7 @@ Create a second Cosmos DB account configured for the MongoDB API:
 
 ```bash
 az cosmosdb create \
-  --name mymongoacccount \
+  --name mymongoaccount \
   --resource-group rg-cosmos-demo \
   --locations regionName=eastus \
   --kind MongoDB
@@ -220,11 +220,11 @@ az cosmosdb create \
 ```bash title="Output"
 {
   "databaseAccountOfferType": "Standard",
-  "documentEndpoint": "https://mymongoacccount.documents.azure.com:443/",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoacccount",
+  "documentEndpoint": "https://mymongoaccount.documents.azure.com:443/",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoaccount",
   "kind": "MongoDB",
   "location": "East US",
-  "name": "mymongoacccount",
+  "name": "mymongoaccount",
   "provisioningState": "Succeeded",
   "resourceGroup": "rg-cosmos-demo",
   "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -238,7 +238,7 @@ Retrieve the MongoDB-compatible connection string for the account:
 
 ```bash
 az cosmosdb keys list \
-  --name mymongoacccount \
+  --name mymongoaccount \
   --resource-group rg-cosmos-demo \
   --type connection-strings \
   --query "connectionStrings[0].connectionString" \
@@ -255,14 +255,14 @@ Create a MongoDB database within the account:
 
 ```bash
 az cosmosdb mongodb database create \
-  --account-name mymongoacccount \
+  --account-name mymongoaccount \
   --resource-group rg-cosmos-demo \
   --name mymongodb
 ```
 
 ```bash title="Output"
 {
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoacccount/mongodbDatabases/mymongodb",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoaccount/mongodbDatabases/mymongodb",
   "name": "mymongodb",
   "resourceGroup": "rg-cosmos-demo",
   "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases"
@@ -276,7 +276,7 @@ Create a MongoDB collection inside the database with a shard key:
 
 ```bash
 az cosmosdb mongodb collection create \
-  --account-name mymongoacccount \
+  --account-name mymongoaccount \
   --resource-group rg-cosmos-demo \
   --database-name mymongodb \
   --name mycollection \
@@ -286,7 +286,7 @@ az cosmosdb mongodb collection create \
 
 ```bash title="Output"
 {
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoacccount/mongodbDatabases/mymongodb/collections/mycollection",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoaccount/mongodbDatabases/mymongodb/collections/mycollection",
   "name": "mycollection",
   "resourceGroup": "rg-cosmos-demo",
   "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections"
@@ -300,7 +300,7 @@ Extract the connection string and connect to the MongoDB database using `mongosh
 
 ```bash
 CONN_STR=$(az cosmosdb keys list \
-  --name mymongoacccount \
+  --name mymongoaccount \
   --resource-group rg-cosmos-demo \
   --type connection-strings \
   --query "connectionStrings[0].connectionString" \
@@ -325,9 +325,9 @@ az cosmosdb list --resource-group rg-cosmos-demo
 ```bash title="Output"
 [
   {
-    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoacccount",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-cosmos-demo/providers/Microsoft.DocumentDB/databaseAccounts/mymongoaccount",
     "kind": "MongoDB",
-    "name": "mymongoacccount",
+    "name": "mymongoaccount",
     "provisioningState": "Succeeded",
     "resourceGroup": "rg-cosmos-demo",
     "type": "Microsoft.DocumentDB/databaseAccounts"
@@ -339,7 +339,7 @@ Delete the second Cosmos DB account configured for the MongoDB API:
 
 ```bash
 az cosmosdb delete \
-  --name mymongoacccount \
+  --name mymongoaccount \
   --resource-group rg-cosmos-demo \
   --yes
 ```
@@ -347,7 +347,7 @@ az cosmosdb delete \
 Then list all Cosmos DB accounts to confirm the resource group is now empty:
 
 ```bash
-az monitor action-group list --resource-group rg-monit-demo
+az cosmosdb list --resource-group rg-cosmos-demo
 ```
 
 ```bash title="Output"
@@ -358,7 +358,7 @@ az monitor action-group list --resource-group rg-monit-demo
 
 - **Account lifecycle:** Create, read, list, and delete Cosmos DB accounts for both SQL and MongoDB API kinds.
 - **Account key management:** Retrieve primary and secondary master keys and read-only keys.
-- **Connection strings:** Retrieve connection strings for MongoDB accounts via `az cosmosdb keys list --type connection-strings`.
+- **Connection strings:** Retrieve connection strings for the API for NoSQL (SQL) and for MongoDB via `az cosmosdb keys list --type connection-strings`.
 - **Name availability check:** Validate account name uniqueness.
 - **SQL databases:** Create, read, list, and delete SQL (NoSQL) databases within an account.
 - **SQL containers:** Create, read, list, and delete SQL containers with partition key configuration.
