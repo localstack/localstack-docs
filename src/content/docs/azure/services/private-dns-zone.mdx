@@ -87,10 +87,7 @@ az network vnet create \
 
 ### Create a private DNS zone
 
-Create a private DNS zone and link it to the virtual network for internal name resolution:
-
-
-Create a DNS zone in the second resource group to demonstrate cleanup:
+Create a private DNS zone using the recommended name for Blob storage private endpoints, [`privatelink.blob.core.windows.net`](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns), so it can be integrated with a private endpoint later in this guide. Linking the zone to your virtual network is covered in the next section.
 
 ```bash
 az network private-dns zone create \
@@ -373,9 +370,14 @@ The IP address `10.0.1.4` — the first usable address in the `10.0.1.0/24` subn
 
 ### Delete a virtual network link and DNS zone
 
-Delete the virtual network link first, then delete the DNS zone:
+On Azure, a private DNS zone cannot be deleted while a private endpoint still references it through a DNS zone group, and the zone must have no remaining [virtual network links](https://learn.microsoft.com/en-us/cli/azure/network/private-dns/zone#az-network-private-dns-zone-delete). Remove the DNS zone group from the private endpoint first, then delete the link and the zone:
 
 ```bash
+az network private-endpoint dns-zone-group delete \
+  --name default \
+  --resource-group rg-dns-demo \
+  --endpoint-name pe-blob-dns
+
 az network private-dns link vnet delete \
   --name link-to-vnet-dns-demo \
   --resource-group rg-dns-demo \
@@ -392,7 +394,7 @@ The Private DNS Zone emulator supports the following features:
 
 - **Create and manage private DNS zones**: Full lifecycle management including create, get, list, and delete.
 - **Virtual network links**: Create, get, list, and delete virtual network links that associate a DNS zone with a virtual network.
-- **Auto-registration**: Store and return the `registrationEnabled` flag on virtual network links.
+- **Virtual network link settings**: The `registrationEnabled` flag on virtual network links is stored and returned. Automatic DNS registration from VMs in linked virtual networks is not emulated; see [Limitations](#limitations).
 - **Zone isolation by resource group**: The same DNS zone name can exist independently in multiple resource groups.
 - **Tags**: Apply and update resource tags on private DNS zone resources.
 - **Cross-virtual-network support**: Link a single DNS zone to multiple virtual networks.
@@ -409,7 +411,7 @@ The Private DNS Zone emulator supports the following features:
 The following samples demonstrate how to use Azure Private DNS Zones with LocalStack for Azure:
 
 - [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
-- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/)
 
 ## API Coverage
 
