@@ -383,7 +383,7 @@ az network private-dns record-set a list \
 ]
 ```
 
-The IP address `10.0.1.4` — the first usable address in the `10.0.1.0/24` subnet — is consistent across all three: the network interface IP configuration, the DNS zone group record set, and the A record in the private DNS zone.
+The IP address `10.0.1.4` is consistent across all three: the network interface IP configuration, the DNS zone group record set, and the A record in the private DNS zone. On Azure, the first four addresses in each subnet are reserved (for `10.0.1.0/24`, that is `10.0.1.0`–`10.0.1.3`), so `10.0.1.4` is typically the first assignable address for resources such as a private endpoint. The emulator surfaces the same value across these APIs for consistency even though it does not enforce real subnet allocation (see [Limitations](#limitations)).
 
 ### Delete a private endpoint
 
@@ -428,7 +428,7 @@ The Private Endpoint emulator supports the following features:
 The following samples demonstrate how to use Azure Private Endpoints with LocalStack for Azure:
 
 - [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
-- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/README.md)
 
 ## API Coverage
 
