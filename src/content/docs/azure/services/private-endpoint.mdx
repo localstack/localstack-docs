@@ -1,0 +1,435 @@
+---
+title: "Private Endpoint"
+description: Get started with Azure Private Endpoint on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Private Endpoint is a network interface that connects you privately and securely to a service powered by Azure Private Link.
+Private endpoints use a private IP address from your virtual network, effectively bringing the service into your virtual network and eliminating exposure to the public internet.
+They are commonly used to access Azure PaaS services, such as Storage or Cosmos DB, from within a private network without internet connectivity. For more information, see [What is Azure Private Endpoint?](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Private Endpoints.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Private Endpoint's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Private Endpoint and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group, virtual network, and subnet
+
+Private endpoints are assigned a private IP from a subnet. Create the prerequisites first:
+
+```bash
+az group create \
+  --name rg-pe-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-pe-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+
+Create a virtual network for the private endpoint:
+
+```bash
+az network vnet create \
+  --name vnet-pe-demo \
+  --resource-group rg-pe-demo \
+  --location westeurope \
+  --address-prefixes 10.0.0.0/16
+```
+
+```bash title="Output"
+{
+  "newVNet": {
+    "addressSpace": { "addressPrefixes": [ "10.0.0.0/16" ] },
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/virtualNetworks/vnet-pe-demo",
+    "location": "westeurope",
+    "name": "vnet-pe-demo",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-pe-demo",
+    "subnets": [],
+    "type": "Microsoft.Network/virtualNetworks",
+    ...
+  }
+}
+```
+
+Create a subnet within the virtual network to host the private endpoint:
+
+```bash
+az network vnet subnet create \
+  --name subnet-pe \
+  --resource-group rg-pe-demo \
+  --vnet-name vnet-pe-demo \
+  --address-prefixes 10.0.1.0/24
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "10.0.1.0/24",
+  "delegations": [],
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/virtualNetworks/vnet-pe-demo/subnets/subnet-pe",
+  "name": "subnet-pe",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-pe-demo",
+  "type": "Microsoft.Network/virtualNetworks/subnets"
+...
+}
+```
+
+### Create a storage account (target resource)
+
+Private endpoints connect to a specific Azure resource. Create a storage account as the target:
+
+```bash
+az storage account create \
+  --name stpedemo \
+  --resource-group rg-pe-demo \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Storage/storageAccounts/stpedemo",
+  "kind": "StorageV2",
+  "location": "westeurope",
+  "name": "stpedemo",
+  "primaryEndpoints": {
+    "blob": "https://stpedemo.blob.core.azure.localhost.localstack.cloud:4566",
+    "file": "https://stpedemo.file.core.azure.localhost.localstack.cloud:4566",
+    "queue": "https://stpedemo.queue.core.azure.localhost.localstack.cloud:4566",
+    "table": "https://stpedemo.table.core.azure.localhost.localstack.cloud:4566",
+    ...
+  },
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-pe-demo",
+  "sku": { "name": "Standard_LRS", "tier": "Standard" },
+  "type": "Microsoft.Storage/storageAccounts",
+  ...
+}
+```
+
+### Create a private endpoint
+
+Retrieve the storage account resource ID and create a private endpoint targeting the blob sub-resource:
+
+```bash
+STORAGE_ID=$(az storage account show \
+  --name stpedemo \
+  --resource-group rg-pe-demo \
+  --query id \
+  --output tsv)
+
+az network private-endpoint create \
+  --name pe-storage-blob \
+  --resource-group rg-pe-demo \
+  --location westeurope \
+  --vnet-name vnet-pe-demo \
+  --subnet subnet-pe \
+  --private-connection-resource-id "$STORAGE_ID" \
+  --group-id blob \
+  --connection-name stpedemo-blob-connection
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateEndpoints/pe-storage-blob",
+  "location": "westeurope",
+  "name": "pe-storage-blob",
+  "networkInterfaces": [
+    {
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/networkInterfaces/pe-storage-blob.nic.8388c53a-14fc-4a02-a517-5e462aab03be",
+      "resourceGroup": "rg-pe-demo"
+    }
+  ],
+  "privateLinkServiceConnections": [
+    {
+      "groupIds": [ "blob" ],
+      "name": "stpedemo-blob-connection",
+      "privateLinkServiceConnectionState": {
+        "actionsRequired": "None",
+        "description": "Auto-Approved",
+        "status": "Approved"
+      },
+      "privateLinkServiceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Storage/storageAccounts/stpedemo",
+      "provisioningState": "Succeeded"
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-pe-demo",
+  "subnet": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/virtualNetworks/vnet-pe-demo/subnets/subnet-pe"
+  },
+  "type": "Microsoft.Network/privateEndpoints"
+...
+}
+```
+
+### Configure a private DNS zone group
+
+Link the private endpoint to a private DNS zone for name resolution:
+
+```bash
+az network private-dns zone create \
+  --name privatelink.blob.core.windows.net \
+  --resource-group rg-pe-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+  "location": "global",
+  "name": "privatelink.blob.core.windows.net",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-pe-demo",
+  "type": "Microsoft.Network/privateDnsZones"
+...
+}
+```
+
+Create a DNS zone group to associate the private DNS zone with the private endpoint:
+
+```bash
+az network private-endpoint dns-zone-group create \
+  --name dns-zone-group-blob \
+  --resource-group rg-pe-demo \
+  --endpoint-name pe-storage-blob \
+  --private-dns-zone privatelink.blob.core.windows.net \
+  --zone-name blob-zone
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateEndpoints/pe-storage-blob/privateDnsZoneGroups/dns-zone-group-blob",
+  "name": "dns-zone-group-blob",
+  "privateDnsZoneConfigs": [
+    {
+      "name": "blob-zone",
+      "privateDnsZoneId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+      "recordSets": [
+        {
+          "fqdn": "stpedemo.privatelink.blob.core.windows.net",
+          "ipAddresses": [ "10.0.1.4" ],
+          "provisioningState": "Succeeded",
+          "recordSetName": "stpedemo",
+          "recordType": "A",
+          "ttl": 10
+        }
+      ]
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-pe-demo"
+}
+```
+
+### Show and list private endpoints
+
+Retrieve the details of the private endpoint and list all endpoints in the resource group:
+
+```bash
+az network private-endpoint show \
+  --name pe-storage-blob \
+  --resource-group rg-pe-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateEndpoints/pe-storage-blob",
+  "location": "westeurope",
+  "name": "pe-storage-blob",
+  "privateLinkServiceConnections": [
+    {
+      "groupIds": [ "blob" ],
+      "name": "stpedemo-blob-connection",
+      "privateLinkServiceConnectionState": { "status": "Approved", ... },
+      "privateLinkServiceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Storage/storageAccounts/stpedemo",
+      "provisioningState": "Succeeded"
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-pe-demo",
+  "type": "Microsoft.Network/privateEndpoints"
+...
+}
+```
+
+Then list all private endpoints in the resource group:
+
+```bash
+az network private-endpoint list \
+  --resource-group rg-pe-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateEndpoints/pe-storage-blob",
+    "location": "westeurope",
+    "name": "pe-storage-blob",
+    "privateLinkServiceConnections": [ { "groupIds": [ "blob" ], "name": "stpedemo-blob-connection", ... } ],
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-pe-demo",
+    "type": "Microsoft.Network/privateEndpoints",
+    ...
+  }
+]
+```
+
+### List DNS zone groups
+
+List the DNS zone groups associated with the private endpoint:
+
+```bash
+az network private-endpoint dns-zone-group list \
+  --resource-group rg-pe-demo \
+  --endpoint-name pe-storage-blob
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateEndpoints/pe-storage-blob/privateDnsZoneGroups/dns-zone-group-blob",
+    "name": "dns-zone-group-blob",
+    "privateDnsZoneConfigs": [
+      {
+        "name": "blob-zone",
+        "privateDnsZoneId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net",
+        "recordSets": [
+          { "fqdn": "stpedemo.privatelink.blob.core.windows.net", "ipAddresses": [ "10.0.1.4" ], "recordType": "A", ... }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded"
+  }
+]
+```
+
+### Verify IP address consistency
+
+When a DNS zone group is created, the emulator automatically registers an A record in the linked private DNS zone using the private IP address assigned to the private endpoint's network interface. The same address appears in the NIC's IP configuration, the DNS zone group's embedded record set (shown in the output above), and the A record in the private DNS zone.
+
+Retrieve the IP address from the private endpoint's network interface:
+
+```bash
+NIC_ID=$(az network private-endpoint show \
+  --name pe-storage-blob \
+  --resource-group rg-pe-demo \
+  --query "networkInterfaces[0].id" \
+  --output tsv)
+
+az network nic show \
+  --ids "$NIC_ID" \
+  --query "ipConfigurations[0].privateIPAddress" \
+  --output tsv
+```
+
+```bash title="Output"
+10.0.1.4
+```
+
+List the A records in the private DNS zone:
+
+```bash
+az network private-dns record-set a list \
+  --resource-group rg-pe-demo \
+  --zone-name privatelink.blob.core.windows.net
+```
+
+```bash title="Output"
+[
+  {
+    "aRecords": [
+      { "ipv4Address": "10.0.1.4" }
+    ],
+    "fqdn": "stpedemo.privatelink.blob.core.windows.net",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pe-demo/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net/A/stpedemo",
+    "name": "stpedemo",
+    "ttl": 10,
+    "type": "Microsoft.Network/privateDnsZones/A"
+  }
+]
+```
+
+The IP address `10.0.1.4` is consistent across all three: the network interface IP configuration, the DNS zone group record set, and the A record in the private DNS zone. On Azure, the first four addresses in each subnet are reserved (for `10.0.1.0/24`, that is `10.0.1.0`–`10.0.1.3`), so `10.0.1.4` is typically the first assignable address for resources such as a private endpoint. The emulator surfaces the same value across these APIs for consistency even though it does not enforce real subnet allocation (see [Limitations](#limitations)).
+
+### Delete a private endpoint
+
+Delete the private endpoint and verify it no longer appears in the list:
+
+```bash
+az network private-endpoint delete \
+  --name pe-storage-blob \
+  --resource-group rg-pe-demo
+```
+
+Then list all private endpoints to confirm the resource group is now empty:
+
+```bash
+az network private-endpoint list --resource-group rg-pe-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+The Private Endpoint emulator supports the following features:
+
+- **Create and manage private endpoints**: Full lifecycle management including create, get, update, list, and delete.
+- **Private Link service connections**: Store and return `privateLinkServiceConnections` with group IDs and connection names.
+- **DNS zone group management**: Create, get, list, and delete private DNS zone groups for a private endpoint.
+- **Group IDs**: Support for any service group ID (e.g., `blob`, `file`, `queue`, `table`, `sqlServer`).
+- **Resource group-scoped listing**: List all private endpoints in a resource group.
+- **Tags**: Apply and update resource tags on private endpoint resources.
+
+## Limitations
+
+- **DNS resolution not performed**: A records are automatically registered in private DNS zones when a DNS zone group is created. However, no actual DNS resolution is performed; the emulator does not respond to DNS queries.
+- **No private IP assignment enforcement**: A private IP is stored but no actual address is reserved from the subnet range.
+- **No target service connectivity**: The emulator does not verify that the target resource or connection is valid.
+- **No data persistence**: Private endpoint resources are not persisted and are lost when the emulator is stopped or restarted.
+
+## Samples
+
+The following samples demonstrate how to use Azure Private Endpoints with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Network" client:load />
