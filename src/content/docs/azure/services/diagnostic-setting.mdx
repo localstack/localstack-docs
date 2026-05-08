@@ -46,7 +46,7 @@ az group create --name rg-diag-demo --location westeurope
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-diag-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -69,7 +69,7 @@ az storage account create \
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
   "kind": "StorageV2",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "sadiagdemo",
   "resourceGroup": "rg-diag-demo",
   "sku": { "name": "Standard_LRS", "tier": "Standard" },
@@ -80,7 +80,11 @@ az storage account create \
 
 ### Create a diagnostic setting on a resource
 
-The following example creates a diagnostic setting on a storage account (nested blob service) that routes `StorageRead` logs to a storage account:
+The following example creates a diagnostic setting on a storage account’s default blob service (`Microsoft.Storage/storageAccounts/.../blobServices/default`) that enables the `StorageRead` resource log category and the `Transaction` metric category for export, with a storage account as the destination. Those categories are defined for blob services in Azure’s [Blob Storage monitoring data reference](https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage-reference#resource-logs).
+
+:::note
+In Azure, you must not use the **same** storage account as both the monitored blob service and the diagnostic setting’s storage destination—doing so would create recursive logging. That restriction is described under *Destination limitations* in [Monitor Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage). The commands below use one account for brevity; because LocalStack does not route or ingest logs for this feature (see [Limitations](#limitations)), this does not imply real Azure behavior.
+:::
 
 ```bash
 RESOURCE_ID="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo/blobServices/default"
@@ -101,7 +105,7 @@ az monitor diagnostic-settings create \
   "metrics": [ { "category": "Transaction", "enabled": true } ],
   "name": "my-diag-setting",
   "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
-  "type": "microsoft.insights/diagnosticSettings"
+  "type": "Microsoft.Insights/diagnosticSettings"
 ...
 }
 ```
@@ -109,9 +113,6 @@ az monitor diagnostic-settings create \
 ### List diagnostic settings
 
 List all diagnostic settings attached to the target resource:
-
-
-Then list all diagnostic settings to confirm the setting was removed:
 
 ```bash
 az monitor diagnostic-settings list --resource "$RESOURCE_ID"
@@ -126,7 +127,7 @@ az monitor diagnostic-settings list --resource "$RESOURCE_ID"
       "metrics": [ { "category": "Transaction", "enabled": true } ],
       "name": "my-diag-setting",
       "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
-      "type": "microsoft.insights/diagnosticSettings"
+      "type": "Microsoft.Insights/diagnosticSettings"
     }
   ]
 ...
@@ -150,14 +151,14 @@ az monitor diagnostic-settings show \
   "metrics": [ { "category": "Transaction", "enabled": true } ],
   "name": "my-diag-setting",
   "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
-  "type": "microsoft.insights/diagnosticSettings"
+  "type": "Microsoft.Insights/diagnosticSettings"
 ...
 }
 ```
 
 ### Update a diagnostic setting
 
-Update the setting to also route to an Event Hub (stored, not routed):
+Update the diagnostic setting to disable the `StorageRead` log category while leaving metrics and the storage destination unchanged:
 
 ```bash
 az monitor diagnostic-settings update \
@@ -173,14 +174,14 @@ az monitor diagnostic-settings update \
   "metrics": [ { "category": "Transaction", "enabled": true } ],
   "name": "my-diag-setting",
   "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
-  "type": "microsoft.insights/diagnosticSettings"
+  "type": "Microsoft.Insights/diagnosticSettings"
 ...
 }
 ```
 
 ### Delete and verify
 
-Delete the resource and confirm it no longer appears in the list:
+Delete the diagnostic setting:
 
 ```bash
 az monitor diagnostic-settings delete \
@@ -188,15 +189,16 @@ az monitor diagnostic-settings delete \
   --resource "$RESOURCE_ID"
 ```
 
-
-Then list all diagnostic settings to confirm the setting was removed:
+Then list diagnostic settings again to confirm the setting was removed:
 
 ```bash
 az monitor diagnostic-settings list --resource "$RESOURCE_ID"
 ```
 
 ```bash title="Output"
-[]
+{
+  "value": []
+}
 ```
 
 ## Features
@@ -205,14 +207,14 @@ az monitor diagnostic-settings list --resource "$RESOURCE_ID"
 - **Multiple destinations:** Accept Storage Account, Log Analytics Workspace, and Event Hub as destinations.
 - **Log category configuration:** Enable or disable individual log categories per setting.
 - **Metric category configuration:** Enable or disable individual metric categories per setting.
-- **Retention policy support:** Accept retention day settings per log and metric category.
+- **Retention policy support:** Accept retention policy fields in log and metric settings (some Azure resource and destination combinations disallow retention on the diagnostic setting itself—see [Monitor Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage)).
 - **Resource-scoped settings:** Settings are scoped to a specific resource (by resource ID).
 
 ## Limitations
 
 - **No data routing:** Logs and metrics are not routed to the configured Storage Account, Log Analytics Workspace, or Event Hub. The setting is stored in the emulator only.
 - **No log ingestion:** Platform logs emitted by Azure services within LocalStack are not captured or forwarded.
-- **No subscription diagnostic settings:** The subscription-level diagnostic settings endpoint (`PUT /subscriptions/{id}/providers/microsoft.insights/diagnosticSettings`) is not currently supported.
+- **No subscription diagnostic settings:** The subscription-level diagnostic settings API (`/subscriptions/{subscriptionId}/providers/Microsoft.Insights/diagnosticSettings`) described in [Subscription Diagnostic Settings](https://learn.microsoft.com/en-us/rest/api/monitor/subscription-diagnostic-settings) is not currently supported.
 
 ## Samples
 
