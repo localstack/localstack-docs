@@ -15,16 +15,84 @@ import react from '@astrojs/react';
 
 import tailwindcss from '@tailwindcss/vite';
 
-// Fetch the latest release version from GitHub
-const response = await fetch(
-  'https://api.github.com/repos/localstack/localstack/releases/latest',
-  {
-    headers: { Accept: 'application/vnd.github+json' },
-  },
-);
-const data = await response.json();
-const latestVersion = data.tag_name.replace('v', '');
+// Used on the AWS and Snowflake installation guides: CLI download URLs and some bash examples.
+// Source of truth: public https://github.com/localstack/localstack-cli/releases/latest
+const LOCALSTACK_CLI_RELEASE_API =
+  'https://api.github.com/repos/localstack/localstack-cli/releases/latest';
 
+/** When the API fails or rate-limits, builds still succeed; bump when CLI ships a new line. */
+const LOCALSTACK_CLI_VERSION_FALLBACK = '2026.4.0';
+
+/** @param {unknown} tagName */
+function normalizeCliReleaseTag(tagName) {
+  if (typeof tagName !== 'string' || !tagName.trim()) return null;
+  return tagName.replace(/^v/i, '').trim();
+}
+
+/**
+ * One request per build when LOCALSTACK_AWS_VERSION is unset. Use that env in CI to skip the
+ * network entirely, or set GITHUB_TOKEN for 5k req/hr instead of unauthenticated 60/hr per IP.
+ */
+async function fetchLatestLocalstackCliVersionFromGitHub() {
+  /** @type {Record<string, string>} */
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'localstack-docs-build (https://docs.localstack.cloud)',
+  };
+  if (process.env.GITHUB_TOKEN) {
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
+
+  const maxAttempts = 3;
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      if (attempt > 1) {
+        await new Promise((r) => setTimeout(r, 400 * attempt));
+      }
+      const response = await fetch(LOCALSTACK_CLI_RELEASE_API, { headers });
+      const data = await response.json();
+
+      if (response.ok) {
+        const version = normalizeCliReleaseTag(data?.tag_name);
+        if (version) return version;
+        lastError = new Error('GitHub release response missing tag_name');
+      } else {
+        const msg =
+          typeof data?.message === 'string' ? data.message : `HTTP ${response.status}`;
+        lastError = new Error(msg);
+      }
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  throw lastError ?? new Error('Failed to fetch localstack-cli release from GitHub');
+}
+
+const cliVersionFromEnv = normalizeCliReleaseTag(process.env.LOCALSTACK_AWS_VERSION ?? '');
+
+/** @type {string} */
+let latestAWSVersion;
+
+if (cliVersionFromEnv) {
+  latestAWSVersion = cliVersionFromEnv;
+} else {
+  try {
+    latestAWSVersion = await fetchLatestLocalstackCliVersionFromGitHub();
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `[astro.config] Could not read localstack-cli version from GitHub (${reason}). ` +
+        `Using pinned fallback ${LOCALSTACK_CLI_VERSION_FALLBACK}. ` +
+        'Set LOCALSTACK_AWS_VERSION in the build, add GITHUB_TOKEN for higher API limits, or bump LOCALSTACK_CLI_VERSION_FALLBACK.',
+    );
+    latestAWSVersion = LOCALSTACK_CLI_VERSION_FALLBACK;
+  }
+}
+
+/** @type {import('./types/astro-local-fonts').AstroLocalFontVariants} */
 const aeonikProVariants = [
   {
     src: [
@@ -118,10 +186,10 @@ export default defineConfig({
   ],
   env: {
     schema: {
-      LOCALSTACK_VERSION: envField.string({
+      LOCALSTACK_AWS_VERSION: envField.string({
         context: 'server',
         access: 'public',
-        default: latestVersion,
+        default: latestAWSVersion,
         optional: true,
       }),
     },
