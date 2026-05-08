@@ -187,102 +187,6 @@ az network nat gateway list \
     "type": "Microsoft.Network/natGateways"
   }
 ]
-
-### Create a NAT gateway
-
-Create a NAT gateway attached to the public IP prefix:
-
-```bash
-az network nat gateway create \
-  --name nat-gw-demo \
-  --resource-group rg-nat-demo \
-  --location westeurope \
-  --public-ip-prefixes pip-prefix-nat \
-  --idle-timeout 4
-```
-
-```bash title="Output"
-{
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nat-demo/providers/Microsoft.Network/natGateways/nat-gw-demo",
-  "idleTimeoutInMinutes": 4,
-  "location": "westeurope",
-  "name": "nat-gw-demo",
-  "provisioningState": "Succeeded",
-  "publicIpPrefixes": [
-    {
-      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nat-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-nat",
-      "resourceGroup": "rg-nat-demo"
-    }
-  ],
-  "resourceGroup": "rg-nat-demo",
-  "sku": {
-    "name": "Standard"
-  },
-  "type": "Microsoft.Network/natGateways"
-...
-}
-```
-
-### Get and list NAT gateways
-
-Retrieve the details of the NAT gateway and list all NAT gateways in the resource group:
-
-```bash
-az network nat gateway show \
-  --name nat-gw-demo \
-  --resource-group rg-nat-demo
-```
-
-```bash title="Output"
-{
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nat-demo/providers/Microsoft.Network/natGateways/nat-gw-demo",
-  "idleTimeoutInMinutes": 4,
-  "location": "westeurope",
-  "name": "nat-gw-demo",
-  "provisioningState": "Succeeded",
-  "publicIpPrefixes": [
-    {
-      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nat-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-nat",
-      "resourceGroup": "rg-nat-demo"
-    }
-  ],
-  "resourceGroup": "rg-nat-demo",
-  "sku": {
-    "name": "Standard"
-  },
-  "type": "Microsoft.Network/natGateways"
-...
-}
-```
-
-Then list all NAT gateways in the resource group:
-
-```bash
-az network nat gateway list \
-  --resource-group rg-nat-demo
-```
-
-```bash title="Output"
-[
-  {
-    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nat-demo/providers/Microsoft.Network/natGateways/nat-gw-demo",
-    "idleTimeoutInMinutes": 4,
-    "location": "westeurope",
-    "name": "nat-gw-demo",
-    "provisioningState": "Succeeded",
-    "publicIpPrefixes": [
-      {
-        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nat-demo/providers/Microsoft.Network/publicIPPrefixes/pip-prefix-nat",
-        "resourceGroup": "rg-nat-demo"
-      }
-    ],
-    "resourceGroup": "rg-nat-demo",
-    "sku": {
-      "name": "Standard"
-    },
-    "type": "Microsoft.Network/natGateways"
-  }
-]
 ```
 
 ### Delete the NAT gateway
@@ -295,7 +199,7 @@ az network nat gateway delete \
   --resource-group rg-nat-demo
 ```
 
-Then list all NAT gateways to confirm the resource group is now empty:
+Then list all NAT gateways in the resource group to confirm the NAT gateway was removed:
 
 ```bash
 az network nat gateway list \
@@ -327,7 +231,7 @@ The NAT Gateway emulator supports the following features:
 The following samples demonstrate how to use Azure NAT Gateway with LocalStack for Azure:
 
 - [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
-- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python)
 
 ## API Coverage
 
