@@ -3,11 +3,11 @@ title: Installation
 description: Installation guide to get started with LocalStack for Snowflake.
 template: doc
 sidebar:
-    order: 0
+  order: 0
 ---
 
 import { Code, LinkButton, Tabs, TabItem } from '@astrojs/starlight/components';
-import { LOCALSTACK_VERSION } from "astro:env/server";
+import { LOCALSTACK_AWS_VERSION } from 'astro:env/server';
 
 ## LocalStack CLI for Snowflake
 
@@ -16,7 +16,6 @@ The easiest way to get started with LocalStack for Snowflake is by using the Loc
 ## Installing the LocalStack CLI
 
 The LocalStack CLI can be installed using Python, Brew (macOS), or Windows executables.
-
 
 <Tabs>
 
@@ -33,7 +32,7 @@ Then install the LocalStack CLI:
 
 ```bash
 python3 -m pip install --upgrade localstack
-````
+```
 
 :::note
 To download a specific version of LocalStack, replace `<version>` with the required version from [release page](https://github.com/localstack/localstack/releases).
@@ -41,8 +40,8 @@ To download a specific version of LocalStack, replace `<version>` with the requi
 ```bash
 python3 -m pip install localstack==<version>
 ```
-:::
 
+:::
 
 :::tip[MacOS Sierra?]
 If you have problems with permissions in MacOS X Sierra, install with:
@@ -50,6 +49,7 @@ If you have problems with permissions in MacOS X Sierra, install with:
 ```bash
 python3 -m pip install --user localstack
 ```
+
 :::
 
 :::danger
@@ -72,11 +72,20 @@ brew install localstack/tap/localstack-cli
 
 Download the binary for your architecture:
 
-<LinkButton href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-darwin-amd64-onefile.tar.gz`} icon="download" variant="minimal">Intel (AMD64)</LinkButton>
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz`}
+  icon="download"
+  variant="minimal"
+>
+  Intel (AMD64)
+</LinkButton>
 
 Then extract it:
 
-<Code code={`sudo tar xvzf localstack-cli-${LOCALSTACK_VERSION}-darwin-*-onefile.tar.gz -C /usr/local/bin`} lang="bash" />
+<Code
+  code={`sudo tar xvzf localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-*-onefile.tar.gz -C /usr/local/bin`}
+  lang="bash"
+/>
 
 </details>
 
@@ -86,7 +95,13 @@ Then extract it:
 
 You can download the pre-built binary below:
 
-<LinkButton href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-windows-amd64-onefile.zip`} icon="download" variant="minimal">Intel (AMD64)</LinkButton>
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-windows-amd64-onefile.zip`}
+  icon="download"
+  variant="minimal"
+>
+  Intel (AMD64)
+</LinkButton>
 
 Then extract the archive and run the binary in PowerShell.
 
@@ -97,7 +112,6 @@ You can download and install the Windows executable from our [GitHub Releases](h
 </TabItem>
 
 </Tabs>
-
 
 Need more options? See our [alternative installation instructions](https://docs.localstack.cloud/snowflake/getting-started/#alternatives).
 
@@ -126,9 +140,8 @@ curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
 Expected response:
 
 ```json
-{"success": true}
+{ "success": true }
 ```
-
 
 ## Updating LocalStack
 
@@ -153,20 +166,20 @@ Refer to the available [tags on Docker Hub](https://hub.docker.com/r/localstack/
 If you prefer Docker Compose, you can start the emulator using the configuration below:
 
 ```yaml showLineNumbers
-version: "3.8"
+version: '3.8'
 
 services:
   localstack:
-    container_name: "localstack-snowflake"
+    container_name: 'localstack-snowflake'
     image: localstack/snowflake
     ports:
-      - "127.0.0.1:4566:4566"
-      - "127.0.0.1:4510-4559:4510-4559"
-      - "127.0.0.1:443:443"
+      - '127.0.0.1:4566:4566'
+      - '127.0.0.1:4510-4559:4510-4559'
+      - '127.0.0.1:443:443'
     environment:
       - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
     volumes:
-      - "./volume:/var/lib/localstack"
+      - './volume:/var/lib/localstack'
 ```
 
 Start the container with:
