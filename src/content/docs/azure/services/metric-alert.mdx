@@ -45,7 +45,7 @@ az group create --name rg-alert-demo --location westeurope
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-alert-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -173,9 +173,9 @@ az monitor metrics alert list \
 ]
 ```
 
-### Create an activity log alert
+### Create a service health activity log alert
 
-Create an activity log alert that fires when a virtual machine is deleted in the resource group:
+Create an [activity log alert for Service Health](https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-activity-log) events. The condition `category=ServiceHealth` matches the default pattern documented for [`az monitor activity-log alert create`](https://learn.microsoft.com/en-us/cli/azure/monitor/activity-log/alert#az-monitor-activity-log-alert-create). That is different from alerting on administrative operations such as deleting a virtual machine, which uses other activity log fields (for example `category` and `operationName` for the delete operation).
 
 ```bash
 az monitor activity-log alert create \
@@ -210,7 +210,7 @@ az monitor activity-log alert create \
 
 ### Delete and verify
 
-Delete the resource and confirm it no longer appears in the list:
+Delete the metric alert rule and confirm it no longer appears in the metric alert list:
 
 ```bash
 az monitor metrics alert delete \
@@ -219,7 +219,7 @@ az monitor metrics alert delete \
 ```
 
 
-Then list all metric alerts to confirm the resource group is now empty:
+Then list metric alerts in the resource group to confirm the rule was removed:
 
 ```bash
 az monitor metrics alert list --resource-group rg-alert-demo
