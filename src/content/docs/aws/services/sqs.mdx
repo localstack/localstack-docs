@@ -325,7 +325,7 @@ In AWS, valid values for message retention range from 60 (1 minute) to 1,209,600
 In LocalStack, we do not put constraints on the value which can be helpful for test scenarios.
 
 :::note
-Note that, if you enable this option, [persistence](/aws/capabilities/state-management/persistence) or [cloud pods](/aws/capabilities/state-management/cloud-pods) for SQS may not work as expected.
+Note that, if you enable this option, [persistence](/aws/developer-tools/snapshots/persistence) or [cloud pods](/aws/developer-tools/snapshots/cloud-pods) for SQS may not work as expected.
 The reason is that, LocalStack does not adjust timestamps when restoring a state, so time appears to pass between LocalStack runs.
 Consequently, when you restart LocalStack after a period that is longer than the message retention period, LocalStack will remove all those messages when SQS starts.
 :::
@@ -373,7 +373,7 @@ Our Lambda implementation automatically resolves these URLs to the LocalStack co
 When your code run within different containers like ECS tasks or your custom ones, it's advisable to establish your Docker network setup.
 You can follow these steps:
 
-1. Override the `LOCALSTACK_HOST` variable as outlined in our [network troubleshooting guide](/aws/capabilities/networking/).
+1. Override the `LOCALSTACK_HOST` variable as outlined in our [network troubleshooting guide](/aws/configuration/networking/).
 2. Ensure that your containers can resolve `LOCALSTACK_HOST` to the LocalStack container within the Docker network.
 3. We recommend employing `SQS_ENDPOINT_STRATEGY=path`, which generates queue URLs in the format `http://<LOCALSTACK_HOST>/queue/...`.
 

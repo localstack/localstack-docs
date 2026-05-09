@@ -56,7 +56,7 @@ phases:
 
 ### Configuration
 
-Get know more about the LocalStack [config options](/aws/capabilities/config/configuration).
+Get know more about the LocalStack [config options](/aws/configuration/config/config-options).
 
 #### Native Runner
 
@@ -170,7 +170,7 @@ artifact:
 
 #### Cloud Pods
 
-Find more information about cloud pods [here](/aws/capabilities/state-management/cloud-pods).
+Find more information about cloud pods [here](/aws/developer-tools/snapshots/cloud-pods).
 
 ##### Native Runner
 
@@ -237,11 +237,11 @@ phases:
       ...
 ```
 
-Find out more about [ephemeral instances](/aws/capabilities/cloud-sandbox/ephemeral-instances).
+Find out more about [ephemeral instances](/aws/developer-tools/cloud-sandbox/ephemeral-instances).
 
 #### Artifact
 
-Find out more about [state management](/aws/capabilities/state-management/export-import-state/).
+Find out more about [state management](/aws/developer-tools/snapshots/export-import-state/).
 
 ```yml showshowLineNumbers
 ...
@@ -274,7 +274,7 @@ To use previously stored artifacts as inputs, set them as a source in the projec
 
 #### Cache
 
-Additional information about [state export and import](/aws/capabilities/state-management/export-import-state/).
+Additional information about [state export and import](/aws/developer-tools/snapshots/export-import-state/).
 
 ##### Native Runner
 
