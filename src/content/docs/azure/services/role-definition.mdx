@@ -34,9 +34,9 @@ azlocal stop-interception
 
 This reconfigures the `az` CLI to send commands to the official Azure management REST API.
 
-### List built-in role definitions
+### List role definitions
 
-List all built-in Azure role definitions available in the current subscription:
+Run [`az role definition list`](https://learn.microsoft.com/en-us/cli/azure/role/definition#az-role-definition-list) to list role definitions for the current subscription. The results include built-in roles (such as Owner, Contributor, and Reader) as well as any custom roles:
 
 ```bash
 az role definition list --output table
@@ -45,9 +45,9 @@ az role definition list --output table
 ```bash title="Output"
 Name                                     Type                                     Description
 ---------------------------------------  ---------------------------------------  -----------------------------------------------------------
-Contributor                              Microsoft.Authorization/roleDefinitions  Grants full access to manage all resources...
-Owner                                    Microsoft.Authorization/roleDefinitions  Grants full access to manage all resources...
-Reader                                   Microsoft.Authorization/roleDefinitions  View all resources, but does not allow you to make changes.
+Contributor                              Microsoft.Authorization/roleDefinitions  Grants full access to manage all resources, but does not allow you to assign roles in Azure RBAC...
+Owner                                    Microsoft.Authorization/roleDefinitions  Grants full access to manage all resources, including assigning roles in Azure RBAC...
+Reader                                   Microsoft.Authorization/roleDefinitions  View all resources, but does not allow you to make any changes.
 ...
 ```
 
@@ -60,10 +60,13 @@ Save the following JSON to `custom-role.json`:
   "Name": "Custom Storage Reader",
   "Description": "Can read storage blobs.",
   "Actions": [
-    "Microsoft.Storage/storageAccounts/blobServices/containers/read",
-    "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read"
+    "Microsoft.Storage/storageAccounts/blobServices/containers/read"
   ],
   "NotActions": [],
+  "DataActions": [
+    "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read"
+  ],
+  "NotDataActions": [],
   "AssignableScopes": [
     "/subscriptions/00000000-0000-0000-0000-000000000000"
   ]
@@ -79,15 +82,19 @@ az role definition create --role-definition @custom-role.json
 ```bash title="Output"
 {
   "assignableScopes": ["/subscriptions/00000000-0000-0000-0000-000000000000"],
+  "description": "Can read storage blobs.",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "permissions": [
     {
       "actions": [
-        "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+        "Microsoft.Storage/storageAccounts/blobServices/containers/read"
+      ],
+      "notActions": [],
+      "dataActions": [
         "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read"
       ],
-      "notActions": []
+      "notDataActions": []
     }
   ],
   "roleName": "Custom Storage Reader",
@@ -97,9 +104,9 @@ az role definition create --role-definition @custom-role.json
 }
 ```
 
-### List role definitions
+### List a role definition by name
 
-List all role definitions that match the custom role name:
+List role definitions that match the display name (`roleName`), as in [Azure’s custom role CLI workflow](https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-cli#list-a-custom-role-definition):
 
 ```bash
 az role definition list --name "Custom Storage Reader"
@@ -109,15 +116,19 @@ az role definition list --name "Custom Storage Reader"
 [
   {
     "assignableScopes": ["/subscriptions/00000000-0000-0000-0000-000000000000"],
+    "description": "Can read storage blobs.",
     "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "permissions": [
       {
         "actions": [
-          "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+          "Microsoft.Storage/storageAccounts/blobServices/containers/read"
+        ],
+        "notActions": [],
+        "dataActions": [
           "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read"
         ],
-        "notActions": []
+        "notDataActions": []
       }
     ],
     "roleName": "Custom Storage Reader",
@@ -129,7 +140,7 @@ az role definition list --name "Custom Storage Reader"
 
 ### Update a custom role definition
 
-Update the custom role definition by passing a modified JSON definition file:
+Update the custom role definition by passing a modified JSON definition file. As described in [Create or update Azure custom roles using Azure CLI](https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-cli), retrieve the current definition with `az role definition list`, edit the JSON (for example permissions or assignable scopes), then apply the update:
 
 ```bash
 az role definition update --role-definition @custom-role.json
@@ -155,8 +166,7 @@ az role definition list --name "Custom Storage Reader"
 
 ## Limitations
 
-- **RBAC not enforced:** Role definitions and assignments are stored in the emulator but are not enforced. All API calls succeed regardless of whether the caller has the required permissions.
-- **No built-in role permission evaluation:** Checking effective permissions via `az role assignment list-access` is not supported.
+- **RBAC not enforced:** Role definitions and assignments are stored in the emulator but permissions are not enforced: API calls are not gated the way they are in Azure, and effective access for a principal at a scope is not evaluated from assignments and role definitions.
 - **Management group scopes:** Management group–level assignable scopes are not supported.
 
 ## Samples
