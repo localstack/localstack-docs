@@ -330,7 +330,7 @@ Pass `--db-parameter-group-name force-ssl` when creating the DB instance, or att
 Setting `rds.force_ssl=0` disables the SSL requirement, allowing clients to connect with `sslmode=disable`.
 
 :::note
-The `pg_stat_ssl` view always reports `ssl = false`, even when the client connection is encrypted.
+As we are terminating the SSL connection at the proxy, the PostgreSQL `pg_stat_ssl` view always reports `ssl = false`, even when the client connection is encrypted.
 :::
 
 ## Global Database Support
