@@ -157,7 +157,8 @@ This typically shows up in API Gateway invoke URLs, Step Functions API integrati
 The `AWS::URLSuffix` pseudo parameter resolves to `amazonaws.com` on AWS (or `amazonaws.com.cn` in China Regions) and to the configured [`LOCALSTACK_HOST`](/aws/capabilities/config/configuration/) on LocalStack, which defaults to `localhost.localstack.cloud`.
 Referencing it lets the same template produce a valid URL in either environment.
 
-Avoid hardcoding the AWS suffix:
+The following snippet shows the anti-pattern to avoid, where `amazonaws.com` is hardcoded into the output URL.
+A template written this way deploys on AWS but produces a non-resolvable URL on LocalStack:
 
 ```yaml
 Outputs:
@@ -165,7 +166,7 @@ Outputs:
     Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}"
 ```
 
-Reference `AWS::URLSuffix` instead:
+Reference `AWS::URLSuffix` instead so the same template resolves to `amazonaws.com` on AWS and to the LocalStack host locally:
 
 ```yaml
 Outputs:
