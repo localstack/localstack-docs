@@ -45,7 +45,7 @@ az group create --name rg-acr-demo --location westeurope
 ```bash title="Output"
 {
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-acr-demo",
-  "location": "eastus",
+  "location": "westeurope",
   "name": "rg-acr-demo",
   "properties": { "provisioningState": "Succeeded" },
   "type": "Microsoft.Resources/resourceGroups"
@@ -54,7 +54,7 @@ az group create --name rg-acr-demo --location westeurope
 
 ### Create a container registry
 
-Create a Standard-tier Azure Container Registry:
+Create a Basic-tier Azure Container Registry (Azure also offers Standard and Premium; limits differ by tier, as described in [Azure Container Registry SKU features and limits](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-skus)):
 
 ```bash
 az acr create \
@@ -68,7 +68,7 @@ az acr create \
 {
   "adminUserEnabled": true,
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-acr-demo/providers/Microsoft.ContainerRegistry/registries/myacrdemo",
-  "location": "eastus",
+  "location": "westeurope",
   "loginServer": "myacrdemo.azurecr.azure.localhost.localstack.cloud:4566",
   "name": "myacrdemo",
   "provisioningState": "Succeeded",
@@ -87,7 +87,7 @@ Authenticate the local Docker daemon to the registry using the Azure CLI:
 az acr login --name myacrdemo
 ```
 
-The emulator does not issue an AAD challenge, so the CLI prints an informational warning before confirming `Login Succeeded`. This is expected behaviour.
+With Azure, `az acr login` is the documented way to authenticate Docker to your registry using your signed-in Microsoft Entra identity ([Push your first image to your Azure container registry using the Docker CLI](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli?tabs=azure-cli); for other auth options see [Authenticate with an Azure container registry](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication)). The emulator does not reproduce the full Azure identity flow, so the CLI may print an informational warning before confirming `Login Succeeded`. That is expected for LocalStack.
 
 ### Build and push an image
 
@@ -141,7 +141,7 @@ az acr repository list --name myacrdemo
 
 ### Check name availability
 
-Check that the registry name is globally available before creating:
+Check registry name availability against the management API. The following example assumes you already created `myacrdemo` above, so the response matches a name that is not available:
 
 ```bash
 az acr check-name --name myacrdemo
@@ -157,7 +157,7 @@ az acr check-name --name myacrdemo
 
 ### Update registry settings
 
-Enable the admin user account on the registry:
+Disable the registry admin account (`az acr update` is the same command Azure documents for changing registry settings; see [`az acr update`](https://learn.microsoft.com/en-us/cli/azure/acr#az-acr-update)):
 
 ```bash
 az acr update --name myacrdemo --resource-group rg-acr-demo --admin-enabled false
@@ -230,7 +230,7 @@ rm -f Dockerfile
 
 The following sample demonstrates how to use Azure Container Registry with LocalStack for Azure:
 
-- [Azure Container Instances, Key Vault, and Storage](https://github.com/localstack/localstack-azure-samples/samples/aci-blob-storage/python/README.md)
+- [Azure Container Instances, Key Vault, and Storage](https://github.com/localstack/localstack-azure-samples/blob/main/samples/aci-blob-storage/python/README.md)
 
 ## API Coverage
 
