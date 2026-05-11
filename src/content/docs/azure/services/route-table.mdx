@@ -82,9 +82,11 @@ az network route-table create \
 }
 ```
 
-### Create a route table with inline routes
+### Create a route table and add routes
 
-Create a route table with a custom route to send all internet traffic via a virtual appliance:
+Routes are managed as separate resources in Azure; create the route table first, then add one or more routes.
+
+Create an empty route table:
 
 ```bash
 az network route-table create \
@@ -106,8 +108,7 @@ az network route-table create \
 }
 ```
 
-
-Add a route that directs internet-bound traffic to a virtual appliance:
+Add a route that directs internet-bound traffic (`0.0.0.0/0`) to a virtual appliance:
 
 ```bash
 az network route-table route create \
@@ -288,7 +289,7 @@ az network vnet create \
   --location westeurope \
   --address-prefix 10.0.0.0/16 \
   --subnet-name subnet-demo \
-  --subnet-prefix 10.0.1.0/24
+  --subnet-prefixes 10.0.1.0/24
 ```
 
 ```bash title="Output"
@@ -362,9 +363,9 @@ az network vnet subnet show \
 }
 ```
 
-### Delete the route table
+### Delete the route tables
 
-Delete the route tables and verify it no longer appears in the list:
+Delete both route tables and verify they no longer appear in the list:
 
 ```bash
 az network route-table delete \
@@ -376,10 +377,10 @@ az network route-table delete \
   --resource-group rg-rt-demo
 ```
 
-Then list all route tables to confirm the resource group is now empty:
+Then list route tables for the resource group to confirm neither route table remains:
 
 ```bash
-az network route-table list --resource-group  rg-rt-demo
+az network route-table list --resource-group rg-rt-demo
 ```
 
 ```bash title="Output"
