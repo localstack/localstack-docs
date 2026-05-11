@@ -8,7 +8,7 @@ import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureF
 
 ## Introduction
 
-Azure Monitor Scheduled Query Rules (SQR) evaluate KQL log queries stored in a Log Analytics Workspace on a defined schedule.
+Azure Monitor Scheduled Query Rules (SQR) run KQL log queries on a defined schedule against data in one or more scopes (for example a Log Analytics workspace).
 When query results meet a configured condition, an alert is fired and routed through an Action Group.
 Scheduled Query Rules are commonly used to detect patterns in application logs, audit events, and custom metrics that cannot be captured by standard metric alerts. For more information, see [Log alerts in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-log).
 
@@ -104,7 +104,7 @@ az monitor action-group create \
 
 ### Create a scheduled query rule
 
-Retrieve the workspace and action group resource IDs, then create a scheduled query rule that fires when the error count exceeds the threshold:
+Retrieve the workspace and action group resource IDs, then create a scheduled query rule with a count-based condition on the `Heartbeat` table (in Azure, the rule would evaluate this KQL on the schedule you set and fire when the condition is met):
 
 ```bash
 WORKSPACE_ID=$(az monitor log-analytics workspace show \
@@ -124,7 +124,7 @@ az monitor scheduled-query create \
   --resource-group rg-sqr-demo \
   --scopes "$WORKSPACE_ID" \
   --condition "count 'Placeholder_1' > 5" \
-  --condition-query "Placeholder_1=Heartbeat | where TimeGenerated > ago(5m)" \
+  --condition-query 'Placeholder_1="Heartbeat | where TimeGenerated > ago(5m)"' \
   --description "Alert on Heartbeat count" \
   --action-groups "$AG_ID" \
   --evaluation-frequency 5m \
@@ -151,7 +151,7 @@ az monitor scheduled-query create \
   },
   "description": "Alert on Heartbeat count",
   "enabled": true,
-  "evaluationFrequency": "0:05:00",
+  "evaluationFrequency": "PT5M",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
   "location": "westeurope",
   "name": "my-sqr",
@@ -160,8 +160,8 @@ az monitor scheduled-query create \
     "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace"
   ],
   "severity": 2,
-  "type": "Microsoft.Insights/scheduledQueryRules",
-  "windowSize": "0:05:00"
+  "type": "microsoft.insights/scheduledqueryrules",
+  "windowSize": "PT5M"
 }
 ```
 
@@ -194,14 +194,17 @@ az monitor scheduled-query show \
   },
   "description": "Alert on Heartbeat count",
   "enabled": true,
-  "evaluationFrequency": "0:05:00",
+  "evaluationFrequency": "PT5M",
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
   "location": "westeurope",
   "name": "my-sqr",
   "resourceGroup": "rg-sqr-demo",
+  "scopes": [
+    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace"
+  ],
   "severity": 2,
-  "type": "Microsoft.Insights/scheduledQueryRules",
-  "windowSize": "0:05:00"
+  "type": "microsoft.insights/scheduledqueryrules",
+  "windowSize": "PT5M"
 }
 ```
 
@@ -232,14 +235,17 @@ az monitor scheduled-query list \
       ]
     },
     "enabled": true,
-    "evaluationFrequency": "0:05:00",
+    "evaluationFrequency": "PT5M",
     "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/microsoft.insights/scheduledqueryrules/my-sqr",
     "location": "westeurope",
     "name": "my-sqr",
     "resourceGroup": "rg-sqr-demo",
+    "scopes": [
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-sqr-demo/providers/Microsoft.OperationalInsights/workspaces/my-workspace"
+    ],
     "severity": 2,
-    "type": "Microsoft.Insights/scheduledQueryRules",
-    "windowSize": "0:05:00"
+    "type": "microsoft.insights/scheduledqueryrules",
+    "windowSize": "PT5M"
   }
 ]
 ```
@@ -271,15 +277,15 @@ az monitor scheduled-query list --resource-group rg-sqr-demo
 - **KQL query storage:** Store the KQL query definition within the rule (not executed).
 - **Condition configuration:** Define threshold, operator, time aggregation, and evaluation period.
 - **Action group references:** Associate one or more action groups with a query rule.
-- **Severity levels:** Set alert severity from 0 (Critical) to 4 (Verbose).
-- **Evaluation frequency:** Configure how often the rule is evaluated via ISO 8601 duration.
-- **Cross-resource queries:** Define rules targeting multiple scopes.
+- **Severity levels:** Set alert severity from 0 (critical) to 4 (verbose), consistent with [Azure CLI `az monitor scheduled-query`](https://learn.microsoft.com/en-us/cli/azure/monitor/scheduled-query).
+- **Evaluation frequency and window size:** Set how often the rule runs and the aggregation window (`5m`-style values in the CLI; the API represents these as ISO 8601 durations such as `PT5M`). See the REST API property reference for [`scheduledQueryRules`](https://learn.microsoft.com/en-us/rest/api/monitor/scheduled-query-rules/create-or-update).
+- **Multiple scopes:** Provide several scope resource IDs when your scenario requires it (the CLI documents [constraints on `scopes`](https://learn.microsoft.com/en-us/cli/azure/monitor/scheduled-query?view=azure-cli-latest#az-monitor-scheduled-query-create)).
 
 ## Limitations
 
 - **No KQL execution:** The query defined in the rule is never run against Log Analytics data.
 - **No alert firing:** Alert thresholds are never evaluated and no alerts are triggered.
-- **No notifications dispatched:** Action group notifications are not sent even when the rule fires.
+- **No notifications dispatched:** Action group notifications are not sent (unlike Azure, where a firing rule invokes the configured action groups).
 - **No alert history:** Alert instance history and state transitions are not recorded.
 
 ## Samples
