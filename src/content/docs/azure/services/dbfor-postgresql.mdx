@@ -92,11 +92,134 @@ The command waits for the server to reach the `Ready` state before returning.
 
 Retrieve the details of the flexible server:
 
+```bash
+az postgres flexible-server show \
+  --name postgres-demo \
+  --resource-group rg-postgres-demo
+```
+
+```bash title="Output"
+{
+  "administratorLogin": "pgadmin",
+  "authConfig": {
+    "activeDirectoryAuth": "Disabled",
+    "passwordAuth": "Enabled",
+    "tenantId": null
+  },
+  "backup": {
+    "backupRetentionDays": 7,
+    "geoRedundantBackup": "Disabled"
+  },
+  "fullyQualifiedDomainName": "postgres-demo.postgres.database.azure.com",
+  "highAvailability": {
+    "mode": "Disabled",
+    "state": "NotEnabled"
+  },
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres-demo",
+  "location": "westeurope",
+  "name": "postgres-demo",
+  "network": {
+    "publicNetworkAccess": "Enabled"
+  },
+  "resourceGroup": "rg-postgres-demo",
+  "sku": {
+    "name": "Standard_B1ms",
+    "tier": "Burstable"
+  },
+  "state": "Ready",
+  "storage": {
+    "autoGrow": "Disabled",
+    "storageSizeGb": 32,
+    "tier": "P4",
+    "type": "Premium_LRS"
+  },
+  "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+  "version": "16",
+  ...
+}
+```
+
+Then list all flexible servers in the resource group:
+
+```bash
+az postgres flexible-server list \
+  --resource-group rg-postgres-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres-demo",
+    "location": "westeurope",
+    "name": "postgres-demo",
+    "sku": {
+      "name": "Standard_B1ms",
+      "tier": "Burstable"
+    },
+    "state": "Ready",
+    "version": "16",
+    ...
+  }
+]
+```
 
 ### Update a flexible server
 
 Update the server SKU and storage size:
 
+```bash
+az postgres flexible-server update \
+  --name postgres-demo \
+  --resource-group rg-postgres-demo \
+  --sku-name Standard_B2s \
+  --tier Burstable \
+  --storage-size 64
+```
+
+```bash title="Output"
+{
+  "administratorLogin": "pgadmin",
+  "authConfig": {
+    "activeDirectoryAuth": "Disabled",
+    "passwordAuth": "Enabled",
+    "tenantId": null
+  },
+  "backup": {
+    "backupRetentionDays": 7,
+    "geoRedundantBackup": "Disabled"
+  },
+  "fullyQualifiedDomainName": "postgres-demo.postgres.database.azure.com",
+  "highAvailability": {
+    "mode": "Disabled",
+    "state": "NotEnabled"
+  },
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres-demo",
+  "location": "westeurope",
+  "name": "postgres-demo",
+  "network": {
+    "publicNetworkAccess": "Enabled"
+  },
+  "resourceGroup": "rg-postgres-demo",
+  "sku": {
+    "name": "Standard_B2s",
+    "tier": "Burstable"
+  },
+  "state": "Ready",
+  "storage": {
+    "autoGrow": "Disabled",
+    "storageSizeGb": 64,
+    "tier": "P6",
+    "type": "Premium_LRS"
+  },
+  "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+  "version": "16",
+  ...
+}
+```
+
+### Create a database
+
+Create a database on the flexible server:
 
 ```bash
 az postgres flexible-server db create \
@@ -192,7 +315,7 @@ az postgres flexible-server firewall-rule show \
 
 az postgres flexible-server firewall-rule list \
   --resource-group rg-postgres-demo \
-  --name pgdoc96
+  --name postgres-demo
 ```
 
 ```bash title="Output"
@@ -215,6 +338,164 @@ az postgres flexible-server firewall-rule list \
 ### View and update server configuration
 
 View the current value of the `max_connections` configuration parameter:
+
+```bash
+az postgres flexible-server parameter show \
+  --resource-group rg-postgres-demo \
+  --server-name postgres-demo \
+  --name max_connections
+```
+
+```bash title="Output"
+{
+  "allowedValues": "25-5000",
+  "dataType": "Integer",
+  "defaultValue": "100",
+  "description": "Sets the maximum number of concurrent connections.",
+  "documentationLink": "https://www.postgresql.org/docs/16/runtime-config-connection.html#GUC-MAX-CONNECTIONS",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres-demo/configurations/max_connections",
+  "isConfigPendingRestart": false,
+  "isDynamicConfig": false,
+  "isReadOnly": false,
+  "name": "max_connections",
+  "resourceGroup": "rg-postgres-demo",
+  "source": "system-default",
+  "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
+  "unit": "",
+  "value": "100"
+}
+```
+
+Update `max_connections` to 200:
+
+```bash
+az postgres flexible-server parameter set \
+  --resource-group rg-postgres-demo \
+  --server-name postgres-demo \
+  --name max_connections \
+  --value 200 \
+  --source user-override
+```
+
+```bash title="Output"
+{
+  "allowedValues": "25-5000",
+  "dataType": "Integer",
+  "defaultValue": "100",
+  "description": "Sets the maximum number of concurrent connections.",
+  "documentationLink": "https://www.postgresql.org/docs/16/runtime-config-connection.html#GUC-MAX-CONNECTIONS",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-postgres-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres-demo/configurations/max_connections",
+  "isConfigPendingRestart": true,
+  "isDynamicConfig": false,
+  "isReadOnly": false,
+  "name": "max_connections",
+  "resourceGroup": "rg-postgres-demo",
+  "source": "user-override",
+  "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
+  "unit": "",
+  "value": "200"
+}
+```
+
+Non-dynamic parameters such as `max_connections` set `isConfigPendingRestart` to `true` after an update. A server restart applies the change.
+
+### Stop, start, and restart a server
+
+Stop the flexible server:
+
+```bash
+az postgres flexible-server stop \
+  --resource-group rg-postgres-demo \
+  --name postgres-demo
+```
+
+```bash title="Output"
+Server will be automatically started after 7 days if you do not perform a manual start operation
+```
+
+Verify the server state is `Stopped`:
+
+```bash
+az postgres flexible-server show \
+  --name postgres-demo \
+  --resource-group rg-postgres-demo \
+  --query state \
+  --output tsv
+```
+
+```bash title="Output"
+Stopped
+```
+
+Start the server again:
+
+```bash
+az postgres flexible-server start \
+  --resource-group rg-postgres-demo \
+  --name postgres-demo
+```
+
+Restart the server to apply pending configuration changes:
+
+```bash
+az postgres flexible-server restart \
+  --resource-group rg-postgres-demo \
+  --name postgres-demo
+```
+
+### Delete and verify
+
+Delete the flexible server:
+
+```bash
+az postgres flexible-server delete \
+  --resource-group rg-postgres-demo \
+  --name postgres-demo \
+  --yes
+```
+
+Then list all flexible servers to confirm the resource group is now empty:
+
+```bash
+az postgres flexible-server list \
+  --resource-group rg-postgres-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+The PostgreSQL Flexible Server emulator supports the following features:
+
+- **Server lifecycle management**: Create, get, update, list, and delete flexible servers with full ARM resource model support.
+- **Stop, start, and restart**: Transition servers between Ready and Stopped states with proper state machine enforcement.
+- **Database management**: Create, get, list, and delete user databases. Each database is backed by a real PostgreSQL instance.
+- **Firewall rules**: Create, get, update, list, and delete IP-based firewall rules with address range validation.
+- **Server configuration**: Get, list, and update over 14 PostgreSQL configuration parameters with data-type validation and restart-pending tracking.
+- **SKU tiers**: Burstable, General Purpose, and Memory Optimized tiers with multiple SKU sizes per tier.
+- **PostgreSQL versions**: Versions 13, 14, 15, 16, and 17 with in-place major version upgrade support.
+- **Storage management**: Configurable storage from 32 GB to 16 TB with automatic tier mapping and storage auto-grow support.
+- **Name availability check**: Validate server name uniqueness across subscriptions before creation.
+- **Location capabilities**: Query available SKUs, storage sizes, and supported PostgreSQL versions per region.
+- **Long-running operations**: Server create, delete, start, stop, and restart return `202 Accepted` with async operation tracking headers.
+- **Bicep and Terraform support**: Deploy flexible servers, databases, and firewall rules using infrastructure-as-code templates.
+
+## Limitations
+
+- **Backup and restore**: Backup retention days and geo-redundant backup settings are stored but no actual backups are performed. Point-in-time restore is not supported.
+- **Read replicas**: Replica properties are returned in the server response but replica creation and management are not implemented.
+- **Microsoft Entra authentication**: The `authConfig.activeDirectoryAuth` property is stored but Active Directory authentication is not enforced.
+- **Virtual network integration**: Delegated subnet and private DNS zone properties are accepted but VNet injection is not performed.
+- **Private endpoint connections**: The property is returned in the response but private endpoint connectivity is not implemented.
+- **High availability failover**: High availability mode and standby availability zone are stored but no failover mechanism is active.
+- **Firewall rule enforcement**: Firewall rules are stored and queryable but are not enforced on actual database connections.
+- **Storage auto-grow enforcement**: The auto-grow setting is stored but automatic storage expansion does not occur.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
 
 ## API Coverage
 
