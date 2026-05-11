@@ -9,7 +9,7 @@ import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureF
 ## Introduction
 
 Azure Monitor Workbooks are interactive reports that combine text, KQL queries, metrics, and visualizations into a single shareable document.
-Workbook Templates allow organizations to share reusable workbook definitions across workspaces and resource groups.
+Workbook templates are Azure Resource Manager resources that package reusable definitions and gallery metadata so teams can publish templates to experiences such as Azure Monitor workbooks galleries.
 They are commonly used to create operational dashboards, cost reports, and compliance summaries that surface data from multiple Azure Monitor sources. For more information, see [Azure Workbooks overview](https://learn.microsoft.com/en-us/azure/azure-monitor/visualize/workbooks-overview).
 
 LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Workbooks.
@@ -65,6 +65,7 @@ az monitor app-insights workbook create \
   --display-name "My Workbook" \
   --kind shared \
   --category workbook \
+  --version "Notebook/1.0" \
   --serialized-data '{"version":"Notebook/1.0","items":[{"type":1,"content":{"json":"## My Workbook\nHello, world!"},"name":"text-0"}],"isLocked":false}' \
   --location westeurope
 ```
@@ -73,12 +74,13 @@ az monitor app-insights workbook create \
 {
   "category": "workbook",
   "displayName": "My Workbook",
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-workbook-demo/providers/microsoft.insights/workbooks/de747180-ecea-4b97-bef4-f8376fc72abe",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-workbook-demo/providers/Microsoft.Insights/workbooks/de747180-ecea-4b97-bef4-f8376fc72abe",
   "kind": "shared",
   "location": "westeurope",
   "name": "de747180-ecea-4b97-bef4-f8376fc72abe",
-  "resourceGroup": "rg-workbook-demo",
-  "serializedData": "{\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":{\"json\":\"## My Workbook\\nHello, world!\"},\"name\":\"text-0\"}],\"isLocked\":false}"
+  "serializedData": "{\"version\":\"Notebook/1.0\",\"items\":[{\"type\":1,\"content\":{\"json\":\"## My Workbook\\nHello, world!\"},\"name\":\"text-0\"}],\"isLocked\":false}",
+  "type": "Microsoft.Insights/workbooks",
+  "version": "Notebook/1.0"
 }
 ```
 
@@ -97,19 +99,20 @@ az monitor app-insights workbook list \
   {
     "category": "workbook",
     "displayName": "My Workbook",
-    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-workbook-demo/providers/microsoft.insights/workbooks/de747180-ecea-4b97-bef4-f8376fc72abe",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-workbook-demo/providers/Microsoft.Insights/workbooks/de747180-ecea-4b97-bef4-f8376fc72abe",
     "kind": "shared",
     "location": "westeurope",
     "name": "de747180-ecea-4b97-bef4-f8376fc72abe",
-    "resourceGroup": "rg-workbook-demo",
-    "serializedData": "..."
+    "serializedData": "...",
+    "type": "Microsoft.Insights/workbooks",
+    "version": "Notebook/1.0"
   }
 ]
 ```
 
 ### Create a workbook template
 
-Workbook templates do not have a dedicated Azure CLI subcommand. Use `az rest` pointed at the LocalStack resource manager endpoint:
+Workbook templates are not exposed as a first-party `az monitor app-insights` command group. Use `az rest` against the resource manager endpoint (via your active cloud, which LocalStack updates when interception is enabled):
 
 ```bash
 RM=$(az cloud show --query "endpoints.resourceManager" -o tsv | sed 's|/$||')
@@ -121,7 +124,10 @@ az rest --method PUT \
     "properties": {
       "priority": 1,
       "author": "My Team",
-      "templateData": {},
+      "templateData": {
+        "version": "Notebook/1.0",
+        "items": []
+      },
       "galleries": [
         {
           "name": "My Template",
@@ -137,7 +143,7 @@ az rest --method PUT \
 
 ```bash title="Output"
 {
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbooktemplates/my-template",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/Microsoft.Insights/workbookTemplates/my-template",
   "location": "westeurope",
   "name": "my-template",
   "properties": {
@@ -152,15 +158,18 @@ az rest --method PUT \
       }
     ],
     "priority": 1,
-    "templateData": {}
+    "templateData": {
+      "version": "Notebook/1.0",
+      "items": []
+    }
   },
-  "type": "microsoft.insights/workbooktemplates"
+  "type": "Microsoft.Insights/workbookTemplates"
 }
 ```
 
 ### Delete resources
 
-Delete the workbook and workbook template, then delete the resource group:
+Delete the workbook and workbook template, then delete the resource group. Use the same shell session as earlier steps so `WORKBOOK_ID` and `RM` are still set.
 
 ```bash
 az monitor app-insights workbook delete \
@@ -170,14 +179,16 @@ az monitor app-insights workbook delete \
 
 az rest --method DELETE \
   --url "${RM}/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workbook-demo/providers/microsoft.insights/workbookTemplates/my-template?api-version=2020-11-20"
+
+az group delete --name rg-workbook-demo --yes
 ```
 
 ## Features
 
 - **Workbook lifecycle:** Create, read, list, update, and delete workbooks.
 - **Workbook template lifecycle:** Create, read, list, update, and delete workbook templates.
-- **Shared and private workbooks:** Accept both `shared` and `user` kind values.
-- **Category filtering:** List workbooks by category such as `workbook`, `sentinel`, or `vm-insights`.
+- **Shared and private workbooks:** The [Workbooks REST API](https://learn.microsoft.com/en-us/rest/api/application-insights/workbooks/create-or-update) defines `kind` values `shared` and `user`. The Azure CLI `workbook create` command currently exposes only `--kind shared` (see [az monitor app-insights workbook create](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/workbook#az-monitor-app-insights-workbook-create)).
+- **Category filtering:** For [list by resource group](https://learn.microsoft.com/en-us/rest/api/application-insights/workbooks/list-by-resource-group), the `category` query parameter is one of `workbook`, `TSG`, `performance`, or `retention` (the same set the CLI accepts on `workbook list --category`). The `properties.category` value stored on a workbook resource is a separate string that you set at creation time.
 - **Serialized data storage:** Store the full workbook JSON definition in the `serializedData` field.
 - **Gallery configuration:** Define workbook templates with gallery metadata for easy discovery.
 
