@@ -74,7 +74,7 @@ The content will be updated as additional query features and functions are imple
 ### Iceberg Tables
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|UNDROP|
 |----|----|----|----|----|----|----|
-|**ICEBERG TABLE**|❌|✅|❌|✅|❌|❌|
+|**ICEBERG TABLE**|❌|✅|❌|❌|❌|❌|
 
 ### Indexes
 | |CREATE|DROP|SHOW|
@@ -134,7 +134,7 @@ The content will be updated as additional query features and functions are imple
 ### Streams
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
 |----|----|----|----|----|----|
-|**STREAM**|✅|✅|❌|✅|✅|
+|**STREAM**|✅|✅|✅|✅|✅|
 
 ### Streamlits
 | |ALTER|CREATE|DESCRIBE|DROP|SHOW|
