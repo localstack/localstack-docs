@@ -102,6 +102,7 @@ az monitor app-insights web-test create \
   --locations Id=us-tx-sn1-azr \
   --request-url "https://example.com" \
   --http-verb GET \
+  --synthetic-monitor-id my-web-test \
   --tags "hidden-link:$AI_ID=Resource"
 ```
 
@@ -110,11 +111,11 @@ az monitor app-insights web-test create \
   "enabled": true,
   "frequency": 300,
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/Microsoft.Insights/webtests/my-web-test",
-  "kind": "ping",
+  "kind": "standard",
   "location": "westeurope",
   "locations": [
     {
-      "location": "us-tx-sn1-azr"
+      "Id": "us-tx-sn1-azr"
     }
   ],
   "name": "my-web-test",
@@ -147,17 +148,20 @@ az monitor app-insights web-test show \
   "enabled": true,
   "frequency": 300,
   "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/Microsoft.Insights/webtests/my-web-test",
-  "kind": "ping",
+  "kind": "standard",
   "location": "westeurope",
   "locations": [
     {
-      "location": "us-tx-sn1-azr"
+      "Id": "us-tx-sn1-azr"
     }
   ],
   "name": "my-web-test",
   "request": {
     "httpVerb": "GET",
     "requestUrl": "https://example.com"
+  },
+  "tags": {
+    "hidden-link:/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/microsoft.insights/components/my-app-insights": "Resource"
   },
   "timeout": 30,
   "type": "Microsoft.Insights/webtests",
@@ -181,11 +185,11 @@ az monitor app-insights web-test list \
     "enabled": true,
     "frequency": 300,
     "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-webtest-demo/providers/Microsoft.Insights/webtests/my-web-test",
-    "kind": "ping",
+    "kind": "standard",
     "location": "westeurope",
     "locations": [
       {
-        "location": "us-tx-sn1-azr"
+        "Id": "us-tx-sn1-azr"
       }
     ],
     "name": "my-web-test",
@@ -229,7 +233,7 @@ az monitor app-insights web-test list --resource-group rg-webtest-demo
 - **Test location configuration:** Accept one or more agent location IDs per test.
 - **Request configuration:** Define URL, HTTP verb, headers, and body for standard tests.
 - **Frequency and timeout settings:** Configure probing frequency and response timeout.
-- **Application Insights linking:** Associate web tests with an Application Insights component via the `HiddenLink` tag.
+- **Application Insights linking:** Associate web tests with an Application Insights component via a `hidden-link` tag on the web test resource (see [Web Tests REST API examples](https://learn.microsoft.com/en-us/rest/api/application-insights/web-tests/create-or-update?view=rest-application-insights-2022-06-15)).
 - **Enable/disable flag:** Enable or disable a web test without deleting it.
 
 ## Limitations
@@ -237,7 +241,7 @@ az monitor app-insights web-test list --resource-group rg-webtest-demo
 - **No HTTP probes sent:** LocalStack does not send HTTP requests to the configured URL.
 - **No availability data collected:** Pass, fail, and response time data is not recorded.
 - **No availability alerts fired:** Alert rules associated with a web test are not triggered.
-- **No synthetic transactions:** Multi-step and Playwright-based tests are stored but not executed.
+- **No synthetic transactions:** Multi-step web tests (`multistep` kind), which rely on a recorded XML web test sequence, are not executed; only metadata is emulated locally.
 
 ## Samples
 
