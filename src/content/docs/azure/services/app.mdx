@@ -1,10 +1,145 @@
 ---
 title: "App"
-description: API coverage for Microsoft.App in LocalStack for Azure.
+description: Get started with Azure App resources on LocalStack
 template: doc
 ---
 
 import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure App provides the control plane for Azure Container Apps resources, including managed environments.
+It helps define and manage serverless container infrastructure used by application workloads.
+These resources are commonly used to prepare the runtime environment where containerized apps are deployed. For more information, see [Azure Container Apps overview](https://learn.microsoft.com/en-us/azure/container-apps/overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure App resources.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of `Microsoft.App` integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Azure App resources and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to contain your App resources:
+
+```bash
+az group create \
+  --name rg-app-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-app-demo",
+  "location": "westeurope",
+  "name": "rg-app-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  ...
+}
+```
+
+### Create a managed environment
+
+Use the `containerapp` command group to create App (`Microsoft.App`) managed environments:
+
+```bash
+az containerapp env create \
+  --name caeappdoc87 \
+  --resource-group rg-app-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-app-demo/providers/Microsoft.App/managedEnvironments/caeappdoc87",
+  "location": "West Europe",
+  "name": "caeappdoc87",
+  "properties": {
+    "defaultDomain": "nicesmoke-8bdf22.westeurope.azurecontainerapps.io",
+    "provisioningState": "Succeeded",
+    "publicNetworkAccess": "Enabled",
+    ...
+  },
+  "type": "Microsoft.App/managedEnvironments",
+  ...
+}
+```
+
+### Show and list managed environments
+
+Show a managed environment:
+
+```bash
+az containerapp env show \
+  --name caeappdoc87 \
+  --resource-group rg-app-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-app-demo/providers/Microsoft.App/managedEnvironments/caeappdoc87",
+  "name": "caeappdoc87",
+  "properties": {
+    "defaultDomain": "nicesmoke-8bdf22.westeurope.azurecontainerapps.io",
+    "provisioningState": "Succeeded",
+    ...
+  },
+  ...
+}
+```
+
+Create another managed environment and list all environments in the resource group:
+
+```bash
+az containerapp env create \
+  --name caeappdoc88 \
+  --resource-group rg-app-demo \
+  --location westeurope
+
+az containerapp env list \
+  --resource-group rg-app-demo
+```
+
+```bash title="Output"
+[
+  {
+    "name": "caeappdoc87",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-app-demo/providers/Microsoft.App/managedEnvironments/caeappdoc87",
+    "properties": {
+      "provisioningState": "Succeeded",
+      ...
+    },
+    ...
+  },
+  {
+    "name": "caeappdoc88",
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-app-demo/providers/Microsoft.App/managedEnvironments/caeappdoc88",
+    "properties": {
+      "provisioningState": "Succeeded",
+      ...
+    },
+    ...
+  }
+]
+```
 
 ## API Coverage
 
