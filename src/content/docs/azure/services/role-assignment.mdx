@@ -1,0 +1,344 @@
+---
+title: "Role Assignment"
+description: Get started with Azure Role Assignments on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Role Assignments grant an identity (user, group, or service principal) the permissions defined by a role definition at a specific scope.
+Together with Role Definitions, Role Assignments form the foundation of Azure RBAC.
+They are commonly used to grant managed identities access to storage accounts, key vaults, and other Azure resources in infrastructure automation scenarios. For more information, see [Assign Azure roles using the Azure CLI](https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Role Assignments.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Role Assignments' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through assigning a built-in role to a managed identity, listing assignments, and removing the assignment.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-rbac-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-rbac-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a user-assigned managed identity
+
+Create a user-assigned managed identity to use as the role assignee:
+
+```bash
+az identity create \
+  --name my-identity \
+  --resource-group rg-rbac-demo
+```
+
+```bash title="Output"
+{
+  "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/my-identity",
+  "isolationScope": "None",
+  "location": "westeurope",
+  "name": "my-identity",
+  "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "resourceGroup": "rg-rbac-demo",
+  "systemData": null,
+  "tags": {},
+  "tenantId": "00000000-0000-0000-0000-000000000000",
+  "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
+}
+```
+
+Capture the identity's principal ID:
+
+```bash
+PRINCIPAL_ID=$(az identity show \
+  --name my-identity \
+  --resource-group rg-rbac-demo \
+  --query principalId \
+  --output tsv)
+```
+
+### Assign a built-in role
+
+Assign the `Contributor` role to the identity at the resource group scope:
+
+```bash
+SUBSCRIPTION_ID=$(az account show --query id --output tsv)
+az role assignment create \
+  --assignee "$PRINCIPAL_ID" \
+  --role Contributor \
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/rg-rbac-demo"
+```
+
+```bash title="Output"
+{
+  "condition": null,
+  "conditionVersion": null,
+  "createdBy": null,
+  "createdOn": null,
+  "delegatedManagedIdentityResourceId": null,
+  "description": null,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.Authorization/roleAssignments/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "principalType": "ServicePrincipal",
+  "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+  "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo",
+  "type": "Microsoft.Authorization/roleAssignments",
+  "updatedBy": null,
+  "updatedOn": null
+}
+```
+
+### List role assignments
+
+List all role assignments scoped to the resource group:
+
+```bash
+az role assignment list \
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/rg-rbac-demo"
+```
+
+```bash title="Output"
+[
+  {
+    "condition": null,
+    "conditionVersion": null,
+    "createdBy": null,
+    "createdOn": null,
+    "delegatedManagedIdentityResourceId": null,
+    "description": null,
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.Authorization/roleAssignments/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalName": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalType": "ServicePrincipal",
+    "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+    "roleDefinitionName": "Contributor",
+    "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo",
+    "type": "Microsoft.Authorization/roleAssignments",
+    "updatedBy": null,
+    "updatedOn": null
+  }
+]
+```
+
+### Filter by assignee
+
+Filter the role assignments to show only assignments for the managed identity's principal ID:
+
+```bash
+az role assignment list \
+  --assignee "$PRINCIPAL_ID" \
+  --all
+```
+
+```bash title="Output"
+[
+  {
+    "condition": null,
+    "conditionVersion": null,
+    "createdBy": null,
+    "createdOn": null,
+    "delegatedManagedIdentityResourceId": null,
+    "description": null,
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.Authorization/roleAssignments/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalName": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalType": "ServicePrincipal",
+    "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+    "roleDefinitionName": "Contributor",
+    "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo",
+    "type": "Microsoft.Authorization/roleAssignments",
+    "updatedBy": null,
+    "updatedOn": null
+  }
+]
+```
+
+### List all role assignments for the subscription
+
+List every role assignment across the entire subscription:
+
+```bash
+az role assignment list --all
+```
+
+```bash title="Output"
+[
+  {
+    "condition": null,
+    "conditionVersion": null,
+    "createdBy": null,
+    "createdOn": null,
+    "delegatedManagedIdentityResourceId": null,
+    "description": null,
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.Authorization/roleAssignments/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalName": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalType": "ServicePrincipal",
+    "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+    "roleDefinitionName": "Contributor",
+    "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo",
+    "type": "Microsoft.Authorization/roleAssignments",
+    "updatedBy": null,
+    "updatedOn": null
+  }
+]
+```
+
+### Assign a Storage Blob Data Owner role on a storage account
+
+Create a storage account and assign the `Storage Blob Data Owner` role to the managed identity at the storage account scope.
+This is a common pattern in infrastructure automation where a function app or container needs full access to a specific storage account.
+
+```bash
+az storage account create \
+  --name strblobdataowner \
+  --resource-group rg-rbac-demo \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+Capture the storage account resource ID:
+
+```bash
+STORAGE_ID=$(az storage account show \
+  --name strblobdataowner \
+  --resource-group rg-rbac-demo \
+  --query id \
+  --output tsv)
+```
+
+Assign `Storage Blob Data Owner` at the storage account scope:
+
+```bash
+az role assignment create \
+  --assignee "$PRINCIPAL_ID" \
+  --role "Storage Blob Data Owner" \
+  --scope "$STORAGE_ID"
+```
+
+```bash title="Output"
+{
+  "condition": null,
+  "conditionVersion": null,
+  "createdBy": null,
+  "createdOn": null,
+  "delegatedManagedIdentityResourceId": null,
+  "description": null,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.Storage/storageAccounts/strblobdataowner/providers/Microsoft.Authorization/roleAssignments/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "principalType": "ServicePrincipal",
+  "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b7e6dc6d-f1e8-4753-8033-0f276bb0955b",
+  "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.Storage/storageAccounts/strblobdataowner",
+  "type": "Microsoft.Authorization/roleAssignments",
+  "updatedBy": null,
+  "updatedOn": null
+}
+```
+
+List assignments scoped to the storage account to verify:
+
+```bash
+az role assignment list --scope "$STORAGE_ID"
+```
+
+```bash title="Output"
+[
+  {
+    "condition": null,
+    "conditionVersion": null,
+    "createdBy": null,
+    "createdOn": null,
+    "delegatedManagedIdentityResourceId": null,
+    "description": null,
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.Storage/storageAccounts/strblobdataowner/providers/Microsoft.Authorization/roleAssignments/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "name": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalName": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "principalType": "ServicePrincipal",
+    "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b7e6dc6d-f1e8-4753-8033-0f276bb0955b",
+    "roleDefinitionName": "Storage Blob Data Owner",
+    "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rbac-demo/providers/Microsoft.Storage/storageAccounts/strblobdataowner",
+    "type": "Microsoft.Authorization/roleAssignments",
+    "updatedBy": null,
+    "updatedOn": null
+  }
+]
+```
+
+### Delete a role assignment
+
+Delete the role assignment and confirm it no longer appears in the list:
+
+```bash
+az role assignment delete \
+  --assignee "$PRINCIPAL_ID" \
+  --role Contributor \
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/rg-rbac-demo"
+```
+
+## Features
+
+- **Role assignment creation:** Create role assignments by specifying an assignee principal ID, role name or ID, and scope.
+- **Assignment listing:** List role assignments at subscription scope, resource group scope, or filtered by assignee.
+- **Assignee filtering:** Filter assignments by principal ID or display name.
+- **Subscription-wide listing:** Retrieve all role assignments across a subscription via `--all`.
+- **Role assignment deletion:** Delete assignments by role name, assignee, and scope.
+- **Custom role support:** Assign custom role definitions alongside built-in roles.
+
+## Limitations
+
+- **RBAC not enforced:** Role assignments are stored but not evaluated. All operations on LocalStack succeed regardless of assigned roles.
+- **Condition-based assignments:** Attribute-based access control (ABAC) conditions in assignments are accepted at the model level but are not evaluated.
+- **Deny assignments:** `Microsoft.Authorization/denyAssignments` are not supported.
+- **Management group scopes:** Assignments at management group scope are not supported.
+
+## Samples
+
+The following sample demonstrates how to use Azure Role Assignments with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/samples/function-app-service-bus/dotnet/README.md)
+- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Authorization" client:load />
