@@ -26,16 +26,8 @@ azlocal start-interception
 ```
 
 :::note
-As an alternative to using the `azlocal` CLI, users can run:
-
-`azlocal start-interception`
-
-This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
-To revert this configuration, run:
-
-`azlocal stop-interception`
-
-This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+`azlocal start-interception` points the Azure CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run `azlocal stop-interception` so the CLI targets the official Azure management REST API again.
 :::
 
 ### Create a resource group
@@ -225,7 +217,7 @@ az storage message peek \
 ]
 ```
 
-Get (dequeue) a message from the queue, which makes it invisible to other consumers for the visibility timeout period:
+Get (dequeue) a message from the queue, which makes it invisible to other consumers for the visibility timeout you set (when you omit `--visibility-timeout`, Azure Queue Storage uses a default of 30 seconds; see [Get Messages](https://learn.microsoft.com/en-us/rest/api/storageservices/get-messages)):
 
 ```bash
 az storage message get \
