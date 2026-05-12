@@ -422,31 +422,47 @@ export default defineConfig({
                 },
                 {
                   label: 'AWS SDKs',
-                  autogenerate: {
-                    directory: '/aws/connecting/aws-sdks',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/connecting/aws-sdks',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Infrastructure as Code',
-                  autogenerate: {
-                    directory: '/aws/connecting/infrastructure-as-code',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/connecting/infrastructure-as-code',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'LocalStack Console',
-                  autogenerate: {
-                    directory: '/aws/connecting/console',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/connecting/console',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'IDE Extensions',
-                  autogenerate: {
-                    directory: '/aws/connecting/ides',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/connecting/ides',
+                      },
+                    },
+                  ],
                 },
               ],
             },
