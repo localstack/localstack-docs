@@ -3,7 +3,7 @@ title: Serverless Framework
 description: Use the Serverless Framework with LocalStack.
 template: doc
 sidebar:
-  order: 1
+  order: 5
 ---
 
 ## Overview

@@ -3,7 +3,7 @@ title: Cloud Custodian
 description: Use Cloud Custodian with LocalStack
 template: doc
 sidebar:
-    order: 4
+    order: 10
 ---
 
 ## Introduction

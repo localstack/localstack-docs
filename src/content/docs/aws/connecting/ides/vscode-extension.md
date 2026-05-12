@@ -2,6 +2,8 @@
 title: LocalStack Toolkit for VS Code
 description: Install, configure, and run LocalStack without leaving VS Code.
 template: doc
+sidebar:
+    order: 1
 tags: ['Hobby']
 ---
 

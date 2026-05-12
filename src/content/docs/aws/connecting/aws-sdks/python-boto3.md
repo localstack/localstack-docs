@@ -1,5 +1,5 @@
 ---
-title: AWS Python Boto3
+title: AWS SDK for Python (Boto3)
 description: How to use the Python Boto3 AWS SDK with LocalStack.
 template: doc
 sidebar:

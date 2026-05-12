@@ -1,5 +1,5 @@
 ---
-title: AWS Ruby
+title: AWS SDK for Ruby
 description: How to use the Ruby AWS SDK with LocalStack.
 template: doc
 sidebar:
