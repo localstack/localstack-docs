@@ -122,6 +122,52 @@ awslocal cloudformation delete-stack \
     --stack-name cfn-quickstart-stack
 ```
 
+## Registry Extensions
+
+LocalStack supports the execution of private CloudFormation registry extensions — custom resource types packaged with the [CloudFormation CLI](https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html) and registered in your account's CloudFormation registry.
+
+Registry extensions work similarly to [custom resources](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources.html), with one key difference: the Lambda function that handles their lifecycle is not directly managed by the user.
+When a private extension is activated, LocalStack deploys and invokes the embedded handler Lambda internally, giving you full local emulation of the extension's Create, Read, Update, Delete, and List (CRUDL) lifecycle.
+
+### Registering and using a private extension
+
+Build and package your extension using the CloudFormation CLI, then upload the package to S3 and register the type:
+
+```bash
+awslocal cloudformation register-type \
+    --type RESOURCE \
+    --type-name MyOrg::MyService::MyResource \
+    --schema-handler-package s3://my-bucket/my-extension.zip
+```
+
+You can then reference the registered type in a template like any built-in resource type:
+
+```yaml
+Resources:
+  MyCustomResource:
+    Type: MyOrg::MyService::MyResource
+    Properties:
+      SomeProperty: value
+```
+
+When the stack is deployed, LocalStack routes each lifecycle operation to the handler Lambda that was deployed from the extension package.
+
+### Supported package formats
+
+LocalStack currently resolves the handler artifact from the following formats inside the extension ZIP package:
+
+| Format | Description |
+|:-------|:------------|
+| `ResourceProvider.zip` | Python or Node.js handler produced by the CloudFormation CLI |
+| Single JAR file | Java-based resource provider handler |
+
+Support for additional payload formats will be added in future releases.
+
+:::note
+Extension packages must target a currently supported Lambda runtime.
+Python 3.9 is no longer supported; use Python 3.12 or another supported runtime when building your extension.
+:::
+
 ## Resource Browser
 
 The LocalStack Web Application provides a Resource Browser for managing CloudFormation stacks to manage your AWS resources locally.
@@ -143,6 +189,7 @@ The following code snippets and sample applications provide practical examples o
 - [Serverless Container-based APIs with Amazon ECS & API Gateway](https://github.com/localstack/serverless-api-ecs-apigateway-sample)
 - [Deploying containers on ECS clusters using ECR and Fargate](/aws/tutorials/ecs-ecr-container-app/)
 - [Messaging Processing application with SQS, DynamoDB, and Fargate](https://github.com/localstack/sqs-fargate-ddb-cdk-go)
+- [CloudFormation Registry Extension demo](https://github.com/localstack-samples/cloudformation-registry-demo)
 
 ## Best practices
 
@@ -229,6 +276,7 @@ Feel free to contribute by [creating a new GitHub issue](https://github.com/loca
 | Nested stacks       | Partial                                         |
 | StackSets           | Partial                                         |
 | Intrinsic Functions | Partial                                         |
+| Registry extension execution | Partial                                |
 
 :::note
 Currently, support for `UPDATE` operations on resources is limited.
