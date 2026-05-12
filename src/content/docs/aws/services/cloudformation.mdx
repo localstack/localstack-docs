@@ -144,6 +144,65 @@ The following code snippets and sample applications provide practical examples o
 - [Deploying containers on ECS clusters using ECR and Fargate](/aws/tutorials/ecs-ecr-container-app/)
 - [Messaging Processing application with SQS, DynamoDB, and Fargate](https://github.com/localstack/sqs-fargate-ddb-cdk-go)
 
+## Best practices
+
+CloudFormation templates that target both real AWS and LocalStack should avoid hardcoded values that differ between the two environments.
+Using [pseudo parameters](#pseudo-parameters) and [intrinsic functions](#intrinsic-functions) keeps a single template portable without conditional logic or environment-specific parameter overrides.
+
+### Use `AWS::URLSuffix` for service domain names
+
+Hardcoding `amazonaws.com` (or conversely `localhost.localstack.cloud`) when building service URLs is one of the most common causes of templates that deploy on AWS but fail on LocalStack, or vice versa.
+This typically shows up in API Gateway invoke URLs, Step Functions API integration targets, and other places where a template constructs a fully qualified endpoint.
+
+The `AWS::URLSuffix` pseudo parameter resolves to `amazonaws.com` on AWS (or `amazonaws.com.cn` in China Regions) and to the configured [`LOCALSTACK_HOST`](/aws/capabilities/config/configuration/) on LocalStack, which defaults to `localhost.localstack.cloud`.
+Referencing it lets the same template produce a valid URL in either environment.
+
+The following snippet shows the anti-pattern to avoid, where `amazonaws.com` is hardcoded into the output URL.
+A template written this way deploys on AWS but produces a non-resolvable URL on LocalStack:
+
+```yaml
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}"
+```
+
+Reference `AWS::URLSuffix` instead so the same template resolves to `amazonaws.com` on AWS and to the LocalStack host locally:
+
+```yaml
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${StageName}"
+```
+
+The same pattern applies when wiring an API Gateway stage into a Step Functions task, when building a WebSocket invoke URL, or any other integration `Uri` that embeds a service domain.
+The LocalStack team contributed this practice upstream to the [AWS SAM application templates](https://github.com/aws/aws-sam-cli-app-templates/pull/525) and to the [AWS serverless patterns collection](https://github.com/aws-samples/serverless-patterns) that backs [serverlessland.com/patterns](https://serverlessland.com/patterns) and the VS Code Application Builder.
+
+:::caution
+`AWS::URLSuffix` is the right tool for endpoints your template constructs, such as API Gateway URLs or service domain joins.
+Avoid substituting it into URIs that AWS resolves to fixed production hostnames, for example:
+
+- ECR image URIs such as `<account>.dkr.ecr.<region>.amazonaws.com/<image>`
+- SageMaker built-in image URIs
+- AppSync `HttpConfig` endpoints for Bedrock or Step Functions data sources
+
+In those cases, the `amazonaws.com` suffix is part of a registry or service endpoint that is not served by LocalStack, so rewriting it can break the template on AWS without making it work on LocalStack.
+:::
+
+### Use `AWS::Partition` when building ARNs
+
+Prefer composing ARNs with `AWS::Partition`, `AWS::Region`, and `AWS::AccountId` rather than embedding a literal `arn:aws:...` prefix.
+The resulting template also works on AWS GovCloud and AWS China without changes:
+
+```yaml
+ManagedPolicyArns:
+  - !Sub "arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+```
+
+### Reference resources with `!Ref` and `Fn::GetAtt`
+
+When one resource needs the address of another, read it from the resource itself with `!Ref` or `!GetAtt` rather than constructing the URL from service domains.
+For example, use `!GetAtt MyQueue.QueueUrl` or `!GetAtt MyBucket.DomainName` so LocalStack returns the local endpoint while AWS returns the real one.
+
 ## Feature coverage
 
 :::tip
@@ -202,6 +261,28 @@ Please exercise caution when using parameters with `NoEcho`.
 | `Fn::ToJsonString` | No        | Converts an object or map into a json string.                |
 | `Fn::Cidr`         | No        | Generates a CIDR block from the inputs.                      |
 | `Fn::GetAZs`       | No        | Returns a list of the Availability Zones of a region.        |
+
+### Pseudo Parameters
+
+[Pseudo parameters](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html) are built-in variables that CloudFormation resolves at deployment time.
+You can reference them with the `Ref` intrinsic function (for example, `!Ref AWS::Region`) or with `Fn::Sub` (for example, `!Sub "${AWS::Region}"`).
+LocalStack resolves each pseudo parameter to the equivalent value for the local environment, which lets the same template deploy against both AWS and LocalStack.
+
+| Pseudo Parameter        | Supported | Value in LocalStack                                                                         | Value in AWS                                                                      |
+| ----------------------- | --------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `AWS::AccountId`        | Yes       | The account ID used by the stack (default: `000000000000`)                                  | The AWS account ID of the account deploying the stack                             |
+| `AWS::NotificationARNs` | Partial   | Empty list                                                                                  | The list of SNS topic ARNs passed to the stack via `--notification-arns`          |
+| `AWS::NoValue`          | Yes       | Removes the corresponding property when used as a return value in `Fn::If`                  | Same                                                                              |
+| `AWS::Partition`        | Yes       | `aws`                                                                                       | `aws`, `aws-cn`, or `aws-us-gov` depending on the Region                          |
+| `AWS::Region`           | Yes       | The Region of the encompassing resource                                                     | Same                                                                              |
+| `AWS::StackId`          | Yes       | The ARN of the stack                                                                        | Same                                                                              |
+| `AWS::StackName`        | Yes       | The name of the stack                                                                       | Same                                                                              |
+| `AWS::URLSuffix`        | Yes       | The configured [`LOCALSTACK_HOST`](/aws/capabilities/config/configuration/) (default: `localhost.localstack.cloud`) | `amazonaws.com`, or `amazonaws.com.cn` in China Regions |
+
+:::tip
+Reach for `AWS::URLSuffix` and `AWS::Partition` instead of hardcoding `amazonaws.com` or `arn:aws:...` in templates.
+See [Best practices](#best-practices) for details.
+:::
 
 ### Resources
 
