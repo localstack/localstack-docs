@@ -3,7 +3,7 @@ title: Former2
 description: Use Former2 to generate Infrastructure-as-Code outputs from existing resources with LocalStack.
 template: doc
 sidebar:
-  order: 5
+  order: 11
 ---
 
 ## Introduction

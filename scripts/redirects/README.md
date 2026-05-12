@@ -4,6 +4,10 @@ This directory contains scripts to help manage redirects for LocalStack's docs m
 - `docs.localstack.cloud` → `docs.localstack.cloud/aws/`
 - `snowflake.localstack.cloud` → `docs.localstack.cloud/snowflake/`
 
+⚠️ WARNING: The content of this directory was used during a migration project in 2025. There is no longer a need to
+follow these instructions or update any files in this directory. The scripts and instructions are provided here for
+historical reference only.
+
 ## 📁 Files Overview
 
 | File | Purpose |

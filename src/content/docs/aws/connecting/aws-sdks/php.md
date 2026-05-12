@@ -1,5 +1,5 @@
 ---
-title: AWS PHP
+title: AWS SDK for PHP
 description: How to use the PHP AWS SDK with LocalStack.
 template: doc
 sidebar:

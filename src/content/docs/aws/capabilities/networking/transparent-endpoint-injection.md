@@ -109,7 +109,7 @@ Make sure to use this only for local testing, and never in production.
 ## Current Limitations
 
 - The mechanism to disable certificate validation for these requests is not currently functional with Go Lambdas.
-  To work around this issue, you'll need to manually set your endpoint when creating your AWS SDK client, as detailed in our documentation on the [Go AWS SDK](/aws/integrations/aws-sdks/go).
+  To work around this issue, you'll need to manually set your endpoint when creating your AWS SDK client, as detailed in our documentation on the [Go AWS SDK](/aws/connecting/aws-sdks/go).
 - Transparent Endpoint Injection does not work when code runs inside the LocalStack container. If you need to connect to LocalStack from within the container, here are a couple of alternative approaches:
   - Set the AWS_ENDPOINT_URL environment variable:
 Set `AWS_ENDPOINT_URL=http://localhost.localstack.cloud:4566`. This is the recommended approach as it directly points your AWS client to the LocalStack endpoint.

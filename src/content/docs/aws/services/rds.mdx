@@ -295,6 +295,32 @@ You can now connect to the database utilizing the user you generated and the tok
 PGPASSWORD=$TOKEN psql -d $DB_NAME -U myiam -w -p $PORT -h $HOST
 ```
 
+## SSL/TLS Support
+
+LocalStack's RDS PostgreSQL emulation supports SSL/TLS-encrypted client connections, so you can test applications that require `sslmode=require`.
+SSL/TLS support is currently available for the `postgres` engine.
+
+### Connect using SSL
+
+Once your DB instance is running, request an encrypted connection from any PostgreSQL client by passing the `sslmode` parameter.
+With `psql`:
+
+```bash
+PGPASSWORD=$MASTER_PW psql "host=$HOST port=$PORT dbname=$DB_NAME user=$MASTER_USER sslmode=require"
+```
+
+Certificate verification with `sslmode=verify-ca` or `sslmode=verify-full` is not currently supported.
+
+### Limitations
+
+LocalStack currently enables SSL/TLS connections for PostgreSQL DB instances, but does not enforce SSL-only connections.
+The `rds.force_ssl` parameter is accepted for compatibility, but it is not enforced.
+Clients can still connect without SSL.
+
+:::note
+The PostgreSQL `pg_stat_ssl` view always reports `ssl = false`, even when the client connection is encrypted.
+:::
+
 ## Global Database Support
 
 LocalStack extends support for [Aurora Global Database](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html) with certain limitations:
