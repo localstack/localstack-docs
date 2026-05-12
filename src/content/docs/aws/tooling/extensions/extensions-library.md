@@ -3,8 +3,8 @@ title: Extensions Library
 description: Extend LocalStack by adding new services and features as extensions.
 template: doc
 sidebar:
-    order: 5
-tags: ["Hobby"]
+  order: 4
+tags: ['Hobby']
 ---
 
 ## Introduction
