@@ -652,39 +652,6 @@ export default defineConfig({
                   ],
                 },
                 {
-                  label: 'AWS SDKs',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/integrations/aws-sdks',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'AWS Native Tools',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/integrations/aws-native-tools',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Infrastructure as Code',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/integrations/infrastructure-as-code',
-                      },
-                    },
-                  ],
-                },
-                {
                   label: 'Containers',
                   collapsed: true,
                   items: [
