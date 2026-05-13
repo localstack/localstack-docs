@@ -81,17 +81,6 @@ jobs:
           WORKFLOW: "AWS / Build, Test, Push"
           RESOURCE_FOLDER: "metrics-implementation-details/community"
 
-      - name: Download CloudFormation catalog from Enterprise pipeline (GitHub)
-        working-directory: docs
-        continue-on-error: true
-        run: /tmp/get_latest_github_metrics.sh ./target main
-        env:
-          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-pro
-          ARTIFACT_ID: iac-catalog-assets
-          WORKFLOW: "IaC – Generate Catalog Assets"
-          RESOURCE_FOLDER: "iac-catalog-assets"
-
       - name: Download coverage data for K8s pipeline (acceptance tests) (GitHub)
         working-directory: docs
         run: /tmp/get_latest_github_metrics.sh ./target main
