@@ -464,6 +464,10 @@ export default defineConfig({
                     },
                   ],
                 },
+                {
+                  label: 'Service Endpoints',
+                  slug: 'aws/connecting/service-endpoints',
+                },
               ],
             },
             {
