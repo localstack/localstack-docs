@@ -15,7 +15,7 @@ It provides convenience features to interact with LocalStack features like Cloud
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
 :::note
-This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 2026.3.0`.
+This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 2026.4.0`.
 :::
 
 ## Global Options
