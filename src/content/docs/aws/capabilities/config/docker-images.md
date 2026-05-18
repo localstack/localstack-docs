@@ -27,12 +27,6 @@ LocalStack for AWS gives you access to the complete set of LocalStack features, 
 You can use the LocalStack for AWS image to start your LocalStack container using various [installation methods](/aws/getting-started/installation/).
 While configuring to run LocalStack with Docker or Docker Compose, run the `localstack/localstack-pro` image with the appropriate tag you have pulled (if not `latest`).
 
-:::note
-Earlier, we maintained `localstack/localstack-light` and `localstack/localstack-full` images.
-They have been deprecated and are removed with the LocalStack 2.0 release.
-The [BigData image](https://hub.docker.com/r/localstack/bigdata/tags), which started as a `bigdata_container` container, has also been deprecated in favor of a BigData Mono container which installs dependencies directly into the LocalStack (`localstack-main`) container.
-:::
-
 ## Image tags
 
 Starting with the end-of-March 2026 release, LocalStack version tags follow
