@@ -60,6 +60,10 @@ Across our docs, we use `localhost.localstack.cloud:4566` instead of `localhost:
 
 ### How should I use the latest LocalStack Docker images?
 
+:::note
+As of May 2026, the `latest` tag mirrors `stable` and is only updated on official releases. If you need the most recent unreleased changes, pull `localstack/localstack:dev` instead.
+:::
+
 To use the latest LocalStack Docker images, you either run `docker pull localstack/localstack:latest` or use the `docker-compose pull` if the image is set to `localstack/localstack:latest`.
 You can also specify a particular digest to make sure you are using the correct image, like this: `localstack/localstack:latest@sha256:f803cc657843c6c7acf2631d15600783c3593e496fba418415afc87680d9d5bc`.
 
@@ -68,27 +72,16 @@ The diagnose endpoint is only available if you run LocalStack with `DEBUG=1`.
 
 ### What do the tags of the LocalStack Docker images mean?
 
-We do push a set of different image tags for the LocalStack Docker images.
-When using LocalStack, you can decide which tag you want to use.
-These tags have different semantics and will be updated on different occasions:
+We publish a set of image tags with different semantics, updated on different occasions:
 
-- `latest` (default)
-  - This is our default tag.
-    It refers to the latest commit which has been fully tested using our extensive integration test suite.
-  - This also entails changes that are part of major releases, which means that this tag can contain breaking changes.
-  - This tag should be used if you want to stay up-to-date with the latest changes.
-- `stable`
-  - This tag refers to the latest tagged release.
-    It will be updated with every release of LocalStack.
-  - This also entails major releases, which means that this tag can contain breaking changes.
-  - This tag should be used if you want to stay up-to-date with releases, but don't necessarily need the latest and greatest changes right away.
-- `<YYYY.MM>` (e.g., `2026.03`)
-  - These tags can be used to refer to the latest release of a month. It will be updated with every patch release within this month.
-  - This tag can be used if you want to avoid any bigger changes, like new features, but still want to update to the latest bugfix release.
-- `<YYYY.MM.patch>` (e.g., `2026.03.0`)
-  - These tags can be used if you want to use a very specific release.
-    It will not be updated.
-  - This tag can be used if you really want to avoid any changes to the image (not even minimal bug fixes).
+- **`latest`**: Updated only on official tagged releases (e.g. `2026.05.0`). Equivalent to `stable`. Recommended for most users who want a stable, release-quality image. As of May 2026, this tag no longer tracks untagged commits on `main`, use `dev` for that behavior.
+- **`stable`**: Same as `latest`. Updated with every official release.
+- **`dev`**: Contains all merged, untagged commits from the `main` branch. Use this if you want the latest unreleased changes.
+- **`nightly`**: Pushed from scheduled nightly builds. Useful for CI pipelines that benefit from a fresh build on a predictable cadence.
+- **`YYYY.MM`** (e.g. `2026.05`): Updated with each patch release within that month. Use this to avoid feature changes while still receiving bugfixes.
+- **`YYYY.MM.patch`** (e.g. `2026.05.0`): Pinned to an exact release and never updated. Use this for fully reproducible environments where even minor bugfix changes are undesirable.
+
+Starting with the end-of-March 2026 release, LocalStack follows [calendar versioning](https://calver.org/) for official releases. For releases up to and including `v4.14.0`, tags follow Semantic Versioning.
 
 Starting with the end-of-March 2026 release, LocalStack follows [calendar versioning](https://calver.org/) for official releases.
 

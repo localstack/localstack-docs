@@ -29,12 +29,20 @@ While configuring to run LocalStack with Docker or Docker Compose, run the `loca
 
 ## Image tags
 
-Starting with the end-of-March 2026 release, LocalStack version tags follow
-[calendar versioning](https://calver.org/) in the `YYYY.MM.patch` format (for example, `2026.03.0`).
+Starting with the end-of-March 2026 release, LocalStack version tags follow [calendar versioning](https://calver.org/) in the `YYYY.MM.patch` format (for example, `2026.03.0`). Releases up to and including `v4.14.0` use [semantic versioning](https://semver.org).
 
-Releases up to and including `v4.14.0` use [semantic versioning](https://semver.org).
-To ensure that we move quickly and steadily, we run nightly builds, where all our updates are available on the `latest` tag of LocalStack's Docker image.
-We intend to announce more significant features and enhancements during major & minor releases.
-We occasionally create patch releases for minor bug fixes and enhancements, to ensure that we can deliver changes quickly while not breaking your existing workflows (in case you prefer not to use `latest`).
+The following tags are available for the LocalStack Docker image:
 
-Visit the [LocalStack for AWS tag](https://hub.docker.com/r/localstack/localstack-pro/tags?page=1&ordering=last_updated) in Docker Hub pages.
+| Tag | Updated when | Recommended for |
+|---|---|---|
+| `latest` / `stable` | Tagged releases only (e.g. `2026.05.0`) | Most users — stable, release-quality builds |
+| `dev` | Every merged commit on `main` | Users who need the latest unreleased changes |
+| `nightly` | Scheduled nightly builds | CI pipelines that need a fresh build on a regular cadence |
+| `YYYY.MM` (e.g. `2026.05`) | Each patch release within that month | Users who want bugfixes but want to avoid feature changes |
+| `YYYY.MM.patch` (e.g. `2026.05.0`) | Never (pinned) | Fully reproducible environments where no changes are acceptable |
+
+:::note
+As of May 2026, `latest` was changed to mirror `stable` and is only updated on official tagged releases. If you previously relied on `latest` for the most recent unreleased changes, switch to the `dev` tag.
+:::
+
+Visit the [LocalStack for AWS tag](https://hub.docker.com/r/localstack/localstack-pro/tags?page=1&ordering=last_updated) page on Docker Hub.
