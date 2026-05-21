@@ -21,6 +21,25 @@ LocalStack lets you to run Flink applications locally and implements several [AW
 A separate Apache Flink cluster is started in [application mode](https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/deployment/overview/#application-mode) for every Managed Flink application created.
 Flink cluster deployment on LocalStack consists of two separate containers for [JobManager](https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/concepts/flink-architecture/#jobmanager) and [TaskManager](https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/concepts/flink-architecture/#taskmanagers).
 
+## Deployment Considerations
+
+The default container runtime for MSF on LocalStack is Docker.
+LocalStack creates Flink JobManager and TaskManager containers on the Docker network specified by `MAIN_DOCKER_NETWORK` (defaults to `bridge`).
+
+**Running LocalStack inside a Kubernetes cluster requires additional configuration.**
+Mounting the host Docker socket (`/var/run/docker.sock`) into a LocalStack pod is not sufficient — the Docker executor cannot create Flink containers in this topology and applications will remain stuck in `STARTING` indefinitely.
+
+To run MSF when LocalStack is deployed inside Kubernetes, set `CONTAINER_RUNTIME=kubernetes`.
+This uses the [Kubernetes executor](/aws/enterprise/kubernetes/kubernetes-executor/), which creates Flink workloads as Kubernetes pods instead of Docker containers.
+
+:::note
+The Kubernetes executor (`CONTAINER_RUNTIME=kubernetes`) requires an **Enterprise** licence.
+It is not available on the Pro tier.
+For more details, see [Kubernetes Concepts & Architecture](/aws/enterprise/kubernetes/concepts/).
+:::
+
+If you are running LocalStack outside of Kubernetes (for example, with Docker Compose or the LocalStack CLI), no additional configuration is required and the Docker executor is used automatically.
+
 ## Getting Started
 
 This guide builds a demo Flink application and deploys it to LocalStack.
@@ -203,16 +222,16 @@ awslocal kinesisanalyticsv2 describe-application --application-name msaf-app | j
 ]
 ```
 
+:::note
+Logs events are reported to CloudWatch every 10 seconds.
+:::
+
 Log events can be retrieved from CloudWatch Logs using the appropriate operation.
 To retrieve all events:
 
 ```bash
 awslocal logs get-log-events --log-group-name msaf-log-group --log-stream-name msaf-log-stream
 ```
-
-:::note
-Logs events are reported to CloudWatch every 10 seconds.
-:::
 
 LocalStack reports both Flink application and Flink framework logs to CloudWatch.
 However, certain extended information such as stack traces may be missing.
@@ -261,6 +280,30 @@ awslocal kinesisanalyticsv2 untag-resource \
 | 1.15.2 | yes | no |
 | 1.13.1 | yes | no |
 
+## Troubleshooting
+
+### Application stuck in `STARTING`
+
+If `describe-application` returns `STARTING` indefinitely and no Flink containers appear, the most likely cause is that LocalStack cannot reach the Docker daemon or Kubernetes API to create the Flink JobManager and TaskManager.
+
+When this occurs, LocalStack logs an internal error after `CLUSTER_READY_WAIT_TIMEOUT` elapses:
+
+```
+Exception: Error submitting job: Flink cluster <id> is not running
+```
+
+The application does not automatically transition to `FAILED` — it remains in `STARTING`.
+This means IaC tools that use state waiters (such as the Terraform AWS provider or Crossplane) will block until their own timeout expires.
+
+**Common causes and fixes:**
+
+- **Running LocalStack inside Kubernetes with the Docker executor** — the Docker executor is not supported in this topology.
+  Set `CONTAINER_RUNTIME=kubernetes` and ensure you have an Enterprise licence.
+  See [Deployment Considerations](#deployment-considerations) for details.
+- **Wrong or missing Docker network** — if LocalStack is running in a non-default Docker network, set `MAIN_DOCKER_NETWORK` to the name of that network so Flink containers are attached to the correct network.
+- **Docker socket not accessible** — confirm that the Docker socket is mounted and functional.
+  You can verify by listing containers from inside the LocalStack container: `curl --unix-socket /var/run/docker.sock http://localhost/containers/json`.
+
 ## Limitations
 
 - Application versions are not maintained
@@ -273,6 +316,10 @@ awslocal kinesisanalyticsv2 untag-resource \
   The application logging level defaults to `INFO` and can not be overridden.
 - Parallelism is limited to the default value of 1, with one TaskManager that has one [Task Slot](https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/concepts/flink-architecture/#task-slots-and-resources) allocated.
   [Parallelism configuration](https://docs.aws.amazon.com/managed-flink/latest/apiv2/API_FlinkApplicationConfiguration.html#APIReference-Type-FlinkApplicationConfiguration-ParallelismConfiguration) provided on Flink application creation or update is ignored.
+- When a Flink cluster fails to start, the application remains in `STARTING` rather than transitioning to `FAILED`.
+  Check LocalStack logs and see [Troubleshooting](#troubleshooting) for guidance.
+- The Docker executor is not supported when LocalStack runs as a pod inside a Kubernetes cluster.
+  Use `CONTAINER_RUNTIME=kubernetes` (Enterprise only) in this topology.
 
 ## API Coverage
 
