@@ -161,8 +161,17 @@ Each user can only be a member of one license group (subscription) per organizat
 4. Push the group to LocalStack via SCIM.
 5. Once synced, LocalStack will recognize the group and assign the corresponding license to all members.
 
-:::danger
-Never manually push an empty group using the **Push now** option from the Push Status dropdown. Doing so will remove the licenses of all users synced through SCIM. Always ensure a group contains users before pushing it manually.
+:::danger[License revocation risk]
+
+The Okta group's membership is the source of truth for license assignments on this subscription. Any change to this group in Okta — adding users, removing users, or syncing it — will reconcile the subscription's licenses to match the group exactly. Users who are licensed on this subscription but not in the Okta group will have their licenses revoked, regardless of how the license was originally assigned (manually or via SCIM).
+
+This means:
+
+- If you sync an **empty group**, every license on this subscription will be revoked.
+- If you sync a **partial group** (for example, 2 users in Okta but 5 currently licensed), the 3 users not in the group will lose their licenses.
+
+If you are enabling SCIM on a subscription that already has licensed users, follow the [Migrating Users with Existing Licenses](#migrating-users-with-existing-licenses) steps below **before** any sync occurs. Once SCIM is enabled, manage license assignments exclusively through Okta.
+
 :::
 
 ### Migrating Users with Existing Licenses
