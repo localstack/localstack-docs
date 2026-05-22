@@ -143,23 +143,26 @@ Expected response:
 { "success": true }
 ```
 
+
 ## Updating LocalStack
 
 To keep both the CLI and emulator images up to date, run:
 
-```bash
+```shell
 localstack update all
 ```
 
-If you only want to update the Snowflake image manually (e.g. to pick up a recent fix), you can run:
+If you want to pull a specific image tag manually, the following tags are available for the LocalStack for Snowflake Docker image:
 
-```bash
-docker pull localstack/snowflake:latest
-```
+| Tag | Updated when | Recommended for |
+|---|---|---|
+| `latest` / `stable` | Tagged releases only (e.g. `2026.05.0`) | Most users — stable, release-quality builds |
+| `dev` | Every merged commit on `main` | Users who need the latest unreleased changes |
+| `YYYY.MM.patch` (e.g. `2026.05.0`) | Never (pinned) | Fully reproducible environments where no changes are acceptable |
 
-Starting with the end-of-March 2026 release, versioned Snowflake image tags follow
-[calendar versioning](https://calver.org/) in the `YYYY.MM.patch` format (for example, `2026.03.0`).
+Starting with the end-of-March 2026 release, versioned Snowflake image tags follow [calendar versioning](https://calver.org/) in the `YYYY.MM.patch` format (for example, `2026.03.0`).
 Refer to the available [tags on Docker Hub](https://hub.docker.com/r/localstack/snowflake/tags) for the latest releases.
+
 
 ## Alternatives
 
