@@ -1,15 +1,37 @@
 [
     {
         "resource_type": "AWS::DynamoDB::Table",
-        "policy_statements": [
-            "dynamodb:DescribeContinuousBackups",
-            "dynamodb:DescribeTable",
-            "dynamodb:DescribeTimeToLive",
-            "dynamodb:GetResourcePolicy",
-            "dynamodb:ListTagsOfResource"
-        ],
         "service": "dynamodb",
-        "identifier": "TableName"
+        "single": {
+            "policy_statements": [
+                "dynamodb:DescribeTable",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:DescribeContinuousBackups",
+                "dynamodb:GetResourcePolicy",
+                "dynamodb:ListTagsOfResource"
+            ],
+            "identifier": "TableName"
+        },
+        "batch": {
+            "policy_statements": [
+                "dynamodb:ListTables",
+                "dynamodb:DescribeTable",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:DescribeContinuousBackups",
+                "dynamodb:GetResourcePolicy",
+                "dynamodb:ListTagsOfResource"
+            ],
+            "identifier": null
+        },
+        "resource_tree": {
+            "resources": [
+                "AWS::KMS::Key"
+            ],
+            "extra_policy_statements": [
+                "kms:DescribeKey",
+                "kms:ListResourceTags"
+            ]
+        }
     },
     {
         "resource_type": "AWS::EC2::SecurityGroup",
@@ -225,15 +247,6 @@
         }
     },
     {
-        "resource_type": "AWS::RDS::DBCluster",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "rds:DescribeDBClusters"
-        ],
-        "service": "rds",
-        "identifier": "Name"
-    },
-    {
         "resource_type": "AWS::Route53::HostedZone",
         "service": "route53",
         "single": {
@@ -303,35 +316,6 @@
             ],
             "identifier": "{\"Prefix\": Optional<str>, \"BucketRegion\": Optional<str>}"
         }
-    },
-    {
-        "resource_type": "AWS::S3::Bucket",
-        "policy_statements": [
-            "s3:GetAccelerateConfiguration",
-            "s3:GetAnalyticsConfiguration",
-            "s3:GetBucketCORS",
-            "s3:GetBucketLocation",
-            "s3:GetBucketLogging",
-            "s3:GetBucketNotification",
-            "s3:GetBucketObjectLockConfiguration",
-            "s3:GetBucketOwnershipControls",
-            "s3:GetBucketPolicy",
-            "s3:GetBucketPublicAccessBlock",
-            "s3:GetBucketRequestPayment",
-            "s3:GetBucketTagging",
-            "s3:GetBucketVersioning",
-            "s3:GetBucketWebsite",
-            "s3:GetEncryptionConfiguration",
-            "s3:GetIntelligentTieringConfiguration",
-            "s3:GetInventoryConfiguration",
-            "s3:GetLifecycleConfiguration",
-            "s3:GetMetricsConfiguration",
-            "s3:GetReplicationConfiguration",
-            "s3:HeadBucket",
-            "s3:ListBucket"
-        ],
-        "service": "s3",
-        "identifier": "Name"
     },
     {
         "resource_type": "AWS::SSM::Parameter",
