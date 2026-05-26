@@ -15,23 +15,23 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 To resolve the issue follow the steps:
 
 1. **Update to the latest LocalStack version:** To resolve the SSL issues due to revoked certificate, we strongly recommend updating to the latest LocalStack version (v3.7.0 and above)for the most reliable and seamless experience.
-2. **Clear the cached certificate:** It’s important to clear the cached certificate if you continue to experience the issue when updating to the latest LS version.
+2. **Clear the cached certificate:** It's important to clear the cached certificate if you continue to experience the issue when updating to the latest LS version.
    This can be done by deleting the cached certificate file.
    For example, on Linux systems, you can locate and remove the file at `~/.cache/localstack/volume/cache/server.test.pem`.
-   The exact path may differ depending on your operating system and how you’ve started LocalStack.
+   The exact path may differ depending on your operating system and how you've started LocalStack.
    Please refer to our [documentation](/aws/capabilities/config/filesystem/#localstack-volume-directory) for specific instructions.
 
 **Workarounds for older (&lt;v3.7.0) LocalStack versions:**
 
 1. **Disable Certificate Download**: To prevent downloading a revoked certificate, set the environment variable `SKIP_SSL_CERT_DOWNLOAD=1`.
    This will cause LocalStack to use a self-signed SSL certificate.
-   Additionally, it’s important to clear the cached certificate from your host machine as mentioned above.
+   Additionally, it's important to clear the cached certificate from your host machine as mentioned above.
 2. **Use HTTP Instead of HTTPS**: Where possible, use `http://` instead of `https://` to avoid issues related to the revoked certificates.
    This workaround works with most browsers.
    However, Safari requires additional steps:
-   2.1. **Safari Users**: To make this work, you’ll need to first navigate to the page in a new tab and accept the security warning.
+   2.1. **Safari Users**: To make this work, you'll need to first navigate to the page in a new tab and accept the security warning.
    To do this, make sure that LocalStack is started with `SKIP_SSL_CERT_DOWNLOAD=1` and that you have cleared the cached certificate as mentioned above.
-   Once you’ve accepted the warning, you should be able to proceed.
+   Once you've accepted the warning, you should be able to proceed.
 
 For other SSL-related issues encountered during startup — such as Python `CERTIFICATE_VERIFY_FAILED` tracebacks or corporate TLS interception — see [How do I diagnose if my SSL traffic is being intercepted by a corporate proxy?](#how-do-i-diagnose-if-my-ssl-traffic-is-being-intercepted-by-a-corporate-proxy).
 
@@ -254,6 +254,26 @@ volumes:
 
 For more details visit [Docker WSL documentation](https://docs.docker.com/desktop/wsl), [Docker WSL best practices](https://docs.docker.com/desktop/wsl/best-practices) and [Docker Volumes documentation](https://docs.docker.com/storage/volumes/).
 
+### Why does LocalStack fail to start with "enhanced container isolation: Docker socket mount denied"?
+
+This error occurs when Docker Desktop's [Enhanced Container Isolation](https://docs.docker.com/desktop/hardened-desktop/enhanced-container-isolation/) (ECI) feature is enabled, typically on Docker Business accounts, and LocalStack has not been added to the Docker socket mount allowlist.
+
+To fix this, ask your Docker Desktop administrator to add `localstack/localstack` and `localstack/localstack-pro` to the allowlist in your organisation's Settings Management policy.
+``` json
+{
+  "enhancedContainerIsolation": {
+    "dockerSocketMount": {
+      "imageList": {
+        "images": [
+          "docker.io/localstack/localstack-pro:**",
+          "docker.io/localstack/localstack:**"
+        ],
+        "allowDerivedImages": true
+      }
+    }
+  }
+}
+```
 ## Startup Troubleshooting FAQs
 
 LocalStack startup failures most commonly come from one of three areas: **license activation**, **CA / SSL certificate validation**, or **outbound network access** (corporate proxies, Zscaler, restricted DNS).
