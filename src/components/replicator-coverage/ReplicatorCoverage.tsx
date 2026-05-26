@@ -118,7 +118,8 @@ const codeChipStyle: React.CSSProperties = {
 const cardStyle = (kind: StrategyKind): React.CSSProperties => ({
   border: `1px solid ${STRATEGY_STYLES[kind].background}`,
   borderRadius: '6px',
-  margin: 0
+  margin: 0,
+  background: 'var(--sl-color-gray-7)',
 });
 
 const cardHeaderStyle = (kind: StrategyKind): React.CSSProperties => {
@@ -174,7 +175,6 @@ const rowToggleStyle = (isOpen: boolean): React.CSSProperties => ({
 const expandedCellStyle: React.CSSProperties = {
   padding: '8px',
   border: '1px solid #999CAD',
-  background: 'var(--sl-color-gray-6)',
 };
 
 const strategiesGridStyle: React.CSSProperties = {
