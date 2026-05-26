@@ -44,6 +44,17 @@ If you are encountering network issues and your Snowflake client drivers are una
 127.0.0.1	snowflake.localhost.localstack.cloud
 ```
 
+### Why does the Snowflake emulator say "Unable to activate license — configure a valid auth token"?
+
+This message appears specifically on the Snowflake emulator image and almost always means the auth token didn't reach the container.
+Confirm the variable is present inside the container:
+
+```shell
+docker exec -it <container-id> env | grep LOCALSTACK_AUTH_TOKEN
+```
+
+If the variable is empty inside the container, fix your `.env` or Compose mapping and restart.
+
 ## Support FAQs
 
 ### How can I get help or support with LocalStack for Snowflake?

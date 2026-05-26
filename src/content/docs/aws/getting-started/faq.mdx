@@ -33,6 +33,8 @@ To resolve the issue follow the steps:
    To do this, make sure that LocalStack is started with `SKIP_SSL_CERT_DOWNLOAD=1` and that you have cleared the cached certificate as mentioned above.
    Once you've accepted the warning, you should be able to proceed.
 
+For other SSL-related issues encountered during startup — such as Python `CERTIFICATE_VERIFY_FAILED` tracebacks or corporate TLS interception — see [How do I diagnose if my SSL traffic is being intercepted by a corporate proxy?](#how-do-i-diagnose-if-my-ssl-traffic-is-being-intercepted-by-a-corporate-proxy).
+
 ### How to update my LocalStack CLI?
 
 If the LocalStack CLI version is heavily outdated, it might lead to issues with container startup and debug commands.
@@ -60,6 +62,10 @@ Across our docs, we use `localhost.localstack.cloud:4566` instead of `localhost:
 
 ### How should I use the latest LocalStack Docker images?
 
+:::note
+As of May 2026, the `latest` tag mirrors `stable` and is only updated on official releases. If you need the most recent unreleased changes, pull `localstack/localstack:dev` instead.
+:::
+
 To use the latest LocalStack Docker images, you either run `docker pull localstack/localstack:latest` or use the `docker-compose pull` if the image is set to `localstack/localstack:latest`.
 You can also specify a particular digest to make sure you are using the correct image, like this: `localstack/localstack:latest@sha256:f803cc657843c6c7acf2631d15600783c3593e496fba418415afc87680d9d5bc`.
 
@@ -68,27 +74,16 @@ The diagnose endpoint is only available if you run LocalStack with `DEBUG=1`.
 
 ### What do the tags of the LocalStack Docker images mean?
 
-We do push a set of different image tags for the LocalStack Docker images.
-When using LocalStack, you can decide which tag you want to use.
-These tags have different semantics and will be updated on different occasions:
+We publish a set of image tags with different semantics, updated on different occasions:
 
-- `latest` (default)
-  - This is our default tag.
-    It refers to the latest commit which has been fully tested using our extensive integration test suite.
-  - This also entails changes that are part of major releases, which means that this tag can contain breaking changes.
-  - This tag should be used if you want to stay up-to-date with the latest changes.
-- `stable`
-  - This tag refers to the latest tagged release.
-    It will be updated with every release of LocalStack.
-  - This also entails major releases, which means that this tag can contain breaking changes.
-  - This tag should be used if you want to stay up-to-date with releases, but don't necessarily need the latest and greatest changes right away.
-- `<YYYY.MM>` (e.g., `2026.03`)
-  - These tags can be used to refer to the latest release of a month. It will be updated with every patch release within this month.
-  - This tag can be used if you want to avoid any bigger changes, like new features, but still want to update to the latest bugfix release.
-- `<YYYY.MM.patch>` (e.g., `2026.03.0`)
-  - These tags can be used if you want to use a very specific release.
-    It will not be updated.
-  - This tag can be used if you really want to avoid any changes to the image (not even minimal bug fixes).
+- **`latest`**: Updated only on official tagged releases  (e.g. `2026.05.0`, `2026.05.1`). Equivalent to `stable`. Recommended for most users who want a stable, release-quality image. As of May 2026, this tag no longer tracks untagged commits on `main`, use `dev` for that behavior.
+- **`stable`**: Same as `latest`. Updated with every official release.
+- **`dev`**: Contains all merged, untagged commits from the `main` branch. Use this if you want the latest unreleased changes.
+- **`nightly`**: Pushed from scheduled nightly builds. Useful for CI pipelines that benefit from a fresh build on a predictable cadence.
+- **`YYYY.MM`** (e.g. `2026.05`): Updated with each patch release within that month. Use this to get the latest security fixes and dependency updates.
+- **`YYYY.MM.patch`** (e.g. `2026.05.0`): Pinned to an exact release and never updated. Use this for fully reproducible environments where even minor bugfix changes are undesirable.
+
+Starting with the end-of-March 2026 release, LocalStack follows [calendar versioning](https://calver.org/) for official releases. For releases up to and including `v4.14.0`, tags follow Semantic Versioning.
 
 Starting with the end-of-March 2026 release, LocalStack follows [calendar versioning](https://calver.org/) for official releases.
 
@@ -151,13 +146,14 @@ A company proxy can lead to connection issues.
 To allow access to the `localstack/bigdata` image, use the following Docker configuration in your `docker-compose.yml` file:
 
 ```yaml
-
 ...
 environment:
-  - HTTP_PROXY =
-  - NO_PROXY = .s3.localhost.localstack.cloud,127.0.0.1,*.localhost
+  - HTTP_PROXY=
+  - NO_PROXY=.s3.localhost.localstack.cloud,127.0.0.1,*.localhost
 ...
 ```
+
+For the broader corporate-proxy story (HTTPS proxy, outbound proxy variables, Zscaler-style TLS interception, and DNS), see [How do I configure LocalStack to use my corporate HTTP and HTTPS proxy?](#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy).
 
 ### Why is it that LocalStack is unable to connect to internet?
 
@@ -180,6 +176,8 @@ If you are using Linux, ensure that you have enabled IP forwarding:
 ```bash
 sudo sysctl -w net.ipv4.ip_forward=1
 ```
+
+If the container can reach the internet generally but not LocalStack endpoints specifically, the issue is more likely a corporate proxy, DNS, or TLS interception. Continue with [How do I verify outbound connectivity from inside the LocalStack container?](#how-do-i-verify-outbound-connectivity-from-inside-the-localstack-container).
 
 ### Why can't my other Docker containers reach LocalStack?
 
@@ -276,6 +274,442 @@ To fix this, ask your Docker Desktop administrator to add `localstack/localstack
   }
 }
 ```
+## Startup Troubleshooting FAQs
+
+LocalStack startup failures most commonly come from one of three areas: **license activation**, **CA / SSL certificate validation**, or **outbound network access** (corporate proxies, Zscaler, restricted DNS).
+The FAQs below are ordered by topic — debug logging first, then license activation, SSL certificates, corporate proxy and DNS, air-gapped environments, and finally less common startup errors.
+
+If LocalStack exits with `exit code 55` or never finishes starting, start with [enabling debug logs](#how-do-i-enable-verbose-debug-logs-for-localstack-startup) and read the last lines of the log to identify which sub-case applies.
+
+### How do I enable verbose debug logs for LocalStack startup?
+
+Almost every startup ticket can be resolved within minutes once the full debug log is available.
+LocalStack exposes two log-related environment variables:
+
+| Variable | Values | What it does |
+| :-- | :-- | :-- |
+| `DEBUG` | `0` (default), `1` | Verbose application logs and full Python stack traces on error |
+| `LS_LOG` | `warning`, `info` (default), `debug`, `trace`, `trace-internal` | Sets the log handler level. `trace` and `trace-internal` also imply `DEBUG=1` and add request/response bodies |
+
+For a startup issue, set both:
+
+```shell
+DEBUG=1 LS_LOG=trace localstack start
+```
+
+Or via Docker Compose:
+
+```yaml
+services:
+  localstack:
+    image: localstack/localstack-pro:latest
+    environment:
+      - DEBUG=1
+      - LS_LOG=trace
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}
+```
+
+The CLI also supports a `--debug` flag that prints host-side debug output (host preparation, Docker command construction, license cache checks) on top of the container logs:
+
+```shell
+localstack --debug start
+```
+
+See the [Logging reference](/aws/capabilities/config/logging/) for the full list of log-related options.
+
+### How do I capture and share LocalStack container logs for troubleshooting?
+
+If LocalStack runs in Docker and exits or becomes unhealthy, capture the full container log starting from container start:
+
+```shell
+docker ps -a | grep localstack
+docker logs <container-id>
+docker logs <container-id> > localstack.log 2>&1
+```
+
+If LocalStack reached the point of serving HTTP and you started it with `DEBUG=1`, you can also pull a compressed diagnose bundle:
+
+```shell
+curl -s localhost:4566/_localstack/diagnose | gzip -cf > diagnose.json.gz
+```
+
+The most useful lines for support are the ones immediately before `exit code 55` or the final traceback — please attach the full log rather than the last few lines.
+
+### What hostnames must LocalStack be able to reach during startup?
+
+LocalStack must be able to make outbound HTTPS requests to the following hostnames over TCP/443 during startup.
+If any required hostname is blocked, startup will fail.
+
+| Hostname | Purpose | Required |
+| :-- | :-- | :-- |
+| `api.localstack.cloud` | License activation and per-org TLS cert download | Yes |
+| `assets.localstack.cloud` | Local TLS server cert and other static assets | Yes |
+| `localstack-pro-artifacts.s3.amazonaws.com` (and related S3 buckets) | Optional on-demand service packages (Glue, RDS engines, Tinkerpop, Flink, etc.) | When using those services |
+| `analytics.localstack.cloud` | Anonymous usage telemetry | No, can be disabled |
+
+A quick connectivity check from the host that runs LocalStack:
+
+```shell
+curl -v https://api.localstack.cloud/v1/health
+dig api.localstack.cloud
+```
+
+You expect HTTP `200` and DNS `status: NOERROR`. If either fails, jump to [How do I verify outbound connectivity from inside the LocalStack container?](#how-do-i-verify-outbound-connectivity-from-inside-the-localstack-container).
+
+### What does "Could not reach the LocalStack licensing server" mean and how do I fix it?
+
+When LocalStack prints `Could not reach the LocalStack licensing server… outbound HTTPS traffic is allowed` and exits with code 55, this is a **network problem, not a license problem**.
+The LocalStack container cannot reach `api.localstack.cloud:443`.
+
+Work through these steps in order:
+
+1. [Verify outbound connectivity from inside the container](#how-do-i-verify-outbound-connectivity-from-inside-the-localstack-container).
+2. [Configure LocalStack to use your corporate HTTP/HTTPS proxy](#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy).
+3. [Fix DNS resolution inside the container](#how-do-i-fix-dns-resolution-issues-inside-the-localstack-container).
+
+If the network path is fine but the TLS handshake fails, the issue is corporate TLS interception. See [How do I trust my corporate TLS interceptor certificate inside LocalStack?](#how-do-i-trust-my-corporate-tls-interceptor-certificate-zscaler-netskope-and-similar-inside-localstack).
+
+### Why does my license show as EXPIRED even though my subscription is active?
+
+If LocalStack exits with `Expected license to be ACTIVE, was EXPIRED`, the license LocalStack received from the server is in `EXPIRED` state.
+Common causes:
+
+1. **Trial period ended.** Upgrade or extend the trial via the [LocalStack web app](https://app.localstack.cloud/account/subscriptions).
+2. **Subscription renewed but the cached license file is stale.** Clear the cache so LocalStack requests a fresh license:
+
+   ```shell
+   # Host CLI cache (Linux)
+   rm -f ~/.cache/localstack/license.json
+
+   # macOS
+   rm -f ~/Library/Caches/localstack-cli/license.json
+
+   # Inside the container the cache lives at:
+   #   /var/lib/localstack/cache/license.json
+   # If you mount a persistence volume, also clear it there.
+   ```
+
+3. **The billing system has not yet activated your renewal.** Check the subscription status at [app.localstack.cloud/account/subscriptions](https://app.localstack.cloud/account/subscriptions). If the subscription is paid but still shows `EXPIRED`, open a support ticket with your workspace name and the last four characters of the auth token.
+4. **Wrong license type assigned.** Sometimes a user is on an expired Trial or Hobby license. Unassign the old license and assign a paid one — see [Managing users and licenses](/aws/capabilities/web-app/managing-users-licenses/#managing-licenses).
+
+### Why does my license show as SUSPENDED?
+
+`Expected license to be ACTIVE, was SUSPENDED` means the license is server-side suspended.
+This is almost always a billing or admin action — payment failure, plan downgrade, or a workspace admin pausing access.
+Resolve via the web app billing page, or contact support.
+
+### What does `licensing.license.not_assigned` mean?
+
+Your auth token is valid, but the licensing server cannot match it to an assigned seat. Either:
+
+- A workspace admin needs to assign you a seat at [app.localstack.cloud/workspace/members](https://app.localstack.cloud/workspace/members), or
+- You purchased a license but haven't assigned it to yourself yet (common in single-engineer setups where the billing page shows `0 / 1 used`).
+
+### What does `licensing.license.not_enough_credits` mean?
+
+You have more active engineers than purchased seats.
+Either un-assign a user or buy more seats on the billing page.
+
+### What does `licensing.license.product_error` or "your LocalStack license requires version X.Y.Z or higher" mean?
+
+You are either using a feature your license tier does not include, or running an outdated LocalStack image.
+Two fixes:
+
+- Pin a current image, e.g. `localstack/localstack-pro:latest` (or the explicit version your license requires).
+- Confirm your subscription tier matches the feature you are using — some Pro features such as Snowflake, Chaos, or Enterprise extensions require specific entitlements.
+
+### What does "The credentials defined in your environment are invalid" mean?
+
+The auth token is malformed, missing, or you accidentally pasted the old-style API key into the new `LOCALSTACK_AUTH_TOKEN` variable.
+Verify the token locally first:
+
+```shell
+localstack auth show-token
+# Should print: Valid: True
+```
+
+Then check:
+
+- The variable name is exactly `LOCALSTACK_AUTH_TOKEN` (legacy `LOCALSTACK_API_KEY` is deprecated and removed).
+- The token includes the `ls-…` prefix.
+- There is no trailing whitespace or quote character.
+- The token has not been committed to source control — if it has, regenerate it immediately at [app.localstack.cloud/workspace/auth-tokens](https://app.localstack.cloud/workspace/auth-tokens).
+
+### What does "User exists in different workspace" mean?
+
+You signed up earlier with the same email and got assigned to a different workspace.
+Sign in to the web app with that account, leave the old workspace, then accept the new invitation.
+
+### How does LocalStack cache its license for offline or intermittent connectivity?
+
+LocalStack caches the last validated license at `/var/lib/localstack/cache/license.json` inside the container.
+As long as the cache is valid, LocalStack can start without reaching `api.localstack.cloud` on every boot.
+
+If your environment has intermittent connectivity, mount this directory as a persistent volume so the cached license survives container restarts:
+
+```yaml
+volumes:
+  - "./localstack-volume:/var/lib/localstack"
+```
+
+For fully air-gapped environments, see [How do I run LocalStack in a fully air-gapped environment?](#how-do-i-run-localstack-in-a-fully-air-gapped-environment).
+
+### How do I diagnose if my SSL traffic is being intercepted by a corporate proxy?
+
+SSL errors during startup usually show up as Python tracebacks ending in one of:
+
+- `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate`
+- `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain`
+- `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Basic Constraints of CA cert not marked critical`
+
+All three mean Python (inside the LocalStack container) refused to trust the certificate presented by the server.
+Before fixing, diagnose the root cause. From inside the LocalStack container — or any host on the same network — run:
+
+```shell
+echo | openssl s_client -connect api.localstack.cloud:443 -servername api.localstack.cloud 2>/dev/null \
+  | openssl x509 -noout -issuer -subject
+```
+
+- If the issuer is **a public CA** (`ZeroSSL`, `Let's Encrypt`, `DigiCert`, …) the certificate is fine and your container just doesn't trust the public CA bundle. See [How do I provide a corporate or updated CA bundle to LocalStack?](#how-do-i-provide-a-corporate-or-updated-ca-bundle-to-localstack).
+- If the issuer is **your company's CA** (`Zscaler`, `Netskope`, an internal corporate CA), outbound TLS is being intercepted. See [How do I trust my corporate TLS interceptor certificate inside LocalStack?](#how-do-i-trust-my-corporate-tls-interceptor-certificate-zscaler-netskope-and-similar-inside-localstack).
+
+### How do I trust my corporate TLS interceptor certificate (Zscaler, Netskope, and similar) inside LocalStack?
+
+This is by far the most common issue for corporate Zscaler / Netskope / Palo Alto / Cisco Umbrella users.
+The interceptor terminates TLS and presents its own cert signed by a CA your laptop trusts but the LocalStack container does not. You must inject that CA into the container.
+
+The cleanest fix is to build a thin image on top of LocalStack and bake the CA in:
+
+```dockerfile
+FROM localstack/localstack-pro:latest
+
+# Replace the URL with your organisation's CA bundle, or COPY it from your build context
+ADD https://mobile.zscaler.net/downloads/zscaler2048_sha256.crt \
+    /usr/local/share/ca-certificates/zscaler.crt
+RUN update-ca-certificates
+
+ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
+    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
+    NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+```
+
+Then use this image instead of the upstream one in your `docker-compose.yml`.
+
+If you can't build a custom image, mount the CA bundle at runtime and point Python, Node, and curl at it:
+
+```yaml
+environment:
+  - REQUESTS_CA_BUNDLE=/etc/ssl/certs/corp-ca.crt
+  - CURL_CA_BUNDLE=/etc/ssl/certs/corp-ca.crt
+  - NODE_EXTRA_CA_CERTS=/etc/ssl/certs/corp-ca.crt
+volumes:
+  - "/path/to/your/corp-ca.crt:/etc/ssl/certs/corp-ca.crt:ro"
+```
+
+`REQUESTS_CA_BUNDLE` is one of a small set of host environment variables that LocalStack forwards into the container automatically.
+If you see a CLI warning that this variable is being forwarded, that's expected — but prefer setting `LOCALSTACK_REQUESTS_CA_BUNDLE` to make the intent explicit.
+
+### How do I provide a corporate or updated CA bundle to LocalStack?
+
+If the issuer on the server cert is a public CA but you still get `unable to get local issuer certificate`, the container's bundled CA store is missing or stale.
+This typically happens when LocalStack ships a newer Python that enforces stricter validation — for example, after the base image moved to Python 3.13, which enforces the `Basic Constraints critical` check on intermediate CAs.
+
+Two options:
+
+1. Upgrade to the latest LocalStack image — these issues have been progressively fixed upstream.
+2. Mount an updated CA bundle from your host (e.g. `/etc/ssl/certs/ca-certificates.crt` on Debian/Ubuntu) using the same pattern as the [corporate TLS interceptor FAQ](#how-do-i-trust-my-corporate-tls-interceptor-certificate-zscaler-netskope-and-similar-inside-localstack) above.
+
+### How do I skip the per-organization TLS certificate download on startup?
+
+On startup LocalStack tries to download a per-org TLS cert from `api.localstack.cloud/v1/proxy/localstack.cert.key`.
+If that one specific request is blocked but everything else works, set:
+
+```shell
+SKIP_SSL_CERT_DOWNLOAD=1
+```
+
+LocalStack falls back to its bundled self-signed certificate.
+
+This **only** suppresses the download step; it does not disable license activation, which still requires reaching `api.localstack.cloud`.
+
+The same flag is also useful when working around a revoked `localhost.localstack.cloud` certificate — see [How do I resolve SSL issues due to revoked local certificate for `localhost.localstack.cloud`?](#how-do-i-resolve-ssl-issues-due-to-revoked-local-certificate-for-localhostlocalstackcloud).
+
+### How do I disable TLS verification entirely (last resort)?
+
+```shell
+SSL_NO_VERIFY=1
+```
+
+This disables outbound TLS verification entirely.
+Acceptable for short-term debugging on a single developer machine; **not recommended for shared CI environments** because it hides real misconfigurations and downgrades your security posture.
+
+### How do I verify outbound connectivity from inside the LocalStack container?
+
+If the host can reach `api.localstack.cloud` but LocalStack can't, the container is missing proxy or DNS settings.
+Exec into the container and run the same checks you would on the host:
+
+```shell
+docker exec -it <container-id> sh
+
+# DNS
+nslookup api.localstack.cloud
+
+# TCP + TLS
+curl -v https://api.localstack.cloud/v1/health
+```
+
+If the host succeeds and the container fails, jump to the [proxy FAQ](#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy) or [DNS FAQ](#how-do-i-fix-dns-resolution-issues-inside-the-localstack-container) depending on which step failed.
+
+### How do I configure LocalStack to use my corporate HTTP and HTTPS proxy?
+
+LocalStack honours both the standard and LocalStack-prefixed proxy variables.
+Setting all of them is safe:
+
+```yaml
+environment:
+  # Standard Docker / Linux variables
+  - HTTP_PROXY=http://proxy.corp.example.com:8080
+  - HTTPS_PROXY=http://proxy.corp.example.com:8080
+  - NO_PROXY=localhost,127.0.0.1,.localstack.cloud,169.254.169.254
+  # LocalStack-specific, used for outbound calls from inside the container
+  - OUTBOUND_HTTP_PROXY=http://proxy.corp.example.com:8080
+  - OUTBOUND_HTTPS_PROXY=http://proxy.corp.example.com:8080
+```
+
+`NO_PROXY` should include:
+
+- `localhost` and `127.0.0.1`
+- Internal corporate hostnames you do not want routed through the proxy
+- `169.254.169.254` (the AWS-style metadata endpoint LocalStack emulates)
+- Your Docker network's hostnames if you run multi-container setups
+
+If TLS handshake errors appear after the proxy is configured, your proxy is probably intercepting TLS — see [How do I trust my corporate TLS interceptor certificate inside LocalStack?](#how-do-i-trust-my-corporate-tls-interceptor-certificate-zscaler-netskope-and-similar-inside-localstack).
+
+### How do I fix DNS resolution issues inside the LocalStack container?
+
+If `nslookup api.localstack.cloud` fails inside the container, the container is inheriting a DNS server it can't reach — common with corporate split-horizon DNS.
+Two ways to fix:
+
+**Option A — tell LocalStack which DNS to use:**
+
+```shell
+DNS_ADDRESS=0
+DNS_SERVER=8.8.8.8      # or your corporate-approved public resolver, e.g. 1.1.1.1
+```
+
+`DNS_ADDRESS=0` tells LocalStack's embedded DNS server not to bind to the container interface; `DNS_SERVER` is the upstream resolver LocalStack uses for any name it does not own.
+
+**Option B — configure Docker daemon DNS** in Docker Desktop → Settings → Docker Engine, add:
+
+```json
+{
+  "dns": ["10.95.161.250", "8.8.8.8"]
+}
+```
+
+Replace `10.95.161.250` with your corporate DNS server and leave a public resolver as a fallback. Apply & Restart.
+
+If `dig api.localstack.cloud` returns `NXDOMAIN` or `SERVFAIL`, some corporate DNS servers filter the `localstack.cloud` zone — ask your network administrator to safelist `localstack.cloud` domains.
+
+### What hostnames should I ask my network team to allowlist for LocalStack?
+
+If your security team manages an explicit allow-list, request the following hostnames over TCP/443:
+
+- `api.localstack.cloud`
+- `assets.localstack.cloud`
+- `analytics.localstack.cloud` *(optional — telemetry only)*
+- `localstack-pro-artifacts.s3.amazonaws.com` *(if you use Glue, RDS engines beyond the default, Tinkerpop, Flink, etc.)*
+
+The allow-list must cover the entire **TLS handshake**, not just the URL pattern — Zscaler / Netskope policies sometimes break by inspecting and rewriting the cert.
+If that happens, see [How do I trust my corporate TLS interceptor certificate inside LocalStack?](#how-do-i-trust-my-corporate-tls-interceptor-certificate-zscaler-netskope-and-similar-inside-localstack).
+
+### How do I run LocalStack in a fully air-gapped environment?
+
+For environments with no outbound access at all, LocalStack supports an offline license file.
+Reach out to LocalStack support; they can issue a long-lived `license.json` you can mount at:
+
+```yaml
+volumes:
+  - "./license.json:/var/lib/localstack/cache/license.json:ro"
+```
+
+### Why does LocalStack startup fail with "Docker not available"?
+
+The LocalStack CLI cannot reach the Docker daemon. Common fixes:
+
+- Start Docker Desktop and confirm it's running.
+- Verify `docker ps` works as your current user (no `sudo`).
+- On macOS, check that `/var/run/docker.sock` is reachable from Docker Desktop.
+- If you use Colima, Rancher, or Podman, make sure the `DOCKER_HOST` environment variable points at the correct socket.
+
+### Why does LocalStack fail with "ports are not available: exposing port TCP 127.0.0.1:443"?
+
+Another process is bound to port `443` — often a previous Docker run that didn't clean up, or a local web server.
+Identify the conflict and either stop it or remove the port from the Compose file if you don't need the HTTPS edge:
+
+```shell
+lsof -i :443
+# or
+netstat -anv | grep 443
+```
+
+### Why do I see a warning about non-prefixed `REQUESTS_CA_BUNDLE` being forwarded?
+
+The CLI prints `Non-prefixed environment variable REQUESTS_CA_BUNDLE is forwarded…` when it auto-forwards a host environment variable into the container.
+The warning is informational — to silence it, use the prefixed form `LOCALSTACK_REQUESTS_CA_BUNDLE` instead.
+
+### Why do my AWS SDK or CDK clients fail with "x509: certificate is valid for *.localhost.localstack.cloud, … not …amazonaws.com"?
+
+A client (CDK, the AWS Load Balancer Controller, an AWS SDK) is targeting real AWS hostnames (e.g. `s3.amazonaws.com`) but the request is actually being routed to LocalStack, which presents its local TLS cert.
+Pick one fix depending on the client:
+
+- Point the client at LocalStack explicitly with `AWS_ENDPOINT_URL=http://localhost:4566` (or `http://localhost.localstack.cloud:4566`), preferably over HTTP for local dev.
+- Or disable cert validation for the client during local development.
+
+### What information should I include when contacting LocalStack support about a startup issue?
+
+To speed up your ticket, attach:
+
+1. The full container log captured with `DEBUG=1 LS_LOG=trace`, from container start until exit.
+2. The compressed diagnose bundle if LocalStack reached the point of serving HTTP:
+
+   ```shell
+   curl -s localhost:4566/_localstack/diagnose | gzip -cf > diagnose.json.gz
+   ```
+
+3. LocalStack image tag — `docker inspect <container> --format '{{.Config.Image}}'`.
+4. CLI version — `localstack --version`.
+5. Host OS, architecture, and Docker runtime (Docker Desktop, Colima, Rancher, Podman, Linux native).
+6. Output of:
+
+   ```shell
+   curl -v https://api.localstack.cloud/v1/health
+   dig api.localstack.cloud
+   ```
+
+7. Whether you are behind a corporate proxy, Zscaler, Netskope, or similar — mention the product name explicitly. Half of all "outbound HTTPS allowed" tickets resolve to a known Zscaler interception pattern.
+
+Open a ticket by emailing `support@localstack.cloud`.
+
+### What are the most useful environment variables for LocalStack startup?
+
+| Variable | Purpose |
+| :-- | :-- |
+| `LOCALSTACK_AUTH_TOKEN` | Personal or workspace auth token used for license activation |
+| `DEBUG` | `1` enables verbose logs and full Python stack traces |
+| `LS_LOG` | `debug`, `trace`, or `trace-internal` for progressively more detail |
+| `HTTP_PROXY` / `HTTPS_PROXY` / `NO_PROXY` | Standard proxy variables |
+| `OUTBOUND_HTTP_PROXY` / `OUTBOUND_HTTPS_PROXY` | LocalStack-specific outbound proxy variables used inside the container |
+| `DNS_SERVER` | Upstream DNS used by LocalStack's embedded resolver |
+| `DNS_ADDRESS` | Set to `0` to disable LocalStack's DNS server binding |
+| `REQUESTS_CA_BUNDLE` / `CURL_CA_BUNDLE` / `NODE_EXTRA_CA_CERTS` | CA bundle path for Python, curl, and Node respectively |
+| `LOCALSTACK_REQUESTS_CA_BUNDLE` | Prefixed form of `REQUESTS_CA_BUNDLE` that avoids the CLI auto-forward warning |
+| `SKIP_SSL_CERT_DOWNLOAD` | `1` to skip the per-org TLS cert download on startup |
+| `SSL_NO_VERIFY` | `1` to disable outbound TLS verification (debug only) |
+| `ACTIVATE_PRO` | `0` to start LocalStack without Pro features (lets the container boot even if license activation fails) |
+
+For the full configuration reference, see the [Configuration reference](/aws/capabilities/config/configuration/) and the broader [Networking documentation](/aws/capabilities/networking/).
+
 ## LocalStack Platform FAQs
 
 ### Where can I check the status of LocalStack's services?
@@ -307,6 +741,16 @@ If this error occurs, something is wrong with your Auth Token or license.
 Make sure your Auth Token is set correctly (check for typos!) and your license is valid.
 If the Auth Token still does not work, please [contact us](https://localstack.cloud/contact/).
 
+The `Reason:` text in the log line tells you which specific failure you're hitting. The most common reasons each have their own FAQ:
+
+- [`Could not reach the LocalStack licensing server`](#what-does-could-not-reach-the-localstack-licensing-server-mean-and-how-do-i-fix-it)
+- [`Expected license to be ACTIVE, was EXPIRED`](#why-does-my-license-show-as-expired-even-though-my-subscription-is-active)
+- [`Expected license to be ACTIVE, was SUSPENDED`](#why-does-my-license-show-as-suspended)
+- [`licensing.license.not_assigned`](#what-does-licensinglicensenot_assigned-mean)
+- [`licensing.license.not_enough_credits`](#what-does-licensinglicensenot_enough_credits-mean)
+- [`licensing.license.product_error`](#what-does-licensinglicenseproduct_error-or-your-localstack-license-requires-version-xyz-or-higher-mean)
+- [`The credentials defined in your environment are invalid`](#what-does-the-credentials-defined-in-your-environment-are-invalid-mean)
+
 ### What should I do if I cannot connect to LocalStack API?
 
 If your log output contains lines like:
@@ -319,6 +763,13 @@ ConnectionRefusedError: [Errno 111] Connection refused
 
 LocalStack cannot contact our API to perform the license activation.
 Confirm with your network administrator that no policies block the connection to our backend.
+
+Before opening a ticket, work through the connectivity FAQs in order — they cover the great majority of "outbound HTTPS allowed but LocalStack still can't reach us" cases:
+
+1. [Enable verbose debug logs](#how-do-i-enable-verbose-debug-logs-for-localstack-startup) and capture the full traceback.
+2. [Verify outbound connectivity from inside the container](#how-do-i-verify-outbound-connectivity-from-inside-the-localstack-container).
+3. [Configure the corporate HTTP/HTTPS proxy](#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy) if there is one.
+4. [Trust the corporate TLS interceptor certificate](#how-do-i-trust-my-corporate-tls-interceptor-certificate-zscaler-netskope-and-similar-inside-localstack) if the proxy intercepts TLS.
 
 ### What should I do if I cannot resolve `api.localstack.cloud`?
 
@@ -337,9 +788,28 @@ dig api.localstack.cloud
 ```
 
 If the result has some other status than `status: NOERROR,` your machine cannot resolve this domain.
+Some corporate DNS servers filter requests to certain domains — contact your network administrator to safelist `localstack.cloud` domains.
 
-Some corporate DNS servers might filter requests to certain domains.
-Contact your network administrator to safelist `localstack.cloud` domains.
+If the host can resolve the domain but the container can't, the container is inheriting a DNS server it can't reach. Two ways to fix:
+
+**Option A — tell LocalStack which DNS to use:**
+
+```shell
+DNS_ADDRESS=0
+DNS_SERVER=8.8.8.8      # or your corporate-approved public resolver, e.g. 1.1.1.1
+```
+
+**Option B — configure Docker daemon DNS** in Docker Desktop → Settings → Docker Engine:
+
+```json
+{
+  "dns": ["10.95.161.250", "8.8.8.8"]
+}
+```
+
+Replace `10.95.161.250` with your corporate DNS server. Apply & Restart.
+
+For the full DNS troubleshooting flow, see [How do I fix DNS resolution issues inside the LocalStack container?](#how-do-i-fix-dns-resolution-issues-inside-the-localstack-container).
 
 ### How does LocalStack for AWS handle security patches and bug fixes?
 
@@ -358,6 +828,8 @@ Yes, the LocalStack image does provide limited offline capabilities.
 To use a fully-fledged offline mode, you may use LocalStack Enterprise, which can be used in air-gapped environments.
 The regular LocalStack Docker images may need to download additional dependencies for specific services (e.g., Elasticsearch, Big Data services) at runtime, while the offline image bakes all dependencies into the image, along with any other configuration that you might need.
 For more details, please take a look at our [Enterprise offering](https://localstack.cloud/pricing).
+
+For the licensing side of offline / restricted environments — including how to cache the license across container restarts and how to use an offline `license.json` issued by support — see [How does LocalStack cache its license for offline or intermittent connectivity?](#how-does-localstack-cache-its-license-for-offline-or-intermittent-connectivity) and [How do I run LocalStack in a fully air-gapped environment?](#how-do-i-run-localstack-in-a-fully-air-gapped-environment).
 
 ### How does the LocalStack Web Application communicate with the LocalStack container?
 

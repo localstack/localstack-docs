@@ -3,7 +3,7 @@ title: Crossplane
 description: Use the Crossplane cloud-native control plane framework with LocalStack.
 template: doc
 sidebar:
-  order: 3
+  order: 9
 ---
 
 ## Overview

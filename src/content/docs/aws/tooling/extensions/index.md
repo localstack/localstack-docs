@@ -3,8 +3,9 @@ title: Overview
 description: Use LocalStack Extensions to customize and extend your local development experience.
 template: doc
 sidebar:
-    order: 1
-tags: ["Hobby"]
+  label: 'Overview'
+  order: 1
+tags: ['Hobby']
 ---
 
 LocalStack Extensions let you customize and extend LocalStack's core functionality by running additional logic and services inside the same container. This feature is available across all LocalStack plans, and is ideal for teams that want deeper control over how LocalStack behaves during development or testing.

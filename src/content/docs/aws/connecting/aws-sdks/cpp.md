@@ -1,5 +1,5 @@
 ---
-title: AWS C++
+title: AWS SDK for C++
 description: How to use the C++ AWS SDK with LocalStack.
 template: doc
 sidebar:

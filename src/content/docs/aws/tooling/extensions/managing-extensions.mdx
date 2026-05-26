@@ -3,8 +3,8 @@ title: Managing extensions
 description: How to manage LocalStack extensions in your LocalStack environment.
 template: doc
 sidebar:
-    order: 3
-tags: ["Hobby"]
+  order: 2
+tags: ['Hobby']
 ---
 
 import { FileTree } from '@astrojs/starlight/components';
@@ -84,8 +84,8 @@ If you decide to mount a different directory to `/var/lib/localstack` in your do
 
 ```yaml
 volumes:
-    - "/tmp/volume:/var/lib/localstack" # LOCALSTACK_VOLUME_DIR mount
-    - "/var/run/docker.sock:/var/run/docker.sock"
+  - '/tmp/volume:/var/lib/localstack' # LOCALSTACK_VOLUME_DIR mount
+  - '/var/run/docker.sock:/var/run/docker.sock'
 ```
 
 Here's how you can use `LOCALSTACK_VOLUME_DIR` in your commands:
@@ -113,18 +113,18 @@ In a docker-compose file, this would look something like:
 ```yaml showLineNumbers
 services:
   localstack:
-    container_name: "localstack-main"
+    container_name: 'localstack-main'
     image: localstack/localstack-pro
     ports:
-      - "127.0.0.1:4566:4566"
-      - "127.0.0.1:4510-4559:4510-4559"
+      - '127.0.0.1:4566:4566'
+      - '127.0.0.1:4510-4559:4510-4559'
     environment:
       - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
       - DEBUG=1
       - EXTENSION_AUTO_INSTALL=localstack-extension-mailhog,localstack-extension-httpbin
     volumes:
-      - "./volume:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - './volume:/var/lib/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
 ```
 
 ### Configuration file
@@ -136,33 +136,30 @@ Since LocalStack extensions are essentially just Python pip packages, the `exten
 
 An example project could look something like this:
 
-* `extensions.txt`
+- `extensions.txt`
 
   ```text
   localstack-extension-mailhog
   git+https://github.com/localstack/localstack-extensions/#egg=localstack-extension-aws-replicator&subdirectory=aws-replicator
   ```
 
-* Project layout:
+- Project layout:
 
-    <FileTree>
-    - extension-install
-      - conf.d
-        - extensions.txt
-    - docker-compose.yml
-    </FileTree>
+  <FileTree>
+    - extension-install - conf.d - extensions.txt - docker-compose.yml
+  </FileTree>
 
-* `docker-compose.yaml`
+- `docker-compose.yaml`
 
-    ```yaml showLineNumbers
-    services:
-      localstack:
-        ...
-        volumes:
-          - "./volume:/var/lib/localstack"
-          - "conf.d:/etc/localstack/conf.d"
-          - "/var/run/docker.sock:/var/run/docker.sock"
-    ```
+  ```yaml showLineNumbers
+  services:
+    localstack:
+      ...
+      volumes:
+        - "./volume:/var/lib/localstack"
+        - "conf.d:/etc/localstack/conf.d"
+        - "/var/run/docker.sock:/var/run/docker.sock"
+  ```
 
 When LocalStack starts up, you should see it tries to install the extensions and all their dependencies.
 
@@ -212,7 +209,7 @@ ModuleNotFoundError: No module named 'flask'
 
 To resolve this, follow these steps:
 
-* Clear the directory mounted to the LocalStack container at `/var/lib/localstack`.
-* Pull the `latest` image of LocalStack (`localstack/localstack-pro:latest`).
-* Restart the LocalStack container.
-* Reinstall any extensions you were using, unless you have `EXTENSION_AUTO_INSTALL` enabled.
+- Clear the directory mounted to the LocalStack container at `/var/lib/localstack`.
+- Pull the `latest` image of LocalStack (`localstack/localstack-pro:latest`).
+- Restart the LocalStack container.
+- Reinstall any extensions you were using, unless you have `EXTENSION_AUTO_INSTALL` enabled.
