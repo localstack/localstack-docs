@@ -87,6 +87,8 @@ export AWS_DEFAULT_REGION=...
 localstack replicator start \
   --resource-type <resource-type> \
   --resource-identifier <identifier> \
+  [--replication-type <replication-type>] \
+  [--explore-strategy <explore-strategy>] \
   [--target-account-id <account-id>] \
   [--target-region-name <region-name>]
 ```
@@ -124,6 +126,7 @@ The command triggers a replication job. The output will look similar to:
   "state": "TESTING_CONNECTION",
   "error_message": null,
   "type": "SINGLE_RESOURCE",
+  "explore_strategy": "SIMPLE",
   "replication_config": {
     "resource_type": "AWS::SSM::PARAMETER",
     "identifier": "myParameter"
@@ -153,6 +156,7 @@ Use the following payload:
 ```json showLineNumbers
 {
   "replication_type": "SINGLE_RESOURCE",
+  "explore_strategy": "SIMPLE|TREE", // optional
   "replication_job_config": {
     "resource_type": "<resource-type>",
     "identifier": "<identifier>"
@@ -175,6 +179,7 @@ For example:
 ```json
 {
   "replication_type": "BATCH",
+  "explore_strategy": "SIMPLE",
   "replication_job_config": {
     "resource_type": "AWS::SSM::Parameter",
     "identifier": "/dev/"
@@ -214,6 +219,7 @@ This command returns the job status in JSON format. For example, here's a single
   "state": "SUCCEEDED",
   "error_message": null,
   "type": "SINGLE_RESOURCE",
+  "explore_strategy": "SIMPLE",
   "replication_config": {
     "resource_type": "AWS::SSM::PARAMETER",
     "identifier": "myParameter"
@@ -229,6 +235,7 @@ For a batch replication job, the output may include additional fields indicating
   "state": "SUCCEEDED",
   "error_message": null,
   "type": "BATCH",
+  "explore_strategy": "SIMPLE",
   "replication_config": {
     "resource_type": "AWS::SSM::Parameter",
     "identifier": "/dev/"
@@ -252,6 +259,34 @@ To check the status of a replication job via the HTTP API, send a `GET` request 
 :::tip
 If the replication state is `SUCCEEDED` but the resource is missing, check in account `000000000000`.
 :::
+
+## Configure the replication
+
+### Replication types
+
+The replication can be set with the `--replication-type` flag using the CLI or by the `replication_type` field in the request body.
+If not specified, the default is `SINGLE_RESOURCE`.
+Replication jobs can be triggered in two modes:
+
+- `SINGLE_RESOURCE`:
+This mode replicates a single resource.
+The resource is identified by its ARN or type and identifier.
+
+- `BATCH`:
+This mode replicates all resources of a given type that match.
+The resource identifier is used as a filter.
+See the [Supported Resources](#supported-resources) table below for the filter format supported by each resource.
+
+### Explore strategies
+
+The replication strategy can be configured using the `--explore-strategy` flag or by the `explore_strategy` field in the request body.
+If not specified, the default is `SIMPLE`.
+Replication jobs can be triggered in two modes, both of which can be used either with the `SINGLE_RESOURCE` or `BATCH` replication type:
+
+- `SIMPLE`: This mode only replicates the resources explicitly specified in the request.
+
+- `TREE`: This mode replicates all resources specified in the resource tree for the resource specified in the request.
+See the [Supported Resources](#supported-resources) table below for details on the resource tree.
 
 ## Quickstart
 
@@ -320,8 +355,8 @@ This example uses an SSO profile named `ls-sandbox` for AWS configuration.
 LOCALSTACK_AUTH_TOKEN=<ls-auth-token> \
   AWS_PROFILE=ls-sandbox \
   localstack replicator start  \
-    --resource-type AWS::SSM::Parameter \
- --resource-identifier <identifier> \
+  --resource-type AWS::SSM::Parameter \
+  --resource-identifier <identifier>
 ```
 
 
@@ -333,6 +368,7 @@ Configured credentials from the AWS CLI
   "state": "TESTING_CONNECTION",
   "error_message": null,
   "type": "SINGLE_RESOURCE",
+  "explore_strategy": "SIMPLE",
   "replication_config": {
     "resource_type": "AWS::SSM::PARAMETER",
     "identifier": "myparam"
@@ -353,6 +389,7 @@ LOCALSTACK_AUTH_TOKEN=<ls-auth-token> \
   "state": "SUCCEEDED",
   "error_message": null,
   "type": "SINGLE_RESOURCE",
+  "explore_strategy": "SIMPLE",
   "replication_config": {
     "resource_arn": "arn:aws:ssm:eu-central-1:<account-id>:parameter/myparam"
   }
@@ -390,9 +427,7 @@ Use the `--target-account-id` flag to specify a different account.
 
 ## Supported Resources
 
-The project is still in preview state and we welcome feedback and bug reports.
-We have opened a [github issue where you can request and upvote](https://github.com/localstack/localstack/issues/12439) to help us prioritize our efforts and support the resources with the most impact.
-For any other requests or reports, please open a [new github issue](https://github.com/localstack/localstack/issues/new/choose).
+The project is still in preview state and its API is subject to change.
 
 :::tip
 To ensure support for all resources, use the latest LocalStack Docker image.
