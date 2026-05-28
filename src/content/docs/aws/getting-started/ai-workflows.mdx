@@ -1,95 +1,43 @@
 ---
 title: AI & Agent Workflows
-description: Use LocalStack with AI coding assistants, MCP servers, and agent-driven infrastructure automation.
+description: Integrate LocalStack with AI coding assistants, MCP servers, and agent-driven infrastructure automation.
 template: doc
 sidebar:
   order: 5
 ---
 
-## Overview
+LocalStack provides a secure, emulated environment for developing and testing AI-assisted workflows. You can iterate on AI-generated infrastructure code and agentic deployment tasks without incurring cloud costs or risking production AWS environments by using a local cloud sandbox.
 
-AI-assisted development workflows need a fast and secure environment to develop and test in.
-Whether you're using an AI coding assistant to generate infrastructure code, running an agent that deploys AWS resources, or validating AI-generated IaC before applying it to real AWS — LocalStack gives you a safe, fast, cost-free environment to run these workflows in.
+## Capability Map
 
-## Connect an AI coding assistant via MCP
+| Use Case | Recommended Tooling |
+| :--- | :--- |
+| **AI Assistant Resource Management** | [LocalStack MCP Server](/aws/tooling/mcp-server/) |
+| **Autonomous Infrastructure Deployment** | [LocalStack Skills](https://github.com/localstack/skills) |
+| **Local IaC Validation** | LocalStack + `tflocal` / `cdklocal` / `awslocal` |
 
-The [LocalStack MCP Server](https://github.com/localstack/localstack-mcp-server) is a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server that connects compatible clients (Claude, Cursor, Windsurf, and others) to your LocalStack environment.
-It gives agents tools to run the full local cloud lifecycle—not only generating infrastructure code, but starting the container, deploying and tearing down IaC, analyzing logs, and more.
-See [Introducing the LocalStack MCP Server](https://blog.localstack.cloud/introducing-localstack-mcp-server/) for the original announcement and walkthrough.
 
-With the MCP server configured, your assistant can use tools such as:
+## Model Context Protocol (MCP) Integration
 
-- **Lifecycle** — Start, stop, restart, or check status of the LocalStack container
-- **Deploy** — Deploy or destroy CDK, Terraform, SAM, or CloudFormation projects on LocalStack
-- **Operations** — Analyze logs, run AWS CLI commands via `awslocal`, manage [Cloud Pods](/aws/capabilities/state-management/cloud-pods/), and (where supported) IAM policy analysis, chaos injection, and docs search
+The LocalStack MCP Server connects compatible AI clients (such as Claude, Cursor, or Windsurf) to your local cloud environment. This integration allows AI agents to manage the full local cloud lifecycle, including container management, resource deployment, and log analysis.
 
-...and many more.
-
-### MCP Server Prerequisites
-
-Before you begin, make sure these are installed and in your system's `PATH`:
-
-- [Node.js](https://nodejs.org/en/) (v20.x or later) to run the `npx` command.
-- [LocalStack CLI](https://docs.localstack.cloud/user-guide/cli/) and [Docker](https://docs.docker.com/get-docker/) to manage the LocalStack container itself.
-- [`cdklocal`](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/) or [`tflocal`](https://docs.localstack.cloud/user-guide/integrations/terraform/) to use the `localstack-deployer` tool. (optional)
-- A [LocalStack Auth Token](https://docs.localstack.cloud/getting-started/auth-token/) to enable licensed features. (optional)
-
-### MCP Server Configuration
-
-Add a server entry like this to your client's MCP configuration—for **Cursor**, this would typically be `~/.cursor/mcp.json`.
-For **Claude Code**, register the server with `claude mcp add` (it is saved to your project-level MCP configuration).
-
-```json
-{
-  "mcpServers": {
-    "localstack-mcp-server": {
-      "command": "npx",
-      "args": ["-y", "@localstack/localstack-mcp-server"],
-      "env": {
-        "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>"
-      }
-    }
-  }
-}
-```
-
-Full prerequisites, Cursor/VS Code/Claude Code variants, custom endpoints (`LOCALSTACK_HOSTNAME`, `LOCALSTACK_PORT`), troubleshooting, and the complete tool reference are on [LocalStack MCP Server](/aws/tooling/mcp-server/).
-
-:::note
-You do not need to start LocalStack manually before using MCP: an agent can start the container using the **localstack-management** tool once this configuration is in place.
-If LocalStack already runs elsewhere, point the MCP server at it via the `env` block as described in [Connecting to a custom LocalStack endpoint](/aws/tooling/mcp-server/#connecting-to-a-custom-localstack-endpoint).
+:::note[Official MCP Documentation]
+For detailed configuration instructions, prerequisite checks, and the complete tool reference, read our [LocalStack MCP Server guide](https://docs.localstack.cloud/aws/tooling/mcp-server/). You don't need to start LocalStack manually before using MCP; agents can initialize the container using the management tools provided by the server.
 :::
 
-## Deploy with agent-driven automation using Skills
 
-[LocalStack Skills](https://github.com/localstack/skills) are pre-built agent skill definitions for deploying common AWS architectures locally. It contains skills for LocalStack lifecycle management, IaC deployment, state management and more. Skills can be used in combination with the MCP server to create a fully autonomous agent-driven workflow.
+## Agent-Driven Automation with Skills
 
-Skills are useful when:
+[LocalStack Skills](https://github.com/localstack/skills) provide pre-defined agent skill definitions for automating AWS architecture deployments. These skills allow agents to scaffold environments, iterate on architecture designs, and manage LocalStack state autonomously.
 
-- You want to scaffold a new local environment quickly without writing all the infrastructure code yourself
-- You're using an agent-first workflow and want LocalStack to be a first-class deployment target
-- You want to iterate rapidly on architecture without touching real AWS
+Skills implementation scenarios:
+- **Rapid Prototyping**: Scaffold new local environments without manual infrastructure coding.
+- **Agent-First Development**: Establish LocalStack as a primary deployment target for autonomous agents.
+- **Architecture Iteration**: Test complex architectural changes in a risk-free, local sandbox.
 
-Browse the [skills repository](https://github.com/localstack/skills) for available skills and setup instructions.
+Refer to the [LocalStack Skills repository](https://github.com/localstack/skills) for available skill definitions and setup instructions.
 
-## Validate AI-generated IaC before applying to AWS
 
-A common pattern when using AI to generate Terraform, CDK, or CloudFormation is to deploy it to LocalStack first.
-This catches configuration errors, missing permissions, and service interaction bugs before you spend time (and money) deploying to real AWS.
+## Next steps
 
-The workflow is:
-
-1. Generate infrastructure code with your AI tool
-2. Deploy to LocalStack with `tflocal apply` (Terraform), `cdklocal deploy` (CDK), or the AWS CLI
-3. Run your integration tests against the local environment
-4. When everything passes, deploy to real AWS with confidence
-
-See [Tooling](/aws/tooling/) for the full list of LocalStack-aware wrappers for common IaC tools.
-
-## Summary
-
-| Use case                                               | Tool                                                      |
-| ------------------------------------------------------ | --------------------------------------------------------- |
-| AI assistant that can inspect & manage local resources | [LocalStack MCP Server](/aws/tooling/mcp-server/)         |
-| Agent-driven infrastructure deployment                 | [LocalStack Skills](https://github.com/localstack/skills) |
-| Validate AI-generated IaC safely                       | LocalStack + `tflocal` / `cdklocal` / `awslocal`          |
+You have explored the integration patterns for AI and agent-driven development. Proceed to the [Auth Token guide](/aws/getting-started/auth-token/) to configure your licensing and unlock advanced LocalStack features.
