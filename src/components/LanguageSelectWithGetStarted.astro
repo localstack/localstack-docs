@@ -1,17 +1,13 @@
 ---
 import Default from '@astrojs/starlight/components/LanguageSelect.astro';
 
-// Get the current page route
 const route = Astro.locals.starlightRoute;
 const isSnowflakePage = route.id.startsWith('snowflake');
-const isAzurePage = route.id.startsWith('azure');
 
-let getStartedUrl = 'https://app.localstack.cloud/sign-up';
+let getStartedUrl = 'https://localstack.cloud/pricing';
 
 if (isSnowflakePage) {
-  getStartedUrl += '?emulator=snowflake';
-} else if (isAzurePage) {
-  getStartedUrl += '?emulator=azure';
+  getStartedUrl = 'https://www.localstack.cloud/pricing?tab=snowflake';
 }
 ---
 
