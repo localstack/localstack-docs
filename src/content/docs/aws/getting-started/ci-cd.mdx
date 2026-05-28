@@ -1,6 +1,6 @@
 ---
-title: CI/CD
-description: Run LocalStack in CI pipelines — auth tokens, Docker Compose, GitHub Actions examples, and persisting state with Cloud Pods or state export.
+title: CI/CD Integration
+description: implementation guides for LocalStack in automated pipelines, including GitHub Actions, Docker Compose, and state management.
 template: doc
 sidebar:
   order: 4
@@ -8,42 +8,43 @@ sidebar:
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-## Overview
+Integrating LocalStack into CI/CD environments enables automated integration testing without cloud infrastructure costs or vendor dependency. CI configurations differ from local development environments in authentication methods and startup workflows.
 
-LocalStack works great in CI environments, allowing your integration tests to run incredibly fast and with no cloud costs.
-The setup differs slighty from local development in a few important ways:
+Key operational differences in CI/CD include:
+- **Authentication**: Use a dedicated CI Auth Token instead of a personal Developer token.
+- **Initialization**: Execute LocalStack in non-interactive mode using Docker Compose, the Docker CLI, or specialized CI actions.
+- **Isolation**: Initialize a fresh LocalStack instance for each job to ensure reproducible test results.
+- **State Management**: Utilize Cloud Pods or state export/import commands to persist infrastructure across pipeline stages.
 
-- **Use a CI Auth Token**, not your personal Developer token
-- **Start LocalStack without a browser** — Docker Compose, `docker run`, or CI helpers such as [`setup-localstack`](https://github.com/localstack/setup-localstack) are common; [`lstk`](/aws/tooling/lstk/) also works in CI when you set `LOCALSTACK_AUTH_TOKEN` and use [`--non-interactive`](/aws/tooling/lstk/#interactive-and-non-interactive-mode) (or rely on automatic non-interactive detection). LocalStack Desktop remains a local-only GUI.
-- **Runs are often isolated per job** — many pipelines start from an empty LocalStack instance for reproducible tests
-- **Persistence in CI is supported** — [Cloud Pods](/aws/capabilities/state-management/cloud-pods/), snapshot-based [persistence](/aws/capabilities/state-management/persistence/) with a mounted volume, or `localstack state export` / `localstack state import` with artifacts or cache.
+## Step 1: Configure CI Auth Token
 
-## Step 1 — Get a CI Auth Token
+Dedicated CI Auth Tokens are required for automated environments to ensure security and auditability.
 
-CI pipelines should use a dedicated CI Auth Token, not a developer token tied to a specific user.
+1. Navigate to the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application.
+2. Generate a new **CI Auth Token**.
+3. Store the token as a protected secret within your CI provider (e.g., `LOCALSTACK_AUTH_TOKEN`).
 
-1. Go to the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application
-2. Create a new **CI Auth Token**
-3. Add it as a secret in your CI provider (e.g., `LOCALSTACK_AUTH_TOKEN`)
-
-:::danger[Keep your token secret]
-Never commit an auth token to source control.
-Always inject it via your CI provider's secrets or environment variable mechanism.
-If a token is compromised, rotate it immediately on the Auth Tokens page — old tokens are invalidated instantly.
+:::danger[Security Best Practice]
+Never commit your auth tokens to source control. 
+Always inject tokens via your CI provider's secrets or environment variable system. 
+Rotate compromised tokens immediately via the Web Application. Old tokens are invalidated instantly.
 :::
 
-See the [Auth Token documentation](/aws/getting-started/auth-token/) for full details on token types and configuration.
+:::note
+Read the [Auth Token guide](/aws/getting-started/auth-token/) for full details on token types and configuration.
+:::
 
-## Step 2 — Start LocalStack in CI
+## Step 2: Start LocalStack in CI
+
+Select the integration method compatible with your CI runner architecture.
 
 <Tabs>
   <TabItem label="GitHub Actions">
-    The recommended approach is to start LocalStack as a service container or as a step using the official GitHub Action:
+    Use the official GitHub Action to initialize LocalStack as a workflow step:
 
     ```yaml
     # .github/workflows/integration-tests.yml
     name: Integration Tests
-
     on: [push, pull_request]
 
     jobs:
@@ -62,17 +63,18 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
 
           - name: Run tests
             run: |
-              # Your test commands here, e.g.:
+            # Your test commands here, e.g.:
               pip install awscli-local
-              awslocal s3 mb s3://my-test-bucket
+              awslocal s3 mb s3://integration-test-bucket
               pytest tests/integration/
     ```
-
-    The `setup-localstack` action handles pulling the image, starting the container, and waiting for LocalStack to be ready.
-
   </TabItem>
+
+    The `setup-localstack` action pulls the image, starts the container, and waits for LocalStack to be ready.
+
+
   <TabItem label="Docker Compose">
-    Add LocalStack as a service in your `docker-compose.yml`:
+    Define LocalStack as a service in your `docker-compose.yml` for containerized environments:
 
     ```yaml
     services:
@@ -82,16 +84,13 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
         ports:
           - "127.0.0.1:4566:4566"
           - "127.0.0.1:4510-4559:4510-4559"
-          - "127.0.0.1:443:443"
         environment:
           - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
-          - DEBUG=${DEBUG:-0}
         volumes:
-          - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
           - "/var/run/docker.sock:/var/run/docker.sock"
     ```
 
-    Start it and wait for readiness:
+    Start the service and verify readiness before executing tests:
 
     ```bash
     docker compose up -d localstack
@@ -104,8 +103,9 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
     :::
 
   </TabItem>
-  <TabItem label="Docker">
-    Start LocalStack directly with `docker run`:
+
+  <TabItem label="Docker CLI">
+    Initialize the container directly using the Docker engine:
 
     ```bash
     docker run \
@@ -120,76 +120,34 @@ See the [Auth Token documentation](/aws/getting-started/auth-token/) for full de
     # Wait for readiness
     until curl -s http://localhost:4566/_localstack/health | grep -q '"running"'; do sleep 1; done
     ```
-
-  </TabItem>
-  <TabItem label="CircleCI">
-    Add LocalStack as a service in your CircleCI config:
-
-    ```yaml
-    version: 2.1
-
-    jobs:
-      integration-tests:
-        docker:
-          - image: cimg/python:3.12
-          - image: localstack/localstack-pro
-            environment:
-              LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
-        steps:
-          - checkout
-          - run:
-              name: Wait for LocalStack
-              command: |
-                until curl -s http://localhost:4566/_localstack/health | grep -q '"running"'; do sleep 1; done
-          - run:
-              name: Run tests
-              command: pytest tests/integration/
-    ```
-
-    Set `LOCALSTACK_AUTH_TOKEN` in your CircleCI project's environment variables.
-
   </TabItem>
 </Tabs>
 
-## Verify activation
+## Technical Comparison: Local vs. CI/CD
 
-After LocalStack starts, confirm the license is active:
+| Feature | Local Development | CI/CD Environment |
+| :--- | :--- | :--- |
+| **Interface** | `lstk` or LocalStack CLI | Docker Compose / `docker run`, or `lstk --non-interactive` |
+| **Authentication** | Browser-based or stored credentials | `LOCALSTACK_AUTH_TOKEN` environment variable |
+| **Token Type** | Individual Developer Token | Dedicated CI Token |
+| **State** | Persistent by choice | Ephemeral (standard) or Snapshotted (Cloud Pods) |
+| **Startup Mode** | Interactive (TUI) (default `lstk`) | Non-interactive (Headless) (`docker compose`, `docker run -d`, `lstk --non-interactive`) |
 
-```bash
-curl -s http://localhost:4566/_localstack/info | jq '.is_license_activated'
-# Should return: true
-```
+## State Persistence in CI
 
-## Key differences from local development
+While most pipelines favor ephemeral instances for clean test cycles, certain workflows require persisting infrastructure state across jobs or runners.
 
-|                | Local development                | CI/CD                                                                               |
-| -------------- | -------------------------------- | ----------------------------------------------------------------------------------- |
-| **CLI**        | `lstk` or LocalStack CLI         | Docker Compose / `docker run`, or `lstk --non-interactive`                          |
-| **Auth**       | Browser login or stored token    | `LOCALSTACK_AUTH_TOKEN` env var                                                     |
-| **Token type** | Developer token                  | CI token                                                                            |
-| **State**      | Optional persistence             | Optional persistence (same mechanisms; typical pattern is a fresh instance per job) |
-| **Startup**    | Interactive TUI (default `lstk`) | Non-interactive (`docker compose`, `docker run -d`, `lstk --non-interactive`)       |
+- **[Cloud Pods](/aws/capabilities/state-management/cloud-pods/)**: Save or load snapshots using the `setup-localstack` action with the `state-backend: cloud-pods` configuration.
+- **Snapshot Persistence Engine**: Enable `PERSISTENCE=1` and mount a host volume to retain data across container restarts on the same runner.
+- **State Export/Import Commands**: Use `localstack state export` and `localstack state import` to pass infrastructure state via CI artifacts or caching mechanisms.
 
-## Persisting state across runs
+## Next steps
 
-If you tear down the container at the end of a job, nothing is left on disk unless you save it — which is why many teams use a clean instance every time.
-When you **do** need to reuse infrastructure or data between pipeline runs or steps, CI is fully supported:
+You have configured LocalStack for automated environments and explored various CI/CD integration patterns. Proceed to the [AI & Agent Workflows Guide](/aws/getting-started/ai-workflows/) to learn how to integrate LocalStack with AI coding assistants and automate infrastructure tasks.
 
-- **[Cloud Pods](/aws/capabilities/state-management/cloud-pods/)** — save and load snapshots; the [`setup-localstack`](https://github.com/localstack/setup-localstack) action can load and save pods via `state-backend: cloud-pods` (see [GitHub Actions](/aws/integrations/continuous-integration/github-actions/) — _Store Localstack state_).
-- **Snapshot-based [persistence](/aws/capabilities/state-management/persistence/)** — enable `PERSISTENCE=1` and mount a volume so state survives container restarts on the same runner or workspace.
-- **State export/import** — run `localstack state export` and `localstack state import` and pass the file through your CI provider’s **artifacts**, **cache**, or attached storage (for example, see [GitLab CI](/aws/integrations/continuous-integration/gitlab-ci/) — _Store Localstack state_).
+## Resources
 
-Choose the approach that fits your runner model: for example, multi-job GitLab pipelines often need explicit state handoff because services do not carry between jobs.
-
-## More CI integrations
-
-LocalStack has dedicated integration guides for many CI providers:
-
-- [GitHub Actions](/aws/integrations/continuous-integration/github-actions/)
-- [GitLab CI](/aws/integrations/continuous-integration/gitlab-ci/)
-- [CircleCI](/aws/integrations/continuous-integration/circleci/)
-- [AWS CodeBuild](/aws/integrations/continuous-integration/codebuild/)
-- [Travis CI](/aws/integrations/continuous-integration/travis-ci/)
-- [Bitbucket Pipelines](/aws/integrations/continuous-integration/bitbucket/)
-
-See the full [CI/CD integrations](/aws/integrations/continuous-integration/) section for details.
+- [GitHub Actions Integration](/aws/integrations/continuous-integration/github-actions/): Advanced workflows and configuration options.
+- [CircleCI Guide](/aws/integrations/continuous-integration/circleci/): Implementation details for CircleCI environments.
+- [GitLab CI Integration](/aws/integrations/continuous-integration/gitlab-ci/): Service-based setup for GitLab runners.
+- [AWS CodeBuild](/aws/integrations/continuous-integration/codebuild/): Native AWS CI/CD integration.
