@@ -1,6 +1,6 @@
 ---
 title: Overview
-description: This section describes how to get started with LocalStack for AWS using a variety of options, and provides details on how LocalStack can be configured to fit the needs of a local cloud sandbox for development, testing, and experimentation.
+description: Introduction to LocalStack for AWS, covering core use cases, local cloud capabilities, and deployment options for development and testing.
 template: doc
 editUrl: false
 sidebar:
@@ -8,52 +8,44 @@ sidebar:
 ---
 
 import { SectionCards } from '../../../../components/SectionCards.tsx';
-import { SecondaryPathCard } from '../../../../components/SecondaryPathCard.tsx';
 
-[LocalStack for AWS](https://localstack.cloud) is a cloud service emulator that runs in a single container on your laptop or in your CI environment.
-It gives you a fully functional AWS environment — Lambda, DynamoDB, S3, SQS, and [80+ more services](/aws/services/) — without touching a real AWS account and without incurring cloud costs.
+LocalStack provides a cloud service emulator that runs within a single container on your local machine or CI environment. It delivers a functional AWS environment including Lambda, DynamoDB, S3, SQS, and [80+ supported services](/aws/services/), enabling development and testing without an AWS account or cloud-related costs.
 
-Here's why developers and teams use it:
+### Core Use Cases
 
-- **Faster development loops** — Test changes against local AWS services instantly, without waiting on real deployments or worrying about cloud costs.
-- **Integration testing in CI** — Run real integration tests against local AWS infrastructure in every pull request, catching bugs before they reach production.
-- **Validate IaC before applying** — Deploy your Terraform, CDK, or CloudFormation to LocalStack first. Confirm it works the way you expect before applying to a real AWS environment.
-- **Safe experimentation** — Explore new AWS services and architectures freely, with no risk to production systems.
+- **Accelerate development loops**: Test changes against local AWS services instantly to bypass deployment wait times.
+- **Automate integration testing**: Execute integration tests against local AWS infrastructure within pull requests to identify regressions before production.
+- **Validate IaC**: Deploy Terraform, CDK, or CloudFormation templates to LocalStack to verify infrastructure logic before applying changes to a cloud environment.
+- **Experimental sandbox**: Explore new AWS services and architectures in a risk-free environment.
 
-LocalStack for AWS also includes advanced capabilities for teams: [Cloud Pods](/aws/capabilities/state-management/cloud-pods/) for sharing and restoring state, [IAM policy enforcement](/aws/capabilities/security-testing/iam-policy-enforcement/), [Chaos Engineering](/aws/capabilities/chaos-engineering/), and more.
+LocalStack also provides advanced features for team collaboration and security, including [Cloud Pods](/aws/capabilities/state-management/cloud-pods/) for state management, [IAM policy enforcement](/aws/capabilities/security-testing/iam-policy-enforcement/), and [Chaos Engineering](/aws/capabilities/chaos-engineering/).
 
-## Choose your path
+## Explore by deployment
 
 <SectionCards
   sections={[
     {
       title: 'Local Development',
       description:
-        'Set up LocalStack on your laptop and get a serverless app running in under 10 minutes. Deploy Lambda functions, DynamoDB tables, and more — no AWS account needed.',
-      href: '/aws/getting-started/quickstart/',
+        'Install LocalStack on a workstation and deploy a serverless application using Lambda and DynamoDB.',
+      href: '/aws/getting-started/local-development/',
     },
     {
       title: 'CI/CD Pipelines',
       description:
-        'Run LocalStack in GitHub Actions, CircleCI, or any container-based CI. Catch infrastructure bugs before they reach production with real integration tests on every pull request.',
+        'Integrate LocalStack into GitHub Actions, CircleCI, or other container-based CI platforms for automated testing.',
       href: '/aws/getting-started/ci-cd/',
     },
     {
       title: 'AI & Agent Workflows',
       description:
-        'Connect LocalStack to your AI coding assistant via the MCP server, or deploy infrastructure automatically using LocalStack Skills.',
+        'Integrate LocalStack with AI coding assistants via MCP or automate infrastructure tasks using LocalStack Skills.',
       href: '/aws/getting-started/ai-workflows/',
     },
   ]}
   client:load
 />
 
-<SecondaryPathCard
-  title="LocalStack on Kubernetes (Enterprise)"
-  href="/aws/enterprise/kubernetes/"
-  client:load
->
-
-LocalStack for AWS supports **running inside a Kubernetes cluster** (for example with the Operator or Helm chart), that is an **Enterprise-only** deployment model enabling dynamic scaling, isolation, and native Kubernetes orchestration.
-
-</SecondaryPathCard>
+:::note
+**Enterprise K8 Deployment:** LocalStack also supports execution within Kubernetes clusters via the Operator or Helm charts. This model enables dynamic scaling, environment isolation, and native orchestration. See our [Kubernetes Deployment guide](/aws/enterprise/kubernetes/) for more information.
+:::
