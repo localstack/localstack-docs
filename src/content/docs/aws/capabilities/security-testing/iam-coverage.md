@@ -147,6 +147,8 @@ It only includes operations performed with a principal, not as root, so test set
 |                | - StringLike                                                                         |
 |                | - ArnLike/ArnEquals                                                                  |
 |                | Supported condition keys:                                                            |
+|                | - aws:RequestedRegion                                                                |
+|                | - aws:PrincipalArn                                                                   |
 |                | - aws:SourceArn                                                                      |
 |                | Supported condition tags:                                                                  |
 |                | - aws:ResourceTag                                                                     |
