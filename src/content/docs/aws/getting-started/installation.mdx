@@ -57,27 +57,159 @@ The LocalStack CLI is the primary tool for managing all LocalStack capabilities.
 
 ### Install LocalStack CLI
 
-<LinkButton href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-linux-amd64-onefile.tar.gz`} icon="download" variant="minimal">x86-64
-<LinkButton href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-linux-arm64-onefile.tar.gz`} icon="download" variant="minimal">ARM64
 
-Extract the binary to `/usr/local/bin`:
+<Tabs>
 
-<Code code={`sudo tar xvzf localstack-cli-${LOCALSTACK_VERSION}-linux-*-onefile.tar.gz -C /usr/local/bin`} lang="bash" />
+<TabItem label="Linux" >
 
+You can download the pre-built binary for your architecture using the link below:
+
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-linux-amd64-onefile.tar.gz`}
+  icon="download"
+  variant="minimal"
+>
+  x86-64
+</LinkButton>
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-linux-arm64-onefile.tar.gz`}
+  icon="download"
+  variant="minimal"
+>
+  ARM64
+</LinkButton>
+
+or use the curl commands below:
+
+For x86-64:
+
+<Code
+  code={`curl --output localstack-cli-${LOCALSTACK_VERSION}-linux-amd64-onefile.tar.gz \\\n    --location https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-linux-amd64-onefile.tar.gz`}
+  lang="bash"
+/>
+
+For ARM64:
+
+<Code
+  code={`curl --output localstack-cli-${LOCALSTACK_VERSION}-linux-arm64-onefile.tar.gz \\\n    --location https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-linux-arm64-onefile.tar.gz`}
+  lang="bash"
+/>
+
+Then extract the LocalStack CLI from the terminal:
+
+<Code
+  code={`sudo tar xvzf localstack-cli-${LOCALSTACK_VERSION}-linux-*-onefile.tar.gz -C /usr/local/bin`}
+  lang="bash"
+/>
+
+<details>
+<summary>Alternative: Homebrew on Linux</summary>
+
+If you are using [Homebrew for Linux](https://docs.brew.sh/Homebrew-on-Linux), you can install the LocalStack CLI directly from our official LocalStack tap:
 
 ```bash
 brew install localstack/tap/localstack-cli
-
 ```
+
+</details>
+
+</TabItem>
+
+<TabItem label="MacOS" >
+
+You can install the LocalStack CLI using Brew directly from our official LocalStack tap:
+
+```bash
+brew install localstack/tap/localstack-cli
+```
+
+<details>
+<summary>Alternative: Binary Download</summary>
+
+You may download the binary for your architecture using the link below:
+
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-darwin-amd64-onefile.tar.gz`}
+  icon="download"
+  variant="minimal"
+>
+  Intel (AMD64)
+</LinkButton>
+
+or use the following curl command:
+
+<Code
+  code={`curl --output ${LOCALSTACK_VERSION}-darwin-amd64-onefile.tar.gz \
+    --location https://github.com/localstack/localstack-cli/releases/download/${LOCALSTACK_VERSION}/localstack-cli-${LOCALSTACK_VERSION}-darwin-amd64-onefile.tar.gz`}
+  lang="bash"
+/>
+
+Then extract the LocalStack CLI from the terminal:
+
+<Code
+  code={`sudo tar xvzf localstack-cli-${LOCALSTACK_VERSION}-darwin-*-onefile.tar.gz -C /usr/local/bin`}
+  lang="bash"
+/>
+
+</details>
+</TabItem>
+
+<TabItem label="Windows" >
+
+You can download the pre-built binary for your architecture using the link below:
+
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v2026.3.0/localstack-cli-2026.3.0-windows-amd64-onefile.zip`}
+  icon="download"
+  variant="minimal"
+>
+  Intel (AMD64)
+</LinkButton>
+
+Then extract the archive and execute the binary in Powershell.
+
+</TabItem>
+
+<TabItem label="Other/Python" >
+
+If you cannot use the binary releases of LocalStack, you can install the Python distribution.
+
+Please make sure to install the following before moving ahead:
+
+- [Python](https://docs.python.org/3/using/index.html)
+- [pip](https://pip.pypa.io/en/stable/installation/)
+
+Next install the LocalStack CLI in your Python environment by running:
 
 ```bash
 python3 -m pip install --upgrade localstack
-
 ```
 
-:::danger
-Do not use `sudo` or the `root` user. Install and execute LocalStack entirely under a local non-root user.
+:::note
+To download a specific version of LocalStack, replace `<version>` with the required version from [release page](https://github.com/localstack/localstack/releases).
+
+```bash
+python3 -m pip install localstack==<version>
+```
+
 :::
+
+:::tip[MacOS Sierra?]
+If you have problems with permissions in MacOS X Sierra, install with:
+
+```bash
+python3 -m pip install --user localstack
+```
+
+:::
+
+:::danger
+Do not use `sudo` or the `root` user when starting LocalStack.
+It should be installed and started entirely under a local non-root user.
+:::
+
+</TabItem>
+</Tabs>
 
 
 
