@@ -1,14 +1,78 @@
 ---
 title: User-Defined Functions
-description: Get started with User-Defined Functions in Node.js, Java & Python with LocalStack for Snowflake
+description: Get started with User-Defined Functions in SQL, Node.js, Java & Python with LocalStack for Snowflake
 tags: ["Base"]
 ---
 
 ## Introduction
 
-User-Defined Functions (UDFs) are functions that you can create to extend the functionality of your SQL queries. Snowflake supports UDFs in different programming languages, including JavaScript, Python, Java, Scala, and SQL.
+User-Defined Functions (UDFs) are functions that you can create to extend the functionality of your SQL queries. Snowflake supports UDFs in different programming languages, including SQL, JavaScript, Python, Java, and Scala.
 
-The Snowflake emulator supports User-Defined Functions (UDFs) in JavaScript, Java and Python. You can create UDFs to extend the functionality of your SQL queries. This guide demonstrates how to create and execute UDFs in JavaScript, Java and Python.
+The Snowflake emulator supports User-Defined Functions (UDFs) in SQL, JavaScript, Java, and Python. You can create UDFs to extend the functionality of your SQL queries. This guide demonstrates how to create and execute UDFs in SQL, JavaScript, Java, and Python.
+
+## SQL
+
+In the Snowflake emulator, you can create scalar SQL UDFs and table-returning SQL UDFs, also known as User-Defined Table Functions (UDTFs). Start your Snowflake emulator and connect to it using a SQL client to execute the queries below.
+
+### Create a Scalar SQL UDF
+
+You can create a scalar SQL UDF using the `CREATE FUNCTION` statement. The following example creates a SQL UDF that receives an amount and percentage as input and returns the amount with the percentage added.
+
+```sql showLineNumbers
+CREATE OR REPLACE FUNCTION add_percentage(amount FLOAT, percentage FLOAT)
+  RETURNS FLOAT
+  AS 'amount + (amount * percentage / 100)';
+```
+
+### Execute a Scalar SQL UDF
+
+You can execute a scalar SQL UDF using the `SELECT` statement.
+
+```sql
+SELECT add_percentage(100, 8);
+```
+
+The result of the query is `108`.
+
+### Create a Table-Returning SQL UDF
+
+You can create a table-returning SQL UDF using the `RETURNS TABLE` clause. The following example creates a SQL UDF that returns rows matching the specified minimum amount.
+
+```sql showLineNumbers
+CREATE OR REPLACE FUNCTION orders_above(min_amount FLOAT)
+  RETURNS TABLE (order_id INTEGER, total FLOAT)
+  AS
+  $$
+    SELECT order_id, total
+    FROM (
+      SELECT 1 AS order_id, 42.50 AS total
+      UNION ALL
+      SELECT 2 AS order_id, 120.00 AS total
+      UNION ALL
+      SELECT 3 AS order_id, 255.25 AS total
+    ) AS orders
+    WHERE total >= min_amount
+  $$;
+```
+
+### Execute a Table-Returning SQL UDF
+
+You can execute a table-returning SQL UDF from a `FROM` clause using the `TABLE` keyword.
+
+```sql
+SELECT * FROM TABLE(orders_above(100));
+```
+
+The result of the query is:
+
+```sql
++----------+--------+
+| ORDER_ID | TOTAL  |
+|----------+--------|
+| 2        | 120.00 |
+| 3        | 255.25 |
++----------+--------+
+```
 
 ## JavaScript
 
