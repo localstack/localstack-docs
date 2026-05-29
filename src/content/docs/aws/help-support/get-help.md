@@ -31,34 +31,17 @@ Community support is provided on a best-effort basis and is not guaranteed.
 
 ### Support email
 
-Contact [support@localstack.cloud](mailto:support@localstack.cloud) for:
-
-- Reporting bugs  
-- Requesting new features 
-- Technical questions  
-- Account-related inquiries  
-- Issues requiring direct support  
-
-Best for:
-- Reproducible issues  
-- Tracking known problems or feature requests 
-- Ongoing issues that require follow-up  
-- Questions that are not suited for public channels  
+Contact LocalStack Support via email at [support@localstack.cloud](mailto:support@localstack.cloud).
 
 
 ### Web application chat
 
-Use the [LocalStack Web Application](https://app.localstack.cloud/) chat for:
-
-- Submitting support requests  
-- Asking technical questions directly  
-
-To create a support request:
+To create a support request using the [LocalStack Web Application](https://app.localstack.cloud/) chat:
 
 1. Open the LocalStack Web Application  
 2. Click the chat icon in the bottom right corner  
-3. Select **Technical Question**  
-4. Enter your details and submit  
+3. Select **Technical Issue** to request technical support or **Account/Billing Issue** to request account related support. 
+4. Enter your details and submit. 
 
 Best for:
 - Direct interaction with the support team  
@@ -74,6 +57,29 @@ Enterprise customers have access to additional support options, including:
 - Real-time chat support  
 
 For more details, see [Enterprise Support](/aws/help-support/enterprise-support/).
+
+
+## What to include
+
+To help us troubleshoot your issue efficiently, please include the following information:
+
+- **Logs**  
+   aws emulator container logs with the environment variables `SF_LOG=trace` and `DEBUG=1` enabled  
+
+- **Query (if applicable)**  
+  The query that triggered the issue  
+
+- **Client details**  
+  Client tool or driver used  
+
+- **Connection parameters**  
+  Excluding sensitive information  
+
+- **Additional logs (if available)**  
+  Client tool or driver logs  
+
+Providing detailed information upfront helps reduce back-and-forth and speeds up resolution time.
+
 
 ## Before you reach out
 
