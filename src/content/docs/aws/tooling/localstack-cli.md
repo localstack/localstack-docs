@@ -12,7 +12,7 @@ tags: ["Hobby"]
 The LocalStack Command Line Interface (CLI) is a tool for starting, managing, and configuring your LocalStack container.
 It provides convenience features to interact with LocalStack features like Cloud Pods, Extensions, State Management, and more.
 
-To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
+To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#install-localstack-cli).
 
 :::note
 This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 2026.3.0`.
