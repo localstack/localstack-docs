@@ -43,10 +43,6 @@ To create a support request using the [LocalStack Web Application](https://app.l
 3. Select **Technical Issue** to request technical support or **Account/Billing Issue** to request account related support. 
 4. Enter your details and submit. 
 
-Best for:
-- Direct interaction with the support team  
-- Submitting issues without leaving the app  
-
 
 ### Enterprise support channels
 
@@ -79,6 +75,23 @@ To help us troubleshoot your issue efficiently, please include the following inf
   Client tool or driver logs  
 
 Providing detailed information upfront helps reduce back-and-forth and speeds up resolution time.
+
+
+:::note
+In many scenarios, we ask our customers to use the diagnostics endpoint to provide additional information.
+
+To use LocalStack’s diagnostics endpoint:
+- Set the environment variable `LS_LOG=trace`
+- Start LocalStack
+- Run the affected task(s)
+- Call the diagnostic endpoint `curl -s localhost.localstack.cloud:4566/_localstack/diagnose > diagnose.json && zip diagnose.zip diagnose.json && rm diagnose.json` (Endpoint URL depends on your configuration)
+- Once you have the `diagnose.zip` file, please send it to our support team via our email at [support@localstack.cloud](mailto:support@localstack.cloud), or via your existing support ticket.
+:::
+
+
+:::danger
+Ensure that you avoid sending the diagnostic output to public channels or forums, as it may contain sensitive information.
+:::
 
 
 ## Before you reach out
