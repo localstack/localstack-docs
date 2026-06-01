@@ -121,13 +121,13 @@
     },
     {
       "CreateFleet": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -186,13 +186,13 @@
     },
     {
       "DeleteFleet": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -383,11 +383,11 @@
       "ListBuilds": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -396,11 +396,11 @@
       "ListBuildsForProject": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -433,13 +433,13 @@
     },
     {
       "ListFleets": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -667,8 +667,8 @@
     },
     {
       "StopBuild": {
-        "implemented": true,
-        "availability": "pro",
+        "implemented": false,
+        "availability": "",
         "internal_test_suite": false,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -997,6 +997,16 @@
       "names": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_list_builds_for_project",
+            "test": "test_list_builds_for_project",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_project_crud_operations",
             "test": "test_project_crud_operations",
             "response": "200",
@@ -1075,6 +1085,36 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          }
+        ]
+      }
+    },
+    "CreateFleet": {
+      "baseCapacity, computeType, environmentType, name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_create_fleet",
+            "test": "test_create_fleet",
+            "response": "400",
+            "error": "ResourceAlreadyExistsException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "baseCapacity, computeType, environmentType, name, tags": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_create_fleet",
+            "test": "test_create_fleet",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       }
@@ -1264,6 +1304,20 @@
           }
         ]
       },
+      "artifacts, environment, name, serviceRole, source, tags": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_list_builds_for_project",
+            "test": "test_list_builds_for_project",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "artifacts, environment, name, serviceRole, source, timeoutInMinutes": {
         "ls_pro": [
           {
@@ -1284,6 +1338,22 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "DeleteFleet": {
+      "arn": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_create_fleet",
+            "test": "test_create_fleet",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -1378,6 +1448,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..build.logs', '$..build.phases']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_list_builds_for_project",
+            "test": "test_list_builds_for_project",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1559,6 +1639,54 @@
             "test": "test_credentials_crud",
             "response": "400",
             "error": "InvalidInputException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "ListBuilds": {
+      "- (without any parameters)": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_list_builds_for_project",
+            "test": "test_list_builds_for_project",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "ListBuildsForProject": {
+      "projectName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_list_builds_for_project",
+            "test": "test_list_builds_for_project",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "ListFleets": {
+      "- (without any parameters)": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_create_fleet",
+            "test": "test_create_fleet",
+            "response": "200",
+            "error": "",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -1775,6 +1903,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_list_builds_for_project",
+            "test": "test_list_builds_for_project",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_multiple_builds",
             "test": "test_multiple_builds",
             "response": "200",
@@ -1820,6 +1958,20 @@
             "response": "400",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "['$..project.tags', '$..projects..tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "name, tags": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/codebuild/test_codebuild.py::TestCodeBuild::test_list_builds_for_project",
+            "test": "test_list_builds_for_project",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
