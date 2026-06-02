@@ -1,5 +1,5 @@
 ---
-title: Support Plans
+title: Support Offerings
 description: Compare LocalStack support plans, features, and response expectations.
 template: doc
 sidebar:
@@ -11,43 +11,54 @@ LocalStack offers multiple support plans with different levels of access, respon
 Choose the plan that best fits your needs based on the level of support and responsiveness required.
 
 
-## Plan overview
+## Plans overview
 
-| **Plan** | **Support Tier** |
+| **Plan** | **Tier** |
 | --- | --- |
+| Hobby (Free) | Basic Support |
 | Trial | Standard Support |
-| Base | Priority Support |
+| Base | Standard Support |
+| Ultimate | Priority Support |
 | Enterprise | Enterprise Support |
+| Student | Basic Support |
+
+
+## Legacy Plans Support Coverage 
+
+| **Plan** | **Tier** |
+| --- | --- |
+| Starter | Standard Support |
+| Teams | Priority Support |
 
 
 ## Feature comparison
 
-| **Features** | **Standard** | **Priority** | **Enterprise** |
-| --- | --- | --- | --- |
-| Documentation access | ✅ | ✅ | ✅ |
-| Community support | ✅ | ✅ | ✅ |
-| Operational support | ✅ | ✅ | ✅ |
-| 1:1 technical support | ✅ | ✅ | ✅ |
-| Screen sharing sessions |  | ✅ | ✅ |
-| Third-party tools support |  | Limited | Limited |
-| Faster response times |  | ✅ | ✅ |
-| Real-time chat support |  |  | ✅ |
-| Support ticketing portal |  |  | ✅ |
-| Service Level Agreements (SLAs) |  |  | ✅ |
-| Direct Slack/Teams channel |  |  | ✅ |
-| Dedicated CSM & TAM |  |  | ✅ |
+| **Features** | **Basic** | **Standard** | **Priority** | **Enterprise** |
+| --- | --- | --- | --- | --- |
+| Documentation access | ✅ | ✅ | ✅ | ✅ |
+| Community support | ✅ | ✅ | ✅ | ✅ |
+| Operational support | ✅ | ✅ | ✅ | ✅ |
+| 1:1 technical support | | ✅ | ✅ | ✅ |
+| Screen sharing sessions | |  | ✅ | ✅ |
+| Third-party tools support | |  | Limited | Limited |
+| Faster response times | |  | ✅ | ✅ |
+| Real-time chat support | |  |  | ✅ |
+| Support ticketing portal | |  |  | ✅ |
+| Service Level Agreements (SLAs) | |  |  | ✅ |
+| Direct Slack/Teams channel | |  |  | ✅ |
+| Dedicated CSM & TAM | |  |  | ✅ |
 
 
 ## Response expectations
 
-### Standard support (Trial)
+### Standard support
 
 - Best-effort support  
 - No guaranteed response times  
 - Typical response time: **24–48 hours** during business hours  
 
 
-### Priority support (Base)
+### Priority support
 
 - **First response:** within 24 hours  
 - **Follow-up responses:** within 24 hours  
@@ -86,28 +97,28 @@ Support does **not** include:
 - **Advanced third-party troubleshooting (Priority plan)**  
   Only basic integration guidance is provided for officially supported tools  
 
-- ** aws in production**  
+- **AWS in production**  
   Support is limited to LocalStack’s emulated services  
 
 
 ## Support channels by plan
 
-| **Channel** | **Standard** | **Priority** | **Enterprise** |
-| --- | --- | --- | --- |
-| Slack community | ✅ | ✅ | ✅ |
-| GitHub Discussions | ✅ | ✅ | ✅ |
-| Support email | ✅ | ✅ | ✅ |
-| Web application chat | ✅ | ✅ | ✅ |
-| Support ticketing portal |  |  | ✅ |
-| Dedicated Slack/Teams channel |  |  | ✅ |
+| **Channel** | **Basic** | **Standard** | **Priority** | **Enterprise** |
+| --- | --- | --- | --- | --- |
+| Slack community | ✅ | ✅ | ✅ | ✅ |
+| GitHub Discussions | ✅ | ✅ | ✅ | ✅ |
+| Support email | | ✅ | ✅ | ✅ |
+| Web application chat | | ✅ | ✅ | ✅ |
+| Support ticketing portal | |  |  | ✅ |
+| Dedicated Slack/Teams channel | |  |  | ✅ |
 
 
-## Support hours
+## Support business hours
 
 Support is available:
 
 - Monday to Friday  
-- 6:00 AM – 9:00 PM UTC , CET, and ET time zones  
+- 6:00 AM – 9:00 PM UTC  
 
 Excludes:
 
