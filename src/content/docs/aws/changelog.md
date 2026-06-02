@@ -18,7 +18,7 @@ Updates that affect only LocalStack Web Application or features in preview or li
 LocalStack uses the following terminology to communicate features under development:
 
 * **Preview** refers to a feature under development that usually evolves into becoming a stable feature.
-  We encourage you to try out these features and report [bugs](https://github.com/localstack/localstack/issues/new/choose), missing functionality, or general feedback.
+  We encourage you to try out these features and report bugs, missing functionality, or general feedback via [GitHub Discussion](https://github.com/orgs/localstack/discussions/new/choose) or our [support channels](/aws/help-support/get-help/).
 * **Experimental** refers to a feature prototype that demonstrates initial feasibility and usually comes with many limitations.
   Please share your feedback to shape such features and express your interest to get them prioritized.
 
