@@ -3,7 +3,7 @@ title: FAQ
 description: FAQ
 template: doc
 sidebar:
-    order: 6
+    order: 9
 tags: ["Enterprise"]
 ---
 
