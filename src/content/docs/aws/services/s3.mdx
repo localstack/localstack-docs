@@ -277,6 +277,13 @@ LocalStack uses a scan-based replication mechanism.
 A background worker scans buckets with at least one enabled replication rule approximately every second, then dispatches replication tasks for any objects that qualify.
 Because of this, replication is **eventually consistent** — there is a short delay between an object being written and it appearing in the destination bucket.
 
+### Metadata replication
+
+LocalStack supports replication of object metadata — specifically tags and Object Lock settings. Metadata replication operates in two modes:
+
+- **Default metadata replication**: When a source object's metadata is modified, those changes are automatically propagated to all of its replicas. This behavior is enabled by default and requires no additional configuration.
+- **Replica metadata synchronization**: When enabled on the destination bucket, metadata changes made directly to a replica are synced back to the source object. This applies only when two-way replication is configured. See [Replication for metadata changes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-for-metadata-changes.html) in the AWS documentation for more details.
+
 ### ReplicationStatus
 
 Replicated objects are assigned a `ReplicationStatus` field, which you can inspect with `GetObject` or `HeadObject`.
@@ -293,7 +300,7 @@ The possible values follow AWS semantics:
 The following replication features are not yet supported in LocalStack and will be available in a future release:
 
 - **IAM enforcement**: Replication-specific IAM permissions (such as `s3:ReplicateObject`) are not currently enforced.
-- **Metadata replication**: Replication of object metadata changes, used in two-way replication scenarios, is not yet supported. See [Replication for metadata changes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-for-metadata-changes.html) in the AWS documentation for more details.
+- **ACL replication**: Replication of Access Control Lists is not currently supported.
 :::
 
 ## Resource Browser
