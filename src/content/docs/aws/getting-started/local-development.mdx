@@ -1,6 +1,6 @@
 ---
 title: Local Development
-description: Deploy a serverless application locally using Lambda and DynamoDB on LocalStack.
+description: Deploy an AWS serverless API locally using Lambda and DynamoDB on LocalStack.
 template: doc
 sidebar:
   order: 4
@@ -13,30 +13,24 @@ import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 This guide walks you through starting LocalStack and deploying a serverless API consisting of a Lambda function and a DynamoDB table. You will perform the entire deployment on your local machine without an AWS account.
 
 A successful deployment results in a:
-- **LocalStack Container:** Running the core emulation engine.
-- **Serverless API:** A Lambda function with a configured Function URL.
+- **Serverless API:** A Lambda function with a configured function URL.
 - **Persistence Layer:** A DynamoDB table for message storage.
-- **Local Cloud Environment:** A functional AWS-emulated sandbox.
+- **Local Cloud Environment:** A fully functional local sandbox that emulates AWS services.
 
-Select your preferred deployment method to begin: **AWS CLI** or **Terraform**.
+Choose your preferred deployment method: **Terraform** or **AWS CLI**.
 
 ## Prerequisites
 
-- [Docker](https://docs.docker.com/get-docker/) engine installed and active.
-- A [LocalStack account](https://app.localstack.cloud/sign-up).
-- [Auth Token](/aws/getting-started/auth-token/)
+- [Docker](https://docs.docker.com/get-docker/) engine installed and running.
+- A [LocalStack account](https://app.localstack.cloud/sign-up) and a valid [LocalStack Auth Token](/aws/getting-started/auth-token/).
+- Either [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) or [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed, depending on your preferred deployment method.
 
 ## Step 1: Install and Start LocalStack
 
-The `lstk` CLI provides the fastest initialization path by automating authentication and image management.
-
 <Tabs>
   <TabItem label="lstk (Recommended)">
-    Install `lstk`:
-
-    ```bash
-    brew install localstack/tap/lstk
-    ```
+    The `lstk` CLI provides the fastest initialization path by automating authentication and image management.
+    Ensure you have [installed](/aws/getting-started/installation/#install-lstk) `lstk` before starting LocalStack.
 
     Start LocalStack:
 
@@ -51,59 +45,62 @@ The `lstk` CLI provides the fastest initialization path by automating authentica
     ```text
     ✔︎ LocalStack ready (containerId: 400b3e61f3c6)
     • Endpoint: localhost.localstack.cloud:4566
-    • Web app: [https://app.localstack.cloud](https://app.localstack.cloud)
+    • Web app: https://app.localstack.cloud
     ```
 
     :::note[Early Release]
-    `lstk` currently supports core lifecycle commands (start, stop, logs, status). For advanced features such as Cloud Pods or Extensions, use the [LocalStack CLI](/aws/getting-started/installation/#localstack-cli).
+    `lstk` currently supports core lifecycle commands (start, stop, logs, status).
+    To learn more about `lstk`, see the [lstk documentation](/aws/tooling/lstk/).
+    For advanced features such as Cloud Pods or Extensions, use the [LocalStack CLI](/aws/getting-started/installation/#localstack-cli).
     :::
 
   </TabItem>
   <TabItem label="LocalStack CLI">
-    If you are using the full-featured LocalStack CLI, ensure you have [configured your auth token](/aws/getting-started/auth-token/) before starting:
+    If you are using the full-featured LocalStack CLI, ensure you have [installed](/aws/getting-started/installation/#install-localstack-cli) it and [configured your auth token](/aws/getting-started/auth-token/) before starting:
+
+    Start LocalStack:
 
     ```bash
     localstack start
     ```
-    
+
     When the container is ready, you'll see these log lines:
 
     ```bash
-        __                     _______ __             __
+         __                     _______ __             __
         / /   ____  _________ _/ / ___// /_____ ______/ /__
       / /   / __ \/ ___/ __ `/ /\__ \/ __/ __ `/ ___/ //_/
       / /___/ /_/ / /__/ /_/ / /___/ / /_/ /_/ / /__/ ,<
     /_____/\____/\___/\__,_/_//____/\__/\__,_/\___/_/|_|
 
-    💻 LocalStack CLI ${LOCALSTACK_VERSION}
-    👤 Profile: default
+    - LocalStack CLI: 2026.5.1
+    - Profile: default
+    - App: https://app.localstack.cloud
 
-    [12:47:13] starting LocalStack in Docker mode 🐳                       localstack.py:494
-              preparing environment                                       bootstrap.py:1240
-              configuring container                                       bootstrap.py:1248
-              starting container                                          bootstrap.py:1258
-    [12:47:15] detaching                                                   bootstrap.py:1262
+    [14:37:38] starting LocalStack in Docker mode 🐳                                                                                           localstack.py:542
+    ...
+    Ready.
     ```
 
   </TabItem>
 </Tabs>
 
-## Step 2: Deploy serverless API
+## Step 2: Deploy the Serverless API
 
-Deploy the Lambda function and DynamoDB table using either the `awslocal` or `tflocal` wrappers. These tools automatically route commands to your local instance instead of AWS.
+You can deploy the Lambda function and DynamoDB table using either our AWS CLI wrapper `awslocal` or our Terraform wrapper `tflocal`.
+These tools automatically route AWS API calls to your LocalStack container, so you do not need AWS account credentials for this guide.
 
 <Tabs>
   <TabItem label="AWS CLI (awslocal)">
     <Steps>
 
-    1. Install the `awslocal` wrapper:
+    1. Install the [`awslocal` wrapper](https://github.com/localstack/awscli-local):
 
        ```bash
        pip install awscli-local
        ```
 
-    2. Create the Lambda function source. 
-       Execute the following to create a project directory and a Python handler:
+    2. Create the Lambda function source. Execute the following to create a project directory, a function file and a Python handler:
 
        ```bash
        mkdir -p /tmp/localstack-demo
@@ -147,7 +144,7 @@ Deploy the Lambda function and DynamoDB table using either the `awslocal` or `tf
        awslocal lambda wait function-active --function-name messages-api
        ```
 
-    5. Configure a public URL and retrieve the endpoint:
+    5. Configure a function URL and retrieve the endpoint:
 
        ```bash
        awslocal lambda create-function-url-config \
@@ -165,15 +162,17 @@ Deploy the Lambda function and DynamoDB table using either the `awslocal` or `tf
 
   <TabItem label="Terraform (tflocal)">
     <Steps>
-    1. Install Terraform and the `tflocal` wrapper:
+    1. Install the [`tflocal` wrapper](https://github.com/localstack/terraform-local):
 
        ```bash
        pip install terraform-local
        ```
 
-    2. Create a `main.tf` file in a new directory:
+    2. Create a project directory and a `main.tf` file:
 
-       ```hcl
+       ```bash
+       mkdir -p /tmp/localstack-demo
+       cat > /tmp/localstack-demo/main.tf << 'TF'
        terraform {
          required_providers {
            aws     = { source = "hashicorp/aws" }
@@ -240,6 +239,8 @@ Deploy the Lambda function and DynamoDB table using either the `awslocal` or `tf
        output "function_url" {
          value = aws_lambda_function_url.messages_api.function_url
        }
+       TF
+       cd /tmp/localstack-demo
        ```
 
     3. Initialize and apply the configuration:
@@ -260,34 +261,35 @@ Deploy the Lambda function and DynamoDB table using either the `awslocal` or `tf
 
 ## Step 3: Test the API
 
-Send a POST request to store a message in the emulated DynamoDB table:
+Send a POST request to store a message in the locally emulated DynamoDB table:
 
 ```bash
 curl -X POST "$LAMBDA_URL" \
   -H "Content-Type: application/json" \
   -d '{"message": "Hello, LocalStack!"}'
-
 ```
 
 You will get back a response:
 
-```json
-{ "id": "a1b2c3d4-...", "message": "Hello, LocalStack!" }
+```json title="Output"
+{ "id": "3e1b5cae-4386-447b-8567-f0615fdb0fff", "message": "Hello, LocalStack!" }
 ```
 
 Retrieve all your messages:
 
 ```bash
 curl "$LAMBDA_URL"
-
 ```
 
-The Lambda function executes within the local environment and interacts with the emulated DynamoDB service. Because no actual cloud resources are created, you won't incur any cloud costs or infrastructure changes.
+The Lambda function executes within the local environment and interacts with the locally emulated DynamoDB service.
+Because no actual cloud resources are created, you won't incur any real AWS cloud costs or infrastructure changes.
 
 ## Step 4: Inspect Resources
 
 View the state of your local infrastructure via the [LocalStack Web Application](https://app.localstack.cloud/).
 Navigate to the [Resource Browser](https://app.localstack.cloud/inst/default/status) to inspect your Lambda functions and DynamoDB tables in real-time.
+
+![Inspect Resources using LocalStack Web Application](/images/aws/localstack-resource-browser.png)
 
 ## Step 5: Clean Up
 
@@ -310,16 +312,15 @@ Stop your LocalStack container to remove all emulated resources. LocalStack is e
 
 {/* prettier-ignore-end */}
 
-To persist state across restarts, see [Persistence](/aws/capabilities/state-management/persistence/) or [Cloud Pods](/aws/capabilities/state-management/cloud-pods/).
+To persist resource state, like S3 buckets or DynamoDB tables, across restarts, check out our [state management tools](/aws/capabilities/state-management/).
 
 Remove the local files you created in this guide:
 
 ```bash
 rm -rf /tmp/localstack-demo
-
 ```
 
 ## Next steps
 
-You have successfully deployed and tested a serverless API on your local workstation. Proceed to the [CI/CD guide](/aws/getting-started/ci-cd/) to learn how to integrate LocalStack into your automated testing pipelines and GitHub Actions workflows.
-
+You have successfully deployed and tested a serverless API on your local workstation.
+Proceed to the [CI/CD guide](/aws/getting-started/ci-cd/) to learn how to integrate LocalStack into your automated continuous integration (CI) pipelines across a wide range of providers and platforms.
