@@ -15,9 +15,9 @@ import react from '@astrojs/react';
 
 import tailwindcss from '@tailwindcss/vite';
 
-// Fetch the latest release version from GitHub
+// Fetch the latest LocalStack CLI release version from GitHub.
 const response = await fetch(
-  'https://api.github.com/repos/localstack/localstack/releases/latest',
+  'https://api.github.com/repos/localstack/localstack-cli/releases/latest',
   {
     headers: { Accept: 'application/vnd.github+json' },
   },
