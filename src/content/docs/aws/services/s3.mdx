@@ -277,6 +277,15 @@ LocalStack uses a scan-based replication mechanism.
 A background worker scans buckets with at least one enabled replication rule approximately every second, then dispatches replication tasks for any objects that qualify.
 Because of this, replication is **eventually consistent** — there is a short delay between an object being written and it appearing in the destination bucket.
 
+### IAM enforcement
+
+LocalStack enforces IAM permissions for S3 replication tasks using the IAM engine directly, which mirrors how AWS itself handles replication permissions.
+Rather than enforcing permissions at the API level, LocalStack evaluates the required IAM actions in the context of each replication task — taking into account the object version, replication configuration, bucket context, and object tags.
+
+LocalStack assumes the IAM role specified in your replication configuration and caches the result for subsequent tasks.
+The cache is invalidated automatically if the replication configuration changes.
+If the assumed role does not have the required permissions for a given replication task, that replication will fail.
+
 ### Metadata replication
 
 LocalStack supports replication of object metadata — specifically tags and Object Lock settings. Metadata replication operates in two modes:
@@ -299,7 +308,7 @@ The possible values follow AWS semantics:
 :::note
 The following replication features are not yet supported in LocalStack and will be available in a future release:
 
-- **IAM enforcement**: Replication-specific IAM permissions (such as `s3:ReplicateObject`) are not currently enforced.
+- **IAM enforcement for tag-based filters**: IAM permission evaluation for replication rules that use tag-based filters is not yet fully supported.
 - **ACL replication**: Replication of Access Control Lists is not currently supported.
 :::
 
