@@ -15,6 +15,7 @@ Each object or file within S3 encompasses essential attributes such as a unique 
 S3 can store unlimited objects, allowing you to store, retrieve, and manage your data in a highly adaptable and reliable manner.
 
 LocalStack allows you to use the S3 APIs in your local environment to create new buckets, manage your S3 objects, and test your S3 configurations locally.
+LocalStack also supports S3 Replication, allowing you to emulate cross-bucket, cross-region, and cross-account object replication in your local environment.
 The supported APIs are available on the API coverage section for [S3](#api-coverage) and [S3 Control](#api-coverage-s3-control), which provides information on the extent of S3's integration with LocalStack.
 
 ## Getting started
@@ -259,6 +260,41 @@ LocalStack supports SSE-C parameter validation for the following S3 APIs:
 - [`UploadPart`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html)
 
 However, LocalStack does not support the actual encryption and decryption of objects using SSE-C.
+
+## S3 Replication
+
+S3 Replication allows you to automatically copy objects from a source bucket to one or more destination buckets.
+Replication can occur within the same region or across regions, and across different account IDs.
+
+LocalStack supports the following replication configurations:
+
+- **One-way replication**: Objects are replicated from a source bucket to a destination bucket. You can scope replication using prefix-based or tag-based filtering, and optionally override the storage class for objects written to the destination bucket.
+- **Two-way replication**: Both buckets are configured as source and destination for each other. LocalStack correctly handles this by tracking each object's `ReplicationStatus` and preventing `REPLICA` objects from being re-replicated in a loop.
+
+### How replication works in LocalStack
+
+LocalStack uses a scan-based replication mechanism.
+A background worker scans buckets with at least one enabled replication rule approximately every second, then dispatches replication tasks for any objects that qualify.
+Because of this, replication is **eventually consistent** — there is a short delay between an object being written and it appearing in the destination bucket.
+
+### ReplicationStatus
+
+Replicated objects are assigned a `ReplicationStatus` field, which you can inspect with `GetObject` or `HeadObject`.
+The possible values follow AWS semantics:
+
+| Status | Meaning |
+|---|---|
+| `PENDING` | Replication has been queued but not yet completed |
+| `COMPLETED` | Object was successfully replicated to the destination |
+| `FAILED` | Replication could not be completed |
+| `REPLICA` | This object is itself a copy created by replication |
+
+:::note
+The following replication features are not yet supported in LocalStack and will be available in a future release:
+
+- **IAM enforcement**: Replication-specific IAM permissions (such as `s3:ReplicateObject`) are not currently enforced.
+- **Metadata replication**: Replication of object metadata changes, used in two-way replication scenarios, is not yet supported. See [Replication for metadata changes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-for-metadata-changes.html) in the AWS documentation for more details.
+:::
 
 ## Resource Browser
 
