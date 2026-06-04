@@ -41,6 +41,10 @@ Docker and Docker Compose are still common ways to run containers inside CI runn
 
 Start with the CI system you use. These snippets show the basic LocalStack startup shape for each provider; the linked guides include authentication, configuration, logs, state management, and provider-specific caveats.
 
+:::note
+For brevity, these snippets show only the LocalStack startup shape. Apart from the GitHub Actions example, they assume your CI Auth Token is already exposed to the job as the `LOCALSTACK_AUTH_TOKEN` environment variable. Store it as a secret in your CI provider before running them, and see [Authentication in CI](#authentication-in-ci) below.
+:::
+
 <Tabs>
   <TabItem label="GitHub Actions">
 
@@ -135,10 +139,13 @@ Start with the CI system you use. These snippets show the basic LocalStack start
   <TabItem label="GitLab CI">
 
     ```yaml
+    stages:
+      - test
+
     variables:
-      DOCKER_SOCK: tcp://docker:2375
       DOCKER_HOST: tcp://docker:2375
       DOCKER_TLS_CERTDIR: ""
+      LOCALSTACK_HOST: "localstack:4566"
 
     services:
       - name: localstack/localstack:latest
@@ -146,6 +153,13 @@ Start with the CI system you use. These snippets show the basic LocalStack start
       - name: docker:dind
         alias: docker
         command: ["--tls=false"]
+
+    localstack-test:
+      stage: test
+      image: python:3.11
+      script:
+        - pip install awscli-local
+        - awslocal s3 mb s3://test-bucket
     ```
 
     See the [GitLab CI guide](/aws/integrations/continuous-integration/gitlab-ci/) for the full setup.
