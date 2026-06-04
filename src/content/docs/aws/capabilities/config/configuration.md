@@ -40,6 +40,7 @@ Options that affect the core LocalStack system.
 | `SERVICES`| `s3,sqs` | A comma-delimited string of services. Check the [internal health endpoint](/aws/capabilities/networking/internal-endpoints#localstack-endpoints) `/_localstack/health` for valid service names. If `SERVICES` is set LocalStack will only load the listed services. All other services will be disabled and cannot be used. |
 | `ALLOW_NONSTANDARD_REGIONS` | `0` (default) | Allows the use of non-standard AWS regions. By default, LocalStack only accepts [standard AWS regions](https://docs.aws.amazon.com/general/latest/gr/rande.html). |
 | `PARITY_AWS_ACCESS_KEY_ID` | `0` (default) | Enables the use production-like access key IDs. By default, LocalStack issues keys with `LSIA...` and `LKIA...` prefix, and will reject keys that start with `ASIA...` or `AKIA...`. |
+| `LOCALSTACK_RESPONSE_HEADER_ENABLED` | `1` (default) \| `0` | Whether LocalStack adds the [`x-localstack` response header](/aws/capabilities/networking/internal-endpoints#x-localstack-response-header) to every AWS API response. The header value is the LocalStack version and lets client tools detect LocalStack and its version. |
 
 ## CLI
 
@@ -222,11 +223,6 @@ Also see [OpenSearch configuration variables](#opensearch) which are used to man
 | - | - | - |
 | `IGNORE_ES_DOWNLOAD_ERRORS` | `0`\|`1` | Whether to ignore errors (e.g., network/SSL) when downloading ElasticSearch plugins |
 
-### EventBridge
-
-| Variable | Example Values | Description |
-| - | - | - |
-| `PROVIDER_OVERRIDE_EVENTS` | `legacy`\|`v2` (default) | The [new EventBridge provider](https://discuss.localstack.cloud/t/introducing-eventbridge-v2-in-localstack/946) is active by default since LocalStack 4.0. |
 
 ### Glue
 
@@ -402,6 +398,7 @@ To learn more about these configuration options, see [Persistence](/aws/capabili
 | `SNAPSHOT_SAVE_STRATEGY` | `ON_SHUTDOWN`\|`ON_REQUEST`\|`SCHEDULED`\|`MANUAL` | Strategy that governs when LocalStack should make state snapshots |
 | `SNAPSHOT_LOAD_STRATEGY` | `ON_STARTUP`\|`ON_REQUEST`\|`MANUAL` | Strategy that governs when LocalStack restores state snapshots |
 | `SNAPSHOT_FLUSH_INTERVAL` | 15 (default) | The interval (in seconds) between persistence snapshots. It only applies to a `SCHEDULED` save strategy (see [Persistence Mechanism](/aws/capabilities/state-management/persistence))|
+| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [state compatibility rules](/aws/capabilities/state-management/persistence#state-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
 
 ## Cloud Pods
 
@@ -483,6 +480,7 @@ These configurations have already been removed and **won't have any effect** on 
 | `EVENT_RULE_ENGINE` | 4.1.0 | `python` (default) \| `java` (deprecated) | Engine for [event pattern matching](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns-content-based-filtering.html) used in EventBridge, EventBridge Pipes, and Lambda Event Source Mapping. Our [new](https://github.com/localstack/localstack/pull/11960) `python` implementation introduced with [4.0.3](https://github.com/localstack/localstack/releases/tag/v4.0.3) makes the `java` engine (previously in preview) using AWS [event-ruler](https://github.com/aws/event-ruler) obsolete. |
 | `LAMBDA_EVENT_SOURCE_MAPPING` | 4.0.0 | `v2` (default since [3.8.0](https://blog.localstack.cloud/localstack-release-v-3-8-0/#new-default-lambda-event-source-mapping-implementation)) \| `v1` | Feature flag to switch Lambda Event Source Mapping (ESM) implementations. |
 | `PROVIDER_OVERRIDE_STEPFUNCTIONS` | 4.0.0 | `v2` (default) \| `legacy` | The new LocalStack-native StepFunctions provider (v2) is active by default since LocalStack 3.0. |
+| `PROVIDER_OVERRIDE_EVENTS` | 2026.04.0 | `v2` (default) \| `legacy` | The new EventBridge provider is active by default since LocalStack 4.0. Remove this variable from your configuration, as any value now points to an invalid provider configuration and prevents the `events` provider from loading. |
 | `STEPFUNCTIONS_LAMBDA_ENDPOINT` | 4.0.0 | `default` | This is only supported for the `legacy` provider. URL to use as the Lambda service endpoint in Step Functions. By default this is the LocalStack Lambda endpoint. Use default to select the original AWS Lambda endpoint. |
 | `LOCAL_PORT_STEPFUNCTIONS` | 4.0.0 | `8083` (default) | This is only supported for the legacy provider. It defines the local port to which Step Functions traffic is redirected. By default, LocalStack routes Step Functions traffic to its internal runtime. Use this variable only if you need to redirect traffic to a different local Step Functions runtime. |
 | `S3_DIR` | 4.0.0 | `/path/to/root` | This was only supported for the `legacy_v2` provider. Configure a global parent directory that contains all buckets as sub-directories (`S3_DIR=/path/to/root`) or an individual directory that will get mounted as special bucket names (`S3_DIR=/path/to/root/bucket1:bucket1`). Only available for LocalStack for AWS.

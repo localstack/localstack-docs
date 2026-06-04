@@ -3,7 +3,8 @@ title: MailHog
 description: Learn how to install and use the official MailHog extension.
 template: doc
 sidebar:
-  order: 2
+  label: The Mailhog Extension
+  order: 6
 tags: ['Hobby']
 ---
 

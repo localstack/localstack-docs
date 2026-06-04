@@ -1,0 +1,219 @@
+---
+title: "Application Insights"
+description: Get started with Azure Application Insights on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Application Insights is an application performance management (APM) service for monitoring live applications.
+It automatically collects request rates, response times, failure rates, and dependency traces, surfacing them in a unified monitoring experience.
+Application Insights is commonly used to diagnose production issues, track custom business metrics, and set up availability alerts for distributed applications. For more information, see [What is Application Insights?](https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Application Insights.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Application Insights' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating an Application Insights component and retrieving its instrumentation key.
+The Azure CLI commands below use the [`application-insights` extension](https://learn.microsoft.com/en-us/cli/azure/azure-cli-extensions-overview); it is installed automatically the first time you run an `az monitor app-insights` command (Azure CLI 2.71.0 or later).
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-insights-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo",
+  "location": "westeurope",
+  "name": "rg-insights-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create an Application Insights component
+
+Create an Application Insights component in the resource group where you intend to emit telemetry ([`--workspace`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/component?view=azure-cli-latest#optional-parameters), for a workspace-based component linked to Log Analytics, is optional and omitted here).
+
+```bash
+az monitor app-insights component create \
+  --app my-app-insights \
+  --resource-group rg-insights-demo \
+  --location westeurope \
+  --kind web \
+  --application-type web
+```
+
+```bash title="Output"
+{
+  "appId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "connectionString": "InstrumentationKey=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx;IngestionEndpoint=https://westeurope.in.applicationinsights.azure.com/",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/Microsoft.Insights/components/my-app-insights",
+  "instrumentationKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "kind": "web",
+  "location": "westeurope",
+  "name": "my-app-insights",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-insights-demo",
+  "type": "Microsoft.Insights/components"
+...
+}
+```
+
+### Show and list components
+
+There is no `az monitor app-insights component list` command in the Azure CLI. Retrieve one component with `component show`, and list all Application Insights components in the resource group with [`az resource list`](https://learn.microsoft.com/en-us/cli/azure/resource?view=azure-cli-latest#az-resource-list) and the `Microsoft.Insights/components` resource type:
+
+```bash
+az monitor app-insights component show \
+  --app my-app-insights \
+  --resource-group rg-insights-demo
+```
+
+```bash title="Output"
+{
+  "appId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/Microsoft.Insights/components/my-app-insights",
+  "instrumentationKey": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "kind": "web",
+  "location": "westeurope",
+  "name": "my-app-insights",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-insights-demo",
+  "type": "Microsoft.Insights/components"
+...
+}
+```
+
+```bash
+az resource list \
+  --resource-group rg-insights-demo \
+  --resource-type Microsoft.Insights/components
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-insights-demo/providers/Microsoft.Insights/components/my-app-insights",
+    "name": "my-app-insights",
+    "resourceGroup": "rg-insights-demo",
+    "location": "westeurope",
+    "type": "Microsoft.Insights/components"
+  }
+]
+```
+
+### Retrieve billing features
+
+Retrieve the current billing features and daily data volume cap for the component:
+
+```bash
+az monitor app-insights component billing show \
+  --app my-app-insights \
+  --resource-group rg-insights-demo
+```
+
+```bash title="Output"
+{
+  "currentBillingFeatures": ["Basic"],
+  "dataVolumeCap": {
+    "cap": 100.0,
+    "maxHistoryCap": 1000.0,
+    "resetTime": 0,
+    "warningThreshold": 90
+  }
+}
+```
+
+### Update billing features
+
+Update the daily data volume cap to limit ingestion costs:
+
+```bash
+az monitor app-insights component billing update \
+  --app my-app-insights \
+  --resource-group rg-insights-demo \
+  --cap 100
+```
+
+```bash title="Output"
+{
+  "currentBillingFeatures": ["Basic"],
+  "dataVolumeCap": {
+    "cap": 100.0,
+    "maxHistoryCap": 1000.0,
+    "resetTime": 0,
+    "warningThreshold": 90
+  }
+}
+```
+
+### Delete and verify
+
+Delete the resource and confirm it no longer appears when listing `Microsoft.Insights/components` in the resource group:
+
+```bash
+az monitor app-insights component delete \
+  --app my-app-insights \
+  --resource-group rg-insights-demo
+```
+
+```bash
+az resource list \
+  --resource-group rg-insights-demo \
+  --resource-type Microsoft.Insights/components
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Component lifecycle:** Create, show, and delete Application Insights components; discover instances in a resource group with `az resource list` and `--resource-type Microsoft.Insights/components` (see [Azure CLI — `az monitor app-insights component`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/component?view=azure-cli-latest)).
+- **Instrumentation key generation:** Each component is assigned an instrumentation key returned on creation.
+- **App ID assignment:** Each component is assigned a unique application ID (for example [`properties.AppId`](https://learn.microsoft.com/en-us/rest/api/application-insights/components/create-or-update) / `appId` in CLI output).
+- **Billing feature configuration:** Get and update billing features such as daily data volume caps (`currentBillingFeatures`, `dataVolumeCap`); see [Azure CLI — `component billing`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/component/billing?view=azure-cli-latest).
+- **Application type (`--application-type` / `Application_Type`):** Accepted values documented for the CLI are **`web`** and **`other`** (default `web`).
+- **Kind (`--kind`):** Typical values **`web`**, **`ios`**, **`other`**, **`store`**, **`java`**, **`phone`** (free-form string for UI customization; see [Azure CLI — `component create`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/component?view=azure-cli-latest#az-monitor-app-insights-component-create)).
+
+## Limitations
+
+- **No telemetry ingestion:** The Application Insights SDK endpoint (`/v2/track`) is not emulated. Telemetry sent from instrumented applications is not stored or queryable.
+- **No Live Metrics stream:** The Live Metrics (QuickPulse) endpoint is not emulated.
+- **No Logs (KQL) queries:** Running queries via [`az monitor app-insights query`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights?view=azure-cli-latest#az-monitor-app-insights-query) (KQL over stored application data) is not supported.
+- **No transaction search:** Individual telemetry records are not stored or searchable.
+- **No availability tests via this component:** Availability tests are separate **[`Microsoft.Insights/webtests`](https://learn.microsoft.com/en-us/azure/azure-monitor/app/monitor-web-app-availability)** resources (CLI group [`web-test`](https://learn.microsoft.com/en-us/cli/azure/monitor/app-insights/web-test?view=azure-cli-latest)), not capabilities of an Application Insights component alone.
+- **No continuous export:** Continuous export to Storage is not supported.
+
+## Samples
+
+The following sample demonstrates how to use Azure Application Insights with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/samples/function-app-service-bus/dotnet/README.md)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />

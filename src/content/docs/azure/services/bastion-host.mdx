@@ -1,0 +1,299 @@
+---
+title: "Bastion Host"
+description: Get started with Azure Bastion Host on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Bastion Host provides secure and seamless RDP and SSH connectivity to virtual machines directly through the Azure portal over TLS.
+Bastion is deployed in a virtual network and eliminates the need for a public IP address on the VM, protecting against port scanning and other external threats.
+It is the recommended approach for securely accessing Azure VMs without exposing them to the public internet. For more information, see [What is Azure Bastion?](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Bastion Host.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Bastion Host's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Bastion Host and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group and virtual network
+
+For dedicated Bastion SKUs on Azure (Basic, Standard, or Premium), you need a subnet named exactly `AzureBastionSubnet` (with a prefix of /26 or larger) and a Standard SKU public IP address with static allocation. Create the prerequisites first:
+
+```bash
+az group create \
+  --name rg-bastion-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-bastion-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+
+Create a virtual network with a /16 address space to host the bastion subnet:
+
+```bash
+az network vnet create \
+  --name vnet-bastion-demo \
+  --resource-group rg-bastion-demo \
+  --location westeurope \
+  --address-prefixes 10.0.0.0/16
+```
+
+```bash title="Output"
+{
+  "newVNet": {
+    "addressSpace": { "addressPrefixes": [ "10.0.0.0/16" ] },
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/virtualNetworks/vnet-bastion-demo",
+    "location": "westeurope",
+    "name": "vnet-bastion-demo",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-bastion-demo",
+    "subnets": [],
+    "type": "Microsoft.Network/virtualNetworks",
+    ...
+  }
+}
+```
+
+
+Create the `AzureBastionSubnet` subnet, which is required by Azure Bastion for dedicated deployments (Basic, Standard, or Premium SKUs).
+
+Microsoft requires this subnet to be **/26 or larger** (/25, /24, and so on); smaller prefixes such as /27 are not valid for Bastion on Azure. See [Choose the right Azure Bastion SKU](https://learn.microsoft.com/en-us/azure/bastion/bastion-sku-comparison) and [Bastion configuration settings](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet).
+
+```bash
+az network vnet subnet create \
+  --name AzureBastionSubnet \
+  --resource-group rg-bastion-demo \
+  --vnet-name vnet-bastion-demo \
+  --address-prefixes 10.0.255.0/26
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "10.0.255.0/26",
+  "delegations": [],
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/virtualNetworks/vnet-bastion-demo/subnets/AzureBastionSubnet",
+  "name": "AzureBastionSubnet",
+  "privateEndpointNetworkPolicies": "Disabled",
+  "privateLinkServiceNetworkPolicies": "Enabled",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-bastion-demo",
+  "type": "Microsoft.Network/virtualNetworks/subnets"
+...
+}
+```
+
+### Create a Standard public IP address
+
+Create a Standard SKU static public IP address required by the Bastion host:
+
+```bash
+az network public-ip create \
+  --name pip-bastion \
+  --resource-group rg-bastion-demo \
+  --location westeurope \
+  --sku Standard \
+  --allocation-method Static
+```
+
+```bash title="Output"
+{
+  "publicIp": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/publicIPAddresses/pip-bastion",
+    "idleTimeoutInMinutes": 4,
+    "ipAddress": "20.56.137.218",
+    "location": "westeurope",
+    "name": "pip-bastion",
+    "provisioningState": "Succeeded",
+    "publicIPAllocationMethod": "Static",
+    "resourceGroup": "rg-bastion-demo",
+    "sku": { "name": "Standard", "tier": "Regional" },
+    "type": "Microsoft.Network/publicIPAddresses",
+    ...
+  }
+}
+```
+
+### Create a bastion host
+
+Create the Bastion host, linking it to the virtual network and the public IP address:
+
+```bash
+az network bastion create \
+  --name bastion-demo \
+  --resource-group rg-bastion-demo \
+  --location westeurope \
+  --vnet-name vnet-bastion-demo \
+  --public-ip-address pip-bastion
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/bastionHosts/bastion-demo",
+  "ipConfigurations": [
+    {
+      "name": "bastion_ip_config",
+      "provisioningState": "Succeeded",
+      "publicIPAddress": {
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/publicIPAddresses/pip-bastion",
+        "resourceGroup": "rg-bastion-demo"
+      },
+      "subnet": {
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/virtualNetworks/vnet-bastion-demo/subnets/AzureBastionSubnet",
+        "resourceGroup": "rg-bastion-demo"
+      }
+    }
+  ],
+  "location": "westeurope",
+  "name": "bastion-demo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-bastion-demo",
+  "scaleUnits": 2,
+  "sku": { "name": "Standard" },
+  "zones": []
+}
+```
+
+### Get and list bastion hosts
+
+Retrieve the details of the Bastion host and list all Bastion instances in the resource group:
+
+```bash
+az network bastion show \
+  --name bastion-demo \
+  --resource-group rg-bastion-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/bastionHosts/bastion-demo",
+  "ipConfigurations": [
+    {
+      "name": "bastion_ip_config",
+      "provisioningState": "Succeeded",
+      "publicIPAddress": {
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/publicIPAddresses/pip-bastion",
+        "resourceGroup": "rg-bastion-demo"
+      },
+      "subnet": {
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/virtualNetworks/vnet-bastion-demo/subnets/AzureBastionSubnet",
+        "resourceGroup": "rg-bastion-demo"
+      }
+    }
+  ],
+  "location": "westeurope",
+  "name": "bastion-demo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-bastion-demo",
+  "scaleUnits": 2,
+  "sku": { "name": "Standard" },
+  "zones": []
+}
+```
+
+
+Then list all Bastion instances in the resource group:
+
+```bash
+az network bastion list --resource-group rg-bastion-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-bastion-demo/providers/Microsoft.Network/bastionHosts/bastion-demo",
+    "ipConfigurations": [
+      {
+        "name": "bastion_ip_config",
+        "provisioningState": "Succeeded",
+        "publicIPAddress": { "id": "...pip-bastion...", "resourceGroup": "rg-bastion-demo" },
+        "subnet": { "id": "...AzureBastionSubnet...", "resourceGroup": "rg-bastion-demo" }
+      }
+    ],
+    "location": "westeurope",
+    "name": "bastion-demo",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-bastion-demo",
+    "scaleUnits": 2,
+    "sku": { "name": "Standard" },
+    "zones": []
+  }
+]
+```
+
+### Delete the bastion host
+
+Delete the Bastion host and verify it no longer appears in the list:
+
+```bash
+az network bastion delete \
+  --name bastion-demo \
+  --resource-group rg-bastion-demo \
+  --yes
+```
+
+Then list all bastion hosts in the resource group to confirm none remain:
+
+```bash
+az network bastion list --resource-group rg-bastion-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+The Bastion Host emulator supports the following features:
+
+- **Create and manage bastion hosts**: Full lifecycle management including create, get, update, list, and delete.
+- **Subnet name validation**: Enforces that the target subnet is named `AzureBastionSubnet`. On Azure, dedicated Bastion deployments (Basic, Standard, or Premium SKUs) also require this subnet to be `/26` or larger—see [Bastion subnet requirements](https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet).
+- **Standard SKU public IP validation**: Enforces that the associated public IP address uses the Standard SKU and Static allocation.
+- **IP configuration storage**: Records and returns the subnet and public IP address associations in `ipConfigurations`.
+- **Tags**: Apply and update resource tags on bastion host resources.
+- **SKU tiers**: Support for `Basic` and `Standard` bastion SKUs. Azure also provides `Developer` and `Premium` SKUs; see [Azure Bastion SKUs](https://learn.microsoft.com/en-us/azure/bastion/bastion-sku-comparison).
+
+## Limitations
+
+- **No RDP or SSH connectivity**: Bastion Host is a mock implementation. No actual remote desktop or SSH sessions are established through the emulator.
+- **No TLS tunnel**: The secure TLS tunneling behavior of Azure Bastion is not simulated.
+- **No VM connectivity verification**: The emulator does not verify that the target VM exists or is reachable.
+- **No data persistence**: Bastion Host resources are not persisted and are lost when the emulator is stopped or restarted.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Network" client:load />

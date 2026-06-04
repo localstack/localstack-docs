@@ -10,6 +10,7 @@
     Features: 'cube-icon',
     'Feature Coverage': 'buildings-icon',
     'Sample Apps': 'file-icon',
+    Connecting: 'plug-icon',
     Capabilities: 'starburst-icon',
     Tooling: 'wrench-icon',
     Integrations: 'connections-icon',

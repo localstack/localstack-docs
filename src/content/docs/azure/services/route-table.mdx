@@ -1,0 +1,414 @@
+---
+title: "Route Table"
+description: Get started with Azure Route Table on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Route Table contains a set of rules (routes) that specify how packets should be routed in a virtual network.
+You can associate a route table with a subnet to override Azure's default system routes and direct traffic to specific next-hop targets such as virtual appliances, VPN gateways, or other virtual networks.
+Route tables are commonly used in hub-and-spoke topologies to force traffic through a central network virtual appliance for inspection. For more information, see [Virtual network traffic routing](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Route Tables.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Route Table's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Route Tables and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create \
+  --name rg-rt-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-rt-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a route table
+
+Create an empty route table to hold the custom routing rules:
+
+```bash
+az network route-table create \
+  --name rt-demo \
+  --resource-group rg-rt-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "disableBgpRoutePropagation": false,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo",
+  "location": "westeurope",
+  "name": "rt-demo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "routes": [],
+  "type": "Microsoft.Network/routeTables"
+}
+```
+
+### Create a route table and add routes
+
+Routes are managed as separate resources in Azure; create the route table first, then add one or more routes.
+
+Create an empty route table:
+
+```bash
+az network route-table create \
+  --name rt-with-routes \
+  --resource-group rg-rt-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "disableBgpRoutePropagation": false,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-with-routes",
+  "location": "westeurope",
+  "name": "rt-with-routes",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "routes": [],
+  "type": "Microsoft.Network/routeTables"
+}
+```
+
+Add a route that directs internet-bound traffic (`0.0.0.0/0`) to a virtual appliance:
+
+```bash
+az network route-table route create \
+  --name route-to-internet \
+  --route-table-name rt-with-routes \
+  --resource-group rg-rt-demo \
+  --address-prefix 0.0.0.0/0 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address 10.0.2.4
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "0.0.0.0/0",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-with-routes/routes/route-to-internet",
+  "name": "route-to-internet",
+  "nextHopIpAddress": "10.0.2.4",
+  "nextHopType": "VirtualAppliance",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "type": "Microsoft.Network/routeTables/routes"
+}
+```
+
+### Manage individual routes
+
+Add, show, and delete individual routes on an existing route table:
+
+Add a route that directs internet-bound traffic through a virtual appliance:
+
+```bash
+az network route-table route create \
+  --name route-to-appliance \
+  --route-table-name rt-demo \
+  --resource-group rg-rt-demo \
+  --address-prefix 0.0.0.0/0 \
+  --next-hop-type VirtualAppliance \
+  --next-hop-ip-address 10.0.1.4
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "0.0.0.0/0",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo/routes/route-to-appliance",
+  "name": "route-to-appliance",
+  "nextHopIpAddress": "10.0.1.4",
+  "nextHopType": "VirtualAppliance",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "type": "Microsoft.Network/routeTables/routes"
+}
+```
+
+Add a second route that keeps spoke traffic local to the virtual network:
+
+```bash
+az network route-table route create \
+  --name route-to-spoke \
+  --route-table-name rt-demo \
+  --resource-group rg-rt-demo \
+  --address-prefix 172.16.0.0/16 \
+  --next-hop-type VnetLocal
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "172.16.0.0/16",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo/routes/route-to-spoke",
+  "name": "route-to-spoke",
+  "nextHopType": "VnetLocal",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "type": "Microsoft.Network/routeTables/routes"
+}
+```
+
+Then retrieve the details of the `route-to-spoke` route within the table:
+
+```bash
+az network route-table route show \
+  --name route-to-spoke \
+  --route-table-name rt-demo \
+  --resource-group rg-rt-demo
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "172.16.0.0/16",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo/routes/route-to-spoke",
+  "name": "route-to-spoke",
+  "nextHopType": "VnetLocal",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "type": "Microsoft.Network/routeTables/routes"
+}
+```
+
+Delete the `route-to-spoke` route from the route table:
+
+```bash
+az network route-table route delete \
+  --name route-to-spoke \
+  --route-table-name rt-demo \
+  --resource-group rg-rt-demo
+```
+
+### Get and list route tables
+
+Retrieve the details of a route table and list all route tables in the resource group:
+
+```bash
+az network route-table show \
+  --name rt-demo \
+  --resource-group rg-rt-demo
+```
+
+```bash title="Output"
+{
+  "disableBgpRoutePropagation": false,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo",
+  "location": "westeurope",
+  "name": "rt-demo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "routes": [
+    {
+      "addressPrefix": "0.0.0.0/0",
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo/routes/route-to-appliance",
+      "name": "route-to-appliance",
+      "nextHopIpAddress": "10.0.1.4",
+      "nextHopType": "VirtualAppliance",
+      "provisioningState": "Succeeded",
+      "type": "Microsoft.Network/routeTables/routes"
+    }
+  ],
+  "type": "Microsoft.Network/routeTables"
+}
+```
+
+Then list all route tables in the resource group:
+
+```bash
+az network route-table list \
+  --resource-group rg-rt-demo
+```
+
+```bash title="Output"
+[
+  {
+    "disableBgpRoutePropagation": false,
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo",
+    "location": "westeurope",
+    "name": "rt-demo",
+    "provisioningState": "Succeeded",
+    "routes": [ { "name": "route-to-appliance", "nextHopType": "VirtualAppliance", "nextHopIpAddress": "10.0.1.4" } ],
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "disableBgpRoutePropagation": false,
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-with-routes",
+    "location": "westeurope",
+    "name": "rt-with-routes",
+    "provisioningState": "Succeeded",
+    "routes": [ { "name": "route-to-internet", "nextHopType": "VirtualAppliance", "nextHopIpAddress": "10.0.2.4" } ],
+    "type": "Microsoft.Network/routeTables"
+  }
+]
+```
+
+### Associate a route table with a subnet
+
+To apply routing rules, associate the route table with a subnet. First create a virtual network with a subnet:
+
+```bash
+az network vnet create \
+  --name vnet-demo \
+  --resource-group rg-rt-demo \
+  --location westeurope \
+  --address-prefix 10.0.0.0/16 \
+  --subnet-name subnet-demo \
+  --subnet-prefixes 10.0.1.0/24
+```
+
+```bash title="Output"
+{
+  "newVNet": {
+    "addressSpace": { "addressPrefixes": [ "10.0.0.0/16" ] },
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/virtualNetworks/vnet-demo",
+    "location": "westeurope",
+    "name": "vnet-demo",
+    "provisioningState": "Succeeded",
+    "subnets": [
+      {
+        "addressPrefix": "10.0.1.0/24",
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/virtualNetworks/vnet-demo/subnets/subnet-demo",
+        "name": "subnet-demo",
+        "provisioningState": "Succeeded",
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "type": "Microsoft.Network/virtualNetworks"
+  }
+}
+```
+
+Then associate `rt-demo` with `subnet-demo`:
+
+```bash
+az network vnet subnet update \
+  --name subnet-demo \
+  --vnet-name vnet-demo \
+  --resource-group rg-rt-demo \
+  --route-table rt-demo
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "10.0.1.0/24",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/virtualNetworks/vnet-demo/subnets/subnet-demo",
+  "name": "subnet-demo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "routeTable": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo",
+    "resourceGroup": "rg-rt-demo"
+  },
+  "type": "Microsoft.Network/virtualNetworks/subnets"
+}
+```
+
+Verify the association is reflected on the subnet:
+
+```bash
+az network vnet subnet show \
+  --name subnet-demo \
+  --vnet-name vnet-demo \
+  --resource-group rg-rt-demo
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "10.0.1.0/24",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/virtualNetworks/vnet-demo/subnets/subnet-demo",
+  "name": "subnet-demo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-rt-demo",
+  "routeTable": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-rt-demo/providers/Microsoft.Network/routeTables/rt-demo",
+    "resourceGroup": "rg-rt-demo"
+  },
+  "type": "Microsoft.Network/virtualNetworks/subnets"
+}
+```
+
+### Delete the route tables
+
+Delete both route tables and verify they no longer appear in the list:
+
+```bash
+az network route-table delete \
+  --name rt-demo \
+  --resource-group rg-rt-demo
+
+az network route-table delete \
+  --name rt-with-routes \
+  --resource-group rg-rt-demo
+```
+
+Then list route tables for the resource group to confirm neither route table remains:
+
+```bash
+az network route-table list --resource-group rg-rt-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+The Route Table emulator supports the following features:
+
+- **Create and manage route tables**: Full lifecycle management including create, get, update, list, and delete.
+- **Sub-resource route management**: Create, get, update, list, and delete individual routes within a route table.
+- **Next-hop types**: Support for `VirtualAppliance`, `VnetLocal`, `VirtualNetworkGateway`, `Internet`, and `None`.
+- **Next-hop IP addresses**: Store and return the next-hop IP address for `VirtualAppliance` routes.
+- **Address prefix ranges**: Store and return the address prefix for each route.
+- **Tags**: Apply and update resource tags on route table resources.
+- **Subscription-scoped listing**: List all route tables across a subscription.
+
+## Limitations
+
+- **No traffic routing**: Route Table is a mock implementation. State is persisted in memory and returned faithfully, but no actual network traffic is routed according to the configured routes.
+- **No subnet association enforcement**: Associating a route table with a subnet is accepted but not enforced at the network level.
+- **No data persistence**: Route table resources and their routes are not persisted and are lost when the emulator is stopped or restarted.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Network" client:load />

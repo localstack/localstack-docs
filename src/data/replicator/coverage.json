@@ -1,135 +1,349 @@
 [
     {
+        "resource_type": "AWS::DynamoDB::Table",
+        "service": "dynamodb",
+        "single": {
+            "policy_statements": [
+                "dynamodb:DescribeTable",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:DescribeContinuousBackups",
+                "dynamodb:GetResourcePolicy",
+                "dynamodb:ListTagsOfResource"
+            ],
+            "identifier": "TableName"
+        },
+        "batch": {
+            "policy_statements": [
+                "dynamodb:ListTables",
+                "dynamodb:DescribeTable",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:DescribeContinuousBackups",
+                "dynamodb:GetResourcePolicy",
+                "dynamodb:ListTagsOfResource"
+            ],
+            "identifier": null
+        },
+        "resource_tree": {
+            "resources": [
+                "AWS::KMS::Key"
+            ],
+            "extra_policy_statements": [
+                "kms:DescribeKey",
+                "kms:ListResourceTags"
+            ]
+        }
+    },
+    {
         "resource_type": "AWS::EC2::SecurityGroup",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "ec2:DescribeSecurityGroups"
-        ],
         "service": "ec2",
-        "identifier": "GroupId"
+        "single": {
+            "policy_statements": [
+                "ec2:DescribeSecurityGroups",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "GroupId"
+        }
     },
     {
         "resource_type": "AWS::EC2::Subnet",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "ec2:DescribeSubnets"
-        ],
         "service": "ec2",
-        "identifier": "SubnetId"
+        "single": {
+            "policy_statements": [
+                "ec2:DescribeSubnets",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "SubnetId"
+        }
     },
     {
         "resource_type": "AWS::EC2::VPC",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "ec2:DescribeVpcs"
-        ],
         "service": "ec2",
-        "identifier": "VpcId"
+        "single": {
+            "policy_statements": [
+                "ec2:DescribeVpcs",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "VpcId"
+        }
     },
     {
         "resource_type": "AWS::ECR::Repository",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "ecr:BatchCheckLayerAvailability",
-            "ecr:BatchGetImage",
-            "ecr:DescribeRepositories",
-            "ecr:GetAuthorizationToken",
-            "ecr:GetDownloadUrlForLayer",
-            "ecr:GetLifecyclePolicy",
-            "ecr:GetRepositoryPolicy",
-            "ecr:ListTagsForResource"
-        ],
         "service": "ecr",
-        "identifier": "RepositoryName:<ImageTag[Optional]>"
+        "single": {
+            "policy_statements": [
+                "cloudformation:GetResource",
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:DescribeRepositories",
+                "ecr:GetAuthorizationToken",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetLifecyclePolicy",
+                "ecr:GetRepositoryPolicy",
+                "ecr:ListTagsForResource"
+            ],
+            "identifier": "RepositoryName:<ImageTag[Optional]>"
+        }
     },
     {
         "resource_type": "AWS::IAM::Policy",
-        "policy_statements": [
-            "iam:GetPolicy"
-        ],
         "service": "iam",
-        "identifier": "Arn"
+        "single": {
+            "policy_statements": [
+                "iam:GetPolicy"
+            ],
+            "identifier": "Arn"
+        }
     },
     {
         "resource_type": "AWS::IAM::Role",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "iam:GetRole"
-        ],
         "service": "iam",
-        "identifier": "RoleName"
+        "single": {
+            "policy_statements": [
+                "iam:GetRole",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "RoleName"
+        }
     },
     {
         "resource_type": "AWS::KMS::Key",
-        "policy_statements": [
-            "kms:DescribeKey",
-            "kms:ListResourceTags"
-        ],
         "service": "kms",
-        "identifier": "KeyId"
+        "single": {
+            "policy_statements": [
+                "kms:DescribeKey",
+                "kms:ListResourceTags"
+            ],
+            "identifier": "KeyId"
+        }
     },
     {
         "resource_type": "AWS::Lambda::LayerVersion",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "lambda:GetLayerVersion"
-        ],
         "service": "lambda",
-        "identifier": "LayerVersionArn"
+        "single": {
+            "policy_statements": [
+                "lambda:GetLayerVersion",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "LayerVersionArn"
+        }
+    },
+    {
+        "resource_type": "AWS::Organizations::Account",
+        "service": "organizations",
+        "single": {
+            "policy_statements": [
+                "organizations:DescribeAccount",
+                "organizations:ListTagsForResource",
+                "organizations:ListParents"
+            ],
+            "identifier": "Id"
+        },
+        "batch": {
+            "policy_statements": [
+                "organizations:DescribeAccount",
+                "organizations:ListTagsForResource",
+                "organizations:ListParents",
+                "organizations:ListAccounts",
+                "organizations:ListAccountsForParent"
+            ],
+            "identifier": "Optional(ParentId)"
+        }
     },
     {
         "resource_type": "AWS::Organizations::Organization",
-        "policy_statements": [
-            "organizations:DescribeOrganization",
-            "organizations:ListParents",
-            "organizations:ListRoots"
-        ],
         "service": "organizations",
-        "identifier": "Id"
+        "single": {
+            "policy_statements": [
+                "organizations:DescribeOrganization",
+                "organizations:ListParents",
+                "organizations:ListRoots"
+            ],
+            "identifier": "Id"
+        },
+        "resource_tree": {
+            "resources": [
+                "AWS::Organizations::OrganizationalUnit",
+                "AWS::Organizations::Account",
+                "AWS::Organizations::Policy"
+            ],
+            "extra_policy_statements": [
+                "organizations:DescribeAccount",
+                "organizations:DescribeOrganizationalUnit",
+                "organizations:DescribePolicy",
+                "organizations:ListAccounts",
+                "organizations:ListAccountsForParent",
+                "organizations:ListParents",
+                "organizations:ListPolicies",
+                "organizations:ListPoliciesForTarget",
+                "organizations:ListTagsForResource",
+                "organizations:ListTargetForPolicy"
+            ]
+        }
+    },
+    {
+        "resource_type": "AWS::Organizations::OrganizationalUnit",
+        "service": "organizations",
+        "single": {
+            "policy_statements": [
+                "organizations:DescribeOrganizationalUnit",
+                "organizations:ListParents",
+                "organizations:ListTagsForResource"
+            ],
+            "identifier": "Id"
+        },
+        "batch": {
+            "policy_statements": [
+                "organizations:DescribeOrganizationalUnit",
+                "organizations:ListParents",
+                "organizations:ListTagsForResource",
+                "organizations:ListOrganizationalUnitsForParent"
+            ],
+            "identifier": "ParentId"
+        }
     },
     {
         "resource_type": "AWS::Organizations::Policy",
-        "policy_statements": [
-            "organizations:DescribePolicy",
-            "organizations:ListTagsForResource"
-        ],
         "service": "organizations",
-        "identifier": "Id"
+        "single": {
+            "policy_statements": [
+                "organizations:DescribePolicy",
+                "organizations:ListTagsForResource"
+            ],
+            "identifier": "Id"
+        },
+        "batch": {
+            "policy_statements": [
+                "organizations:DescribePolicy",
+                "organizations:ListTagsForResource",
+                "organizations:ListPolicies",
+                "organizations:ListPoliciesForTarget",
+                "organizations:ListTargetForPolicy"
+            ],
+            "identifier": "{\"Filter\": Optional<str>, \"TargetId\": Optional<str>}"
+        }
     },
     {
-        "resource_type": "AWS::Organizations::PolicyTarget",
-        "policy_statements": [],
-        "service": "organizations",
-        "identifier": "PolicyId:TargetId"
+        "resource_type": "AWS::RDS::DBCluster",
+        "service": "rds",
+        "extra_config": {
+            "master_user_password": {
+                "type": "str",
+                "default": "test",
+                "description": "The master user password for the cluster. Only required when the replicated cluster does not use managed user secrets"
+            }
+        },
+        "single": {
+            "policy_statements": [
+                "rds:DescribeDBClusters",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "Name"
+        },
+        "batch": {
+            "policy_statements": [
+                "rds:DescribeDBClusters"
+            ],
+            "identifier": "Optional<json string filters for describe_db_clusters>"
+        }
     },
     {
         "resource_type": "AWS::Route53::HostedZone",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "route53:GetHostedZone",
-            "route53:ListQueryLoggingConfigs",
-            "route53:ListTagsForResource"
-        ],
         "service": "route53",
-        "identifier": "Id"
+        "single": {
+            "policy_statements": [
+                "cloudformation:GetResource",
+                "route53:GetHostedZone",
+                "route53:ListTagsForResource",
+                "route53:ListQueryLoggingConfigs"
+            ],
+            "identifier": "Id"
+        }
+    },
+    {
+        "resource_type": "AWS::S3::Bucket",
+        "service": "s3",
+        "single": {
+            "policy_statements": [
+                "s3:HeadBucket",
+                "s3:GetAccelerateConfiguration",
+                "s3:GetLifecycleConfiguration",
+                "s3:GetBucketPublicAccessBlock",
+                "s3:GetAnalyticsConfiguration",
+                "s3:GetBucketCORS",
+                "s3:GetEncryptionConfiguration",
+                "s3:GetInventoryConfiguration",
+                "s3:GetBucketLogging",
+                "s3:GetMetricsConfiguration",
+                "s3:GetBucketNotification",
+                "s3:GetBucketVersioning",
+                "s3:GetReplicationConfiguration",
+                "s3:GetBucketWebsite",
+                "s3:GetBucketObjectLockConfiguration",
+                "s3:GetBucketTagging",
+                "s3:GetBucketOwnershipControls",
+                "s3:GetIntelligentTieringConfiguration",
+                "s3:GetBucketLocation",
+                "s3:GetBucketPolicy",
+                "s3:GetBucketRequestPayment",
+                "s3:ListBucket"
+            ],
+            "identifier": "Name"
+        },
+        "batch": {
+            "policy_statements": [
+                "s3:HeadBucket",
+                "s3:GetAccelerateConfiguration",
+                "s3:GetLifecycleConfiguration",
+                "s3:GetBucketPublicAccessBlock",
+                "s3:GetAnalyticsConfiguration",
+                "s3:GetBucketCORS",
+                "s3:GetEncryptionConfiguration",
+                "s3:GetInventoryConfiguration",
+                "s3:GetBucketLogging",
+                "s3:GetMetricsConfiguration",
+                "s3:GetBucketNotification",
+                "s3:GetBucketVersioning",
+                "s3:GetReplicationConfiguration",
+                "s3:GetBucketWebsite",
+                "s3:GetBucketObjectLockConfiguration",
+                "s3:GetBucketTagging",
+                "s3:GetBucketOwnershipControls",
+                "s3:GetIntelligentTieringConfiguration",
+                "s3:GetBucketLocation",
+                "s3:GetBucketPolicy",
+                "s3:GetBucketRequestPayment",
+                "s3:ListBucket"
+            ],
+            "identifier": "{\"Prefix\": Optional<str>, \"BucketRegion\": Optional<str>}"
+        }
     },
     {
         "resource_type": "AWS::SSM::Parameter",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "ssm:DescribeParameters",
-            "ssm:GetParameters"
-        ],
         "service": "ssm",
-        "identifier": "Name"
+        "single": {
+            "policy_statements": [
+                "ssm:GetParameters",
+                "ssm:DescribeParameters",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "Name"
+        },
+        "batch": {
+            "policy_statements": [
+                "ssm:GetParametersByPath"
+            ],
+            "identifier": "Parameter path (eg. '/dev/')"
+        }
     },
     {
         "resource_type": "AWS::SecretsManager::Secret",
-        "policy_statements": [
-            "cloudformation:GetResource",
-            "secretsmanager:DescribeSecret"
-        ],
         "service": "secretsmanager",
-        "identifier": "Arn"
+        "single": {
+            "policy_statements": [
+                "secretsmanager:DescribeSecret",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "Arn"
+        }
     }
 ]

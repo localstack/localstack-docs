@@ -1,0 +1,228 @@
+---
+title: "Public IP Address"
+description: Get started with Azure Public IP Address on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Public IP Address is a resource that provides a static or dynamic IP address reachable from the internet.
+Public IP addresses are assigned to Azure resources such as virtual machines, load balancers, application gateways, VPN gateways, and bastion hosts.
+They are commonly used when resources need to accept inbound internet connections or require a stable outbound identity. For more information, see [Public IP addresses](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Public IP Addresses.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Public IP Address's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Public IP Addresses and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create \
+  --name rg-pip-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-pip-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a public IP address
+
+Create a static Standard SKU public IP address:
+
+```bash
+az network public-ip create \
+  --name pip-demo \
+  --resource-group rg-pip-demo \
+  --location westeurope \
+  --sku Standard \
+  --allocation-method Static
+```
+
+```bash title="Output"
+{
+  "publicIp": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-demo/providers/Microsoft.Network/publicIPAddresses/pip-demo",
+    "idleTimeoutInMinutes": 4,
+    "ipAddress": "20.115.40.220",
+    "location": "westeurope",
+    "name": "pip-demo",
+    "provisioningState": "Succeeded",
+    "publicIPAddressVersion": "IPv4",
+    "publicIPAllocationMethod": "Static",
+    "resourceGroup": "rg-pip-demo",
+    "sku": {
+      "name": "Standard",
+      "tier": "Regional"
+    },
+    "type": "Microsoft.Network/publicIPAddresses",
+    ...
+  }
+}
+```
+
+### Get and list public IP addresses
+
+Retrieve the details of the public IP address and list all public IPs in the resource group:
+
+```bash
+az network public-ip show \
+  --name pip-demo \
+  --resource-group rg-pip-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-demo/providers/Microsoft.Network/publicIPAddresses/pip-demo",
+  "idleTimeoutInMinutes": 4,
+  "ipAddress": "20.115.40.220",
+  "location": "westeurope",
+  "name": "pip-demo",
+  "provisioningState": "Succeeded",
+  "publicIPAddressVersion": "IPv4",
+  "publicIPAllocationMethod": "Static",
+  "resourceGroup": "rg-pip-demo",
+  "sku": {
+    "name": "Standard",
+    "tier": "Regional"
+  },
+  "type": "Microsoft.Network/publicIPAddresses",
+  ...
+}
+```
+
+
+Then list all public IP addresses in the resource group:
+
+```bash
+az network public-ip list \
+  --resource-group rg-pip-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-pip-demo/providers/Microsoft.Network/publicIPAddresses/pip-demo",
+    "ipAddress": "20.115.40.220",
+    "location": "westeurope",
+    "name": "pip-demo",
+    "provisioningState": "Succeeded",
+    "publicIPAddressVersion": "IPv4",
+    "publicIPAllocationMethod": "Static",
+    "sku": { "name": "Standard", "tier": "Regional" },
+    "type": "Microsoft.Network/publicIPAddresses",
+    ...
+  }
+]
+```
+
+### List all public IPs in a subscription
+
+List every public IP address across the entire subscription:
+
+```bash
+az network public-ip list \
+  --output table
+```
+
+```bash title="Output"
+Name      ResourceGroup    Location    Zones    Address        AddressVersion    AllocationMethod    IdleTimeoutInMinutes    ProvisioningState
+--------  ---------------  ----------  -------  -------------  ----------------  ------------------  ----------------------  -------------------
+pip-demo  rg-pip-demo      westeurope           20.115.40.220  IPv4              Static              4                       Succeeded
+```
+
+To show the same resources scoped to one resource group:
+
+```bash
+az network public-ip list \
+  --resource-group rg-pip-demo \
+  --output table
+```
+
+```bash title="Output"
+Name      ResourceGroup    Location    Zones    Address        AddressVersion    AllocationMethod    IdleTimeoutInMinutes    ProvisioningState
+--------  ---------------  ----------  -------  -------------  ----------------  ------------------  ----------------------  -------------------
+pip-demo  rg-pip-demo      westeurope           20.115.40.220  IPv4              Static              4                       Succeeded
+```
+
+### Delete the public IP address
+
+Delete the public IP address and verify it no longer appears in the list:
+
+```bash
+az network public-ip delete \
+  --name pip-demo \
+  --resource-group rg-pip-demo
+```
+
+Then list all public IP addresses to confirm the resource group is now empty:
+
+```bash
+az network public-ip list --resource-group rg-pip-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+The Public IP Address emulator supports the following features:
+
+- **Create and manage public IPs**: Full lifecycle management including create, get, update, list, and delete.
+- **Static and dynamic allocation**: Configure `Static` or `Dynamic` IP allocation methods.
+- **SKU tiers**: Support for `Basic` and `Standard` SKUs.
+- **IPv4 and IPv6**: Store and return the IP address version.
+- **DNS name labels**: Associate a DNS name label with a public IP.
+- **Tags**: Apply and update resource tags on public IP address resources.
+- **Resource group and subscription-scoped listing**: List public IPs scoped to a resource group or across the entire subscription.
+- **Zone configuration**: Record and return availability zone assignments.
+
+## Limitations
+
+- **No real IP allocation**: Public IP Address is a mock implementation. No actual IP addresses are allocated from Azure's public IP pools, and no public internet connectivity is provided.
+- **Allocation method not enforced**: Dynamic and Static allocation methods are stored and returned, but no real IP assignment behavior is simulated.
+- **No data persistence**: Public IP address resources are not persisted and are lost when the emulator is stopped or restarted.
+
+## Samples
+
+The following samples demonstrate how to use Azure Public IP Addresses with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python/)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Network" client:load />

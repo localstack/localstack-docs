@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: 0 5 * * MON
   workflow_dispatch:
-    inputs:
-        targetBranch:
-          required: false
-          type: string
-          default: 'main'
 
 jobs:
   update-parity-coverage-docs:
@@ -16,26 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout docs
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           path: docs
-          ref: ${{ github.event.inputs.targetBranch || 'main' }}
 
       - name: Set up system wide dependencies
         run: |
           sudo apt-get install jq wget
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.13
         id: setup-python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version: "3.11"
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+          python-version: "3.13"
 
       - name: Download scripts from meta repository
         run: |
@@ -52,7 +41,7 @@ jobs:
           WORKFLOW: "Terraform Tests"
           FILTER_SUCCESS: 0
 
-      - name: Download metrics data from Pro pipeline (GitHub)
+      - name: Download metrics data from Enterprise pipeline (GitHub)
         working-directory: docs
         run: /tmp/get_latest_github_metrics.sh ./target main
         env:
@@ -62,7 +51,7 @@ jobs:
           WORKFLOW: "AWS / Build, Test, Push" 
           PREFIX_ARTIFACT: pro-integration-test
 
-      - name: Download coverage (capture-notimplemented) data from Pro pipeline (GitHub)
+      - name: Download coverage (capture-notimplemented) data from Enterprise pipeline (GitHub)
         working-directory: docs
         run: /tmp/get_latest_github_metrics.sh ./target main
         env:
@@ -72,36 +61,25 @@ jobs:
           WORKFLOW: "AWS / Build, Test, Push" 
           RESOURCE_FOLDER: "metrics-implementation-details"
 
-      - name: Download metrics data from Community pipeline (GitHub)
+      - name: Download metrics data from Free Plan pipeline (GitHub)
         working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target main
-        env:
-          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-core
-          ARTIFACT_ID: parity-metric-raw-amd*
-          WORKFLOW: "AWS / Build, Test, Push"
-          PREFIX_ARTIFACT: community-integration-test
-
-      - name: Download coverage (capture-notimplemented) data from Community pipeline (GitHub)
-        working-directory: docs
-        run: /tmp/get_latest_github_metrics.sh ./target main
-        env:
-          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
-          REPOSITORY_NAME: localstack-core
-          ARTIFACT_ID: capture-notimplemented
-          WORKFLOW: "AWS / Build, Test, Push"
-          RESOURCE_FOLDER: "metrics-implementation-details/community"
-
-      - name: Download CloudFormation catalog from Pro pipeline (GitHub)
-        working-directory: docs
-        continue-on-error: true
         run: /tmp/get_latest_github_metrics.sh ./target main
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
           REPOSITORY_NAME: localstack-pro
-          ARTIFACT_ID: iac-catalog-assets
-          WORKFLOW: "IaC – Generate Catalog Assets"
-          RESOURCE_FOLDER: "iac-catalog-assets"
+          ARTIFACT_ID: parity-metric-raw-amd*
+          WORKFLOW: "AWS / Build, Test, Push"
+          PREFIX_ARTIFACT: community-integration-test
+
+      - name: Download coverage (capture-notimplemented) data from Free Plan pipeline (GitHub)
+        working-directory: docs
+        run: /tmp/get_latest_github_metrics.sh ./target main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
+          REPOSITORY_NAME: localstack-pro
+          ARTIFACT_ID: capture-notimplemented
+          WORKFLOW: "AWS / Build, Test, Push"
+          RESOURCE_FOLDER: "metrics-implementation-details/community"
 
       - name: Download coverage data for K8s pipeline (acceptance tests) (GitHub)
         working-directory: docs
@@ -109,7 +87,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PRO_ACCESS_TOKEN }}
           REPOSITORY_NAME: localstack-pro
-          ARTIFACT_ID: parity-metric-pro-k8s-acceptance-raw-amd64-*
+          ARTIFACT_ID: parity-metric-pro-k8s-acceptance-raw-amd64
           WORKFLOW: "AWS / Pro K8s tests"
           PREFIX_ARTIFACT: k8s-acceptance-test
 
@@ -123,7 +101,7 @@ jobs:
           WORKFLOW: "AWS / Pro K8s tests"
           PREFIX_ARTIFACT: k8s-integration-test
 
-      - name: Download coverage data for community K8s pipeline (integration tests) (GitHub)
+      - name: Download coverage data for Free Plan K8s pipeline (integration tests) (GitHub)
         working-directory: docs
         run: /tmp/get_latest_github_metrics.sh ./target main
         env:
@@ -154,12 +132,12 @@ jobs:
       - name: Read PR markdown template
         if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
         id: template
-        uses: juliangruber/read-file-action@v1
+        uses: juliangruber/read-file-action@271ff311a4947af354c6abcd696a306553b9ec18 # v1.1.8
         with:
           path: docs/.github/bot_templates/PARITY_COVERAGE_DOCS_PR.md
 
       - name: Create PR
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
         with:
           path: docs

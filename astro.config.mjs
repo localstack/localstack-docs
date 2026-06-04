@@ -15,16 +15,90 @@ import react from '@astrojs/react';
 
 import tailwindcss from '@tailwindcss/vite';
 
-// Fetch the latest LocalStack CLI release version from GitHub.
-const response = await fetch(
-  'https://api.github.com/repos/localstack/localstack-cli/releases/latest',
-  {
-    headers: { Accept: 'application/vnd.github+json' },
-  },
-);
-const data = await response.json();
-const latestVersion = data.tag_name.replace('v', '');
+// Used on the AWS and Snowflake installation guides: CLI download URLs and some bash examples.
+// Source of truth: public https://github.com/localstack/localstack-cli/releases/latest
+const LOCALSTACK_CLI_RELEASE_API =
+  'https://api.github.com/repos/localstack/localstack-cli/releases/latest';
 
+/** When the API fails or rate-limits, builds still succeed; bump when CLI ships a new line. */
+const LOCALSTACK_CLI_VERSION_FALLBACK = '2026.4.0';
+
+/** @param {unknown} tagName */
+function normalizeCliReleaseTag(tagName) {
+  if (typeof tagName !== 'string' || !tagName.trim()) return null;
+  return tagName.replace(/^v/i, '').trim();
+}
+
+/**
+ * One request per build when LOCALSTACK_AWS_VERSION is unset. Use that env in CI to skip the
+ * network entirely, or set GITHUB_TOKEN for 5k req/hr instead of unauthenticated 60/hr per IP.
+ */
+async function fetchLatestLocalstackCliVersionFromGitHub() {
+  /** @type {Record<string, string>} */
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'localstack-docs-build (https://docs.localstack.cloud)',
+  };
+  if (process.env.GITHUB_TOKEN) {
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
+
+  const maxAttempts = 3;
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      if (attempt > 1) {
+        await new Promise((r) => setTimeout(r, 400 * attempt));
+      }
+      const response = await fetch(LOCALSTACK_CLI_RELEASE_API, { headers });
+      const data = await response.json();
+
+      if (response.ok) {
+        const version = normalizeCliReleaseTag(data?.tag_name);
+        if (version) return version;
+        lastError = new Error('GitHub release response missing tag_name');
+      } else {
+        const msg =
+          typeof data?.message === 'string'
+            ? data.message
+            : `HTTP ${response.status}`;
+        lastError = new Error(msg);
+      }
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  throw (
+    lastError ?? new Error('Failed to fetch localstack-cli release from GitHub')
+  );
+}
+
+const cliVersionFromEnv = normalizeCliReleaseTag(
+  process.env.LOCALSTACK_AWS_VERSION ?? '',
+);
+
+/** @type {string} */
+let latestAWSVersion;
+
+if (cliVersionFromEnv) {
+  latestAWSVersion = cliVersionFromEnv;
+} else {
+  try {
+    latestAWSVersion = await fetchLatestLocalstackCliVersionFromGitHub();
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `[astro.config] Could not read localstack-cli version from GitHub (${reason}). ` +
+        `Using pinned fallback ${LOCALSTACK_CLI_VERSION_FALLBACK}. ` +
+        'Set LOCALSTACK_AWS_VERSION in the build, add GITHUB_TOKEN for higher API limits, or bump LOCALSTACK_CLI_VERSION_FALLBACK.',
+    );
+    latestAWSVersion = LOCALSTACK_CLI_VERSION_FALLBACK;
+  }
+}
+
+/** @type {import('./types/astro-local-fonts').AstroLocalFontVariants} */
 const aeonikProVariants = [
   {
     src: [
@@ -118,10 +192,10 @@ export default defineConfig({
   ],
   env: {
     schema: {
-      LOCALSTACK_VERSION: envField.string({
+      LOCALSTACK_AWS_VERSION: envField.string({
         context: 'server',
         access: 'public',
-        default: latestVersion,
+        default: latestAWSVersion,
         optional: true,
       }),
     },
@@ -172,13 +246,6 @@ export default defineConfig({
             defer: true,
             src: '//js-eu1.hs-scripts.com/26596507.js',
           },
-        },
-        {
-          tag: 'script',
-          attrs: {
-            type: 'text/javascript',
-          },
-          content: `!function(){var e,t,n;e="f528d4d390d322d",t=function(){Reo.init({clientID:"f528d4d390d322d"})},(n=document.createElement("script")).src="https://static.reo.dev/"+e+"/reo.js",n.defer=!0,n.onload=t,document.head.appendChild(n)}();`,
         },
         {
           tag: 'script',
@@ -323,8 +390,8 @@ export default defineConfig({
             },
             {
               label: 'Getting Started',
-              autogenerate: { directory: '/aws/getting-started' },
               collapsed: true,
+              items: [{ autogenerate: { directory: '/aws/getting-started' } }],
             },
             {
               label: 'Local AWS Services',
@@ -333,6 +400,64 @@ export default defineConfig({
             {
               label: 'Sample Apps',
               slug: 'aws/sample-apps',
+            },
+            {
+              label: 'Connecting',
+              collapsed: true,
+              items: [
+                {
+                  label: 'Overview',
+                  slug: 'aws/connecting',
+                },
+                {
+                  label: 'AWS CLI',
+                  slug: 'aws/connecting/aws-cli',
+                },
+                {
+                  label: 'AWS SDKs',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/connecting/aws-sdks',
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: 'Infrastructure as Code',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/connecting/infrastructure-as-code',
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: 'LocalStack Console',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/connecting/console',
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: 'IDE Extensions',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/connecting/ides',
+                      },
+                    },
+                  ],
+                },
+              ],
             },
             {
               label: 'Capabilities',
@@ -344,52 +469,80 @@ export default defineConfig({
                 },
                 {
                   label: 'LocalStack Web App',
-                  autogenerate: {
-                    directory: '/aws/capabilities/web-app',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/capabilities/web-app',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Config',
-                  autogenerate: {
-                    directory: '/aws/capabilities/config',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/capabilities/config',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Cloud Sandbox',
-                  autogenerate: {
-                    directory: '/aws/capabilities/cloud-sandbox',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/capabilities/cloud-sandbox',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Networking',
-                  autogenerate: {
-                    directory: '/aws/capabilities/networking',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/capabilities/networking',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'State Management',
-                  autogenerate: {
-                    directory: '/aws/capabilities/state-management',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/capabilities/state-management',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Chaos Engineering',
-                  autogenerate: {
-                    directory: '/aws/capabilities/chaos-engineering',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/capabilities/chaos-engineering',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Security Testing',
-                  autogenerate: {
-                    directory: '/aws/capabilities/security-testing',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/capabilities/security-testing',
+                      },
+                    },
+                  ],
                 },
               ],
             },
@@ -415,29 +568,22 @@ export default defineConfig({
                 },
                 {
                   label: 'LocalStack SDKs',
-                  autogenerate: {
-                    directory: '/aws/tooling/localstack-sdks',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/tooling/localstack-sdks',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Extensions',
                   items: [
                     {
-                      label: 'Overview',
-                      slug: 'aws/tooling/extensions',
-                    },
-                    {
-                      label: 'Managing Extensions',
-                      slug: 'aws/tooling/extensions/managing-extensions',
-                    },
-                    {
-                      label: 'Developing Extensions',
-                      slug: 'aws/tooling/extensions/developing-extensions',
-                    },
-                    {
-                      label: 'Extensions Library',
-                      slug: 'aws/tooling/extensions/extensions-library',
+                      autogenerate: {
+                        directory: '/aws/tooling/extensions',
+                      },
                     },
                     {
                       label: 'Official Extensions',
@@ -447,19 +593,15 @@ export default defineConfig({
                   collapsed: true,
                 },
                 {
-                  label: 'LocalStack Toolkit VS Code',
-                  slug: 'aws/tooling/vscode-extension',
-                },
-                {
                   label: 'Lambda Tools',
-                  autogenerate: {
-                    directory: '/aws/tooling/lambda-tools',
-                  },
                   collapsed: true,
-                },
-                {
-                  label: 'Event Studio',
-                  slug: 'aws/tooling/event-studio',
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/tooling/lambda-tools',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'AWS Replicator',
@@ -493,59 +635,58 @@ export default defineConfig({
                 },
                 {
                   label: 'Continuous Integration',
-                  autogenerate: {
-                    directory: '/aws/integrations/continuous-integration',
-                  },
                   collapsed: true,
-                },
-                {
-                  label: 'AWS SDKs',
-                  autogenerate: {
-                    directory: '/aws/integrations/aws-sdks',
-                  },
-                  collapsed: true,
-                },
-                {
-                  label: 'AWS Native Tools',
-                  autogenerate: {
-                    directory: '/aws/integrations/aws-native-tools',
-                  },
-                  collapsed: true,
-                },
-                {
-                  label: 'Infrastructure as Code',
-                  autogenerate: {
-                    directory: '/aws/integrations/infrastructure-as-code',
-                  },
-                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/integrations/continuous-integration',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Containers',
-                  autogenerate: {
-                    directory: '/aws/integrations/containers',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/integrations/containers',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'App Frameworks',
-                  autogenerate: {
-                    directory: '/aws/integrations/app-frameworks',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/integrations/app-frameworks',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Messaging',
-                  autogenerate: {
-                    directory: '/aws/integrations/messaging',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/integrations/messaging',
+                      },
+                    },
+                  ],
                 },
                 {
                   label: 'Testing',
-                  autogenerate: {
-                    directory: '/aws/integrations/testing',
-                  },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/integrations/testing',
+                      },
+                    },
+                  ],
                 },
               ],
             },
@@ -559,12 +700,18 @@ export default defineConfig({
                 },
                 {
                   label: 'Kubernetes',
-                  autogenerate: { directory: '/aws/enterprise/kubernetes' },
                   collapsed: true,
+                  items: [
+                    {
+                      autogenerate: { directory: '/aws/enterprise/kubernetes' },
+                    },
+                  ],
                 },
                 {
                   label: 'Single Sign-On',
-                  autogenerate: { directory: '/aws/enterprise/sso' },
+                  items: [
+                    { autogenerate: { directory: '/aws/enterprise/sso' } },
+                  ],
                 },
                 {
                   label: 'Enterprise Image',
@@ -587,7 +734,7 @@ export default defineConfig({
             {
               label: 'Help & Support',
               collapsed: true,
-              autogenerate: { directory: '/aws/help-support' },
+              items: [{ autogenerate: { directory: '/aws/help-support' } }],
             },
           ],
         },
@@ -601,8 +748,10 @@ export default defineConfig({
             },
             {
               label: 'Getting Started',
-              autogenerate: { directory: '/snowflake/getting-started' },
               collapsed: true,
+              items: [
+                { autogenerate: { directory: '/snowflake/getting-started' } },
+              ],
             },
             {
               label: 'Features',
@@ -615,22 +764,26 @@ export default defineConfig({
             {
               label: 'Capabilities',
               collapsed: true,
-              autogenerate: { directory: '/snowflake/capabilities' },
+              items: [
+                { autogenerate: { directory: '/snowflake/capabilities' } },
+              ],
             },
             {
               label: 'Tooling',
               collapsed: true,
-              autogenerate: { directory: '/snowflake/tooling' },
+              items: [{ autogenerate: { directory: '/snowflake/tooling' } }],
             },
             {
               label: 'Integrations',
               collapsed: true,
-              autogenerate: { directory: '/snowflake/integrations' },
+              items: [
+                { autogenerate: { directory: '/snowflake/integrations' } },
+              ],
             },
             {
               label: 'Tutorials',
               collapsed: true,
-              autogenerate: { directory: '/snowflake/tutorials' },
+              items: [{ autogenerate: { directory: '/snowflake/tutorials' } }],
             },
             {
               label: 'Feature Coverage',
@@ -647,7 +800,9 @@ export default defineConfig({
             {
               label: 'Help & Support',
               collapsed: true,
-              autogenerate: { directory: '/snowflake/help-support' },
+              items: [
+                { autogenerate: { directory: '/snowflake/help-support' } },
+              ],
             },
           ],
         },
@@ -661,8 +816,8 @@ export default defineConfig({
             },
             {
               label: 'Getting Started',
-              autogenerate: { directory: 'azure/getting-started' },
               collapsed: true,
+              items: [{ autogenerate: { directory: 'azure/getting-started' } }],
             },
             {
               label: 'Local Azure Services',
@@ -670,8 +825,8 @@ export default defineConfig({
             },
             {
               label: 'Integrations',
-              autogenerate: { directory: 'azure/integrations' },
               collapsed: true,
+              items: [{ autogenerate: { directory: 'azure/integrations' } }],
             },
             {
               label: 'Changelog',
@@ -687,7 +842,9 @@ export default defineConfig({
   ],
 
   vite: {
-    plugins: [tailwindcss()],
+    // @tailwindcss/vite types `Plugin` against the hoisted `vite` package; Astro types `plugins`
+    // against its bundled copy. They are runtime-compatible.
+    plugins: [/** @type {any} */ (tailwindcss())],
   },
 
   // Static site (SSG): deploy the `dist/` folder to any static host (e.g. Cloudflare Pages

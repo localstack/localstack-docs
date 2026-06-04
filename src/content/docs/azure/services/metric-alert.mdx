@@ -1,0 +1,256 @@
+---
+title: "Metric Alert"
+description: Get started with Azure Monitor Metric Alerts on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor Metric Alerts trigger notifications when a monitored metric crosses a defined threshold.
+They evaluate metric data at configurable intervals and route notifications through Action Groups when conditions are met.
+Metric Alerts are commonly used to detect anomalies in CPU usage, memory pressure, request latency, and other resource metrics across Azure workloads. For more information, see [Overview of metric alerts in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-metric-overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Metric Alerts.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Metric Alerts' integration with LocalStack.
+
+## Getting started
+
+This guide walks you through creating a metric alert rule referencing an action group.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-alert-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo",
+  "location": "westeurope",
+  "name": "rg-alert-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create an action group
+
+Create an action group to use as the notification target for the metric alert:
+
+```bash
+az monitor action-group create \
+  --name my-ag \
+  --resource-group rg-alert-demo \
+  --short-name myag \
+  --action email admin admin@example.com
+```
+
+```bash title="Output"
+{
+  "groupShortName": "myag",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo/providers/microsoft.insights/actionGroups/my-ag",
+  "name": "my-ag",
+  "resourceGroup": "rg-alert-demo",
+  "type": "Microsoft.Insights/ActionGroups"
+...
+}
+```
+
+### Create a metric alert
+
+The following alert fires when CPU percentage on a virtual machine exceeds 80%:
+
+```bash
+SCOPE="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo/providers/Microsoft.Compute/virtualMachines/my-vm"
+AG_ID="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo/providers/microsoft.insights/actionGroups/my-ag"
+
+az monitor metrics alert create \
+  --name cpu-alert \
+  --resource-group rg-alert-demo \
+  --scopes "$SCOPE" \
+  --condition "avg Percentage CPU > 80" \
+  --action "$AG_ID" \
+  --description "Alert when CPU > 80%"
+```
+
+```bash title="Output"
+{
+  "criteria": {
+    "allOf": [
+      {
+        "criterionType": "StaticThresholdCriterion",
+        "metricName": "Percentage CPU",
+        "name": "cond0",
+        "operator": "GreaterThan",
+        "threshold": 80.0,
+        "timeAggregation": "Average"
+      }
+    ],
+    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+  },
+  "description": "Alert when CPU > 80%",
+  "enabled": true,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo/providers/Microsoft.Insights/metricAlerts/cpu-alert",
+  "name": "cpu-alert",
+  "resourceGroup": "rg-alert-demo",
+  "severity": 2,
+  "type": "Microsoft.Insights/metricAlerts",
+  ...
+}
+```
+
+### Show and list metric alerts
+
+Retrieve the details of the metric alert and list all alerts in the resource group:
+
+```bash
+az monitor metrics alert show \
+  --name cpu-alert \
+  --resource-group rg-alert-demo
+```
+
+```bash title="Output"
+{
+  "criteria": {
+    "allOf": [
+      {
+        "metricName": "Percentage CPU",
+        "operator": "GreaterThan",
+        "threshold": 80.0,
+        "timeAggregation": "Average",
+        ...
+      }
+    ],
+    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+  },
+  "description": "Alert when CPU > 80%",
+  "enabled": true,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo/providers/Microsoft.Insights/metricAlerts/cpu-alert",
+  "name": "cpu-alert",
+  "resourceGroup": "rg-alert-demo",
+  "severity": 2,
+  "type": "Microsoft.Insights/metricAlerts"
+...
+}
+```
+
+
+Then list all metric alerts in the resource group:
+
+```bash
+az monitor metrics alert list \
+  --resource-group rg-alert-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo/providers/Microsoft.Insights/metricAlerts/cpu-alert",
+    "name": "cpu-alert",
+    "resourceGroup": "rg-alert-demo",
+    "severity": 2,
+    "type": "Microsoft.Insights/metricAlerts"
+  }
+]
+```
+
+### Create a service health activity log alert
+
+Create an [activity log alert for Service Health](https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-activity-log) events. The condition `category=ServiceHealth` matches the default pattern documented for [`az monitor activity-log alert create`](https://learn.microsoft.com/en-us/cli/azure/monitor/activity-log/alert#az-monitor-activity-log-alert-create). That is different from alerting on administrative operations such as deleting a virtual machine, which uses other activity log fields (for example `category` and `operationName` for the delete operation).
+
+```bash
+az monitor activity-log alert create \
+  --name service-health-alert \
+  --resource-group rg-alert-demo \
+  --scope "/subscriptions/00000000-0000-0000-0000-000000000000" \
+  --condition category=ServiceHealth \
+  --action-group "$AG_ID"
+```
+
+```bash title="Output"
+{
+  "actions": {
+    "actionGroups": [
+      {
+        "actionGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo/providers/microsoft.insights/actionGroups/my-ag"
+      }
+    ]
+  },
+  "condition": {
+    "allOf": [ { "equals": "ServiceHealth", "field": "category" } ]
+  },
+  "enabled": true,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-alert-demo/providers/Microsoft.Insights/activityLogAlerts/service-health-alert",
+  "name": "service-health-alert",
+  "resourceGroup": "rg-alert-demo",
+  "scopes": ["/subscriptions/00000000-0000-0000-0000-000000000000"],
+  "type": "Microsoft.Insights/ActivityLogAlerts"
+...
+}
+```
+
+### Delete and verify
+
+Delete the metric alert rule and confirm it no longer appears in the metric alert list:
+
+```bash
+az monitor metrics alert delete \
+  --name cpu-alert \
+  --resource-group rg-alert-demo
+```
+
+
+Then list metric alerts in the resource group to confirm the rule was removed:
+
+```bash
+az monitor metrics alert list --resource-group rg-alert-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Metric alert lifecycle:** Create, read, list, update, and delete metric alert rules.
+- **Activity log alert lifecycle:** Create, read, list, and delete activity log alert rules.
+- **Single and multi-resource scopes:** Define alerts scoped to a single resource or multiple resources.
+- **Action group references:** Associate action groups with alert rules.
+- **Dynamic threshold support:** Accept dynamic threshold criteria in the alert condition.
+- **Severity configuration:** Set alert severity from 0 (Critical) to 4 (Verbose).
+- **Auto-mitigation:** Configure whether alerts auto-resolve when the condition clears.
+- **Frequency and window size:** Configure evaluation frequency and aggregation window size.
+
+## Limitations
+
+- **No alert evaluation:** Metric conditions are not evaluated against real or simulated metric data. Alerts never fire.
+- **No state transitions:** Alert state (Fired, Resolved) is not tracked or updated.
+- **No email or webhook dispatch:** Even if an alert were to fire, no notifications would be sent.
+- **Metrics not ingested:** Metric data is not ingested, stored, or queryable from LocalStack.
+
+## Samples
+
+Explore end-to-end examples in the [LocalStack for Azure Samples](https://github.com/localstack/localstack-azure-samples) repository.
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />

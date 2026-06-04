@@ -39,7 +39,7 @@ const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'identifier',
     header: () => 'Identifier',
-    cell: ({ row }) => row.original.identifier,
+    cell: ({ row }) => row.original.single.identifier,
     size: 150,
     minSize: 120,
     maxSize: 200,
@@ -49,7 +49,7 @@ const columns: ColumnDef<any>[] = [
     header: () => 'Required Actions',
     cell: ({ row }) => (
       <>
-        {row.original.policy_statements.map((s: string, i: number) => (
+        {row.original.single.policy_statements.map((s: string, i: number) => (
           <div key={i}>{s}</div>
         ))}
       </>

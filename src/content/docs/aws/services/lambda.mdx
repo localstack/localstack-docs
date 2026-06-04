@@ -537,6 +537,17 @@ Some noteworthy configurations include:
 The full list of configurations is defined in the Golang function
 [InitLsOpts](https://github.com/localstack/lambda-runtime-init/blob/localstack/cmd/localstack/main.go#L43).
 
+### Proxy configuration
+
+Lambda execution environments communicate back to the LocalStack container for runtime APIs, credentials, logs, and calls to emulated AWS services.
+If your host, Docker daemon, or Kubernetes cluster injects `http_proxy` or `https_proxy` into Lambda containers, that internal traffic must bypass the proxy.
+
+LocalStack automatically adds the configured `LOCALSTACK_HOST` host, and the runtime `LOCALSTACK_HOSTNAME` when present, to the Lambda execution environment's `no_proxy` variable.
+If your function already defines `no_proxy`, LocalStack preserves the existing entries and prepends the LocalStack hosts.
+
+In Kubernetes deployments, make sure admission controllers or proxy-injection policies do not overwrite the `no_proxy` value after LocalStack creates Lambda pods.
+If your cluster-level policy manages `no_proxy`, include the LocalStack host used by your deployment, for example `localhost.localstack.cloud` or the host configured through `LOCALSTACK_HOST`.
+
 ## Special Tools
 
 LocalStack provides various tools to help you develop, debug, and test your AWS Lambda functions more efficiently.
@@ -546,13 +557,13 @@ LocalStack provides various tools to help you develop, debug, and test your AWS 
 - **Remote debugging**: LocalStack's remote debugging functionality allows you to attach a debugger to your Lambda function using your preferred IDE.
   To get started with remote debugging in LocalStack, see our [debugging documentation](/aws/tooling/lambda-tools/remote-debugging).
 - **Lambda VS Code Extension**: LocalStack's Lambda VS Code Extension supports deploying and invoking Python Lambda functions through AWS SAM or AWS CloudFormation.
-  To get started with the Lambda VS Code Extension, see our [Lambda VS Code Extension documentation](/aws/tooling/vscode-extension).
+  To get started with the Lambda VS Code Extension, see our [Lambda VS Code Extension documentation](/aws/connecting/ides/vscode-extension).
 - **API for querying Lambda runtimes**: LocalStack offers a metadata API to query the list of Lambda runtimes via `GET http://localhost.localstack.cloud:4566/_aws/lambda/runtimes`.
   It returns the [Supported Runtimes](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html) matching AWS parity (i.e., excluding deprecated runtimes) and offers additional filters for `deprecated` runtimes and `all` runtimes (`GET /_aws/lambda/runtimes?filter=all`).
 
 ## Resource Browser
 
-The LocalStack Web Application provides a [Resource Browser](/aws/capabilities/web-app/resource-browser) for managing Lambda resources.
+The LocalStack Web Application provides a [Resource Browser](/aws/connecting/console/resource-browser) for managing Lambda resources.
 You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **Lambda** under the **Compute** section.
 
 The Resource Browser displays Functions and Layers resources.

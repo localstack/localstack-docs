@@ -1,0 +1,310 @@
+---
+title: "Network Interface"
+description: Get started with Azure Network Interface on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Network Interface (NIC) is the interconnection between a virtual machine and a virtual network.
+A NIC enables an Azure VM to communicate with the internet, Azure, and on-premises resources.
+Each NIC can have one or more IP configurations, an associated subnet, optional network security group (NSG), and optional public IP address. For more information, see [Network interfaces](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Network Interfaces.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Network Interface's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Network Interfaces and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group and virtual network
+
+A network interface must be associated with a subnet. Create the prerequisite resources first:
+
+```bash
+az group create \
+  --name rg-nic-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-nic-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+Create a virtual network for the network interfaces:
+
+```bash
+az network vnet create \
+  --name vnet-nic-demo \
+  --resource-group rg-nic-demo \
+  --location westeurope \
+  --address-prefixes 10.0.0.0/16
+```
+
+```bash title="Output"
+{
+  "newVNet": {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.0.0.0/16"
+      ]
+    },
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/virtualNetworks/vnet-nic-demo",
+    "location": "westeurope",
+    "name": "vnet-nic-demo",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-nic-demo",
+    "subnets": [],
+    "type": "Microsoft.Network/virtualNetworks",
+    ...
+  }
+}
+```
+
+
+Create a subnet within the virtual network to attach the NICs to:
+
+```bash
+az network vnet subnet create \
+  --name subnet-nic \
+  --resource-group rg-nic-demo \
+  --vnet-name vnet-nic-demo \
+  --address-prefixes 10.0.1.0/24
+```
+
+```bash title="Output"
+{
+  "addressPrefix": "10.0.1.0/24",
+  "delegations": [],
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/virtualNetworks/vnet-nic-demo/subnets/subnet-nic",
+  "name": "subnet-nic",
+  "privateEndpointNetworkPolicies": "Disabled",
+  "privateLinkServiceNetworkPolicies": "Enabled",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-nic-demo",
+  "type": "Microsoft.Network/virtualNetworks/subnets"
+...
+}
+```
+
+### Create a network interface
+
+Create a NIC attached to the subnet:
+
+```bash
+az network nic create \
+  --name nic-demo \
+  --resource-group rg-nic-demo \
+  --location westeurope \
+  --vnet-name vnet-nic-demo \
+  --subnet subnet-nic
+```
+
+```bash title="Output"
+{
+  "NewNIC": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/networkInterfaces/nic-demo",
+    "ipConfigurations": [
+      {
+        "name": "ipconfig1",
+        "primary": true,
+        "privateIPAddress": "10.0.1.4",
+        "privateIPAddressVersion": "IPv4",
+        "privateIPAllocationMethod": "Dynamic",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "rg-nic-demo",
+        "subnet": {
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/virtualNetworks/vnet-nic-demo/subnets/subnet-nic",
+          "resourceGroup": "rg-nic-demo"
+        },
+        ...
+      }
+    ],
+    "location": "westeurope",
+    "name": "nic-demo",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-nic-demo",
+    "type": "Microsoft.Network/networkInterfaces",
+    ...
+  }
+}
+```
+
+### Create a NIC with a static private IP
+
+Create a second network interface and assign a static private IP address from the subnet:
+
+```bash
+az network nic create \
+  --name nic-static \
+  --resource-group rg-nic-demo \
+  --location westeurope \
+  --vnet-name vnet-nic-demo \
+  --subnet subnet-nic \
+  --private-ip-address 10.0.1.10
+```
+
+```bash title="Output"
+{
+  "NewNIC": {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/networkInterfaces/nic-static",
+    "ipConfigurations": [
+      {
+        "name": "ipconfig1",
+        "primary": true,
+        "privateIPAddress": "10.0.1.10",
+        "privateIPAddressVersion": "IPv4",
+        "privateIPAllocationMethod": "Static",
+        "provisioningState": "Succeeded",
+        "subnet": {
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/virtualNetworks/vnet-nic-demo/subnets/subnet-nic",
+          "resourceGroup": "rg-nic-demo"
+        },
+        ...
+      }
+    ],
+    "location": "westeurope",
+    "name": "nic-static",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-nic-demo",
+    "type": "Microsoft.Network/networkInterfaces",
+    ...
+  }
+}
+```
+
+### Get and list network interfaces
+
+Retrieve the details of a network interface and list all NICs in the resource group:
+
+```bash
+az network nic show \
+  --name nic-demo \
+  --resource-group rg-nic-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/networkInterfaces/nic-demo",
+  "ipConfigurations": [
+    {
+      "name": "ipconfig1",
+      "primary": true,
+      "privateIPAddress": "10.0.1.4",
+      "privateIPAddressVersion": "IPv4",
+      "privateIPAllocationMethod": "Dynamic",
+      "provisioningState": "Succeeded",
+      "subnet": {
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/virtualNetworks/vnet-nic-demo/subnets/subnet-nic",
+        "resourceGroup": "rg-nic-demo"
+      },
+      ...
+    }
+  ],
+  "location": "westeurope",
+  "name": "nic-demo",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-nic-demo",
+  "type": "Microsoft.Network/networkInterfaces",
+  ...
+}
+```
+
+
+Then list all network interfaces in the resource group:
+
+```bash
+az network nic list \
+  --resource-group rg-nic-demo
+```
+
+```bash title="Output"
+[
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/networkInterfaces/nic-demo",
+    "ipConfigurations": [ { "name": "ipconfig1", "privateIPAllocationMethod": "Dynamic", ... } ],
+    "location": "westeurope",
+    "name": "nic-demo",
+    "provisioningState": "Succeeded",
+    "type": "Microsoft.Network/networkInterfaces",
+    ...
+  },
+  {
+    "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-nic-demo/providers/Microsoft.Network/networkInterfaces/nic-static",
+    "ipConfigurations": [ { "name": "ipconfig1", "privateIPAddress": "10.0.1.10", "privateIPAllocationMethod": "Static", ... } ],
+    "location": "westeurope",
+    "name": "nic-static",
+    "provisioningState": "Succeeded",
+    "type": "Microsoft.Network/networkInterfaces",
+    ...
+  }
+]
+```
+
+### Delete a network interface
+
+Delete the network interface and verify it no longer appears in the list:
+
+```bash
+az network nic delete \
+  --name nic-demo \
+  --resource-group rg-nic-demo
+```
+
+## Features
+
+The Network Interface emulator supports the following features:
+
+- **Create and manage NICs**: Full lifecycle management including create, get, update, list, and delete.
+- **Dynamic IP allocation**: Automatically assigns a private IP address from the associated subnet address space.
+- **Static IP configuration**: Assign a fixed private IP address from the subnet range.
+- **Public IP association**: Attach a public IP address resource to a NIC IP configuration.
+- **NSG association**: Associate a network security group with a NIC.
+- **IP forwarding**: Configure IP forwarding on the NIC for routing scenarios.
+- **Accelerated networking**: Store and return the `enableAcceleratedNetworking` flag.
+- **Tags**: Apply and update resource tags.
+- **Subscription-scoped listing**: List all NICs across a subscription.
+
+## Limitations
+
+- **No actual networking**: Network Interface is a mock implementation. State is persisted in memory and returned faithfully, but no network packets are routed through the interface.
+- **No VM attachment enforcement**: Associating a NIC with a virtual machine is accepted but VM resources are not implemented.
+- **No data persistence**: NIC resources are not persisted and are lost when the emulator is stopped or restarted.
+
+## Samples
+
+The following samples demonstrate how to use Azure Network Interfaces with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/tree/main/samples/function-app-service-bus/dotnet/)
+- [Web App and Cosmos DB for MongoDB API](https://github.com/localstack/localstack-azure-samples/tree/main/samples/web-app-cosmosdb-mongodb-api/python)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Network" client:load />

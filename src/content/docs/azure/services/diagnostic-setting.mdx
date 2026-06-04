@@ -1,0 +1,228 @@
+---
+title: "Diagnostic Setting"
+description: Get started with Azure Monitor Diagnostic Settings on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Monitor Diagnostic Settings configure where a resource sends its platform logs and metrics.
+Supported destinations include Log Analytics Workspaces, Storage Accounts, Event Hubs, and partner solutions.
+Diagnostic settings are commonly used to enable centralized log collection and compliance auditing across Azure deployments. For more information, see [Diagnostic settings in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings).
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Monitor Diagnostic Settings.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Diagnostic Settings' integration with LocalStack.
+
+## Getting started
+
+This guide uses the existing `monitor.mdx` article workflow as a reference.
+See also the [Monitor](/azure/services/monitor) page for a broader overview of diagnostic settings alongside activity log examples.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+azlocal start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+azlocal stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold all resources created in this guide:
+
+```bash
+az group create --name rg-diag-demo --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo",
+  "location": "westeurope",
+  "name": "rg-diag-demo",
+  "properties": { "provisioningState": "Succeeded" },
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a storage account as the destination
+
+Create a storage account to serve as the export destination for the logs and metrics:
+
+```bash
+az storage account create \
+  --name sadiagdemo \
+  --resource-group rg-diag-demo \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
+  "kind": "StorageV2",
+  "location": "westeurope",
+  "name": "sadiagdemo",
+  "resourceGroup": "rg-diag-demo",
+  "sku": { "name": "Standard_LRS", "tier": "Standard" },
+  "type": "Microsoft.Storage/storageAccounts"
+...
+}
+```
+
+### Create a diagnostic setting on a resource
+
+The following example creates a diagnostic setting on a storage account’s default blob service (`Microsoft.Storage/storageAccounts/.../blobServices/default`) that enables the `StorageRead` resource log category and the `Transaction` metric category for export, with a storage account as the destination. Those categories are defined for blob services in Azure’s [Blob Storage monitoring data reference](https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage-reference#resource-logs).
+
+:::note
+In Azure, you must not use the **same** storage account as both the monitored blob service and the diagnostic setting’s storage destination—doing so would create recursive logging. That restriction is described under *Destination limitations* in [Monitor Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage). The commands below use one account for brevity; because LocalStack does not route or ingest logs for this feature (see [Limitations](#limitations)), this does not imply real Azure behavior.
+:::
+
+```bash
+RESOURCE_ID="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo/blobServices/default"
+DEST_ID="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo"
+
+az monitor diagnostic-settings create \
+  --name my-diag-setting \
+  --resource "$RESOURCE_ID" \
+  --storage-account "$DEST_ID" \
+  --logs '[{"category": "StorageRead", "enabled": true}]' \
+  --metrics '[{"category": "Transaction", "enabled": true}]'
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo/blobServices/default/providers/microsoft.insights/diagnosticSettings/my-diag-setting",
+  "logs": [ { "category": "StorageRead", "enabled": true } ],
+  "metrics": [ { "category": "Transaction", "enabled": true } ],
+  "name": "my-diag-setting",
+  "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
+  "type": "Microsoft.Insights/diagnosticSettings"
+...
+}
+```
+
+### List diagnostic settings
+
+List all diagnostic settings attached to the target resource:
+
+```bash
+az monitor diagnostic-settings list --resource "$RESOURCE_ID"
+```
+
+```bash title="Output"
+{
+  "value": [
+    {
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo/blobServices/default/providers/microsoft.insights/diagnosticSettings/my-diag-setting",
+      "logs": [ { "category": "StorageRead", "enabled": true } ],
+      "metrics": [ { "category": "Transaction", "enabled": true } ],
+      "name": "my-diag-setting",
+      "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
+      "type": "Microsoft.Insights/diagnosticSettings"
+    }
+  ]
+...
+}
+```
+
+### Show a diagnostic setting
+
+Retrieve the full configuration of the diagnostic setting:
+
+```bash
+az monitor diagnostic-settings show \
+  --name my-diag-setting \
+  --resource "$RESOURCE_ID"
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo/blobServices/default/providers/microsoft.insights/diagnosticSettings/my-diag-setting",
+  "logs": [ { "category": "StorageRead", "enabled": true } ],
+  "metrics": [ { "category": "Transaction", "enabled": true } ],
+  "name": "my-diag-setting",
+  "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
+  "type": "Microsoft.Insights/diagnosticSettings"
+...
+}
+```
+
+### Update a diagnostic setting
+
+Update the diagnostic setting to disable the `StorageRead` log category while leaving metrics and the storage destination unchanged:
+
+```bash
+az monitor diagnostic-settings update \
+  --name my-diag-setting \
+  --resource "$RESOURCE_ID" \
+  --logs '[{"category": "StorageRead", "enabled": false}]'
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo/blobServices/default/providers/microsoft.insights/diagnosticSettings/my-diag-setting",
+  "logs": [ { "category": "StorageRead", "enabled": false } ],
+  "metrics": [ { "category": "Transaction", "enabled": true } ],
+  "name": "my-diag-setting",
+  "storageAccountId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-diag-demo/providers/Microsoft.Storage/storageAccounts/sadiagdemo",
+  "type": "Microsoft.Insights/diagnosticSettings"
+...
+}
+```
+
+### Delete and verify
+
+Delete the diagnostic setting:
+
+```bash
+az monitor diagnostic-settings delete \
+  --name my-diag-setting \
+  --resource "$RESOURCE_ID"
+```
+
+Then list diagnostic settings again to confirm the setting was removed:
+
+```bash
+az monitor diagnostic-settings list --resource "$RESOURCE_ID"
+```
+
+```bash title="Output"
+{
+  "value": []
+}
+```
+
+## Features
+
+- **Diagnostic setting lifecycle:** Create, read, list, update, and delete diagnostic settings on any resource.
+- **Multiple destinations:** Accept Storage Account, Log Analytics Workspace, and Event Hub as destinations.
+- **Log category configuration:** Enable or disable individual log categories per setting.
+- **Metric category configuration:** Enable or disable individual metric categories per setting.
+- **Retention policy support:** Accept retention policy fields in log and metric settings (some Azure resource and destination combinations disallow retention on the diagnostic setting itself—see [Monitor Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage)).
+- **Resource-scoped settings:** Settings are scoped to a specific resource (by resource ID).
+
+## Limitations
+
+- **No data routing:** Logs and metrics are not routed to the configured Storage Account, Log Analytics Workspace, or Event Hub. The setting is stored in the emulator only.
+- **No log ingestion:** Platform logs emitted by Azure services within LocalStack are not captured or forwarded.
+- **No subscription diagnostic settings:** The subscription-level diagnostic settings API (`/subscriptions/{subscriptionId}/providers/Microsoft.Insights/diagnosticSettings`) described in [Subscription Diagnostic Settings](https://learn.microsoft.com/en-us/rest/api/monitor/subscription-diagnostic-settings) is not currently supported.
+
+## Samples
+
+The following sample demonstrates how to use Azure Diagnostic Settings with LocalStack for Azure:
+
+- [Function App and Service Bus](https://github.com/localstack/localstack-azure-samples/samples/function-app-service-bus/dotnet/README.md)
+- [Web App and Cosmos DB for MongoDB API ](https://github.com/localstack/localstack-azure-samples/samples/web-app-cosmosdb-mongodb-api/python/README.md)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.Insights" client:load />
