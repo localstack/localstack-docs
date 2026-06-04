@@ -64,7 +64,7 @@ aws --profile localstack sqs list-queues
 | `localstack.viewLogs`             | View Logs                          | `commandPalette` |
 
 :::note
-The AWS Toolkit for VS Code, a separate VS Code extension available from Amazon, now provides the ability to connect with LocalStack. This automates much of the existing manual setup required to debug Lambda functions (https://docs.localstack.cloud/aws/tooling/lambda-tools/remote-debugging/).
+The AWS Toolkit for VS Code, a separate VS Code extension available from Amazon, now provides the ability to connect with LocalStack. This automates much of the existing manual setup required to debug Lambda functions (https://docs.localstack.cloud/aws/developer-tools/lambda-tools/remote-debugging/).
 :::
 
 ## Contributing

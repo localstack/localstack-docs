@@ -24,7 +24,7 @@ Cloud Pods can be used for various purposes, such as:
 
 ## Installation
 
-You can save and load the persistent state of Cloud Pods, you can use the [Cloud Pods command-line interface (CLI)](/aws/capabilities/state-management/cli-commands).
+You can save and load the persistent state of Cloud Pods, you can use the [Cloud Pods command-line interface (CLI)](/aws/developer-tools/snapshots/cli-commands).
 LocalStack provides a remote storage backend that can be used to store the state of your running application and share it with your team members.
 You can interact with the Cloud Pods over the storage backend via the LocalStack Web Application.
 
@@ -199,7 +199,7 @@ localstack state inspect --format json
 }
 ```
 
-For comprehensive instructions, navigate to our [Command-Line Interface (CLI) Guide](/aws/capabilities/state-management/cli-commands/).
+For comprehensive instructions, navigate to our [Command-Line Interface (CLI) Guide](/aws/developer-tools/snapshots/cli-commands/).
 To access your Cloud Pods through the LocalStack Web Application, navigate to the [Cloud Pods browser](https://app.localstack.cloud/pods).
 
 :::note
@@ -645,7 +645,7 @@ This load operation will modify the runtime state as follows:
 
 ## Cloud Pods & Persistence
 
-[Persistence](/aws/capabilities/state-management/persistence) ensures that the service state persists across container restarts.
+[Persistence](/aws/developer-tools/snapshots/persistence) ensures that the service state persists across container restarts.
 You can enable persistence via a LocalStack config flag `PERSISTENCE=1` to restore your local resources, in case you’re stopping and re-starting the LocalStack instance on the same machine.
 
 In contrast, Cloud Pods provide more detailed control over your state.
@@ -669,7 +669,7 @@ Loading a Cloud Pod with mismatching version might lead to a corrupted state of 
 Do you want to continue? [y/N]:
 ```
 
-In addition to this prompt, Cloud Pods are subject to the [state compatibility rules](/aws/capabilities/state-management/persistence#state-compatibility) shared with snapshot-based persistence.
+In addition to this prompt, Cloud Pods are subject to the [state compatibility rules](/aws/developer-tools/snapshots/persistence#state-compatibility) shared with snapshot-based persistence.
 Pods that were saved before `v2026.03` cannot be loaded into LocalStack `v2026.03` or later, because persistence was rewritten for several services in that release.
 Set `DISABLE_COMPATIBILITY_RULES=1` to bypass the checks at your own risk.
 
@@ -750,4 +750,4 @@ If you're still unable to connect to the S3 bucket, add the bucket hostname to t
 DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM=ls-pods-bucket-test.s3.amazonaws.com/
 ```
 
-For more details, see the [Skip LocalStack DNS Resolution](/aws/tooling/dns-server/#skip-localstack-dns-resolution) section. 
+For more details, see the [Skip LocalStack DNS Resolution](/aws/capabilities/dns-server/#skip-localstack-dns-resolution) section. 
