@@ -26,11 +26,41 @@ Options that affect the core Snowflake emulator functionality.
 | `SF_S3_ENDPOINT_EXTERNAL` | `s3.localhost.localstack.cloud:4566` | S3 endpoint for file uploads to return to external clients. Defaults to `SF_S3_ENDPOINT` if not set. |
 | `SF_AWS_ENDPOINT_URL` | `localhost:4566` (default) | AWS services endpoint for connecting to other AWS services (SQS, SNS, etc.) from the Snowflake emulator. |
 | `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM` | `*.s3.amazonaws.com` (example) | List of domain names that should NOT be resolved to the LocalStack container, but instead always forwarded to the upstream resolver (S3 for example). this would be required when importing data into a stage from an external S3 bucket on the real AWS cloud. Comma-separated list of Python-flavored regex patterns. |
-| `SF_HOSTNAME_REGEX` | `snowflake\..+` (default) | Allows you to customize the hostname used for matching the Snowflake API routes in the HTTP router. If not set, then it matches on any hostnames that contain a `snowflake.*` subdomain (e.g., `snowflake.localhost.localstack.cloud`). |
+| `SF_HOSTNAMES` | `snowflake.localhost.localstack.cloud,snowflake.internal` | Comma-separated list of hostnames that should route to the Snowflake emulator. If set, only these hostnames are matched. If unset, LocalStack also matches any hostname with a `snowflake.` subdomain (i.e., `*snowflake.*` or `*.snowflake.*`) for backward compatibility.
 | `SF_CSV_IMPORT_MAX_ROWS` | `50000` (default) | Maximum number of rows to import from CSV files into tables |
 | `SF_DEFAULT_USER` | `test` (default) | Specify the default user to be used by the Snowflake emulator. |
 | `SF_DEFAULT_PASSWORD` | `test` (default) | Specify the default password to be used by the Snowflake emulator. |
 | `SF_PROXY_PRIVATE_KEY` | | Specify the private key to be used by the Snowflake emulator. |
+
+### Custom Snowflake hostnames
+
+By default, the Snowflake emulator accepts requests for hostnames such as `snowflake.localhost.localstack.cloud` and other `*.snowflake.*` hostnames.
+If you expose the emulator through a custom DNS name, for example in Kubernetes or behind an ingress, set `SF_HOSTNAMES` to the exact hostnames clients use to reach the emulator:
+
+```bash
+SF_HOSTNAMES=snowflake.internal.example.com,snowflake.internal \
+localstack start --stack snowflake
+```
+
+The first hostname in `SF_HOSTNAMES` is used as the primary hostname for local connection defaults and generated URLs.
+When `SF_HOSTNAMES` is set, the default wildcard fallback is disabled, and only the configured hostnames are routed to the Snowflake emulator.
+
+::::note
+`SF_HOSTNAME_REGEX` is no longer supported.
+If you previously used `SF_HOSTNAME_REGEX`, migrate to `SF_HOSTNAMES` and list each hostname explicitly.
+::::
+
+If your custom hostname also needs a matching TLS certificate, use LocalStack's standard certificate configuration options:
+
+```bash
+SF_HOSTNAMES=snowflake.internal.example.com \
+CUSTOM_SSL_CERT_PATH=/var/lib/localstack/custom/cert.pem \
+SKIP_SSL_CERT_DOWNLOAD=1 \
+localstack start --stack snowflake
+```
+
+The file referenced by `CUSTOM_SSL_CERT_PATH` must contain a certificate and private key that match the hostname used by your Snowflake clients.
+For more general guidance on adding trusted certificates to LocalStack, see [Custom TLS certificates](/aws/capabilities/security-testing/custom-tls-certificates/).
 
 ## CLI
 
