@@ -70,6 +70,17 @@ Both methods have two steps:
 1. Submit a replication job.
 2. Check the job status.
 
+#### Replication strategies
+
+The Replicator supports different strategies depending on how many resources you want to copy and whether their related resources should be included.
+The [supported resources](#supported-resources) table shows which strategies are available for each resource type, along with the IAM actions required for each.
+
+- **Single** (`SINGLE_RESOURCE`): replicate a single resource identified by its identifier or ARN. This is the default.
+- **Batch** (`BATCH`): discover and replicate every matching resource in a single job, for example all SSM parameters under a path prefix or all S3 buckets matching a prefix.
+- **Tree** (`TREE` explore strategy): starting from a single resource, also replicate its related child resources. For example, replicating an `AWS::Organizations::Organization` also replicates its organizational units, accounts, and policies.
+
+The replication type and explore strategy are independent: `replication_type` selects between single-resource and batch discovery, while `explore_strategy` (`SIMPLE` or `TREE`) controls whether related resources are followed.
+
 #### Using the LocalStack CLI
 
 The Replicator CLI is part of the LocalStack CLI.
@@ -188,6 +199,29 @@ For example:
 ```
 
 This triggers a batch replication job that discovers and replicates all SSM parameters under the `/dev/` path prefix.
+
+To replicate a resource together with its related resources, set `explore_strategy` to `TREE`.
+For example, to replicate an entire organization tree:
+
+```json
+{
+  "replication_type": "SINGLE_RESOURCE",
+  "explore_strategy": "TREE",
+  "replication_job_config": {
+    "resource_type": "AWS::Organizations::Organization",
+    "identifier": "o-exampleorgid"
+  },
+  "source_aws_config": {
+    "aws_access_key_id": "...",
+    "aws_secret_access_key": "...",
+    "region_name": "..."
+  }
+}
+```
+
+When `explore_strategy` is omitted, the default is `SIMPLE`, which replicates only the requested resource.
+With `TREE`, the Replicator follows the resource's relationships and replicates the related resources listed in the [supported resources](#supported-resources) table.
+The additional IAM actions shown for the **Tree** strategy must also be granted.
 
 
 ### Check Replication Job Status
@@ -397,4 +431,7 @@ Please open a [new GitHub Discussion](https://github.com/orgs/localstack/discuss
 To ensure support for all resources, use the latest LocalStack Docker image.
 :::
 
-<ReplicatorCoverage />
+The table below lists every supported resource type and the [replication strategies](#replication-strategies) available for each.
+Select a row to expand it and view the resource identifier, the IAM actions required for each strategy, and any related resources replicated by the Tree strategy.
+
+<ReplicatorCoverage client:load />

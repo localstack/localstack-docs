@@ -1,261 +1,423 @@
-import React from 'react';
+import React, { useState } from 'react';
 import data from '@/data/replicator/coverage.json';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from '@/components/ui/table';
-import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-} from '@tanstack/react-table';
-import type { ColumnDef, ColumnSizingState } from '@tanstack/react-table';
-import { useTableColumnSizing } from '@/hooks/useTableColumnSizing';
-import { useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 
-const coverage = Object.values(data);
+type ReplicationTypeInfo = {
+  policy_statements: string[];
+  identifier: string | null;
+};
 
-const columns: ColumnDef<any>[] = [
-  {
-    accessorKey: 'resource_type',
-    header: () => 'Resource Type',
-    cell: ({ row }) => row.original.resource_type,
-    size: 150,
-    minSize: 120,
-    maxSize: 200,
+type ResourceTreeInfo = {
+  resources: string[];
+  extra_policy_statements: string[];
+};
+
+type ExtraConfigField = {
+  type: string;
+  default: unknown;
+  description: string;
+};
+
+type ResourceCoverage = {
+  resource_type: string;
+  service: string;
+  single?: ReplicationTypeInfo;
+  batch?: ReplicationTypeInfo;
+  resource_tree?: ResourceTreeInfo;
+  extra_config?: Record<string, ExtraConfigField>;
+};
+
+const coverage = data as ResourceCoverage[];
+
+type StrategyKey = 'single' | 'batch' | 'tree';
+
+const STRATEGY_META: Record<
+  StrategyKey,
+  { label: string; color: string; description: string }
+> = {
+  single: {
+    label: 'Single',
+    color: '#2563eb',
+    description: 'Replicate one resource at a time by identifier or ARN.',
   },
-  {
-    accessorKey: 'service',
-    header: () => 'Service',
-    cell: ({ row }) => row.original.service,
-    size: 120,
-    minSize: 100,
-    maxSize: 150,
+  batch: {
+    label: 'Batch',
+    color: '#7c3aed',
+    description: 'Discover and replicate many matching resources in one job.',
   },
-  {
-    accessorKey: 'identifier',
-    header: () => 'Identifier',
-    cell: ({ row }) => row.original.single.identifier,
-    size: 150,
-    minSize: 120,
-    maxSize: 200,
+  tree: {
+    label: 'Tree',
+    color: '#0d9488',
+    description:
+      'Use the TREE explore strategy to also replicate related child resources.',
   },
-  {
-    accessorKey: 'policy_statements',
-    header: () => 'Required Actions',
-    cell: ({ row }) => (
-      <>
-        {row.original.single.policy_statements.map((s: string, i: number) => (
-          <div key={i}>{s}</div>
-        ))}
-      </>
-    ),
-    size: 300,
-    minSize: 200,
-    maxSize: 500,
-  },
-  {
-    id: 'arn_support',
-    header: () => 'Arn Support',
-    cell: () => '✔️',
-    size: 100,
-    minSize: 80,
-    maxSize: 120,
-  },
-];
+};
 
-export default function ReplicatorCoverage() {
-  // Use the reusable hook for column sizing
-  const { columnSizing, setColumnSizing } = useTableColumnSizing(columns);
-
-  const table = useReactTable({
-    data: coverage,
-    columns,
-    state: {
-      columnSizing,
-    },
-    onColumnSizingChange: setColumnSizing,
-    columnResizeMode: 'onChange',
-    getCoreRowModel: getCoreRowModel(),
-    debugTable: false,
-  });
-
-  // For testing purposes, we can log the column sizing state
-  // console.log('Column sizing state:', columnSizing);
-
-  // Add CSS for resizer
-  const resizerStyle = `
-    .resizer {
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 100%;
-      width: 5px;
-      background: rgba(0, 0, 0, 0.1);
-      cursor: col-resize;
-      user-select: none;
-      touch-action: none;
-    }
-    .resizer.isResizing {
-      background: rgba(0, 0, 0, 0.2);
-      opacity: 1;
-    }
-    @media (hover: hover) {
-      .resizer {
-        opacity: 0;
-      }
-      *:hover > .resizer {
-        opacity: 1;
-      }
-    }
-  `;
-
+function StrategyBadge({
+  strategy,
+  active,
+}: {
+  strategy: StrategyKey;
+  active: boolean;
+}) {
+  const meta = STRATEGY_META[strategy];
   return (
-    <div className="w-full">
-      <style>{resizerStyle}</style>
-      <div className="p-2 block max-w-full overflow-x-scroll overflow-y-hidden">
-        <Table 
-          className="w-full" 
+    <span
+      title={
+        active
+          ? `${meta.label}: ${meta.description}`
+          : `${meta.label} replication is not supported for this resource`
+      }
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '4px',
+        padding: '2px 8px',
+        borderRadius: '9999px',
+        fontSize: '12px',
+        fontWeight: 600,
+        lineHeight: '16px',
+        whiteSpace: 'nowrap',
+        border: `1px solid ${active ? meta.color : 'var(--sl-color-gray-5)'}`,
+        color: active ? '#fff' : 'var(--sl-color-gray-3)',
+        background: active ? meta.color : 'transparent',
+        opacity: active ? 1 : 0.6,
+      }}
+    >
+      {meta.label}
+    </span>
+  );
+}
+
+function PolicyList({ statements }: { statements: string[] }) {
+  if (!statements.length) {
+    return (
+      <span style={{ color: 'var(--sl-color-gray-3)' }}>
+        No additional actions required
+      </span>
+    );
+  }
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+      {statements.map((statement) => (
+        <code
+          key={statement}
           style={{
-            borderCollapse: 'collapse',
-            tableLayout: 'fixed',
-            width: '100%',
+            fontSize: '12px',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            background: 'var(--sl-color-gray-6)',
+            border: '1px solid var(--sl-color-gray-5)',
+            whiteSpace: 'nowrap',
           }}
         >
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const meta = header.column.columnDef.meta as
-                    | { className?: string }
-                    | undefined;
-                  
-                  const getColumnWidth = (columnId: string) => {
-                    switch (columnId) {
-                      case 'resource_type':
-                        return '20%';
-                      case 'service':
-                        return '15%';
-                      case 'identifier':
-                        return '20%';
-                      case 'policy_statements':
-                        return '35%';
-                      case 'arn_support':
-                        return '10%';
-                      default:
-                        return 'auto';
-                    }
-                  };
-                  
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className={meta?.className || ''}
-                      style={{ 
-                        width: getColumnWidth(header.id),
-                        position: 'relative',
-                        textAlign: 'center',
-                        border: '1px solid #999CAD',
-                        background: '#AFB2C2',
-                        color: 'var(--sl-color-gray-1)',
-                        fontFamily: 'var(--font-aeonik-fono)',
-                        fontSize: '14px',
-                        fontStyle: 'normal',
-                        fontWeight: '500',
-                        lineHeight: '16px',
-                        letterSpacing: '-0.15px',
-                        padding: '12px 8px',
-                      }}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {header.column.getCanResize() && (
-                        <div
-                          onMouseDown={header.getResizeHandler()}
-                          onTouchStart={header.getResizeHandler()}
-                          className={`resizer ${
-                            header.column.getIsResizing() ? 'isResizing' : ''
-                          }`}
-                        ></div>
-                      )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody style={{
-            color: 'var(--sl-color-gray-1)',
-            fontFamily: 'var(--font-aeonik-fono)',
-            fontSize: '14px',
-            fontStyle: 'normal',
-            fontWeight: '400',
-            lineHeight: '16px',
-            letterSpacing: '-0.15px',
-          }}>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  const meta = cell.column.columnDef.meta as
-                    | { className?: string }
-                    | undefined;
-                  
-                  const getColumnWidth = (columnId: string) => {
-                    switch (columnId) {
-                      case 'resource_type':
-                        return '20%';
-                      case 'service':
-                        return '15%';
-                      case 'identifier':
-                        return '20%';
-                      case 'policy_statements':
-                        return '35%';
-                      case 'arn_support':
-                        return '10%';
-                      default:
-                        return 'auto';
-                    }
-                  };
-                  
-                  return (
-                    <TableCell
-                      key={cell.id}
-                      className={meta?.className || undefined}
-                      style={{ 
-                        width: getColumnWidth(cell.column.id),
-                        textAlign: 'center',
-                        border: '1px solid #999CAD',
-                        padding: '12px 8px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: cell.column.id === 'policy_statements' ? 'normal' : 'nowrap',
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+          {statement}
+        </code>
+      ))}
     </div>
   );
 }
 
-// Testing instructions:
-// 1. Verify that the table expands to 100% width of its container
-// 2. Check that columns maintain their widths during pagination
-// 3. Test with different viewport sizes to ensure responsive behavior
-// 4. Try resizing columns to ensure the resize functionality works
-// 5. Verify that content in cells is properly displayed with ellipsis for overflow
+function Identifier({ value }: { value: string | null }) {
+  if (!value) {
+    return (
+      <span style={{ color: 'var(--sl-color-gray-3)' }}>None required</span>
+    );
+  }
+  return (
+    <code
+      style={{
+        fontSize: '12px',
+        padding: '2px 6px',
+        borderRadius: '4px',
+        background: 'var(--sl-color-gray-6)',
+        border: '1px solid var(--sl-color-gray-5)',
+      }}
+    >
+      {value}
+    </code>
+  );
+}
+
+function DetailSection({
+  strategy,
+  children,
+}: {
+  strategy: StrategyKey;
+  children: React.ReactNode;
+}) {
+  const meta = STRATEGY_META[strategy];
+  return (
+    <div
+      style={{
+        borderLeft: `3px solid ${meta.color}`,
+        paddingLeft: '12px',
+        marginBottom: '16px',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          marginBottom: '8px',
+        }}
+      >
+        <StrategyBadge strategy={strategy} active />
+        <span style={{ fontSize: '13px', color: 'var(--sl-color-gray-3)' }}>
+          {meta.description}
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: '8px' }}>
+      <div
+        style={{
+          fontSize: '11px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.4px',
+          color: 'var(--sl-color-gray-3)',
+          marginBottom: '4px',
+        }}
+      >
+        {label}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function ResourceDetails({ resource }: { resource: ResourceCoverage }) {
+  return (
+    <div style={{ padding: '16px 20px', background: 'var(--sl-color-gray-7, var(--sl-color-gray-6))' }}>
+      {resource.single && (
+        <DetailSection strategy="single">
+          <Field label="Identifier">
+            <Identifier value={resource.single.identifier} />
+          </Field>
+          <Field label="Required IAM actions">
+            <PolicyList statements={resource.single.policy_statements} />
+          </Field>
+        </DetailSection>
+      )}
+
+      {resource.batch && (
+        <DetailSection strategy="batch">
+          <Field label="Identifier">
+            <Identifier value={resource.batch.identifier} />
+          </Field>
+          <Field label="Required IAM actions">
+            <PolicyList statements={resource.batch.policy_statements} />
+          </Field>
+        </DetailSection>
+      )}
+
+      {resource.resource_tree && (
+        <DetailSection strategy="tree">
+          <Field label="Replicated related resources">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {resource.resource_tree.resources.map((r) => (
+                <code
+                  key={r}
+                  style={{
+                    fontSize: '12px',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    background: 'var(--sl-color-gray-6)',
+                    border: '1px solid var(--sl-color-gray-5)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {r}
+                </code>
+              ))}
+            </div>
+          </Field>
+          <Field label="Additional IAM actions">
+            <PolicyList
+              statements={resource.resource_tree.extra_policy_statements}
+            />
+          </Field>
+        </DetailSection>
+      )}
+
+      {resource.extra_config && (
+        <DetailSection strategy="single">
+          <Field label="Extra configuration">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {Object.entries(resource.extra_config).map(([name, field]) => (
+                <div key={name} style={{ fontSize: '13px' }}>
+                  <code
+                    style={{
+                      fontSize: '12px',
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      background: 'var(--sl-color-gray-6)',
+                      border: '1px solid var(--sl-color-gray-5)',
+                    }}
+                  >
+                    {name}
+                  </code>{' '}
+                  <span style={{ color: 'var(--sl-color-gray-3)' }}>
+                    ({field.type}
+                    {field.default !== null && field.default !== undefined
+                      ? `, default: ${JSON.stringify(field.default)}`
+                      : ''}
+                    )
+                  </span>
+                  <div style={{ marginTop: '2px' }}>{field.description}</div>
+                </div>
+              ))}
+            </div>
+          </Field>
+        </DetailSection>
+      )}
+    </div>
+  );
+}
+
+export default function ReplicatorCoverage() {
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  const toggle = (resourceType: string) =>
+    setExpanded((prev) => ({ ...prev, [resourceType]: !prev[resourceType] }));
+
+  const cellStyle: React.CSSProperties = {
+    border: '1px solid var(--sl-color-gray-5)',
+    padding: '12px',
+    textAlign: 'left',
+    verticalAlign: 'middle',
+    fontFamily: 'var(--font-aeonik-fono)',
+    fontSize: '14px',
+  };
+
+  const headStyle: React.CSSProperties = {
+    border: '1px solid var(--sl-color-gray-5)',
+    background: 'var(--sl-color-gray-6)',
+    color: 'var(--sl-color-white)',
+    fontFamily: 'var(--font-aeonik-fono)',
+    fontSize: '14px',
+    fontWeight: 600,
+    padding: '12px',
+    textAlign: 'left',
+  };
+
+  return (
+    <div className="w-full" style={{ fontFamily: 'var(--font-aeonik-fono)' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '16px',
+          marginBottom: '12px',
+          fontSize: '13px',
+          color: 'var(--sl-color-gray-2)',
+        }}
+      >
+        {(Object.keys(STRATEGY_META) as StrategyKey[]).map((key) => (
+          <span
+            key={key}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
+            <StrategyBadge strategy={key} active />
+            <span>{STRATEGY_META[key].description}</span>
+          </span>
+        ))}
+      </div>
+
+      <div className="block max-w-full overflow-x-auto">
+        <table
+          style={{
+            borderCollapse: 'collapse',
+            width: '100%',
+            minWidth: '640px',
+            tableLayout: 'fixed',
+            color: 'var(--sl-color-gray-1)',
+          }}
+        >
+          <colgroup>
+            <col style={{ width: '38px' }} />
+            <col style={{ width: '38%' }} />
+            <col style={{ width: '15%' }} />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th style={{ ...headStyle, textAlign: 'center' }} aria-label="Expand" />
+              <th style={headStyle}>Resource Type</th>
+              <th style={headStyle}>Service</th>
+              <th style={headStyle}>Replication Strategies</th>
+            </tr>
+          </thead>
+          <tbody>
+            {coverage.map((resource) => {
+              const isOpen = !!expanded[resource.resource_type];
+              return (
+                <React.Fragment key={resource.resource_type}>
+                  <tr
+                    onClick={() => toggle(resource.resource_type)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <td style={{ ...cellStyle, textAlign: 'center' }}>
+                      <ChevronRight
+                        size={16}
+                        style={{
+                          transition: 'transform 0.15s ease',
+                          transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                          verticalAlign: 'middle',
+                          color: 'var(--sl-color-gray-3)',
+                        }}
+                      />
+                    </td>
+                    <td style={cellStyle}>
+                      <code
+                        style={{
+                          display: 'inline-block',
+                          fontSize: '13px',
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          background: 'var(--sl-color-gray-6)',
+                          border: '1px solid var(--sl-color-gray-5)',
+                          whiteSpace: 'normal',
+                          wordBreak: 'break-word',
+                        }}
+                      >
+                        {resource.resource_type}
+                      </code>
+                    </td>
+                    <td style={cellStyle}>{resource.service}</td>
+                    <td style={cellStyle}>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        <StrategyBadge strategy="single" active={!!resource.single} />
+                        <StrategyBadge strategy="batch" active={!!resource.batch} />
+                        <StrategyBadge strategy="tree" active={!!resource.resource_tree} />
+                      </div>
+                    </td>
+                  </tr>
+                  {isOpen && (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        style={{
+                          border: '1px solid var(--sl-color-gray-5)',
+                          padding: 0,
+                        }}
+                      >
+                        <ResourceDetails resource={resource} />
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
