@@ -14,7 +14,6 @@ For example, `2026.03.0` is the initial March 2026 release.
 :::
 
 ## 2026.05.0
-
 - Update Docker image tagging policy to introduce `dev` and `nightly` tags, while aligning `latest` to mirror `stable`
 - Add support for `TRY_CAST(<array> AS ARRAY)` conversions
 - Support `ARRAY_AGG(DISTINCT ...)` execution with variant path expressions
