@@ -14,7 +14,7 @@ In heterogeneous clusters, these child pods may need additional Kubernetes confi
 
 Use the `LOCALSTACK_K8S_POD_CONFIG` environment variable to configure Kubernetes metadata, scheduling, and resource settings for LocalStack-spawned pods.
 The variable accepts a JSON object with reusable `profiles` and optional per-service mappings.
-The value must be valid JSON; an invalid value raises an error when the first child pod is created.
+The value must be valid JSON. LocalStack validates this configuration at startup and refuses to start if the value is not valid JSON or contains unknown fields, so misconfigurations surface before any child pods are created.
 
 ::::note
 This feature currently applies to Lambda and ECS pods created by the Kubernetes executor.
@@ -98,6 +98,26 @@ extraEnvVars:
           }
         }
       }
+```
+
+If you deploy LocalStack with the [LocalStack Operator](/aws/enterprise/kubernetes/kubernetes-operator/), set the same configuration as structured YAML under `spec.podSchedulingConfig` in your `LocalStack` resource instead of passing JSON:
+
+```yaml
+apiVersion: api.localstack.cloud/v1alpha1
+kind: LocalStack
+spec:
+  # other fields
+  podSchedulingConfig:
+    profiles:
+      default:
+        nodeSelector:
+          pool: general
+      defaultArm64:
+        nodeSelector:
+          pool: arm-nodes
+      defaultAmd64:
+        nodeSelector:
+          pool: amd-nodes
 ```
 
 ## Configure per-service profiles
