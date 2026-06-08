@@ -13,6 +13,36 @@ Starting with the end-of-March 2026 release, LocalStack for Snowflake follows [c
 For example, `2026.03.0` is the initial March 2026 release.
 :::
 
+## 2026.05.0
+
+- Update Docker image tagging policy to introduce `dev` and `nightly` tags, while aligning `latest` to mirror `stable`
+- Add support for `TRY_CAST(<array> AS ARRAY)` conversions
+- Support `ARRAY_AGG(DISTINCT ...)` execution with variant path expressions
+- Support preservation of typed `NUMBER(p,s)` values in `MIN` and `MAX` aggregates
+- Improve `COUNT(DISTINCT ...)` handling with nested `CASE` predicates and literals
+- Improve window functions (`LAG`, `LEAD`) to preserve qualified column references in `ORDER BY`
+- Improve pattern matching (`LIKE`, `ILIKE`) on values derived from `LATERAL FLATTEN` loops
+- Improve `QUALIFY` query handling combining `SELECT *` with aliased expressions in CTEs
+- Improve implicit type coercion for aliased `NULL` and `VARCHAR` values in `UNION` / `UNION ALL` queries
+- Improve translation and execution for SQL UDFs and stored procedures starting with CTEs, set operations, or blocks
+- Improve Snowpipe concurrency and message polling responsiveness by scheduling `COPY INTO` work per pipe
+- Fix statement splitting for multi-statement queries containing inline, line, or block SQL comments
+- Fix error shapes for invalid SQL syntax and compilation failures to return Snowflake-compatible codes instead of raw backend errors
+
+## 2026.04.0
+- Add support for AWS Glue Iceberg REST catalog integrations via `CREATE CATALOG INTEGRATION`
+- Add support for new SQL date/time functions (`DAY`, `DAYOFMONTH`, `DAYOFYEAR`, `QUARTER`, `WEEK`, `YEAROFWEEK`)
+- Support six-argument form for `TIMESTAMP_LTZ_FROM_PARTS`
+- Support unquoted date/time parts in `DATE_PART` and `EXTRACT` functions
+- Add support for `INFORMATION_SCHEMA.PROCEDURES` view via metadata FDW mechanism
+- Add `ROW_COUNT` and `BYTES` metadata to `INFORMATION_SCHEMA.TABLES` and `SHOW OBJECTS`
+- Enhance `SHOW OBJECTS` to support `is_interactive` columns and scoped filters (`IN`, `STARTS WITH`, `LIMIT`)
+- Improve routine tracking for UDFs and stored procedures, including overloaded routines and `IDENTIFIER($var)`
+- Improve Snowpipe notification processing and performance for shared S3 buckets
+- Enhance Web App with multi-statement query execution and side-by-side layout for Query History and results
+- Enhance Web App with tabbed query results, truncated result banners, and improved SQL autocomplete
+- Enhance Web App Resource Browser with dedicated views and icons for databases, schemas, tables, and views
+
 ### 2026.03.0
 - Add support for `GET_DDL` for tables, views, and databases
 - Add support for `FULL JOIN` and complex join conditions
