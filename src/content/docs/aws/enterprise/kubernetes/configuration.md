@@ -3,7 +3,7 @@ title: Configuration
 description: Kubernetes configuration reference for LocalStack running on Kubernetes
 template: doc
 sidebar:
-    order: 6
+    order: 7
 tags: ["Enterprise"]
 ---
 
@@ -27,6 +27,18 @@ Both variables accept a comma-separated list of `key=value` pairs:
 LOCALSTACK_K8S_LABELS=env=dev,team=platform
 LOCALSTACK_K8S_ANNOTATIONS=prometheus.io/scrape=true,prometheus.io/port=8080
 ```
+
+### Pod configuration
+
+`LOCALSTACK_K8S_POD_CONFIG` configures Kubernetes metadata, scheduling, and resource settings for child pods created by supported services such as Lambda and ECS.
+Use it to define reusable pod profiles with fields such as `nodeSelector`, `tolerations`, `affinity`, `resources`, `labels`, and `annotations`.
+The value must be valid JSON.
+
+```bash
+LOCALSTACK_K8S_POD_CONFIG='{"profiles":{"default":{"nodeSelector":{"pool":"general"}}}}'
+```
+
+For the full JSON schema, profile resolution order, and examples, see [Pod Configuration](/aws/enterprise/kubernetes/pod-configuration/).
 
 ### Container security context
 
@@ -79,6 +91,7 @@ Increase these values if your cluster is under heavy load or if image pulls are 
 | `LOCALSTACK_K8S_NAMESPACE` | Kubernetes namespace for child pods |
 | `LOCALSTACK_K8S_LABELS` | Comma-separated `key=value` labels applied to child pods |
 | `LOCALSTACK_K8S_ANNOTATIONS` | Comma-separated `key=value` annotations applied to child pods |
+| `LOCALSTACK_K8S_POD_CONFIG` | JSON pod configuration for supported child pods. See [Pod Configuration](/aws/enterprise/kubernetes/pod-configuration/) |
 | `K8S_CONTAINER_SECURITY_CONTEXT` | JSON security context applied to child pod containers |
 | `K8S_CURL_INIT_IMAGE` | Init container image used for network readiness checks |
 | `LAMBDA_K8S_INIT_IMAGE` | Init container image used in Lambda pods |

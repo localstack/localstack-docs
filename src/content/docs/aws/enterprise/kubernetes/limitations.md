@@ -3,7 +3,7 @@ title: Limitations
 description: Known limitations when running LocalStack on Kubernetes
 template: doc
 sidebar:
-    order: 7
+    order: 8
 tags: ["Enterprise"]
 ---
 
