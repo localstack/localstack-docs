@@ -3,8 +3,8 @@ title: lstk
 description: Reference guide for lstk, the modern CLI for managing LocalStack, with installation, configuration, commands, and troubleshooting.
 template: doc
 sidebar:
-    order: 10
-tags: ["Hobby"]
+  order: 10
+tags: ['Hobby']
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
@@ -18,8 +18,7 @@ It provides a built-in terminal UI (TUI) for interactive use and plain text outp
 Running `lstk` with no arguments takes you through the entire flow automatically.
 
 :::note
-`lstk` currently supports core lifecycle commands (`start`, `stop`, `logs`, `status`).
-For advanced features like **Cloud Pods**, **Extensions**, and **Ephemeral Instances**, use the [LocalStack CLI](/aws/tooling/localstack-cli/).
+`lstk` is in early release and does not yet support advanced features like **Cloud Pods**, **Extensions**, and **Ephemeral Instances**. For these features, use the [LocalStack CLI](/aws/tooling/localstack-cli/).
 Both tools can be installed and used on the same machine.
 :::
 
@@ -173,13 +172,13 @@ port = "4566"    # Host port the emulator will be accessible on
 
 ### Config field reference
 
-| Field    | Type     | Default    | Description                                                                                          |
-|:---------|:---------|:-----------|:-----------------------------------------------------------------------------------------------------|
-| `type`   | string   | `"aws"`    | Emulator type. Only `"aws"` is supported.                                                            |
-| `tag`    | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.03"`, etc.). Useful for pinning a specific version.             |
-| `port`   | string   | `"4566"`   | Host port the emulator listens on.                                                                   |
-| `volume` | string   | (OS cache) | Host directory for persistent emulator state. Defaults to the OS cache directory if not specified.    |
-| `env`    | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
+| Field    | Type     | Default    | Description                                                                                        |
+| :------- | :------- | :--------- | :------------------------------------------------------------------------------------------------- |
+| `type`   | string   | `"aws"`    | Emulator type. Only `"aws"` is supported.                                                          |
+| `tag`    | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.03"`, etc.). Useful for pinning a specific version.           |
+| `port`   | string   | `"4566"`   | Host port the emulator listens on.                                                                 |
+| `volume` | string   | (OS cache) | Host directory for persistent emulator state. Defaults to the OS cache directory if not specified. |
+| `env`    | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                       |
 
 A top-level `update_prompt` boolean (default `true`) controls whether `lstk` prompts about available updates on startup.
 
@@ -213,10 +212,10 @@ If you reference an `env` profile name that doesn't exist in your config, `lstk`
 
 In addition to your custom profiles, `lstk` always injects the following into the container:
 
-| Variable                | Value                         |
-|:------------------------|:------------------------------|
-| `LOCALSTACK_AUTH_TOKEN` | Your resolved auth token      |
-| `GATEWAY_LISTEN`        | `:4566,:443`                  |
+| Variable                | Value                                  |
+| :---------------------- | :------------------------------------- |
+| `LOCALSTACK_AUTH_TOKEN` | Your resolved auth token               |
+| `GATEWAY_LISTEN`        | `:4566,:443`                           |
 | `MAIN_CONTAINER_NAME`   | Container name (e.g. `localstack-aws`) |
 
 ### Using a project-local config
@@ -276,10 +275,10 @@ Show or stream emulator logs.
 lstk logs [options]
 ```
 
-| Option      | Description                              |
-|:------------|:-----------------------------------------|
-| `--follow`, `-f`  | Stream logs in real-time          |
-| `--verbose`, `-v` | Show all logs without filtering   |
+| Option            | Description                     |
+| :---------------- | :------------------------------ |
+| `--follow`, `-f`  | Stream logs in real-time        |
+| `--verbose`, `-v` | Show all logs without filtering |
 
 Example:
 
@@ -327,7 +326,7 @@ lstk update [options]
 ```
 
 | Option    | Description                               |
-|:----------|:------------------------------------------|
+| :-------- | :---------------------------------------- |
 | `--check` | Check for updates without installing them |
 
 ### `completion`
@@ -344,12 +343,12 @@ See [Shell completions](#shell-completions) for setup instructions.
 
 These options are available for all commands:
 
-| Option              | Description                                     |
-|:--------------------|:------------------------------------------------|
-| `--config <path>`   | Path to a specific TOML config file             |
-| `--non-interactive` | Disable the interactive TUI, use plain output   |
-| `-v`, `--version`   | Print the version and exit                      |
-| `-h`, `--help`      | Print help and exit                             |
+| Option              | Description                                   |
+| :------------------ | :-------------------------------------------- |
+| `--config <path>`   | Path to a specific TOML config file           |
+| `--non-interactive` | Disable the interactive TUI, use plain output |
+| `-v`, `--version`   | Print the version and exit                    |
+| `-h`, `--help`      | Print help and exit                           |
 
 ## Interactive and non-interactive mode
 
@@ -374,12 +373,12 @@ If you need to authenticate in CI, set `LOCALSTACK_AUTH_TOKEN` instead.
 
 The following environment variables configure `lstk` itself (not the LocalStack container):
 
-| Variable                     | Description                                                                                                      |
-|:-----------------------------|:-----------------------------------------------------------------------------------------------------------------|
-| `LOCALSTACK_AUTH_TOKEN`      | Auth token for non-interactive runs or to skip browser login. Used when no keyring token is stored.              |
-| `LOCALSTACK_DISABLE_EVENTS`  | Set to `1` to disable telemetry event reporting.                                                                 |
-| `DOCKER_HOST`                | Override the Docker daemon socket (e.g. `unix:///home/user/.colima/default/docker.sock`).                        |
-| `LSTK_KEYRING`               | Set to `file` to force file-based token storage instead of the system keyring.                                   |
+| Variable                    | Description                                                                                         |
+| :-------------------------- | :-------------------------------------------------------------------------------------------------- |
+| `LOCALSTACK_AUTH_TOKEN`     | Auth token for non-interactive runs or to skip browser login. Used when no keyring token is stored. |
+| `LOCALSTACK_DISABLE_EVENTS` | Set to `1` to disable telemetry event reporting.                                                    |
+| `DOCKER_HOST`               | Override the Docker daemon socket (e.g. `unix:///home/user/.colima/default/docker.sock`).           |
+| `LSTK_KEYRING`              | Set to `file` to force file-based token storage instead of the system keyring.                      |
 
 When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
 
@@ -387,11 +386,11 @@ When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then p
 
 `lstk` injects several environment variables into the LocalStack container on every start, in addition to any profiles you configure:
 
-| Variable                | Default value          | Description                                |
-|:------------------------|:-----------------------|:-------------------------------------------|
-| `LOCALSTACK_AUTH_TOKEN` | (your resolved token)  | Passed from the CLI to activate the license |
-| `GATEWAY_LISTEN`        | `:4566,:443`           | Ports the emulator binds inside the container |
-| `MAIN_CONTAINER_NAME`   | `localstack-aws`       | Container name for internal references      |
+| Variable                | Default value         | Description                                   |
+| :---------------------- | :-------------------- | :-------------------------------------------- |
+| `LOCALSTACK_AUTH_TOKEN` | (your resolved token) | Passed from the CLI to activate the license   |
+| `GATEWAY_LISTEN`        | `:4566,:443`          | Ports the emulator binds inside the container |
+| `MAIN_CONTAINER_NAME`   | `localstack-aws`      | Container name for internal references        |
 
 The container also gets the Docker socket mounted (if detected) and port mappings for `4566`, `443`, and the service port range `4510-4559`.
 
@@ -567,6 +566,7 @@ No credentials were found in the environment.
 ```
 
 **Fix:**
+
 - Verify your token is valid at the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens).
 - Make sure the token is set correctly, either via `lstk login` or the `LOCALSTACK_AUTH_TOKEN` environment variable.
 - If a stale keyring token is interfering, run `lstk logout` first and then set `LOCALSTACK_AUTH_TOKEN`.
