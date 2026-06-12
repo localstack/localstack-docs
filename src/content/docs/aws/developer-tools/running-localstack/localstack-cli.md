@@ -15,7 +15,7 @@ It provides convenience features to interact with LocalStack features like Cloud
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
 :::note
-This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 2026.5.3`.
+[`lstk`](/aws/tooling/lstk/) is our new Go-based CLI with an interactive terminal UI for lifecycle (`start`, `stop`), monitoring (`status`, `logs`), storage (`snapshot`), and more.
 :::
 
 ## Global Options
