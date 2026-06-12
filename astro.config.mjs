@@ -480,7 +480,7 @@ export default defineConfig({
                       slug: 'aws/developer-tools/running-localstack/localstack-cli',
                     },
                     {
-                      label: 'lstk',
+                      label: 'lstk CLI',
                       slug: 'aws/developer-tools/running-localstack/lstk',
                     },
                     {
