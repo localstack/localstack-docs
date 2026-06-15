@@ -460,7 +460,102 @@ export default defineConfig({
               ],
             },
             {
-              label: 'Capabilities',
+              label: 'Developer Tools',
+              collapsed: true,
+              items: [
+                {
+                  label: 'Overview',
+                  slug: 'aws/developer-tools',
+                },
+                {
+                  label: 'Running LocalStack',
+                  collapsed: true,
+                  items: [
+                    {
+                      label: 'Overview',
+                      slug: 'aws/developer-tools/running-localstack',
+                    },
+                    {
+                      label: 'LocalStack CLI',
+                      slug: 'aws/developer-tools/running-localstack/localstack-cli',
+                    },
+                    {
+                      label: 'lstk',
+                      slug: 'aws/developer-tools/running-localstack/lstk',
+                    },
+                    {
+                      label: 'LocalStack MCP Server',
+                      slug: 'aws/developer-tools/running-localstack/mcp-server',
+                    },
+                  ],
+                },
+                {
+                  label: 'Snapshots',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/developer-tools/snapshots',
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: 'App Inspector',
+                  slug: 'aws/developer-tools/app-inspector',
+                },
+                {
+                  label: 'Chaos Engineering',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/developer-tools/chaos-engineering',
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: 'Security Testing',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/developer-tools/security-testing',
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: 'Lambda Tools',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/developer-tools/lambda-tools',
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: 'AWS Replicator',
+                  slug: 'aws/developer-tools/aws-replicator',
+                },
+                {
+                  label: 'Cloud Sandbox',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/developer-tools/cloud-sandbox',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              label: 'Configuration',
               collapsed: true,
               items: [
                 {
@@ -490,17 +585,6 @@ export default defineConfig({
                   ],
                 },
                 {
-                  label: 'Cloud Sandbox',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/capabilities/cloud-sandbox',
-                      },
-                    },
-                  ],
-                },
-                {
                   label: 'Networking',
                   collapsed: true,
                   items: [
@@ -512,67 +596,12 @@ export default defineConfig({
                   ],
                 },
                 {
-                  label: 'State Management',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/capabilities/state-management',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Chaos Engineering',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/capabilities/chaos-engineering',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Security Testing',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/capabilities/security-testing',
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              label: 'Tooling',
-              collapsed: true,
-              items: [
-                {
-                  label: 'Overview',
-                  slug: 'aws/tooling',
-                },
-                {
-                  label: 'LocalStack CLI',
-                  slug: 'aws/tooling/localstack-cli',
-                },
-                {
-                  label: 'LocalStack MCP Server',
-                  slug: 'aws/tooling/mcp-server',
-                },
-                {
-                  label: 'lstk',
-                  slug: 'aws/tooling/lstk',
-                },
-                {
                   label: 'LocalStack SDKs',
                   collapsed: true,
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/tooling/localstack-sdks',
+                        directory: '/aws/capabilities/localstack-sdks',
                       },
                     },
                   ],
@@ -582,7 +611,7 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/tooling/extensions',
+                        directory: '/aws/capabilities/extensions',
                       },
                     },
                     {
@@ -593,35 +622,20 @@ export default defineConfig({
                   collapsed: true,
                 },
                 {
-                  label: 'Lambda Tools',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/tooling/lambda-tools',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'AWS Replicator',
-                  slug: 'aws/tooling/aws-replicator',
-                },
-                {
                   label: 'DNS Server',
-                  slug: 'aws/tooling/dns-server',
+                  slug: 'aws/capabilities/dns-server',
                 },
                 {
                   label: 'Testing Utils',
-                  slug: 'aws/tooling/testing-utils',
+                  slug: 'aws/capabilities/testing-utils',
                 },
                 {
                   label: 'LocalStack Docker Extension',
-                  slug: 'aws/tooling/localstack-docker-extension',
+                  slug: 'aws/capabilities/localstack-docker-extension',
                 },
                 {
                   label: 'LocalSurf',
-                  slug: 'aws/tooling/localsurf',
+                  slug: 'aws/capabilities/localsurf',
                 },
               ],
             },

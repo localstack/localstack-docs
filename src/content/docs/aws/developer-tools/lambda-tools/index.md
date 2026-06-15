@@ -13,5 +13,3 @@ These tools are designed to shorten feedback loops and improve the developer exp
 - **IDE debugging**: Attach a debugger to your running Lambda function, set breakpoints, inspect variables, and step through code.
 
 - **Hot reload**: Automatically apply code changes without needing to redeploy the function, enabling rapid iteration.
-
-- **LocalStack Toolkit for VSCode**: The [LocalStack Toolkit for VS Code](https://github.com/localstack/localstack-vscode-extension) enables you to install, configure, and run LocalStack without leaving VS Code.

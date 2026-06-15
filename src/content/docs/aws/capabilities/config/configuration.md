@@ -31,7 +31,7 @@ Options that affect the core LocalStack system.
 | `LOCALSTACK_HOST`| `localhost.localstack.cloud:4566` (default) | This is interpolated into URLs and addresses that are returned by LocalStack. It has the form `<hostname>:<port>`. |
 | `GATEWAY_LISTEN` | `0.0.0.0:4566` (default in Docker mode), `127.0.0.1:4566` (default in host mode) | Configures the bind addresses of LocalStack. It has the form `<ip address>:<port>(,<ip address>:<port>)*`. LocalStack for AWS adds port `443`. |
 | `USE_SSL` | `0` (default) | Whether to return URLs using HTTP (`0`) or HTTPS (`1`). Changed with 3.0.0. In earlier versions this was toggling SSL support on or off. |
-| `PERSISTENCE` | `0` (default) | Enable persistence. See [Persistence Mechanism](/aws/capabilities/state-management/persistence) and [Filesystem Layout](/aws/capabilities/config/filesystem). |
+| `PERSISTENCE` | `0` (default) | Enable persistence. See [Persistence Mechanism](/aws/developer-tools/snapshots/persistence) and [Filesystem Layout](/aws/capabilities/config/filesystem). |
 | `MAIN_CONTAINER_NAME` | `localstack-main` (default) | Specify the main docker container name |
 | `LS_LOG` | `trace`, `trace-internal`, `debug`, `info`, `warn`, `error`, `warning`| Specify the log level. Currently overrides the `DEBUG` configuration. `trace` for detailed request/response, `trace-internal` for internal calls, too. |
 | `EXTERNAL_SERVICE_PORTS_START` | `4510` (default) | Start of the [External Service Port Range](/aws/capabilities/networking/external-port-range) (inclusive). |
@@ -260,11 +260,11 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 
 | Variable| Example Values | Description |
 | - | - | - |
-| `BUCKET_MARKER_LOCAL` | `hot-reload` (default) | Magic S3 bucket name for [Hot Reloading](/aws/tooling/lambda-tools/hot-reloading). The S3Key points to the source code on the local file system. |
+| `BUCKET_MARKER_LOCAL` | `hot-reload` (default) | Magic S3 bucket name for [Hot Reloading](/aws/developer-tools/lambda-tools/hot-reloading). The S3Key points to the source code on the local file system. |
 | `HOSTNAME_FROM_LAMBDA` | `localstack` | Endpoint host under which APIs are accessible from Lambda containers (optional). This can be useful in docker-compose stacks to use the local container hostname if neither IP address nor container name of the main container are available (e.g., in CI). Often used in combination with `LAMBDA_DOCKER_NETWORK`.|
 | `LAMBDA_DISABLE_AWS_ENDPOINT_URL` | `0` (default) \| `1` | Whether to disable injecting the environment variable `AWS_ENDPOINT_URL`, which automatically configures [supported AWS SDKs](https://docs.aws.amazon.com/sdkref/latest/guide/feature-ss-endpoints.html). |
 | `LAMBDA_DISABLE_JAVA_SDK_V2_CERTIFICATE_VALIDATION` | `1` (default) | Whether to disable the certificate name validation for [AWS Java SDK v2](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/home.html) calls when using [transparent endpoint injection](/aws/capabilities/networking/transparent-endpoint-injection).|
-| `LAMBDA_DOCKER_DNS` | `""` (default) | Optional custom DNS server for the container running your Lambda function. Overwrites the default LocalStack [DNS Server](/aws/tooling/dns-server). Hence, resolving `localhost.localstack.cloud` requires additional configuration. |
+| `LAMBDA_DOCKER_DNS` | `""` (default) | Optional custom DNS server for the container running your Lambda function. Overwrites the default LocalStack [DNS Server](/aws/capabilities/dns-server). Hence, resolving `localhost.localstack.cloud` requires additional configuration. |
 | `LAMBDA_DOCKER_FLAGS` | `-e KEY=VALUE`, `-v host:container`, `-p host:container`, `--add-host domain:ip` | Additional flags passed to Docker `run`\|`create` commands. Supports environment variables (also with `--env-file`, but the file has to be mounted into the LocalStack container), ports, volume mounts, extra hosts, networks, DNS servers, labels, ulimits, user, platform, and privileged mode. The `--env-file` argument for Docker `run` and Docker Compose have different feature sets. To provide both, we support the `--env-file` for environment files with the docker run syntax, while `--compose-env-file` supports the full docker compose features, like placeholders with `${}`, replacing quotes, etc. |
 | `LAMBDA_DOCKER_NETWORK` | `bridge` (Docker default) | [Docker network driver](https://docs.docker.com/network/) for the Lambda and ECS containers. Needs to be set to the network the LocalStack container is connected to. Limitation: `host` mode currently not supported. |
 | `LAMBDA_DOWNLOAD_AWS_LAYERS` | `1` (default, pro) | Whether to download public Lambda layers from AWS through a LocalStack proxy when creating or updating functions. |
@@ -391,18 +391,18 @@ Please check with your SMTP email service provider for the following settings.
 
 ## Persistence
 
-To learn more about these configuration options, see [Persistence](/aws/capabilities/state-management/persistence).
+To learn more about these configuration options, see [Persistence](/aws/developer-tools/snapshots/persistence).
 
 | Variable | Valid options | Description |
 | - | - | - |
 | `SNAPSHOT_SAVE_STRATEGY` | `ON_SHUTDOWN`\|`ON_REQUEST`\|`SCHEDULED`\|`MANUAL` | Strategy that governs when LocalStack should make state snapshots |
 | `SNAPSHOT_LOAD_STRATEGY` | `ON_STARTUP`\|`ON_REQUEST`\|`MANUAL` | Strategy that governs when LocalStack restores state snapshots |
-| `SNAPSHOT_FLUSH_INTERVAL` | 15 (default) | The interval (in seconds) between persistence snapshots. It only applies to a `SCHEDULED` save strategy (see [Persistence Mechanism](/aws/capabilities/state-management/persistence))|
-| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [state compatibility rules](/aws/capabilities/state-management/persistence#state-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
+| `SNAPSHOT_FLUSH_INTERVAL` | 15 (default) | The interval (in seconds) between persistence snapshots. It only applies to a `SCHEDULED` save strategy (see [Persistence Mechanism](/aws/developer-tools/snapshots/persistence))|
+| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [state compatibility rules](/aws/developer-tools/snapshots/persistence#state-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
 
 ## Cloud Pods
 
-To learn more about these configuration options, see [Cloud Pods](/aws/capabilities/state-management/cloud-pods).
+To learn more about these configuration options, see [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods).
 
 | Variable | Valid options | Description |
 | - | - | - |
@@ -410,14 +410,14 @@ To learn more about these configuration options, see [Cloud Pods](/aws/capabilit
 | `POD_LOAD_CLI_TIMEOUT` | 60 (default) | Timeout in seconds to wait before returning from load operations on the Cloud Pods CLI |
 | `POD_ENCRYPTION` | `0` (default) \| `1` | Whether to encrypt the Cloud Pods artifacts at rest. |
 | `ENABLE_POD_RESOURCES=1` | `0` (default) \| `1`  | Whether to save a detailed Stack Overview including available resources for the Cloud Pod |
-| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [state merging](/aws/capabilities/state-management/cloud-pods/#state-merging)) |
+| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [state merging](/aws/developer-tools/snapshots/cloud-pods/#state-merging)) |
 
 ## Extensions
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `EXTENSION_AUTO_INSTALL` | | Install a list of extensions automatically at startup. Comma-separated list of extensions directives which will be installed automatically at startup (see [managing extensions](/aws/tooling/extensions/managing-extensions#automating-extensions-installation))|
-| `EXTENSION_DEV_MODE` | `0` (default) \| `1` | Enables development mode for extensions. Refer to the [Extensions Development Guide](/aws/tooling/extensions/developing-extensions) for more information. |
+| `EXTENSION_AUTO_INSTALL` | | Install a list of extensions automatically at startup. Comma-separated list of extensions directives which will be installed automatically at startup (see [managing extensions](/aws/capabilities/extensions/managing-extensions#automating-extensions-installation))|
+| `EXTENSION_DEV_MODE` | `0` (default) \| `1` | Enables development mode for extensions. Refer to the [Extensions Development Guide](/aws/capabilities/extensions/developing-extensions) for more information. |
 
 ## Miscellaneous
 
@@ -443,14 +443,14 @@ To learn more about these configuration options, see [Cloud Pods](/aws/capabilit
 
 ## DNS
 
-To learn more about these configuration options, see [DNS Server](/aws/tooling/dns-server).
+To learn more about these configuration options, see [DNS Server](/aws/capabilities/dns-server).
 
 | Variable | Example Values | Description |
 | - | - | - |
 | `DNS_ADDRESS` | `0.0.0.0` (default) | Address the LocalStack should bind the DNS server on (port 53 tcp/udp). Value `0` to disable.
 | `DNS_SERVER` | Default upstream DNS or `8.8.8.8` (default) | Fallback DNS server for queries not handled by LocalStack.
 | `DNS_RESOLVE_IP` | `127.0.0.1` (default) | IP address the DNS server should return as A record for queries handled by LocalStack. If customized, this value will be returned in preference to the DNS server response.
-| `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM` | `([^.]+\.)*(ecr\|lambda)\.[^.]+\.amazonaws\.com` (example) | List of domain names that should *NOT* be redirected by the LocalStack DNS to the LocalStack container, but instead always forwarded to the upstream resolver. This will *NOT* redirect requests made to LocalStack due to manual endpoint configuration. Comma-separated list of Python-flavored regex patterns. See [the DNS server documentation](/aws/tooling/dns-server#skip-localstack-dns-resolution) for more details.
+| `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM` | `([^.]+\.)*(ecr\|lambda)\.[^.]+\.amazonaws\.com` (example) | List of domain names that should *NOT* be redirected by the LocalStack DNS to the LocalStack container, but instead always forwarded to the upstream resolver. This will *NOT* redirect requests made to LocalStack due to manual endpoint configuration. Comma-separated list of Python-flavored regex patterns. See [the DNS server documentation](/aws/capabilities/dns-server#skip-localstack-dns-resolution) for more details.
 | `DNS_LOCAL_NAME_PATTERNS` | `([^.]+\.)*(ecr\|lambda)\.[^.]+\.amazonaws\.com` (example) | **Deprecated since 3.0.2** List of domain names that should *NOT* be redirected by the LocalStack DNS to the LocalStack container, but instead always forwarded to the upstream resolver. This will *NOT* redirect requests made to LocalStack due to manual endpoint configuration. Comma-separated list of Python-flavored regex patterns. **Renamed to `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM`**
 
 ## Transparent Endpoint Injection
@@ -512,7 +512,7 @@ These configurations have already been removed and **won't have any effect** on 
 | `LAMBDA_REMOTE_DOCKER` | 3.0.0 | | determines whether Lambda code is copied or mounted into containers.<br> **Removed in new provider because zip file copying is used by default and hot reloading automatically configures mounting.** |
 | | | `true` (default) | your Lambda function definitions will be passed to the container by copying the zip file (potentially slower). It allows for remote execution, where the host and the client are not on the same machine.|
 | | | `false` | your Lambda function definitions will be passed to the container by mounting a volume (potentially faster). This requires to have the Docker client and the Docker host on the same machine. |
-| `LAMBDA_STAY_OPEN_MODE` | 3.0.0 | `1` (default) | Usage of the stay-open mode of Lambda containers. Only applicable if `LAMBDA_EXECUTOR=docker-reuse`. Set to `0` if you want to use [Hot Reloading](/aws/tooling/lambda-tools/hot-reloading).<br> **Removed in new provider because stay-open mode is the default behavior. `LAMBDA_KEEPALIVE_MS` can be used to configure how long containers should be kept running in-between invocations.** |
+| `LAMBDA_STAY_OPEN_MODE` | 3.0.0 | `1` (default) | Usage of the stay-open mode of Lambda containers. Only applicable if `LAMBDA_EXECUTOR=docker-reuse`. Set to `0` if you want to use [Hot Reloading](/aws/developer-tools/lambda-tools/hot-reloading).<br> **Removed in new provider because stay-open mode is the default behavior. `LAMBDA_KEEPALIVE_MS` can be used to configure how long containers should be kept running in-between invocations.** |
 | `LAMBDA_XRAY_INIT` | 3.0.0 | `1` \| `0` (default) | Whether to fully initialize XRay daemon for Lambda containers (may increase Lambda startup times).<br> **the X-Ray daemon is now always initialized.** |
 | `LEGACY_EDGE_PROXY` | 3.0.0 | `1` \| `0` (default) | Whether to use the legacy edge proxy or the newer Gateway/HandlerChain framework.  |
 | `LOCALSTACK_HOSTNAME` | 3.0.0 | `http://${LOCALSTACK_HOSTNAME}:4566` | Name of the host where LocalStack services are available. Use this hostname as endpoint in order to access the services from within your Lambda functions (e.g., to store an item to DynamoDB or S3 from a Lambda). This option is read-only. Use `LOCALSTACK_HOST` instead. |

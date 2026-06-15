@@ -10,11 +10,11 @@ LocalStack is designed to be ephemeral by default, meaning all state is lost whe
 
 LocalStack supports three ways to manage and reuse state:
 
-* [**Cloud Pods**](/aws/capabilities/state-management/cloud-pods): Shareable, versioned snapshots of your LocalStack instance that can be stored, restored, and synced via the LocalStack platform.
+* [**Cloud Pods**](/aws/developer-tools/snapshots/cloud-pods): Shareable, versioned snapshots of your LocalStack instance that can be stored, restored, and synced via the LocalStack platform.
 
-* [**Export & Import State**](/aws/capabilities/state-management/export-import-state): Save your instance state to a local file and reload it manually as needed.
+* [**Export & Import State**](/aws/developer-tools/snapshots/export-import-state): Save your instance state to a local file and reload it manually as needed.
 
-* [**Persistence**](/aws/capabilities/state-management/persistence): Automatically save and reload state locally by enabling a configuration flag.
+* [**Persistence**](/aws/developer-tools/snapshots/persistence): Automatically save and reload state locally by enabling a configuration flag.
 
 Internally, all three approaches manage the same container state. They just differ in how the state is stored and reused (local vs remote, manual vs automated). 
 
