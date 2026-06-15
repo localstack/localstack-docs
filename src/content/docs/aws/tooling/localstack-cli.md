@@ -15,7 +15,7 @@ It provides convenience features to interact with LocalStack features like Cloud
 To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
 
 :::note
-This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 2026.4.0`.
+This documentation was auto-generated from LocalStack CLI version `LocalStack CLI 2026.5.3`.
 :::
 
 ## Global Options
@@ -163,30 +163,6 @@ CLI shell completion
 ```bash
 Usage: localstack completion [OPTIONS] {bash|zsh|fish}
 
-   Print shell completion code for the specified shell (bash, zsh, or fish).
-   The shell code must be evaluated to enable the interactive shell completion
-   of LocalStack CLI commands.  This is usually done by sourcing it from the
-   .bash_profile.
-
-    Examples:
-      # Bash
-      ## Bash completion on Linux depends on the 'bash-completion' package.
-      ## Write the LocalStack CLI completion code for bash to a file and source it from .bash_profile
-      localstack completion bash > ~/.localstack/completion.bash.inc
-      printf "
-      # LocalStack CLI bash completion
-      source '$HOME/.localstack/completion.bash.inc'
-      " >> $HOME/.bash_profile
-      source $HOME/.bash_profile
-   
-      # zsh
-      ## Set the LocalStack completion code for zsh to autoload on startup:
-      localstack completion zsh > "${fpath[1]}/_localstack"
-   
-      # fish
-      ## Set the LocalStack completion code for fish to autoload on startup:
-      localstack completion fish > ~/.config/fish/completions/localstack.fish
-
 Options:
   -h, --help  Show this message and exit.
 ```
@@ -197,8 +173,6 @@ Manage your LocalStack config
 
 ```bash
 Usage: localstack config [OPTIONS] COMMAND [ARGS]...
-
-  Inspect and validate your LocalStack configuration.
 
 Options:
   -h, --help  Show this message and exit.
@@ -218,13 +192,6 @@ Show your config
 ```bash
 Usage: localstack config show [OPTIONS]
 
-  Print the current LocalStack config values.
-
-  This command prints the LocalStack configuration values from your
-  environment. It analyzes the environment variables as well as the LocalStack
-  CLI profile. It does _not_ analyze a specific file (like a docker-compose-
-  yml).
-
 Options:
   -f, --format [table|plain|dict|json]
                                   The formatting style for the command output.
@@ -238,16 +205,6 @@ Validate your config
 
 ```bash
 Usage: localstack config validate [OPTIONS]
-
-  Validate your LocalStack configuration (docker compose).
-
-  This command inspects the given docker-compose file (by default docker-
-  compose.yml in the current working directory) and validates if the
-  configuration is valid.
-
-  It will show an error and return a non-zero exit code if:
-  - The docker-compose file is syntactically incorrect.
-  - If the file contains common issues when configuring LocalStack.
 
 Options:
   -f, --file PATH  Path to compose file  [default: docker-compose.yml]
@@ -263,14 +220,6 @@ Show LocalStack logs
 ```bash
 Usage: localstack logs [OPTIONS]
 
-  Show the logs of the current LocalStack runtime.
-
-  This command shows the logs of the currently running LocalStack docker
-  container. By default, this command looks for a container named `localstack-
-  main` (which is the default container name used by the `localstack start`
-  command). If your LocalStack container has a different name, set the config
-  variable `MAIN_CONTAINER_NAME`.
-
 Options:
   -f, --follow  Block the terminal and follow the log output
   -n, --tail N  Print only the last <N> lines of the log output
@@ -284,8 +233,6 @@ Restart LocalStack
 ```bash
 Usage: localstack restart [OPTIONS]
 
-  Restarts the current LocalStack runtime.
-
 Options:
   -h, --help  Show this message and exit.
 ```
@@ -296,14 +243,6 @@ Obtain a shell in LocalStack
 
 ```bash
 Usage: localstack ssh [OPTIONS]
-
-  Obtain a shell in the current LocalStack runtime.
-
-  This command starts a new interactive shell in the currently running
-  LocalStack container. By default, this command looks for a container named
-  `localstack-main` (which is the default container name used by the
-  `localstack start` command). If your LocalStack container has a different
-  name, set the config variable `MAIN_CONTAINER_NAME`.
 
 Options:
   -h, --help  Show this message and exit.
@@ -316,16 +255,9 @@ Start LocalStack
 ```bash
 Usage: localstack start [OPTIONS]
 
-  Start the LocalStack runtime.
-
-  This command starts the LocalStack runtime with your current configuration.
-  By default, it will start a new Docker container from the latest
-  LocalStack(-Pro) Docker image with best-practice volume mounts and port
-  mappings.
-
 Options:
   --docker            Start LocalStack in a docker container [default]
-  --host              Start LocalStack directly on the host(DEPRECATED)
+  --host              Start LocalStack directly on the host (DEPRECATED)
   --no-banner         Disable LocalStack banner
   -d, --detached      Start LocalStack in the background
   --network TEXT      The container network the LocalStack container should be
@@ -351,8 +283,6 @@ Query status info
 ```bash
 Usage: localstack status [OPTIONS] COMMAND [ARGS]...
 
-  Query status information about the currently running LocalStack instance.
-
 Options:
   -h, --help  Show this message and exit.
 
@@ -371,9 +301,6 @@ Query LocalStack Docker status
 ```bash
 Usage: localstack status docker [OPTIONS]
 
-  Query information about the currently running LocalStack Docker image, its
-  container, and the LocalStack runtime.
-
 Options:
   -f, --format [table|plain|dict|json]
                                   The formatting style for the command output.
@@ -387,9 +314,6 @@ Query LocalStack services status
 
 ```bash
 Usage: localstack status services [OPTIONS]
-
-  Query information about the services of the currently running LocalStack
-  instance.
 
 Options:
   -f, --format [table|plain|dict|json]
@@ -407,14 +331,6 @@ Stop LocalStack
 ```bash
 Usage: localstack stop [OPTIONS]
 
-  Stops the current LocalStack runtime.
-
-  This command stops the currently running LocalStack docker container. By
-  default, this command looks for a container named `localstack-main` (which
-  is the default container name used by the `localstack start` command). If
-  your LocalStack container has a different name, set the config variable
-  `MAIN_CONTAINER_NAME`.
-
 Options:
   -h, --help  Show this message and exit.
 ```
@@ -425,8 +341,6 @@ Update LocalStack
 
 ```bash
 Usage: localstack update [OPTIONS] COMMAND [ARGS]...
-
-  Update different LocalStack components.
 
 Options:
   -h, --help  Show this message and exit.
@@ -447,14 +361,6 @@ Update all LocalStack components
 ```bash
 Usage: localstack update all [OPTIONS]
 
-  Update all LocalStack components.
-
-  This is the same as executing `localstack update localstack-cli` and
-  `localstack update docker-images`. Updating the LocalStack CLI is currently
-  only supported if the CLI is installed and run via Python / PIP. If you used
-  a different installation method, please follow the instructions on
-  https://docs.localstack.cloud/.
-
 Options:
   -h, --help  Show this message and exit.
 ```
@@ -466,12 +372,6 @@ Update docker images LocalStack depends on
 ```bash
 Usage: localstack update docker-images [OPTIONS]
 
-  Update all Docker images LocalStack depends on.
-
-  This command updates all Docker LocalStack docker images, as well as other
-  Docker images LocalStack depends on (and which have been used before / are
-  present on the machine).
-
 Options:
   -h, --help  Show this message and exit.
 ```
@@ -482,13 +382,6 @@ Update LocalStack CLI
 
 ```bash
 Usage: localstack update localstack-cli [OPTIONS]
-
-  Update the LocalStack CLI.
-
-  This command updates the LocalStack CLI. This is currently only supported if
-  the CLI is installed and run via Python / PIP. If you used a different
-  installation method, please follow the instructions on
-  https://docs.localstack.cloud/.
 
 Options:
   -h, --help  Show this message and exit.
@@ -502,14 +395,6 @@ Wait for LocalStack
 
 ```bash
 Usage: localstack wait [OPTIONS]
-
-  Wait for the LocalStack runtime to be up and running.
-
-  This commands waits for a started LocalStack runtime to be up and running,
-  ready to serve requests. By default, this command looks for a container
-  named `localstack-main` (which is the default container name used by the
-  `localstack start` command). If your LocalStack container has a different
-  name, set the config variable `MAIN_CONTAINER_NAME`.
 
 Options:
   -t, --timeout N  Only wait for <N> seconds before raising a timeout error
@@ -614,12 +499,12 @@ Options:
 
 ### `ephemeral`
 
-(Preview) Manage ephemeral LocalStack instances
+Manage ephemeral LocalStack instances
 
 ```bash
 Usage: localstack ephemeral [OPTIONS] COMMAND [ARGS]...
 
-  (Preview) Manage ephemeral LocalStack instances in the cloud.
+  Manage ephemeral LocalStack instances in the cloud.
 
   This command group allows you to create, list, and delete ephemeral
   LocalStack instances. Ephemeral instances are temporary cloud instances that
@@ -629,10 +514,11 @@ Options:
   -h, --help  Show this message and exit.
 
 Commands:
-  create  Create a new ephemeral instance
-  delete  Delete an ephemeral instance
-  list    List all ephemeral instances
-  logs    Fetch logs from an ephemeral instance
+  create    Create a new ephemeral instance
+  delete    Delete an ephemeral instance
+  describe  Describe an ephemeral instance
+  list      List all ephemeral instances
+  logs      Fetch logs from an ephemeral instance
 ```
 
 <details>
@@ -680,7 +566,31 @@ Usage: localstack ephemeral delete [OPTIONS]
       localstack ephemeral delete --name my-test-instance
 
 Options:
-  --name TEXT  Name of the ephemeral instance to delete  [required]
+  --name TEXT        Name of the ephemeral instance to delete  [required]
+  --wait             Wait until the instance is fully deleted
+  --timeout INTEGER  Maximum seconds to wait for deletion when --wait is set
+                     [default: 300]
+  -h, --help         Show this message and exit.
+```
+
+#### `ephemeral describe`
+
+Describe an ephemeral instance
+
+```bash
+Usage: localstack ephemeral describe [OPTIONS]
+
+  Describe a specific ephemeral LocalStack instance and show its current
+  state.
+
+  Retrieve the full details and current state of an ephemeral instance by
+  specifying its name.
+
+  Example:
+      localstack ephemeral describe --name my-test-instance
+
+Options:
+  --name TEXT  Name of the ephemeral instance to describe  [required]
   -h, --help   Show this message and exit.
 ```
 
@@ -751,7 +661,7 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  dev        Developer tools for developing LocalStack extensions.
+  dev
   init       Initialize the LocalStack extensions environment.
   install    Install a LocalStack extension.
   list       List installed extension.
@@ -763,12 +673,10 @@ Commands:
 
 #### `extensions dev`
 
-Developer tools for developing LocalStack extensions.
+
 
 ```bash
 Usage: localstack extensions dev [OPTIONS] COMMAND [ARGS]...
-
-  Developer tools for developing LocalStack extensions.
 
 Options:
   -h, --help  Show this message and exit.
@@ -1181,6 +1089,11 @@ Options:
                                   be replicated. Only provide if different
                                   than source AWS account.
   --delay TEXT                    Delay for the MOCK replication work
+  --extra-config KEY=VALUE        Additional entries to merge into
+                                  replication_job_config as key=value pairs.
+                                  Repeat the flag for multiple entries
+                                  (--extra-config k1=v1 --extra-config k2=v2)
+                                  Values are sent as strings.
   -h, --help                      Show this message and exit.
 
 *** Preview Feature ***
