@@ -44,6 +44,20 @@ If you are encountering network issues and your Snowflake client drivers are una
 127.0.0.1	snowflake.localhost.localstack.cloud
 ```
 
+### Which Docker image tag should I use for LocalStack for Snowflake?
+
+As of the LocalStack for Snowflake 2026.05.0 release, the published Docker image tags follow the same policy used across the wider LocalStack image set:
+
+| Tag | Updated when | Recommended for |
+|---|---|---|
+| `latest` / `stable` | Tagged releases only (e.g. `2026.05.0`) | Most users, stable, release-quality builds |
+| `dev` | Every merged commit on `main` (the main development branch) | Users who need the latest unreleased changes |
+| `YYYY.MM.patch` (e.g. `2026.05.0`) | Never (pinned) | Fully reproducible environments where no changes are acceptable |
+
+Previously, `latest` tracked untagged changes from `main`. It now mirrors `stable` and is only updated on official tagged releases. If you were relying on `localstack/snowflake:latest` to pick up the most recent unreleased changes (for example, in CI or Docker Compose), switch to the `dev` tag instead.
+
+The `nightly` tag is no longer published for LocalStack for Snowflake. Use the `dev` tag to track untagged changes from `main`.
+
 ## Support FAQs
 
 ### How can I get help or support with LocalStack for Snowflake?
