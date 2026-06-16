@@ -188,11 +188,74 @@ awslocal batch submit-job \
     --container-overrides '{"command":["sh", "-c", "sleep 5; pwd"]}'
 ```
 
+## Multi-node parallel jobs
+
+LocalStack supports [AWS Batch multi-node parallel (MNP) jobs](https://docs.aws.amazon.com/batch/latest/userguide/multi-node-parallel-jobs.html), which run a single job across a main node and one or more worker nodes.
+The main node starts first, and the workers follow once it is running. Each worker receives the main node's private IP so the nodes can communicate.
+
+MNP jobs run on EC2-backed compute environments only. Fargate is not supported.
+
+To run one, register a job definition with `--type multinode` and a `nodeProperties` object that sets the main node, the number of nodes, and a container per node range:
+
+```bash
+awslocal batch register-job-definition \
+    --job-definition-name mnp-jobdefn \
+    --type multinode \
+    --node-properties '{
+        "mainNode": 0,
+        "numNodes": 2,
+        "nodeRangeProperties": [
+            {
+                "targetNodes": "0:1",
+                "container": {
+                    "image": "busybox",
+                    "command": ["sh", "-c", "echo node $AWS_BATCH_JOB_NODE_INDEX; sleep 10"],
+                    "resourceRequirements": [
+                        {"type": "MEMORY", "value": "512"},
+                        {"type": "VCPU", "value": "1"}
+                    ]
+                }
+            }
+        ]
+    }'
+```
+
+Then submit it to an EC2-backed queue:
+
+```bash
+awslocal batch submit-job \
+    --job-name mnp-job \
+    --job-queue mnp-queue \
+    --job-definition mnp-jobdefn
+```
+
+The submitted job is the parent. Each node is addressable as a child job using the `<jobId>#<nodeIndex>` notation, which you can inspect with `describe-jobs`:
+
+```bash
+awslocal batch describe-jobs --jobs "<jobId>#0" "<jobId>#1"
+```
+
+A few behaviors to keep in mind:
+
+- The parent job's outcome follows the main node.
+- A worker failure does not fail the parent.
+- Terminating the parent job stops all of its nodes.
+
+### Node environment variables
+In addition to the [standard Batch environment variables](#current-limitations), each node receives the following multi-node parallel variables:
+- `AWS_BATCH_JOB_NODE_INDEX` — the index of the current node.
+- `AWS_BATCH_JOB_NUM_NODES` — the total number of nodes in the job.
+- `AWS_BATCH_JOB_MAIN_NODE_INDEX` — the index of the main node.
+- `AWS_BATCH_JOB_MAIN_NODE_PRIVATE_IPV4_ADDRESS` — the private IP of the main node, set on worker nodes so they can connect back to the main node.
+
 ## Current Limitations
 
 LocalStack simulates the execution of ECS-based AWS Batch jobs using the local ECS runtime. No real infrastructure is created or managed.
 
 Array jobs are supported in sequential mode only.
+
+[Multi-node parallel jobs](#multi-node-parallel-jobs) are supported on EC2-backed compute environments only.
+See [Multi-node parallel jobs](#multi-node-parallel-jobs) for details.
 
 A subset of environment variables is supported, including:
 - `AWS_BATCH_CE_NAME`
@@ -202,10 +265,11 @@ A subset of environment variables is supported, including:
 - `AWS_BATCH_JOB_ID`
 - `AWS_BATCH_JQ_NAME`
 
+For multi-node parallel jobs, the additional `AWS_BATCH_JOB_NODE_INDEX`, `AWS_BATCH_JOB_NUM_NODES`, `AWS_BATCH_JOB_MAIN_NODE_INDEX`, and `AWS_BATCH_JOB_MAIN_NODE_PRIVATE_IPV4_ADDRESS` variables are set.
+
 The configuration variable `ECS_DOCKER_FLAGS` can be used to pass additional Docker flags to the container runtime.
 
 Setting `ECS_TASK_EXECUTOR=kubernetes` is supported as an alternative backend, though Kubernetes execution is experimental and may not support all features.
-
 
 ## API Coverage
 
