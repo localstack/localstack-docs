@@ -9,7 +9,7 @@ sidebar:
 If you have created a resource using LocalStack, such as an OpenSearch cluster or RDS database, you may need to access it from your application.
 Typically, these resources are accessible through a URL or a hostname provided by LocalStack.
 By default, LocalStack returns the hostname `localhost.localstack.cloud`, which resolves to LocalStack using DNS.
-For special environments (e.g., proxies), the [configuration](/aws/configuration/config/configuration) `LOCALSTACK_HOST` customizes the URLs returned by LocalStack.
+For special environments (e.g., proxies), the [configuration](/aws/configuration/configuration-options) `LOCALSTACK_HOST` customizes the URLs returned by LocalStack.
 This guide will explore different scenarios and provide detailed instructions on accessing resources created by LocalStack under different scenarios.
 
 ## From your host

@@ -264,16 +264,16 @@ LocalStack runs inside a Docker container, and the above options are different w
 
 The LocalStack emulator is available on Docker Hub (`localstack/localstack-pro`).
 
-For a comprehensive overview of the LocalStack images, check out our [Docker images documentation](/aws/configuration/config/docker-images).
+For a comprehensive overview of the LocalStack images, check out our [Docker images documentation](/aws/advanced-installation/docker-images).
 
 ### LocalStack Desktop
 
-Learn more about our desktop client at [LocalStack Desktop](/aws/configuration/web-app/localstack-desktop) and download it [here](https://app.localstack.cloud/download).
+Learn more about our desktop client at [LocalStack Desktop](/aws/developer-tools/running-localstack/localstack-desktop) and download it [here](https://app.localstack.cloud/download).
 
 ### LocalStack Docker Extension
 
 Install our [official Docker Desktop extension](https://hub.docker.com/extensions/localstack/localstack-docker-desktop) to manage LocalStack.
-See [LocalStack Docker Extension](/aws/configuration/localstack-docker-extension) for more information.
+See [LocalStack Docker Extension](/aws/advanced-installation/localstack-docker-extension) for more information.
 
 ### Docker-Compose
 
@@ -385,7 +385,7 @@ docker run \
 - Mounting the Docker socket `/var/run/docker.sock` as a volume is required for some services that use Docker to provide the emulation, such as AWS Lambda.
   Check out the [Lambda providers](/aws/services/lambda) documentation for more information.
 
-- When using Docker to manually start LocalStack, you will have to configure the container on your own (see [docker-compose-pro.yml](https://github.com/localstack/localstack/blob/main/docker-compose-pro.yml) and [Configuration](/aws/configuration/config/configuration).
+- When using Docker to manually start LocalStack, you will have to configure the container on your own (see [docker-compose-pro.yml](https://github.com/localstack/localstack/blob/main/docker-compose-pro.yml) and [Configuration](/aws/configuration/configuration-options).
   This could be seen as the "expert mode" of starting LocalStack.
   If you are looking for a simpler method of starting LocalStack, please use the [LocalStack CLI](#localstack-cli).
 
@@ -397,7 +397,7 @@ docker run \
 
 ### LocalStack Operator
 
-If you want to deploy LocalStack in your [Kubernetes](https://kubernetes.io) cluster, you can use the [LocalStack Operator](/aws/enterprise/kubernetes/kubernetes-operator).
+If you want to deploy LocalStack in your [Kubernetes](https://kubernetes.io) cluster, you can use the [LocalStack Operator](/aws/advanced-installation/kubernetes/kubernetes-operator).
 
 ## What's next?
 
@@ -408,10 +408,10 @@ Now that you have LocalStack up and running, the following resources might be us
   - Use `awslocal` to use the AWS CLI against your local cloud!
   - Use the Serverless Framework with LocalStack!
   - And many more!
-- [Find out how to configure LocalStack](/aws/configuration/config/configuration) such that it perfectly fits your need.
-- [Use LocalStack in your CI environment](/aws/integrations/continuous-integration/) to increase your code quality.
+- [Find out how to configure LocalStack](/aws/configuration/configuration-options) such that it perfectly fits your need.
+- [Use LocalStack in your CI environment](/aws/ci-pipelines/) to increase your code quality.
 - [Checkout LocalStack's Cloud Developer Tools](/aws/developer-tools/) to further increase your development efficiency with LocalStack.
-- Find out about the ways you can [configure LocalStack](/aws/configuration/config/configuration).
+- Find out about the ways you can [configure LocalStack](/aws/configuration/configuration-options).
 
 ## Troubleshooting
 
@@ -432,7 +432,7 @@ python3 -m localstack.cli.main
 
 If you are using the `localstack` CLI to start LocalStack, but the container is not starting, please check the following:
 
-- Uncheck the **Use kernel networking for UDP** option in Docker Desktop (**Settings** → **Resources** → **Network**) or follow the steps in our [documentation](/aws/configuration/dns-server#system-dns-configuration) to disable it.
+- Uncheck the **Use kernel networking for UDP** option in Docker Desktop (**Settings** → **Resources** → **Network**) or follow the steps in our [documentation](/aws/configuration/networking/dns-server#system-dns-configuration) to disable it.
 - Start LocalStack with a specific DNS address:
 
 ```bash
