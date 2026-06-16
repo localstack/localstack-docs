@@ -592,10 +592,6 @@ export default defineConfig({
                         directory: '/aws/tooling/extensions',
                       },
                     },
-                    {
-                      label: 'Official Extensions',
-                      link: 'https://app.localstack.cloud/extensions/library/',
-                    },
                   ],
                   collapsed: true,
                 },
