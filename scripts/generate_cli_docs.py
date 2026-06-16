@@ -212,7 +212,7 @@ def generate_documentation(
         "To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).",
         "",
         ":::note",
-        "[`lstk`](/aws/tooling/lstk/) is our new Go-based CLI with an interactive terminal UI for lifecycle (`start`, `stop`), monitoring (`status`, `logs`), storage (`snapshot`), and more.",
+        "[`lstk`](/aws/developer-tools/running-localstack/lstk/) is our new Go-based CLI with an interactive terminal UI for lifecycle (`start`, `stop`), monitoring (`status`, `logs`), storage (`snapshot`), and more.",
         ":::",
         "",
         "## Global Options",
