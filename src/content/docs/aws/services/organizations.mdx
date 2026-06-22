@@ -91,8 +91,8 @@ To get started, start your LocalStack instance using your preferred method:
 ## Service Control Policy enforcement
 
 [Service Control Policies (SCPs)](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html) set the maximum permissions for accounts in your organization.
-When IAM enforcement is enabled, LocalStack checks SCPs together with identity-based policies.
-A request goes through only if both the principal's identity-based policies and the SCPs covering its account allow the action.
+When IAM enforcement is enabled, LocalStack checks SCPs together with other applicable policies.
+A request goes through only if both the principal's policies, resource's policies and the SCPs covering its account allow the action on the resource.
 
 To turn on SCP enforcement, start LocalStack with [`ENFORCE_IAM=1`](/aws/developer-tools/security-testing/iam-policy-enforcement) and enable the `SERVICE_CONTROL_POLICY` policy type on your organization root (see the [getting started](#getting-started) steps above).
 
