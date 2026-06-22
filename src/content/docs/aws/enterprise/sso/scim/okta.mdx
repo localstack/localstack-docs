@@ -27,7 +27,9 @@ Use the following steps to configure SCIM Base Connector URL and Bearer Auth Tok
 The exact menu names may vary depending on Okta's UI version and app type, but the key settings are always the SCIM Base Connector URL and Bearer Auth Token under the provisioning or integration section.
 :::
 
-### Provisioning Individual Users
+### User Management
+
+#### Provisioning Individual Users
 
 LocalStack supports full provisioning and deprovisioning of individual user accounts via SCIM.
 
@@ -44,11 +46,11 @@ For security reasons, SCIM can only provision user accounts for users who do not
 Legacy users (existing LocalStack accounts) can also be assigned to the Okta application, provided their email address matches the one they used to register with the LocalStack web app.
 :::
 
-### Updating User Accounts
+#### Updating User Accounts
 
 Changes to user attributes (first name, last name, email) in Okta are automatically pushed to LocalStack via SCIM while the integration is active.
 
-### Deprovisioning Users
+#### Deprovisioning Users
 
 1. In Okta, go to your application's **Assignments** tab.
 2. Find the user you want to remove and click **Remove** next to their name.
@@ -56,11 +58,11 @@ Changes to user attributes (first name, last name, email) in Okta are automatica
 
 Okta will send a SCIM deprovisioning request and the user will be removed from LocalStack.
 
-### Provisioning Groups of Users
+#### Provisioning Groups of Users
 
 Groups in Okta can be used to provision multiple users to LocalStack at once.
 
-#### Assigning a Group
+##### Assigning a Group
 
 1. In the Okta Admin Console, go to your application and click the **Assignments** tab.
 2. Select **Assign → Assign to Groups**.
@@ -68,7 +70,7 @@ Groups in Okta can be used to provision multiple users to LocalStack at once.
 
 Okta will send a SCIM request to LocalStack to create a user account for each member of the group. Changes to a group's membership in Okta are automatically pushed to LocalStack via SCIM.
 
-#### Deprovisioning a Group
+##### Deprovisioning a Group
 
 1. In Okta, return to your application's **Assignments** tab.
 2. Find the group and click **Remove** next to its name.
@@ -80,7 +82,7 @@ Okta will send a SCIM request to remove the group's users from LocalStack. Users
 Any changes in Okta (user/group attribute changes, group memberships, etc.) are automatically synchronized with LocalStack as long as the SCIM integration is active.
 :::
 
-#### Migrating an Existing OpenID Connect or SAML Application
+##### Migrating an Existing OpenID Connect or SAML Application
 
 If you have an existing OIDC or SAML app in Okta that already has SSO users assigned, follow these steps to add SCIM provisioning:
 
@@ -101,11 +103,61 @@ If you have an existing OIDC or SAML app in Okta that already has SSO users assi
    ![Errors when provisioning users for SAML application](/images/aws/SCIM-SAML-provisioning-5.jpg)
 6. After syncing completes, refresh the page — the error messages should be gone and all users will be fully managed via Okta SCIM.
 
-## License Assignment
+### Role Management
+
+LocalStack workspace roles (**admin** and **member**) are assigned to users by pushing SCIM groups whose name identifies the target role. The role groups themselves do not need to exist in LocalStack before the push — they are synthetic SCIM groups keyed off the `displayName`.
+
+:::caution
+Each user can only be in **one** role group at a time. Attempting to add a user who is already in the admin role group to the member role group (or vice versa) returns a `409` conflict. Remove the user from the previous role group first, then add to the new one.
+:::
+
+#### Group Name Convention
+
+Role groups are matched by `displayName` using a case-insensitive substring check:
+
+- Any group whose name contains `admin` → admin role group
+- Any group whose name contains `member` → member role group
+
+All of the following are valid names for the admin role group:
+
+- `LocalStack-Admin`
+- `LocalStack-Admins-Prod`
+- `engineering-admins`
+
+The first time you push a role group from Okta, LocalStack persists that `displayName` so subsequent GET responses to your IdP reflect the name you sent. You can also rename the group later via SCIM and LocalStack will track the rename.
+
+#### Creating and Pushing a Role Group in Okta
+
+1. Create a new Okta group whose name contains either `Admin` (for the admin role) or `Member` (for the member role). For example: `LocalStack-Admin` or `LocalStack-Member`.
+2. Add users to the group (users must already be assigned to the LocalStack SCIM application).
+3. In your application, go to the **Push Groups** tab.
+4. Push the group to LocalStack via SCIM.
+5. Once synced, LocalStack will assign the corresponding role to all members of the group.
+
+   ![Pushing a role group from Okta](/images/aws/SCIM_okta_role_group.jpg)
+
+#### Moving a User Between Roles
+
+To change a user's role from member to admin (or vice versa):
+
+1. Remove the user from their current role group in Okta.
+2. Add them to the target role group.
+
+Perform these operations as a single atomic action where possible. Adding a user to the new role group while they are still in the old one will return a `409` conflict.
+
+#### Last-Admin Protection
+
+LocalStack will reject any SCIM request that would leave the workspace without an admin. If you attempt to remove the only admin from the admin role group, the request fails with `409 Cannot remove the last workspace admin`. Assign another admin in LocalStack first, then retry the removal.
+
+### License Management
 
 Licenses are assigned to users by pushing specifically named SCIM groups that correspond to your LocalStack subscriptions.
 
-### Group Name Format
+:::caution
+Each user can only be a member of one license group (subscription) per organization. Assigning a user to multiple license groups will result in an error and provisioning will fail for that user.
+:::
+
+#### Group Name Format
 
 License group names follow this format:
 
@@ -119,10 +171,6 @@ The exact group name for each subscription is displayed in the SCIM configuratio
 
 :::tip
 Legacy users can be added to a license assignment group in Okta, provided their email address matches their LocalStack registration email, they have been assigned to the Okta application, and the group name matches the correct subscription.
-:::
-
-:::caution
-Each user can only be a member of one license group (subscription) per organization. Assigning a user to multiple license groups will result in an error and provisioning will fail for that user.
 :::
 
 #### Creating and Pushing a License Group in Okta
@@ -146,7 +194,7 @@ If you are enabling SCIM on a subscription that already has licensed users, foll
 
 :::
 
-### Migrating Users with Existing Licenses
+#### Migrating Users with Existing Licenses
 
 If your organization already has users with assigned licenses and you want to manage them through SCIM:
 

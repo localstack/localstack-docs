@@ -20,22 +20,19 @@ Use the following steps to configure SCIM provisioning from a Microsoft Entra ID
    - **Tenant URL:** Paste the SCIM Base Connector URL from the LocalStack SCIM configuration panel.
    - **Secret Token:** Paste the SCIM bearer token from the LocalStack SCIM configuration panel.
 
-   ![Entra ID SCIM connectivity configuration](/images/aws/SCIM-entra-connectivity.jpg)
+   ![Entra ID SCIM connectivity configuration](/images/aws/SCIM_entra_connectivity.png)
 
-4. **Test the connection** — Click **Test connection** to confirm Entra can reach LocalStack successfully.
-5. **Save** — Save the connection settings.
-6. **(Recommended) Set scope** — Under **Provisioning → Settings → Scope**, select **Sync only assigned users and groups** to limit provisioning to users and groups you explicitly assign to the application.
-7. **Start provisioning** — Once the connection is verified, return to the Provisioning overview and click **Start provisioning**. Entra will begin syncing user and group changes to LocalStack on a 40-minute cycle.
-
-:::note
-Entra runs the provisioning cycle every ~40 minutes by default. To trigger an immediate sync for a specific user, use **Provision on Demand** from the application's Provisioning blade.
-:::
+4. **Test the connection and save** — Click **Test connection** to confirm Entra can reach LocalStack, then save the settings.
+5. **(Recommended) Set scope** — Under **Provisioning → Settings → Scope**, select **Sync only assigned users and groups** to limit provisioning to users and groups you explicitly assign to the application.
+6. **Start provisioning** — Return to the Provisioning overview and click **Start provisioning**. Entra will sync user and group changes to LocalStack every ~40 minutes; for an immediate sync of a specific user, use **Provision on Demand** from the Provisioning blade.
 
 :::caution
 Do **NOT** enable the `aadOptscim062020` feature flag on the Entra provisioning configuration. This flag changes Entra's outbound `PATCH /Groups` semantics in a way that can cause destructive single-user member replacements. The default behavior (flag off) is what LocalStack expects.
 :::
 
-### Provisioning Individual Users
+### User Management
+
+#### Provisioning Individual Users
 
 LocalStack supports full provisioning and deprovisioning of individual user accounts via SCIM.
 
@@ -44,51 +41,45 @@ For security reasons, SCIM can only provision user accounts for users who do not
 :::
 
 1. **Create the user in Entra** (if not already present) — In **Microsoft Entra ID → Users**, click **+ New user → Create new user** and fill in the basic details (User principal name, Display name, etc).
-   ![Creating a new user in Entra ID](/images/aws/SCIM-entra-create-user.jpg)
+   ![Creating a new user in Entra ID](/images/aws/SCIM_entra_create_new_user.png)
 
 2. **Assign the user to the LocalStack application** — Open your Enterprise Application and go to **Manage → Users and groups**. Click **+ Add user/group**, search for the user, select them, and click **Select**.
-   ![Selecting users to assign to the application](/images/aws/SCIM-entra-add-members.jpg)
+   ![Selecting users to assign to the application](/images/aws/SCIM_entra_add_members_search.jpg)
 
-3. **Wait for sync (or trigger Provision on Demand)** — On the next provisioning cycle, Entra will send a SCIM request to LocalStack to create the user account. To skip the wait, go to **Provisioning → Provision on Demand**, search for the user, and run an immediate provision.
+3. **Wait for sync** — On the next provisioning cycle (or via **Provision on Demand**), Entra will send a SCIM request to LocalStack to create the user account.
 
 :::tip
 Legacy users (existing LocalStack accounts) can also be assigned to the Entra application, provided their email address matches the one they used to register with the LocalStack web app.
 :::
 
-### Updating User Accounts
+#### Updating User Accounts
 
-Changes to user attributes (first name, last name, email) in Entra are automatically pushed to LocalStack via SCIM on the next sync cycle while the integration is active. Attributes are managed on the user's **Properties → Identity** tab in Microsoft Entra ID.
+Changes to user attributes (first name, last name, email) in Entra are automatically pushed to LocalStack via SCIM while the integration is active.
 
-![Editing a user's identity properties in Entra ID](/images/aws/SCIM-entra-user-properties.jpg)
-
-### Deprovisioning Users
+#### Deprovisioning Users
 
 1. In Entra, open the LocalStack Enterprise Application and go to **Manage → Users and groups**.
 2. Find the user you want to remove and click **Remove**.
 3. Confirm the action.
 
-On the next sync cycle (or via Provision on Demand) Entra will send a SCIM deprovisioning request and the user will be removed from LocalStack.
+Entra will send a SCIM deprovisioning request and the user will be removed from LocalStack on the next sync cycle. Disabling the user in the Entra directory itself (`accountEnabled = false`) has the same effect.
 
-:::note
-Disabling the user account in the Entra directory itself (setting `accountEnabled = false`) also takes the user out of scope and triggers SCIM deprovisioning on the next sync cycle.
-:::
-
-### Provisioning Groups of Users
+#### Provisioning Groups of Users
 
 Groups in Microsoft Entra ID can be used to provision multiple users to LocalStack at once. To enable group provisioning, ensure the **Provision Microsoft Entra ID Groups** mapping is enabled in **Provisioning → Mappings**.
 
-#### Assigning a Group
+##### Assigning a Group
 
 1. **Create a security group** — In **Microsoft Entra ID → Groups → All groups**, click **+ New group**. Choose **Security** as the group type, set the **Membership type** to **Assigned**, give the group a name, and (optionally) a description.
-   ![Creating a new security group in Entra ID](/images/aws/SCIM-entra-new-group.jpg)
+   ![Creating a new security group in Entra ID](/images/aws/SCIM_entra_new_group.png)
 2. **Add members to the group** — In the same form (or after creation, via the group's **Members** tab), select the users you want to provision.
-   ![Adding members to a group in Entra ID](/images/aws/SCIM-entra-group-members.jpg)
+   ![Adding members to a group in Entra ID](/images/aws/SCIM_entra_create_group_member_popup.png)
 3. **Assign the group to the application** — Open your Enterprise Application, go to **Manage → Users and groups**, click **+ Add user/group**, select the group, and confirm.
-4. **Wait for sync** — On the next provisioning cycle, Entra will send SCIM requests to LocalStack to provision each member of the group.
+4. **Wait for sync** — Entra will send SCIM requests to LocalStack to provision each member on the next sync cycle.
 
 Changes to a group's membership in Entra are automatically pushed to LocalStack via SCIM on subsequent sync cycles.
 
-#### Deprovisioning a Group
+##### Deprovisioning a Group
 
 1. In Entra, open the LocalStack Enterprise Application and go to **Manage → Users and groups**.
 2. Find the group and click **Remove**.
@@ -99,3 +90,48 @@ Entra will send SCIM requests to remove the group's users from LocalStack. Users
 :::tip
 Any changes in Entra (user/group attribute changes, group memberships, etc.) are automatically synchronized with LocalStack on subsequent sync cycles as long as the SCIM integration is active.
 :::
+
+### Role Management
+
+LocalStack workspace roles (**admin** and **member**) are assigned to users by syncing SCIM groups whose name identifies the target role. The role groups themselves do not need to exist in LocalStack before the sync — they are synthetic SCIM groups keyed off the `displayName`.
+
+:::caution
+Each user can only be in **one** role group at a time. Attempting to add a user who is already in the admin role group to the member role group (or vice versa) returns a `409` conflict. Remove the user from the previous role group first, then add to the new one.
+:::
+
+#### Group Name Convention
+
+Role groups are matched by `displayName` using a case-insensitive substring check:
+
+- Any group whose name contains `admin` → admin role group
+- Any group whose name contains `member` → member role group
+
+All of the following are valid names for the admin role group:
+
+- `LocalStack-Admin`
+- `LocalStack-Admins-Prod`
+- `XD5-XD5-LA1000_AuthLocalstackAdmin`
+
+The first time you sync a role group from Entra, LocalStack persists that `displayName` so subsequent GET responses to your IdP reflect the name you sent. You can also rename the group later via SCIM and LocalStack will track the rename.
+
+#### Creating a Role Group in Microsoft Entra ID
+
+1. In **Microsoft Entra ID → Groups → All groups**, click **+ New group**. Create a **Security** group with **Membership type: Assigned** whose name contains either `Admin` (for the admin role) or `Member` (for the member role).
+   ![Creating a role group in Entra ID](/images/aws/SCIM_entra_role_group.png)
+2. Add users to the group (users must already be assigned to the LocalStack Enterprise Application).
+3. Assign the group to the LocalStack Enterprise Application via **Manage → Users and groups**.
+4. Confirm that **Provision Microsoft Entra ID Groups** is enabled under **Provisioning → Mappings**.
+5. On the next provisioning cycle (or via **Provision on Demand**), Entra will sync the group to LocalStack and assign the corresponding role to all members.
+
+#### Moving a User Between Roles
+
+To change a user's role from member to admin (or vice versa):
+
+1. Remove the user from their current role group in Entra.
+2. Add them to the target role group.
+
+Perform these operations as a single atomic action where possible. Adding a user to the new role group while they are still in the old one will return a `409` conflict.
+
+#### Last-Admin Protection
+
+LocalStack will reject any SCIM request that would leave the workspace without an admin. If you attempt to remove the only admin from the admin role group, the request fails with `409 Cannot remove the last workspace admin`. Assign another admin in LocalStack first, then retry the removal.
