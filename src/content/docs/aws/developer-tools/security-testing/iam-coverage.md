@@ -142,6 +142,8 @@ It only includes operations performed with a principal, not as root, so test set
 | **Resource, NotResource** | In general supported, including placeholders `*` and `?`.              |
 |                | No support for policy variables                                                      |
 | **Condition**  | Supported condition operators:                                                       |
+|                | - Null                                                                       |
+|                | - Bool                                                                      |
 |                | - StringEquals                                                                       |
 |                | - StringEqualsIgnoreCase                                                             |
 |                | - StringLike                                                                         |
@@ -154,6 +156,7 @@ It only includes operations performed with a principal, not as root, so test set
 |                | - aws:ResourceTag                                                                     |
 |                | - aws:RequestTag                                                                     |
 |                | - aws:PrincipalTag                                                                    |
+
 
 ## Current Limitations
 
