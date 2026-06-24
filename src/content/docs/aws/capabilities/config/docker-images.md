@@ -37,12 +37,14 @@ The following tags are available for the LocalStack Docker image:
 |---|---|---|
 | `latest` / `stable` | Tagged releases only (e.g. `2026.05.0`) | Most users — stable, release-quality builds |
 | `dev` | Every merged commit on `main` | Users who need the latest unreleased changes |
-| `nightly` | Scheduled nightly builds | CI pipelines that need a fresh build on a regular cadence |
 | `YYYY.MM` (e.g. `2026.05`) | Each patch release within that month | Users who want bugfixes but want to avoid feature changes |
 | `YYYY.MM.patch` (e.g. `2026.05.0`) | Never (pinned) | Fully reproducible environments where no changes are acceptable |
 
 :::note
 As of May 2026, `latest` was changed to mirror `stable` and is only updated on official tagged releases. If you previously relied on `latest` for the most recent unreleased changes, switch to the `dev` tag.
+
+The `nightly` tag is no longer published for LocalStack for AWS. Use the `dev` tag to track untagged changes from `main`.
+
 :::
 
 Visit the [LocalStack for AWS tag](https://hub.docker.com/r/localstack/localstack-pro/tags?page=1&ordering=last_updated) page on Docker Hub.
