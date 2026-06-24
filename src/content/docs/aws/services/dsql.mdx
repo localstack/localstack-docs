@@ -34,10 +34,10 @@ awslocal dsql create-cluster
 
 ```bash title="Output"
 {
-    "identifier": "abcdefghij0123456789klmnop",
-    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/abcdefghij0123456789klmnop",
+    "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6",
     "status": "CREATING",
-    "creationTime": "2026-06-24T10:00:00.000000+00:00",
+    "creationTime": 1782306284.339124,
     "deletionProtectionEnabled": true,
     "encryptionDetails": {
         "encryptionType": "AWS_OWNED_KMS_KEY",
@@ -58,15 +58,15 @@ You can retrieve the details of a cluster using the [`GetCluster`](https://docs.
 Replace the identifier with the one returned in the previous step:
 
 ```bash
-awslocal dsql get-cluster --identifier abcdefghij0123456789klmnop
+awslocal dsql get-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 ```bash title="Output"
 {
-    "identifier": "abcdefghij0123456789klmnop",
-    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/abcdefghij0123456789klmnop",
+    "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6",
     "status": "ACTIVE",
-    "creationTime": "2026-06-24T10:00:00.000000+00:00",
+    "creationTime": 1782306284.339124,
     "deletionProtectionEnabled": true,
     "tags": {},
     "encryptionDetails": {
@@ -87,8 +87,8 @@ awslocal dsql list-clusters
 {
     "clusters": [
         {
-            "identifier": "abcdefghij0123456789klmnop",
-            "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/abcdefghij0123456789klmnop"
+            "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+            "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6"
         }
     ]
 }
@@ -101,22 +101,22 @@ Attempting to delete a protected cluster returns a `ValidationException`.
 
 ```bash
 awslocal dsql update-cluster \
-    --identifier abcdefghij0123456789klmnop \
+    --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --no-deletion-protection-enabled
 ```
 
 You can then delete the cluster using the [`DeleteCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteCluster.html) API:
 
 ```bash
-awslocal dsql delete-cluster --identifier abcdefghij0123456789klmnop
+awslocal dsql delete-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 ```bash title="Output"
 {
-    "identifier": "abcdefghij0123456789klmnop",
-    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/abcdefghij0123456789klmnop",
+    "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6",
     "status": "DELETING",
-    "creationTime": "2026-06-24T10:00:00.000000+00:00"
+    "creationTime": 1782306284.339124
 }
 ```
 
@@ -162,7 +162,7 @@ Add or update tags on an existing cluster:
 
 ```bash
 awslocal dsql tag-resource \
-    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/abcdefghij0123456789klmnop \
+    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --tags Team=platform
 ```
 
@@ -170,7 +170,7 @@ List the tags on a resource:
 
 ```bash
 awslocal dsql list-tags-for-resource \
-    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/abcdefghij0123456789klmnop
+    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 ```bash title="Output"
@@ -187,7 +187,7 @@ Remove tags by key:
 
 ```bash
 awslocal dsql untag-resource \
-    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/abcdefghij0123456789klmnop \
+    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --tag-keys Env
 ```
 
@@ -197,7 +197,7 @@ You can attach a resource-based policy to a cluster using the [`PutClusterPolicy
 
 ```bash
 awslocal dsql put-cluster-policy \
-    --identifier abcdefghij0123456789klmnop \
+    --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --policy '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::000000000000:root"},"Action":"dsql:DbConnect","Resource":"*"}]}'
 ```
 
@@ -210,7 +210,7 @@ awslocal dsql put-cluster-policy \
 Retrieve the stored policy:
 
 ```bash
-awslocal dsql get-cluster-policy --identifier abcdefghij0123456789klmnop
+awslocal dsql get-cluster-policy --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 :::note
@@ -223,20 +223,20 @@ You can manage stream metadata using the [`CreateStream`](https://docs.aws.amazo
 
 ```bash
 awslocal dsql create-stream \
-    --cluster-identifier abcdefghij0123456789klmnop \
-    --target-definition '{"kinesisConfiguration":{"streamArn":"arn:aws:kinesis:us-east-1:000000000000:stream/my-stream"}}' \
-    --ordering DATABASE \
+    --cluster-identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
+    --target-definition '{"kinesis":{"streamArn":"arn:aws:kinesis:us-east-1:000000000000:stream/my-stream","roleArn":"arn:aws:iam::000000000000:role/dsql-stream-role"}}' \
+    --ordering UNORDERED \
     --format JSON
 ```
 
 ```bash title="Output"
 {
-    "clusterIdentifier": "abcdefghij0123456789klmnop",
-    "streamIdentifier": "qrstuvwxyz0123456789abcdef",
-    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/abcdefghij0123456789klmnop/stream/qrstuvwxyz0123456789abcdef",
+    "clusterIdentifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "streamIdentifier": "3506a484-f6b2-4610-b04e-5cb0eae4405a",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6/stream/3506a484-f6b2-4610-b04e-5cb0eae4405a",
     "status": "CREATING",
-    "creationTime": "2026-06-24T10:05:00.000000+00:00",
-    "ordering": "DATABASE",
+    "creationTime": 1782306345.637581,
+    "ordering": "UNORDERED",
     "format": "JSON"
 }
 ```
@@ -244,7 +244,7 @@ awslocal dsql create-stream \
 List the streams of a cluster:
 
 ```bash
-awslocal dsql list-streams --cluster-identifier abcdefghij0123456789klmnop
+awslocal dsql list-streams --cluster-identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 :::note
@@ -256,13 +256,13 @@ Streams are backed as metadata only; no change-data-capture (CDC) records are em
 You can retrieve the synthesised VPC endpoint service name for a cluster using the [`GetVpcEndpointServiceName`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_GetVpcEndpointServiceName.html) API:
 
 ```bash
-awslocal dsql get-vpc-endpoint-service-name --identifier abcdefghij0123456789klmnop
+awslocal dsql get-vpc-endpoint-service-name --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 ```bash title="Output"
 {
     "serviceName": "com.amazonaws.us-east-1.dsql",
-    "clusterVpcEndpoint": "vpce-local.abcdefghij0123456789klmnop.dsql.us-east-1.vpce.amazonaws.com"
+    "clusterVpcEndpoint": "vpce-local.8a71d298-c086-4fb4-a698-d7b4eeb657e6.dsql.us-east-1.vpce.amazonaws.com"
 }
 ```
 
