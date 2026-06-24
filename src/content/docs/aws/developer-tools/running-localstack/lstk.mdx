@@ -25,7 +25,7 @@ Running `lstk` with no arguments takes you through the entire startup flow autom
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) installed and running.
-- A [LocalStack account](https://app.localstack.cloud/sign-up) with a valid [Auth Token](/aws/getting-started/auth-token/).
+- A [LocalStack account](https://app.localstack.cloud/sign-up) with a [license](/aws/getting-started/auth-token/#managing-your-license), and `lstk` handles authentication for you (see [Authentication](#authentication)).
 
 ## Installation
 
@@ -80,7 +80,7 @@ See the [`update`](#update) command for details, including the start-time update
 lstk
 ```
 
-Running `lstk` without arguments performs the full startup sequence: resolves your auth token by opening the LocalStack Web Application, pulls the latest image if needed, and starts the LocalStack container.
+Running `lstk` without arguments performs the full startup sequence: authenticates you automatically, pulls the latest image if needed, and starts the LocalStack container.
 In an interactive terminal it launches the TUI; in a non-interactive environment it prints plain text output.
 
 On the very first interactive run, `lstk` prompts you to pick which emulator to run (AWS, Snowflake, or Azure) and writes your choice to `config.toml`.
@@ -89,8 +89,10 @@ See [Emulator types](#emulator-types) for the available options.
 For CI or headless environments, set `LOCALSTACK_AUTH_TOKEN` and use `--non-interactive`:
 
 ```bash
-LOCALSTACK_AUTH_TOKEN=<your-token> lstk --non-interactive
+LOCALSTACK_AUTH_TOKEN=<your-ci-auth-token> lstk --non-interactive
 ```
+
+CI environments require a CI Auth Token; a personal Developer Auth Token cannot be used there.
 
 ## Authentication
 
@@ -252,9 +254,21 @@ See [Container-injected variables](#container-injected-variables) for the full l
 
 Place a `.lstk/config.toml` in your project directory.
 When you run `lstk` from that directory, the local config takes precedence over the global one.
-This is useful for pinning a specific image tag or environment profile per-project:
+This lets each project pin its own emulator type, image tag, and environment profiles.
+
+For example, a project that targets the Snowflake emulator can keep its own config:
 
 ```toml
+# .lstk/config.toml
+[[containers]]
+type = "snowflake"
+port = "4566"
+```
+
+An AWS project might instead pin a specific image tag and enable a debug profile:
+
+```toml
+# .lstk/config.toml
 [[containers]]
 type = "aws"
 tag  = "2026.4"
@@ -1150,7 +1164,7 @@ No credentials were found in the environment.
 ### Image pull failed
 
 If `lstk` cannot pull the Docker image, check your network connection and Docker configuration.
-On corporate networks, you may need to configure Docker's proxy settings.
+On corporate networks, you may need to configure Docker's proxy settings, see [How do I configure LocalStack to use my corporate HTTP and HTTPS proxy?](/aws/getting-started/faq/#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy).
 
 ### Unknown environment profile
 
@@ -1173,4 +1187,4 @@ DEBUG = "1"
 
 ### Getting help
 
-If the steps above don't resolve your issue, [contact us](https://localstack.cloud/contact/) or open an issue on the [lstk GitHub repository](https://github.com/localstack/lstk/issues).
+If the steps above don't resolve your issue, see [Get Help](/aws/help-support/get-help/) for the available support channels, including the support email and in-app chat.
