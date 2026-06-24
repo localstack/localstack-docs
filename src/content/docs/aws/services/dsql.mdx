@@ -2,7 +2,7 @@
 title: "Aurora DSQL"
 description: Get started with Aurora DSQL on LocalStack
 tags: ["Ultimate"]
-persistence: supported
+persistence: supported with limitations
 ---
 
 import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
@@ -268,13 +268,14 @@ awslocal dsql get-vpc-endpoint-service-name --identifier 8a71d298-c086-4fb4-a698
 
 ## Current Limitations
 
-- **CloudFormation is not yet supported** for Aurora DSQL resources.
+- CloudFormation is not yet supported for Aurora DSQL resources.
 - The data plane is backed by a standard embedded PostgreSQL instance rather than the real Aurora DSQL distributed engine.
   DSQL-specific SQL dialect restrictions are not enforced, so behaviour may differ from AWS for unsupported statements.
-- **Multi-region clusters** are tracked at the control-plane level only.
+- Multi-region clusters are tracked at the control-plane level only.
   Peering metadata is recorded, but there is no real cross-region replication.
-- **Streams** support metadata CRUD only; no change-data-capture record flow is produced.
-- **Cluster policies** are stored as opaque JSON and are not enforced.
+- Data-plane data is not persisted yet. Cluster metadata survives restarts when persistence is enabled, but the data written through the embedded PostgreSQL backend (tables, rows) is not retained.
+- Streams support metadata CRUD only; no change-data-capture record flow is produced.
+- Cluster policies are stored as opaque JSON and are not enforced.
 - `GetVpcEndpointServiceName` returns a cosmetic, synthesised endpoint name.
 - KMS encryption is reflected in metadata only; no actual encryption is performed.
 - Data-plane connectivity requires running LocalStack inside Docker and uses plain PostgreSQL credentials.
