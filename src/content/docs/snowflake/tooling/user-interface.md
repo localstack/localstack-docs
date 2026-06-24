@@ -33,7 +33,7 @@ Navigate to [**https://app.localstack.cloud/inst/default/snowflake**](https://ap
 
 The User Interface provides a **SQL Worksheet** tab that allows you to run SQL queries and view results. The editor includes SQL syntax highlighting and autocomplete for SQL keywords, Snowflake built-in functions, and schema objects such as databases, tables, and columns.
 
-![Running SQL queries](/images/snowflake/new-run-sql-queries.png)
+![Running SQL queries](/images/snowflake/snowflake-run-queries.png)
 
 Use the **Local Resources** panel on the right to explore your schema objects in a hierarchical tree. Each node type — database, schema, table, view, column, and folder — is represented by a dedicated icon. Views are displayed as a distinct category alongside tables within each schema.
 
@@ -59,4 +59,4 @@ Each entry includes metadata such as the query ID, SQL text, execution status, d
 
 You can search and filter the query history to quickly locate queries by text, execution status, or time range.
 
-![Query history](/images/snowflake/query-history.png)
+![Query history](/images/snowflake/snowflake-query-history.png)

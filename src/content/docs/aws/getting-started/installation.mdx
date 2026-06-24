@@ -121,7 +121,7 @@ Then extract the LocalStack CLI from the terminal:
 You can download the pre-built binary for your architecture using the link below:
 
 <LinkButton
-  href={`https://github.com/localstack/localstack-cli/releases/download/v2026.3.0/localstack-cli-2026.3.0-windows-amd64-onefile.zip`}
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-windows-amd64-onefile.zip`}
   icon="download"
   variant="minimal"
 >
@@ -148,7 +148,7 @@ python3 -m pip install --upgrade localstack
 ```
 
 :::note
-To download a specific version of LocalStack, replace `<version>` with the required version from [release page](https://github.com/localstack/localstack/releases).
+To download a specific version of LocalStack, replace `<version>` with the required version from [changelog page](/aws/changelog).
 
 ```bash
 python3 -m pip install localstack==<version>
@@ -257,8 +257,8 @@ Besides using the CLI, there are other ways of starting and managing your LocalS
 - [Docker](#docker)\
   Use the Docker CLI to manually start the LocalStack Docker container.
 
-- [Helm](#helm)\
-  Use Helm to create a LocalStack deployment in a Kubernetes cluster.
+- [LocalStack Operator](#localstack-operator)\
+  Use the LocalStack Operator to deploy and manage LocalStack instances inside a Kubernetes cluster.
 
 LocalStack runs inside a Docker container, and the above options are different ways to start and manage the LocalStack Docker container.
 
@@ -273,7 +273,7 @@ Learn more about our desktop client at [LocalStack Desktop](/aws/capabilities/we
 ### LocalStack Docker Extension
 
 Install our [official Docker Desktop extension](https://hub.docker.com/extensions/localstack/localstack-docker-desktop) to manage LocalStack.
-See [LocalStack Docker Extension](/aws/tooling/localstack-docker-extension) for more information.
+See [LocalStack Docker Extension](/aws/capabilities/localstack-docker-extension) for more information.
 
 ### Docker-Compose
 
@@ -375,7 +375,7 @@ docker run \
 
 - This command pulls the current nightly build from the `main` branch (if you don't have the image locally) and **not** the latest supported version.
   If you want to use a specific version of LocalStack, use the appropriate tag: `docker run --rm -it -p 4566:4566 -p 4510-4559:4510-4559 localstack/localstack:<tag>`.
-  Check-out the [LocalStack releases](https://github.com/localstack/localstack/releases) to know more about specific LocalStack versions.
+  Check-out the [changelog page](/aws/changelog) to know more about specific LocalStack versions.
 
 - If you are using LocalStack with an [Auth Token](/aws/getting-started/auth-token), you need to specify the image tag as `localstack/localstack-pro` in your Docker setup.
   Going forward, `localstack/localstack-pro` image will contain our Pro-supported services and APIs.
@@ -395,25 +395,9 @@ docker run \
 - To configure an Auth Token, refer to the [Auth Token](/aws/getting-started/auth-token) documentation.
   :::
 
-### Helm
+### LocalStack Operator
 
-If you want to deploy LocalStack in your [Kubernetes](https://kubernetes.io) cluster, you can use [Helm](https://helm.sh).
-
-#### Prerequisites
-
-- [Kubernetes](https://kubernetes.io)
-- [Helm](https://helm.sh/docs/intro/install/)
-
-#### Deploy LocalStack using Helm
-
-You can deploy LocalStack in a Kubernetes cluster by running these commands:
-
-```bash
-helm repo add localstack-repo https://helm.localstack.cloud
-helm upgrade --install localstack localstack-repo/localstack
-```
-
-The Helm charts are not maintained in the main repository, but in a [separate one](https://github.com/localstack/helm-charts).
+If you want to deploy LocalStack in your [Kubernetes](https://kubernetes.io) cluster, you can use the [LocalStack Operator](/aws/enterprise/kubernetes/kubernetes-operator).
 
 ## What's next?
 
@@ -426,7 +410,7 @@ Now that you have LocalStack up and running, the following resources might be us
   - And many more!
 - [Find out how to configure LocalStack](/aws/capabilities/config/configuration) such that it perfectly fits your need.
 - [Use LocalStack in your CI environment](/aws/integrations/continuous-integration/) to increase your code quality.
-- [Checkout LocalStack's Cloud Developer Tools](/aws/tooling/) to further increase your development efficiency with LocalStack.
+- [Checkout LocalStack's Cloud Developer Tools](/aws/developer-tools/) to further increase your development efficiency with LocalStack.
 - Find out about the ways you can [configure LocalStack](/aws/capabilities/config/configuration).
 
 ## Troubleshooting
@@ -448,7 +432,7 @@ python3 -m localstack.cli.main
 
 If you are using the `localstack` CLI to start LocalStack, but the container is not starting, please check the following:
 
-- Uncheck the **Use kernel networking for UDP** option in Docker Desktop (**Settings** → **Resources** → **Network**) or follow the steps in our [documentation](/aws/tooling/dns-server#system-dns-configuration) to disable it.
+- Uncheck the **Use kernel networking for UDP** option in Docker Desktop (**Settings** → **Resources** → **Network**) or follow the steps in our [documentation](/aws/capabilities/dns-server#system-dns-configuration) to disable it.
 - Start LocalStack with a specific DNS address:
 
 ```bash

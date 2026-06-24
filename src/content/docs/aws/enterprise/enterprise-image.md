@@ -53,7 +53,7 @@ The main integrations are:
 
 - **License activation**: The standard image performs online activation using your `LOCALSTACK_AUTH_TOKEN`. See [Auth Token](/aws/getting-started/auth-token) for activation behavior and fallbacks.
 - **Event reporting (telemetry)**: Used for Stack Insights and related usage analytics. You can disable this via `DISABLE_EVENTS=1`.
-- **Cloud Pods (platform remote)**: Saving/loading pods against the default platform remote uses LocalStack-managed infrastructure. For stricter data residency, configure your own Cloud Pods [remote storage](/aws/capabilities/state-management/cloud-pods#remotes).
+- **Cloud Pods (platform remote)**: Saving/loading pods against the default platform remote uses LocalStack-managed infrastructure. For stricter data residency, configure your own Cloud Pods [remote storage](/aws/developer-tools/snapshots/cloud-pods#remotes).
 - **Ephemeral instances**: These are managed cloud instances and therefore require connectivity to LocalStack Cloud services.
 
 ### Recommended setup for offline environments

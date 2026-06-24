@@ -193,6 +193,167 @@ awslocal cognito-idp list-users --user-pool-id $pool_id
 }
 ```
 
+## Multi-factor authentication (MFA)
+
+LocalStack challenges for multi-factor authentication during the sign-in flow.
+The following MFA factors are supported:
+
+- **SMS text message** (`SMS_MFA`)
+- **Software token / TOTP** (`SOFTWARE_TOKEN_MFA`), such as Google Authenticator or Authy
+- **Email** (`EMAIL_OTP`)
+
+MFA is controlled at two levels.
+You configure the available factors and the enforcement mode at the pool level with [`SetUserPoolMfaConfig`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html), and you enable specific factors per user with [`AdminSetUserMFAPreference`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminSetUserMFAPreference.html) or [`SetUserMFAPreference`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserMFAPreference.html).
+The pool's `MfaConfiguration` determines whether a challenge is issued:
+
+- `OFF`: no MFA challenge is ever issued.
+- `OPTIONAL`: a challenge is issued only when the user has an MFA factor enabled in their preferences.
+- `ON`: an MFA challenge is always required.
+
+When a user has multiple factors enabled, the one marked as `PreferredMfa` is selected.
+
+### Software token (TOTP) MFA
+
+First, enable software token MFA at the pool level.
+Setting `MfaConfiguration` to `OPTIONAL` enforces MFA per-user based on their preferences:
+
+```bash
+awslocal cognito-idp set-user-pool-mfa-config \
+  --user-pool-id $pool_id \
+  --software-token-mfa-configuration Enabled=true \
+  --mfa-configuration OPTIONAL
+```
+
+Sign in once to obtain an access token, then associate a software token for the user.
+This returns a `SecretCode` that you register in your authenticator app:
+
+```bash
+awslocal cognito-idp associate-software-token --access-token <access-token>
+```
+
+```bash title="Output"
+{
+    "SecretCode": "QDWSDFGRVASRWQRRWE..."
+}
+```
+
+Verify the token by submitting a code generated from the secret, then set the software token as the user's preferred MFA factor:
+
+```bash
+awslocal cognito-idp verify-software-token \
+  --access-token <access-token> \
+  --user-code <totp-code>
+
+awslocal cognito-idp set-user-mfa-preference \
+  --access-token <access-token> \
+  --software-token-mfa-settings Enabled=true,PreferredMfa=true
+```
+
+On the next sign-in, the authentication flow now returns a `SOFTWARE_TOKEN_MFA` challenge instead of issuing tokens directly:
+
+```bash
+awslocal cognito-idp initiate-auth \
+  --client-id $client_id \
+  --auth-flow USER_PASSWORD_AUTH \
+  --auth-parameters USERNAME=example_user,PASSWORD=12345678Aa!
+```
+
+```bash title="Output"
+{
+    "ChallengeName": "SOFTWARE_TOKEN_MFA",
+    "Session": "abcd1234...",
+    "ChallengeParameters": {
+        "USER_ID_FOR_SRP": "example_user"
+    }
+}
+```
+
+Respond to the challenge with a fresh TOTP code to complete authentication:
+
+```bash
+awslocal cognito-idp respond-to-auth-challenge \
+  --client-id $client_id \
+  --challenge-name SOFTWARE_TOKEN_MFA \
+  --session <session> \
+  --challenge-responses USERNAME=example_user,SOFTWARE_TOKEN_MFA_CODE=<totp-code>
+```
+
+An invalid code is rejected with a `CodeMismatchException`.
+
+### Email MFA
+
+Enable email MFA at the pool level by providing an `EmailMfaConfiguration`.
+The configuration is persisted and returned by [`GetUserPoolMfaConfig`](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html):
+
+```bash
+awslocal cognito-idp set-user-pool-mfa-config \
+  --user-pool-id $pool_id \
+  --email-mfa-configuration 'Message="Your code is {####}",Subject="Your verification code"' \
+  --mfa-configuration OPTIONAL
+```
+
+Set email as the user's preferred MFA factor.
+The user must have a verified `email` attribute:
+
+```bash
+awslocal cognito-idp admin-set-user-mfa-preference \
+  --user-pool-id $pool_id \
+  --username example_user \
+  --email-mfa-settings Enabled=true,PreferredMfa=true
+```
+
+`AdminGetUser` now surfaces `EMAIL_OTP` in the user's MFA settings:
+
+```bash
+awslocal cognito-idp admin-get-user --user-pool-id $pool_id --username example_user
+```
+
+```bash title="Output"
+{
+    ...
+    "UserMFASettingList": [
+        "EMAIL_OTP"
+    ],
+    "PreferredMfaSetting": "EMAIL_OTP"
+}
+```
+
+On the next sign-in, the flow returns an `EMAIL_OTP` challenge:
+
+```bash title="Output"
+{
+    "ChallengeName": "EMAIL_OTP",
+    "Session": "abcd1234...",
+    "ChallengeParameters": {
+        "CODE_DELIVERY_DELIVERY_MEDIUM": "EMAIL",
+        "CODE_DELIVERY_DESTINATION": "e***@example.com"
+    }
+}
+```
+
+The one-time code is printed to the LocalStack container logs (and sent via email if [SMTP is configured](/aws/capabilities/config/configuration/#emails)):
+
+```bash
+INFO --- [et.reactor-0] l.p.c.s.c.auth_flows       : Code verification sent via email: 123456
+```
+
+Respond to the challenge with the emailed code to complete authentication:
+
+```bash
+awslocal cognito-idp respond-to-auth-challenge \
+  --client-id $client_id \
+  --challenge-name EMAIL_OTP \
+  --session <session> \
+  --challenge-responses USERNAME=example_user,EMAIL_OTP_CODE=<code>
+```
+
+As with TOTP, an invalid code is rejected with a `CodeMismatchException`.
+
+:::note
+LocalStack cannot deliver or verify real SMS messages locally.
+For `SMS_MFA` challenges, the `SMS_MFA_CODE` parameter must be present in the challenge response but its value is not validated.
+:::
+
 ## JWT Token Issuer and JSON Web Key Sets (JWKS) endpoints
 
 When Cognito creates JWT tokens, they include an issuer (`iss`) attribute that specifies the endpoint of the corresponding user pool.

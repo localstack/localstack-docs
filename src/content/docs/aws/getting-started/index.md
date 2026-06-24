@@ -20,4 +20,4 @@ You can find a comprehensive list of supported APIs on each AWS service page.
 
 LocalStack also provides additional features to make your life as a cloud developer easier!
 
-Check out LocalStack's [Cloud Developer Tools](/aws/tooling/).
+Check out LocalStack's [Cloud Developer Tools](/aws/developer-tools/).

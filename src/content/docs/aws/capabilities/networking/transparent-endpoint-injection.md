@@ -11,7 +11,7 @@ sidebar:
 
 LocalStack provides Transparent Endpoint Injection,
 which enables seamless connectivity to LocalStack without modifying your application code targeting AWS.
-The [DNS Server](/aws/tooling/dns-server) resolves AWS domains such as `*.amazonaws.com` including subdomains to the LocalStack container.
+The [DNS Server](/aws/capabilities/dns-server) resolves AWS domains such as `*.amazonaws.com` including subdomains to the LocalStack container.
 Therefore, your application seamlessly accesses the LocalStack APIs instead of the real AWS APIs.
 For local testing, you might need to disable SSL validation as explained under [Self-signed certificates](#self-signed-certificates).
 
@@ -40,7 +40,7 @@ For [supported AWS SDKs](https://docs.aws.amazon.com/sdkref/latest/guide/feature
 this configuration happens automatically without any custom code changes.
 
 Currently, no application code changes are required to let your application connect to local cloud APIs because
-Transparent Endpoint Injection uses the integrated [DNS Server](/aws/tooling/dns-server) to resolve AWS API calls to target LocalStack.
+Transparent Endpoint Injection uses the integrated [DNS Server](/aws/capabilities/dns-server) to resolve AWS API calls to target LocalStack.
 
 ## Configuration
 
@@ -59,7 +59,7 @@ If Transparent Endpoint Injection is _not_ used, the AWS SDK within Lambda funct
 Transparent Endpoint Injection is only available in LocalStack for AWS.
 
 Alternatively, specific AWS endpoints can be resolved to AWS while continuing to use Transparent Endpoint Injection.
-Refer to the [DNS server configuration](/aws/tooling/dns-server#system-dns-configuration) for skipping selected domain name patterns.
+Refer to the [DNS server configuration](/aws/capabilities/dns-server#system-dns-configuration) for skipping selected domain name patterns.
 
 :::danger
 Use this configuration with caution because we generally do not recommend connecting to real AWS from within LocalStack.
@@ -127,13 +127,13 @@ In such cases, there are different approaches you can take depending on your set
 
 ![AWS SDK connecting to a Docker host](/images/aws/2.svg)
 
-If you're using LocalStack with an [Auth Token](/aws/getting-started/auth-token), then you can utilize the [DNS server](/aws/tooling/dns-server) to perform requests to LocalStack as if it were AWS.
+If you're using LocalStack with an [Auth Token](/aws/getting-started/auth-token), then you can utilize the [DNS server](/aws/capabilities/dns-server) to perform requests to LocalStack as if it were AWS.
 You need to make two changes:
 
 * Publish port 53 from the LocalStack docker container to your host.
 * Configure your host to use the LocalStack DNS server by default.
 
-For more details, see your [DNS server documentation](/aws/tooling/dns-server).
+For more details, see your [DNS server documentation](/aws/capabilities/dns-server).
 
 Note that in both cases, SSL verification must be disabled.
 

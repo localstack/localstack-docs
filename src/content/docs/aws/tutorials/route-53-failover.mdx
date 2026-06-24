@@ -17,7 +17,7 @@ leadimage: "route-53-failover.png"
 
 ## Introduction
 
-LocalStack allows you to integrate and test [Chaos API](/aws/capabilities/chaos-engineering/chaos-api) with [Route53](/aws/services/route53) to automatically divert users to a healthy secondary zone if the primary region fails, ensuring system availability and responsiveness.
+LocalStack allows you to integrate and test [Chaos API](/aws/developer-tools/chaos-engineering/chaos-api) with [Route53](/aws/services/route53) to automatically divert users to a healthy secondary zone if the primary region fails, ensuring system availability and responsiveness.
 Route53's health checks and traffic redirection enhance architecture resilience and ensure service continuity during regional outages, crucial for uninterrupted user experiences.
 
 :::note
@@ -198,7 +198,7 @@ test.hello-localstack.com.
 ### Testing the application
 
 Our setup is now complete and ready for testing.
-To mimic a regional outage in the `us-west-1` region, we'll configure the [Chaos API](/aws/capabilities/chaos-engineering/chaos-api) to halt all service invocations in this region, including the health check function.
+To mimic a regional outage in the `us-west-1` region, we'll configure the [Chaos API](/aws/developer-tools/chaos-engineering/chaos-api) to halt all service invocations in this region, including the health check function.
 Once the primary region becomes non-functional, Route 53's health checks will fail.
 This failure will activate the failover policy, redirecting traffic to the corresponding services in the secondary region, thus maintaining service continuity.
 

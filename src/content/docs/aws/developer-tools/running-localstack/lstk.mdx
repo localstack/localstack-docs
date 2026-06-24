@@ -1,0 +1,600 @@
+---
+title: lstk
+description: Reference guide for lstk, the modern CLI for managing LocalStack, with installation, configuration, commands, and troubleshooting.
+template: doc
+sidebar:
+  order: 10
+tags: ['Hobby']
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Introduction
+
+`lstk` is a high-performance command-line interface for LocalStack, built in Go.
+It provides a built-in terminal UI (TUI) for interactive use and plain text output for CI/CD pipelines and scripting.
+
+`lstk` handles the full emulator lifecycle: authentication, pulling the Docker image, starting and stopping the container, streaming logs, and checking status.
+Running `lstk` with no arguments takes you through the entire flow automatically.
+
+:::note
+`lstk` is in early release and does not yet support advanced features like **Cloud Pods**, **Extensions**, and **Ephemeral Instances**. For these features, use the [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/).
+Both tools can be installed and used on the same machine.
+:::
+
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed and running.
+- A [LocalStack account](https://app.localstack.cloud/sign-up) with a valid [Auth Token](/aws/getting-started/auth-token/).
+
+## Installation
+
+<Tabs>
+<TabItem label="Homebrew (macOS/Linux)">
+
+```bash
+brew install localstack/tap/lstk
+```
+
+Homebrew also installs shell completions for bash, zsh, and fish automatically.
+
+</TabItem>
+<TabItem label="npm">
+
+```bash
+npm install -g @localstack/lstk
+```
+
+</TabItem>
+<TabItem label="Pre-built binaries">
+
+Download the binary for your platform from [GitHub Releases](https://github.com/localstack/lstk/releases), extract it, and place it on your `PATH`.
+
+</TabItem>
+</Tabs>
+
+Verify the installation:
+
+```bash
+lstk --version
+```
+
+### Updating
+
+`lstk` can update itself.
+It detects how it was originally installed (Homebrew, npm, or binary) and uses the matching update method:
+
+```bash
+# Check for updates without installing
+lstk update --check
+
+# Update to the latest version
+lstk update
+```
+
+## Quick start
+
+```bash
+lstk
+```
+
+Running `lstk` without arguments performs the full startup sequence: resolves your auth token by opening the LocalStack Web Application, pulls the latest image if needed, and starts the LocalStack container.
+In an interactive terminal it launches the TUI; in a non-interactive environment it prints plain text output.
+
+For CI or headless environments, set `LOCALSTACK_AUTH_TOKEN` and use `--non-interactive`:
+
+```bash
+LOCALSTACK_AUTH_TOKEN=<your-token> lstk --non-interactive
+```
+
+## Authentication
+
+`lstk` resolves your auth token in the following order:
+
+1. **System keyring**: a token stored by a previous `lstk login`.
+2. **`LOCALSTACK_AUTH_TOKEN` environment variable**: used only when the keyring has no token.
+3. **Browser login**: triggered automatically in interactive mode when neither of the above provides a token.
+
+:::caution
+The keyring token takes precedence over `LOCALSTACK_AUTH_TOKEN`.
+If you set or change the environment variable but a keyring token already exists, the environment variable is ignored.
+Run `lstk logout` to clear the stored keyring token first.
+:::
+
+### Logging in
+
+```bash
+lstk login
+```
+
+Opens a browser window for authentication and stores the resulting token in your system keyring.
+This command requires an interactive terminal.
+
+### Logging out
+
+```bash
+lstk logout
+```
+
+Removes the stored credentials from the system keyring.
+After logout, `lstk` falls back to `LOCALSTACK_AUTH_TOKEN` if set, or prompts for browser login on the next start.
+
+### File-based token storage
+
+On systems where the system keyring is unavailable, `lstk` automatically falls back to storing the token in a file (`<config-dir>/auth-token`).
+You can force file-based storage by setting:
+
+```bash
+export LSTK_KEYRING=file
+```
+
+## Configuration
+
+`lstk` uses a TOML configuration file, created automatically on first run.
+
+### Config file search order
+
+`lstk` uses the first `config.toml` it finds in this order:
+
+1. `./.lstk/config.toml`: project-local config in the current directory.
+2. `$HOME/.config/lstk/config.toml`: user config (created here if `$HOME/.config/` exists).
+3. OS default:
+   - **macOS**: `$HOME/Library/Application Support/lstk/config.toml`
+   - **Windows**: `%AppData%\lstk\config.toml`
+   - **Linux**: `$XDG_CONFIG_HOME/lstk/config.toml` or `$HOME/.config/lstk/config.toml`
+
+On first run, the config is created at path #2 if `$HOME/.config/` already exists; otherwise at the OS default (#3).
+
+To see the active config file path:
+
+```bash
+lstk config path
+```
+
+To use a specific config file:
+
+```bash
+lstk --config /path/to/config.toml start
+```
+
+### Default configuration
+
+The default `config.toml` created on first run:
+
+```toml
+[[containers]]
+type = "aws"     # Emulator type. Currently supported: "aws"
+tag  = "latest"  # Docker image tag, e.g. "latest", "2026.03"
+port = "4566"    # Host port the emulator will be accessible on
+# volume = ""    # Host directory for persistent state (default: OS cache dir)
+# env = []       # Named environment profiles to apply (see [env.*] sections below)
+```
+
+### Config field reference
+
+| Field    | Type     | Default    | Description                                                                                        |
+| :------- | :------- | :--------- | :------------------------------------------------------------------------------------------------- |
+| `type`   | string   | `"aws"`    | Emulator type. Only `"aws"` is supported.                                                          |
+| `tag`    | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.03"`, etc.). Useful for pinning a specific version.           |
+| `port`   | string   | `"4566"`   | Host port the emulator listens on.                                                                 |
+| `volume` | string   | (OS cache) | Host directory for persistent emulator state. Defaults to the OS cache directory if not specified. |
+| `env`    | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                       |
+
+A top-level `update_prompt` boolean (default `true`) controls whether `lstk` prompts about available updates on startup.
+
+### Passing environment variables to the container
+
+Define reusable environment profiles under `[env.<name>]` and reference them in your container config:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "latest"
+port = "4566"
+env  = ["debug", "ci"]
+
+[env.debug]
+DEBUG = "1"
+ENFORCE_IAM = "1"
+PERSISTENCE = "1"
+
+[env.ci]
+SERVICES = "s3,sqs"
+EAGER_SERVICE_LOADING = "1"
+```
+
+When `lstk start` runs, the key-value pairs from each referenced profile are injected as environment variables into the LocalStack container.
+Keys are uppercased automatically.
+
+:::note
+If you reference an `env` profile name that doesn't exist in your config, `lstk` returns an error: `environment "..." referenced in container config not found`.
+:::
+
+In addition to your custom profiles, `lstk` always injects the following into the container:
+
+| Variable                | Value                                  |
+| :---------------------- | :------------------------------------- |
+| `LOCALSTACK_AUTH_TOKEN` | Your resolved auth token               |
+| `GATEWAY_LISTEN`        | `:4566,:443`                           |
+| `MAIN_CONTAINER_NAME`   | Container name (e.g. `localstack-aws`) |
+
+### Using a project-local config
+
+Place a `.lstk/config.toml` in your project directory.
+When you run `lstk` from that directory, the local config takes precedence over the global one.
+This is useful for pinning a specific image tag or environment profile per-project:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "2026.03"
+port = "4566"
+env  = ["dev"]
+
+[env.dev]
+DEBUG = "1"
+PERSISTENCE = "1"
+```
+
+## Commands
+
+`lstk` uses a flat command structure.
+Running `lstk` with no command is equivalent to `lstk start`.
+
+### `start`
+
+Start the LocalStack emulator.
+Launches the TUI in interactive terminals and prints plain output otherwise.
+
+```bash
+lstk start
+lstk start --non-interactive
+```
+
+### `stop`
+
+Stop the running LocalStack emulator.
+
+```bash
+lstk stop
+```
+
+### `status`
+
+Show emulator status and a summary of deployed resources.
+
+```bash
+lstk status
+```
+
+### `logs`
+
+Show or stream emulator logs.
+
+```bash
+lstk logs [options]
+```
+
+| Option            | Description                     |
+| :---------------- | :------------------------------ |
+| `--follow`, `-f`  | Stream logs in real-time        |
+| `--verbose`, `-v` | Show all logs without filtering |
+
+Example:
+
+```bash
+# Stream filtered logs in real-time
+lstk logs --follow
+
+# Stream all logs without filtering
+lstk logs --follow --verbose
+```
+
+### `login`
+
+Authenticate via browser and store credentials in the system keyring.
+Requires an interactive terminal.
+
+```bash
+lstk login
+```
+
+### `logout`
+
+Remove stored authentication credentials from the system keyring.
+
+```bash
+lstk logout
+```
+
+### `config`
+
+Manage CLI configuration.
+
+```bash
+lstk config path
+```
+
+The `path` subcommand prints the resolved path to the active `config.toml`.
+
+### `update`
+
+Check for or install the latest version of `lstk`.
+
+```bash
+lstk update [options]
+```
+
+| Option    | Description                               |
+| :-------- | :---------------------------------------- |
+| `--check` | Check for updates without installing them |
+
+### `completion`
+
+Generate shell completion scripts.
+
+```bash
+lstk completion [bash|zsh|fish|powershell]
+```
+
+See [Shell completions](#shell-completions) for setup instructions.
+
+## Global options
+
+These options are available for all commands:
+
+| Option              | Description                                   |
+| :------------------ | :-------------------------------------------- |
+| `--config <path>`   | Path to a specific TOML config file           |
+| `--non-interactive` | Disable the interactive TUI, use plain output |
+| `-v`, `--version`   | Print the version and exit                    |
+| `-h`, `--help`      | Print help and exit                           |
+
+## Interactive and non-interactive mode
+
+`lstk` automatically selects its output mode:
+
+- **Interactive mode** (TUI): used when both stdin and stdout are connected to a terminal.
+  Commands like `start`, `login`, `status`, and `update` display a Bubble Tea-powered terminal UI.
+- **Non-interactive mode** (plain text): used when the output is piped, redirected, or running in CI.
+  Force this in a TTY with `--non-interactive`.
+
+```bash
+# Force plain output even in an interactive terminal
+lstk --non-interactive start
+```
+
+:::note
+`lstk login` requires an interactive terminal.
+If you need to authenticate in CI, set `LOCALSTACK_AUTH_TOKEN` instead.
+:::
+
+## Environment variables
+
+The following environment variables configure `lstk` itself (not the LocalStack container):
+
+| Variable                    | Description                                                                                         |
+| :-------------------------- | :-------------------------------------------------------------------------------------------------- |
+| `LOCALSTACK_AUTH_TOKEN`     | Auth token for non-interactive runs or to skip browser login. Used when no keyring token is stored. |
+| `LOCALSTACK_DISABLE_EVENTS` | Set to `1` to disable telemetry event reporting.                                                    |
+| `DOCKER_HOST`               | Override the Docker daemon socket (e.g. `unix:///home/user/.colima/default/docker.sock`).           |
+| `LSTK_KEYRING`              | Set to `file` to force file-based token storage instead of the system keyring.                      |
+
+When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
+
+### Container-injected variables
+
+`lstk` injects several environment variables into the LocalStack container on every start, in addition to any profiles you configure:
+
+| Variable                | Default value         | Description                                   |
+| :---------------------- | :-------------------- | :-------------------------------------------- |
+| `LOCALSTACK_AUTH_TOKEN` | (your resolved token) | Passed from the CLI to activate the license   |
+| `GATEWAY_LISTEN`        | `:4566,:443`          | Ports the emulator binds inside the container |
+| `MAIN_CONTAINER_NAME`   | `localstack-aws`      | Container name for internal references        |
+
+The container also gets the Docker socket mounted (if detected) and port mappings for `4566`, `443`, and the service port range `4510-4559`.
+
+## Logging
+
+`lstk` writes its own diagnostic logs to `lstk.log` in the same directory as the active config file.
+This is separate from the LocalStack container logs (which you view with `lstk logs`).
+
+- The log file is created automatically and appended to across runs.
+- When the file exceeds **1 MB**, it is cleared on the next run.
+- Use `lstk config path` to find the config directory; `lstk.log` sits alongside `config.toml`.
+
+## Shell completions
+
+`lstk` includes completion scripts for bash, zsh, fish, and powershell.
+If you installed via Homebrew, completions are set up automatically.
+
+For manual setup:
+
+<Tabs>
+<TabItem label="Bash">
+
+```bash
+# Load in current session
+source <(lstk completion bash)
+
+# Persist (Linux)
+lstk completion bash > /etc/bash_completion.d/lstk
+
+# Persist (macOS with Homebrew)
+lstk completion bash > $(brew --prefix)/etc/bash_completion.d/lstk
+```
+
+</TabItem>
+<TabItem label="Zsh">
+
+```bash
+# Load in current session
+source <(lstk completion zsh)
+
+# Persist (Linux)
+lstk completion zsh > "${fpath[1]}/_lstk"
+
+# Persist (macOS with Homebrew)
+lstk completion zsh > $(brew --prefix)/share/zsh/site-functions/_lstk
+```
+
+</TabItem>
+<TabItem label="Fish">
+
+```bash
+# Load in current session
+lstk completion fish | source
+
+# Persist
+lstk completion fish > ~/.config/fish/completions/lstk.fish
+```
+
+</TabItem>
+</Tabs>
+
+Restart your shell after persisting completions.
+
+## FAQ
+
+### What is the difference between `lstk` and the `localstack` CLI?
+
+Both tools can start, stop, and manage the LocalStack emulator.
+`lstk` is a newer CLI built in Go with a TUI, while the `localstack` CLI is the established Python-based tool with support for Cloud Pods, Extensions, Ephemeral Instances, and other advanced features.
+
+Both can be installed side by side.
+Use `lstk` for fast daily start/stop workflows and `localstack` for advanced platform features.
+
+### Can I use `lstk` with Docker Compose?
+
+No. `lstk` manages its own Docker container directly.
+If you use a `docker-compose.yml` to run LocalStack, you do not need `lstk`, and vice versa.
+Do not mix `lstk start` with a Docker Compose setup; they are separate, independent methods.
+
+For Docker Compose configuration, see the [Docker Compose installation guide](/aws/getting-started/installation/#docker-compose).
+
+### Is there a separate community and pro Docker image?
+
+No. LocalStack uses a single Docker image: `localstack/localstack`.
+There is no separate "community" or "pro" image.
+All plans (including the free Hobby tier) use the same image and require an auth token.
+
+### How do I pass configuration options like `DEBUG` or `PERSISTENCE` to the container?
+
+Use environment profiles in your `config.toml`.
+Define the variables under an `[env.<name>]` section and reference that name in the `env` list of your container config.
+See [Passing environment variables to the container](#passing-environment-variables-to-the-container) for details.
+
+### How do I pin a specific LocalStack version?
+
+Set the `tag` field in your `config.toml` to a specific version tag:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "2026.03"
+port = "4566"
+```
+
+## Troubleshooting
+
+### Port 443 already in use
+
+By default, LocalStack binds to both port `4566` and port `443` inside the container (controlled by the `GATEWAY_LISTEN` variable).
+On some systems, particularly Windows with Hyper-V, IIS, or VPN software, port 443 may already be in use.
+
+**Symptoms:**
+
+```text
+failed to start LocalStack: Error response from daemon: ports are not available:
+exposing port TCP 127.0.0.1:443 -> 127.0.0.1:0: listen tcp4 127.0.0.1:443: bind:
+address already in use
+```
+
+**Fix:** Override `GATEWAY_LISTEN` to bind only to port 4566:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "latest"
+port = "4566"
+env  = ["nossl"]
+
+[env.nossl]
+GATEWAY_LISTEN = "0.0.0.0:4566"
+```
+
+This tells the container to skip the port 443 binding entirely.
+
+### Docker is not running
+
+`lstk` requires a running Docker daemon.
+If Docker is not reachable, you will see an error like:
+
+```text
+Error: runtime not healthy
+```
+
+**Fix:** Start Docker Desktop (macOS/Windows) or the Docker daemon (`sudo systemctl start docker` on Linux).
+If you use Colima or OrbStack, make sure the VM is running.
+You can also point `lstk` at a custom socket with `DOCKER_HOST`.
+
+### Authentication required in non-interactive mode
+
+When running without a TTY (e.g. in CI), `lstk` cannot open a browser for login.
+If no token is found in the keyring or environment, it fails:
+
+```text
+authentication required: set LOCALSTACK_AUTH_TOKEN or run in interactive mode
+```
+
+**Fix:** Set the `LOCALSTACK_AUTH_TOKEN` environment variable before running `lstk`:
+
+```bash
+export LOCALSTACK_AUTH_TOKEN=<your-token>
+lstk --non-interactive start
+```
+
+You can find your auth token on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens).
+
+### License validation failed
+
+If your auth token is invalid, expired, or not linked to an active license, the LocalStack container exits with a license error:
+
+```text
+The license activation failed for the following reason:
+No credentials were found in the environment.
+```
+
+**Fix:**
+
+- Verify your token is valid at the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens).
+- Make sure the token is set correctly, either via `lstk login` or the `LOCALSTACK_AUTH_TOKEN` environment variable.
+- If a stale keyring token is interfering, run `lstk logout` first and then set `LOCALSTACK_AUTH_TOKEN`.
+
+### Image pull failed
+
+If `lstk` cannot pull the Docker image, check your network connection and Docker configuration.
+On corporate networks, you may need to configure Docker's proxy settings.
+
+### Unknown environment profile
+
+If your container config references an `env` profile that doesn't exist, `lstk` returns:
+
+```text
+environment "myprofile" referenced in container config not found
+```
+
+**Fix:** Make sure the profile name in the `env` list matches an `[env.<name>]` section in your `config.toml`:
+
+```toml
+[[containers]]
+type = "aws"
+env  = ["myprofile"]   # must match the section name below
+
+[env.myprofile]
+DEBUG = "1"
+```
+
+### Getting help
+
+If the steps above don't resolve your issue, [contact us](https://localstack.cloud/contact/) or open an issue on the [lstk GitHub repository](https://github.com/localstack/lstk/issues).

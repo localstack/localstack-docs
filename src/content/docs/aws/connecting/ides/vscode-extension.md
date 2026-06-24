@@ -64,7 +64,7 @@ aws --profile localstack sqs list-queues
 | `localstack.viewLogs`             | View Logs                          | `commandPalette` |
 
 :::note
-The AWS Toolkit for VS Code, a separate VS Code extension available from Amazon, now provides the ability to connect with LocalStack. This automates much of the existing manual setup required to debug Lambda functions (https://docs.localstack.cloud/aws/tooling/lambda-tools/remote-debugging/).
+The AWS Toolkit for VS Code, a separate VS Code extension available from Amazon, now provides the ability to connect with LocalStack. This automates much of the existing manual setup required to debug Lambda functions (https://docs.localstack.cloud/aws/developer-tools/lambda-tools/remote-debugging/).
 :::
 
 ## Contributing
@@ -77,8 +77,4 @@ Please provide feedback or report an issue on the LocalStack Toolkit for VS Code
 
 ### LocalStack general support
 
-For LocalStack-related questions, feedback, and contributions, you can:
-
-- Check our main repository: visit our [get in touch section on LocalStack's GitHub](https://github.com/localstack/localstack?tab=readme-ov-file#get-in-touch) for contact information and support channels.
-
-- Join our Slack Community: Connect with other developers on the official [LocalStack Slack community](https://localstack.cloud/slack).
+For LocalStack-related questions, feedback, and contributions, you can visit our [help & support page](/aws/help-support/get-help/) to learn about the different support channels and report issues on our [GitHub Discussions board](https://github.com/orgs/localstack/discussions/new/choose).
