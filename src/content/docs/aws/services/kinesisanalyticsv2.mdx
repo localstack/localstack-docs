@@ -26,16 +26,8 @@ Flink cluster deployment on LocalStack consists of two separate containers for [
 The default container runtime for MSF on LocalStack is Docker.
 LocalStack creates Flink JobManager and TaskManager containers on the Docker network specified by `MAIN_DOCKER_NETWORK` (defaults to `bridge`).
 
-**Running LocalStack inside a Kubernetes cluster requires additional configuration.**
+**Running LocalStack inside a Kubernetes cluster with the Docker executor is not supported.**
 Mounting the host Docker socket (`/var/run/docker.sock`) into a LocalStack pod is not sufficient — the Docker executor cannot create Flink containers in this topology and applications will remain stuck in `STARTING` indefinitely.
-
-To run MSF when LocalStack is deployed inside Kubernetes, set `CONTAINER_RUNTIME=kubernetes`.
-This uses the [Kubernetes executor](/aws/enterprise/kubernetes/kubernetes-executor/), which creates Flink workloads as Kubernetes pods instead of Docker containers.
-
-:::note
-The Kubernetes executor (`CONTAINER_RUNTIME=kubernetes`) is available on the **Ultimate** tier.
-For more details, see [Kubernetes Concepts & Architecture](/aws/enterprise/kubernetes/concepts/).
-:::
 
 If you are running LocalStack outside of Kubernetes (for example, with Docker Compose or the LocalStack CLI), no additional configuration is required and the Docker executor is used automatically.
 
@@ -297,7 +289,6 @@ This means IaC tools that use state waiters (such as the Terraform AWS provider 
 **Common causes and fixes:**
 
 - **Running LocalStack inside Kubernetes with the Docker executor** — the Docker executor is not supported in this topology.
-  Set `CONTAINER_RUNTIME=kubernetes` and ensure you have an Enterprise licence.
   See [Deployment Considerations](#deployment-considerations) for details.
 - **Wrong or missing Docker network** — if LocalStack is running in a non-default Docker network, set `MAIN_DOCKER_NETWORK` to the name of that network so Flink containers are attached to the correct network.
 - **Docker socket not accessible** — confirm that the Docker socket is mounted and functional.
@@ -318,7 +309,6 @@ This means IaC tools that use state waiters (such as the Terraform AWS provider 
 - When a Flink cluster fails to start, the application remains in `STARTING` rather than transitioning to `FAILED`.
   Check LocalStack logs and see [Troubleshooting](#troubleshooting) for guidance.
 - The Docker executor is not supported when LocalStack runs as a pod inside a Kubernetes cluster.
-  Use `CONTAINER_RUNTIME=kubernetes` (Enterprise only) in this topology.
 
 ## API Coverage
 
