@@ -94,33 +94,7 @@ awslocal dsql list-clusters
 }
 ```
 
-### Delete a cluster
-
-Because clusters are created with deletion protection enabled, you must first disable it using the [`UpdateCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_UpdateCluster.html) API.
-Attempting to delete a protected cluster returns a `ValidationException`.
-
-```bash
-awslocal dsql update-cluster \
-    --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
-    --no-deletion-protection-enabled
-```
-
-You can then delete the cluster using the [`DeleteCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteCluster.html) API:
-
-```bash
-awslocal dsql delete-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
-```
-
-```bash title="Output"
-{
-    "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
-    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6",
-    "status": "DELETING",
-    "creationTime": 1782306284.339124
-}
-```
-
-## Connect to the cluster
+### Connect to the cluster
 
 The cluster `endpoint` returned by `GetCluster` points at an embedded PostgreSQL instance, so you can connect to it with any PostgreSQL client.
 The endpoint uses the `host:port` format; split it to obtain the host and port for your client.
@@ -148,6 +122,32 @@ SELECT id, name FROM employees;
 ----+-------
   1 | Alice
 (1 row)
+```
+
+### Delete a cluster
+
+Because clusters are created with deletion protection enabled, you must first disable it using the [`UpdateCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_UpdateCluster.html) API.
+Attempting to delete a protected cluster returns a `ValidationException`.
+
+```bash
+awslocal dsql update-cluster \
+    --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
+    --no-deletion-protection-enabled
+```
+
+You can then delete the cluster using the [`DeleteCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteCluster.html) API:
+
+```bash
+awslocal dsql delete-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+```
+
+```bash title="Output"
+{
+    "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "status": "DELETING",
+    "creationTime": 1782306284.339124
+}
 ```
 
 ## Tags
