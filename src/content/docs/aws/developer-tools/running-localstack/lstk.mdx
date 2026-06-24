@@ -18,14 +18,13 @@ It provides a built-in terminal UI (TUI) for interactive use and plain text outp
 Running `lstk` with no arguments takes you through the entire flow automatically.
 
 :::note
-`lstk` is in early release and does not yet support advanced features like **Cloud Pods**, **Extensions**, and **Ephemeral Instances**. For these features, use the [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/).
-Both tools can be installed and used on the same machine.
+`lstk` covers the everyday emulator workflow: lifecycle (`start`, `stop`), monitoring (`status`, `logs`), storage (`snapshot`), and more.
 :::
 
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) installed and running.
-- A [LocalStack account](https://app.localstack.cloud/sign-up) with a valid [Auth Token](/aws/getting-started/auth-token/).
+- A [LocalStack account](https://app.localstack.cloud/sign-up) with a [license](/aws/getting-started/auth-token/#managing-your-license), and `lstk` handles authentication for you (see [Authentication](#authentication)).
 
 ## Installation
 
@@ -78,14 +77,16 @@ lstk update
 lstk
 ```
 
-Running `lstk` without arguments performs the full startup sequence: resolves your auth token by opening the LocalStack Web Application, pulls the latest image if needed, and starts the LocalStack container.
+Running `lstk` without arguments performs the full startup sequence: authenticates you automatically, pulls the latest image if needed, and starts the LocalStack container.
 In an interactive terminal it launches the TUI; in a non-interactive environment it prints plain text output.
 
-For CI or headless environments, set `LOCALSTACK_AUTH_TOKEN` and use `--non-interactive`:
+For CI or headless environments, set a [CI Auth Token](/aws/getting-started/auth-token/#ci-environments) via `LOCALSTACK_AUTH_TOKEN` and use `--non-interactive`:
 
 ```bash
-LOCALSTACK_AUTH_TOKEN=<your-token> lstk --non-interactive
+LOCALSTACK_AUTH_TOKEN=<your-ci-auth-token> lstk --non-interactive
 ```
+
+CI environments require a CI Auth Token; a personal Developer Auth Token cannot be used there.
 
 ## Authentication
 
@@ -163,7 +164,7 @@ The default `config.toml` created on first run:
 
 ```toml
 [[containers]]
-type = "aws"     # Emulator type. Currently supported: "aws"
+type = "aws"     # Emulator type. Currently supported: "aws", "snowflake", "azure"
 tag  = "latest"  # Docker image tag, e.g. "latest", "2026.03"
 port = "4566"    # Host port the emulator will be accessible on
 # volume = ""    # Host directory for persistent state (default: OS cache dir)
@@ -174,7 +175,7 @@ port = "4566"    # Host port the emulator will be accessible on
 
 | Field    | Type     | Default    | Description                                                                                        |
 | :------- | :------- | :--------- | :------------------------------------------------------------------------------------------------- |
-| `type`   | string   | `"aws"`    | Emulator type. Only `"aws"` is supported.                                                          |
+| `type`   | string   | `"aws"`    | Emulator type. One of `"aws"`, `"snowflake"`, `"azure"`.                                                          |
 | `tag`    | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.03"`, etc.). Useful for pinning a specific version.           |
 | `port`   | string   | `"4566"`   | Host port the emulator listens on.                                                                 |
 | `volume` | string   | (OS cache) | Host directory for persistent emulator state. Defaults to the OS cache directory if not specified. |
@@ -216,15 +217,27 @@ In addition to your custom profiles, `lstk` always injects the following into th
 | :---------------------- | :------------------------------------- |
 | `LOCALSTACK_AUTH_TOKEN` | Your resolved auth token               |
 | `GATEWAY_LISTEN`        | `:4566,:443`                           |
-| `MAIN_CONTAINER_NAME`   | Container name (e.g. `localstack-aws`) |
+| `MAIN_CONTAINER_NAME`   | Container name (`localstack-aws`), derived automatically; not configurable |
 
 ### Using a project-local config
 
 Place a `.lstk/config.toml` in your project directory.
 When you run `lstk` from that directory, the local config takes precedence over the global one.
-This is useful for pinning a specific image tag or environment profile per-project:
+This lets each project pin its own emulator type, image tag, and environment profiles.
+
+For example, a project that targets the Snowflake emulator can keep its own config:
 
 ```toml
+# .lstk/config.toml
+[[containers]]
+type = "snowflake"
+port = "4566"
+```
+
+An AWS project might instead pin a specific image tag and enable a debug profile:
+
+```toml
+# .lstk/config.toml
 [[containers]]
 type = "aws"
 tag  = "2026.03"
@@ -456,14 +469,6 @@ Restart your shell after persisting completions.
 
 ## FAQ
 
-### What is the difference between `lstk` and the `localstack` CLI?
-
-Both tools can start, stop, and manage the LocalStack emulator.
-`lstk` is a newer CLI built in Go with a TUI, while the `localstack` CLI is the established Python-based tool with support for Cloud Pods, Extensions, Ephemeral Instances, and other advanced features.
-
-Both can be installed side by side.
-Use `lstk` for fast daily start/stop workflows and `localstack` for advanced platform features.
-
 ### Can I use `lstk` with Docker Compose?
 
 No. `lstk` manages its own Docker container directly.
@@ -476,7 +481,7 @@ For Docker Compose configuration, see the [Docker Compose installation guide](/a
 
 No. LocalStack uses a single Docker image: `localstack/localstack`.
 There is no separate "community" or "pro" image.
-All plans (including the free Hobby tier) use the same image and require an auth token.
+All plans (including the free Hobby tier) use the same image and require a license.
 
 ### How do I pass configuration options like `DEBUG` or `PERSISTENCE` to the container?
 
@@ -574,7 +579,7 @@ No credentials were found in the environment.
 ### Image pull failed
 
 If `lstk` cannot pull the Docker image, check your network connection and Docker configuration.
-On corporate networks, you may need to configure Docker's proxy settings.
+On corporate networks, you may need to configure Docker's proxy settings, see [How do I configure LocalStack to use my corporate HTTP and HTTPS proxy?](/aws/getting-started/faq/#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy).
 
 ### Unknown environment profile
 
@@ -597,4 +602,4 @@ DEBUG = "1"
 
 ### Getting help
 
-If the steps above don't resolve your issue, [contact us](https://localstack.cloud/contact/) or open an issue on the [lstk GitHub repository](https://github.com/localstack/lstk/issues).
+If the steps above don't resolve your issue, see [Get Help](/aws/help-support/get-help/) for the available support channels, including the support email and in-app chat.
