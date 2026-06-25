@@ -15,7 +15,6 @@ Each object or file within S3 encompasses essential attributes such as a unique 
 S3 can store unlimited objects, allowing you to store, retrieve, and manage your data in a highly adaptable and reliable manner.
 
 LocalStack allows you to use the S3 APIs in your local environment to create new buckets, manage your S3 objects, and test your S3 configurations locally.
-LocalStack also supports S3 Replication, allowing you to emulate cross-bucket, cross-region, and cross-account object replication in your local environment.
 The supported APIs are available on the API coverage section for [S3](#api-coverage) and [S3 Control](#api-coverage-s3-control), which provides information on the extent of S3's integration with LocalStack.
 
 ## Getting started
@@ -269,26 +268,17 @@ Replication can occur within the same region or across regions, and across diffe
 LocalStack supports the following replication configurations:
 
 - **One-way replication**: Objects are replicated from a source bucket to a destination bucket. You can scope replication using prefix-based or tag-based filtering, and optionally override the storage class for objects written to the destination bucket.
-- **Two-way replication**: Both buckets are configured as source and destination for each other. LocalStack correctly handles this by tracking each object's `ReplicationStatus` and preventing `REPLICA` objects from being re-replicated in a loop.
-
-### How replication works in LocalStack
-
-LocalStack uses a scan-based replication mechanism.
-A background worker scans buckets with at least one enabled replication rule approximately every second, then dispatches replication tasks for any objects that qualify.
-Because of this, replication is **eventually consistent** — there is a short delay between an object being written and it appearing in the destination bucket.
+- **Two-way replication**: Both buckets are configured as source and destination for each other, and replication is configured to work in both directions.
 
 ### IAM enforcement
 
-LocalStack enforces IAM permissions for S3 replication tasks using the IAM engine directly, which mirrors how AWS itself handles replication permissions.
-Rather than enforcing permissions at the API level, LocalStack evaluates the required IAM actions in the context of each replication task — taking into account the object version, replication configuration, bucket context, and object tags.
-
-LocalStack assumes the IAM role specified in your replication configuration and caches the result for subsequent tasks.
-The cache is invalidated automatically if the replication configuration changes.
-If the assumed role does not have the required permissions for a given replication task, that replication will fail.
+LocalStack supports IAM enforcement for S3 replication.
+IAM permissions are evaluated in the context of each replication task using the IAM engine directly, which mirrors how AWS itself handles replication permissions.
 
 ### Metadata replication
 
 LocalStack supports replication of object metadata — specifically tags and Object Lock settings. Metadata replication operates in two modes:
+LocalStack supports replication of object metadata, specifically tags and Object Lock settings. Metadata replication operates in two modes:
 
 - **Default metadata replication**: When a source object's metadata is modified, those changes are automatically propagated to all of its replicas. This behavior is enabled by default and requires no additional configuration.
 - **Replica metadata synchronization**: When enabled on the destination bucket, metadata changes made directly to a replica are synced back to the source object. This applies only when two-way replication is configured. See [Replication for metadata changes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-for-metadata-changes.html) in the AWS documentation for more details.
@@ -308,7 +298,8 @@ The possible values follow AWS semantics:
 :::note
 The following replication features are not yet supported in LocalStack and will be available in a future release:
 
-- **IAM enforcement for tag-based filters**: IAM permission evaluation for replication rules that use tag-based filters is not yet fully supported.
+- **`s3:ReplicateTags` deny evaluation**: Explicitly denying `s3:ReplicateTags` will not cause replication to be denied if the object has tags.
+- **KMS-encrypted object replication**: Objects encrypted with customer-provided KMS keys are not replicated, even when replication of KMS-encrypted objects is explicitly configured. See [Replicating objects created with server-side encryption using AWS KMS keys](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-config-for-kms-objects.html#replications) in the AWS documentation for more details.
 - **ACL replication**: Replication of Access Control Lists is not currently supported.
 :::
 
