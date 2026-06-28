@@ -3,7 +3,7 @@ title: Local Development
 description: Deploy an AWS serverless API locally using Lambda and DynamoDB on LocalStack.
 template: doc
 sidebar:
-  order: 4
+  order: 3
 ---
 
 import { Code, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
@@ -48,41 +48,8 @@ If you haven't installed LocalStack yet, follow the [installation guide](/aws/ge
     • Web app: https://app.localstack.cloud
     ```
 
-    :::note[Early Release]
-    `lstk` currently supports core lifecycle commands (start, stop, logs, status).
-    To learn more about `lstk`, see the [lstk documentation](/aws/tooling/lstk/).
-    For advanced features such as Cloud Pods or Extensions, use the [LocalStack CLI](/aws/getting-started/installation/#localstack-cli).
-    :::
-
   </TabItem>
-  <TabItem label="LocalStack CLI">
-    Start LocalStack:
-
-    ```bash
-    localstack start
-    ```
-
-    When the container is ready, you'll see these log lines:
-
-    {/* prettier-ignore */}
-    <Code
-      code={`     __                     _______ __             __
-    / /   ____  _________ _/ / ___// /_____ ______/ /__
-   / /   / __ \\/ ___/ __ \`/ /\\__ \\/ __/ __ \`/ ___/ //_/
-  / /___/ /_/ / /__/ /_/ / /___/ / /_/ /_/ / /__/ ,<
- /_____/\\____/\\___/\\__,_/_//____/\\__/\\__,_/\\___/_/|_|
-
- - LocalStack CLI: ${LOCALSTACK_AWS_VERSION}
- - Profile: default
- - App: https://app.localstack.cloud
-
-[14:37:38] starting LocalStack in Docker mode 🐳                       localstack.py:542
-...
-Ready.`}
-      lang="bash"
-    />
-
-  </TabItem>
+  
 </Tabs>
 
 ## Step 2: Deploy the serverless API
@@ -303,11 +270,7 @@ Stop your LocalStack container to remove all emulated resources. LocalStack is e
   lstk stop 
   ```
   </TabItem>
-  <TabItem label="LocalStack CLI">
-  ```bash 
-  localstack stop
-  ```
-  </TabItem>
+  
 </Tabs>
 
 {/* prettier-ignore-end */}

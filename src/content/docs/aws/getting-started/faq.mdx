@@ -35,20 +35,6 @@ To resolve the issue follow the steps:
 
 For other SSL-related issues encountered during startup — such as Python `CERTIFICATE_VERIFY_FAILED` tracebacks or corporate TLS interception — see [How do I diagnose if my SSL traffic is being intercepted by a corporate proxy?](#how-do-i-diagnose-if-my-ssl-traffic-is-being-intercepted-by-a-corporate-proxy).
 
-### How to update my LocalStack CLI?
-
-If the LocalStack CLI version is heavily outdated, it might lead to issues with container startup and debug commands.
-If you are using an older version of LocalStack, you can update it by running the following command:
-
-```bash
-pip install --upgrade localstack localstack-ext
-```
-
-If you are running a newer version of LocalStack, you can check the version by running the following command:
-
-```bash
-localstack update localstack-cli
-```
 
 ### Is using `localhost.localstack.cloud:4566` to set as the endpoint for AWS services recommended?
 
@@ -122,23 +108,6 @@ aws ssm put-parameter --name "//test/parameter/new" --type String --value "test"
 ```
 
 For additional known issues related to Git Bash, you can refer to the following link: [Git Bash Known Issues](https://github.com/git-for-windows/build-extra/blob/main/ReleaseNotes.md#known-issues)
-
-### How to fix LocalStack CLI (Python) UTF-8 encoding issue under Windows?
-
-If you are using LocalStack CLI under Windows, you might run into encoding issues.
-To fix this, set the following environment variables:
-Set the system locale (language for non-Unicode programs) to UTF-8 to avoid Unicode errors.
-
-Follow these steps:
-
-- Open the Control Panel.
-- Go to "Clock and Region" or "Region and Language."
-- Click on the "Administrative" tab.
-- Click on the "Change system locale" button.
-- Select "Beta: Use Unicode UTF-8 for worldwide language support" and click "OK."
-- Restart your computer to apply the changes.
-
-If you would like to keep the system locale as it is, you can mitigate the issue by using the command `localstack --no-banner`.
 
 ### How do I resolve connection issues with proxy blocking access to LocalStack's BigData image?
 
@@ -633,14 +602,6 @@ volumes:
   - "./license.json:/var/lib/localstack/cache/license.json:ro"
 ```
 
-### Why does LocalStack startup fail with "Docker not available"?
-
-The LocalStack CLI cannot reach the Docker daemon. Common fixes:
-
-- Start Docker Desktop and confirm it's running.
-- Verify `docker ps` works as your current user (no `sudo`).
-- On macOS, check that `/var/run/docker.sock` is reachable from Docker Desktop.
-- If you use Colima, Rancher, or Podman, make sure the `DOCKER_HOST` environment variable points at the correct socket.
 
 ### Why does LocalStack fail with "ports are not available: exposing port TCP 127.0.0.1:443"?
 

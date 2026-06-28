@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Install LocalStack with lstk, the LocalStack CLI, Docker, Docker Compose, or Helm.
+description: Install LocalStack with lstk, Docker, Docker Compose, or Helm.
 template: doc
 sidebar:
   order: 2
@@ -13,9 +13,9 @@ import { LOCALSTACK_AWS_VERSION } from 'astro:env/server';
 
 LocalStack provides multiple installation paths depending on your development environment and requirements. We recommend a CLI-based installation for the most consistent local startup experience.
 
-Choose the CLI that fits your workflow: use [`lstk`](#lstk) to install, authenticate, and start LocalStack with minimal setup, or use the [LocalStack CLI](#localstack-cli) when you need full-featured management commands for advanced workflows.
+Use [`lstk`](#lstk) to install, authenticate, and start LocalStack with minimal setup.
 
-LocalStack for AWS features require an [Auth Token](/aws/getting-started/auth-token/) to activate your running instance. `lstk` handles authentication through a browser-based login flow, while the LocalStack CLI, Docker, and CI workflows can use `LOCALSTACK_AUTH_TOKEN`.
+LocalStack for AWS features require an [Auth Token](/aws/getting-started/auth-token/) to activate your running instance. `lstk` handles authentication through a browser-based login flow, while Docker and CI workflows can use `LOCALSTACK_AUTH_TOKEN`.
 
 ## lstk
 
@@ -23,9 +23,6 @@ LocalStack for AWS features require an [Auth Token](/aws/getting-started/auth-to
 
 **Requirement:** You must have a working [Docker installation](https://docs.docker.com/get-docker/) before proceeding.
 
-:::caution[Early Release]
-`lstk` currently supports core lifecycle commands: `start`, `stop`, `logs`, and `status`. For advanced features like Cloud Pods or Extensions, use the [LocalStack CLI](#localstack-cli).
-:::
 
 ### Install lstk
 
@@ -61,254 +58,10 @@ lstk update
 
 For more details, see the [lstk documentation](/aws/tooling/lstk/).
 
-## LocalStack CLI
-
-The LocalStack CLI provides the full command set for managing LocalStack capabilities such as Cloud Pods, Extensions, and advanced state workflows.
-
-**Requirement:** You must have a working [Docker installation](https://docs.docker.com/get-docker/) before proceeding.
-
-### Install LocalStack CLI
-
-
-<Tabs>
-
-<TabItem label="Linux" >
-
-You can download the pre-built binary for your architecture using the link below:
-
-<LinkButton
-  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-amd64-onefile.tar.gz`}
-  icon="download"
-  variant="minimal"
->
-  x86-64
-</LinkButton>
-<LinkButton
-  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-arm64-onefile.tar.gz`}
-  icon="download"
-  variant="minimal"
->
-  ARM64
-</LinkButton>
-
-or use the curl commands below:
-
-For x86-64:
-
-<Code
-  code={`curl --output localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-amd64-onefile.tar.gz \\\n    --location https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-amd64-onefile.tar.gz`}
-  lang="bash"
-/>
-
-For ARM64:
-
-<Code
-  code={`curl --output localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-arm64-onefile.tar.gz \\\n    --location https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-arm64-onefile.tar.gz`}
-  lang="bash"
-/>
-
-Then extract the LocalStack CLI from the terminal:
-
-<Code
-  code={`sudo tar xvzf localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-*-onefile.tar.gz -C /usr/local/bin`}
-  lang="bash"
-/>
-
-<details>
-<summary>Alternative: Homebrew on Linux</summary>
-
-If you are using [Homebrew for Linux](https://docs.brew.sh/Homebrew-on-Linux), you can install the LocalStack CLI directly from our official LocalStack tap:
-
-```bash
-brew install localstack/tap/localstack-cli
-```
-
-</details>
-
-</TabItem>
-
-<TabItem label="macOS" >
-
-You can install the LocalStack CLI using Brew directly from our official LocalStack tap:
-
-```bash
-brew install localstack/tap/localstack-cli
-```
-
-<details>
-<summary>Alternative: Binary Download</summary>
-
-You may download the binary for your architecture using the links below:
-
-<LinkButton
-  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz`}
-  icon="download"
-  variant="minimal"
->
-  Intel (AMD64)
-</LinkButton>
-<LinkButton
-  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-arm64-onefile.tar.gz`}
-  icon="download"
-  variant="minimal"
->
-  Apple Silicon (ARM64)
-</LinkButton>
-
-or use the curl commands below:
-
-For Intel (AMD64):
-
-<Code
-  code={`curl --output localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz \\\n    --location https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz`}
-  lang="bash"
-/>
-
-For Apple Silicon (ARM64):
-
-<Code
-  code={`curl --output localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-arm64-onefile.tar.gz \\\n    --location https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-arm64-onefile.tar.gz`}
-  lang="bash"
-/>
-
-Then extract the LocalStack CLI from the terminal:
-
-<Code
-  code={`sudo tar xvzf localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-*-onefile.tar.gz -C /usr/local/bin`}
-  lang="bash"
-/>
-
-</details>
-</TabItem>
-
-<TabItem label="Windows" >
-
-You can download the pre-built binary for your architecture using the link below:
-
-<LinkButton
-  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-windows-amd64-onefile.zip`}
-  icon="download"
-  variant="minimal"
->
-  Intel (AMD64)
-</LinkButton>
-
-Then extract the archive and execute the binary in PowerShell.
-
-</TabItem>
-
-<TabItem label="Other/Python" >
-
-If you cannot use the binary releases of LocalStack, you can install the Python distribution.
-
-Please make sure to install the following before moving ahead:
-
-- [Python](https://docs.python.org/3/using/index.html)
-- [pip](https://pip.pypa.io/en/stable/installation/)
-
-Next install the LocalStack CLI in your Python environment by running:
-
-```bash
-python3 -m pip install --upgrade localstack
-```
-
-:::note
-To download a specific version of LocalStack CLI, replace `<version>` with the required version from [release page](https://github.com/localstack/localstack-cli/releases).
-```bash
-python3 -m pip install localstack==<version>
-```
-:::
-
-:::tip[macOS Sierra?]
-If you have problems with permissions in macOS Sierra, install with:
-```bash
-python3 -m pip install --user localstack
-```
-:::
-
-:::danger
-Do not use `sudo` or the `root` user when starting LocalStack.
-It should be installed and started entirely under a local non-root user.
-:::
-</TabItem>
-</Tabs>
-
-### Start LocalStack CLI
-
-To verify that the LocalStack CLI was installed correctly, you can check the version in your terminal:
-
-```bash 
-localstack --version
-```
-
-<Code code={`LocalStack CLI ${LOCALSTACK_AWS_VERSION}`} lang="bash" title="Output" />
-
-You are all set!
-
-:::note
-To start LocalStack, you must first [set up your auth token](/aws/getting-started/auth-token).
-:::
-
-Once you've set up your auth token, you can start LocalStack with the following command:
-
-```bash
-localstack start # start localstack in background with -d flag
-```
-
-{/* prettier-ignore */}
-<Code
-  code={`     __                     _______ __             __
-    / /   ____  _________ _/ / ___// /_____ ______/ /__
-   / /   / __ \\/ ___/ __ \`/ /\\__ \\/ __/ __ \`/ ___/ //_/
-  / /___/ /_/ / /__/ /_/ / /___/ / /_/ /_/ / /__/ ,<
- /_____/\\____/\\___/\\__,_/_//____/\\__/\\__,_/\\___/_/|_|
-
- - LocalStack CLI: ${LOCALSTACK_AWS_VERSION}
- - Profile: default
- - App: https://app.localstack.cloud
-
-[12:47:13] starting LocalStack in Docker mode 🐳                       localstack.py:494
-           preparing environment                                       bootstrap.py:1240
-           configuring container                                       bootstrap.py:1248
-           starting container                                          bootstrap.py:1258
-[12:47:15] detaching                                                   bootstrap.py:1262`}
-  lang="bash"
-/>
-
-### Update LocalStack CLI
-
-The LocalStack CLI allows you to easily update the different components of LocalStack.
-To check the various options available for updating, run:
-
-```bash
-localstack update --help
-```
-
-```bash
-Usage: localstack update [OPTIONS] COMMAND [ARGS]...
-
-  Update different LocalStack components.
-
-Options:
-  -h, --help  Show this message and exit.
-
-Commands:
-  all             Update all LocalStack components
-  docker-images   Update docker images LocalStack depends on
-  localstack-cli  Update LocalStack CLI
-```
-
-:::note
-Updating the LocalStack CLI using `localstack update localstack-cli` and `localstack update all` will work only if it was installed from the Python distribution.
-If it was installed using the pre-built binary or via Brew, please run the installation steps again to update to the latest version.
-:::
-
-For more details, see the [LocalStack CLI documentation](/aws/tooling/localstack-cli/).
-
 ## Container and orchestration tools
 
 Use these methods when you need explicit container configuration, want to run LocalStack alongside other services, or deploy LocalStack in CI and Kubernetes environments.
-For everyday local development, `lstk` or the LocalStack CLI is usually simpler.
+For everyday local development, `lstk` is usually simpler.
 
 ### Docker Compose
 
@@ -386,43 +139,12 @@ Install the [official extension](https://hub.docker.com/extensions/localstack/lo
 
 ## Troubleshooting
 
-#### The LocalStack CLI installation is successful, but I cannot execute `localstack`
-
-If you can successfully install LocalStack using `pip` but you cannot use it in your terminal, you most likely haven't set up your operating system's / terminal's `PATH` variable (in order to tell them where to find programs installed via `pip`).
-
-- If you are using Windows, you can enable the `PATH` configuration when installing Python, [as described in the official docs of Python](https://docs.python.org/3/using/windows.html#finding-the-python-executable).
-- If you are using a macOS or Linux operating system, please make sure that the `PATH` is correctly set up - either system wide, or in your terminal.
-
-As a workaround you can call the LocalStack CLI python module directly:
-
-```bash
-python3 -m localstack.cli.main
-```
-
-#### The `localstack` CLI does not start the LocalStack container
-
-If you are using the `localstack` CLI to start LocalStack, but the container is not starting, please check the following:
-
-- Uncheck the **Use kernel networking for UDP** option in Docker Desktop (**Settings** → **Resources** → **Network**) or follow the steps in our [documentation](/aws/tooling/dns-server#system-dns-configuration) to disable it.
-- Start LocalStack with a specific DNS address:
-
-```bash
-DNS_ADDRESS=0 localstack start
-```
-
-- Remove port 53 as indicated in our [standard `docker-compose.yml` file](https://github.com/localstack/localstack/blob/main/docker-compose-pro.yml).
-
 #### How should I access the LocalStack logs on my local machine?
 
 You can now avail logging output and error reporting using LocalStack logs.
 To access the logs, run the following command:
 
 <Tabs>
-<TabItem label="LocalStack CLI">
-```bash
-localstack logs
-```
-</TabItem>
 <TabItem label="lstk">
 ```bash
 lstk logs
