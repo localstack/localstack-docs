@@ -556,7 +556,7 @@ export default defineConfig({
               items: [
                 {
                   label: 'Overview',
-                  slug: 'aws/capabilities',
+                  slug: 'aws/configuration',
                 },
                 {
                   label: 'LocalStack Web App',
@@ -564,7 +564,7 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/capabilities/web-app',
+                        directory: '/aws/configuration/web-app',
                       },
                     },
                   ],
@@ -575,7 +575,7 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/capabilities/config',
+                        directory: '/aws/configuration/config',
                       },
                     },
                   ],
@@ -586,7 +586,7 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/capabilities/networking',
+                        directory: '/aws/configuration/networking',
                       },
                     },
                   ],
@@ -597,7 +597,7 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/capabilities/localstack-sdks',
+                        directory: '/aws/configuration/localstack-sdks',
                       },
                     },
                   ],
@@ -607,7 +607,7 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/capabilities/extensions',
+                        directory: '/aws/configuration/extensions',
                       },
                     },
                     {
@@ -619,19 +619,19 @@ export default defineConfig({
                 },
                 {
                   label: 'DNS Server',
-                  slug: 'aws/capabilities/dns-server',
+                  slug: 'aws/configuration/dns-server',
                 },
                 {
                   label: 'Testing Utils',
-                  slug: 'aws/capabilities/testing-utils',
+                  slug: 'aws/configuration/testing-utils',
                 },
                 {
                   label: 'LocalStack Docker Extension',
-                  slug: 'aws/capabilities/localstack-docker-extension',
+                  slug: 'aws/configuration/localstack-docker-extension',
                 },
                 {
                   label: 'LocalSurf',
-                  slug: 'aws/capabilities/localsurf',
+                  slug: 'aws/configuration/localsurf',
                 },
               ],
             },

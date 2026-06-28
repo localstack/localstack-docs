@@ -31,16 +31,16 @@ Options that affect the core LocalStack system.
 | `LOCALSTACK_HOST`| `localhost.localstack.cloud:4566` (default) | This is interpolated into URLs and addresses that are returned by LocalStack. It has the form `<hostname>:<port>`. |
 | `GATEWAY_LISTEN` | `0.0.0.0:4566` (default in Docker mode), `127.0.0.1:4566` (default in host mode) | Configures the bind addresses of LocalStack. It has the form `<ip address>:<port>(,<ip address>:<port>)*`. LocalStack for AWS adds port `443`. |
 | `USE_SSL` | `0` (default) | Whether to return URLs using HTTP (`0`) or HTTPS (`1`). Changed with 3.0.0. In earlier versions this was toggling SSL support on or off. |
-| `PERSISTENCE` | `0` (default) | Enable persistence. See [Persistence Mechanism](/aws/developer-tools/snapshots/persistence) and [Filesystem Layout](/aws/capabilities/config/filesystem). |
+| `PERSISTENCE` | `0` (default) | Enable persistence. See [Persistence Mechanism](/aws/developer-tools/snapshots/persistence) and [Filesystem Layout](/aws/configuration/config/filesystem). |
 | `MAIN_CONTAINER_NAME` | `localstack-main` (default) | Specify the main docker container name |
 | `LS_LOG` | `trace`, `trace-internal`, `debug`, `info`, `warn`, `error`, `warning`| Specify the log level. Currently overrides the `DEBUG` configuration. `trace` for detailed request/response, `trace-internal` for internal calls, too. |
-| `EXTERNAL_SERVICE_PORTS_START` | `4510` (default) | Start of the [External Service Port Range](/aws/capabilities/networking/external-port-range) (inclusive). |
-| `EXTERNAL_SERVICE_PORTS_END` | `4560` (default) | End of the [External Service Port Range](/aws/capabilities/networking/external-port-range) (exclusive). |
+| `EXTERNAL_SERVICE_PORTS_START` | `4510` (default) | Start of the [External Service Port Range](/aws/configuration/networking/external-port-range) (inclusive). |
+| `EXTERNAL_SERVICE_PORTS_END` | `4560` (default) | End of the [External Service Port Range](/aws/configuration/networking/external-port-range) (exclusive). |
 | `EAGER_SERVICE_LOADING` | `0` (default) \|`1` | Boolean that toggles lazy loading of services. If eager loading is enabled, services are started at LocalStack startup rather than their first use. Be aware that eager loading increases the LocalStack startup time. |
-| `SERVICES`| `s3,sqs` | A comma-delimited string of services. Check the [internal health endpoint](/aws/capabilities/networking/internal-endpoints#localstack-endpoints) `/_localstack/health` for valid service names. If `SERVICES` is set LocalStack will only load the listed services. All other services will be disabled and cannot be used. |
+| `SERVICES`| `s3,sqs` | A comma-delimited string of services. Check the [internal health endpoint](/aws/configuration/networking/internal-endpoints#localstack-endpoints) `/_localstack/health` for valid service names. If `SERVICES` is set LocalStack will only load the listed services. All other services will be disabled and cannot be used. |
 | `ALLOW_NONSTANDARD_REGIONS` | `0` (default) | Allows the use of non-standard AWS regions. By default, LocalStack only accepts [standard AWS regions](https://docs.aws.amazon.com/general/latest/gr/rande.html). |
 | `PARITY_AWS_ACCESS_KEY_ID` | `0` (default) | Enables the use production-like access key IDs. By default, LocalStack issues keys with `LSIA...` and `LKIA...` prefix, and will reject keys that start with `ASIA...` or `AKIA...`. |
-| `LOCALSTACK_RESPONSE_HEADER_ENABLED` | `1` (default) \| `0` | Whether LocalStack adds the [`x-localstack` response header](/aws/capabilities/networking/internal-endpoints#x-localstack-response-header) to every AWS API response. The header value is the LocalStack version and lets client tools detect LocalStack and its version. |
+| `LOCALSTACK_RESPONSE_HEADER_ENABLED` | `1` (default) \| `0` | Whether LocalStack adds the [`x-localstack` response header](/aws/configuration/networking/internal-endpoints#x-localstack-response-header) to every AWS API response. The header value is the LocalStack version and lets client tools detect LocalStack and its version. |
 
 ## CLI
 
@@ -48,7 +48,7 @@ These options are applicable when using the CLI to start LocalStack.
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. See [Filesystem Layout](/aws/capabilities/config/filesystem#using-the-cli) |
+| `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. See [Filesystem Layout](/aws/configuration/config/filesystem#using-the-cli) |
 | `CONFIG_PROFILE` | | The configuration profile to load. See [Profiles](#profiles) |
 | `CONFIG_DIR` | `~/.localstack` | The path where LocalStack can find configuration profiles and other CLI-specific configuration |
 
@@ -262,8 +262,8 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | `BUCKET_MARKER_LOCAL` | `hot-reload` (default) | Magic S3 bucket name for [Hot Reloading](/aws/developer-tools/lambda-tools/hot-reloading). The S3Key points to the source code on the local file system. |
 | `HOSTNAME_FROM_LAMBDA` | `localstack` | Endpoint host under which APIs are accessible from Lambda containers (optional). This can be useful in docker-compose stacks to use the local container hostname if neither IP address nor container name of the main container are available (e.g., in CI). Often used in combination with `LAMBDA_DOCKER_NETWORK`.|
 | `LAMBDA_DISABLE_AWS_ENDPOINT_URL` | `0` (default) \| `1` | Whether to disable injecting the environment variable `AWS_ENDPOINT_URL`, which automatically configures [supported AWS SDKs](https://docs.aws.amazon.com/sdkref/latest/guide/feature-ss-endpoints.html). |
-| `LAMBDA_DISABLE_JAVA_SDK_V2_CERTIFICATE_VALIDATION` | `1` (default) | Whether to disable the certificate name validation for [AWS Java SDK v2](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/home.html) calls when using [transparent endpoint injection](/aws/capabilities/networking/transparent-endpoint-injection).|
-| `LAMBDA_DOCKER_DNS` | `""` (default) | Optional custom DNS server for the container running your Lambda function. Overwrites the default LocalStack [DNS Server](/aws/capabilities/dns-server). Hence, resolving `localhost.localstack.cloud` requires additional configuration. |
+| `LAMBDA_DISABLE_JAVA_SDK_V2_CERTIFICATE_VALIDATION` | `1` (default) | Whether to disable the certificate name validation for [AWS Java SDK v2](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/home.html) calls when using [transparent endpoint injection](/aws/configuration/networking/transparent-endpoint-injection).|
+| `LAMBDA_DOCKER_DNS` | `""` (default) | Optional custom DNS server for the container running your Lambda function. Overwrites the default LocalStack [DNS Server](/aws/configuration/dns-server). Hence, resolving `localhost.localstack.cloud` requires additional configuration. |
 | `LAMBDA_DOCKER_FLAGS` | `-e KEY=VALUE`, `-v host:container`, `-p host:container`, `--add-host domain:ip` | Additional flags passed to Docker `run`\|`create` commands. Supports environment variables (also with `--env-file`, but the file has to be mounted into the LocalStack container), ports, volume mounts, extra hosts, networks, DNS servers, labels, ulimits, user, platform, and privileged mode. The `--env-file` argument for Docker `run` and Docker Compose have different feature sets. To provide both, we support the `--env-file` for environment files with the docker run syntax, while `--compose-env-file` supports the full docker compose features, like placeholders with `${}`, replacing quotes, etc. |
 | `LAMBDA_DOCKER_NETWORK` | `bridge` (Docker default) | [Docker network driver](https://docs.docker.com/network/) for the Lambda and ECS containers. Needs to be set to the network the LocalStack container is connected to. Limitation: `host` mode currently not supported. |
 | `LAMBDA_DOWNLOAD_AWS_LAYERS` | `1` (default, pro) | Whether to download public Lambda layers from AWS through a LocalStack proxy when creating or updating functions. |
@@ -415,8 +415,8 @@ To learn more about these configuration options, see [Cloud Pods](/aws/developer
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `EXTENSION_AUTO_INSTALL` | | Install a list of extensions automatically at startup. Comma-separated list of extensions directives which will be installed automatically at startup (see [managing extensions](/aws/capabilities/extensions/managing-extensions#automating-extensions-installation))|
-| `EXTENSION_DEV_MODE` | `0` (default) \| `1` | Enables development mode for extensions. Refer to the [Extensions Development Guide](/aws/capabilities/extensions/developing-extensions) for more information. |
+| `EXTENSION_AUTO_INSTALL` | | Install a list of extensions automatically at startup. Comma-separated list of extensions directives which will be installed automatically at startup (see [managing extensions](/aws/configuration/extensions/managing-extensions#automating-extensions-installation))|
+| `EXTENSION_DEV_MODE` | `0` (default) \| `1` | Enables development mode for extensions. Refer to the [Extensions Development Guide](/aws/configuration/extensions/developing-extensions) for more information. |
 
 ## Miscellaneous
 
@@ -442,21 +442,21 @@ To learn more about these configuration options, see [Cloud Pods](/aws/developer
 
 ## DNS
 
-To learn more about these configuration options, see [DNS Server](/aws/capabilities/dns-server).
+To learn more about these configuration options, see [DNS Server](/aws/configuration/dns-server).
 
 | Variable | Example Values | Description |
 | - | - | - |
 | `DNS_ADDRESS` | `0.0.0.0` (default) | Address the LocalStack should bind the DNS server on (port 53 tcp/udp). Value `0` to disable.
 | `DNS_SERVER` | Default upstream DNS or `8.8.8.8` (default) | Fallback DNS server for queries not handled by LocalStack.
 | `DNS_RESOLVE_IP` | `127.0.0.1` (default) | IP address the DNS server should return as A record for queries handled by LocalStack. If customized, this value will be returned in preference to the DNS server response.
-| `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM` | `([^.]+\.)*(ecr\|lambda)\.[^.]+\.amazonaws\.com` (example) | List of domain names that should *NOT* be redirected by the LocalStack DNS to the LocalStack container, but instead always forwarded to the upstream resolver. This will *NOT* redirect requests made to LocalStack due to manual endpoint configuration. Comma-separated list of Python-flavored regex patterns. See [the DNS server documentation](/aws/capabilities/dns-server#skip-localstack-dns-resolution) for more details.
+| `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM` | `([^.]+\.)*(ecr\|lambda)\.[^.]+\.amazonaws\.com` (example) | List of domain names that should *NOT* be redirected by the LocalStack DNS to the LocalStack container, but instead always forwarded to the upstream resolver. This will *NOT* redirect requests made to LocalStack due to manual endpoint configuration. Comma-separated list of Python-flavored regex patterns. See [the DNS server documentation](/aws/configuration/dns-server#skip-localstack-dns-resolution) for more details.
 | `DNS_LOCAL_NAME_PATTERNS` | `([^.]+\.)*(ecr\|lambda)\.[^.]+\.amazonaws\.com` (example) | **Deprecated since 3.0.2** List of domain names that should *NOT* be redirected by the LocalStack DNS to the LocalStack container, but instead always forwarded to the upstream resolver. This will *NOT* redirect requests made to LocalStack due to manual endpoint configuration. Comma-separated list of Python-flavored regex patterns. **Renamed to `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM`**
 
 ## Transparent Endpoint Injection
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `DISABLE_TRANSPARENT_ENDPOINT_INJECTION` | `0` (default in Pro) \| `1` | Whether to disable DNS resolution of AWS hostnames to the LocalStack container. Pro feature. (see [Transparent Endpoint Injection](/aws/capabilities/networking/transparent-endpoint-injection))
+| `DISABLE_TRANSPARENT_ENDPOINT_INJECTION` | `0` (default in Pro) \| `1` | Whether to disable DNS resolution of AWS hostnames to the LocalStack container. Pro feature. (see [Transparent Endpoint Injection](/aws/configuration/networking/transparent-endpoint-injection))
 
 ## LocalStack for AWS
 
@@ -522,9 +522,9 @@ These configurations have already been removed and **won't have any effect** on 
 | `DATA_DIR`| 2.0.0 | blank (disabled/default), `/tmp/localstack/data` |  Local directory for saving persistent data. Use `PERSISTENCE` instead. |
 | `DISABLE_TERM_HANDLER` | 2.0.0 | `""` (default) \| `1` | Whether to disable signal passing to LocalStack when running in docker. Enabling this will prevent an orderly shutdown when running inside LS in docker. Setting this to anything else than an empty string will disable it.
 | `HOST_TMP_FOLDER` | 2.0.0 | `/some/path` |  Temporary folder on the host that gets mounted as `$TMPDIR/localstack` into the LocalStack container. Required only for Lambda volume mounts when using `LAMBDA_REMOTE_DOCKER=false.` |
-| `INIT_SCRIPTS_PATH` | 2.0.0 | `/some/path` | Before 1.0, this was used to configure the path to the initializing files with extensions `.sh` that were found in `/docker-entrypoint-initaws.d`. This has been replaced by the [init-hook system](/aws/capabilities/config/initialization-hooks/). |
-| `LEGACY_DIRECTORIES` | 2.0.0 | `0` (default) | Use legacy method of managing internal filesystem layout. See [Filesystem Layout](/aws/capabilities/config/filesystem). |
-| `LEGACY_INIT_DIR` | 2.0.0 | `1` \| `0`(default) | Used with `INIT_SCRIPTS_PATH`. This has been replaced by the [init-hook system](/aws/capabilities/config/initialization-hooks). |
+| `INIT_SCRIPTS_PATH` | 2.0.0 | `/some/path` | Before 1.0, this was used to configure the path to the initializing files with extensions `.sh` that were found in `/docker-entrypoint-initaws.d`. This has been replaced by the [init-hook system](/aws/configuration/config/initialization-hooks/). |
+| `LEGACY_DIRECTORIES` | 2.0.0 | `0` (default) | Use legacy method of managing internal filesystem layout. See [Filesystem Layout](/aws/configuration/config/filesystem). |
+| `LEGACY_INIT_DIR` | 2.0.0 | `1` \| `0`(default) | Used with `INIT_SCRIPTS_PATH`. This has been replaced by the [init-hook system](/aws/configuration/config/initialization-hooks). |
 | `MULTI_ACCOUNTS` | 2.0.0 | `0` (default) | Enable multi-accounts (preview) |
 | `SQS_PROVIDER` | 2.0.0 |  `moto` (default) and `elasticmq` | |
 | `SYNCHRONOUS_API_GATEWAY_EVENTS` | 2.0.0 | `1` (default) \| `0` | Whether or not to handle API Gateway Lambda event sources as synchronous invocations. |

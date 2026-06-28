@@ -76,6 +76,6 @@ You should see the email you sent in the MailHog UI.
 
 - Explore our collection of official extensions, along with a growing ecosystem of third-party extensions, in our [Extensions Library](https://app.localstack.cloud/extensions/library).
 - Learn about the various methods for extension management and automating their installation when using LocalStack in a CI environment.
-  Get detailed insights from our [Managing Extensions](/aws/capabilities/extensions/managing-extensions) guide.
+  Get detailed insights from our [Managing Extensions](/aws/configuration/extensions/managing-extensions) guide.
 - Want to create your own extensions?
-  Dive into our guide on [Developing Extensions](/aws/capabilities/extensions/developing-extensions) for step-by-step instructions.
+  Dive into our guide on [Developing Extensions](/aws/configuration/extensions/developing-extensions) for step-by-step instructions.
