@@ -11,7 +11,7 @@ SCIM (System for Cross-domain Identity Management) allows you to automate user p
 
 SCIM is a sub-feature of SSO and requires an active SSO configuration with at least one Identity Provider already set up. See the [Single Sign-On](/aws/enterprise/sso/) documentation before proceeding.
 
-All integration details — including the SCIM Base Connector URL, Bearer Auth Token, and group names per subscription — are available in the LocalStack web app under **Settings → [Single Sign-On](https://app.localstack.cloud/settings/sso)**.
+All integration details - including the SCIM Base Connector URL, Bearer Auth Token, and group names per subscription - are available in the LocalStack web app under Settings → Single Sign-On.
 
 For IdP-specific setup instructions, see:
 
@@ -38,11 +38,11 @@ Once enabled, click **View SCIM Configuration** to access the SCIM Base Connecto
 
 The settings contain the **SCIM API Base Connector URL** and the **Bearer Auth Token** as shown in the image below. You can copy these values to configure your SCIM client.
 
-![SCIM connection details](/images/aws/SCIM-configuration.jpg)
+![SCIM connection details](/images/aws/SCIM-configuration.png)
 
 SCIM clients authenticate using a long-lived bearer token. The token starts with `scim-` and is displayed (masked) in the SCIM configuration panel. Use the copy icon to copy it to your clipboard.
 
-You can regenerate the token at any time using the refresh icon. Regenerating the token immediately invalidates the previous one — update your IdP configuration with the new token to avoid interruptions.
+You can regenerate the token at any time using the refresh icon. Regenerating the token immediately invalidates the previous one - update your IdP configuration with the new token to avoid interruptions.
 
 Once you have the Base Connector URL and Bearer Token, continue with the IdP-specific setup:
 
@@ -55,7 +55,7 @@ LocalStack supports configuring default roles and permissions that are applied w
 
 Granting users permissions or assigning them to groups (e.g. 'Member', 'Admin') is not supported via SCIM but the settings in the LocalStack web app allow you to set presets that are applied when a user is provisioned via SCIM. These settings are inherited from the SSO settings.
 
-![SCIM user role and permission settings](/images/aws/SCIM-permissions.jpg)
+![SCIM user role and permission settings](/images/aws/SCIM-permissions.png)
 
 ## Limitations
 

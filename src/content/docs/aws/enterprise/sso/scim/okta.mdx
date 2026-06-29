@@ -13,15 +13,15 @@ This page covers configuring **Okta** as your SCIM client to provision users, gr
 
 Use the following steps to configure SCIM Base Connector URL and Bearer Auth Token:
 
-1. **Select your application** — Go to **Applications → Applications** and select the application you want to enable SCIM provisioning for.
-2. **Navigate to Provisioning settings** — In the application settings, go to the **Provisioning** tab and click **Integration** or **Edit** (wording may vary).
+1. **Select your application** - Go to **Applications → Applications** and select the application you want to enable SCIM provisioning for.
+2. **Navigate to Provisioning settings** - In the application settings, go to the **Provisioning** tab and click **Integration** or **Edit** (wording may vary).
 3. **Enter the SCIM connection details:**
    - **SCIM connector base URL:** Paste the SCIM Base Connector URL from the LocalStack SCIM configuration panel.
    - **Authentication Mode:** Select **HTTP Header**.
    - **Bearer Token:** Paste the SCIM bearer token from the LocalStack SCIM configuration panel.
-4. **Test the connection** — Click **Test Connector Configuration** to confirm Okta can connect successfully.
-5. **Enable provisioning features** (optional) — Once the connection succeeds, enable the desired provisioning actions (Create Users, Update User Attributes, Deactivate Users) under the **To App** settings tab. There is no need to enable Sync Password, as SSO does not require a password.
-6. **Save** — Save and apply the integration settings.
+4. **Test the connection** - Click **Test Connector Configuration** to confirm Okta can connect successfully.
+5. **Enable provisioning features** (optional) - Once the connection succeeds, enable the desired provisioning actions (Create Users, Update User Attributes, Deactivate Users) under the **To App** settings tab. There is no need to enable Sync Password, as SSO does not require a password.
+6. **Save** - Save and apply the integration settings.
 
 :::note
 The exact menu names may vary depending on Okta's UI version and app type, but the key settings are always the SCIM Base Connector URL and Bearer Auth Token under the provisioning or integration section.
@@ -33,10 +33,6 @@ The exact menu names may vary depending on Okta's UI version and app type, but t
 
 LocalStack supports full provisioning and deprovisioning of individual user accounts via SCIM.
 
-:::note
-For security reasons, SCIM can only provision user accounts for users who do not already exist in the LocalStack web app. If a user was originally created via SCIM and later removed from your workspace, you must invite them again through the LocalStack [**Users & Licenses**](https://app.localstack.cloud/settings/members). The user will receive an email invitation and must explicitly accept it to rejoin the workspace.
-:::
-
 1. In the Okta Admin Console, go to your application and click the **Assignments** tab.
 2. Select **Assign → Assign to People**.
 3. Search for and select the users you want to provision, then click **Assign** and **Done**.
@@ -44,6 +40,10 @@ For security reasons, SCIM can only provision user accounts for users who do not
 
 :::tip
 Legacy users (existing LocalStack accounts) can also be assigned to the Okta application, provided their email address matches the one they used to register with the LocalStack web app.
+:::
+
+:::note
+For security reasons, SCIM can only provision user accounts for users who do not already exist in the LocalStack web app. If a user was originally created via SCIM and later removed from your workspace, you must invite them again through the LocalStack Users & Licenses. The user will receive an email invitation and must explicitly accept it to rejoin the workspace.
 :::
 
 #### Updating User Accounts
@@ -62,15 +62,13 @@ Okta will send a SCIM deprovisioning request and the user will be removed from L
 
 Groups in Okta can be used to provision multiple users to LocalStack at once.
 
-##### Assigning a Group
-
 1. In the Okta Admin Console, go to your application and click the **Assignments** tab.
 2. Select **Assign → Assign to Groups**.
 3. Search for and select the groups you want to provision, then click **Assign** and **Done**.
 
 Okta will send a SCIM request to LocalStack to create a user account for each member of the group. Changes to a group's membership in Okta are automatically pushed to LocalStack via SCIM.
 
-##### Deprovisioning a Group
+#### Deprovisioning Groups of Users
 
 1. In Okta, return to your application's **Assignments** tab.
 2. Find the group and click **Remove** next to its name.
@@ -82,30 +80,30 @@ Okta will send a SCIM request to remove the group's users from LocalStack. Users
 Any changes in Okta (user/group attribute changes, group memberships, etc.) are automatically synchronized with LocalStack as long as the SCIM integration is active.
 :::
 
-##### Migrating an Existing OpenID Connect or SAML Application
+#### Migrating an Existing OpenID Connect or SAML Application
 
 If you have an existing OIDC or SAML app in Okta that already has SSO users assigned, follow these steps to add SCIM provisioning:
 
 1. On the **General** tab of your Okta application, set **Provisioning** to **SCIM**.
-   ![Provisioning to SCIM for SAML application](/images/aws/SCIM-SAML-provisioning.jpg)
+   ![Enabling SCIM provisioning on an Okta application](/images/aws/SCIM_okta_enable_scim.png)
 2. Go to the **Provisioning** tab and click **Edit** to configure the SCIM connection:
    - **SCIM connector base URL:** Paste the URL from LocalStack.
    - **Unique identifier field for users:** Enter `userName` (the Okta default).
    - **Supported provisioning actions:** Enable all available options.
 
-   ![Adding the LocalStack settings for SAML application](/images/aws/SCIM-SAML-provisioning-2.jpg)
+   ![Configuring the SCIM connection settings in Okta](/images/aws/SCIM_okta_connection_settings.png)
 
 3. Select **HTTP Header** as the Authentication Mode and paste the Bearer token from the LocalStack SCIM configuration panel. Click **Save**.
-   ![Adding the Bearer token for SAML application](/images/aws/SCIM-SAML-provisioning-3.jpg)
+   ![Adding the Bearer token in Okta](/images/aws/SCIM_okta_bearer_token.png)
 4. After a successful connection test, go to the **To App** tab, click **Edit**, and enable **Create Users**, **Update User Attributes**, and **Deactivate Users**. Save your changes.
-   ![Testing the connection for SAML application](/images/aws/SCIM-SAML-provisioning-4.jpg)
+   ![Enabling provisioning actions in Okta](/images/aws/SCIM_okta_provisioning_actions.png)
 5. Click the **Assignments** tab. Okta will show error messages for users who were assigned before provisioning was enabled. Click **Provision User** and confirm the action to sync all existing users. If the task fails, you can retry it under **Dashboard → Tasks**.
-   ![Errors when provisioning users for SAML application](/images/aws/SCIM-SAML-provisioning-5.jpg)
-6. After syncing completes, refresh the page — the error messages should be gone and all users will be fully managed via Okta SCIM.
+   ![Provisioning existing users in Okta](/images/aws/SCIM_okta_provision_existing_users.png)
+6. After syncing completes, refresh the page - the error messages should be gone and all users will be fully managed via Okta SCIM.
 
 ### Role Management
 
-LocalStack workspace roles (**admin** and **member**) are assigned to users by pushing SCIM groups whose name identifies the target role. The role groups themselves do not need to exist in LocalStack before the push — they are synthetic SCIM groups keyed off the `displayName`.
+LocalStack workspace roles (**admin** and **member**) are assigned to users by pushing SCIM groups whose name identifies the target role. The role groups themselves do not need to exist in LocalStack before the push - they are synthetic SCIM groups keyed off the `displayName`.
 
 :::caution
 Each user can only be in **one** role group at a time. Attempting to add a user who is already in the admin role group to the member role group (or vice versa) returns a `409` conflict. Remove the user from the previous role group first, then add to the new one.
@@ -122,28 +120,34 @@ All of the following are valid names for the admin role group:
 
 - `LocalStack-Admin`
 - `LocalStack-Admins-Prod`
-- `engineering-admins`
+- `ABC-ABC-AB1000_AuthLocalstackAdmin`
 
 The first time you push a role group from Okta, LocalStack persists that `displayName` so subsequent GET responses to your IdP reflect the name you sent. You can also rename the group later via SCIM and LocalStack will track the rename.
 
 #### Creating and Pushing a Role Group in Okta
 
-1. Create a new Okta group whose name contains either `Admin` (for the admin role) or `Member` (for the member role). For example: `LocalStack-Admin` or `LocalStack-Member`.
+1. Create a new Okta group whose name contains either `Admin` (for the admin role) or `Member` (for the member role).
 2. Add users to the group (users must already be assigned to the LocalStack SCIM application).
 3. In your application, go to the **Push Groups** tab.
 4. Push the group to LocalStack via SCIM.
 5. Once synced, LocalStack will assign the corresponding role to all members of the group.
 
-   ![Pushing a role group from Okta](/images/aws/SCIM_okta_role_group.jpg)
+   ![Pushing a role group from Okta](/images/aws/SCIM_okta_role_group.png)
 
 #### Moving a User Between Roles
 
-To change a user's role from member to admin (or vice versa):
+To change a user's role from member to admin (or vice versa), apply the two changes **in sequence**, letting the removal sync to LocalStack before adding the new group:
 
 1. Remove the user from their current role group in Okta.
-2. Add them to the target role group.
+2. Push the change - if it isn't synced automatically, push the old role group from the **Push Groups** tab so the removal is committed.
+3. Add the user to the target role group.
+4. Push the change again for the new role group (or wait for the automatic sync) to apply the new role.
 
-Perform these operations as a single atomic action where possible. Adding a user to the new role group while they are still in the old one will return a `409` conflict.
+:::caution
+Don't change both groups at once. If the *add* reaches LocalStack before the *removal* has been committed, the user still carries their old role-group marker and the request is rejected with a `409` conflict. Committing the removal first - by pushing the old group from the **Push Groups** tab - guarantees the marker is cleared before the new role is applied.
+
+The `409` is transient - the move eventually converges once the removal syncs - but sequencing the changes avoids the error and the temporary inconsistency entirely.
+:::
 
 #### Last-Admin Protection
 
