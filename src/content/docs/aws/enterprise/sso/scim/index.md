@@ -1,13 +1,13 @@
 ---
 title: SCIM
-description: Automating user and license provisioning in LocalStack using SCIM (System for Cross-domain Identity Management).
+description: Automating user provisioning, role assignment, and license assignment in LocalStack using SCIM (System for Cross-domain Identity Management).
 template: doc
 tags: ['Enterprise']
 sidebar:
   label: Overview
 ---
 
-SCIM (System for Cross-domain Identity Management) allows you to automate user provisioning, deprovisioning, and license assignment in LocalStack through your identity provider (IdP). LocalStack's SCIM implementation follows the SCIM v2.0 specification and has been developed and tested with both the **Okta** and **Microsoft Entra ID** SCIM clients.
+SCIM (System for Cross-domain Identity Management) allows you to automate user provisioning, deprovisioning, role assignment, and license assignment in LocalStack through your identity provider (IdP). LocalStack's SCIM implementation follows the SCIM v2.0 specification and has been developed and tested with both the **Okta** and **Microsoft Entra ID** SCIM clients.
 
 SCIM is a sub-feature of SSO and requires an active SSO configuration with at least one Identity Provider already set up. See the [Single Sign-On](/aws/enterprise/sso/) documentation before proceeding.
 
@@ -55,11 +55,15 @@ Once you have the Base Connector URL and Bearer Token, continue with the IdP-spe
 
 ## Web App Roles and Permissions
 
-LocalStack supports configuring default roles and permissions that are applied when a user is provisioned via SCIM. These can for example be used to grant users access CI credentials or to make them workspace admins.
+There are two ways roles and permissions are applied to SCIM-provisioned users:
 
-Granting users permissions or assigning them to groups (e.g. 'Member', 'Admin') is not supported via SCIM but the settings in the LocalStack web app allow you to set presets that are applied when a user is provisioned via SCIM. These settings are inherited from the SSO settings.
+- **Default presets at provisioning time** - LocalStack lets you configure a default role and permissions that are applied when a user is first provisioned via SCIM (for example, to grant CI credentials by default). These presets are inherited from the SSO settings and apply to every newly provisioned user.
 
-![SCIM user role and permission settings](/images/aws/SCIM-permissions.png)
+  ![SCIM user role and permission settings](/images/aws/SCIM-permissions.png)
+
+- **Role assignment via SCIM role groups** - workspace roles (**admin** / **member**) can be assigned and changed directly from your IdP by syncing role groups. See **Role Management** for [Okta](/aws/enterprise/sso/scim/okta/#role-management) or [Microsoft Entra ID](/aws/enterprise/sso/scim/entra/#role-management).
+
+Granular permissions beyond the workspace role (e.g. specific CI credential grants) are not individually assignable via SCIM - they are controlled by the provisioning-time presets above or managed directly in the LocalStack web app.
 
 ## Limitations
 
