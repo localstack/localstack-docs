@@ -58,6 +58,10 @@ Changes to user attributes (first name, last name, email) in Okta are automatica
 
 Okta will send a SCIM deprovisioning request and the user will be removed from LocalStack.
 
+:::caution
+LocalStack will not let you deprovision the last remaining workspace admin. If the user being removed is the only admin, the request fails with `409 Cannot remove the last workspace admin`. Assign another admin in LocalStack first, then retry the deprovisioning.
+:::
+
 #### Provisioning Groups of Users
 
 Groups in Okta can be used to provision multiple users to LocalStack at once.

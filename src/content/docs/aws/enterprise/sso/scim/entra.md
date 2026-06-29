@@ -49,10 +49,6 @@ Legacy users (existing LocalStack accounts) can also be assigned to the Entra ap
 :::
 
 :::note
-If the Enterprise Application already had users or groups assigned (for example, for SSO) before you enabled provisioning, they will be provisioned to LocalStack automatically on the next sync cycle. To sync them immediately, use **Provision on Demand** from the Provisioning blade for each user.
-:::
-
-:::note
 For security reasons, SCIM can only provision user accounts for users who do not already exist in the LocalStack web app. If a user was originally created via SCIM and later removed from your workspace, you must invite them again through the LocalStack Users & Licenses. The user will receive an email invitation and must explicitly accept it to rejoin the workspace.
 :::
 
@@ -67,6 +63,10 @@ Changes to user attributes (first name, last name, email) in Entra are automatic
 3. Confirm the action.
 
 Entra will send a SCIM deprovisioning request and the user will be removed from LocalStack on the next sync cycle. Disabling the user in the Entra directory itself (`accountEnabled = false`) has the same effect.
+
+:::caution
+LocalStack will not let you deprovision the last remaining workspace admin. If the user being removed is the only admin, the request fails with `409 Cannot remove the last workspace admin`. Assign another admin in LocalStack first, then retry the deprovisioning.
+:::
 
 #### Provisioning Groups of Users
 
@@ -92,6 +92,14 @@ Entra will send SCIM requests to remove the group's users from LocalStack. Users
 :::tip
 Any changes in Entra (user/group attribute changes, group memberships, etc.) are automatically synchronized with LocalStack on subsequent sync cycles as long as the SCIM integration is active.
 :::
+
+#### Migrating an Existing Enterprise Application
+
+If you enable SCIM provisioning on an Entra Enterprise Application that was already used for SSO, the users and groups already assigned to it are brought under SCIM management automatically - there's no separate migration step.
+
+1. Enable provisioning on the existing application by following the [Configuring SCIM with Microsoft Entra ID](#configuring-scim-with-microsoft-entra-id) steps above.
+2. The users and groups already assigned to the application are provisioned to LocalStack on the next sync cycle.
+3. To sync them immediately rather than waiting for the cycle, use **Provision on Demand** from the Provisioning blade for each user.
 
 ### Role Management
 
@@ -142,3 +150,7 @@ The `409` is transient - Entra retries the failed operation on the next cycle, a
 #### Last-Admin Protection
 
 LocalStack will reject any SCIM request that would leave the workspace without an admin. If you attempt to remove the only admin from the admin role group, the request fails with `409 Cannot remove the last workspace admin`. Assign another admin in LocalStack first, then retry the removal.
+
+:::note
+License assignment via SCIM is not supported with Microsoft Entra ID. To assign licenses through SCIM, use [Okta](/aws/enterprise/sso/scim/okta/#license-management). Otherwise, manage license assignments directly in the LocalStack web app.
+:::
