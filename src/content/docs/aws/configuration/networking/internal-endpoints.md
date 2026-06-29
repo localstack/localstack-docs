@@ -54,4 +54,4 @@ Starting with `v2026.04`, it returns the LocalStack version instead.
 Clients that only check for the *presence* of the header remain compatible.
 :::
 
-The header is enabled by default and can be disabled by setting [`LOCALSTACK_RESPONSE_HEADER_ENABLED`](/aws/capabilities/config/configuration#core) to `0`.
+The header is enabled by default and can be disabled by setting [`LOCALSTACK_RESPONSE_HEADER_ENABLED`](/aws/configuration/config/configuration#core) to `0`.

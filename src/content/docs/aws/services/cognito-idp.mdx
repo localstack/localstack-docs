@@ -143,7 +143,7 @@ awslocal cognito-idp sign-up \
 
 Once the user is successfully created, a confirmation code will be generated.
 This code can be found in the LocalStack container logs (as shown below).
-Additionally, if you have [SMTP configured](/aws/capabilities/config/configuration/#emails), the confirmation code can be optionally sent via email for enhanced convenience and user experience.
+Additionally, if you have [SMTP configured](/aws/configuration/config/configuration/#emails), the confirmation code can be optionally sent via email for enhanced convenience and user experience.
 
 ```bash
 INFO:localstack_ext.services.cognito.cognito_idp_api: Confirmation code for Cognito user example_user: 125796
@@ -331,7 +331,7 @@ On the next sign-in, the flow returns an `EMAIL_OTP` challenge:
 }
 ```
 
-The one-time code is printed to the LocalStack container logs (and sent via email if [SMTP is configured](/aws/capabilities/config/configuration/#emails)):
+The one-time code is printed to the LocalStack container logs (and sent via email if [SMTP is configured](/aws/configuration/config/configuration/#emails)):
 
 ```bash
 INFO --- [et.reactor-0] l.p.c.s.c.auth_flows       : Code verification sent via email: 123456
@@ -518,7 +518,7 @@ The client credentials grant allows for scope-based authorization from a non-int
 Your app can directly request client credentials from the token endpoint to receive an access token.
 
 To request the token from the LocalStack URL, use the following endpoint: `://cognito-idp.localhost.localstack.cloud:4566/_aws/cognito-idp/oauth2/token`.
-For additional information on our endpoints, refer to our [Internal Endpoints](/aws/capabilities/networking/internal-endpoints/) documentation.
+For additional information on our endpoints, refer to our [Internal Endpoints](/aws/configuration/networking/internal-endpoints/) documentation.
 
 If there are multiple user pools, LocalStack identifies the appropriate one by examining the `clientid` of the request.
 
@@ -652,7 +652,7 @@ The following code snippets and sample applications provide practical examples o
 
 By default, LocalStack's Cognito does not send actual email messages.
 However, if you wish to enable this feature, you will need to provide an email address and configure the corresponding SMTP settings.
-The instructions on configuring the connection parameters of your SMTP server can be found in the [Configuration](/aws/capabilities/config/configuration/#emails) guide to allow your local Cognito environment to send email notifications.
+The instructions on configuring the connection parameters of your SMTP server can be found in the [Configuration](/aws/configuration/config/configuration/#emails) guide to allow your local Cognito environment to send email notifications.
 
 ## API Coverage (Cognito Identity Pools)
 

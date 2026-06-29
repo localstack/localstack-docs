@@ -12,7 +12,7 @@ Please open a [GitHub Discussion](https://github.com/orgs/localstack/discussions
 LocalStack ships with multi-account support which allows namespacing based on AWS account ID.
 
 LocalStack uses the value in the AWS Access Key ID field for the purpose of namespacing over account ID.
-For more information, see [Credentials](/aws/capabilities/config/credentials).
+For more information, see [Credentials](/aws/configuration/config/credentials).
 
 The Access Key ID field can be configured in the AWS CLI in multiple ways: please refer to [AWS CLI documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-precedence).
 

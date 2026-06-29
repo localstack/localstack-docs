@@ -34,7 +34,7 @@ All except `boot.d` will be run in the same Python interpreter as LocalStack, wh
 You can also use subdirectories to organize your init scripts.
 
 Currently, known script extensions are `.sh` and `.py`.
-Additionally, with the installation of the `localstack-extension-terraform-init` [extension](/aws/capabilities/extensions/), `.tf` files can also be supported.
+Additionally, with the installation of the `localstack-extension-terraform-init` [extension](/aws/configuration/extensions/), `.tf` files can also be supported.
 Shell scripts have to be executable, and have to have a [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) (usually `#!/bin/bash`).
 
 A script can be in one of four states: `UNKNOWN`, `RUNNING`, `SUCCESSFUL`, `ERROR`.
@@ -165,7 +165,7 @@ Another use for init hooks can be seen when [adding custom TLS certificates to L
 ### Terraform Files as Init Hooks
 
 Running Terraform configuration files as init hooks requires the installation of a special extension.
-For more information on how to manage [LocalStack extensions](/aws/capabilities/extensions/), please refer to the dedicated documentation page,
+For more information on how to manage [LocalStack extensions](/aws/configuration/extensions/), please refer to the dedicated documentation page,
 and for more details on running init hooks in development mode, you can check out the [extension repository description](https://github.com/localstack/localstack-extensions/tree/main/terraform-init).
 
 Start LocalStack with **`EXTENSION_AUTO_INSTALL="localstack-extension-terraform-init"`**.
@@ -258,4 +258,4 @@ If you are having issues with your initialization hooks not being executed, plea
   * If your script does not show up in the list of discovered init scripts, please check your Docker volume mount.
     Most likely the scripts are not properly mounted into the Docker container.
 * Are resources not being created?
-  * Ensure that AWS [credentials](/aws/capabilities/config/credentials) are set, e.g. through `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables.
+  * Ensure that AWS [credentials](/aws/configuration/config/credentials) are set, e.g. through `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables.

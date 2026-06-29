@@ -34,7 +34,7 @@ This offline functionality is enabled by:
 
 ## "Online" vs "Offline" image
 
-This section compares the standard [LocalStack for AWS Docker image](/aws/capabilities/config/docker-images) ("online") with the customer-specific Enterprise image ("offline").
+This section compares the standard [LocalStack for AWS Docker image](/aws/configuration/config/docker-images) ("online") with the customer-specific Enterprise image ("offline").
 
 ### Key differences
 
@@ -45,7 +45,7 @@ This section compares the standard [LocalStack for AWS Docker image](/aws/capabi
 | Service dependencies | Some services may download dependencies on demand during runtime. | Service dependencies are pre-baked into the image for offline usage. |
 | Cloud Pods | Platform remote integration can sync state with your LocalStack account. | LocalStack Platform remotes are typically unavailable in fully air-gapped setups. Use self-managed remotes (for example S3 or ORAS) when available in your environment. |
 | Ephemeral instances | Available via Web App/CLI as cloud-hosted LocalStack runtimes. | Not available in air-gapped/offline deployments because they run on LocalStack Cloud infrastructure. |
-| Telemetry | Can send usage events for features such as [Stack Insights](/aws/capabilities/web-app/stack-insights). | Keep event reporting disabled (`DISABLE_EVENTS=1`) for strict offline setups. |
+| Telemetry | Can send usage events for features such as [Stack Insights](/aws/configuration/web-app/stack-insights). | Keep event reporting disabled (`DISABLE_EVENTS=1`) for strict offline setups. |
 
 ### What communicates with LocalStack Cloud?
 

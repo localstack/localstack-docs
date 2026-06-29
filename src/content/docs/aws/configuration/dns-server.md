@@ -9,10 +9,10 @@ LocalStack includes a DNS server that enables seamless connectivity to LocalStac
 The DNS server is available on all IPv4 addresses within the LocalStack container (i.e., listening to `0.0.0.0`) and resolves `localhost.localstack.cloud` to the LocalStack container.
 Therefore, containers that are configured to use the DNS server can reach LocalStack using `localhost.localstack.cloud`.
 This configuration happens automatically for containers created by LocalStack, including compute resources such as Lambda, ECS, and EC2.
-Your container can be configured to use the DNS server as demonstrated in the [Network Troubleshooting guide](/aws/capabilities/networking/accessing-endpoint-url/#from-the-same-computer).
+Your container can be configured to use the DNS server as demonstrated in the [Network Troubleshooting guide](/aws/configuration/networking/accessing-endpoint-url/#from-the-same-computer).
 If you wish to use the DNS server on your host system, follow the instructions under [System DNS configuration](#system-dns-configuration).
 
-LocalStack for AWS additionally offers [Transparent Endpoint Injection](/aws/capabilities/networking/transparent-endpoint-injection/) (active by default),
+LocalStack for AWS additionally offers [Transparent Endpoint Injection](/aws/configuration/networking/transparent-endpoint-injection/) (active by default),
 which enables seamless connectivity to LocalStack without changing your application code targeting AWS.
 The DNS server resolves AWS domains such as `*.amazonaws.com` including subdomains to the LocalStack container.
 Therefore, your application seamlessly accesses the LocalStack APIs instead of the real AWS APIs.
@@ -69,7 +69,7 @@ We do not recommend disabling the DNS server since this disables resolving `loca
 ### LocalStack endpoints
 
 If you operate behind an enterprise proxy and wish to customize the domain name returned by LocalStack services (e.g., SQS queue URL),
-check out the [Configuration](/aws/capabilities/config/configuration#core) `LOCALSTACK_HOST`.
+check out the [Configuration](/aws/configuration/config/configuration#core) `LOCALSTACK_HOST`.
 
 If you wish to customize internal LocalStack DNS routing of `localhost.localstack.cloud`,
 refer to the instructions in the [Route53 documentation](/aws/services/route53#customizing-internal-endpoint-resolution).

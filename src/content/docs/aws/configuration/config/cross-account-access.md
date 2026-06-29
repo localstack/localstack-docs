@@ -59,7 +59,7 @@ The full list of resources and operations that allow cross-account access are li
 
 :::tip
 LocalStack does not enforce IAM for cross-account access by default.
-Use the `ENFORCE_IAM` [configuration](/aws/capabilities/config/configuration#iam) option to enable it.
+Use the `ENFORCE_IAM` [configuration](/aws/configuration/config/configuration#iam) option to enable it.
 :::
 
 ### EC2 Peering

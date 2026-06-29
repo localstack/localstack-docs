@@ -25,7 +25,7 @@ Officially supported extensions are available in our [Official Extensions Librar
 :::tip
 Want to try out a common LocalStack extension?
 
-Our [MailHog tutorial](/aws/capabilities/extensions/mailhog) teaches you how to install and use the official MailHog extension. It’s a quick way to explore how extensions work in LocalStack.
+Our [MailHog tutorial](/aws/configuration/extensions/mailhog) teaches you how to install and use the official MailHog extension. It’s a quick way to explore how extensions work in LocalStack.
 :::
 
 :::note
