@@ -8,11 +8,11 @@ tags: ["Base"]
 
 Snowflake Dynamic Tables enable a background process to continuously load new data from sources into the table, supporting both delta and full load operations. A dynamic table automatically updates to reflect query results, removing the need for a separate target table and custom code for data transformation. This table is kept current through regularly scheduled refreshes by an automated process.
 
-The Snowflake emulator supports Dynamic tables, allowing you to create and manage Dynamic tables locally.
+The Snowflake emulator supports Dynamic Tables, allowing you to create and manage Dynamic Tables locally. In the current emulator implementation, Dynamic Tables are backed by views and are always current. `TARGET_LAG` and refresh scheduling have no effect. Full staleness and refresh-timing support is planned for the future.
 
 ## Getting started
 
-This guide is designed for users new to Dynamic tables and assumes basic knowledge of SQL and Snowflake. Start your Snowflake emulator and connect to it using an SQL client in order to execute the queries further below.
+This guide is designed for users new to Dynamic Tables and assumes basic knowledge of SQL and Snowflake. Start your Snowflake emulator and connect to it using an SQL client in order to execute the queries further below.
 
 In this guide, you will create a table, create a dynamic table, insert data into the table, and query the dynamic table.
 
@@ -209,3 +209,10 @@ The output should be:
 | MY_RENAMED_TABLE successfully dropped.   |
 +------------------------------------------+
 ```
+
+## Current Limitations
+
+The following limitations apply to Dynamic Tables in the current Snowflake emulator:
+
+- **Always-current refresh behavior**: Dynamic Tables are backed by views in the current implementation, meaning they always reflect the latest state of their source query. As a result, `TARGET_LAG` and `REFRESH_MODE` settings are accepted but have no effect on refresh timing or staleness behavior.
+- **Planned support**: Proper staleness tracking and refresh-timing support is planned for the Rust emulator.
