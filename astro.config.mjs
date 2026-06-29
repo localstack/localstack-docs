@@ -4,7 +4,6 @@ import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import starlightDocSearch from '@astrojs/starlight-docsearch';
 import starlightLinksValidator from 'starlight-links-validator';
-import starlightImageZoom from 'starlight-image-zoom';
 import starlightLlmsTxt from 'starlight-llms-txt';
 import sitemap from '@astrojs/sitemap';
 import starlightFullViewMode from 'starlight-fullview-mode';
@@ -359,9 +358,6 @@ export default defineConfig({
           exclude: ['aws/changelog', 'snowflake/changelog', 'azure/changelog'],
           rawContent: true,
         }),
-        starlightImageZoom({
-          showCaptions: true,
-        }),
         starlightFullViewMode({
           leftSidebarEnabled: false,
         }),
@@ -480,7 +476,7 @@ export default defineConfig({
                       slug: 'aws/developer-tools/running-localstack/localstack-cli',
                     },
                     {
-                      label: 'lstk',
+                      label: 'lstk CLI',
                       slug: 'aws/developer-tools/running-localstack/lstk',
                     },
                     {

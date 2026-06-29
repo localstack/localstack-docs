@@ -92,13 +92,13 @@ When starting the Azure emulator, point the CLI at the Azure image via `IMAGE_NA
 <Tabs>
   <TabItem label="macOS/Linux">
     <Code
-      code={`localstack auth set-token <YOUR_AUTH_TOKEN>\nIMAGE_NAME=localstack/localstack-azure-alpha localstack start`}
+      code={`localstack auth set-token <YOUR_AUTH_TOKEN>\nIMAGE_NAME=localstack/localstack-azure localstack start`}
       lang="shell"
     />
   </TabItem>
   <TabItem label="Windows">
     <Code
-      code={`localstack auth set-token <YOUR_AUTH_TOKEN>\n$env:IMAGE_NAME="localstack/localstack-azure-alpha"; localstack start`}
+      code={`localstack auth set-token <YOUR_AUTH_TOKEN>\n$env:IMAGE_NAME="localstack/localstack-azure"; localstack start`}
       lang="powershell"
     />
   </TabItem>
@@ -123,7 +123,7 @@ docker run \
   -p 4566:4566 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:- } \
-  localstack/localstack-azure-alpha
+  localstack/localstack-azure
 ```
 
 For more information about starting the Azure emulator with Docker, take a look at our [Azure installation guide](/azure/getting-started/#docker-cli).
@@ -147,7 +147,7 @@ Developer Auth Tokens cannot be used in CI.
 CI Auth Tokens are available on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) and are configured similarly to Developer Auth Tokens.
 
 To set the CI Auth Token, add the Auth Token value in the `LOCALSTACK_AUTH_TOKEN` environment variable of your CI provider, and reference it when starting the Azure emulator in your CI workflow.
-The same patterns used for [LocalStack in CI](/aws/integrations/continuous-integration/) apply to Azure — swap the image for `localstack/localstack-azure-alpha`.
+The same patterns used for [LocalStack in CI](/aws/integrations/continuous-integration/) apply to Azure — swap the image for `localstack/localstack-azure`.
 
 ## Rotating the Auth Token
 

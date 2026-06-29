@@ -1,0 +1,286 @@
+---
+title: "Aurora DSQL"
+description: Get started with Aurora DSQL on LocalStack
+tags: ["Ultimate"]
+persistence: supported with limitations
+---
+
+import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+
+## Introduction
+
+Aurora DSQL is a serverless, distributed, PostgreSQL-compatible database service provided by AWS.
+It offers active-active high availability and is designed for transactional workloads that require scalability without the operational overhead of managing database infrastructure.
+
+LocalStack allows you to use the Aurora DSQL APIs to create and manage clusters, tags, resource policies, and streams in your local environment.
+The data plane is backed by an embedded PostgreSQL instance, so you can connect to a cluster and run SQL against it.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Aurora DSQL's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Aurora DSQL and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+
+Start your LocalStack container using your preferred method.
+We will demonstrate how to create a cluster, inspect it, and clean it up using the AWS CLI.
+
+### Create a cluster
+
+You can create a cluster using the [`CreateCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_CreateCluster.html) API.
+Run the following command to create a cluster:
+
+```bash
+awslocal dsql create-cluster
+```
+
+```bash title="Output"
+{
+    "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "status": "CREATING",
+    "creationTime": 1782306284.339124,
+    "deletionProtectionEnabled": true,
+    "encryptionDetails": {
+        "encryptionType": "AWS_OWNED_KMS_KEY",
+        "encryptionStatus": "ENABLED"
+    },
+    "endpoint": "localhost.localstack.cloud:4513"
+}
+```
+
+The cluster is returned with a `CREATING` status and transitions to `ACTIVE` shortly after.
+Note that `deletionProtectionEnabled` defaults to `true`, matching AWS behaviour.
+
+To use a customer-managed KMS key, pass `--kms-encryption-key <key-arn>`; the `encryptionDetails` will then report `CUSTOMER_MANAGED_KMS_KEY` and echo the key ARN.
+
+### Inspect a cluster
+
+You can retrieve the details of a cluster using the [`GetCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_GetCluster.html) API.
+Replace the identifier with the one returned in the previous step:
+
+```bash
+awslocal dsql get-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+```
+
+```bash title="Output"
+{
+    "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "status": "ACTIVE",
+    "creationTime": 1782306284.339124,
+    "deletionProtectionEnabled": true,
+    "tags": {},
+    "encryptionDetails": {
+        "encryptionType": "AWS_OWNED_KMS_KEY",
+        "encryptionStatus": "ENABLED"
+    },
+    "endpoint": "localhost.localstack.cloud:4513"
+}
+```
+
+You can list all clusters in the current account and region using the [`ListClusters`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_ListClusters.html) API:
+
+```bash
+awslocal dsql list-clusters
+```
+
+```bash title="Output"
+{
+    "clusters": [
+        {
+            "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+            "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6"
+        }
+    ]
+}
+```
+
+### Connect to the cluster
+
+The cluster `endpoint` returned by `GetCluster` points at an embedded PostgreSQL instance, so you can connect to it with any PostgreSQL client.
+The endpoint uses the `host:port` format; split it to obtain the host and port for your client.
+
+:::note
+Data-plane connectivity requires LocalStack to run inside Docker, so that the embedded PostgreSQL backend is available and its port is reachable.
+Locally, connections use plain PostgreSQL credentials (database `test`, user `test`, password `test`).
+The IAM authentication-token flow that AWS Aurora DSQL requires is not used against LocalStack.
+:::
+
+Using `psql`, connect to the database and run some SQL:
+
+```bash
+psql -d test -U test -h localhost.localstack.cloud -p 4513 -W
+```
+
+```sql
+CREATE TABLE employees (id integer, name text);
+INSERT INTO employees (id, name) VALUES (1, 'Alice');
+SELECT id, name FROM employees;
+```
+
+```bash title="Output"
+ id | name
+----+-------
+  1 | Alice
+(1 row)
+```
+
+### Delete a cluster
+
+Because clusters are created with deletion protection enabled, you must first disable it using the [`UpdateCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_UpdateCluster.html) API.
+Attempting to delete a protected cluster returns a `ValidationException`.
+
+```bash
+awslocal dsql update-cluster \
+    --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
+    --no-deletion-protection-enabled
+```
+
+You can then delete the cluster using the [`DeleteCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteCluster.html) API:
+
+```bash
+awslocal dsql delete-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+```
+
+```bash title="Output"
+{
+    "identifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "status": "DELETING",
+    "creationTime": 1782306284.339124
+}
+```
+
+## Tags
+
+You can attach tags at creation time with `--tags`, and manage them afterwards using the [`TagResource`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_TagResource.html), [`UntagResource`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_UntagResource.html), and [`ListTagsForResource`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_ListTagsForResource.html) APIs.
+
+```bash
+awslocal dsql create-cluster --tags Name=my-cluster,Env=dev
+```
+
+Add or update tags on an existing cluster:
+
+```bash
+awslocal dsql tag-resource \
+    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
+    --tags Team=platform
+```
+
+List the tags on a resource:
+
+```bash
+awslocal dsql list-tags-for-resource \
+    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6
+```
+
+```bash title="Output"
+{
+    "tags": {
+        "Name": "my-cluster",
+        "Env": "dev",
+        "Team": "platform"
+    }
+}
+```
+
+Remove tags by key:
+
+```bash
+awslocal dsql untag-resource \
+    --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
+    --tag-keys Env
+```
+
+## Cluster policies
+
+You can attach a resource-based policy to a cluster using the [`PutClusterPolicy`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_PutClusterPolicy.html) API, then read and remove it with [`GetClusterPolicy`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_GetClusterPolicy.html) and [`DeleteClusterPolicy`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteClusterPolicy.html).
+
+```bash
+awslocal dsql put-cluster-policy \
+    --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
+    --policy '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::000000000000:root"},"Action":"dsql:DbConnect","Resource":"*"}]}'
+```
+
+```bash title="Output"
+{
+    "policyVersion": "a1b2c3d4"
+}
+```
+
+Retrieve the stored policy:
+
+```bash
+awslocal dsql get-cluster-policy --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+```
+
+:::note
+Cluster policies are stored and returned as-is but are not enforced by LocalStack.
+:::
+
+## Streams
+
+You can manage stream metadata using the [`CreateStream`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_CreateStream.html), [`GetStream`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_GetStream.html), [`ListStreams`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_ListStreams.html), and [`DeleteStream`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteStream.html) APIs.
+
+```bash
+awslocal dsql create-stream \
+    --cluster-identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
+    --target-definition '{"kinesis":{"streamArn":"arn:aws:kinesis:us-east-1:000000000000:stream/my-stream","roleArn":"arn:aws:iam::000000000000:role/dsql-stream-role"}}' \
+    --ordering UNORDERED \
+    --format JSON
+```
+
+```bash title="Output"
+{
+    "clusterIdentifier": "8a71d298-c086-4fb4-a698-d7b4eeb657e6",
+    "streamIdentifier": "3506a484-f6b2-4610-b04e-5cb0eae4405a",
+    "arn": "arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6/stream/3506a484-f6b2-4610-b04e-5cb0eae4405a",
+    "status": "CREATING",
+    "creationTime": 1782306345.637581,
+    "ordering": "UNORDERED",
+    "format": "JSON"
+}
+```
+
+List the streams of a cluster:
+
+```bash
+awslocal dsql list-streams --cluster-identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+```
+
+:::note
+Streams are backed as metadata only; no change-data-capture (CDC) records are emitted.
+:::
+
+## VPC endpoint
+
+You can retrieve the synthesised VPC endpoint service name for a cluster using the [`GetVpcEndpointServiceName`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_GetVpcEndpointServiceName.html) API:
+
+```bash
+awslocal dsql get-vpc-endpoint-service-name --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+```
+
+```bash title="Output"
+{
+    "serviceName": "com.amazonaws.us-east-1.dsql",
+    "clusterVpcEndpoint": "vpce-local.8a71d298-c086-4fb4-a698-d7b4eeb657e6.dsql.us-east-1.vpce.amazonaws.com"
+}
+```
+
+## Current Limitations
+
+- CloudFormation is not yet supported for Aurora DSQL resources.
+- The data plane is backed by a standard embedded PostgreSQL instance rather than the real Aurora DSQL distributed engine.
+  DSQL-specific SQL dialect restrictions are not enforced, so behaviour may differ from AWS for unsupported statements.
+- Multi-region clusters are tracked at the control-plane level only.
+  Peering metadata is recorded, but there is no real cross-region replication.
+- Data-plane data is not persisted yet. Cluster metadata survives restarts when persistence is enabled, but the data written through the embedded PostgreSQL backend (tables, rows) is not retained.
+- Streams support metadata CRUD only; no change-data-capture record flow is produced.
+- Cluster policies are stored as opaque JSON and are not enforced.
+- `GetVpcEndpointServiceName` returns a cosmetic, synthesised endpoint name.
+- KMS encryption is reflected in metadata only; no actual encryption is performed.
+- Data-plane connectivity requires running LocalStack inside Docker and uses plain PostgreSQL credentials.
+  The AWS IAM authentication-token flow is not used locally.
+
+## API Coverage
+
+<FeatureCoverage service="dsql" client:load />
