@@ -45,7 +45,7 @@ For more information, see the [Helm Chart configuration](https://github.com/loca
 - Kubernetes Lambda Executor in LocalStack scales Lambda execution by spawning new environments (running in pods) during concurrent invocations.
   Inactive environments shut down after 10 minutes (configurable via `LAMBDA_KEEPALIVE_MS`).
 - Executor schedules multiple Lambda functions according to Kubernetes cluster defaults without specifying node affinity.
-  Users can assign labels to lambda pods using the `LAMBDA_K8S_LABELS` variable (e.g., `LAMBDA_K8S_LABELS=key=value,key2=value2`).
+  Users can assign labels to lambda pods using the `K8S_LABELS` variable (e.g., `K8S_LABELS=key=value,key2=value2`).
 - Timeout configurations similar to AWS are enforced using the `Timeout` function parameter.
   No intrinsic limits on the number of Lambdas; default limit on concurrent executions is 1000 (`LAMBDA_LIMITS_CONCURRENT_EXECUTIONS`).
 - Custom DNS configuration for Lambda on Kubernetes can be set through the `LAMBDA_DOCKER_DNS` configuration variable.

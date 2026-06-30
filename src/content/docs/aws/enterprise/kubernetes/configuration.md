@@ -11,9 +11,9 @@ When LocalStack runs on Kubernetes with the Kubernetes executor enabled, a set o
 
 ### Namespace
 
-By default, LocalStack creates child pods in the `default` namespace. Use `LOCALSTACK_K8S_NAMESPACE` to deploy them into a different namespace.
+By default, LocalStack creates child pods in the `default` namespace. Use `K8S_NAMESPACE` to deploy them into a different namespace.
 ```bash
-LOCALSTACK_K8S_NAMESPACE=localstack-workloads
+K8S_NAMESPACE=localstack-workloads
 ```
 
 The namespace must already exist in your cluster before starting LocalStack.
@@ -24,18 +24,18 @@ You can attach custom Kubernetes labels and annotations to all child pods create
 
 Both variables accept a comma-separated list of `key=value` pairs:
 ```bash
-LOCALSTACK_K8S_LABELS=env=dev,team=platform
-LOCALSTACK_K8S_ANNOTATIONS=prometheus.io/scrape=true,prometheus.io/port=8080
+K8S_LABELS=env=dev,team=platform
+K8S_ANNOTATIONS=prometheus.io/scrape=true,prometheus.io/port=8080
 ```
 
 ### Pod configuration
 
-`LOCALSTACK_K8S_POD_CONFIG` configures Kubernetes metadata, scheduling, and resource settings for child pods created by supported services such as Lambda and ECS.
+`K8S_POD_CONFIG` configures Kubernetes metadata, scheduling, and resource settings for child pods created by supported services such as Lambda and ECS.
 Use it to define reusable pod profiles with fields such as `nodeSelector`, `tolerations`, `affinity`, `resources`, `labels`, and `annotations`.
 The value must be valid JSON.
 
 ```bash
-LOCALSTACK_K8S_POD_CONFIG='{"profiles":{"default":{"nodeSelector":{"pool":"general"}}}}'
+K8S_POD_CONFIG='{"profiles":{"default":{"nodeSelector":{"pool":"general"}}}}'
 ```
 
 For the full JSON schema, profile resolution order, and examples, see [Pod Configuration](/aws/enterprise/kubernetes/pod-configuration/).
@@ -88,10 +88,10 @@ Increase these values if your cluster is under heavy load or if image pulls are 
 
 | Variable | Description |
 |---|---|
-| `LOCALSTACK_K8S_NAMESPACE` | Kubernetes namespace for child pods |
-| `LOCALSTACK_K8S_LABELS` | Comma-separated `key=value` labels applied to child pods |
-| `LOCALSTACK_K8S_ANNOTATIONS` | Comma-separated `key=value` annotations applied to child pods |
-| `LOCALSTACK_K8S_POD_CONFIG` | JSON pod configuration for supported child pods. See [Pod Configuration](/aws/enterprise/kubernetes/pod-configuration/) |
+| `K8S_NAMESPACE` | Kubernetes namespace for child pods |
+| `K8S_LABELS` | Comma-separated `key=value` labels applied to child pods |
+| `K8S_ANNOTATIONS` | Comma-separated `key=value` annotations applied to child pods |
+| `K8S_POD_CONFIG` | JSON pod configuration for supported child pods. See [Pod Configuration](/aws/enterprise/kubernetes/pod-configuration/) |
 | `K8S_CONTAINER_SECURITY_CONTEXT` | JSON security context applied to child pod containers |
 | `K8S_CURL_INIT_IMAGE` | Init container image used for network readiness checks |
 | `LAMBDA_K8S_INIT_IMAGE` | Init container image used in Lambda pods |
