@@ -464,7 +464,7 @@ Two AMI families are supported:
 LocalStack reads the same set of fields from both formats and propagates them to the registered node, including node labels, taints, topology metadata (region, zone, instance type), and the provider ID. This matches what real EKS nodes look like from the cluster's perspective.
 
 :::note
-Self-managed nodes use the embedded k3d-backed provider (`K8S_PROVIDER=k3s`), which is the default.
+Self-managed nodes use the embedded k3d-backed provider (`MANAGED_K8S_PROVIDER=k3s`), which is the default.
 The walkthrough below runs entirely between Docker containers, so it also works on macOS where direct host-to-instance networking is not available.
 :::
 
@@ -640,7 +640,7 @@ To try this out, follow the upstream [Getting started with Karpenter](https://ka
 ## Use an existing Kubernetes installation
 
 You can also access the EKS API using your existing local Kubernetes installation.
-This can be achieved by setting the configuration variable `K8S_PROVIDER=local` and mounting the `$HOME/.kube/config` file into the LocalStack container.
+This can be achieved by setting the configuration variable `MANAGED_K8S_PROVIDER=local` and mounting the `$HOME/.kube/config` file into the LocalStack container.
 When using a `docker-compose.yml` file, you need to add a bind mount like this:
 
 ```yaml
