@@ -468,7 +468,6 @@ To learn more about these configuration options, see [DNS Server](/aws/configura
 
 | Variable             | Example Values | Description |
 |----------------------|----------------|-------------|
-| `ACTIVATE_PRO`       | `0` \| `1`&nbsp;(default)    | Whether Pro should be activated or not. This is set to true by default if using the `localstack/localstack-pro` container image. If set to `1`, LocalStack will fail to start if the license key activation did not work. If set to `0`, an attempt is made to start LocalStack without Pro features. |
 | `LOCALSTACK_AUTH_TOKEN` |             | [Auth token](/aws/getting-started/auth-token) to activate LocalStack for AWS. |
 | `LOCALSTACK_API_KEY` |                | **Deprecated since 3.0.0** API key to activate LocalStack for AWS.<br/> **Use the `LOCALSTACK_AUTH_TOKEN` instead (except for [CI environments](/aws/integrations/continuous-integration/)).** |
 | `LOG_LICENSE_ISSUES` | `0` \| `1`&nbsp;(default)    | Whether to log issues with the license activation to the console. |
