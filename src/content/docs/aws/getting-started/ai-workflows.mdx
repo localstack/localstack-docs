@@ -27,15 +27,29 @@ There are three common ways to use LocalStack in AI-assisted development:
 
 You do not need all three approaches to get started. If your editor supports MCP, start with the LocalStack MCP Server. Or, you can use Skills if you want reusable agent instructions. If not, ask your assistant to generate Terraform, CDK, or AWS CLI steps and run them with LocalStack's local wrappers.
 
+## Quick Setup
+
+LocalStack has provided an [`agents.md`](https://blog.localstack.cloud/ai/agents.md) file that provides the full instructions for your AI agent to get started with LocalStack, including how to configure the MCP server and LocalStack Skills. Details can be found at our [agents landing page](https://blog.localstack.cloud/ai/) or you can copy and paste the instructions below into your AI agent's prompt.
+
+```text
+Fetch https://blog.localstack.cloud/ai/agents.md and follow the instructions to set up LocalStack on my machine.
+```
+
+For manual setup of the MCP server and skills, you can follow the steps below.
+
 ## Connect an MCP client
 
-The LocalStack MCP Server connects MCP-compatible clients to your LocalStack environment. Once configured, your AI assistant can use LocalStack tools to start the container, deploy infrastructure, run AWS CLI commands, inspect logs, manage state, and query resources.
+The LocalStack MCP Server connects MCP-compatible clients to your LocalStack environment. Once configured, your AI assistant can use LocalStack tools to start the container, deploy infrastructure, run AWS CLI commands, inspect logs, manage state, and query resources. The quickest way to get started with the MCP server is to use the interactive setup wizard:
+
+```bash
+npx -y @localstack/localstack-mcp-server init
+```
+
+The wizard detects your installed clients, asks how you want to run the server, and writes the configuration for you. You need a valid [Auth Token](/aws/getting-started/auth-token/) to configure the server.
 
 :::note
-The MCP server runs locally and talks to your LocalStack instance. Your AI assistant is the MCP client. For setup instructions and the full tool reference, see the [LocalStack MCP Server guide](/aws/tooling/mcp-server/).
+The MCP server runs locally and talks to a LocalStack instance. Your AI assistant is the MCP client. For detailed setup instructions and the full tool reference, see the [LocalStack MCP Server guide](/aws/tooling/mcp-server/).
 :::
-
-All MCP server tools require a valid [Auth Token](/aws/getting-started/auth-token/) configured as `LOCALSTACK_AUTH_TOKEN`.
 
 ## Use agent skills
 

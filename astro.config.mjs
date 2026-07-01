@@ -555,15 +555,11 @@ export default defineConfig({
                   slug: 'aws/tooling',
                 },
                 {
-                  label: 'LocalStack CLI',
-                  slug: 'aws/tooling/localstack-cli',
-                },
-                {
                   label: 'LocalStack MCP Server',
                   slug: 'aws/tooling/mcp-server',
                 },
                 {
-                  label: 'lstk',
+                  label: 'lstk CLI',
                   slug: 'aws/tooling/lstk',
                 },
                 {
@@ -622,6 +618,10 @@ export default defineConfig({
                 {
                   label: 'LocalSurf',
                   slug: 'aws/tooling/localsurf',
+                },
+                {
+                  label: 'LocalStack CLI (deprecated)',
+                  slug: 'aws/tooling/localstack-cli',
                 },
               ],
             },
