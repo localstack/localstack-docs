@@ -207,7 +207,7 @@ This section covers configuration options that are specific to certain AWS servi
 | `K3D_CLUSTER_TOKEN` | `localstack-k3d-cluster-token` (default) | Token used to authenticate agent nodes joining a k3d-backed EKS cluster. Setting an explicit token ensures consistent node authentication across k3d versions, which is required for dynamic agent assignment. (formerly `EKS_K3D_CLUSTER_TOKEN`, still accepted as a deprecated alias) |
 
 :::note
-The Kubernetes runtime configuration variables were renamed to cloud-agnostic names (`K8S_*`, `K3S_*`, `K3D_*`) since they are shared across all services that run workloads on Kubernetes (EKS, Lambda, ECS, …). The previous `EKS_*`, `LOCALSTACK_K8S_*`, and `LAMBDA_K8S_*` names still work as deprecated aliases and will be removed in a future release.
+The EKS configuration variables were renamed to cloud-agnostic names since they're shared across cloud emulators (AWS EKS / Azure AKS). The previous `EKS_*`, `LOCALSTACK_K8S_*`, and `LAMBDA_K8S_*` names still work as deprecated aliases and will be removed in a future release.
 
 If you configure these options through the LocalStack CLI **v1**, keep the `LOCALSTACK_` prefix on the new names (e.g. `LOCALSTACK_K8S_PROVIDER`). The CLI v1 only forwards host environment variables prefixed with `LOCALSTACK_` into the container, where the prefix is stripped to yield the in-container variable (`K8S_PROVIDER`).
 :::
