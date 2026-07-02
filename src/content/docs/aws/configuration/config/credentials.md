@@ -8,7 +8,7 @@ Like AWS, LocalStack requires AWS credentials to be supplied in all API operatio
 
 ## Access Key ID
 
-For root accounts, the choice of access key ID affects [multi-account namespacing](/aws/capabilities/config/multi-account-setups).
+For root accounts, the choice of access key ID affects [multi-account namespacing](/aws/configuration/config/multi-account-setups).
 
 Access key IDs can be one of following patterns:
 

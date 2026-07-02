@@ -227,12 +227,12 @@ You can now use ECR (Elastic Container Registry) images within your EKS environm
 
 #### Initial configuration
 
-To modify the return value of resource URIs for most services, including ECR, you can utilize the `LOCALSTACK_HOST` variable in the [configuration](/aws/capabilities/config/configuration).
+To modify the return value of resource URIs for most services, including ECR, you can utilize the `LOCALSTACK_HOST` variable in the [configuration](/aws/configuration/config/configuration).
 By default, ECR returns a `repositoryUri` starting with `localhost.localstack.cloud`, such as: `localhost.localstack.cloud:<port>/<repository-name>`.
 
 :::note
 In this section, we assume that `localhost.localstack.cloud` resolves in your environment, and LocalStack is connected to a non-default bridge network.
-For more information, refer to the article about [DNS rebind protection](/aws/capabilities/dns-server#dns-rebind-protection).
+For more information, refer to the article about [DNS rebind protection](/aws/configuration/dns-server#dns-rebind-protection).
 
 If the domain `localhost.localstack.cloud` does not resolve on your host, you can still proceed by setting `LOCALSTACK_HOST=localhost` (not recommended).
 
@@ -348,7 +348,7 @@ In the events, we can see that the pull from ECR was successful:
 ```
 
 :::tip
-Public Docker images from `registry.k8s.io` can be pulled without additional configuration from EKS nodes, but if you pull images from any other locations that resolve to S3 you can configure `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM=<bucket-name>\.s3.*\.amazonaws\.com` in your [configuration](/aws/capabilities/config/configuration).
+Public Docker images from `registry.k8s.io` can be pulled without additional configuration from EKS nodes, but if you pull images from any other locations that resolve to S3 you can configure `DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM=<bucket-name>\.s3.*\.amazonaws\.com` in your [configuration](/aws/configuration/config/configuration).
 :::
 
 ### Configuring an Ingress for your services
@@ -862,16 +862,18 @@ spec:
 
 LocalStack uses [k3s](https://github.com/k3s-io/k3s) under the hood for creating EKS clusters.
 Below is the list of supported Kubernetes versions and their corresponding k3s versions.
+
 The default version is `1.35`.
 
 | Kubernetes Version   | k3s Version   | EKS Platform Version   |
 |----------------------|---------------|------------------------|
-| 1.35                 | v1.35.3-k3s1  | eks.9                  |
-| 1.34                 | v1.34.6-k3s1  | eks.19                 |
-| 1.33                 | v1.33.10-k3s1 | eks.33                 |
-| 1.32                 | v1.32.13-k3s1 | eks.40                 |
-| 1.31                 | v1.31.14-k3s1 | eks.56                 |
-| 1.30                 | v1.30.14-k3s2 | eks.64                 |
+| 1.36                 | v1.36.1-k3s1  | eks.3                  |
+| 1.35                 | v1.35.5-k3s1  | eks.13                 |
+| 1.34                 | v1.34.8-k3s1  | eks.23                 |
+| 1.33                 | v1.33.12-k3s1 | eks.37                 |
+| 1.32                 | v1.32.13-k3s1 | eks.44                 |
+| 1.31                 | v1.31.14-k3s1 | eks.60                 |
+| 1.30                 | v1.30.14-k3s2 | eks.68                 |
 
 Users can specify the desired version when creating an EKS cluster in LocalStack using the `EKS_K3S_IMAGE_TAG` configuration variable when starting LocalStack.
 

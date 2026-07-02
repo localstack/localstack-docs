@@ -171,7 +171,7 @@ Common causes for connection failure:
 
 * **Transparent Endpoint Injection**
 
-  * Review: [https://docs.localstack.cloud/aws/capabilities/networking/transparent-endpoint-injection/](https://docs.localstack.cloud/aws/capabilities/networking/transparent-endpoint-injection/)
+  * Review: [https://docs.localstack.cloud/aws/configuration/networking/transparent-endpoint-injection/](https://docs.localstack.cloud/aws/configuration/networking/transparent-endpoint-injection/)
 * **Egress restrictions**
 
   * Ensure cluster network policies allow outbound internet access.
@@ -262,7 +262,7 @@ This usually means the cluster restricts which images can be pulled.
 
 * Allow the LocalStack images in your cluster
 * If you must use a custom image name or pull-through cache, see:
-  [https://docs.localstack.cloud/aws/capabilities/config/configuration/](https://docs.localstack.cloud/aws/capabilities/config/configuration/)
+  [https://docs.localstack.cloud/aws/configuration/config/configuration/](https://docs.localstack.cloud/aws/configuration/config/configuration/)
 
 
 ### Admission or security policy failures

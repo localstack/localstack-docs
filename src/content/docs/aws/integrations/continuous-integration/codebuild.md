@@ -56,7 +56,7 @@ phases:
 
 ### Configuration
 
-Get know more about the LocalStack [config options](/aws/capabilities/config/configuration).
+Get know more about the LocalStack [config options](/aws/configuration/config/configuration).
 
 #### Native Runner
 

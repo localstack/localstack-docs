@@ -125,7 +125,7 @@ else:
 ...
 ```
 
-In LocalStack for AWS, no code changes are required using our [Transparent Endpoint Injection](/aws/capabilities/networking/transparent-endpoint-injection).
+In LocalStack for AWS, no code changes are required using our [Transparent Endpoint Injection](/aws/configuration/networking/transparent-endpoint-injection).
 
 ## Deploying to LocalStack
 
