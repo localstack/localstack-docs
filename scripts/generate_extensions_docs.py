@@ -46,7 +46,6 @@ class Extension:
     author: str
     version: str
     official: bool
-    has_ui: bool
 
     @classmethod
     def from_api(cls, item: dict) -> "Extension":
@@ -58,7 +57,6 @@ class Extension:
             author=(item.get("author") or "Unknown").strip(),
             version=(item.get("version") or "").strip() or "—",
             official=bool(item.get("official")),
-            has_ui=bool(item.get("has_ui")),
         )
 
 
@@ -129,8 +127,6 @@ def generate_table(extensions: list[Extension]) -> list[str]:
     ]
     for ext in extensions:
         name = _escape_cell(ext.display_name)
-        if ext.has_ui:
-            name = f"{name} <sup>UI</sup>"
         description = _escape_cell(ext.description)
         author = _escape_cell(ext.author)
         install = f"`localstack extensions install {ext.name}`" if ext.name else "—"
@@ -169,8 +165,7 @@ def generate_documentation(extensions: list[Extension]) -> str:
         "on installing, listing, and removing extensions.",
         "",
         ":::note",
-        "This page is auto-generated from the LocalStack marketplace API. "
-        "Extensions marked with <sup>UI</sup> ship with a web UI.",
+        "This page is auto-generated from the LocalStack marketplace API.",
         ":::",
         "",
     ]
