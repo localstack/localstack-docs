@@ -134,6 +134,29 @@ An error occurred (AccessDenied) when calling the ListObjectsV2 operation: User:
 
 The management account stays exempt from SCPs for cross-account requests too.
 
+### Testing SCPs with the IAM Policy Simulator
+
+You can use the [IAM Policy Simulator](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_testing-policies.html) to check whether a principal's request would be allowed or denied without running it against your resources.
+LocalStack evaluates SCPs during policy simulation, so you can validate SCP behavior with [`SimulatePrincipalPolicy`](https://docs.aws.amazon.com/IAM/latest/APIReference/API_SimulatePrincipalPolicy.html) before making live requests.
+
+```bash
+awslocal iam simulate-principal-policy \
+   --policy-source-arn arn:aws:iam::111111111111:user/test \
+   --action-names s3:ListBucket \
+   --resource-arns arn:aws:s3:::cross-account-bucket
+```
+
+When SCPs affect the decision, LocalStack populates the `OrganizationsDecisionDetail` field of the [`EvaluationResult`](https://docs.aws.amazon.com/IAM/latest/APIReference/API_EvaluationResult.html), so you can see whether an SCP allowed the action.
+
+:::note
+LocalStack's Policy Simulator and its IAM enforcement engine share the same underlying evaluation logic.
+As a result, the simulator reflects the real AWS IAM behavior rather than the behavior of the AWS Policy Simulator, which differs in a few ways:
+
+- AWS ignores SCPs that contain conditions during simulation. LocalStack evaluates SCPs with conditions.
+- AWS applies SCPs to the organization's management account during simulation. LocalStack does not apply SCPs to the management account, matching the real behavior of AWS Organizations.
+- AWS reports an explicit `Deny` from an SCP as an implicit deny. LocalStack reports it as an explicit deny, which is the expected outcome.
+:::
+
 ## API Coverage
 
 <FeatureCoverage service="organizations" client:load />
