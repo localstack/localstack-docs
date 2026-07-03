@@ -38,10 +38,15 @@
         "service": "ec2",
         "single": {
             "policy_statements": [
-                "ec2:DescribeSecurityGroups",
-                "cloudformation:GetResource"
+                "ec2:DescribeSecurityGroups"
             ],
             "identifier": "GroupId"
+        },
+        "batch": {
+            "policy_statements": [
+                "ec2:DescribeSecurityGroups"
+            ],
+            "identifier": "Optional<json string filters for describe_security_groups>"
         }
     },
     {
@@ -64,6 +69,15 @@
                 "cloudformation:GetResource"
             ],
             "identifier": "VpcId"
+        },
+        "resource_tree": {
+            "resources": [
+                "AWS::EC2::Subnet",
+                "AWS::EC2::SecurityGroup"
+            ],
+            "extra_policy_statements": [
+                "ec2:DescribeSecurityGroups"
+            ]
         }
     },
     {
@@ -92,6 +106,16 @@
                 "iam:GetPolicy"
             ],
             "identifier": "Arn"
+        },
+        "batch": {
+            "policy_statements": [
+                "iam:GetPolicy",
+                "iam:ListPolicies",
+                "iam:ListAttachedGroupPolicies",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListAttachedUserPolicies"
+            ],
+            "identifier": "Optional<json string. Can countain PathPrefix and/or one of GroupName, RoleName or UserName>"
         }
     },
     {
@@ -103,6 +127,18 @@
                 "cloudformation:GetResource"
             ],
             "identifier": "RoleName"
+        },
+        "resource_tree": {
+            "resources": [
+                "AWS::IAM::Policy"
+            ],
+            "extra_policy_statements": [
+                "iam:GetPolicy",
+                "iam:ListAttachedGroupPolicies",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListAttachedUserPolicies",
+                "iam:ListPolicies"
+            ]
         }
     },
     {
@@ -315,6 +351,18 @@
                 "s3:ListBucket"
             ],
             "identifier": "{\"Prefix\": Optional<str>, \"BucketRegion\": Optional<str>}"
+        }
+    },
+    {
+        "resource_type": "AWS::SNS::Topic",
+        "service": "sns",
+        "single": {
+            "policy_statements": [
+                "sns:GetTopicAttributes",
+                "sns:ListTagsForResource",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "TopicArn"
         }
     },
     {

@@ -92,7 +92,7 @@ workflows:
 
 To configure LocalStack use the `environment` key on the job level or a shell command, where the latter takes higher precedence.
 
-Read more about the [configuration options](/aws/capabilities/config/configuration) of LocalStack.
+Read more about the [configuration options](/aws/configuration/config/configuration) of LocalStack.
 
 #### Job level
 
@@ -206,7 +206,7 @@ _Note: For best result we recommend to use a combination of the below techniques
 
 Cloud Pods providing an easy solution to persist LocalStack's state, even between workflows or projects.
 
-Find more information about [Cloud Pods](/aws/capabilities/state-management/cloud-pods).
+Find more information about [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods).
 
 ##### Multiple projects
 
@@ -364,7 +364,7 @@ workflows:
 
 #### Ephemeral Instance (Preview)
 
-Find out more about [Ephemeral Instances](/aws/capabilities/cloud-sandbox/ephemeral-instances).
+Find out more about [Ephemeral Instances](/aws/developer-tools/cloud-sandbox/ephemeral-instances).
 
 ##### Same job
 
@@ -520,7 +520,7 @@ jobs:
       - localstack-load-state
 ```
 
-More information about Localstack's [state import/export](/aws/capabilities/state-management/export-import-state).
+More information about Localstack's [state import/export](/aws/developer-tools/snapshots/export-import-state).
 
 #### Cache
 
@@ -586,4 +586,4 @@ workflows:
       ...
 ```
 
-More information about [state management](/aws/capabilities/state-management/export-import-state).
+More information about [state management](/aws/developer-tools/snapshots/export-import-state).

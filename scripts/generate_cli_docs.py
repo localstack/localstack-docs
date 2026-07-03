@@ -187,9 +187,8 @@ def generate_command_section(cmd: Command) -> list[str]:
 
 
 def generate_documentation(
-    regular_commands: list[Command], 
+    regular_commands: list[Command],
     advanced_commands: list[Command],
-    version: str
 ) -> str:
     """Generate the complete markdown documentation."""
     doc_lines = []
@@ -213,7 +212,7 @@ def generate_documentation(
         "To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).",
         "",
         ":::note",
-        f"This documentation was auto-generated from LocalStack CLI version `{version}`.",
+        "[`lstk`](/aws/developer-tools/running-localstack/lstk/) is our new Go-based CLI with an interactive terminal UI for lifecycle (`start`, `stop`), monitoring (`status`, `logs`), storage (`snapshot`), and more.",
         ":::",
         "",
         "## Global Options",
@@ -282,10 +281,6 @@ def main() -> None:
     total = len(regular_commands) + len(advanced_commands)
     print(f"Found {len(regular_commands)} commands and {len(advanced_commands)} advanced commands", file=sys.stderr)
     
-    # Get version
-    version_output = run_command(["localstack", "--version"])
-    version = version_output.strip() if version_output else "latest"
-    
     # Populate details for each command (including subcommands)
     all_commands = regular_commands + advanced_commands
     for i, cmd in enumerate(all_commands):
@@ -293,7 +288,7 @@ def main() -> None:
         populate_command_details(cmd)
     
     print("Generating documentation...", file=sys.stderr)
-    documentation = generate_documentation(regular_commands, advanced_commands, version)
+    documentation = generate_documentation(regular_commands, advanced_commands)
     
     if args.dry_run:
         print(documentation)

@@ -136,7 +136,7 @@ job:
 ...
 ```
 
-More info about Localstack's state export and import [here](/aws/capabilities/state-management/export-import-state/).
+More info about Localstack's state export and import [here](/aws/developer-tools/snapshots/export-import-state/).
 
 #### Cache
 
@@ -159,7 +159,7 @@ job:
 ...
 ```
 
-Additional information about state export and import [here](/aws/capabilities/state-management/export-import-state/).
+Additional information about state export and import [here](/aws/developer-tools/snapshots/export-import-state/).
 
 #### Cloud Pod
 
@@ -174,7 +174,7 @@ job:
 ...
 ```
 
-Find more information about cloud pods [here](/aws/capabilities/state-management/cloud-pods).
+Find more information about cloud pods [here](/aws/developer-tools/snapshots/cloud-pods).
 
 #### Ephemeral Instance (Preview)
 
@@ -213,7 +213,7 @@ test-job:
 ...
 ```
 
-Find out more about ephemeral instances [here](/aws/capabilities/cloud-sandbox/ephemeral-instances).
+Find out more about ephemeral instances [here](/aws/developer-tools/cloud-sandbox/ephemeral-instances).
 
 ## Current Limitations
 

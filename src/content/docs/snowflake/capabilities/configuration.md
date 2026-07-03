@@ -60,7 +60,7 @@ localstack start --stack snowflake
 ```
 
 The file referenced by `CUSTOM_SSL_CERT_PATH` must contain a certificate and private key that match the hostname used by your Snowflake clients.
-For more general guidance on adding trusted certificates to LocalStack, see [Custom TLS certificates](/aws/capabilities/security-testing/custom-tls-certificates/).
+For more general guidance on adding trusted certificates to LocalStack, see [Custom TLS certificates](/aws/developer-tools/security-testing/custom-tls-certificates/).
 
 ## CLI
 

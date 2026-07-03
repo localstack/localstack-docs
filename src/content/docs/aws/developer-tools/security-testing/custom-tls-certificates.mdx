@@ -1,0 +1,122 @@
+---
+title: Custom TLS certificates
+description: Using custom TLS certificates with LocalStack
+template: doc
+tags: ['Hobby']
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Background
+
+LocalStack sometimes performs on-demand fetching of resources from the public internet.
+This requires that LocalStack is able to access public URLs.
+If there is a proxy server in your network that uses a non-standard TLS certificate, LocalStack will not be able to download any files on demand.
+You may see errors in the logs relating to TLS such as "unable to get local issuer certificate".
+
+There are two options when running LocalStack:
+
+1. [creating a custom Docker image](#creating-a-custom-docker-image) or
+2. [using init hooks](#custom-tls-certificates-with-init-hooks)
+
+They all can be summarised as:
+
+1. get your proxy's custom certificate into the system certificate store, and
+2. configure [`requests`](https://pypi.python.org/pypi/requests) to use the custom certificate,
+3. configure [`curl`](https://curl.se/) to use the custom certificate, and
+4. configure [`node.js`](https://nodejs.org/) to use the custom certificate.
+
+## Creating a custom docker image
+
+If you run LocalStack in a docker container (which includes using [the CLI](/aws/getting-started/installation/#installing-localstack-cli), [docker](/aws/getting-started/installation/#docker), [docker-compose](/aws/getting-started/installation/#docker-compose), or [helm](/aws/enterprise/kubernetes/deploy-helm-chart)), to include a custom TLS root certificate a new docker image should be created.
+
+Create a `Dockerfile` containing the following commands:
+
+```yaml showshowLineNumbers
+FROM localstack/localstack:latest
+# or if using the pro image:
+FROM localstack/localstack-pro:latest
+
+COPY <your custom certificate.crt> /usr/local/share/ca-certificates/cert-bundle.crt
+RUN update-ca-certificates
+ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+```
+
+and build the image:
+
+```bash
+docker build -t <image name> .
+```
+
+:::tip
+Certificate files must end in `.crt` to be included in the system certificate store.
+If your certificate file ends with `.pem`, you can rename it to end in `.crt`.
+:::
+
+### Starting LocalStack with the custom image
+
+LocalStack now needs to be configured to use this custom image.
+The workflow is different depending on how you start localstack.
+
+<Tabs>
+<TabItem label="CLI">
+```bash
+IMAGE_NAME=<image name> localstack start
+```
+</TabItem>
+<TabItem label="Docker">
+```bash
+docker run <docker arguments> <image name>
+```
+</TabItem>
+<TabItem label="docker-compose.yml">
+```yaml showshowLineNumbers
+services:
+  localstack:
+    image: <image name>
+    # the rest of your configuration
+```
+</TabItem>
+</Tabs>
+
+## Custom TLS certificates with init hooks
+
+It is recommended to create a `boot` init hook.
+Create a directory on your local system that includes
+
+- the certificate you wish to copy, and
+- the following shell script:
+
+```bash
+#!/bin/bash
+
+set -euo pipefail
+
+cp /etc/localstack/init/boot.d/<your certificate file>.crt /usr/local/share/ca-certificates
+update-ca-certificates
+```
+
+Then run LocalStack with the environment variables
+
+- `REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt`, and
+- `CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt`, and
+- `NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt`
+
+and follow the instructions fn the [init hooks documentation](/aws/configuration/config/initialization-hooks) for configuring LocalStack to use the hook directory as a `boot` hook.
+
+## Disabling TLS verification for LocalStack Cloud
+
+If your proxy intercepts traffic to LocalStack cloud services (e.g., license server), you can disable TLS verification for these specific requests using the `SSL_NO_VERIFY` [configuration variable](/aws/configuration/config/configuration#security) (or `LOCALSTACK_SSL_NO_VERIFY` in Docker).
+
+```bash
+SSL_NO_VERIFY=1 localstack start
+```
+
+:::caution
+This approach disables certificate verification rather than trusting your proxy's certificate.
+Use custom certificates (as described above) when you need to maintain proper TLS verification for all traffic.
+:::
