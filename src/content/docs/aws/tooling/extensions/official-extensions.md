@@ -20,7 +20,7 @@ localstack extensions install <extension-name>
 See [Managing extensions](/aws/tooling/extensions/managing-extensions) for more details on installing, listing, and removing extensions.
 
 :::note
-This page is auto-generated from the LocalStack marketplace API. Extensions marked with <sup>UI</sup> ship with a web UI.
+This page is auto-generated from the LocalStack marketplace API.
 :::
 
 ## Official Extensions
@@ -29,13 +29,13 @@ Extensions built and maintained by the LocalStack team.
 
 | Extension | Description | Author | Install |
 |-----------|-------------|--------|---------|
-| AWS Proxy <sup>UI</sup> | Proxy requests from your LocalStack instance to real AWS resources | LocalStack | `localstack extensions install localstack-extension-aws-proxy` |
+| AWS Proxy | Proxy requests from your LocalStack instance to real AWS resources | LocalStack | `localstack extensions install localstack-extension-aws-proxy` |
 | Diagnosis Viewer | View the diagnostics endpoint directly in localstack | LocalStack | `localstack extensions install localstack-extension-diagnosis-viewer` |
 | Hello World | A minimal LocalStack extension | LocalStack | `localstack extensions install localstack-extension-hello-world` |
-| httpbin <sup>UI</sup> | A simple HTTP Request & Response Service directly in LocalStack | LocalStack | `localstack extensions install localstack-extension-httpbin` |
-| MailHog <sup>UI</sup> | Web and API based SMTP testing directly in LocalStack using MailHog | LocalStack | `localstack extensions install localstack-extension-mailhog` |
+| httpbin | A simple HTTP Request & Response Service directly in LocalStack | LocalStack | `localstack extensions install localstack-extension-httpbin` |
+| MailHog | Web and API based SMTP testing directly in LocalStack using MailHog | LocalStack | `localstack extensions install localstack-extension-mailhog` |
 | Miniflare | This extension makes Miniflare (dev environment for Cloudflare workers) available directly in LocalStack | LocalStack | `localstack extensions install localstack-extension-miniflare` |
-| Resource Graph <sup>UI</sup> | Altimeter based LocalStack extension that allows you to create and import into neptune a graph of the resources in your LocalStack instance | LocalStack | `localstack extensions install localstack-extension-resource-graph` |
+| Resource Graph | Altimeter based LocalStack extension that allows you to create and import into neptune a graph of the resources in your LocalStack instance | LocalStack | `localstack extensions install localstack-extension-resource-graph` |
 | Stripe | A LocalStack extension that provides a mocked version of Stripe as a service | LocalStack | `localstack extensions install localstack-extension-stripe` |
 | Terraform Init Hooks | Use Terraform files as initialization hooks to pre-seed your LocalStack instance automatically | Thomas Rausch | `localstack extensions install localstack-extension-terraform-init` |
 
