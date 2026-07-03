@@ -235,14 +235,21 @@ The submitted job is the parent. Each node is addressable as a child job using t
 awslocal batch describe-jobs --jobs "<jobId>#0" "<jobId>#1"
 ```
 
-A few behaviors to keep in mind:
+Each node also receives additional [environment variables](#environment-variables), such as `AWS_BATCH_JOB_NODE_INDEX` and `AWS_BATCH_JOB_MAIN_NODE_PRIVATE_IPV4_ADDRESS`, that let the nodes coordinate.
 
-- The parent job's outcome follows the main node.
-- A worker failure does not fail the parent.
-- Terminating the parent job stops all of its nodes.
+## Environment variables
 
-### Node environment variables
-In addition to the [standard Batch environment variables](#current-limitations), each node receives the following multi-node parallel variables:
+LocalStack injects a subset of the Batch environment variables into each job container:
+
+- `AWS_BATCH_CE_NAME`
+- `AWS_BATCH_JOB_ARRAY_INDEX`
+- `AWS_BATCH_JOB_ARRAY_SIZE`
+- `AWS_BATCH_JOB_ATTEMPT`
+- `AWS_BATCH_JOB_ID`
+- `AWS_BATCH_JQ_NAME`
+
+[Multi-node parallel jobs](#multi-node-parallel-jobs) receive the following additional variables on each node:
+
 - `AWS_BATCH_JOB_NODE_INDEX` — the index of the current node.
 - `AWS_BATCH_JOB_NUM_NODES` — the total number of nodes in the job.
 - `AWS_BATCH_JOB_MAIN_NODE_INDEX` — the index of the main node.
@@ -253,19 +260,6 @@ In addition to the [standard Batch environment variables](#current-limitations),
 LocalStack simulates the execution of ECS-based AWS Batch jobs using the local ECS runtime. No real infrastructure is created or managed.
 
 Array jobs are supported in sequential mode only.
-
-[Multi-node parallel jobs](#multi-node-parallel-jobs) are supported on EC2-backed compute environments only.
-See [Multi-node parallel jobs](#multi-node-parallel-jobs) for details.
-
-A subset of environment variables is supported, including:
-- `AWS_BATCH_CE_NAME`
-- `AWS_BATCH_JOB_ARRAY_INDEX`
-- `AWS_BATCH_JOB_ARRAY_SIZE`
-- `AWS_BATCH_JOB_ATTEMPT`
-- `AWS_BATCH_JOB_ID`
-- `AWS_BATCH_JQ_NAME`
-
-For multi-node parallel jobs, the additional `AWS_BATCH_JOB_NODE_INDEX`, `AWS_BATCH_JOB_NUM_NODES`, `AWS_BATCH_JOB_MAIN_NODE_INDEX`, and `AWS_BATCH_JOB_MAIN_NODE_PRIVATE_IPV4_ADDRESS` variables are set.
 
 The configuration variable `ECS_DOCKER_FLAGS` can be used to pass additional Docker flags to the container runtime.
 
