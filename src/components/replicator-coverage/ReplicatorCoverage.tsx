@@ -287,26 +287,6 @@ export default function ReplicatorCoverage() {
   const toggle = (resourceType: string) =>
     setExpanded((prev) => ({ ...prev, [resourceType]: !prev[resourceType] }));
 
-  const cellStyle: React.CSSProperties = {
-    border: '1px solid var(--sl-color-gray-5)',
-    padding: '12px',
-    textAlign: 'left',
-    verticalAlign: 'middle',
-    fontFamily: 'var(--font-aeonik-fono)',
-    fontSize: '14px',
-  };
-
-  const headStyle: React.CSSProperties = {
-    border: '1px solid var(--sl-color-gray-5)',
-    background: 'var(--sl-color-gray-6)',
-    color: 'var(--sl-color-white)',
-    fontFamily: 'var(--font-aeonik-fono)',
-    fontSize: '14px',
-    fontWeight: 600,
-    padding: '12px',
-    textAlign: 'left',
-  };
-
   return (
     <div className="w-full" style={{ fontFamily: 'var(--font-aeonik-fono)' }}>
       <div
@@ -330,93 +310,123 @@ export default function ReplicatorCoverage() {
         ))}
       </div>
 
-      <div className="block max-w-full overflow-x-auto">
-        <table
+      <div
+        role="table"
+        style={{
+          border: '1px solid var(--sl-color-gray-5)',
+          borderRadius: '8px',
+          overflow: 'hidden',
+          color: 'var(--sl-color-gray-1)',
+        }}
+      >
+        <div
+          role="row"
+          className="hidden md:grid"
           style={{
-            borderCollapse: 'collapse',
-            width: '100%',
-            minWidth: '640px',
-            tableLayout: 'fixed',
-            color: 'var(--sl-color-gray-1)',
+            gridTemplateColumns:
+              '1.75rem minmax(0, 1fr) 9rem minmax(0, 14rem)',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '12px 16px',
+            background: 'var(--sl-color-gray-6)',
+            borderBottom: '1px solid var(--sl-color-gray-5)',
+            fontSize: '14px',
+            fontWeight: 600,
           }}
         >
-          <colgroup>
-            <col style={{ width: '38px' }} />
-            <col style={{ width: '38%' }} />
-            <col style={{ width: '15%' }} />
-            <col />
-          </colgroup>
-          <thead>
-            <tr>
-              <th style={{ ...headStyle, textAlign: 'center' }} aria-label="Expand" />
-              <th style={headStyle}>Resource Type</th>
-              <th style={headStyle}>Service</th>
-              <th style={headStyle}>Replication Strategies</th>
-            </tr>
-          </thead>
-          <tbody>
-            {coverage.map((resource) => {
-              const isOpen = !!expanded[resource.resource_type];
-              return (
-                <React.Fragment key={resource.resource_type}>
-                  <tr
-                    onClick={() => toggle(resource.resource_type)}
-                    style={{ cursor: 'pointer' }}
+          <span aria-hidden="true" />
+          <span role="columnheader">Resource Type</span>
+          <span role="columnheader">Service</span>
+          <span role="columnheader">Replication Strategies</span>
+        </div>
+
+        {coverage.map((resource, idx) => {
+          const isOpen = !!expanded[resource.resource_type];
+          return (
+            <div
+              key={resource.resource_type}
+              role="row"
+              style={{
+                borderTop:
+                  idx === 0 ? 'none' : '1px solid var(--sl-color-gray-5)',
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => toggle(resource.resource_type)}
+                aria-expanded={isOpen}
+                className="replicator-row w-full grid items-start gap-x-3 gap-y-2 grid-cols-[1.75rem_minmax(0,1fr)] md:grid-cols-[1.75rem_minmax(0,1fr)_9rem_minmax(0,14rem)] md:items-center hover:bg-[var(--sl-color-gray-6)] transition-colors"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: '12px 16px',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  color: 'var(--sl-color-gray-1)',
+                  fontFamily: 'var(--font-aeonik-fono)',
+                }}
+              >
+                <ChevronRight
+                  size={16}
+                  style={{
+                    transition: 'transform 0.15s ease',
+                    transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                    color: 'var(--sl-color-gray-3)',
+                    marginTop: '4px',
+                    flexShrink: 0,
+                  }}
+                />
+                <code
+                  style={{
+                    minWidth: 0,
+                    fontSize: '13px',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    background: 'var(--sl-color-gray-6)',
+                    border: '1px solid var(--sl-color-gray-5)',
+                    whiteSpace: 'normal',
+                    overflowWrap: 'anywhere',
+                    wordBreak: 'break-word',
+                    justifySelf: 'start',
+                  }}
+                >
+                  {resource.resource_type}
+                </code>
+                <span
+                  className="col-start-2 md:col-start-auto"
+                  style={{
+                    fontSize: '14px',
+                    overflowWrap: 'anywhere',
+                    minWidth: 0,
+                  }}
+                >
+                  <span
+                    className="md:hidden"
+                    style={{
+                      color: 'var(--sl-color-gray-3)',
+                      marginRight: '6px',
+                    }}
                   >
-                    <td style={{ ...cellStyle, textAlign: 'center' }}>
-                      <ChevronRight
-                        size={16}
-                        style={{
-                          transition: 'transform 0.15s ease',
-                          transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
-                          verticalAlign: 'middle',
-                          color: 'var(--sl-color-gray-3)',
-                        }}
-                      />
-                    </td>
-                    <td style={cellStyle}>
-                      <code
-                        style={{
-                          display: 'inline-block',
-                          fontSize: '13px',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          background: 'var(--sl-color-gray-6)',
-                          border: '1px solid var(--sl-color-gray-5)',
-                          whiteSpace: 'normal',
-                          wordBreak: 'break-word',
-                        }}
-                      >
-                        {resource.resource_type}
-                      </code>
-                    </td>
-                    <td style={cellStyle}>{resource.service}</td>
-                    <td style={cellStyle}>
-                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                        <StrategyBadge strategy="single" active={!!resource.single} />
-                        <StrategyBadge strategy="batch" active={!!resource.batch} />
-                        <StrategyBadge strategy="tree" active={!!resource.resource_tree} />
-                      </div>
-                    </td>
-                  </tr>
-                  {isOpen && (
-                    <tr>
-                      <td
-                        colSpan={4}
-                        style={{
-                          border: '1px solid var(--sl-color-gray-5)',
-                          padding: 0,
-                        }}
-                      >
-                        <ResourceDetails resource={resource} />
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
+                    Service:
+                  </span>
+                  {resource.service}
+                </span>
+                <div
+                  className="col-start-2 md:col-start-auto"
+                  style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}
+                >
+                  <StrategyBadge strategy="single" active={!!resource.single} />
+                  <StrategyBadge strategy="batch" active={!!resource.batch} />
+                  <StrategyBadge
+                    strategy="tree"
+                    active={!!resource.resource_tree}
+                  />
+                </div>
+              </button>
+              {isOpen && <ResourceDetails resource={resource} />}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
