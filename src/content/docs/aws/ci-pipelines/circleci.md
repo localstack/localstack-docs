@@ -92,7 +92,7 @@ workflows:
 
 To configure LocalStack use the `environment` key on the job level or a shell command, where the latter takes higher precedence.
 
-Read more about the [configuration options](/aws/configuration/configuration-options) of LocalStack.
+Read more about the [configuration options](/aws/customization/configuration-options) of LocalStack.
 
 #### Job level
 

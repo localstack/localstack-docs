@@ -13,12 +13,11 @@
     Connecting: 'plug-icon',
     'Developer Tools': 'wrench-icon',
     Capabilities: 'starburst-icon',
-    Configuration: 'starburst-icon',
+    Customization: 'starburst-icon',
     Tooling: 'wrench-icon',
     'CI Pipelines': 'change-icon',
-    'Advanced Installation': 'cube-icon',
     Integrations: 'connections-icon',
-    'Team Workspaces': 'users-icon',
+    'Organizations & Admin': 'users-icon',
     Enterprise: 'buildings-icon',
     Tutorials: 'book-icon',
     Changelog: 'change-icon',
@@ -43,7 +42,13 @@
 
     const navElements = [];
     for (const topLevelNav of topLevelNavs) {
-      navElements.push(...topLevelNav.querySelectorAll('span'));
+      for (const span of topLevelNav.querySelectorAll('span')) {
+        // Only consider labels that belong directly to this top-level list,
+        // not labels nested inside a collapsed sub-section's own list.
+        if (span.closest('ul') === topLevelNav) {
+          navElements.push(span);
+        }
+      }
     }
 
     for (const element of navElements) {

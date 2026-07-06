@@ -52,6 +52,6 @@ Tools like [simpleproxy](https://manpages.ubuntu.com/manpages/trusty/man1/simple
 Alternatively, you can direct `localhost.localstack.cloud` to your target machine's IP address by modifying the `/etc/hosts` file, which is useful if you’re using the LocalStack Web UI on a macOS or Linux-based machine.
 
 :::note
-To bind to a custom IP address and port, configure the ['GATEWAY_LISTEN' configuration variable](/aws/configuration/configuration-options/#core).
-For troubleshooting, refer to the [network troubleshooting docs](/aws/configuration/networking/).
+To bind to a custom IP address and port, configure the ['GATEWAY_LISTEN' configuration variable](/aws/customization/configuration-options/#core).
+For troubleshooting, refer to the [network troubleshooting docs](/aws/customization/networking/).
 :::
