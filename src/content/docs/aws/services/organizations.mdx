@@ -157,6 +157,44 @@ As a result, the simulator reflects the real AWS IAM behavior rather than the be
 - AWS reports an explicit `Deny` from an SCP as an implicit deny. LocalStack reports it as an explicit deny, which is the expected outcome.
 :::
 
+## Service Control Policy validation
+
+When you create or update a Service Control Policy (SCP) with `CreatePolicy` or `UpdatePolicy`, LocalStack validates the policy document against the syntax rules that SCPs must follow.
+A policy that violates any of these rules is rejected with a `MalformedPolicyDocumentException` or a `ConstraintViolationException`, matching the behavior you would see on AWS.
+
+The following constraints are enforced for SCPs:
+
+- **No `Principal` or `NotPrincipal` elements**: unlike identity-based or resource-based IAM policies, SCPs cannot specify a `Principal` or `NotPrincipal` key inside a `Statement`. A policy that includes either key is rejected with a `MalformedPolicyDocumentException`.
+- **Maximum policy size of 10,240 characters**: a policy document larger than 10,240 characters is rejected with a `ConstraintViolationException` (reason `POLICY_CONTENT_LIMIT_EXCEEDED`). This matches the limit enforced by AWS in practice.
+- **A single policy object**: the document must be a single JSON object. Passing a JSON array of policy objects is rejected.
+- **A single `Statement` key**: the document may contain only one `Statement` key. Duplicate `Statement` keys (or any other duplicate keys) cause the policy to be rejected as malformed.
+- **Resources must be present**: each statement must contain a `Resource` element. Specific resource ARNs (not just the `*` wildcard) are accepted.
+
+:::note
+The AWS documentation states that the [maximum SCP size is 5,120 characters](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html) and that SCPs [only support the `*` wildcard for resources](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps_syntax.html#scp-syntax-resource).
+LocalStack instead mirrors the behavior observed against real AWS: the enforced size limit is 10,240 characters, and specific resource ARNs are accepted.
+:::
+
+For example, the following policy is rejected because it includes a `Principal` element, which is not permitted in an SCP:
+
+```bash
+awslocal organizations create-policy \
+    --name "InvalidSCP" \
+    --description "SCP with a Principal element" \
+    --type SERVICE_CONTROL_POLICY \
+    --content '{
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Deny",
+                "Principal": "*",
+                "Action": "s3:*",
+                "Resource": "*"
+            }
+        ]
+    }'
+```
+
 ## API Coverage
 
 <FeatureCoverage service="organizations" client:load />
