@@ -591,40 +591,6 @@ export default defineConfig({
                   ],
                 },
                 {
-                  label: 'Other Installations',
-                  collapsed: true,
-                  items: [
-                    {
-                      label: 'Overview',
-                      slug: 'aws/customization/other-installations',
-                    },
-                    {
-                      label: 'Docker Images',
-                      slug: 'aws/customization/other-installations/docker-images',
-                    },
-                    {
-                      label: 'Enterprise Image',
-                      slug: 'aws/customization/other-installations/enterprise-image',
-                    },
-                    {
-                      label: 'Podman',
-                      slug: 'aws/customization/other-installations/podman',
-                    },
-                    {
-                      label: 'Rancher Desktop',
-                      slug: 'aws/customization/other-installations/rancher-desktop',
-                    },
-                    {
-                      label: 'DevContainers',
-                      slug: 'aws/customization/other-installations/devcontainers',
-                    },
-                    {
-                      label: 'LocalStack Docker Extension',
-                      slug: 'aws/customization/other-installations/localstack-docker-extension',
-                    },
-                  ],
-                },
-                {
                   label: 'Integrations',
                   collapsed: true,
                   items: [
@@ -690,6 +656,40 @@ export default defineConfig({
                       autogenerate: {
                         directory: '/aws/customization/networking',
                       },
+                    },
+                  ],
+                },
+                {
+                  label: 'Other Installations',
+                  collapsed: true,
+                  items: [
+                    {
+                      label: 'Overview',
+                      slug: 'aws/customization/other-installations',
+                    },
+                    {
+                      label: 'Docker Images',
+                      slug: 'aws/customization/other-installations/docker-images',
+                    },
+                    {
+                      label: 'Enterprise Image',
+                      slug: 'aws/customization/other-installations/enterprise-image',
+                    },
+                    {
+                      label: 'Podman',
+                      slug: 'aws/customization/other-installations/podman',
+                    },
+                    {
+                      label: 'Rancher Desktop',
+                      slug: 'aws/customization/other-installations/rancher-desktop',
+                    },
+                    {
+                      label: 'DevContainers',
+                      slug: 'aws/customization/other-installations/devcontainers',
+                    },
+                    {
+                      label: 'LocalStack Docker Extension',
+                      slug: 'aws/customization/other-installations/localstack-docker-extension',
                     },
                   ],
                 },
