@@ -526,7 +526,7 @@ This init binary is used as the entry point for every Lambda container.
 
 Our custom implementation offers additional configuration options,
 but these configurations are primarily intended for LocalStack developers and could change in the future.
-The LocalStack [configuration](/aws/configuration/config/configuration) `LAMBDA_DOCKER_FLAGS` can be used to configure all Lambda containers,
+The LocalStack [configuration](/aws/customization/configuration-options) `LAMBDA_DOCKER_FLAGS` can be used to configure all Lambda containers,
 for example `LAMBDA_DOCKER_FLAGS=-e LOCALSTACK_INIT_LOG_LEVEL=debug`.
 Some noteworthy configurations include:
 - `LOCALSTACK_INIT_LOG_LEVEL` defines the log level of the Golang binary.
@@ -602,7 +602,7 @@ With the new implementation, the following changes have been introduced:
   The ARM containers for compatible runtimes are based on Amazon Linux 2, and ARM-compatible hosts can create functions with the `arm64` architecture.
 - Lambda functions in LocalStack resolve AWS domains, such as `s3.amazonaws.com`, to the LocalStack container.
   This domain resolution is DNS-based and can be disabled by setting `DNS_ADDRESS=0`.
-  For more information, refer to [Transparent Endpoint Injection](/aws/configuration/networking/transparent-endpoint-injection).
+  For more information, refer to [Transparent Endpoint Injection](/aws/customization/networking/transparent-endpoint-injection).
   Previously, LocalStack provided patched AWS SDKs to redirect AWS API calls transparently to LocalStack.
 - The new provider may generate more exceptions due to invalid input.
   For instance, while the old provider accepted arbitrary strings (such as `r1`) as Lambda roles when creating a function, the new provider validates role ARNs using a regular expression that requires them to be in the format `arn:aws:iam::000000000000:role/lambda-role`.
@@ -613,7 +613,7 @@ With the new implementation, the following changes have been introduced:
   The configuration `LAMBDA_SYNCHRONOUS_CREATE=1` can force synchronous function creation, but it is not recommended.
 - LocalStack's Lambda implementation, allows you to customize the Lambda execution environment using the [Lambda Extensions API](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-extensions-api.html).
   This API allows for advanced monitoring, observability, or developer tooling, providing greater control and flexibility over your Lambda functions.
-  Lambda functions can also be run on hosts with [multi-architecture support](/aws/configuration/config/arm64-support/), allowing you to leverage LocalStack's Lambda API to develop and test Lambda functions with high parity.
+  Lambda functions can also be run on hosts with [multi-architecture support](/aws/customization/advanced/arm64-support/), allowing you to leverage LocalStack's Lambda API to develop and test Lambda functions with high parity.
 
 The following configuration options from the old provider are discontinued in the new provider:
 
