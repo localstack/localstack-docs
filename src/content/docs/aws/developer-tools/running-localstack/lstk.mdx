@@ -16,12 +16,8 @@ It provides a built-in terminal UI (TUI) for interactive use and plain text outp
 
 `lstk` handles the full emulator lifecycle: authentication, pulling the Docker image, starting, stopping, and restarting the container, streaming logs, and checking status.
 It can also save and load emulator state — as local snapshots, Cloud Pods, or in your own S3 bucket — reset running state, and manage the on-disk volume.
-It proxies your existing tooling — the AWS and Azure CLIs, Terraform, AWS CDK, and the AWS SAM CLI — so they run against LocalStack with no per-tool wrapper, and it runs Git-style `lstk-<name>` extensions.
+It proxies your existing tooling — the AWS and Azure CLIs, Terraform, AWS CDK, and the AWS SAM CLI — so they run directly against LocalStack.
 Running `lstk` with no arguments takes you through the entire startup flow automatically.
-
-:::note
-`lstk` supports core lifecycle commands (`start`, `stop`, `restart`, `logs`, `status`), state management via snapshots (`snapshot save`/`snapshot load`, `reset`), CLI/IaC proxies (`aws`, `az`, `terraform`, `cdk`, `sam`), and CLI integration setup (`setup aws`, `setup azure`).
-:::
 
 ## Prerequisites
 
@@ -193,7 +189,7 @@ port = "4566"    # Host port the emulator will be accessible on
 | `image`  | string   | (unset)    | Override the default Docker image, e.g. an internal-registry mirror or a locally loaded offline image. If it already carries a tag, `tag` is dropped; otherwise `tag` (or `latest`) is appended. When unset, the default `localstack/<product>` image is used. |
 | `volume` | string   | (OS cache) | Host directory for persistent emulator state (mounted at `/var/lib/localstack`). Defaults to `<os-cache>/lstk/volume/<container-name>`. Used verbatim (no path resolution). |
 | `volumes`| string[] | `[]`       | Docker-style `"host:container[:ro]"` bind mounts (e.g. Snowflake init hooks). May also carry the persistence mount (the entry targeting `/var/lib/localstack`); relative host sources are resolved against the config file's directory and a leading `~/` is expanded. See [Volume mounts](#volume-mounts). |
-| `snapshot` | string | (unset)    | Snapshot `REF` (a `pod:<name>`, local path, or `s3://` location) auto-loaded after the emulator starts. **AWS emulator only.** See [Auto-loading a snapshot on start](#auto-loading-a-snapshot-on-start). |
+| `snapshot` | string | (unset)    | Snapshot `REF` (a `pod:<name>`, local path, or `s3://` location) auto-loaded after the AWS emulator starts. See [Auto-loading a snapshot on start](#auto-loading-a-snapshot-on-start). |
 | `env`    | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
 
 :::note
@@ -219,8 +215,8 @@ In non-interactive mode the default `aws` emulator is used.
 
 Lifecycle commands operate on the emulators defined in your `config.toml`.
 Run a single `[[containers]]` block at a time.
-The AWS-specific commands — `status` resources, `reset`, the `aws` CLI proxy, the IaC proxies (`terraform`, `cdk`, `sam`), and `setup aws` — require an `aws` emulator; `az` and `setup azure` require an `azure` emulator.
-`snapshot` (`save`/`load`/`list`/`remove`/`show`) works with any emulator, but prints an experimental-support warning for the Snowflake and Azure emulators.
+The AWS-specific commands — the resources listing in `status`, `reset`, the `aws` CLI proxy, the IaC proxies (`terraform`, `cdk`, `sam`), and `setup aws` — require an `aws` emulator; `az` and `setup azure` require an `azure` emulator.
+`snapshot` (`save`/`load`/`list`/`remove`/`show`) works with any emulator, though some snapshot features are fully supported only on the AWS emulator for now — see the snapshot docs for your emulator for details.
 
 :::note
 The AWS emulator's license is validated by `lstk` before the container starts.
@@ -262,18 +258,21 @@ See [Container-injected variables](#container-injected-variables) for the full l
 ### Volume mounts
 
 Each `[[containers]]` block accepts a `volumes` list of Docker-style `"host:container[:ro]"` bind specs, in addition to the singular `volume` field.
-This is useful for mounting init hooks (for example, Snowflake boot/start/ready/shutdown scripts under `/etc/localstack/init`) or any other host directory into the emulator.
+This is useful for mounting initialization hooks (scripts run at the container lifecycle stages under `/etc/localstack/init/{boot,start,ready,shutdown}.d`) or any other host path into the emulator.
+
+The example below uses `volumes` to map multiple mounts — a `ready`-stage init-hook script and the persistence directory:
 
 ```toml
 [[containers]]
-type = "snowflake"
+type = "aws"
 port = "4566"
 volumes = [
-  "./init/ready.d:/etc/localstack/init/ready.d",   # init hooks
-  "./data:/var/lib/localstack",                     # persistence mount
-  "./seed:/seed:ro",                                # read-only mount
+  "./init/ready.d/init.sh:/etc/localstack/init/ready.d/init.sh",  # ready init hook
+  "./data:/var/lib/localstack",                                    # persistence mount
 ]
 ```
+
+Init-hook script naming and behavior differ per emulator; see the Initialization Hooks guide for your emulator ([AWS](/aws/configuration/config/initialization-hooks/), [Snowflake](/snowflake/capabilities/init-hooks/)) for the full details.
 
 Resolution rules:
 
@@ -364,7 +363,7 @@ port     = "4566"
 snapshot = "pod:my-baseline"
 ```
 
-The snapshot is loaded only when the emulator is **freshly started** this run (it is skipped when the emulator is already running), mirroring v1's `AUTO_LOAD_POD`.
+The snapshot is loaded only when the emulator is **freshly started** this run (it is skipped when the emulator is already running).
 Override the configured `REF` for a single run with `lstk start --snapshot <ref>`, or skip auto-loading entirely with `lstk start --no-snapshot`.
 An invalid `REF` fails before the emulator starts.
 `snapshot save` never writes this field back — it is set manually.
@@ -540,7 +539,7 @@ Everything after `lstk az` is forwarded verbatim to the host `az` binary; its ex
 
 #### `az start-interception` / `az stop-interception`
 
-An opt-in second mode mutates your **global** `~/.azure` configuration so plain `az` (in any terminal or script) targets LocalStack, then switches it back.
+An opt-in interception mode mutates your **global** `~/.azure` configuration so plain `az` (in any terminal or script) targets LocalStack, then switches it back.
 
 ```bash
 lstk az start-interception   # global 'az' now targets LocalStack
@@ -549,8 +548,6 @@ lstk az stop-interception    # switch back to real Azure
 
 - `start-interception` registers and activates the `LocalStack` cloud in `~/.azure` and disables instance discovery, so existing `az` scripts run unmodified against LocalStack. It is independent of `lstk setup azure`.
 - `stop-interception` switches the active cloud back to `AzureCloud` (override with `--cloud <name>`) and re-enables instance discovery — but only if `LocalStack` is still the active cloud, to avoid clobbering an unrelated selection.
-
-Because interception changes global state affecting every `az` invocation, prefer the isolated `lstk az <args>` mode unless a script must invoke plain `az`.
 
 ### `terraform`
 
@@ -1284,27 +1281,6 @@ lstk completion fish > ~/.config/fish/completions/lstk.fish
 </Tabs>
 
 Restart your shell after persisting completions.
-
-## Extensions
-
-`lstk` supports Git-style extensions.
-When `lstk <name>` is not a built-in command or alias, `lstk` resolves and runs an external `lstk-<name>` executable, forwarding all arguments after `<name>` verbatim, passing `stdin`/`stdout`/`stderr` through, and propagating the child's exit code.
-
-```bash
-# Runs the lstk-hello executable, forwarding "world"
-lstk hello world
-```
-
-Built-in commands always take precedence — extension dispatch happens only for an otherwise-unknown command.
-Resolution order is built-ins → the directory containing the `lstk` executable (so extensions bundled alongside `lstk` are found through npm/Homebrew shims) → your `PATH`.
-There is no manifest: any resolvable `lstk-<name>` is the `<name>` extension.
-
-`lstk` conveys runtime context to the extension through two environment variables:
-
-| Variable               | Description                                                                                                   |
-|:-----------------------|:--------------------------------------------------------------------------------------------------------------|
-| `LSTK_EXT_API_VERSION` | A flat integer the extension can check before parsing the context.                                            |
-| `LSTK_EXT_CONTEXT`     | A JSON object with `configDir`, an optional `authToken`, `nonInteractive`, and an `emulators` array of `{type, endpoint, port}` (empty when none are running). |
 
 ## FAQ
 
