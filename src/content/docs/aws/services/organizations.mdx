@@ -88,6 +88,113 @@ To get started, start your LocalStack instance using your preferred method:
    awslocal organizations delete-organization
    ```
 
+## Service Control Policy enforcement
+
+[Service Control Policies (SCPs)](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html) set the maximum permissions for accounts in your organization.
+When IAM enforcement is enabled, LocalStack checks SCPs together with other applicable policies.
+A request goes through only if both the principal's policies, resource's policies and the SCPs covering its account allow the action on the resource.
+
+To turn on SCP enforcement, start LocalStack with [`ENFORCE_IAM=1`](/aws/developer-tools/security-testing/iam-policy-enforcement) and enable the `SERVICE_CONTROL_POLICY` policy type on your organization root (see the [getting started](#getting-started) steps above).
+
+LocalStack evaluates SCPs at each level of the organization hierarchy: root, organizational unit, and account.
+An action must be allowed by an SCP at every level between the root and the account.
+If any level lacks an `Allow`, the result is an implicit deny, and an explicit `Deny` overrides any `Allow`.
+
+:::note
+The organization's management (master) account is exempt from SCPs.
+Principals in the management account are never restricted by SCPs, even with an explicit `Deny` SCP attached.
+:::
+
+### Cross-account access
+
+LocalStack enforces SCPs for [cross-account access](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic-cross-account.html), where a principal in one account uses a resource owned by another account.
+
+For a cross-account request, LocalStack checks the SCPs of the source account (the account making the request).
+A deny in those SCPs blocks the request even when the target resource's policy grants access.
+
+Consider a member account that lists the objects of an S3 bucket in another account of the same organization, with a bucket policy that grants the member account access:
+
+```bash
+# Run as the member (source) account
+awslocal s3api list-objects-v2 --bucket cross-account-bucket
+```
+
+The default `FullAWSAccess` SCP lets the request succeed on the bucket policy.
+Attach an SCP that denies `s3:ListBucket` to the member account, and the request fails:
+
+```bash title="Output"
+An error occurred (AccessDenied) when calling the ListObjectsV2 operation: User: arn:aws:iam::111111111111:user/test is not authorized to perform: s3:ListBucket on resource: "arn:aws:s3:::cross-account-bucket" with an explicit deny in a service control policy
+```
+
+An SCP that allows only unrelated actions (for example, an `ec2:*`-only SCP) produces an implicit deny, since no SCP allows `s3:ListBucket`:
+
+```bash title="Output"
+An error occurred (AccessDenied) when calling the ListObjectsV2 operation: User: arn:aws:iam::111111111111:user/test is not authorized to perform: s3:ListBucket on resource: "arn:aws:s3:::cross-account-bucket" because no service control policy allows the s3:ListBucket action
+```
+
+The management account stays exempt from SCPs for cross-account requests too.
+
+### Testing SCPs with the IAM Policy Simulator
+
+You can use the [IAM Policy Simulator](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_testing-policies.html) to check whether a principal's request would be allowed or denied without running it against your resources.
+LocalStack evaluates SCPs during policy simulation, so you can validate SCP behavior with [`SimulatePrincipalPolicy`](https://docs.aws.amazon.com/IAM/latest/APIReference/API_SimulatePrincipalPolicy.html) before making live requests.
+
+```bash
+awslocal iam simulate-principal-policy \
+   --policy-source-arn arn:aws:iam::111111111111:user/test \
+   --action-names s3:ListBucket \
+   --resource-arns arn:aws:s3:::cross-account-bucket
+```
+
+When SCPs affect the decision, LocalStack populates the `OrganizationsDecisionDetail` field of the [`EvaluationResult`](https://docs.aws.amazon.com/IAM/latest/APIReference/API_EvaluationResult.html), so you can see whether an SCP allowed the action.
+
+:::note
+LocalStack's Policy Simulator and its IAM enforcement engine share the same underlying evaluation logic.
+As a result, the simulator reflects the real AWS IAM behavior rather than the behavior of the AWS Policy Simulator, which differs in a few ways:
+
+- AWS ignores SCPs that contain conditions during simulation. LocalStack evaluates SCPs with conditions.
+- AWS applies SCPs to the organization's management account during simulation. LocalStack does not apply SCPs to the management account, matching the real behavior of AWS Organizations.
+- AWS reports an explicit `Deny` from an SCP as an implicit deny. LocalStack reports it as an explicit deny, which is the expected outcome.
+:::
+
+## Service Control Policy validation
+
+When you create or update a Service Control Policy (SCP) with `CreatePolicy` or `UpdatePolicy`, LocalStack validates the policy document against the syntax rules that SCPs must follow.
+A policy that violates any of these rules is rejected with a `MalformedPolicyDocumentException` or a `ConstraintViolationException`, matching the behavior you would see on AWS.
+
+The following constraints are enforced for SCPs:
+
+- **No `Principal` or `NotPrincipal` elements**: unlike identity-based or resource-based IAM policies, SCPs cannot specify a `Principal` or `NotPrincipal` key inside a `Statement`. A policy that includes either key is rejected with a `MalformedPolicyDocumentException`.
+- **Maximum policy size of 10,240 characters**: a policy document larger than 10,240 characters is rejected with a `ConstraintViolationException` (reason `POLICY_CONTENT_LIMIT_EXCEEDED`). This matches the limit enforced by AWS in practice.
+- **A single policy object**: the document must be a single JSON object. Passing a JSON array of policy objects is rejected.
+- **A single `Statement` key**: the document may contain only one `Statement` key. Duplicate `Statement` keys (or any other duplicate keys) cause the policy to be rejected as malformed.
+- **Resources must be present**: each statement must contain a `Resource` element. Specific resource ARNs (not just the `*` wildcard) are accepted.
+
+:::note
+The AWS documentation states that the [maximum SCP size is 5,120 characters](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html) and that SCPs [only support the `*` wildcard for resources](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps_syntax.html#scp-syntax-resource).
+LocalStack instead mirrors the behavior observed against real AWS: the enforced size limit is 10,240 characters, and specific resource ARNs are accepted.
+:::
+
+For example, the following policy is rejected because it includes a `Principal` element, which is not permitted in an SCP:
+
+```bash
+awslocal organizations create-policy \
+    --name "InvalidSCP" \
+    --description "SCP with a Principal element" \
+    --type SERVICE_CONTROL_POLICY \
+    --content '{
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Deny",
+                "Principal": "*",
+                "Action": "s3:*",
+                "Resource": "*"
+            }
+        ]
+    }'
+```
+
 ## API Coverage
 
 <FeatureCoverage service="organizations" client:load />

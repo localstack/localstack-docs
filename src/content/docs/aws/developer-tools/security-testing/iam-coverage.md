@@ -123,6 +123,10 @@ It only includes operations performed with a principal, not as root, so test set
 | **Permission Boundaries**   |                                                     |
 |                             | - Roles                                             |
 |                             | - Users                                             |
+| **Service Control Policies (SCPs)** |                                             |
+|                             | - Enforced across the organization hierarchy (root, OU, account) |
+|                             | - Enforced for cross-account access                 |
+|                             | - Evaluated by the IAM Policy Simulator             |
 
 ## Supported Policy Features
 
