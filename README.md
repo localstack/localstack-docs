@@ -2,6 +2,14 @@
 
 This is just the Starlight starter for now. We can begin moving existing content into `/content/docs`.
 
+## Contributing
+
+Docs contributions follow LocalStack's contribution guidelines. Please read them
+before opening a PR — they're the single source of truth and cover the ticket,
+branching, and release workflow:
+
+**[Guide: LocalStack Docs Workflows & Management](https://www.notion.so/localstack/Guide-LocalStack-Docs-Workflows-Management-1d1fc2a234318044b044fc6554fcc9e4)**
+
 ## Starlight Starter Kit: Basics
 
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
