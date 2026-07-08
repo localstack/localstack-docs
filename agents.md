@@ -1,6 +1,330 @@
-# agents.md — LocalStack Docs
+# agents.md for LocalStack for AWS Docs
 
-This file helps AI coding agents understand the structure, conventions, and workflows of this repository. Read it before making any changes.
+This file is an MVP AI Documentation Agent tailored for the LocalStack for AWS documentation in our documentation repository. 
+
+This agent will automate the research, verification, and drafting of service documentation, tutorials, and configuration guides while ensuring strict alignment with our internal technical standards.
+
+Read this file fully before making any changes.
+
+---
+
+## How to Work on a Docs Task
+
+Follow this process for every task, in order. Do not skip steps.
+
+### Step 1: Understand the task
+
+Before writing anything, clarify:
+- Which **product** is this for? (AWS, Snowflake, Azure)
+- What **type of doc** is needed? (aws service doc, tutorial, configuration, getting-started, changelog entry, etc.)
+- Is there an **existing doc** to update, or is this a **new doc**?
+- Is there a **Linear ticket** with more context?
+
+
+### Step 2: Research before writing
+
+Never write from memory, and never guess. Treat lack of documentation as a research puzzle, not an invitation to improvise. You must cross-reference real AWS behavior with LocalStack's actual implementation before drafting text.
+
+#### EXPLICIT HALT & CONSENT REQUIRED
+If you encounter a conflict between what AWS docs state and what LocalStack code/coverage files support, **do not guess or gloss over it.** Stop and explicitly ask the user for clarification. State what you found, where the data thins out, and ask how they want the limitation or behavior documented. Never apply silent assumptions.
+
+#### Research Protocols by Doc Type
+
+**For AWS service docs:**
+1. **Analyze LocalStack Coverage (Ground Truth):** Open and fully parse `src/data/coverage/<service>.json`. Identify exactly which API operations are supported, supported with limitations, or completely missing. 
+2. **Read Existing Context:** Read the existing doc at `src/content/docs/aws/services/<service>.mdx` entirely to understand what is currently exposed to users.
+3. **Cross-Reference Live AWS Docs:** Look up the official AWS API reference documentation for that service. Verify the exact payload structures, required parameters, and intent of the API operations.
+4. **Audit the Ecosystem:** 
+   - Search the core LocalStack repo (`github.com/localstack/localstack`) for PRs, issues, or changelog entries matching the service/feature to catch undocumented quirks.
+   - Search `github.com/localstack-samples` to see if real, working sample applications already exist for this service.
+
+**For configuration or capability docs:**
+1. Open and thoroughly review the existing files under `src/content/docs/aws/configuration/`.
+2. Look up the specific environment variables or configuration flags in LocalStack's core source code or release notes to verify their exact type, default values, and behavioral impact.
+
+**For tutorials:**
+1. Review 2-3 active tutorials under `src/content/docs/aws/tutorials/` to benchmark the depth and progression of instructions.
+2. **Prerequisite Verification:** Mechanically verify that all required CLI tools, auth tokens, or Pro plans are listed.
+3. **Live Link Audit:** Confirm that any linked sample repositories or external assets actually exist. No placeholder URLs.
+
+#### MANDATORY INTERNAL AUDIT TRAIL
+For every new doc or major change you draft, you must generate a short **Audit Trail** in your response or PR scratchpad containing:
+- **Sources Accessed:** Direct URLs to the official AWS documentation docs you referenced.
+- **Coverage Files Parsed:** The exact path and key data metrics checked from `src/data/coverage/`.
+- **Confidence & Gaps Assessment:** Explicitly state if data was thin or if you encountered places where LocalStack's behavior diverged from AWS. Note any features you deliberately omitted due to lack of verified local support.
+
+#### Anti-Hallucination Guardrails
+- **Zero-Tolerance for Fictional APIs:** Never invent `awslocal` commands, CLI flags, configuration variables, or JSON output fields. If a flag or parameter is not explicitly found in active AWS documentation or LocalStack's data/source code, do not write it down.
+
+
+
+### Step 3: Check for existing patterns
+
+Before creating a new doc, read 2–3 similar existing docs to match their structure. For service docs, read `s3.mdx` and `lambda.mdx`. For tutorials, read any tutorial in `aws/tutorials/`. This repo has strong internal consistency, match it.
+
+### Step 4: Write
+
+Follow the writing conventions below. Draft the full doc, not just sections.
+
+### Step 5: Verify before finishing
+
+- Run `npm run build` to catch broken links and frontmatter errors.
+- Check that all internal links use root-relative paths (`/aws/services/s3/`), never relative paths (`../../s3`).
+- Confirm frontmatter fields match what `src/content.config.ts` allows because unknown fields cause build errors.
+- If you renamed or moved a doc, add the old URL to `public/_redirects`.
+
+---
+
+## Writing Style and Tone
+
+### Voice
+
+- **Direct and instructional.** Tell the user exactly what to do.
+- **Second person.** Address the reader as "you."
+- **Present tense.** "Run the following command" not "You will run the following command."
+- **Active voice.** "LocalStack supports X" not "X is supported by LocalStack."
+- No filler phrases like "In this section, we will explore..." Start with the content.
+
+### Tone markers
+
+- Professional but helpful. Not stiff, not casual.
+- When noting limitations, be factual and specific: "LocalStack does not support X" or "X is not yet supported in LocalStack and will be available in a future release."
+- Link to AWS docs when explaining AWS concepts. Do not re-explain what AWS already explains well.
+
+### What to always include in a service doc
+
+1. **Introduction**: What the AWS service does (2–4 sentences). What LocalStack lets you do with it. Link to the API coverage section.
+2. **Getting started**: A short, self-contained walkthrough using `awslocal` commands. Assume the user has LocalStack running. Show real commands with real expected output.
+3. **Feature sections**: Cover notable behaviors, limitations, or LocalStack-specific quirks. Use `:::note` or `:::tip` callouts for important caveats.
+4. **Resource Browser**: If the service has a LocalStack Web App Resource Browser, include a section with a screenshot and a bulleted list of actions available.
+5. **Examples**: Links to relevant sample apps from `github.com/localstack-samples` or tutorials on the docs site.
+6. **API Coverage**: Always end with the `<FeatureCoverage>` component.
+
+### What to always include in a tutorial
+
+1. **Introduction**: The problem being solved and what the reader will build.
+2. **Architecture diagram**: If the tutorial involves multiple services, include a diagram.
+3. **Prerequisites**: Bulleted list: LocalStack, awslocal, any other tools. State if Pro plan is required.
+4. **Step-by-step tutorial**: Use `###` for each step. Each step should have a clear goal, the command(s) to run, and the expected output.
+5. No "Summary" section at the end: just end with the last meaningful step or a "Next steps" pointing to related content.
+
+---
+
+## doc Structure Templates
+
+### Service doc (MDX)
+
+````mdx
+---
+title: "Service Name (Abbreviation)"
+description: Get started with [Service Name] on LocalStack
+tags: ["Hobby"]
+persistence: supported        # or: "supported with limitations" or omit if not applicable
+---
+
+import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
+
+## Introduction
+
+[2–4 sentences: what the AWS service does. What LocalStack lets you do with it.]
+
+LocalStack allows you to use the [Service] APIs in your local environment to [key actions].
+The supported APIs are available on the [API coverage section](#api-coverage).
+
+## Getting started
+
+This guide is designed for users new to [Service] and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+
+Start your LocalStack container using your preferred method.
+
+### [First task]
+
+[Explanation sentence.]
+
+```bash
+awslocal <service> <command> --option value
+```
+
+```bash title="Output"
+{
+  "Field": "value"
+}
+```
+
+## [Feature or behavior section]
+
+[Explain a notable LocalStack-specific behavior, limitation, or configuration option.]
+
+:::note
+[Important caveat or limitation.]
+:::
+
+## Resource Browser
+
+The LocalStack Web Application provides a [Resource Browser](/aws/connecting/console/resource-browser) for managing [Service] resources.
+You can access the Resource Browser by opening the LocalStack Web Application in your browser, navigating to the **Resources** section, and then clicking on **[Service]**.
+
+![Resource Browser](/images/aws/<service>-resource-browser.png)
+
+The Resource Browser allows you to perform the following actions:
+
+- **Action One**: Description.
+- **Action Two**: Description.
+
+## Examples
+
+The following code snippets and sample applications provide practical examples of how to use [Service] in LocalStack:
+
+- [Description of sample app](https://github.com/localstack-samples/sample-...)
+
+## API Coverage
+
+<FeatureCoverage service="<service-id>" client:load />
+````
+
+### Tutorial doc (MDX)
+
+````mdx
+---
+title: "Tutorial title — what the user will build"
+description: Learn how to [goal] using [services] with LocalStack. [One more sentence of context.]
+services:
+  - s3
+  - lmb
+platform:
+  - Python
+deployment:
+  - terraform
+pro: true       # only if LocalStack Pro is required
+leadimage: "tutorial-banner-filename.png"
+---
+
+## Introduction
+
+[Problem statement. What the reader will build. Why it matters.]
+
+## Architecture
+
+![Architecture Diagram](/images/aws/tutorial-diagram.png)
+
+[2–3 sentences describing the architecture.]
+
+## Prerequisites
+
+- [LocalStack](https://localstack.cloud/) with an [auth token](https://app.localstack.cloud/workspace/auth-tokens) (Pro plan required)
+- [awslocal](https://github.com/localstack/awscli-local)
+- [Other tool](link)
+
+## Tutorial: [Goal]
+
+### Step 1 — [Action]
+
+[Explanation.]
+
+```bash
+command here
+```
+
+### Step 2 — [Action]
+
+
+````
+
+---
+
+## Code Examples
+
+### CLI commands
+
+Always use `awslocal` (not `aws`). Every command block must:
+- Show the command itself
+- Show the expected output in a separate block with `title="Output"`
+
+````mdx
+```bash
+awslocal s3api create-bucket --bucket my-bucket
+```
+
+```bash title="Output"
+{
+    "Location": "/my-bucket"
+}
+```
+````
+
+### Multi-line commands
+
+Use `\` for line continuation:
+
+```bash
+awslocal lambda create-function \
+    --function-name my-function \
+    --runtime python3.11 \
+    --handler handler.handler \
+    --role arn:aws:iam::000000000000:role/lambda-role \
+    --zip-file fileb://function.zip
+```
+
+### File content blocks
+
+Use `title` to label the filename and `showLineNumbers` for longer snippets:
+
+````mdx
+```json title="cors-config.json" showLineNumbers
+{
+  "CORSRules": [...]
+}
+```
+````
+
+### Callout types
+
+Use Starlight callout syntax:
+
+````mdx
+:::note
+Use this for important caveats, limitations, or things that differ from AWS behavior.
+:::
+
+:::tip
+Use this for helpful shortcuts or recommendations.
+:::
+
+:::caution
+Use this for destructive or irreversible actions.
+:::
+````
+
+---
+
+## Linking
+
+### Internal links
+
+Always use **root-relative paths**. Never use relative paths (`../../`).
+
+```mdx
+[SDK documentation](/aws/configuration/localstack-sdks/)
+[API coverage](/aws/services/s3/#api-coverage)
+```
+
+Relative links will fail the build (`starlightLinksValidator` treats them as errors).
+
+### AWS documentation links
+
+Link to AWS docs when explaining AWS concepts users may not know:
+
+```mdx
+[`CreateBucket`](https://docs.aws.amazon.com/cli/latest/reference/s3api/create-bucket.html)
+```
+
+### Sample app links
+
+Link to `github.com/localstack-samples` for examples, not inline code snippets. Use descriptive link text:
+
+```mdx
+- [Full-Stack application with Lambda, DynamoDB & S3 for shipment validation](https://github.com/localstack-samples/sample-shipment-list-demo-lambda-dynamodb-s3)
+```
 
 ---
 
@@ -14,7 +338,7 @@ This file helps AI coding agents understand the structure, conventions, and work
 | Styling | Tailwind CSS v4 + custom CSS |
 | Code highlighting | Expressive Code (Shiki, themes: one-light / one-dark-pro) |
 | Search | Algolia DocSearch |
-| Deployment | Cloudflare Pages (static build to `dist/`) |
+| Deployment | Cloudflare docs (static build to `dist/`) |
 | Package manager | npm |
 
 ---
@@ -24,7 +348,7 @@ This file helps AI coding agents understand the structure, conventions, and work
 ```
 localstack-docs/
 ├── src/
-│   ├── content/docs/         # All documentation pages (MDX/MD)
+│   ├── content/docs/         # All documentation docs (MDX/MD)
 │   │   ├── aws/              # AWS product docs
 │   │   ├── snowflake/        # Snowflake product docs
 │   │   └── azure/            # Azure product docs
@@ -49,21 +373,14 @@ localstack-docs/
 │   ├── content.config.ts     # Content collection schema (Zod)
 │   └── routeData.ts          # Starlight route middleware
 ├── public/
-│   ├── _redirects            # Cloudflare Pages 301 redirects
+│   ├── _redirects            # Cloudflare docs 301 redirects
 │   ├── _headers              # Security & CORS headers
 │   ├── images/               # Static images (screenshots, favicons)
 │   ├── js/                   # Vanilla JS (icon-loader.js)
 │   └── .well-known/          # Agent/MCP discovery endpoints
 ├── scripts/                  # Data generation and sync scripts
-│   ├── create_data_coverage.py
-│   ├── create_azure_coverage.py
-│   ├── create_cloudformation_coverage.py
-│   ├── generate_cli_docs.py
-│   ├── generate_extensions_docs.py
-│   ├── docs-release-script.sh
-│   └── sync-licensing-tags.mjs
 ├── astro.config.mjs          # Main Astro + Starlight config
-├── ec.config.mjs             # Expressive Code (syntax highlighting) config
+├── ec.config.mjs             # Expressive Code config
 ├── markdoc.config.mjs        # Markdoc processor config
 ├── tsconfig.json             # TypeScript (strict mode)
 └── package.json
@@ -73,15 +390,13 @@ localstack-docs/
 
 ## Three Products, Three Sidebars
 
-This repo documents three distinct LocalStack products. They share components but have separate content directories and independent sidebars:
-
 | Product | Content path | Sidebar |
 |---------|-------------|---------|
 | AWS | `src/content/docs/aws/` | AWS sidebar |
 | Snowflake | `src/content/docs/snowflake/` | Snowflake sidebar |
 | Azure | `src/content/docs/azure/` | Azure sidebar |
 
-Always confirm which product you are editing. Sidebars are auto-generated from directory structure in `astro.config.mjs` — adding a file in the right directory is enough to make it appear.
+Sidebars are auto-generated from directory structure — adding a file in the right directory is enough to make it appear.
 
 ### AWS content layout
 
@@ -94,163 +409,79 @@ aws/
 │   ├── networking/           # Port mapping, DNS, endpoint injection
 │   ├── web-app/              # LocalStack Web App UI
 │   ├── localstack-sdks/      # Python SDK, Java SDK
-│   ├── extensions/           # Developing and managing extensions
-│   └── [standalone pages]    # DNS Server, Testing Utils, etc.
+│   └── extensions/           # Developing and managing extensions
 ├── developer-tools/          # CLI, Lambda tools, snapshots, MCP server
 ├── connecting/               # AWS CLI, SDKs, Console, IDEs
 ├── services/                 # One .mdx per AWS service (100+ files)
-├── tutorials/                # Step-by-step tutorials (21+)
+├── tutorials/                # Step-by-step tutorials
 ├── integrations/             # CI/CD, containers, frameworks
 ├── enterprise/               # Kubernetes, SSO
 ├── help-support/             # FAQ, troubleshooting
 └── changelog.md
 ```
 
-> **Important:** The directory was renamed from `aws/capabilities/` to `aws/configuration/` in mid-2026. Redirects for the old paths are in `public/_redirects`. Always use the new `aws/configuration/` path.
+> **Important:** The directory was renamed from `aws/capabilities/` to `aws/configuration/` in mid-2026. All new content goes in `aws/configuration/`. Old URLs are covered by `public/_redirects`.
 
 ---
 
-## Content Conventions
+## Frontmatter
 
-### File formats
-
-- Use **MDX** (`.mdx`) for pages that import or use custom components.
-- Use **Markdown** (`.md`) for simple text-only pages.
-
-### Frontmatter
-
-Every page requires at minimum `title` and `description`. The schema is enforced by Zod in `src/content.config.ts` — unknown fields will cause a build error.
-
-```yaml
----
-title: Simple Storage Service (S3)
-description: Get started with Amazon S3 on LocalStack
----
-```
-
-**All supported frontmatter fields:**
+Every doc requires at minimum `title` and `description`. The schema is enforced by Zod in `src/content.config.ts` — **unknown fields cause a build error**.
 
 | Field | Type | Purpose |
 |-------|------|---------|
-| `title` | string | Page heading and `<title>` tag — **required** |
+| `title` | string | doc heading — **required** |
 | `description` | string | SEO meta description — **required** |
 | `template` | `"doc"` | Explicit Starlight template (usually omitted) |
 | `sidebar.order` | number | Position within its sidebar group |
-| `sidebar.label` | string | Custom label in sidebar instead of title |
-| `sidebar.collapsed` | boolean | Collapse the group by default |
-| `tags` | string[] | Custom tags |
-| `services` | string[] | AWS services covered (for tutorials) |
-| `platform` | string[] | Programming languages/platforms (for tutorials) |
-| `deployment` | string[] | Deployment tools (for tutorials) |
-| `pro` | boolean | Requires Pro tier? (for tutorials) |
-| `leadimage` | string | Hero image filename (for tutorials) |
-| `persistence` | string | Persistence support level (e.g., `"full"`) |
-| `editUrl` | `false` | Hide the "Edit on GitHub" link |
-| `hideCopyPage` | boolean | Hide the "Copy Page" dropdown |
-
-**Frontmatter patterns by page type:**
-
-- **Landing/index pages:** `editUrl: false`
-- **Tutorials:** `pro: true`, `leadimage`, `services`, `platform`, `deployment`
-- **Service pages:** minimal — usually just `title` and `description`
-- **Configuration pages:** `services` array where relevant
-
-### Description style
-
-Use the pattern `"Get started with [Service] on LocalStack"` for AWS service pages. Always include "LocalStack" in the description.
+| `sidebar.label` | string | Custom sidebar label |
+| `sidebar.collapsed` | boolean | Collapse group by default |
+| `tags` | string[] | Custom tags (managed by sync script — do not bulk-edit) |
+| `services` | string[] | AWS services covered (tutorials only) |
+| `platform` | string[] | Programming languages/platforms (tutorials only) |
+| `deployment` | string[] | Deployment tools (tutorials only) |
+| `pro` | boolean | Requires Pro plan (tutorials only) |
+| `leadimage` | string | Hero image filename (tutorials only) |
+| `persistence` | string | Persistence support level (service docs) |
+| `editUrl` | `false` | Hide "Edit on GitHub" link |
+| `hideCopydoc` | boolean | Hide the "Copy doc" dropdown |
 
 ---
 
 ## Components
 
-### Starlight built-ins (use freely in MDX)
+### Starlight built-ins
 
 ```mdx
 import { Tabs, TabItem, Code, LinkButton, Steps, Aside } from '@astrojs/starlight/components';
 ```
 
-### Custom Astro components
-
-| Component | Purpose |
-|-----------|---------|
-| `CardGridLayout.astro` | 2-column responsive grid |
-| `SectionCards.astro` | Section card containers |
-| `PersistenceBadge.astro` | Persistence support indicator |
-| `SearchableAwsServices.astro` | Client-side searchable AWS service list |
-| `SearchableSnowflakeFeatures.astro` | Client-side searchable Snowflake feature list |
-| `SearchableAzureServices.astro` | Client-side searchable Azure service list |
-| `ApplicationsShowcase.astro` | Featured applications grid |
-| `DynamicAwsServices.astro` | AWS service list generated from data |
-| `DynamicTutorials.astro` | Tutorials list generated from data |
-
 ### Custom React components (require `client:load`)
 
 ```mdx
-import OverviewCards from '@/components/OverviewCards';
+import FeatureCoverage from "../../../../components/feature-coverage/FeatureCoverage";
 
-<OverviewCards client:load />
+<FeatureCoverage service="s3" client:load />
 ```
 
 | Component | Purpose |
 |-----------|---------|
+| `FeatureCoverage` | AWS API coverage table — always at the bottom of service docs |
+| `AzureFeatureCoverage` | Azure API coverage table |
 | `OverviewCards` | Hero and overview card grids |
-| `HeroCards` | Large CTAs on landing pages |
-| `ProductCards` | Product/tier comparison cards |
-| `HeroSection` | Homepage hero section |
-| `ServiceBox` | Individual service card |
-| `CopyPageDropdown` | Copy page to ChatGPT/Claude |
-| `DocsFeedback` | Inline helpfulness feedback form |
+| `HeroCards` | Large CTAs on landing docs |
 | `SearchableAwsServices` | Searchable + filterable service list |
-| `SearchableAzureServices` | Searchable Azure service list |
-| `SearchableSnowflakeFeatures` | Searchable Snowflake feature list |
-| `FeatureCoverage` | Interactive AWS API coverage table |
-| `AzureFeatureCoverage` | Interactive Azure API coverage table |
+| `DocsFeedback` | Inline helpfulness feedback form |
 
-### Page-level overrides (do not edit without understanding site-wide impact)
-
-These override Starlight's default slots and are wired in `astro.config.mjs`. Changes affect every page:
+### doc-level overrides (do not edit without understanding site-wide impact)
 
 | Component | What it overrides |
 |-----------|-------------------|
-| `PageTitleWithCopyButton.astro` | Page title — adds "Copy to AI" dropdown |
-| `PageSidebarWithBadges.astro` | Sidebar — injects pricing tier badges |
+| `docTitleWithCopyButton.astro` | doc title — adds "Copy to AI" dropdown |
+| `docSidebarWithBadges.astro` | Sidebar — injects pricing tier badges |
 | `BannerWithPersistentAnnouncement.astro` | Site-wide announcement banner |
 | `FooterWithFeedback.astro` | Footer with feedback form |
-| `LanguageSelectWithGetStarted.astro` | Header with "Get Started" CTA |
 | `StarlightHead.astro` | `<head>` — PostHog, HubSpot, Reo tracking |
-
----
-
-## Images and Icons
-
-### Static images
-
-Place screenshots and diagrams in `public/images/`. Reference them in MDX with root-relative paths:
-
-```mdx
-![Alt text](/images/my-screenshot.png)
-```
-
-### Imported SVG assets
-
-Icons and logos in `src/assets/images/` must be imported and accessed via `.src`:
-
-```mdx
-import rocketIcon from '../../../assets/images/GettingStarted_Color.svg';
-
-<img src={rocketIcon.src} alt="Getting Started" />
-```
-
-### CSS icon classes
-
-Icon classes are defined in `src/styles/custom.css` and applied to HTML elements:
-
-```html
-<span class="cube-icon"></span>
-<span class="rocket-icon"></span>
-```
-
-Available: `.cube-icon`, `.rocket-icon`, `.wrench-icon`, `.connections-icon`, `.starburst-icon`, `.book-icon`, `.file-icon`, `.help-and-support-icon`, `.persistence-icon`, `.pricing-icon`
 
 ---
 
@@ -260,72 +491,55 @@ Available: `.cube-icon`, `.rocket-icon`, `.wrench-icon`, `.connections-icon`, `.
 npm run dev              # Dev server at http://localhost:4321
 npm run build            # Production build → ./dist/
 npm run preview          # Preview production build locally
-npm run lint:links       # Build and validate all links (same as build)
+npm run lint:links       # Build + validate all links (same as build)
 npm run sync:licensing-tags  # Sync pricing tags from src/data/licensing/
 ```
 
-**Always run `npm run lint:links` (or `npm run build`) before opening a PR.** The `starlightLinksValidator` plugin treats broken links and relative URL paths as build errors.
-
----
-
-## Routing and Redirects
-
-- Starlight auto-generates routes from file paths under `src/content/docs/`.
-- Deployment target is **Cloudflare Pages** — redirects use `public/_redirects` (not Netlify format, but compatible syntax):
-
-```
-/old/path  /new/path  301
-```
-
-- When restructuring or renaming pages, always add redirect entries to `public/_redirects`.
-- There are 80+ existing redirects — check for conflicts before adding new ones.
-- `public/_headers` controls CORS and security headers — do not edit without understanding the implications.
+Always run `npm run build` before opening a PR. Broken links and invalid frontmatter are caught at build time.
 
 ---
 
 ## Data-Driven Content
 
-Several content areas are **auto-generated** from JSON data files. Do not hand-edit generated pages — edit the source data and re-run the script.
+Do not hand-edit these docs — they are auto-generated. Edit the source data and re-run the script.
 
 | Generated content | Source data | Script |
 |-------------------|-------------|--------|
-| AWS service coverage tables | `src/data/coverage/` (120 JSON files) | `scripts/create_data_coverage.py` |
+| AWS service coverage tables | `src/data/coverage/` | `scripts/create_data_coverage.py` |
 | Azure coverage tables | `src/data/azure-coverage/` | `scripts/create_azure_coverage.py` |
-| CloudFormation resource tables | `src/data/cloudformation/` | `scripts/create_cloudformation_coverage.py` |
-| CLI reference docs | External (CLI helptext) | `scripts/generate_cli_docs.py` |
+| CloudFormation tables | `src/data/cloudformation/` | `scripts/create_cloudformation_coverage.py` |
+| CLI reference docs | External | `scripts/generate_cli_docs.py` |
 | Extensions docs | External | `scripts/generate_extensions_docs.py` |
-| Licensing tags on service pages | `src/data/licensing/current-plans.json` | `scripts/sync-licensing-tags.mjs` |
+| Pricing tags | `src/data/licensing/current-plans.json` | `scripts/sync-licensing-tags.mjs` |
 
 ---
 
-## TypeScript
+## Redirects
 
-- Strict mode is enabled (`astro/tsconfigs/strict`).
-- Path alias `@/*` resolves to `./src/*`.
-- JSX runtime: `react-jsx` (React 19).
-- Use `cn()` from `@/lib/utils` for conditional Tailwind class merging.
-- Content frontmatter schema is defined with **Zod** in `src/content.config.ts` — unknown frontmatter fields cause build errors.
+When renaming or restructuring docs, add entries to `public/_redirects` (Cloudflare docs format):
+
+```
+/old/path  /new/path  301
+```
+
+There are 80+ existing redirects. Check for conflicts before adding new ones.
 
 ---
 
 ## Key Gotchas
 
-1. **No relative links between pages.** The `starlightLinksValidator` plugin fails the build. Use root-relative paths like `/aws/services/s3/`.
+1. **No relative links.** Use root-relative paths (`/aws/services/s3/`). Relative paths (`../../s3`) fail the build.
 
-2. **`aws/capabilities/` is now `aws/configuration/`.** This rename happened in mid-2026. All new content goes in `aws/configuration/`. Old URLs are covered by `public/_redirects`.
+2. **`aws/capabilities/` is now `aws/configuration/`.** Rename happened mid-2026. All new content goes in `aws/configuration/`.
 
-3. **Frontmatter schema is strict.** Unknown fields throw a Zod error at build time. Check `src/content.config.ts` before adding new frontmatter fields.
+3. **Frontmatter schema is strict.** Unknown fields throw a Zod error at build time. Check `src/content.config.ts` first.
 
-4. **Pricing tags are synced via script.** Do not bulk-edit `tags:` frontmatter manually. Update `src/data/licensing/current-plans.json` and run `npm run sync:licensing-tags`.
+4. **Pricing tags are synced via script.** Don't bulk-edit `tags:` frontmatter. Update the JSON source and run the sync script.
 
-5. **React components need `client:load`** to be interactive. Without it, Astro renders them as static HTML with no JS.
+5. **React components need `client:load`** to be interactive. Without it, they render as static HTML with no JS.
 
-6. **Three independent sidebars.** The multi-sidebar switcher (`starlightUtils` plugin) and `routeData.ts` manage which sidebar is active. Do not manually wire sidebar-switching logic.
+6. **Some docs are auto-generated.** Check `scripts/` before editing service coverage, CLI docs, or extension docs — changes will be overwritten.
 
-7. **Some pages are auto-generated.** Check `scripts/` before editing service coverage, CLI docs, extension docs, or CloudFormation resource pages — your changes will be overwritten on the next generation run.
+7. **`editUrl: false`** on landing docs and auto-generated docs to hide the "Edit on GitHub" link.
 
-8. **`editUrl: false`** should be set on landing pages and all auto-generated pages to hide the "Edit on GitHub" link.
-
-9. **Fonts are local only.** Only the Aeonik family is used; loaded from `src/fonts/`. No Google Fonts.
-
-10. **Agent discovery endpoints** live in `public/.well-known/` — MCP server cards and agent skills metadata. Do not remove or relocate these files.
+8. **Agent discovery endpoints** in `public/.well-known/` — do not remove or relocate.
