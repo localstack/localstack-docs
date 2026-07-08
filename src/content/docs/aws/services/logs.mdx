@@ -13,6 +13,22 @@ import { Badge } from '@astrojs/starlight/components';
 [CloudWatch Logs](https://docs.aws.amazon.com/cloudwatch/index.html) allows to store and retrieve logs.
 While some services automatically create and write logs (e.g. Lambda), logs can also be added manually.
 
+:::note
+We've introduced a **new CloudWatch Logs provider (`v2`)** backed by a persistent SQLite database.
+It is an optional alternative to the default provider and is planned to become the default in an upcoming release.
+
+The main benefit is a significant reduction in memory usage for long-running instances that generate high volumes of log events, which addresses a memory leak present in the default provider.
+
+You can opt in to the new provider by setting:
+
+```bash
+PROVIDER_OVERRIDE_LOGS=v2
+```
+
+**Known limitation:** Switching to the `v2` provider on an existing instance results in an empty log event history, since log event data cannot be migrated from the default provider's in-memory store.
+Metadata such as log groups, log streams, subscription filters, and tags is migrated correctly.
+:::
+
 ## Subscription Filters
 
 Subscription filters can be used to forward logs to certain services, e.g. Kinesis, Lambda, and Kinesis Data Firehose.
