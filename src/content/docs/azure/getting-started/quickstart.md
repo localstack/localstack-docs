@@ -3,7 +3,7 @@ title: Quickstart
 description: Get started with LocalStack for Azure in a few simple steps.
 template: doc
 sidebar:
-    order: 1
+    order: 2
 ---
 
 ## Introduction
@@ -16,6 +16,7 @@ In this guide, you will run some basic Azure CLI commands to manage resource gro
 - [`localstack`  CLI](/aws/getting-started/installation/#localstack-cli)
 - [`azlocal` CLI](https://pypi.org/project/azlocal/)
 - [LocalStack for Azure](/azure/getting-started/)
+- A [LocalStack Auth Token](/azure/getting-started/auth-token/)
 
 ## Instructions
 

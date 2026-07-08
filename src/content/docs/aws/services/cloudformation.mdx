@@ -201,7 +201,7 @@ Using [pseudo parameters](#pseudo-parameters) and [intrinsic functions](#intrins
 Hardcoding `amazonaws.com` (or conversely `localhost.localstack.cloud`) when building service URLs is one of the most common causes of templates that deploy on AWS but fail on LocalStack, or vice versa.
 This typically shows up in API Gateway invoke URLs, Step Functions API integration targets, and other places where a template constructs a fully qualified endpoint.
 
-The `AWS::URLSuffix` pseudo parameter resolves to `amazonaws.com` on AWS (or `amazonaws.com.cn` in China Regions) and to the configured [`LOCALSTACK_HOST`](/aws/capabilities/config/configuration/) on LocalStack, which defaults to `localhost.localstack.cloud`.
+The `AWS::URLSuffix` pseudo parameter resolves to `amazonaws.com` on AWS (or `amazonaws.com.cn` in China Regions) and to the configured [`LOCALSTACK_HOST`](/aws/customization/configuration-options/) on LocalStack, which defaults to `localhost.localstack.cloud`.
 Referencing it lets the same template produce a valid URL in either environment.
 
 The following snippet shows the anti-pattern to avoid, where `amazonaws.com` is hardcoded into the output URL.
@@ -255,7 +255,7 @@ For example, use `!GetAtt MyQueue.QueueUrl` or `!GetAtt MyBucket.DomainName` so 
 :::tip
 We are continually enhancing our CloudFormation feature coverage by consistently introducing new resource types.
 Your feature requests assist us in determining the priority of resource additions.
-Feel free to contribute by [creating a new GitHub issue](https://github.com/localstack/localstack/issues/new?assignees=&labels=feature-request&template=feature-request.yml&title=feature+request%3A+%3Ctitle%3E).
+Feel free to contribute by [creating a new GitHub Discussion](https://github.com/orgs/localstack/discussions/new/choose).
 :::
 
 ### Features
@@ -325,7 +325,7 @@ LocalStack resolves each pseudo parameter to the equivalent value for the local 
 | `AWS::Region`           | Yes       | The Region of the encompassing resource                                                     | Same                                                                              |
 | `AWS::StackId`          | Yes       | The ARN of the stack                                                                        | Same                                                                              |
 | `AWS::StackName`        | Yes       | The name of the stack                                                                       | Same                                                                              |
-| `AWS::URLSuffix`        | Yes       | The configured [`LOCALSTACK_HOST`](/aws/capabilities/config/configuration/) (default: `localhost.localstack.cloud`) | `amazonaws.com`, or `amazonaws.com.cn` in China Regions |
+| `AWS::URLSuffix`        | Yes       | The configured [`LOCALSTACK_HOST`](/aws/customization/configuration-options/) (default: `localhost.localstack.cloud`) | `amazonaws.com`, or `amazonaws.com.cn` in China Regions |
 
 :::tip
 Reach for `AWS::URLSuffix` and `AWS::Partition` instead of hardcoding `amazonaws.com` or `arn:aws:...` in templates.

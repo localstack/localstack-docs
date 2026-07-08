@@ -14,7 +14,7 @@ The AWS Cloud Development Kit (CDK) is an Infrastructure-as-Code (IaC) tool usin
 
 ## AWS CDK CLI for LocalStack
 
-`cdklocal` is a thin wrapper script for using the [AWS CDK](https://github.com/aws/aws-cdk) library against local APIs provided by [LocalStack](https://github.com/localstack/localstack).
+`cdklocal` is a thin wrapper script for using the [AWS CDK](https://github.com/aws/aws-cdk) library against local APIs provided by LocalStack.
 
 ### Installation
 

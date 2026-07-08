@@ -1,0 +1,1190 @@
+---
+title: lstk CLI
+description: Reference guide for lstk, the modern CLI for managing LocalStack, with installation, configuration, commands, and troubleshooting.
+template: doc
+sidebar:
+  order: 10
+tags: ['Hobby']
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Introduction
+
+`lstk` is a high-performance command-line interface for LocalStack, built in Go.
+It provides a built-in terminal UI (TUI) for interactive use and plain text output for CI/CD pipelines and scripting.
+
+`lstk` handles the full emulator lifecycle: authentication, pulling the Docker image, starting, stopping, and restarting the container, streaming logs, and checking status.
+It can also save and load emulator state — as local snapshots or Cloud Pods — reset running state, run AWS CLI commands against the emulator, and manage the on-disk volume.
+Running `lstk` with no arguments takes you through the entire startup flow automatically.
+
+:::note
+`lstk` supports core lifecycle commands (`start`, `stop`, `restart`, `logs`, `status`) along with state management via snapshots (`snapshot save`/`snapshot load`, `reset`) and an AWS CLI proxy (`lstk aws`).
+:::
+
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed and running.
+- A [LocalStack account](https://www.localstack.cloud/pricing) with a [license](/aws/getting-started/auth-token/#managing-your-license), and `lstk` handles authentication for you (see [Authentication](#authentication)).
+
+## Installation
+
+<Tabs>
+<TabItem label="Homebrew (macOS/Linux)">
+
+```bash
+brew install localstack/tap/lstk
+```
+
+Homebrew also installs shell completions for bash, zsh, and fish automatically.
+
+</TabItem>
+<TabItem label="npm">
+
+```bash
+npm install -g @localstack/lstk
+```
+
+</TabItem>
+<TabItem label="Pre-built binaries">
+
+Download the binary for your platform from [GitHub Releases](https://github.com/localstack/lstk/releases), extract it, and place it on your `PATH`.
+
+</TabItem>
+</Tabs>
+
+Verify the installation:
+
+```bash
+lstk --version
+```
+
+### Updating
+
+`lstk` can update itself.
+It detects how it was originally installed (Homebrew, npm, or binary) and uses the matching update method:
+
+```bash
+# Check for updates without installing
+lstk update --check
+
+# Update to the latest version
+lstk update
+```
+
+See the [`update`](#update) command for details, including the start-time update notification.
+
+## Quick start
+
+```bash
+lstk
+```
+
+Running `lstk` without arguments performs the full startup sequence: authenticates you automatically, pulls the latest image if needed, and starts the LocalStack container.
+In an interactive terminal it launches the TUI; in a non-interactive environment it prints plain text output.
+
+On the very first interactive run, `lstk` prompts you to pick which emulator to run (AWS, Snowflake, or Azure) and writes your choice to `config.toml`.
+See [Emulator types](#emulator-types) for the available options.
+
+For CI or headless environments, set `LOCALSTACK_AUTH_TOKEN` and use `--non-interactive`:
+
+```bash
+LOCALSTACK_AUTH_TOKEN=<your-ci-auth-token> lstk --non-interactive
+```
+
+CI environments require a CI Auth Token; a personal Developer Auth Token cannot be used there.
+
+## Authentication
+
+`lstk` resolves your auth token in the following order:
+
+1. **System keyring**: a token stored by a previous `lstk login`.
+2. **`LOCALSTACK_AUTH_TOKEN` environment variable**: used only when the keyring has no token.
+3. **Browser login**: triggered automatically in interactive mode when neither of the above provides a token.
+
+:::caution
+The keyring token takes precedence over `LOCALSTACK_AUTH_TOKEN`.
+If you set or change the environment variable but a keyring token already exists, the environment variable is ignored.
+Run `lstk logout` to clear the stored keyring token first.
+:::
+
+### Logging in
+
+```bash
+lstk login
+```
+
+Opens a browser window for authentication and stores the resulting token in your system keyring.
+This command requires an interactive terminal.
+See the [`login`](#login) command for the full flow and the endpoints it uses.
+
+### Logging out
+
+```bash
+lstk logout
+```
+
+Removes the stored credentials from the system keyring and the file-based fallback, and clears the cached license.
+`logout` cannot clear a token supplied via `LOCALSTACK_AUTH_TOKEN`; if you authenticated that way, unset the variable instead.
+See the [`logout`](#logout) command for the full behavior.
+
+### File-based token storage
+
+On systems where the system keyring is unavailable, `lstk` automatically falls back to storing the token in a file (`<config-dir>/auth-token`, mode `0600`).
+You can force file-based storage by setting:
+
+```bash
+export LSTK_KEYRING=file
+```
+
+## Configuration
+
+`lstk` uses a TOML configuration file, created automatically on first run.
+
+### Config file search order
+
+`lstk` uses the first `config.toml` it finds in this order:
+
+1. `./.lstk/config.toml`: project-local config in the current directory.
+2. `$HOME/.config/lstk/config.toml`: user config (created here if `$HOME/.config/` exists).
+3. OS default:
+   - **macOS**: `$HOME/Library/Application Support/lstk/config.toml`
+   - **Windows**: `%AppData%\lstk\config.toml`
+   - **Linux**: `$XDG_CONFIG_HOME/lstk/config.toml` or `$HOME/.config/lstk/config.toml`
+
+On first run, the config is created at path #2 if `$HOME/.config/` already exists; otherwise at the OS default (#3).
+
+To see the active config file path:
+
+```bash
+lstk config path
+```
+
+To use a specific config file:
+
+```bash
+lstk --config /path/to/config.toml start
+```
+
+### Default configuration
+
+The default `config.toml` created on first run:
+
+```toml
+[[containers]]
+type = "aws"     # Emulator type. Supported: "aws", "snowflake", "azure"
+tag  = "latest"  # Docker image tag, e.g. "latest", "2026.4"
+port = "4566"    # Host port the emulator will be accessible on
+# volume = ""    # Host directory for persistent state (default: OS cache dir)
+# env = []       # Named environment profiles to apply (see [env.*] sections below)
+```
+
+### Config field reference
+
+| Field    | Type     | Default    | Description                                                                                          |
+|:---------|:---------|:-----------|:-----------------------------------------------------------------------------------------------------|
+| `type`   | string   | `"aws"`    | Emulator type. One of `"aws"`, `"snowflake"`, `"azure"`. Run a single `[[containers]]` block at a time. See [Emulator types](#emulator-types). |
+| `tag`    | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.4"`, etc.). Useful for pinning a specific version. Zero-padded months (`"2026.04"`) are normalized to `"2026.4"`. |
+| `port`   | string   | `"4566"`   | Host port the emulator listens on (1–65535). The in-container port is always `4566`.                 |
+| `volume` | string   | (OS cache) | Host directory for persistent emulator state. Defaults to `<os-cache>/lstk/volume/<container-name>`.  |
+| `env`    | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
+
+:::note
+There is no `update_prompt` config key.
+`lstk` always checks for available updates on startup.
+Once you choose to skip a version, `lstk` records it under the `[cli]` table as `update_skipped_version` and stops prompting for that version.
+This value is written automatically and is not meant to be hand-edited (see [`update`](#update)).
+:::
+
+### Emulator types
+
+`lstk` can run more than one kind of emulator.
+The `type` field in your `config.toml` selects which one:
+
+| Type        | Docker image                  | Description                          |
+|:------------|:------------------------------|:-------------------------------------|
+| `aws`       | `localstack/localstack-pro`   | LocalStack AWS emulator (default).   |
+| `snowflake` | `localstack/snowflake`        | LocalStack Snowflake emulator.       |
+| `azure`     | `localstack/localstack-azure` | LocalStack Azure emulator.           |
+
+On the first interactive run, `lstk` prompts you to pick an emulator (`a` for AWS, `s` for Snowflake, `z` for Azure) and writes your choice to `config.toml`.
+In non-interactive mode the default `aws` emulator is used.
+
+Lifecycle commands operate on the emulators defined in your `config.toml`.
+Run a single `[[containers]]` block at a time; the AWS-specific commands (`status` resources, `aws`, `snapshot`, `reset`, `setup aws`) require an `aws` emulator to be configured.
+
+:::note
+The AWS emulator's license is validated by `lstk` before the container starts.
+The Snowflake and Azure emulators validate their own license inside the container at startup, so `lstk` skips its pre-flight license check for them.
+If your license does not include the selected emulator, the container exits and `lstk` reports the missing entitlement.
+:::
+
+### Passing environment variables to the container
+
+Define reusable environment profiles under `[env.<name>]` and reference them in your container config:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "latest"
+port = "4566"
+env  = ["debug", "ci"]
+
+[env.debug]
+DEBUG = "1"
+ENFORCE_IAM = "1"
+PERSISTENCE = "1"
+
+[env.ci]
+SERVICES = "s3,sqs"
+EAGER_SERVICE_LOADING = "1"
+```
+
+When `lstk start` runs, the key-value pairs from each referenced profile are injected as environment variables into the LocalStack container.
+Keys are uppercased automatically.
+
+:::note
+If you reference an `env` profile name that doesn't exist in your config, `lstk` returns an error: `environment "..." referenced in container config not found`.
+:::
+
+In addition to your custom profiles, `lstk` always injects several variables into the container.
+See [Container-injected variables](#container-injected-variables) for the full list.
+
+### Using a project-local config
+
+Place a `.lstk/config.toml` in your project directory.
+When you run `lstk` from that directory, the local config takes precedence over the global one.
+This lets each project pin its own emulator type, image tag, and environment profiles.
+
+For example, a project that targets the Snowflake emulator can keep its own config:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "snowflake"
+port = "4566"
+```
+
+An AWS project might instead pin a specific image tag and enable a debug profile:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+tag  = "2026.4"
+port = "4566"
+env  = ["dev"]
+
+[env.dev]
+DEBUG = "1"
+PERSISTENCE = "1"
+```
+
+## Commands
+
+`lstk` uses a flat command structure.
+Running `lstk` with no command is equivalent to `lstk start`.
+
+### `start`
+
+Start the LocalStack emulator.
+Launches the TUI in interactive terminals and prints plain output otherwise.
+`lstk start` launches the emulator defined in the first `[[containers]]` entry of the resolved `config.toml` (not necessarily AWS).
+
+```bash
+lstk start
+lstk start --persist
+lstk start --non-interactive
+```
+
+| Option              | Description                                                                  |
+|:--------------------|:-----------------------------------------------------------------------------|
+| `--persist`         | Persist emulator state across restarts (sets `LOCALSTACK_PERSISTENCE=1` in the container) |
+| `--non-interactive` | Disable the interactive TUI and use plain output                             |
+
+By default the emulator starts with a fresh state on every run.
+Pass `--persist` to keep data across restarts: `lstk` injects `LOCALSTACK_PERSISTENCE=1` into the container so state is written to the mounted [`volume`](#config-field-reference) and reloaded on the next start.
+When persistence is active, the AWS emulator's startup summary includes a `• Persistence: Enabled` line.
+
+```bash
+# Start with persistent state
+lstk start --persist
+```
+
+:::note
+`--persist` is a flag on `start` (and the bare `lstk` command) and on [`restart`](#restart).
+For finer-grained control, you can also set `PERSISTENCE = "1"` in an environment profile (see [Passing environment variables to the container](#passing-environment-variables-to-the-container)).
+:::
+
+### `stop`
+
+Stop the running LocalStack emulator.
+Stops every emulator container defined in the resolved `config.toml` (the `[[containers]]` entries), with a 30-second stop timeout per container.
+
+```bash
+lstk stop
+lstk stop --non-interactive
+```
+
+`stop` fails fast if the Docker runtime is not healthy (for example, Docker is not running), or if a configured emulator is not currently running (`LocalStack is not running`).
+In an interactive terminal it shows an animated "Stopping LocalStack..." spinner and a styled confirmation; in non-interactive mode it prints the same progress and result as plain text.
+
+### `restart`
+
+Stop and restart the LocalStack emulator.
+Performs a stop of the running emulator followed by a fresh start, using the same auth, config, and Docker settings as [`start`](#start).
+Launches the TUI in interactive terminals and prints plain output otherwise.
+
+```bash
+lstk restart
+lstk restart --persist
+```
+
+| Option       | Description                                |
+|:-------------|:-------------------------------------------|
+| `--persist`  | Persist emulator state across the restart  |
+
+By default, emulator state is **not** retained across the restart and the container starts clean.
+Pass `--persist` to keep the emulator's state so it survives the restart.
+
+### `status`
+
+Show the status of a running emulator and its deployed resources.
+Before contacting the emulator, `lstk` checks that the Docker runtime is healthy; if it is not, the command reports `runtime not healthy` and exits with a non-zero status.
+
+```bash
+lstk status
+lstk --non-interactive status
+```
+
+For each emulator configured in your `config.toml` (the `[[containers]]` entries), `status` reports whether it is running and, if so, prints an instance summary:
+
+```text
+LocalStack AWS Emulator is running
+• Endpoint: localhost:4566
+• Persistence: Enabled
+• Container: localstack-aws
+• Version: 4.0.0
+• Uptime: 1h 12m 4s
+```
+
+- **Endpoint** is the live `host:port`, queried from Docker, so it stays correct even if the configured `port` was changed while the container kept running.
+- **Persistence** appears only for the AWS emulator and only when persistence is enabled.
+- **Uptime** is computed from the container's start time and is omitted if it cannot be determined.
+
+If an emulator is not running, `status` prints an error and exits non-zero without checking the remaining emulators:
+
+```text
+LocalStack AWS Emulator is not running
+
+  Start LocalStack: lstk
+  See help: lstk -h
+```
+
+For the **AWS emulator**, `status` additionally lists deployed resources.
+When resources exist it prints a summary line followed by a table; when none exist it prints `No resources deployed`.
+
+```text
+~ 3 resources · 2 services
+
+Service  Resource     Region     Account
+S3       my-bucket    us-east-1  000000000000
+SQS      my-queue     us-east-1  000000000000
+```
+
+In an interactive terminal the output is rendered through the TUI; in non-interactive mode (or with `--non-interactive`) the same content is printed as plain text, with the resource table shown at full width when stdout is not a TTY.
+The Snowflake and Azure emulators show the instance summary only and never report resources.
+
+### `logs`
+
+Show or stream emulator logs.
+
+```bash
+lstk logs [options]
+```
+
+| Option      | Description                              |
+|:------------|:-----------------------------------------|
+| `--follow`, `-f`  | Stream logs in real-time. Without this flag, `lstk` prints the currently available logs and exits. |
+| `--verbose`, `-v` | Show all logs without filtering. By default, `lstk` drops noisy lines (internal request logs, provider chatter); `--verbose` shows every line verbatim. |
+
+By default, `lstk logs` reads from the first configured emulator container and applies a noise filter.
+In an interactive terminal, lines are color-coded by log level (`DEBUG`, `INFO`, `WARN`, `ERROR`); in non-interactive mode, raw log lines are written to stdout.
+
+Example:
+
+```bash
+# Print current filtered logs and exit
+lstk logs
+
+# Stream filtered logs in real-time
+lstk logs --follow
+
+# Stream all logs without filtering
+lstk logs --follow --verbose
+```
+
+### `aws`
+
+Run AWS CLI commands against the running LocalStack emulator.
+`lstk aws` proxies your host `aws` CLI with the endpoint, credentials, and region pre-configured, so you don't have to pass `--endpoint-url` or set test credentials yourself.
+
+```bash
+lstk aws s3 ls
+lstk aws sqs list-queues
+lstk aws s3 mb s3://my-bucket
+```
+
+It is equivalent to running:
+
+```bash
+aws --endpoint-url http://localhost:4566 <args>
+```
+
+with `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_DEFAULT_REGION` set automatically.
+
+Everything after `lstk aws` is forwarded verbatim to the host `aws` binary, including AWS CLI flags such as `--region` or `--output`.
+The exit code and `stdout`/`stderr` of the underlying `aws` process are passed through unchanged, so piping and interactive subcommands work as expected.
+
+| Option              | Description                                                                                       |
+|:--------------------|:--------------------------------------------------------------------------------------------------|
+| `--non-interactive` | Suppress the loading spinner. Unlike other commands, this flag is stripped before invoking `aws` (not forwarded). |
+
+:::note
+`lstk aws` does not start the emulator.
+The AWS emulator must already be running (`lstk start`), Docker must be healthy, and the host `aws` CLI must be installed and on your `PATH`.
+:::
+
+#### Credentials and region
+
+`lstk aws` injects credentials in one of two ways:
+
+- **Profile mode**: if a complete `localstack` profile exists in both `~/.aws/config` and `~/.aws/credentials`, `lstk` appends `--profile localstack` and lets `aws` read the region, credentials, and endpoint from that profile.
+- **Profile-less mode**: if the profile is not present, `lstk` runs `aws` with `AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`, and `AWS_DEFAULT_REGION=us-east-1` injected only when those variables are not already set in your environment. In this mode it also prints an informational note: `No AWS profile found, run 'lstk setup aws'`.
+
+Run [`lstk setup aws`](#setup) to create the `localstack` profile for use with the AWS CLI and SDKs.
+
+#### Endpoint resolution
+
+By default, `lstk` probes whether `localhost.localstack.cloud` resolves to `127.0.0.1` and uses `localhost.localstack.cloud:<port>` if so, otherwise it falls back to `127.0.0.1:<port>`.
+Set [`LOCALSTACK_HOST`](#environment-variables) to override the host:port used to reach LocalStack and skip the DNS probe.
+The port comes from the AWS container's `port` in `config.toml` (default `4566`).
+
+### `snapshot`
+
+Manage emulator snapshots.
+A snapshot captures the running AWS emulator's state, either as a local file on disk or as a Cloud Pod on the LocalStack platform.
+The `snapshot` command groups four subcommands — `save`, `load`, `list`, and `remove`. The first two are also exposed as the top-level aliases `lstk save` and `lstk load`.
+
+:::note
+`snapshot`, `save`, `load`, and [`reset`](#reset) operate on the **AWS emulator** only.
+If no AWS emulator is configured or running, they error out (`snapshot is only supported for the AWS emulator`).
+:::
+
+#### `snapshot save`
+
+Save a snapshot of the running emulator's state.
+The emulator must already be running; this command does **not** auto-start it.
+
+```bash
+# Auto-named snapshot file in the current directory
+lstk snapshot save
+
+# Save to a specific local path
+lstk snapshot save ./my-snapshot
+
+# Save to a Cloud Pod on the LocalStack platform (requires auth)
+lstk snapshot save pod:my-baseline
+```
+
+The optional `[destination]` argument takes one of three forms:
+
+| Destination        | Description                                                                                     |
+|:-------------------|:------------------------------------------------------------------------------------------------|
+| (omitted)          | Auto-generates a timestamped snapshot file in the current directory.                             |
+| local path         | Writes a snapshot archive to that path.                                                          |
+| `pod:<name>`       | Saves a Cloud Pod to the LocalStack platform. Requires authentication.                           |
+
+Pod operations require an auth token (`LOCALSTACK_AUTH_TOKEN` or a prior `lstk login`); local-file snapshots do not.
+
+#### `snapshot load`
+
+Load a snapshot into the emulator, **auto-starting it first** if it is not already running.
+
+```bash
+# Load a local snapshot by path or name
+lstk snapshot load my-baseline
+lstk snapshot load ./checkpoint
+
+# Load from a Cloud Pod (requires auth)
+lstk snapshot load pod:my-baseline
+
+# Control how the snapshot merges with running state
+lstk snapshot load pod:my-baseline --merge=overwrite
+```
+
+The `REF` argument is required and identifies a local path/name or a `pod:<name>` Cloud Pod.
+
+| Option               | Description                                                                                              |
+|:---------------------|:--------------------------------------------------------------------------------------------------------|
+| `--merge <strategy>` | How the loaded state combines with running state. One of `account-region-merge` (default), `overwrite`, `service-merge`. |
+
+- `account-region-merge` (default): the snapshot wins on any `(service, account, region)` overlap.
+- `overwrite`: running state is reset first, then the snapshot is imported onto a clean state.
+- `service-merge`: the snapshot wins per resource; non-overlapping resources are combined.
+
+The aliases behave identically:
+
+```bash
+lstk save pod:my-baseline
+lstk load ./checkpoint
+```
+
+#### `snapshot list`
+
+List the Cloud Pod snapshots available on the LocalStack platform.
+By default, only snapshots you created are listed; pass `--all` to include every snapshot in your organization.
+This subcommand operates on Cloud Pods, so it requires authentication.
+
+```bash
+# Snapshots you created
+lstk snapshot list
+
+# Every snapshot in your organization
+lstk snapshot list --all
+```
+
+| Option  | Description                                                  |
+|:--------|:------------------------------------------------------------|
+| `--all` | List all snapshots in your organization, not just your own. |
+
+#### `snapshot remove`
+
+Delete a Cloud Pod snapshot from the LocalStack platform.
+Only cloud snapshots (the `pod:` prefix) can be removed; local snapshots are plain files you delete yourself.
+This operation cannot be undone.
+
+```bash
+lstk snapshot remove pod:my-baseline
+
+# Skip the confirmation prompt (required in non-interactive mode)
+lstk snapshot remove pod:my-baseline --force
+```
+
+The required `REF` argument must be a `pod:<name>` Cloud Pod reference.
+
+| Option    | Description                                                            |
+|:----------|:----------------------------------------------------------------------|
+| `--force` | Skip the confirmation prompt. Required when running non-interactively. |
+
+### `reset`
+
+Discard the running AWS emulator's in-memory state (all created resources such as S3 buckets and Lambda functions are dropped).
+The emulator **keeps running**; only its state is cleared.
+
+```bash
+lstk reset
+lstk reset --force
+```
+
+| Option    | Description                                                     |
+|:----------|:----------------------------------------------------------------|
+| `--force` | Skip the confirmation prompt. Required in non-interactive mode. |
+
+In interactive mode, `reset` prompts for confirmation before clearing state.
+In non-interactive mode it fails unless `--force` is passed:
+
+```text
+reset requires confirmation; use --force to skip in non-interactive mode
+```
+
+:::note
+`reset` clears in-memory state only.
+It does **not** wipe the on-disk volume (certificates, persistence data, cached tools).
+To clear that, stop the emulator and run [`lstk volume clear`](#volume).
+:::
+
+### `volume`
+
+Manage the emulator volume: the host directory that holds persistent state such as certificates, downloaded tools, and persistence data.
+
+```bash
+lstk volume path
+lstk volume clear [options]
+```
+
+#### `volume path`
+
+Prints the resolved volume directory for every emulator in your config, one per line.
+With the default config (a single `aws` emulator) it prints one path.
+Each path is the container's configured `volume` value, or the default OS cache location if `volume` is unset (`~/Library/Caches/lstk/volume/localstack-aws` on macOS, `~/.cache/lstk/volume/localstack-aws` on Linux).
+
+```bash
+# Print the volume directory for each configured emulator
+lstk volume path
+```
+
+#### `volume clear`
+
+Removes all data from the emulator volume directory, resetting cached state.
+It operates on all configured emulators by default, or a single one with `--type`.
+Before clearing, it lists each target as `<emulator>: <path> (<size>)`.
+
+| Option          | Description                              |
+|:----------------|:-----------------------------------------|
+| `--force`       | Skip the confirmation prompt             |
+| `--type <type>` | Clear only the emulator of this type     |
+
+```bash
+# Clear all configured emulator volumes (prompts for confirmation)
+lstk volume clear
+
+# Clear only the AWS emulator volume
+lstk volume clear --type aws
+
+# Skip the confirmation prompt
+lstk volume clear --force
+
+# Clear without prompting in a non-interactive environment
+lstk volume clear --type snowflake --force
+```
+
+In an interactive terminal, `lstk volume clear` prompts `Clear volume data? This cannot be undone` before deleting anything; choosing **NO** or pressing Ctrl+C cancels with no changes.
+In non-interactive mode, `--force` is required, otherwise the command fails with `volume clear requires confirmation; use --force to skip in non-interactive mode`.
+
+:::caution
+If the volume contains files owned by `root` (created by Docker), clearing fails with a permission error.
+Re-run with elevated privileges:
+
+```bash
+sudo lstk volume clear
+```
+:::
+
+### `login`
+
+Authenticate with LocalStack via a browser-based device authorization flow and store the resulting credential in your system keyring.
+This command requires an interactive terminal.
+
+```bash
+lstk login
+```
+
+`lstk` opens your default browser to the LocalStack Web Application, shows a one-time code, and waits for you to approve the request.
+If the browser cannot open automatically, `lstk` prints the URL to visit manually.
+On success it stores the **license token** returned by the platform (not the raw browser bearer token).
+
+If you are already authenticated — either `LOCALSTACK_AUTH_TOKEN` is set or a token already exists in storage — `login` prints `You're already logged in` and exits without starting a new flow.
+
+In non-interactive mode (piped output, CI, or `--non-interactive`), `login` fails with `login requires an interactive terminal`.
+The `--config <path>` flag selects which `config.toml` is loaded, which affects `keyring`, `web_app_url`, and `api_endpoint` resolution.
+
+:::note
+If you approve the request in the browser only *after* pressing a key in the terminal, `lstk` reports `auth request not confirmed - please complete the authentication in your browser`.
+Re-run `lstk login` and approve in the browser before continuing.
+:::
+
+The credential is written to the system keyring (service `lstk`, key `lstk.auth-token`).
+When the keyring is unavailable — or `LSTK_KEYRING=file` is set — `lstk` stores it in a file at `<config-dir>/auth-token` (mode `0600`) instead.
+
+Endpoints used by the flow can be overridden via config or environment:
+
+| Config key     | Env var             | Default                        | Description                                                                  |
+|:---------------|:--------------------|:-------------------------------|:-----------------------------------------------------------------------------|
+| `keyring`      | `LSTK_KEYRING`      | (system keyring)               | Set to `file` to force file-based token storage instead of the OS keyring.   |
+| `web_app_url`  | `LSTK_WEB_APP_URL`  | `https://app.localstack.cloud` | Base URL used to build the browser authorization link.                       |
+| `api_endpoint` | `LSTK_API_ENDPOINT` | `https://api.localstack.cloud` | LocalStack platform API endpoint used for the device flow and license token. |
+
+```bash
+# Force file-based token storage during login
+LSTK_KEYRING=file lstk login
+
+# Use a specific config file
+lstk --config ./.lstk/config.toml login
+```
+
+### `logout`
+
+Remove stored authentication credentials.
+
+```bash
+lstk logout
+lstk logout --non-interactive
+```
+
+`logout` deletes the auth token from your system keyring (falling back to the file-based token at `<config-dir>/auth-token` when the keyring is unavailable or `LSTK_KEYRING=file` is set) and removes the cached license file.
+On success it prints `Logged out successfully`.
+
+The outcome depends on how you are authenticated:
+
+| Situation | Behavior |
+|:----------|:---------|
+| A token is stored (from `lstk login`) | The token is deleted from the keyring and file fallback, the cached license is removed, and `lstk` prints `Logged out successfully`. |
+| No stored token, but `LOCALSTACK_AUTH_TOKEN` is set | Nothing is deleted. `lstk` prints a note that you are authenticated via the environment variable and to unset it to log out. |
+| No stored token and no `LOCALSTACK_AUTH_TOKEN` | `lstk` prints `Not currently logged in` and exits successfully. |
+
+:::note
+`logout` never clears the `LOCALSTACK_AUTH_TOKEN` environment variable, and it does not stop running emulators.
+If a LocalStack emulator is still running after logout, `lstk` prints a note reminding you it is running in the background; run `lstk stop` to stop it.
+:::
+
+### `setup`
+
+Set up CLI integration for an emulator type.
+`lstk setup` is a grouping command with no action of its own; the work is done by its subcommand.
+Currently only AWS is supported.
+
+```bash
+lstk setup aws
+```
+
+#### `setup aws`
+
+Create or update a `localstack` profile in `~/.aws/config` and `~/.aws/credentials` so the AWS CLI and SDKs can target LocalStack.
+This command requires an interactive terminal and prompts before making any changes.
+
+```bash
+lstk setup aws
+```
+
+It writes the following profile (existing unrelated profiles are preserved):
+
+```ini
+# ~/.aws/config
+[profile localstack]
+region = us-east-1
+output = json
+endpoint_url = http://localhost.localstack.cloud:4566
+
+# ~/.aws/credentials
+[localstack]
+aws_access_key_id = test
+aws_secret_access_key = test
+```
+
+Afterwards, target LocalStack by passing `--profile localstack` or exporting `AWS_PROFILE`:
+
+```bash
+export AWS_PROFILE=localstack
+aws s3 ls
+```
+
+The endpoint host is resolved automatically: `lstk` probes `localhost.localstack.cloud` and uses it when it resolves to `127.0.0.1`, otherwise it falls back to `127.0.0.1`.
+Set [`LOCALSTACK_HOST`](#environment-variables) to override the host and port written into the profile.
+The port comes from your AWS emulator's configured `port` (default `4566`); if no `aws` emulator is configured, the command fails with `no aws emulator configured`.
+
+If the `localstack` profile is already configured correctly, `lstk` reports `LocalStack AWS profile is already configured.` and makes no changes.
+
+:::note
+`setup aws` requires an interactive terminal.
+In non-interactive mode (piped output, CI, or `--non-interactive`) it fails with `setup aws requires an interactive terminal`.
+There is no flag to auto-confirm.
+:::
+
+:::caution
+`lstk config profile` is the deprecated form of this command.
+It still works and behaves identically, but you should use `lstk setup aws` instead.
+:::
+
+### `config`
+
+Manage CLI configuration.
+`config` has no behavior of its own; run it with a subcommand.
+
+#### `config path`
+
+Print the resolved path to the active `config.toml`.
+
+```bash
+lstk config path
+```
+
+This subcommand is read-only: it never creates or initializes a config file.
+If `--config <path>` is set, it prints that path verbatim.
+Otherwise it prints the already-loaded config path, the first existing config in the search order, or the path where a config would be created on first run.
+
+#### `config profile`
+
+:::caution[Deprecated]
+`config profile` is deprecated. Use [`setup aws`](#setup) instead.
+:::
+
+Write a LocalStack AWS CLI profile into `~/.aws/config` and `~/.aws/credentials`, pointing at your configured emulator.
+
+```bash
+lstk config profile   # prefer: lstk setup aws
+```
+
+Requires an interactive terminal. In non-interactive mode it fails with:
+
+```text
+config profile requires an interactive terminal
+```
+
+The generated profile uses the host from the `LOCALSTACK_HOST` environment variable (when set) and your configured containers, identical to [`setup aws`](#setup).
+
+### `update`
+
+Check for and apply updates to the `lstk` CLI itself.
+`lstk` auto-detects how it was installed (Homebrew, npm, or direct binary) and updates using that same method.
+Development builds (version `dev`) are skipped, and updates are checked against the latest [GitHub release](https://github.com/localstack/lstk/releases/latest).
+
+```bash
+lstk update [options]
+```
+
+| Option              | Description                                                  |
+|:--------------------|:-------------------------------------------------------------|
+| `--check`           | Check for updates without installing them                    |
+| `--non-interactive` | Use plain output instead of the TUI (update logic unchanged) |
+
+Examples:
+
+```bash
+# Check for updates without installing
+lstk update --check
+
+# Update to the latest version
+lstk update
+
+# Update with plain (non-TUI) output
+lstk update --non-interactive
+```
+
+By install method:
+
+- **Homebrew** (binary under a `Caskroom` path): runs `brew upgrade localstack/tap/lstk`.
+- **npm** (binary under `node_modules`): runs `npm install -g @localstack/lstk@latest`.
+- **Binary** (anything else): downloads the release asset for your OS/arch from GitHub, extracts it, and replaces the running executable in place.
+
+With `--check`, `lstk` only reports whether a newer version is available and exits without downloading or installing anything.
+
+:::note
+Set `LSTK_GITHUB_TOKEN` to send an authenticated GitHub request and avoid API rate limits during update checks.
+It is optional; updates also work unauthenticated.
+:::
+
+#### Update notification on start
+
+Separately from `lstk update`, `lstk` checks for a newer version when you run `lstk start` (the default command), using a short timeout that fails silently if GitHub is unreachable.
+
+In an interactive terminal, when an update is available `lstk` prints the new version and a release-notes link, then prompts:
+
+```text
+Update lstk to latest version?
+> Update now [U]
+  Remind me next time [R]
+  Skip this version [S]
+```
+
+- **Update now [U]**: downloads and applies the update, then asks you to re-run your command.
+- **Remind me next time [R]**: does nothing; you are reminded on the next run.
+- **Skip this version [S]**: records the version in `config.toml` so you are not prompted about it again.
+
+In non-interactive mode the notification is not a prompt — `lstk` emits a single note (`Update available: <current> → <latest> (run lstk update)`) and continues.
+
+When you choose **Skip this version**, `lstk` writes the skipped version under a `[cli]` table:
+
+```toml
+[cli]
+update_skipped_version = "0.5.0"
+```
+
+While this value matches the latest available version, the start-time update notification for that version is suppressed.
+This key is managed automatically and is not intended to be edited by hand.
+
+### `completion`
+
+Generate shell completion scripts.
+
+```bash
+lstk completion [bash|zsh|fish|powershell]
+```
+
+See [Shell completions](#shell-completions) for setup instructions.
+
+## Global options
+
+These options are available for all commands:
+
+| Option              | Description                                                                |
+|:--------------------|:---------------------------------------------------------------------------|
+| `--config <path>`   | Path to a specific TOML config file                                        |
+| `--non-interactive` | Disable the interactive TUI, use plain output                              |
+| `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
+| `-v`, `--version`   | Print the version and exit                                                 |
+| `-h`, `--help`      | Print help and exit                                                        |
+
+## Interactive and non-interactive mode
+
+`lstk` automatically selects its output mode:
+
+- **Interactive mode** (TUI): used when both stdin and stdout are connected to a terminal.
+  Commands like `start`, `stop`, `restart`, `status`, `login`, `update`, and the confirmation prompts of `reset`/`volume clear` display a Bubble Tea-powered terminal UI.
+- **Non-interactive mode** (plain text): used when the output is piped, redirected, or running in CI.
+  Force this in a TTY with `--non-interactive`.
+
+```bash
+# Force plain output even in an interactive terminal
+lstk --non-interactive start
+```
+
+:::note
+`lstk login` and `lstk setup aws` require an interactive terminal.
+If you need to authenticate in CI, set `LOCALSTACK_AUTH_TOKEN` instead.
+Commands that mutate state without prompting in CI (`reset`, `volume clear`) require `--force`.
+:::
+
+## Environment variables
+
+The following environment variables configure `lstk` itself (not the LocalStack container):
+
+| Variable                     | Description                                                                                                      |
+|:-----------------------------|:-----------------------------------------------------------------------------------------------------------------|
+| `LOCALSTACK_AUTH_TOKEN`      | Auth token for non-interactive runs or to skip browser login. Used when no keyring token is stored.              |
+| `LOCALSTACK_HOST`            | Override the host (and optional port) used when resolving and printing the emulator endpoint, and when writing the AWS CLI profile. Bypasses the `localhost.localstack.cloud` DNS probe. |
+| `LOCALSTACK_DISABLE_EVENTS`  | Set to `1` to disable anonymous telemetry event reporting.                                                       |
+| `DOCKER_HOST`                | Override the Docker daemon socket (e.g. `unix:///home/user/.colima/default/docker.sock`).                        |
+| `LSTK_KEYRING`               | Set to `file` to force file-based token storage instead of the system keyring.                                   |
+| `LSTK_OTEL`                  | Set to `1` to enable OpenTelemetry trace export (disabled by default). See [OpenTelemetry tracing](#opentelemetry-tracing). |
+| `LSTK_GITHUB_TOKEN`          | Optional GitHub token used when checking for or downloading `lstk` updates (raises GitHub API rate limits).      |
+| `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
+| `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
+
+When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
+
+When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
+
+### Container-injected variables
+
+`lstk` injects several environment variables into the LocalStack container on every start, in addition to any profiles you configure:
+
+| Variable                | Default value                                | Description                                  |
+|:------------------------|:---------------------------------------------|:---------------------------------------------|
+| `LOCALSTACK_AUTH_TOKEN` | (your resolved token)                        | Passed from the CLI to activate the license. |
+| `GATEWAY_LISTEN`        | `:4566,:443`                                 | Ports the emulator binds inside the container. |
+| `MAIN_CONTAINER_NAME`   | `localstack-aws`                             | Container name for internal references.       |
+| `LOCALSTACK_HOST`       | `localhost.localstack.cloud:<host port>`     | Hostname/port the emulator advertises.        |
+| `LOCALSTACK_PERSISTENCE`| `1` (only with `--persist`)                  | Enables state persistence across restarts.    |
+
+When a Docker socket is detected it is bind-mounted into the container and `DOCKER_HOST=unix:///var/run/docker.sock` is injected so the emulator can spawn its own containers.
+`lstk` also forwards host environment variables matching `CI` and `LOCALSTACK_*` (the host `LOCALSTACK_AUTH_TOKEN` is dropped so it cannot override the token resolved by `lstk`).
+
+The container also gets port mappings for `4566`, `443`, and the service port range `4510-4559`.
+
+## OpenTelemetry tracing
+
+`lstk` can export traces of its own command execution over OTLP/HTTP.
+Tracing is **disabled by default**.
+Enable it with:
+
+```bash
+LSTK_OTEL=1 lstk start
+```
+
+When enabled, every command is wrapped in a span (e.g. `lstk.start`) recording the exit code and any error.
+`lstk` does not hardcode an export target, so the OpenTelemetry Go SDK reads the standard `OTEL_EXPORTER_OTLP_*` environment variables automatically (default target: OTLP/HTTP at `localhost:4318`).
+You need an OTLP-compatible backend running to receive the traces.
+
+## Logging
+
+`lstk` writes its own diagnostic logs to `lstk.log` in the same directory as the active config file.
+This is separate from the LocalStack container logs (which you view with `lstk logs`).
+
+- The log file is created automatically and appended to across runs.
+- When the file exceeds **1 MB**, it is cleared on the next run.
+- Use `lstk config path` to find the config directory; `lstk.log` sits alongside `config.toml`.
+
+## Shell completions
+
+`lstk` includes completion scripts for bash, zsh, fish, and powershell.
+If you installed via Homebrew, completions are set up automatically.
+
+For manual setup:
+
+<Tabs>
+<TabItem label="Bash">
+
+```bash
+# Load in current session
+source <(lstk completion bash)
+
+# Persist (Linux)
+lstk completion bash > /etc/bash_completion.d/lstk
+
+# Persist (macOS with Homebrew)
+lstk completion bash > $(brew --prefix)/etc/bash_completion.d/lstk
+```
+
+</TabItem>
+<TabItem label="Zsh">
+
+```bash
+# Load in current session
+source <(lstk completion zsh)
+
+# Persist (Linux)
+lstk completion zsh > "${fpath[1]}/_lstk"
+
+# Persist (macOS with Homebrew)
+lstk completion zsh > $(brew --prefix)/share/zsh/site-functions/_lstk
+```
+
+</TabItem>
+<TabItem label="Fish">
+
+```bash
+# Load in current session
+lstk completion fish | source
+
+# Persist
+lstk completion fish > ~/.config/fish/completions/lstk.fish
+```
+
+</TabItem>
+</Tabs>
+
+Restart your shell after persisting completions.
+
+## FAQ
+
+### Can I use `lstk` with Docker Compose?
+
+No. `lstk` manages its own Docker container directly.
+If you use a `docker-compose.yml` to run LocalStack, you do not need `lstk`, and vice versa.
+Do not mix `lstk start` with a Docker Compose setup; they are separate, independent methods.
+
+For Docker Compose configuration, see the [Docker Compose installation guide](/aws/getting-started/installation/#docker-compose).
+
+### Which Docker image does `lstk` use?
+
+It depends on the emulator type configured in your `config.toml`.
+The AWS emulator uses `localstack/localstack-pro`, the Snowflake emulator uses `localstack/snowflake`, and the Azure emulator uses `localstack/localstack-azure`.
+All require a valid auth token (including the free Hobby tier).
+See [Emulator types](#emulator-types).
+
+### How do I pass configuration options like `DEBUG` or `PERSISTENCE` to the container?
+
+Use environment profiles in your `config.toml`.
+Define the variables under an `[env.<name>]` section and reference that name in the `env` list of your container config.
+See [Passing environment variables to the container](#passing-environment-variables-to-the-container) for details.
+
+### How do I save and restore emulator state?
+
+Use [`lstk snapshot save`](#snapshot) to capture the running AWS emulator's state to a local file or a Cloud Pod, and [`lstk snapshot load`](#snapshot) (or the `lstk save` / `lstk load` aliases) to restore it.
+To drop in-memory state without writing a snapshot, use [`lstk reset`](#reset).
+
+### How do I pin a specific LocalStack version?
+
+Set the `tag` field in your `config.toml` to a specific version tag:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "2026.4"
+port = "4566"
+```
+
+## Troubleshooting
+
+### Port 443 already in use
+
+By default, LocalStack binds to both port `4566` and port `443` inside the container (controlled by the `GATEWAY_LISTEN` variable).
+On some systems, particularly Windows with Hyper-V, IIS, or VPN software, port 443 may already be in use.
+
+**Symptoms:**
+
+```text
+failed to start LocalStack: Error response from daemon: ports are not available:
+exposing port TCP 127.0.0.1:443 -> 127.0.0.1:0: listen tcp4 127.0.0.1:443: bind:
+address already in use
+```
+
+**Fix:** Override `GATEWAY_LISTEN` to bind only to port 4566:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "latest"
+port = "4566"
+env  = ["nossl"]
+
+[env.nossl]
+GATEWAY_LISTEN = "0.0.0.0:4566"
+```
+
+This tells the container to skip the port 443 binding entirely.
+
+### Docker is not running
+
+`lstk` requires a running Docker daemon.
+If Docker is not reachable, you will see an error like:
+
+```text
+Error: runtime not healthy
+```
+
+**Fix:** Start Docker Desktop (macOS/Windows) or the Docker daemon (`sudo systemctl start docker` on Linux).
+If you use Colima or OrbStack, make sure the VM is running.
+You can also point `lstk` at a custom socket with `DOCKER_HOST`.
+
+### Authentication required in non-interactive mode
+
+When running without a TTY (e.g. in CI), `lstk` cannot open a browser for login.
+If no token is found in the keyring or environment, it fails:
+
+```text
+authentication required: set LOCALSTACK_AUTH_TOKEN or run in interactive mode
+```
+
+**Fix:** Set the `LOCALSTACK_AUTH_TOKEN` environment variable before running `lstk`:
+
+```bash
+export LOCALSTACK_AUTH_TOKEN=<your-token>
+lstk --non-interactive start
+```
+
+You can find your auth token on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens).
+
+### License validation failed
+
+If your auth token is invalid, expired, or not linked to an active license, the LocalStack container exits with a license error:
+
+```text
+The license activation failed for the following reason:
+No credentials were found in the environment.
+```
+
+**Fix:**
+
+- Verify your token is valid at the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens).
+- Make sure the token is set correctly, either via `lstk login` or the `LOCALSTACK_AUTH_TOKEN` environment variable.
+- If a stale keyring token is interfering, run `lstk logout` first and then set `LOCALSTACK_AUTH_TOKEN`.
+
+### Image pull failed
+
+If `lstk` cannot pull the Docker image, check your network connection and Docker configuration.
+On corporate networks, you may need to configure Docker's proxy settings, see [How do I configure LocalStack to use my corporate HTTP and HTTPS proxy?](/aws/getting-started/faq/#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy).
+
+### Unknown environment profile
+
+If your container config references an `env` profile that doesn't exist, `lstk` returns:
+
+```text
+environment "myprofile" referenced in container config not found
+```
+
+**Fix:** Make sure the profile name in the `env` list matches an `[env.<name>]` section in your `config.toml`:
+
+```toml
+[[containers]]
+type = "aws"
+env  = ["myprofile"]   # must match the section name below
+
+[env.myprofile]
+DEBUG = "1"
+```
+
+### Getting help
+
+If the steps above don't resolve your issue, see [Get Help](/aws/help-support/get-help/) for the available support channels, including the support email and in-app chat.

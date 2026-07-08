@@ -1,0 +1,525 @@
+---
+title: LocalStack MCP Server
+description: Use the LocalStack MCP Server to manage your local cloud development environment through AI-powered MCP clients.
+template: doc
+tags: ['Hobby']
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Introduction
+
+The [LocalStack MCP Server](https://github.com/localstack/localstack-mcp-server) is a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server that connects MCP-compatible clients to your LocalStack environment.
+It enables AI agents to manage the full local cloud development lifecycle: starting containers, deploying infrastructure, analyzing logs, injecting chaos faults, managing state snapshots, and running AWS CLI commands, all through natural language prompts.
+
+## Prerequisites
+
+Before configuring the MCP server, ensure the following are installed and available on your system `PATH`:
+
+- [Node.js](https://nodejs.org/en/download/) (v22.x or later) to run `npx`.
+- [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/) and [Docker](https://docs.docker.com/get-docker/) to manage the LocalStack container.
+- A [LocalStack Auth Token](/aws/getting-started/auth-token/) configured as `LOCALSTACK_AUTH_TOKEN`. All MCP server tools require a valid Auth Token.
+- [`cdklocal`](https://github.com/localstack/aws-cdk-local), [`tflocal`](https://github.com/localstack/terraform-local), or [`samlocal`](https://github.com/localstack/aws-sam-cli-local) if you plan to use the infrastructure deployment tool. (**optional**)
+- [Snowflake CLI](https://docs.snowflake.com/en/developer-guide/snowflake-cli/index) (`snow`) if you plan to use the Snowflake client tool. (**optional**)
+
+## Installation
+
+The LocalStack MCP Server is published on npm as [`@localstack/localstack-mcp-server`](https://www.npmjs.com/package/@localstack/localstack-mcp-server).
+The recommended approach is to let your MCP client run the server via `npx`, which downloads and caches the package automatically.
+
+:::note
+All MCP server tools require `LOCALSTACK_AUTH_TOKEN` to be set.
+You must include it in the `env` block of your configuration.
+You can get your Auth Token from the [LocalStack Web App](https://app.localstack.cloud).
+:::
+
+The quickest way to get started with the MCP server is to use the interactive setup wizard:
+
+```bash
+npx -y @localstack/localstack-mcp-server init
+```
+
+The wizard detects your installed clients, asks how you want to run the server, and writes the configuration for you. You need a valid [Auth Token](/aws/getting-started/auth-token/) to configure the server.
+
+For manual setup of the MCP server, choose your MCP client below for setup instructions.
+
+<Tabs>
+<TabItem label="Cursor">
+
+Click the button below to install the LocalStack MCP Server in Cursor automatically:
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=localstack-mcp-server&config=eyJjb21tYW5kIjoibnB4IC15IEBsb2NhbHN0YWNrL2xvY2Fsc3RhY2stbWNwLXNlcnZlciJ9)
+
+After installing, open `~/.cursor/mcp.json` and add the `env` block with your Auth Token:
+
+```json
+{
+  "mcpServers": {
+    "localstack-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@localstack/localstack-mcp-server"],
+      "env": {
+        "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+Restart Cursor after saving.
+The server appears in **Cursor Settings > MCP** once detected.
+
+</TabItem>
+<TabItem label="VS Code">
+
+Add the following to your VS Code user settings JSON (`settings.json`) or workspace `.vscode/mcp.json`:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "localstack-mcp-server": {
+        "command": "npx",
+        "args": ["-y", "@localstack/localstack-mcp-server"],
+        "env": {
+          "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>"
+        }
+      }
+    }
+  }
+}
+```
+
+You can also run the command **MCP: Add Server** from the Command Palette and paste the server command.
+MCP support requires the [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extension.
+
+</TabItem>
+<TabItem label="Claude Code">
+
+Run the following command in your terminal:
+
+```bash
+claude mcp add localstack-mcp-server \
+  -e LOCALSTACK_AUTH_TOKEN=<YOUR_TOKEN> \
+  -- npx -y @localstack/localstack-mcp-server
+```
+
+Claude Code stores this in its project-level configuration and starts the server automatically when you open a conversation.
+
+</TabItem>
+<TabItem label="OpenCode">
+
+Add the following to your OpenCode configuration file (`opencode.json`):
+
+```json
+{
+  "mcpServers": {
+    "localstack-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@localstack/localstack-mcp-server"],
+      "env": {
+        "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+</TabItem>
+<TabItem label="Amazon Q CLI">
+
+Add the following to your Amazon Q MCP configuration at `~/.aws/amazonq/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "localstack-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@localstack/localstack-mcp-server"],
+      "env": {
+        "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+</TabItem>
+<TabItem label="Other Clients">
+
+For any MCP-compatible client, configure a stdio server with:
+
+- **Command:** `npx`
+- **Arguments:** `["-y", "@localstack/localstack-mcp-server"]`
+- **Environment:** `LOCALSTACK_AUTH_TOKEN` set to your token
+
+If your client uses a JSON configuration file, the entry follows this format:
+
+```json
+{
+  "mcpServers": {
+    "localstack-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@localstack/localstack-mcp-server"],
+      "env": {
+        "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+Refer to your client's documentation for the exact location of its MCP configuration file.
+
+</TabItem>
+</Tabs>
+
+### Connecting to a custom LocalStack endpoint
+
+By default the MCP server connects to `http://localhost:4566`.
+If your LocalStack instance runs on a different host or port, set the following environment variables in the `env` block:
+
+| Variable              | Default     | Description                         |
+| --------------------- | ----------- | ----------------------------------- |
+| `LOCALSTACK_HOSTNAME` | `localhost` | Hostname of the LocalStack instance |
+| `LOCALSTACK_PORT`     | `4566`      | Port of the LocalStack instance     |
+
+You can also pass any [LocalStack configuration variable](/aws/customization/configuration-options/) through the `env` block.
+These are forwarded to the container when the `localstack-management` tool starts it.
+
+```json
+{
+  "mcpServers": {
+    "localstack-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@localstack/localstack-mcp-server"],
+      "env": {
+        "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>",
+        "LOCALSTACK_HOSTNAME": "my-host",
+        "LOCALSTACK_PORT": "4566"
+      }
+    }
+  }
+}
+```
+
+## Tools
+
+The MCP server exposes the following tools that your AI agent can call.
+Each tool runs pre-flight checks (verifying the CLI is available, the container is running, and the Auth Token is present) and returns structured responses.
+
+### `localstack-management`
+
+Manage the LocalStack runtime lifecycle for both the AWS emulator and the Snowflake emulator.
+
+| Parameter | Type                                       | Required | Description                                   |
+| --------- | ------------------------------------------ | -------- | --------------------------------------------- |
+| `action`  | `start` \| `stop` \| `restart` \| `status` | Yes      | The operation to perform                      |
+| `service` | `aws` \| `snowflake`                       | No       | The stack to manage (default: `aws`)          |
+| `envVars` | `Record<string, string>`                   | No       | Extra environment variables passed on `start` |
+
+**Example prompts:**
+
+- "Start my LocalStack container."
+- "What's the current status of LocalStack?"
+- "Start the Snowflake emulator."
+
+### `localstack-deployer`
+
+Deploy or destroy infrastructure on LocalStack using CDK, Terraform, SAM, or CloudFormation.
+
+| Parameter      | Type                                                      | Required                                | Description                                                                                        |
+| -------------- | --------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `action`       | `deploy` \| `destroy` \| `create-stack` \| `delete-stack` | Yes                                     | The deployment operation                                                                           |
+| `projectType`  | `cdk` \| `terraform` \| `sam` \| `auto`                   | No                                      | Framework to use (default: `auto`, detected from project files)                                    |
+| `directory`    | `string`                                                  | Yes (for `deploy`/`destroy`)            | Path to the project directory                                                                      |
+| `variables`    | `Record<string, string>`                                  | No                                      | Variables passed as Terraform `-var` flags, CDK `--context` values, or SAM `--parameter-overrides` |
+| `stackName`    | `string`                                                  | Yes (for `create-stack`/`delete-stack`) | CloudFormation/SAM stack name                                                                      |
+| `templatePath` | `string`                                                  | No                                      | Path to a CloudFormation/SAM template                                                              |
+| `s3Bucket`     | `string`                                                  | No                                      | S3 bucket for SAM deployments (if omitted, SAM uses `--resolve-s3`)                                |
+| `resolveS3`    | `boolean`                                                 | No                                      | For SAM deployments, whether to use `--resolve-s3` when no `s3Bucket` is provided                  |
+| `saveParams`   | `boolean`                                                 | No                                      | For SAM deployments, whether to persist resolved parameters to `samconfig.toml`                    |
+
+**Example prompts:**
+
+- "Deploy my CDK project in the `infra/` directory on LocalStack."
+- "Destroy the Terraform deployment in `./terraform`."
+- "Deploy my SAM application in `./sam-app`."
+- "Create a CloudFormation stack named `my-stack` from `template.yaml`."
+
+:::note
+The `deploy` and `destroy` actions require [`cdklocal`](https://github.com/localstack/aws-cdk-local), [`tflocal`](https://github.com/localstack/terraform-local), or [`samlocal`](https://github.com/localstack/aws-sam-cli-local) to be installed on your system `PATH`, depending on the project type.
+The `create-stack` and `delete-stack` actions run `awslocal` inside the LocalStack container and require the container to be running.
+:::
+
+### `localstack-logs-analysis`
+
+Analyze LocalStack logs to find errors, summarize API activity, or inspect raw output.
+
+| Parameter      | Type                                          | Required | Description                                                      |
+| -------------- | --------------------------------------------- | -------- | ---------------------------------------------------------------- |
+| `analysisType` | `summary` \| `errors` \| `requests` \| `logs` | No       | Type of analysis (default: `summary`)                            |
+| `lines`        | `number`                                      | No       | Number of log lines to fetch (default: `2000`)                   |
+| `service`      | `string`                                      | No       | Filter by AWS service name                                       |
+| `operation`    | `string`                                      | No       | Filter by API operation (used with `service` in `requests` mode) |
+| `filter`       | `string`                                      | No       | Keyword filter (used with `logs` mode only)                      |
+
+**Example prompts:**
+
+- "Analyze LocalStack logs for any errors."
+- "Show me the S3 API requests from the last 500 log lines."
+- "Get the raw LocalStack logs filtered by 'lambda'."
+
+### `localstack-iam-policy-analyzer`
+
+Configure IAM enforcement and generate IAM policies from access denials in the logs.
+
+| Parameter | Type                                             | Required             | Description              |
+| --------- | ------------------------------------------------ | -------------------- | ------------------------ |
+| `action`  | `set-mode` \| `analyze-policies` \| `get-status` | Yes                  | The operation to perform |
+| `mode`    | `ENFORCED` \| `SOFT_MODE` \| `DISABLED`          | Yes (for `set-mode`) | IAM enforcement level    |
+
+**Example prompts:**
+
+- "Enable IAM enforcement in soft mode on LocalStack."
+- "Analyze the logs for IAM policy violations and generate the required policies."
+- "What's the current IAM enforcement status?"
+
+### `localstack-chaos-injector`
+
+Inject faults and network latency into LocalStack services to test application resilience.
+
+| Parameter    | Type                                                                                                                                                     | Required                                                         | Description                                    |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------- |
+| `action`     | `inject-faults` \| `add-fault-rule` \| `remove-fault-rule` \| `get-faults` \| `clear-all-faults` \| `inject-latency` \| `get-latency` \| `clear-latency` | Yes                                                              | The chaos operation                            |
+| `rules`      | `Array<FaultRule>`                                                                                                                                       | Yes (for `inject-faults`, `add-fault-rule`, `remove-fault-rule`) | Fault rules to inject/modify                   |
+| `latency_ms` | `number`                                                                                                                                                 | Yes (for `inject-latency`)                                       | Latency in milliseconds to add to all requests |
+
+Each **fault rule** can include:
+
+| Field         | Type                                     | Description                               |
+| ------------- | ---------------------------------------- | ----------------------------------------- |
+| `service`     | `string`                                 | Target AWS service (e.g., `s3`, `lambda`) |
+| `region`      | `string`                                 | Target region (e.g., `us-east-1`)         |
+| `operation`   | `string`                                 | Target API operation (e.g., `PutObject`)  |
+| `probability` | `number` (0-1)                           | Probability of the fault triggering       |
+| `error`       | `{ statusCode?: number, code?: string }` | Error response to return                  |
+
+**Example prompts:**
+
+- "Inject a 500 error for all Lambda Invoke calls in us-east-1 with 100% probability."
+- "Add 2000ms of network latency to all LocalStack requests."
+- "Clear all chaos faults."
+
+### `localstack-cloud-pods`
+
+Save, load, and manage LocalStack state snapshots using [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/).
+
+| Parameter  | Type                                    | Required                         | Description                                                                          |
+| ---------- | --------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------ |
+| `action`   | `save` \| `load` \| `delete` \| `reset` | Yes                              | The state management operation                                                       |
+| `pod_name` | `string`                                | Yes (for `save`/`load`/`delete`) | Name of the Cloud Pod (alphanumeric, dots, hyphens, underscores; max 128 characters) |
+
+**Example prompts:**
+
+- "Save the current LocalStack state as a Cloud Pod named `my-app-state`."
+- "Load the Cloud Pod `my-app-state`."
+- "Reset the LocalStack state completely."
+
+### `localstack-aws-client`
+
+Execute AWS CLI commands inside the running LocalStack container via `awslocal`.
+
+| Parameter | Type     | Required | Description                                                         |
+| --------- | -------- | -------- | ------------------------------------------------------------------- |
+| `command` | `string` | Yes      | The AWS CLI command to run (without the `aws` or `awslocal` prefix) |
+
+**Example prompts:**
+
+- "List all S3 buckets in LocalStack."
+- "Describe my Lambda functions."
+- "Query the DynamoDB table `users` for all items."
+
+The tool sanitizes input to prevent shell injection (pipes, redirects, and command chaining are blocked).
+If a command fails due to a service not being emulated, the tool returns a link to the relevant [service coverage documentation](/aws/services/).
+
+### `localstack-extensions`
+
+Install, uninstall, list, and discover [LocalStack Extensions](/aws/customization/integrations/extensions/) from the marketplace.
+
+| Parameter | Type                                              | Required                        | Description                                                  |
+| --------- | ------------------------------------------------- | ------------------------------- | ------------------------------------------------------------ |
+| `action`  | `list` \| `install` \| `uninstall` \| `available` | Yes                             | The extensions operation                                     |
+| `name`    | `string`                                          | Yes (for `install`/`uninstall`) | Extension package name (e.g., `localstack-extension-typedb`) |
+| `source`  | `string`                                          | No                              | Git URL to install from (alternative to `name`)              |
+
+**Example prompts:**
+
+- "List my installed LocalStack extensions."
+- "Browse the available extensions in the marketplace."
+- "Install the `localstack-extension-typedb` extension."
+- "Uninstall the `localstack-extension-stripe` extension."
+
+:::note
+After installing or uninstalling an extension, the tool automatically restarts LocalStack to apply the changes.
+:::
+
+### `localstack-ephemeral-instances`
+
+Manage cloud-hosted [Ephemeral Instances](/aws/developer-tools/cloud-sandbox/ephemeral-instances/) for remote LocalStack testing workflows.
+
+| Parameter   | Type                                     | Required                           | Description                                                      |
+| ----------- | ---------------------------------------- | ---------------------------------- | ---------------------------------------------------------------- |
+| `action`    | `create` \| `list` \| `logs` \| `delete` | Yes                                | The ephemeral instance operation                                 |
+| `name`      | `string`                                 | Yes (for `create`/`logs`/`delete`) | Instance name                                                    |
+| `lifetime`  | `number`                                 | No                                 | Lifetime in minutes for the instance (only for `create`)         |
+| `extension` | `string`                                 | No                                 | Extension package to preload on the instance (only for `create`) |
+| `cloudPod`  | `string`                                 | No                                 | Cloud Pod name to initialize state from (only for `create`)      |
+| `envVars`   | `Record<string, string>`                 | No                                 | Extra environment variables for the instance (only for `create`) |
+
+**Example prompts:**
+
+- "Create an ephemeral LocalStack instance named `test-env` with a 60-minute lifetime."
+- "List all my ephemeral instances."
+- "Get the logs from the `test-env` ephemeral instance."
+- "Delete the ephemeral instance named `test-env`."
+
+### `localstack-docs`
+
+Search the LocalStack documentation to find guides, API references, and configuration details.
+
+| Parameter | Type     | Required | Description                                                   |
+| --------- | -------- | -------- | ------------------------------------------------------------- |
+| `query`   | `string` | Yes      | The search query                                              |
+| `limit`   | `number` | No       | Maximum number of results to return (default: `5`, max: `10`) |
+
+**Example prompts:**
+
+- "Search the LocalStack docs for how to configure S3."
+- "Find the LocalStack documentation on Cloud Pods."
+
+### `localstack-snowflake-client`
+
+Execute SQL queries and commands against the [LocalStack Snowflake emulator](/snowflake/) using the Snowflake CLI (`snow`).
+
+| Parameter   | Type                            | Required                                         | Description                               |
+| ----------- | ------------------------------- | ------------------------------------------------ | ----------------------------------------- |
+| `action`    | `execute` \| `check-connection` | Yes                                              | The operation to perform                  |
+| `query`     | `string`                        | Yes (for `execute`, if `file_path` not provided) | SQL query to execute                      |
+| `file_path` | `string`                        | Yes (for `execute`, if `query` not provided)     | Absolute path to a `.sql` file to execute |
+| `database`  | `string`                        | No                                               | Snowflake database context                |
+| `schema`    | `string`                        | No                                               | Snowflake schema context                  |
+| `warehouse` | `string`                        | No                                               | Snowflake warehouse to use                |
+| `role`      | `string`                        | No                                               | Snowflake role to use                     |
+
+**Example prompts:**
+
+- "Check the connection to the LocalStack Snowflake emulator."
+- "Run `SELECT * FROM my_table` on the Snowflake emulator."
+- "Execute the SQL file at `/path/to/setup.sql` on Snowflake."
+
+:::note
+This tool requires the [Snowflake CLI](https://docs.snowflake.com/en/developer-guide/snowflake-cli/index) (`snow`) to be installed on your system `PATH`.
+The tool automatically configures a `localstack` connection profile pointing to the Snowflake emulator.
+:::
+
+## Quickstart
+
+Once your MCP client is configured, verify the setup by opening a conversation with your AI agent.
+
+**1. Start LocalStack**
+
+> _"Start my LocalStack container."_
+
+The agent uses the `localstack-management` tool to start the container and confirms the status.
+
+**2. Deploy infrastructure**
+
+> _"Deploy my CDK project in the `./my-app` directory."_
+
+The agent detects the framework, runs `cdklocal bootstrap` and `cdklocal deploy`, and returns the stack outputs.
+
+**3. Verify resources**
+
+> _"List the Lambda functions and DynamoDB tables that were created."_
+
+The agent runs `awslocal` commands inside the container and returns the results.
+
+**4. Analyze logs**
+
+> _"Check the LocalStack logs for any errors."_
+
+The agent fetches recent logs and highlights any errors or warnings.
+
+**5. Save state**
+
+> _"Save a Cloud Pod named `my-checkpoint`."_
+
+The agent persists the current LocalStack state so you can restore it later.
+
+## Configuration reference
+
+The following environment variables can be set in the `env` block of your MCP configuration:
+
+| Variable                               | Default           | Description                                                    |
+| -------------------------------------- | ----------------- | -------------------------------------------------------------- |
+| `LOCALSTACK_AUTH_TOKEN` (**required**) | None              | Your LocalStack Auth Token. Required for all MCP server tools. |
+| `LOCALSTACK_HOSTNAME`                  | `localhost`       | Hostname of the LocalStack instance                            |
+| `LOCALSTACK_PORT`                      | `4566`            | Port of the LocalStack instance                                |
+| `MAIN_CONTAINER_NAME`                  | `localstack-main` | Name of the LocalStack Docker container                        |
+| `MCP_ANALYTICS_DISABLED`               | `0`               | Set to `1` to disable MCP analytics                            |
+
+Any [LocalStack configuration variable](/aws/customization/configuration-options/) can also be passed through the `env` block.
+These are forwarded to the container when the `localstack-management` tool starts it.
+
+For example, to enable debug logging and persistence:
+
+```json
+{
+  "mcpServers": {
+    "localstack-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@localstack/localstack-mcp-server"],
+      "env": {
+        "LOCALSTACK_AUTH_TOKEN": "<YOUR_TOKEN>",
+        "DEBUG": "1",
+        "PERSISTENCE": "1"
+      }
+    }
+  }
+}
+```
+
+## Troubleshooting
+
+### LocalStack container fails to start
+
+**Symptoms:** The `localstack-management` tool reports a timeout after 120 seconds.
+
+**Solutions:**
+
+- Ensure Docker is running on your machine.
+- Verify the LocalStack CLI is installed and on your `PATH` by running `localstack --version`.
+- Check Docker resource limits. LocalStack needs at least 2 GB of memory.
+- If you are using a custom `LOCALSTACK_HOSTNAME`, ensure the host is reachable.
+
+### MCP server not detected by the client
+
+**Symptoms:** The server does not appear in your client's MCP server list.
+
+**Solutions:**
+
+- Verify Node.js (v22+) is installed by running `node --version`.
+- Run `npx -y @localstack/localstack-mcp-server` manually in a terminal to check for errors.
+- Ensure the JSON in your MCP configuration file is valid (no trailing commas, correct key names).
+- Restart your MCP client after saving configuration changes.
+
+### Tools return "Auth Token Required"
+
+**Symptoms:** Any tool call fails with an "Auth Token Required" error.
+
+**Solutions:**
+
+- Confirm your `LOCALSTACK_AUTH_TOKEN` is set in the `env` block of your MCP configuration.
+- Verify the token is valid by running `localstack auth show-token`.
+- Ensure there are no extra spaces or quotes around the token value in your configuration file.

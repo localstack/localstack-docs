@@ -82,7 +82,7 @@ export function CopyPageDropdown({ pageUrl, pageTitle }: CopyPageDropdownProps) 
       
       if (shouldSkip(el)) return '';
       
-      // Handle images (including those in custom elements like starlight-image-zoom)
+      // Handle images
       if (tagName === 'img') {
         const alt = el.getAttribute('alt') || '';
         const src = el.getAttribute('src') || '';

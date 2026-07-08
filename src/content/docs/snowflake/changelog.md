@@ -13,7 +13,65 @@ Starting with the end-of-March 2026 release, LocalStack for Snowflake follows [c
 For example, `2026.03.0` is the initial March 2026 release.
 :::
 
-### 2026.03.0
+## 2026.06.0
+
+- 'Added support for `PERCENTILE_CONT` and `PERCENTILE_DISC`, the standard percentile aggregate functions used for medians, quartiles, and other distribution cutoffs.'
+- '`MEDIAN` is now fixed to return correct results, since it shares its underlying implementation with `PERCENTILE_CONT`.'
+- '`UNPIVOT` no longer crashes with an unhandled `IndexError` in certain query shapes.'
+- '`GREATEST` and `LEAST` now preserve the input type, and generic `MIN`/`MAX` resolution was fixed alongside them.'
+- '`ROUND` precision derivation now accommodates an increased scale, fixing incorrect results for some decimal roundings.'
+- 'Fixed handling of certain boolean comparison expressions that previously produced incorrect results.'
+- '`CONVERT_TIMESTAMP` now handles `NULL` inputs correctly instead of failing.'
+- '`DATEDIFF` now handles an unquoted date part argument used inside a window function ORDER BY.'
+- 'Fixed a bug affecting character/string conversion.'
+- '`QUALIFY` column resolution is fixed for queries that cross-join a CTE and reference a column via its CTE alias.'
+- 'Table qualifiers added during alias expansion are now quoted correctly, fixing visibility issues with `UNION ALL` over a CTE combined with `QUALIFY`.'
+- '`IS NULL` now evaluates correctly against a bare `NULL` value projected through a CTE or subquery.'
+- 'Unaliased derived tables in a `JOIN` clause will no longer cause the query to fail.'
+- 'Nested `QUALIFY` rewrites no longer create an ambiguous internal column.'
+- 'Parenthesized queries of the form `(WITH ... SELECT ...)` are no longer incorrectly rejected.'
+- '`WITH RECURSIVE` will now enable recursive CTEs to be properly recognized and executed as recursive.'
+- 'Scripting keywords used as implicit table aliases are no longer misinterpreted during table reference parsing.'
+- 'SQL procedure bodies using `DECLARE` blocks, including `OBJECT` and `NUMBER`-typed variables and bodies containing `UPDATE ... RETURNING`, no longer fail to create.'
+- '`CREATE TASK` now supports multi-statement `BEGIN ... END` bodies.'
+- '`DROP STAGE IF EXISTS` no longer raises an error when the referenced stage does not exist.'
+- 'Bumped `jackson-databind` to `2.18.8`, addressing CVE-2026-54512 and CVE-2026-54513.'
+- 'Bumped `dulwich` and `kclpy-ext` to patched versions, addressing three High-severity CVEs.'
+- 'Bumped the bundled Apache NiFi (OpenFlow) component to version 2.10.0.'
+
+## 2026.05.0
+
+- Update Docker image tagging policy to introduce `dev` and `nightly` tags, while aligning `latest` to mirror `stable`
+- Add support for `TRY_CAST(<array> AS ARRAY)` conversions
+- Support `ARRAY_AGG(DISTINCT ...)` execution with variant path expressions
+- Support preservation of typed `NUMBER(p,s)` values in `MIN` and `MAX` aggregates
+- Improve `COUNT(DISTINCT ...)` handling with nested `CASE` predicates and literals
+- Improve window functions (`LAG`, `LEAD`) to preserve qualified column references in `ORDER BY`
+- Improve pattern matching (`LIKE`, `ILIKE`) on values derived from `LATERAL FLATTEN` loops
+- Improve `QUALIFY` query handling combining `SELECT *` with aliased expressions in CTEs
+- Improve implicit type coercion for aliased `NULL` and `VARCHAR` values in `UNION` / `UNION ALL` queries
+- Improve translation and execution for SQL UDFs and stored procedures starting with CTEs, set operations, or blocks
+- Improve Snowpipe concurrency and message polling responsiveness by scheduling `COPY INTO` work per pipe
+- Fix statement splitting for multi-statement queries containing inline, line, or block SQL comments
+- Fix error shapes for invalid SQL syntax and compilation failures to return Snowflake-compatible codes instead of raw backend errors
+
+## 2026.04.0
+
+- Add support for AWS Glue Iceberg REST catalog integrations via `CREATE CATALOG INTEGRATION`
+- Add support for new SQL date/time functions (`DAY`, `DAYOFMONTH`, `DAYOFYEAR`, `QUARTER`, `WEEK`, `YEAROFWEEK`)
+- Support six-argument form for `TIMESTAMP_LTZ_FROM_PARTS`
+- Support unquoted date/time parts in `DATE_PART` and `EXTRACT` functions
+- Add support for `INFORMATION_SCHEMA.PROCEDURES` view via metadata FDW mechanism
+- Add `ROW_COUNT` and `BYTES` metadata to `INFORMATION_SCHEMA.TABLES` and `SHOW OBJECTS`
+- Enhance `SHOW OBJECTS` to support `is_interactive` columns and scoped filters (`IN`, `STARTS WITH`, `LIMIT`)
+- Improve routine tracking for UDFs and stored procedures, including overloaded routines and `IDENTIFIER($var)`
+- Improve Snowpipe notification processing and performance for shared S3 buckets
+- Enhance Web App with multi-statement query execution and side-by-side layout for Query History and results
+- Enhance Web App with tabbed query results, truncated result banners, and improved SQL autocomplete
+- Enhance Web App Resource Browser with dedicated views and icons for databases, schemas, tables, and views
+
+## 2026.03.0
+
 - Add support for `GET_DDL` for tables, views, and databases
 - Add support for `FULL JOIN` and complex join conditions
 - Add support for looping constructs (`WHILE`, `LOOP`, `FOR`, `REPEAT`) in Snowflake scripting
@@ -32,7 +90,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Improve Snowpipe latency for large JSON uploads
 - Fix dropping of dependent views when dropping tables
 
-### 1.7.0
+## 1.7.0
+
 - Add support for `OBJECT_AGG`, `QUERY_HISTORY_BY_USER`, `BOOLAND_AGG`, `BOOLOR_AGG`, `APPROX_PERCENTILE`, `LIKE`, `ILIKE`, and math functions
 - Add support for date arithmetics
 - Add support for `INFORMATION_SCHEMA.COLUMNS`, `INFORMATION_SCHEMA.SCHEMATA`, and `INFORMATION_SCHEMA.DATABASES` views
@@ -52,14 +111,15 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Fix `SYSTEM$BOOTSTRAP_DATA_REQUEST` to support varargs
 - Fix evaluating values for describe-only queries
 
-### 1.6.0
+## 1.6.0
+
 - Add support for SQL `REGEXP_LIKE`, `SPLIT_PART`, `STRIP_NULL_VALUE`, `TRY_PARSE_JSON` function
 - Integrate Snowflake with S3 tables
 - Improve dynamic table query handling and error reporting
 - Support access delegation mode in Polaris catalog
 - Fix `DATEADD` function to support column references as input arguments
 - Fix casting of types for interval arithmetics
-- Enhance parity for `TO_DATE` with large datetimes 
+- Enhance parity for `TO_DATE` with large datetimes
 - Bump Apache NiFi version to 2.7.1
 - Enable cross-database queries in SELECT statements
 - Fix schema-qualified identifier handling and standardize canonical name usage
@@ -70,7 +130,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Add update stats to response of DML operations
 - Fixes schema resolution for `CREATE STREAM` statements
 
-### 1.5.0
+## 1.5.0
+
 - Add support for `POSITION`, `CHARINDEX`, `LEFT`, `RIGHT`, `LENGTH/LEN` SQL function
 - Fix long-running queries by continuing to run them asynchronously
 - Enhance parity for `SELECT AVG OVER ROWS` aggregate queries
@@ -81,7 +142,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Enhance parity to GET a single stage file directly
 - Support Iceberg CTAS (`CREATE ICEBERG TABLE AS SELECT`)
 
-### 1.4.0
+## 1.4.0
+
 - Add support for `SELECT * EXCLUDE (...)`
 - Add support for `PI` function
 - Enhance parity for query binding values and numeric timestamps with TZ
@@ -90,7 +152,7 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Add support for switching JSON/Arrow result encoding in session parameters
 - Enable returning of result batches for large query results
 - Fix VARCHAR type/modifier when inferred from SELECT statements
-- Return exact column type/modifiers for `DESCRIBE VIEW` results 
+- Return exact column type/modifiers for `DESCRIBE VIEW` results
 - Fix default type modifiers when inferred from SELECT statements
 - Add logic to clean up temporary stages on session termination
 - Raise `DuplicateMergeKey` on `MERGE` duplicates
@@ -99,9 +161,10 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Properly handle error responses for async queries
 - Fix `GROUP BY` positional references being incorrectly wrapped
 
-### 1.3.0
+## 1.3.0
+
 - Retry failing db commands and enhance handling of transactions
-- Upgrade to Python 3.13 
+- Upgrade to Python 3.13
 - Expand Alias References
 - Support python-only queries in snowflake scripting
 - Remove byte order mark (BOM) in query string to support SnowConvert tool
@@ -120,7 +183,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Handle cross db references in `INFORMATION_SCHEMA.TABLES` view
 - Enhance parity of column types for `DESCRIBE VIEW` queries
 
-### 1.2.0
+## 1.2.0
+
 - Add support for `SQUARE`, `FACTORIAL`, `UNIFORM`, `SYSTEM$ALLOWLIST`, `ARRAYS_ZIP`, `CURRENT_ORGANIZATION_USER`, `QUERY_HISTORY` functions
 - Enhance metadata for varchar type
 - Add support for `PIVOT` operation
@@ -146,10 +210,11 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Add initial CRUD support for resource monitors
 - Add initial CRUD support for masking policies
 - Support `SHOW REPLICATION ACCOUNTS`
-- Enhance parity for creating transient schemas 
+- Enhance parity for creating transient schemas
 - Enhance `CREATE MASKING POLICY` handling
 
-### 1.1.0
+## 1.1.0
+
 - Add support for functions: `ROUND`, `SYSDATE`, `STARTSWITH`, `ENDSWITH`, `MD5`, `SUBSTR`, `HAVERSINE`, `LAST_DAY`, `TRY_CAST`, `TRUNCATE`, `PERCENT_RANK`, `SYSTEM$TASK_DEPENDENTS_ENABLE`
 - Implement `TRY_*` conversion functions
 - Add number formatting parameter to `TO_DOUBLE` and `TO_DECIMAL`
@@ -179,12 +244,13 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Enhance parity for type casts on results returned from `FLATTEN`
 - Enhance parsing of nested variable assignments
 
-### 1.0.1
+## 1.0.1
+
 - Implementation and migration to the new type system
 - Enhance persistence support for storing/reloading native apps
 - Add support for cross-db CTAS and CVAS statements
 - Enhance support for `ALTER DATABASE` statements
-- Add initial support for `COLLATE` table columns 
+- Add initial support for `COLLATE` table columns
 - Add support for `DESCRIBE SCHEMA`
 - Enhance support for `ALTER SCHEMA` queries
 - Add support for suspending tasks
@@ -198,7 +264,7 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Implement `LOWER` and `UPPER` functions
 - Fix `DROP TABLE` query
 - Add initial support for `GRANT OWNERSHIP` statements
-- Enhance CRUD support for `ROW ACCESS POLICIES` 
+- Enhance CRUD support for `ROW ACCESS POLICIES`
 - Support temporary views and dropping temp objects at session end
 - Enahance parity for `CREATE` and `DROP ROLE`
 - Fix for multi-account DB initialization
@@ -217,7 +283,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Enhance parity on metadata results for copy into command
 - Fix for numeric bool values
 
-### 1.0.0
+## 1.0.0
+
 - Add support for `SHOW/ALTER FUNCTION`
 - Fix incompatibilities with GO driver and SnowSQL client
 - Add support for `SHOW INDEXES`
@@ -260,8 +327,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Add auto-conversion of strings to `ARRAY/OBJECT` types
 - Add support for Polaris catalog
 
+## 0.3.0
 
-### 0.3.0
 - Add support for multi-account setups
 - Add initial support for Java UDFs
 - Add initial support for native apps and `APPLICATION PACKAGEs`
@@ -296,7 +363,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Improve JDBC driver compatibility
 - Support LS alias to LIST files from stages
 
-### 0.2.5
+## 0.2.5
+
 - Change storage integration to not be associated with DB/schema
 - Add enhanced support for SHOW ROLES and USE ROLE
 - Enhance parity for COUNT(..) with NULL values
@@ -331,7 +399,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Add support for IF EXISTS clauses in ALTER COLUMN queries
 - Add initial support for user-defined transaction management
 
-### 0.2.4
+## 0.2.4
+
 - Support `POWER`/`POW`/`DIV0NULL`/`IFNULL` functions
 - Add support for COPY INTO location
 - Add initial support for table/database clones
@@ -363,7 +432,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Improve general error handling
 - Add initial support for `SHOW GRANTS TO/OF`
 
-### 0.2.3
+## 0.2.3
+
 - Add initial support for `OBJECT_KEYS`/`PARSE_IP`/`DESCRIBE FUNCTION` functions
 - Add support for various functions including `DATE_TRUNC`, `NVL2`, `LEAST`, `GREATEST`, and more
 - Enhance parity for creation/deletion of schemas with fully qualified names
@@ -376,7 +446,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Implement trigonometric and hyperbolic functions
 - Add support for GET stage files
 
-### 0.2.2
+## 0.2.2
+
 - Add initial support for hybrid tables and dynamic tables
 - Add support for `OBJECT_CONSTRUCT_KEEP_NULL`/`AS_DOUBLE`/`AS_INTEGER`/`AS_NUMBER`/`AS_CHAR`
 - Add `/result` API endpoint to retrieve query results
@@ -389,7 +460,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Enhance custom JSON parsing to allow escaped characters
 - Enhance parity of `TIMESTAMP_LTZ` for Flyway compatibility
 
-### 0.2.1
+## 0.2.1
+
 - Add initial support for Iceberg tables
 - Add initial support for external volumes and Snowflake pipes
 - Support `LIST`/`REMOVE` queries for staged files
@@ -406,7 +478,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Add MUI data-grid for results table in UI
 - Add squashing of Docker image to reduce size
 
-### 0.2.0
+## 0.2.0
+
 - Support various SQL functions (`BITAND`, `FLATTEN`, `RANDOM`, etc.)
 - Add Snowflake proxy request handler
 - Add initial version of simple UI view
@@ -418,7 +491,8 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Add Snowflake v2 SQL APIs
 - Fix `describeOnly` `INSERT` queries
 
-### 0.1.26
+## 0.1.26
+
 - Support `CONVERT_TIMEZONE`, `IFF` SQL functions
 - Implement `ALTER WAREHOUSE` as no-op
 - Implement time functions
@@ -429,125 +503,151 @@ For example, `2026.03.0` is the initial March 2026 release.
 - Implement additional date functions
 - Add support for loading data from public S3 buckets
 
-### 0.1.25
+## 0.1.25
+
 - Enhance support for various SHOW queries
 - Add initial persistence support for Snowflake store
 - Enhance parity for timestamp types
 - Fix SHOW PARAMETERS for Terraform compatibility
 - Set up CI build for Docker image
 
-### 0.1.24
+## 0.1.24
+
 - Enhance parity around user-defined PROCEDUREs
 - Fix upper-casing for various functions
 - Enhance support for UNIQUE column constraints
 - Add initial support for cross-DB resource sharing
 
-### 0.1.23
+## 0.1.23
+
 - Add initial simple scheduler to periodically run tasks
 
-### 0.1.22
+## 0.1.22
+
 - Fix query transforms for `ADD COLUMN` queries
 - Fix wrapping of `VALUES` subquery in braces
 - Add initial CRUD support for `TASK`s
 - Support `DROP PRIMARY KEY` queries
 - Migrate use of `localstack.http` to `rolo`
 
-### 0.1.21
+## 0.1.21
+
 - Add support for consuming table stream records via DML statements
 
-### 0.1.20
+## 0.1.20
+
 - Initial simple support for table streams
 - Add support for `SHOW DATABASES`, `SHOW VIEWS`
 - Enhance parity for Arrow results
 - Fix various identifier and query issues
 
-### 0.1.19
+## 0.1.19
+
 - Return `SELECT` results in arrow format for pandas compatibility
 - Add `add_months` function
 - Fix UDFs with raw expressions
 - Upgrade to Postgres v15
 - Various parity and performance improvements
 
-### 0.1.18
+## 0.1.18
+
 - Add support for various array and aggregation functions
 - Enhance `FILE FORMAT` operations
 - Fix `CTAS` queries
 - Support `INFER_SCHEMA(..)` for parquet files
 - Improve identifier handling
 
-### 0.1.17
+## 0.1.17
+
 - Support creation/deletion of stages
 - Add `IS_ARRAY` function
 - Remove `DuckDB` based `DB` engine
 - Refactor codebase to use `QueryProcessor` interface
 - Enhance column name handling
 
-### 0.1.16
+## 0.1.16
+
 - Add support for `SHOW PROCEDURES` and `SHOW IMPORTED KEYS`
 - Add basic support for session parameters
 
-### 0.1.15
+## 0.1.15
+
 - Fix result type conversation for `GET_PATH(..)` util function
 
-### 0.1.14
+## 0.1.14
+
 - Enhance parity around `SHOW` queries
 - Add more array util functions
 - Fix `STRING_AGG` functionality
 
-### 0.1.13
+## 0.1.13
+
 - Support `CURRENT_*` functions
 - Enhance `LISTAGG` for distinct values
 - Add test for `JS` UDFs with exports
 
-### 0.1.12
+## 0.1.12
+
 - Cast params for `string_agg`/`listagg`
 - Fix parity for upper/lowercase names
 
-### 0.1.11
+## 0.1.11
+
 - Enhance parity for array aggregation functions
 - Improve timestamp timezone handling
 - Add case-sensitive identifier tracking
 
-### 0.1.10
+## 0.1.10
+
 - Add query transforms for `CLUSTER BY`
 - Add `SF_S3_ENDPOINT` config
 - Various parity fixes
 
-### 0.1.9
+## 0.1.9
+
 - Add support for `Python` UDFs
 - Enhance function creation parity
 - Add analytics setup
 
-### 0.1.8
+## 0.1.8
+
 - Add `SF_LOG` config for request/response trace logging
 
-### 0.1.7
+## 0.1.7
+
 - Add initial support for `JavaScript` UDFs
 - Enhance DB/table creation responses
 - Improve streaming logic
 
-### 0.1.6
+## 0.1.6
+
 - Introduce session state for DB/schema retention
 - Support async queries and `result_scan(..)`
 
-### 0.1.5
+## 0.1.5
+
 - Enhance `DESCRIBE TABLE` results
 - Support `MIN_BY`/`MAX_BY` aggregate functions
 
-### 0.1.4
+## 0.1.4
+
 - Add logic to parse and replace `DB` references in queries
 
-### 0.1.3
+## 0.1.3
+
 - Add `DBEngine` abstraction
 - Add experimental support for `duckdb`
 - Enhance `JSON` query support
 
-### 0.1.2
+## 0.1.2
+
 - Add CSV file ingestion from Snowflake stage to table
 
-### 0.1.1
+## 0.1.1
+
 - Initial support for `Kafka` connector
 - Add `snowpipe`/streaming APIs
 
-### 0.1.0
+## 0.1.0
+
 - Initial release of the extension

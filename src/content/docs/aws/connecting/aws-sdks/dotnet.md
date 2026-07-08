@@ -133,7 +133,7 @@ var amazonS3Client = session.CreateClientByImplementation<AmazonS3Client>();
 If you are building cloud-native applications with [Aspire](https://aspire.dev/), LocalStack provides first-class integration through the Aspire orchestration framework.
 The [`LocalStack.Aspire.Hosting`](https://github.com/localstack-dotnet/dotnet-aspire-for-localstack) package enables seamless local development with automatic container lifecycle management, service discovery, and observability integration.
 
-For detailed guidance on using LocalStack with Aspire, including configuration options and example projects, see the [Aspire integration guide](/aws/integrations/app-frameworks/aspire).
+For detailed guidance on using LocalStack with Aspire, including configuration options and example projects, see the [Aspire integration guide](/aws/customization/integrations/app-frameworks/aspire).
 
 ## Resources
 

@@ -4,7 +4,6 @@ import starlight from '@astrojs/starlight';
 import starlightUtils from '@lorenzo_lewis/starlight-utils';
 import starlightDocSearch from '@astrojs/starlight-docsearch';
 import starlightLinksValidator from 'starlight-links-validator';
-import starlightImageZoom from 'starlight-image-zoom';
 import starlightLlmsTxt from 'starlight-llms-txt';
 import sitemap from '@astrojs/sitemap';
 import starlightFullViewMode from 'starlight-fullview-mode';
@@ -359,9 +358,6 @@ export default defineConfig({
           exclude: ['aws/changelog', 'snowflake/changelog', 'azure/changelog'],
           rawContent: true,
         }),
-        starlightImageZoom({
-          showCaptions: true,
-        }),
         starlightFullViewMode({
           leftSidebarEnabled: false,
         }),
@@ -457,70 +453,60 @@ export default defineConfig({
                     },
                   ],
                 },
+                {
+                  label: 'Credentials',
+                  slug: 'aws/connecting/credentials',
+                },
               ],
             },
             {
-              label: 'Capabilities',
+              label: 'Developer Tools',
               collapsed: true,
               items: [
                 {
                   label: 'Overview',
-                  slug: 'aws/capabilities',
+                  slug: 'aws/developer-tools',
                 },
                 {
-                  label: 'LocalStack Web App',
+                  label: 'Running LocalStack',
+                  collapsed: true,
+                  items: [
+                    {
+                      label: 'Overview',
+                      slug: 'aws/developer-tools/running-localstack',
+                    },
+                    {
+                      label: 'LocalStack CLI',
+                      slug: 'aws/developer-tools/running-localstack/localstack-cli',
+                    },
+                    {
+                      label: 'lstk CLI',
+                      slug: 'aws/developer-tools/running-localstack/lstk',
+                    },
+                    {
+                      label: 'LocalStack MCP Server',
+                      slug: 'aws/developer-tools/running-localstack/mcp-server',
+                    },
+                    {
+                      label: 'LocalStack Desktop',
+                      slug: 'aws/developer-tools/running-localstack/localstack-desktop',
+                    },
+                  ],
+                },
+                {
+                  label: 'Snapshots',
                   collapsed: true,
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/capabilities/web-app',
+                        directory: '/aws/developer-tools/snapshots',
                       },
                     },
                   ],
                 },
                 {
-                  label: 'Config',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/capabilities/config',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Cloud Sandbox',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/capabilities/cloud-sandbox',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Networking',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/capabilities/networking',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'State Management',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/capabilities/state-management',
-                      },
-                    },
-                  ],
+                  label: 'App Inspector',
+                  slug: 'aws/developer-tools/app-inspector',
                 },
                 {
                   label: 'Chaos Engineering',
@@ -528,7 +514,7 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/capabilities/chaos-engineering',
+                        directory: '/aws/developer-tools/chaos-engineering',
                       },
                     },
                   ],
@@ -539,54 +525,10 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/capabilities/security-testing',
+                        directory: '/aws/developer-tools/security-testing',
                       },
                     },
                   ],
-                },
-              ],
-            },
-            {
-              label: 'Tooling',
-              collapsed: true,
-              items: [
-                {
-                  label: 'Overview',
-                  slug: 'aws/tooling',
-                },
-                {
-                  label: 'LocalStack MCP Server',
-                  slug: 'aws/tooling/mcp-server',
-                },
-                {
-                  label: 'lstk CLI',
-                  slug: 'aws/tooling/lstk',
-                },
-                {
-                  label: 'LocalStack SDKs',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/tooling/localstack-sdks',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Extensions',
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/tooling/extensions',
-                      },
-                    },
-                    {
-                      label: 'Official Extensions',
-                      link: 'https://app.localstack.cloud/extensions/library/',
-                    },
-                  ],
-                  collapsed: true,
                 },
                 {
                   label: 'Lambda Tools',
@@ -594,96 +536,22 @@ export default defineConfig({
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/tooling/lambda-tools',
+                        directory: '/aws/developer-tools/lambda-tools',
                       },
                     },
                   ],
                 },
                 {
                   label: 'AWS Replicator',
-                  slug: 'aws/tooling/aws-replicator',
+                  slug: 'aws/developer-tools/aws-replicator',
                 },
                 {
-                  label: 'DNS Server',
-                  slug: 'aws/tooling/dns-server',
-                },
-                {
-                  label: 'Testing Utils',
-                  slug: 'aws/tooling/testing-utils',
-                },
-                {
-                  label: 'LocalStack Docker Extension',
-                  slug: 'aws/tooling/localstack-docker-extension',
-                },
-                {
-                  label: 'LocalSurf',
-                  slug: 'aws/tooling/localsurf',
-                },
-                {
-                  label: 'LocalStack CLI (deprecated)',
-                  slug: 'aws/tooling/localstack-cli',
-                },
-              ],
-            },
-            {
-              label: 'Integrations',
-              collapsed: true,
-              items: [
-                {
-                  label: 'Overview',
-                  slug: 'aws/integrations',
-                },
-                {
-                  label: 'Continuous Integration',
+                  label: 'Cloud Sandbox',
                   collapsed: true,
                   items: [
                     {
                       autogenerate: {
-                        directory: '/aws/integrations/continuous-integration',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Containers',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/integrations/containers',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'App Frameworks',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/integrations/app-frameworks',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Messaging',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/integrations/messaging',
-                      },
-                    },
-                  ],
-                },
-                {
-                  label: 'Testing',
-                  collapsed: true,
-                  items: [
-                    {
-                      autogenerate: {
-                        directory: '/aws/integrations/testing',
+                        directory: '/aws/developer-tools/cloud-sandbox',
                       },
                     },
                   ],
@@ -691,31 +559,185 @@ export default defineConfig({
               ],
             },
             {
-              label: 'Enterprise',
+              label: 'CI Pipelines',
+              collapsed: true,
+              items: [{ autogenerate: { directory: '/aws/ci-pipelines' } }],
+            },
+            {
+              label: 'Customization',
               collapsed: true,
               items: [
                 {
                   label: 'Overview',
-                  slug: 'aws/enterprise',
+                  slug: 'aws/customization',
+                },
+                {
+                  label: 'Configuration Options',
+                  slug: 'aws/customization/configuration-options',
+                },
+                {
+                  label: 'Logging',
+                  slug: 'aws/customization/logging',
                 },
                 {
                   label: 'Kubernetes',
                   collapsed: true,
                   items: [
                     {
-                      autogenerate: { directory: '/aws/enterprise/kubernetes' },
+                      autogenerate: {
+                        directory: '/aws/customization/kubernetes',
+                      },
                     },
                   ],
                 },
                 {
-                  label: 'Single Sign-On',
+                  label: 'Integrations',
+                  collapsed: true,
                   items: [
-                    { autogenerate: { directory: '/aws/enterprise/sso' } },
+                    {
+                      label: 'Overview',
+                      slug: 'aws/customization/integrations',
+                    },
+                    {
+                      label: 'LocalStack Extensions',
+                      collapsed: true,
+                      items: [
+                        {
+                          autogenerate: {
+                            directory: '/aws/customization/integrations/extensions',
+                          },
+                        },
+                        {
+                          label: 'Official Extensions',
+                          link: 'https://app.localstack.cloud/extensions/library/',
+                        },
+                      ],
+                    },
+                    {
+                      label: 'LocalStack SDKs',
+                      collapsed: true,
+                      items: [
+                        {
+                          autogenerate: {
+                            directory: '/aws/customization/integrations/localstack-sdks',
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      label: 'App Frameworks',
+                      collapsed: true,
+                      items: [
+                        {
+                          autogenerate: {
+                            directory: '/aws/customization/integrations/app-frameworks',
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      label: 'Testing',
+                      collapsed: true,
+                      items: [
+                        {
+                          autogenerate: {
+                            directory: '/aws/customization/integrations/testing',
+                          },
+                        },
+                      ],
+                    },
                   ],
                 },
                 {
-                  label: 'Enterprise Image',
-                  slug: 'aws/enterprise/enterprise-image',
+                  label: 'Networking',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/customization/networking',
+                      },
+                    },
+                  ],
+                },
+                {
+                  label: 'Other Installations',
+                  collapsed: true,
+                  items: [
+                    {
+                      label: 'Overview',
+                      slug: 'aws/customization/other-installations',
+                    },
+                    {
+                      label: 'Docker Images',
+                      slug: 'aws/customization/other-installations/docker-images',
+                    },
+                    {
+                      label: 'Enterprise Image',
+                      slug: 'aws/customization/other-installations/enterprise-image',
+                    },
+                    {
+                      label: 'Podman',
+                      slug: 'aws/customization/other-installations/podman',
+                    },
+                    {
+                      label: 'Rancher Desktop',
+                      slug: 'aws/customization/other-installations/rancher-desktop',
+                    },
+                    {
+                      label: 'DevContainers',
+                      slug: 'aws/customization/other-installations/devcontainers',
+                    },
+                    {
+                      label: 'LocalStack Docker Extension',
+                      slug: 'aws/customization/other-installations/localstack-docker-extension',
+                    },
+                  ],
+                },
+                {
+                  label: 'Advanced Features',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: '/aws/customization/advanced',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              label: 'Organizations & Admin',
+              collapsed: true,
+              items: [
+                {
+                  label: 'Overview',
+                  slug: 'aws/organizations-admin',
+                },
+                {
+                  label: 'Accounts',
+                  slug: 'aws/organizations-admin/accounts',
+                },
+                {
+                  label: 'Workspace',
+                  slug: 'aws/organizations-admin/workspaces',
+                },
+                {
+                  label: 'Users and Licenses',
+                  slug: 'aws/organizations-admin/managing-users-licenses',
+                },
+                {
+                  label: 'Single Sign-On',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: { directory: '/aws/organizations-admin/sso' },
+                    },
+                  ],
+                },
+                {
+                  label: 'Stack Insights',
+                  slug: 'aws/organizations-admin/stack-insights',
                 },
               ],
             },

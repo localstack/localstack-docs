@@ -19,7 +19,7 @@ To resolve the issue follow the steps:
    This can be done by deleting the cached certificate file.
    For example, on Linux systems, you can locate and remove the file at `~/.cache/localstack/volume/cache/server.test.pem`.
    The exact path may differ depending on your operating system and how you've started LocalStack.
-   Please refer to our [documentation](/aws/capabilities/config/filesystem/#localstack-volume-directory) for specific instructions.
+   Please refer to our [documentation](/aws/customization/advanced/filesystem/#localstack-volume-directory) for specific instructions.
 
 **Workarounds for older (&lt;v3.7.0) LocalStack versions:**
 
@@ -65,7 +65,6 @@ We publish a set of image tags with different semantics, updated on different oc
 - **`latest`**: Updated only on official tagged releases  (e.g. `2026.05.0`, `2026.05.1`). Equivalent to `stable`. Recommended for most users who want a stable, release-quality image. As of May 2026, this tag no longer tracks untagged commits on `main`, use `dev` for that behavior.
 - **`stable`**: Same as `latest`. Updated with every official release.
 - **`dev`**: Contains all merged, untagged commits from the `main` branch. Use this if you want the latest unreleased changes.
-- **`nightly`**: Pushed from scheduled nightly builds. Useful for CI pipelines that benefit from a fresh build on a predictable cadence.
 - **`YYYY.MM`** (e.g. `2026.05`): Updated with each patch release within that month. Use this to get the latest security fixes and dependency updates.
 - **`YYYY.MM.patch`** (e.g. `2026.05.0`): Pinned to an exact release and never updated. Use this for fully reproducible environments where even minor bugfix changes are undesirable.
 
@@ -153,7 +152,7 @@ If the container can reach the internet generally but not LocalStack endpoints s
 Using LocalStack inside a Docker network with multiple other containers can lead to connectivity issues from/to those containers.
 For example, a container which attempts to deploy a stack and interact with the services directly, from within the same Docker network.
 
-Refer to our [network troubleshooting guide](/aws/capabilities/networking/) covering several scenarios.
+Refer to our [network troubleshooting guide](/aws/customization/networking/) covering several scenarios.
 
 ### How to resolve the pull rate limit issue for LocalStack's Docker image?
 
@@ -284,7 +283,7 @@ The CLI also supports a `--debug` flag that prints host-side debug output (host 
 localstack --debug start
 ```
 
-See the [Logging reference](/aws/capabilities/config/logging/) for the full list of log-related options.
+See the [Logging reference](/aws/customization/logging/) for the full list of log-related options.
 
 ### How do I capture and share LocalStack container logs for troubleshooting?
 
@@ -359,7 +358,7 @@ Common causes:
    ```
 
 3. **The billing system has not yet activated your renewal.** Check the subscription status at [app.localstack.cloud/account/subscriptions](https://app.localstack.cloud/account/subscriptions). If the subscription is paid but still shows `EXPIRED`, open a support ticket with your workspace name and the last four characters of the auth token.
-4. **Wrong license type assigned.** Sometimes a user is on an expired Trial or Hobby license. Unassign the old license and assign a paid one — see [Managing users and licenses](/aws/capabilities/web-app/managing-users-licenses/#managing-licenses).
+4. **Wrong license type assigned.** Sometimes a user is on an expired Trial or Hobby license. Unassign the old license and assign a paid one — see [Managing users and licenses](/aws/organizations-admin/managing-users-licenses/#managing-licenses).
 
 ### Why does my license show as SUSPENDED?
 
@@ -594,13 +593,7 @@ If that happens, see [How do I trust my corporate TLS interceptor certificate in
 
 ### How do I run LocalStack in a fully air-gapped environment?
 
-For environments with no outbound access at all, LocalStack supports an offline license file.
-Reach out to LocalStack support; they can issue a long-lived `license.json` you can mount at:
-
-```yaml
-volumes:
-  - "./license.json:/var/lib/localstack/cache/license.json:ro"
-```
+Offline images for airgapped environments are available on our enterprise tier, please reach out to our sales team.
 
 
 ### Why does LocalStack fail with "ports are not available: exposing port TCP 127.0.0.1:443"?
@@ -669,7 +662,7 @@ Open a ticket by emailing `support@localstack.cloud`.
 | `SSL_NO_VERIFY` | `1` to disable outbound TLS verification (debug only) |
 | `ACTIVATE_PRO` | `0` to start LocalStack without Pro features (lets the container boot even if license activation fails) |
 
-For the full configuration reference, see the [Configuration reference](/aws/capabilities/config/configuration/) and the broader [Networking documentation](/aws/capabilities/networking/).
+For the full configuration reference, see the [Configuration reference](/aws/customization/configuration-options/) and the broader [Networking documentation](/aws/customization/networking/).
 
 ## LocalStack Platform FAQs
 

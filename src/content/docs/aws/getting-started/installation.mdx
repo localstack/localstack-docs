@@ -56,7 +56,7 @@ The first execution initiates a browser-based login flow. Subsequent starts use 
 lstk update
 ```
 
-For more details, see the [lstk documentation](/aws/tooling/lstk/).
+For more details, see the [lstk documentation](/aws/developer-tools/running-localstack/lstk/).
 
 ## Container and orchestration tools
 
@@ -68,7 +68,7 @@ For everyday local development, `lstk` is usually simpler.
 Use Docker Compose when you want a reusable configuration file that can be shared across a team or checked into a project repository.
 Create a `docker-compose.yml` with the following configuration:
 
-```yaml
+```yaml showLineNumbers
 services:
   localstack:
     container_name: '${LOCALSTACK_DOCKER_NAME:-localstack-main}'
@@ -115,7 +115,8 @@ The Docker Compose and Docker CLI examples above use the same runtime settings:
 - Docker reuses a local image if one already exists. Pull explicitly or pin an image tag, such as `localstack/localstack:<version>`, when you need reproducible CI or team environments.
 - If you use Docker bridge networking, container name resolution may not work as expected from other containers. Prefer the default LocalStack networking setup unless you have a specific reason to customize it.
 - Configuration variables can be prefixed with `LOCALSTACK_` in Docker. For instance, setting `LOCALSTACK_PERSISTENCE=1` is equivalent to `PERSISTENCE=1`.
-For more details, see the [Docker images](/aws/capabilities/config/docker-images/), [configuration](/aws/capabilities/config/configuration/), and [networking](/aws/capabilities/networking/) documentation.
+
+For more details, see the [Docker images](/aws/customization/other-installations/docker-images/), [configuration](/aws/customization/configuration-options/), and [networking](/aws/customization/networking/) documentation.
 :::
 
 ### Helm (Kubernetes)
@@ -133,11 +134,35 @@ helm upgrade --install localstack localstack-repo/localstack
 
 Manage local instances via a standalone desktop application. [Download here](https://app.localstack.cloud/download).
 
-### Docker Desktop extension
-
 Install the [official extension](https://hub.docker.com/extensions/localstack/localstack-docker-desktop) to manage LocalStack directly from the Docker Desktop.
 
 ## Troubleshooting
+
+#### The LocalStack CLI installation is successful, but I cannot execute `localstack`
+
+If you can successfully install LocalStack using `pip` but you cannot use it in your terminal, you most likely haven't set up your operating system's / terminal's `PATH` variable (in order to tell them where to find programs installed via `pip`).
+
+- If you are using Windows, you can enable the `PATH` configuration when installing Python, [as described in the official docs of Python](https://docs.python.org/3/using/windows.html#finding-the-python-executable).
+- If you are using a MacOS or Linux operating system, please make sure that the `PATH` is correctly set up - either system wide, or in your terminal.
+
+As a workaround you can call the LocalStack CLI python module directly:
+
+```bash
+python3 -m localstack.cli.main
+```
+
+#### The `localstack` CLI does not start the LocalStack container
+
+If you are using the `localstack` CLI to start LocalStack, but the container is not starting, please check the following:
+
+- Uncheck the **Use kernel networking for UDP** option in Docker Desktop (**Settings** → **Resources** → **Network**) or follow the steps in our [documentation](/aws/customization/networking/dns-server#system-dns-configuration) to disable it.
+- Start LocalStack with a specific DNS address:
+
+```bash
+DNS_ADDRESS=0 localstack start
+```
+
+- Remove port 53 as indicated in our [standard `docker-compose.yml` file](https://github.com/localstack/localstack/blob/main/docker-compose-pro.yml).
 
 #### How should I access the LocalStack logs on my local machine?
 
@@ -182,7 +207,7 @@ After running the task, run the diagnostic endpoint and share the archive file w
 
 #### My application cannot reach LocalStack over the network
 
-We have extensive network troubleshooting documentation available [here](/aws/capabilities/networking/).
+We have extensive network troubleshooting documentation available [here](/aws/customization/networking/).
 
 If this does not solve your problem then please [reach out to LocalStack Support](/aws/help-support/get-help/).
 

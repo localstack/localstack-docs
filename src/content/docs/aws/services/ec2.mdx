@@ -206,7 +206,7 @@ LocalStack EC2 supports multiple methods to simulate the EC2 service.
 All tiers support the mock/CRUD capability.
 For advanced setups, LocalStack for AWS comes with emulation capability for certain resource types so that they behave more closely like AWS.
 
-The underlying method for this can be controlled using the [`EC2_VM_MANAGER`](/aws/capabilities/config/configuration#ec2) configuration option.
+The underlying method for this can be controlled using the [`EC2_VM_MANAGER`](/aws/customization/configuration-options#ec2) configuration option.
 You may choose between plain mocked resources, containerized or virtualized.
 
 ## Mock VM Manager
@@ -214,7 +214,7 @@ You may choose between plain mocked resources, containerized or virtualized.
 With the Mock VM manager, all resources are stored as in-memory representation.
 This only offers the CRUD capability.
 
-To use this VM manager in LocalStack for AWS, set [`EC2_VM_MANAGER`](/aws/capabilities/config/configuration#ec2) to `mock`.
+To use this VM manager in LocalStack for AWS, set [`EC2_VM_MANAGER`](/aws/customization/configuration-options#ec2) to `mock`.
 
 This serves as the fallback manager if an operation is not implemented in other VM managers.
 
@@ -224,7 +224,7 @@ LocalStack for AWS supports the Docker VM manager which uses the [Docker Engine]
 This VM manager requires the Docker socket from the host machine to be mounted inside the LocalStack container at `/var/run/docker.sock`.
 
 This is the default VM manager in LocalStack for AWS.
-You may set [`EC2_VM_MANAGER`](/aws/capabilities/config/configuration#ec2) to `docker` to explicitly use this VM manager.
+You may set [`EC2_VM_MANAGER`](/aws/customization/configuration-options#ec2) to `docker` to explicitly use this VM manager.
 
 All launched EC2 instances have the Docker socket mounted inside them at `/var/run/docker.sock` to make Docker-in-Docker usecases possible.
 
@@ -339,7 +339,7 @@ This section illustrates how this functionality can be achieved with EC2 Docker 
 
 :::note
 This feature is disabled by default.
-Please set the [`EC2_MOUNT_BLOCK_DEVICES`](/aws/capabilities/config/configuration#ec2) configuration option to enable it.
+Please set the [`EC2_MOUNT_BLOCK_DEVICES`](/aws/customization/configuration-options#ec2) configuration option to enable it.
 :::
 
 First, we create a user data script `init.sh` which creates an ext3 file system on the block device `/ebs-dev/sda1` and mounts it under `/ebs-mounted`:
@@ -365,7 +365,7 @@ awslocal ec2 run-instances --image-id ami-ff0fea8310f3 --count 1 --instance-type
 ```
 
 Please note that, whereas real AWS uses GiB for volume sizes, LocalStack uses MiB as the unit for `VolumeSize` in the command above (to avoid creating huge files locally).
-Also, by default block device images are limited to 1 GiB in size, but this can be customized by setting the [`EC2_EBS_MAX_VOLUME_SIZE`](/aws/capabilities/config/configuration#ec2) config variable (defaults to `1000`).
+Also, by default block device images are limited to 1 GiB in size, but this can be customized by setting the [`EC2_EBS_MAX_VOLUME_SIZE`](/aws/customization/configuration-options#ec2) config variable (defaults to `1000`).
 
 Once the instance is successfully started and initialized, we can first determine the container ID via `docker ps`, and then list the contents of the mounted filesystem `/ebs-mounted`, which should contain our test file named `my-test-file`:
 
@@ -426,11 +426,11 @@ They are:
 - `public-hostname`
 - `public-ipv4`
 
-If you would like support for more metadata categories, please make a feature request on [GitHub](https://github.com/localstack/localstack/issues/new/choose).
+If you would like support for more metadata categories, please make a feature request on [GitHub Discussion](https://github.com/orgs/localstack/discussions/new/choose).
 
 ### Configuration
 
-You can use the [`EC2_DOCKER_FLAGS`](/aws/capabilities/config/configuration#ec2) LocalStack configuration variable to pass supplementary flags to Docker during the initiation of containerized instances.
+You can use the [`EC2_DOCKER_FLAGS`](/aws/customization/configuration-options#ec2) LocalStack configuration variable to pass supplementary flags to Docker during the initiation of containerized instances.
 This allows for fine-tuned behaviours, for example, running containers in privileged mode using `--privileged` or specifying an alternate CPU platform with `--platform`.
 Keep in mind that this will apply to all instances that are launched in the LocalStack session.
 
@@ -456,7 +456,7 @@ Any operation not listed below will use the mock VM manager.
 :::note
 The Libvirt VM manager is under active development.
 It is currently offered as a preview and will be part of the Ultimate plan upon release.
-If a functionality you desire is missing, please create a feature request on the [GitHub issue tracker](https://github.com/localstack/localstack/issues/new/choose).
+If a functionality you desire is missing, please create a feature request on the [GitHub issue tracker](https://github.com/orgs/localstack/discussions/new/choose).
 :::
 
 The Libvirt VM manager uses the [Libvirt](https://libvirt.org/index.html) API to create fully virtualized EC2 resources.
@@ -500,7 +500,7 @@ If you are using [Docker CLI](/aws/getting-started/installation#docker-cli), inc
 -v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock
 ```
 
-If you are using a remote Libvirt hypervisor, you can set the [`EC2_HYPERVISOR_URI`](/aws/capabilities/config/configuration#ec2) config option with a connection URI.
+If you are using a remote Libvirt hypervisor, you can set the [`EC2_HYPERVISOR_URI`](/aws/customization/configuration-options#ec2) config option with a connection URI.
 
 :::tip
 If you encounter an error like `failed to connect to the hypervisor: Permission denied`, you may need to perform additional setup on the hypervisor host.
@@ -541,7 +541,7 @@ LocalStack does not come preloaded with any AMIs.
 
 Compatible qcow2 images must be placed in the Libvirt storage pool on the host machine.
 By default, this is located at `/var/lib/libvirt/images`.
-If you use a different storage pool, configure it using the [`EC2_LIBVIRT_POOL`](/aws/capabilities/config/configuration#ec2) option.
+If you use a different storage pool, configure it using the [`EC2_LIBVIRT_POOL`](/aws/customization/configuration-options#ec2) option.
 Images must be named with the prefix `ami-` followed by at least 8 hexadecimal characters without an extension, e.g. `ami-1234abcd`.
 
 You may need run the following command to make sure the image is registered with Libvirt (replace `default` with your storage pool name if different):
@@ -615,7 +615,7 @@ The Libvirt VM manager supports several configuration options to customize its b
 By default, LocalStack creates VMs using a generic Libvirt domain configuration.
 However, certain hypervisor setups may require specialized configurations that LocalStack cannot automatically detect.
 
-You can use the [`EC2_REFERENCE_DOMAIN`](/aws/capabilities/config/configuration#ec2) configuration option to specify a pre-configured Libvirt domain that LocalStack will use as a template for all new instances.
+You can use the [`EC2_REFERENCE_DOMAIN`](/aws/customization/configuration-options#ec2) configuration option to specify a pre-configured Libvirt domain that LocalStack will use as a template for all new instances.
 LocalStack clones the domain configuration, updating elements like UUID, MAC addresses, and boot volumes as needed.
 
 To use domain cloning:
@@ -631,8 +631,8 @@ If the specified domain does not exist or is not in shut-off state, LocalStack f
 By default, LocalStack uses the Libvirt storage pool and network named `default`.
 If your Libvirt setup uses different names, you can configure them using:
 
-- [`EC2_LIBVIRT_POOL`](/aws/capabilities/config/configuration#ec2): Name of the Libvirt storage pool for images (defaults to `default`).
-- [`EC2_LIBVIRT_NETWORK`](/aws/capabilities/config/configuration#ec2): Name of the Libvirt network for instances (defaults to `default`).
+- [`EC2_LIBVIRT_POOL`](/aws/customization/configuration-options#ec2): Name of the Libvirt storage pool for images (defaults to `default`).
+- [`EC2_LIBVIRT_NETWORK`](/aws/customization/configuration-options#ec2): Name of the Libvirt network for instances (defaults to `default`).
 
 ### Networking
 
