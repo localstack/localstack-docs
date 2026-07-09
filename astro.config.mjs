@@ -730,8 +730,15 @@ export default defineConfig({
                   label: 'Single Sign-On',
                   collapsed: true,
                   items: [
+                    { slug: 'aws/organizations-admin/sso' },
+                    { slug: 'aws/organizations-admin/sso/azure-ad' },
                     {
-                      autogenerate: { directory: '/aws/organizations-admin/sso' },
+                      label: 'SCIM',
+                      items: [
+                        { slug: 'aws/organizations-admin/sso/scim' },
+                        { slug: 'aws/organizations-admin/sso/scim/okta' },
+                        { slug: 'aws/organizations-admin/sso/scim/entra' },
+                      ],
                     },
                   ],
                 },

@@ -17,7 +17,7 @@ You can install any of the extensions below with the LocalStack CLI:
 localstack extensions install <extension-name>
 ```
 
-See [Managing extensions](/aws/tooling/extensions/managing-extensions) for more details on installing, listing, and removing extensions.
+See [Managing extensions](/aws/customization/integrations/extensions/managing-extensions/) for more details on installing, listing, and removing extensions.
 
 :::note
 This page is auto-generated from the LocalStack marketplace API.
