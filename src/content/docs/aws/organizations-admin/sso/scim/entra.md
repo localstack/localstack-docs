@@ -7,7 +7,7 @@ sidebar:
   order: 3
 ---
 
-This page covers configuring **Microsoft Entra ID** as your SCIM client to provision users and groups into LocalStack. Before starting, make sure you've completed the steps in the [SCIM overview](/aws/enterprise/sso/scim/) to enable SCIM and obtain the **SCIM Base Connector URL** and **Bearer Auth Token** from the LocalStack web app.
+This page covers configuring **Microsoft Entra ID** as your SCIM client to provision users and groups into LocalStack. Before starting, make sure you've completed the steps in the [SCIM overview](/aws/organizations-admin/sso/scim/) to enable SCIM and obtain the **SCIM Base Connector URL** and **Bearer Auth Token** from the LocalStack web app.
 
 ## Configuring SCIM with Microsoft Entra ID
 
@@ -152,5 +152,5 @@ The `409` is transient - Entra retries the failed operation on the next cycle, a
 LocalStack will reject any SCIM request that would leave the workspace without an admin. If you attempt to remove the only admin from the admin role group, the request fails with `409 Cannot remove the last workspace admin`. Assign another admin in LocalStack first, then retry the removal.
 
 :::note
-License assignment via SCIM is not supported with Microsoft Entra ID. To assign licenses through SCIM, use [Okta](/aws/enterprise/sso/scim/okta/#license-management). Otherwise, manage license assignments directly in the LocalStack web app.
+License assignment via SCIM is not supported with Microsoft Entra ID. To assign licenses through SCIM, use [Okta](/aws/organizations-admin/sso/scim/okta/#license-management). Otherwise, manage license assignments directly in the LocalStack web app.
 :::

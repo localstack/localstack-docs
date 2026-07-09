@@ -730,17 +730,15 @@ export default defineConfig({
                   label: 'Single Sign-On',
                   collapsed: true,
                   items: [
-                    { slug: 'aws/enterprise/sso' },
-                    { slug: 'aws/enterprise/sso/azure-ad' },
+                    { slug: 'aws/organizations-admin/sso' },
+                    { slug: 'aws/organizations-admin/sso/azure-ad' },
                     {
                       label: 'SCIM',
                       items: [
-                        { slug: 'aws/enterprise/sso/scim' },
-                        { slug: 'aws/enterprise/sso/scim/okta' },
-                        { slug: 'aws/enterprise/sso/scim/entra' },
+                        { slug: 'aws/organizations-admin/sso/scim' },
+                        { slug: 'aws/organizations-admin/sso/scim/okta' },
+                        { slug: 'aws/organizations-admin/sso/scim/entra' },
                       ],
-                    {
-                      autogenerate: { directory: '/aws/organizations-admin/sso' },
                     },
                   ],
                 },
