@@ -286,7 +286,7 @@ In addition to loading Cloud Pods through the Command-Line Interface (CLI) or th
 
 ### Environmental variables
 
-To automatically load a Cloud Pod at startup, utilize the `AUTO_LOAD_POD` [configuration variable](/aws/capabilities/config/configuration/).
+To automatically load a Cloud Pod at startup, utilize the `AUTO_LOAD_POD` [configuration variable](/aws/customization/configuration-options/).
 
 `AUTO_LOAD_POD` can accept multiple Cloud Pod names separated by commas.
 To autoload multiple Cloud Pods, such as `foo-pod` and `bar-pod`, use: `AUTO_LOAD_POD=foo-pod,bar-pod`.
@@ -522,7 +522,7 @@ services:
 :::note
 The Auto Load from remote feature does not automatically configure the remote.
 This needs to be done with the `localstack pod remote add ...` command.
-This commands creates a configuration file for the remote in the [LocalStack volume directory](/aws/capabilities/config/filesystem/#localstack-volume-directory).
+This commands creates a configuration file for the remote in the [LocalStack volume directory](/aws/customization/advanced/filesystem/#localstack-volume-directory).
 :::
 
 ## End-to-End Encryption <Badge text="Enterprise" size="large" />
@@ -575,7 +575,7 @@ The process is the following:
 Unless explicitly specified, all Cloud Pods commands default to targeting the LocalStack Platform as the storage remote.
 It's important to note that the CLI must be authenticated correctly with our Platform.
 
-Custom remote configurations are stored within the [LocalStack volume directory](/aws/capabilities/config/filesystem/#localstack-volume-directory) and are managed by the LocalStack container.
+Custom remote configurations are stored within the [LocalStack volume directory](/aws/customization/advanced/filesystem/#localstack-volume-directory) and are managed by the LocalStack container.
 Consequently, when sharing Cloud Pods among your team using a custom remote, each team member must define the identical remote configuration.
 Once added, a remote persists even after LocalStack restarts.
 
@@ -590,7 +590,7 @@ The available strategies are:
 - `service-merge`: This strategy merges services at the account-region level, provided there's no overlap in resources.
   It prioritizes the loaded resources when merging.
 
-The LocalStack's default merge strategy can be changed via the `MERGE_STRATEGY` [configuration variable](/aws/capabilities/config/configuration/).
+The LocalStack's default merge strategy can be changed via the `MERGE_STRATEGY` [configuration variable](/aws/customization/configuration-options/).
 
 ### LocalStack CLI
 
@@ -750,4 +750,4 @@ If you're still unable to connect to the S3 bucket, add the bucket hostname to t
 DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM=ls-pods-bucket-test.s3.amazonaws.com/
 ```
 
-For more details, see the [Skip LocalStack DNS Resolution](/aws/capabilities/dns-server/#skip-localstack-dns-resolution) section. 
+For more details, see the [Skip LocalStack DNS Resolution](/aws/customization/networking/dns-server/#skip-localstack-dns-resolution) section. 
