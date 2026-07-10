@@ -66,8 +66,10 @@ These tools automatically route AWS API calls to your LocalStack container, so y
        def handler(event, context):
            table = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
            method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
-           if method == 'POST':
-               item = {'id': str(uuid.uuid4()), **json.loads(event.get('body', '{}'))}
+           # Function URL POST, or direct invoke (e.g. Resource Browser) with a message
+           if method == 'POST' or 'message' in event:
+               data = json.loads(event.get('body', '{}')) if method == 'POST' else event
+               item = {'id': str(uuid.uuid4()), **data}
                table.put_item(Item=item)
                return {'statusCode': 200, 'body': json.dumps(item)}
            result = table.scan()
@@ -152,8 +154,10 @@ These tools automatically route AWS API calls to your LocalStack container, so y
            def handler(event, context):
                table = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
                method = event.get('requestContext', {}).get('http', {}).get('method', 'GET')
-               if method == 'POST':
-                   item = {'id': str(uuid.uuid4()), **json.loads(event.get('body', '{}'))}
+               # Function URL POST, or direct invoke (e.g. Resource Browser) with a message
+               if method == 'POST' or 'message' in event:
+                   data = json.loads(event.get('body', '{}')) if method == 'POST' else event
+                   item = {'id': str(uuid.uuid4()), **data}
                    table.put_item(Item=item)
                    return {'statusCode': 200, 'body': json.dumps(item)}
                result = table.scan()

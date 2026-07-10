@@ -106,41 +106,31 @@ Many supported services in LocalStack for AWS come with a resource browse that a
      "message": "Checked out from the Resource Browser"
    }
    ```
-4. Click **Submit** to trigger the function.
+4. Click **Submit** to trigger the function. You will see the function invoked and the response returned. The log result of the response should look like this:
+
+   ```json title="Output"
+   {
+     "statusCode": 200,
+     "body": {
+       "id": "faa4dc54-f0b7-4b6b-9e52-39702af78d73",
+       "message": "Checked out from the Resource Browser"
+     }
+   }
+   ```
 
 </Steps>
-
-![Lambda Resource Browser showing the list of deployed functions](/images/aws/lambda-resource-browser.png)
-
-{/* Screenshot needed: the `messages-api` function detail page in the Resource Browser, showing its ARN, runtime, handler, and environment variables. */}
-
-Now trigger the function the same way you did in the tutorial. If you're in a new terminal session, re-fetch the function URL first:
-
-```bash
-LAMBDA_URL=$(awslocal lambda list-function-url-configs \
-  --function-name messages-api \
-  --query 'FunctionUrlConfigs[0].FunctionUrl' \
-  --output text)
-
-curl -X POST "$LAMBDA_URL" \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Checked out from the Resource Browser"}'
-```
 
 With the Lambda invoked, switch to the DynamoDB side to see what it wrote:
 
 <Steps>
 
-1. Back in the Resource Browser, go to **Database** > **DynamoDB** > **Tables**, and click `Messages`.
-2. Click the **Items** button to view the table's contents. You can switch between **scan** and **query** mode from here.
+1. Back in the [**Status** tab](https://app.localstack.cloud/inst/default/status) and click on **DynamoDB** and then, fromthe **Tables** tab, click the `Messages` table. This will open the table details page where you can view the table's details including the table name, key schema, and the number of items in the table.
+2. Click the **Items** tab to view the table's contents. You should see the message you posted during the tutorial _and_ the new one you just sent.
+   ![DynamoDB Resource Browser showing the Items list](/images/aws/dynamodb-resource-browser.jpg)
 
 </Steps>
 
-![DynamoDB Resource Browser showing the Tables list](/images/aws/dynamodb-resource-browser.png)
-
-{/* Screenshot needed: the Items view for the `Messages` table, showing both the message posted during the tutorial and the new one just added. */}
-
-**Expected result:** the Items view lists the message you posted during the tutorial _and_ the new one you just sent — proof that the Lambda function is writing to the table you're looking at, in real time.
+**Expected result:** the Items view for the DynamoDB "Messages" table lists the message you posted during the tutorial _and_ the new one you just sent confirming that the Lambda function is writing to the table.
 
 :::tip
 If the table doesn't appear, check the **region** dropdown in the top-right corner of the Resource Browser. It must match the region your resources were created in (`us-east-1` by default in the tutorial).
