@@ -1,0 +1,285 @@
+---
+title: Local Development
+description: Use the LocalStack Web Application to inspect, browse, snapshot, and trace the serverless API you deployed in the Local Development tutorial.
+template: doc
+sidebar:
+  order: 2
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Introduction
+
+The [Getting Started - Local Development](/aws/getting-started/local-development/) tutorial walked you through deploying a Lambda function and a DynamoDB table on LocalStack, then testing it with `curl`. Everything up to that point happened on the command line.
+
+This quickstart picks up where that tutorial left off and shows the tools you can leverage to inspect, manage, snapshot, and debug your LocalStack instance. You will use the [LocalStack Web Application](https://app.localstack.cloud/) to:
+
+1. Confirm your local instance is running and find it in the browser.
+2. Get a visual summary of your deployed resources with **Stack Overview**.
+3. Trigger your Lambda function and browse the resulting DynamoDB rows with the **Resource Browser**.
+4. Snapshot the entire application state, wipe it, and bring it back with **Cloud Pods**.
+5. Trace the request flow between your Lambda function and DynamoDB table with **App Inspector**.
+
+By the end, you will be comfortable using the web application to enhance your workflow for local development, alongside the CLI tools you already know.
+
+## Prerequisites
+
+- Completed the [Getting Started - Local Development](/aws/getting-started/local-development/) tutorial, **without** running its Step 6 cleanup. Your `messages-api` Lambda function and `Messages` DynamoDB table should still be deployed.
+- The LocalStack container from that tutorial still running. If you closed your terminal, the container keeps running in the background — verify with:
+
+  ```bash
+  lstk status
+  ```
+
+  If it reports that the AWS emulator is not running, start it again with `lstk start`. Since LocalStack is ephemeral by default, this gives you a fresh, empty instance — redeploy the Lambda function and DynamoDB table from the tutorial before continuing.
+
+- Signed in to the [LocalStack Web Application](https://app.localstack.cloud/).
+
+## Step by Step
+
+### Step 1: Find your running instance
+
+Before opening the browser, confirm LocalStack is actually up and check what it currently has deployed:
+
+```bash
+lstk status
+```
+
+```text title="Output"
+LocalStack AWS Emulator is running
+• Endpoint: localhost:4566
+• Container: localstack-main
+• Version: 4.9.1
+• Uptime: 12m 3s
+
+~ 2 resources · 2 services
+
+Service   Resource      Region     Account
+Lambda    messages-api  us-east-1  000000000000
+DynamoDB  Messages      us-east-1  000000000000
+```
+
+<Steps>
+
+1. Open the [LocalStack Web Application](https://app.localstack.cloud/) and sign in.
+2. In the sidebar, under **LocalStack Instances**, click on your running instance (e.g. `localhost.localstack.cloud`). The instance should display a green **running** badge.
+   ![LocalStack Web Application sidebar showing a running instance](/images/aws/running-instance-sidebar.jpg)
+
+</Steps>
+
+**Expected result:** the instance card shows a green **running** badge. Clicking into it opens the instance dashboard with tabs for **Overview**, **Status**, **Resource Browser**, **State**, and **Extensions**. The default tab is **Resource Browser**, which displays a list of all the resources you can inspect via the web application.
+
+If you don't see a running instance, see [Troubleshooting](#troubleshooting) before continuing.
+
+### Step 2: Inspect your app with Stack Overview
+
+Stack Overview gives you a summary of everything deployed on the instance.
+
+<Steps>
+
+1. From the instance dashboard, click the [**Overview** tab](https://app.localstack.cloud/inst/default/overview).
+2. Look for the **Lambda Function** and **DynamoDB Table** items in the list.
+3. Click the arrow (`>`) next to **Lambda Function** to expand it and confirm `messages-api` is listed. Do the same for **DynamoDB Table** to confirm the `Messages` table is deployed.
+
+</Steps>
+
+![Stack Overview showing deployed resource types with counts](/images/aws/stack-overview.jpg)
+
+:::note
+Stack Overview is a **preview** feature. It only tracks a defined set of [supported resource types](/aws/connecting/console/stack-overview/#supported-resources). Lambda functions and DynamoDB tables are both covered, but if you extend this app with a service that isn't on the list, it won't show up here even though it's running fine.
+:::
+
+**Expected result:** you can confirm, at a glance, that both the Lambda function and the DynamoDB table from the tutorial are deployed without needing to use the CLI.
+
+### Step 3: Trigger the Lambda and inspect data with the Resource Browsers
+
+Many supported services in LocalStack for AWS come with a resource browse that allows you to view configuration details and manage individual resources. Use it here to check the Lambda function's configuration, trigger the function, and then validate that a new row lands in DynamoDB.
+
+<Steps>
+
+1. Navigate to the [**Status** tab](https://app.localstack.cloud/inst/default/status). It displays a list of the running services at the top as well as additional services that are available to use within the LocalStack emulator.
+2. Under **Running** services, click **Lambda**, then, within the **Functions** tab, and click the `messages-api` function. From here you can review the function's details including the ARN, runtime, handler, and the `TABLE_NAME` environment variable pointing at `Messages`. You can also update the function code, invoke the function, and view the function logs.
+   ![Lambda Resource Browser showing the details of a deployed Lambda function](/images/aws/lambda-resource-browser.jpg)
+3. Click **Invoke** to open the invoke dialog and paste the following JSON payload into the input field:
+   ```json
+   {
+     "message": "Checked out from the Resource Browser"
+   }
+   ```
+4. Click **Submit** to trigger the function.
+
+</Steps>
+
+![Lambda Resource Browser showing the list of deployed functions](/images/aws/lambda-resource-browser.png)
+
+{/* Screenshot needed: the `messages-api` function detail page in the Resource Browser, showing its ARN, runtime, handler, and environment variables. */}
+
+Now trigger the function the same way you did in the tutorial. If you're in a new terminal session, re-fetch the function URL first:
+
+```bash
+LAMBDA_URL=$(awslocal lambda list-function-url-configs \
+  --function-name messages-api \
+  --query 'FunctionUrlConfigs[0].FunctionUrl' \
+  --output text)
+
+curl -X POST "$LAMBDA_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Checked out from the Resource Browser"}'
+```
+
+With the Lambda invoked, switch to the DynamoDB side to see what it wrote:
+
+<Steps>
+
+1. Back in the Resource Browser, go to **Database** > **DynamoDB** > **Tables**, and click `Messages`.
+2. Click the **Items** button to view the table's contents. You can switch between **scan** and **query** mode from here.
+
+</Steps>
+
+![DynamoDB Resource Browser showing the Tables list](/images/aws/dynamodb-resource-browser.png)
+
+{/* Screenshot needed: the Items view for the `Messages` table, showing both the message posted during the tutorial and the new one just added. */}
+
+**Expected result:** the Items view lists the message you posted during the tutorial _and_ the new one you just sent — proof that the Lambda function is writing to the table you're looking at, in real time.
+
+:::tip
+If the table doesn't appear, check the **region** dropdown in the top-right corner of the Resource Browser. It must match the region your resources were created in (`us-east-1` by default in the tutorial).
+:::
+
+### Step 4: Save and restore state with Cloud Pods
+
+[Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/) let you snapshot your entire LocalStack state — resources _and_ their data — and bring it back later, even after the container has been stopped and restarted. Try this by saving your current app, wiping it, and restoring it.
+
+<Steps>
+
+1. Save the current state as a Cloud Pod:
+
+   ```bash
+   lstk snapshot save pod:messages-api-demo
+   ```
+
+   `lstk` uploads the state of every running service — `lambda` and `dynamodb`, plus `iam` if you deployed with Terraform — to your LocalStack account.
+
+2. Verify it in the web application by navigating to **Cloud Pods** in the sidebar (`https://app.localstack.cloud/pods`). You should see `messages-api-demo` listed with a storage size and version `1`.
+
+</Steps>
+
+![Cloud Pods Browser listing saved Cloud Pods](/images/aws/cloud-pods-browser.png)
+
+Now wipe the instance and confirm it's actually gone:
+
+<Steps>
+
+1. Stop LocalStack:
+
+   ```bash
+   lstk stop
+   ```
+
+2. Start it again as a fresh instance:
+
+   ```bash
+   lstk start
+   ```
+
+3. Back in the Resource Browser (or Stack Overview), confirm the `messages-api` function and `Messages` table are no longer listed. LocalStack is ephemeral by default, so stopping the container discarded everything.
+
+4. Restore the snapshot:
+
+   ```bash
+   lstk snapshot load pod:messages-api-demo
+   ```
+
+</Steps>
+
+**Expected result:** run `lstk status` again, or refresh the Resource Browser — `messages-api` and `Messages` are back. More importantly, re-run the `curl` request from Step 3 against the (re-fetched) function URL: the response includes every message you saved before the restart, including the one added in Step 3. Cloud Pods restore the _data_ in the table, not just the table definition.
+
+:::note
+You can do the same save/restore flow from the web application instead of the CLI: open the **State** tab on your instance (`https://app.localstack.cloud/inst/default/state`), switch to the **Cloud Pod** view, and use the **Save** and **Load** panels shown below.
+:::
+
+![LocalStack Web Application's Export/Import State page in Cloud Pod mode](/images/aws/export-import-state-cloud-pod.png)
+
+### Step 5: Trace the request flow with App Inspector
+
+[App Inspector](/aws/developer-tools/app-inspector/) records every call your application makes to LocalStack, so you can see the flow between services, inspect the exact payloads exchanged, and catch IAM or configuration issues before they become deployment surprises.
+
+<Steps>
+
+1. Navigate to **App Inspector** in the sidebar (`https://app.localstack.cloud/inst/default/appinspector/spans`).
+2. Click **Clear Operations** to remove the noise generated while creating your resources earlier.
+3. Trigger the Lambda function once more with the `curl` command from Step 3.
+4. Refresh the operations list.
+
+</Steps>
+
+![App Inspector event list showing a request flow across services](/images/aws/app-inspector/app-inspector-fanout-pipeline.png)
+
+{/* Screenshot needed: App Inspector list view for this app, showing the External producer → Lambda (Invoke) → DynamoDB (PutItem) chain with a green/OK status. */}
+
+You should see the request flow through two rows: an **Invoke** on `messages-api`, followed by a **PutItem** on `Messages`. Click **View Graph** on either row to see them rendered as connected nodes, then click a node to open **Operation Details** — service, action, resource ARN, duration, status, and the exact request/response payload.
+
+![App Inspector operation details panel](/images/aws/app-inspector/app-inspector-operation-details.png)
+
+{/* Screenshot needed: Operation Details panel for the `PutItem` call on the `Messages` table, with a green "OK" status and "Allowed" permissions badge for this app's own IAM role. */}
+
+For this demo app, every operation should show a green **OK** status and an **Allowed** permissions badge — there's nothing to fix. This is exactly where you would spot problems if there were any: a call that never reaches its target shows where the chain breaks, and a missing IAM permission shows up as an **Implicitly Denied** badge on the specific action, with the principal and required permission called out, well before you'd hit the same error against real AWS.
+
+:::note
+App Inspector requires LocalStack **2026.04.0** or later. If you don't see it in the sidebar, check your version with `lstk status` and update your image.
+:::
+
+## Testing and Validation
+
+Run through this end-to-end check to confirm everything from this guide is working together:
+
+```bash
+# 1. Confirm resources are deployed
+lstk status
+
+# 2. Trigger the function and capture the response
+curl -X POST "$LAMBDA_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Final validation check"}'
+
+# 3. Retrieve the full message history
+curl "$LAMBDA_URL"
+```
+
+Cross-check the output of the last command against what you see in the DynamoDB **Items** view in the Resource Browser — the counts and message content should match exactly. Then confirm the same request appears as a fresh row in **App Inspector** with an **OK** status.
+
+## Troubleshooting
+
+**Instance shows as "not running" in Instance Management**
+Run `lstk status` from your terminal to confirm the container's actual state, and check that Docker is running. Start it again with `lstk start` if needed — remember this gives you an empty instance unless you load a Cloud Pod afterwards.
+
+**Resource Browser shows a "Network Failure" error**
+The LocalStack container isn't running, or isn't reachable at the endpoint configured for the instance. Confirm the endpoint in Instance Management matches your running container (`https://localhost.localstack.cloud:4566` by default).
+
+**Lambda function or DynamoDB table don't appear anywhere in the web app**
+Check the region dropdown in the top-right of the Resource Browser. If it's set to a region other than the one you deployed to (`us-east-1` by default in the tutorial), switch it.
+
+**Resources are missing after a restart, even though you didn't mean to wipe them**
+LocalStack does not persist state across restarts by default. Either avoid stopping the container, enable [persistence](/aws/developer-tools/snapshots/persistence/), or restore your last Cloud Pod with `lstk snapshot load pod:<name>`.
+
+**`lstk snapshot save` fails with an authentication or license error**
+Cloud Pods require a valid LocalStack account. Run `lstk login`, or confirm `LOCALSTACK_AUTH_TOKEN` is set correctly, and try again.
+
+**`lstk snapshot load` warns about a version mismatch**
+This happens when the LocalStack version that saved the pod differs from the one running now. It's safe to proceed for this demo; in real projects, pin your LocalStack version to avoid state incompatibilities.
+
+**App Inspector isn't listed in the sidebar**
+It requires LocalStack **2026.04.0** or later. Check your running version with `lstk status`.
+
+## Next steps
+
+You've now used all four core areas of the LocalStack Web Application to inspect, manage, snapshot, and debug a running application. To go deeper on any of them:
+
+- [Instance Management](/aws/connecting/console/instance-management/) — bookmarking instances and connecting to a LocalStack instance running on another machine.
+- [Stack Overview](/aws/connecting/console/stack-overview/) — the full list of supported resource types.
+- [Resource Browser](/aws/connecting/console/resource-browser/) — the complete list of supported services beyond Lambda and DynamoDB.
+- [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/) — merge strategies, remotes, auto-loading pods on startup, and sharing state with your team.
+- [App Inspector](/aws/developer-tools/app-inspector/) — using it from the [LocalStack Toolkit for VS Code](/aws/connecting/ides/vscode-extension/) without leaving your editor.
+- [`lstk` CLI reference](/aws/developer-tools/running-localstack/lstk/) — the full set of `snapshot`, `status`, and `reset` commands used in this guide.
+
+Once you're comfortable with the local workflow, continue to the [CI/CD guide](/aws/getting-started/ci-cd/) to bring LocalStack into your automated pipelines.
