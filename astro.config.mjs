@@ -629,10 +629,6 @@ export default defineConfig({
                   label: 'LocalStack Docker Extension',
                   slug: 'aws/configuration/localstack-docker-extension',
                 },
-                {
-                  label: 'LocalSurf',
-                  slug: 'aws/configuration/localsurf',
-                },
               ],
             },
             {
