@@ -3,7 +3,7 @@ title: "Quickstart: LocalStack on Kubernetes"
 description: Deploy LocalStack into a Kubernetes cluster and run a sample Lambda + RDS application in under 5 minutes.
 template: doc
 sidebar:
-  order: 6
+  order: 1
 ---
 
 ## Introduction

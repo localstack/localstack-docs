@@ -390,6 +390,16 @@ export default defineConfig({
               items: [{ autogenerate: { directory: '/aws/getting-started' } }],
             },
             {
+              label: 'Quickstart Library',
+              collapsed: true,
+              items: [
+                {
+                  label: 'LocalStack on Kubernetes',
+                  slug: 'aws/quickstart-library/k8s-quickstart',
+                },
+              ],
+            },
+            {
               label: 'Local AWS Services',
               slug: 'aws/services',
             },

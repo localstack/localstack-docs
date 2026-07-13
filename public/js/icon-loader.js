@@ -17,6 +17,7 @@
     Tooling: 'wrench-icon',
     Integrations: 'connections-icon',
     Enterprise: 'buildings-icon',
+    'Quickstart Library': 'book-icon',
     Tutorials: 'book-icon',
     Changelog: 'change-icon',
     'SQL Functions': 'sql-icon',
