@@ -17,7 +17,7 @@ The supported APIs are available on the API coverage section for [ELBv1](#api-co
 
 ## Getting started
 
-This guide is designed for users new to Elastic Load Balancing and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Elastic Load Balancing and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an Application Load Balancer, along with its target group, listener, and rule, and forward requests to an IP target.
@@ -36,7 +36,7 @@ To specify the subnet and VPC in which the load balancer will be created, you ca
 In this example, we will use the subnet and VPC in the `us-east-1f` availability zone.
 
 ```bash
-subnet_info=$(awslocal ec2 describe-subnets --filters Name=availability-zone,Values=us-east-1f \
+subnet_info=$(lstk aws ec2 describe-subnets --filters Name=availability-zone,Values=us-east-1f \
     | jq -r '.Subnets[] | select(.AvailabilityZone == "us-east-1f") | {SubnetId: .SubnetId, VpcId: .VpcId}')
 
 subnet_id=$(echo $subnet_info | jq -r '.SubnetId')
@@ -48,7 +48,7 @@ To create a load balancer, you can use the [`CreateLoadBalancer`](https://docs.a
 The following command creates an Application Load Balancer named `example-lb`:
 
 ```bash
-loadBalancer=$(awslocal elbv2 create-load-balancer --name example-lb \
+loadBalancer=$(lstk aws elbv2 create-load-balancer --name example-lb \
     --subnets $subnet_id | jq -r '.LoadBalancers[]|.LoadBalancerArn')
 ```
 
@@ -58,7 +58,7 @@ To create a target group, you can use the [`CreateTargetGroup`](https://docs.aws
 The following command creates a target group named `example-target-group`:
 
 ```bash
-targetGroup=$(awslocal elbv2 create-target-group --name example-target-group \
+targetGroup=$(lstk aws elbv2 create-target-group --name example-target-group \
     --protocol HTTP --target-type ip --port 80 --vpc-id $vpc_id \
     | jq -r '.TargetGroups[].TargetGroupArn')
 ```
@@ -69,7 +69,7 @@ To register a target, you can use the [`RegisterTargets`](https://docs.aws.amazo
 The following command registers the target with the target group created in the previous step:
 
 ```bash
-awslocal elbv2 register-targets --targets Id=127.0.0.1,Port=5678,AvailabilityZone=all \
+lstk aws elbv2 register-targets --targets Id=127.0.0.1,Port=5678,AvailabilityZone=all \
     --target-group-arn $targetGroup
 ```
 
@@ -84,7 +84,7 @@ We create a listener for the load balancer using the [`CreateListener`](https://
 The following command creates a listener for the load balancer created in the previous step:
 
 ```bash
-listenerArn=$(awslocal elbv2 create-listener \
+listenerArn=$(lstk aws elbv2 create-listener \
         --protocol HTTP \
         --port 80 \
         --default-actions '{"Type":"forward","TargetGroupArn":"'$targetGroup'","ForwardConfig":{"TargetGroups":[{"TargetGroupArn":"'$targetGroup'","Weight":11}]}}' \
@@ -95,7 +95,7 @@ To create a rule for the listener, you can use the [`CreateRule`](https://docs.a
 The following command creates a rule for the listener created above:
 
 ```bash
-listenerRule=$(awslocal elbv2 create-rule \
+listenerRule=$(lstk aws elbv2 create-rule \
         --conditions Field=path-pattern,Values=/ \
         --priority 1 \
         --actions '{"Type":"forward","TargetGroupArn":"'$targetGroup'","ForwardConfig":{"TargetGroups":[{"TargetGroupArn":"'$targetGroup'","Weight":11}]}}' \
@@ -190,19 +190,19 @@ The following example uses the `subnet_id` variable set in the [Getting started]
 
 ```bash
 # Create the load balancer
-loadBalancer=$(awslocal elbv2 create-load-balancer \
+loadBalancer=$(lstk aws elbv2 create-load-balancer \
     --name multi-listener-lb \
     --subnets $subnet_id | jq -r '.LoadBalancers[].LoadBalancerArn')
 
 # Listener on port 80
-awslocal elbv2 create-listener \
+lstk aws elbv2 create-listener \
     --load-balancer-arn $loadBalancer \
     --protocol HTTP \
     --port 80 \
     --default-actions '{"Type":"fixed-response","FixedResponseConfig":{"StatusCode":"200","MessageBody":"Listener 80","ContentType":"text/plain"}}'
 
 # Listener on port 8080
-awslocal elbv2 create-listener \
+lstk aws elbv2 create-listener \
     --load-balancer-arn $loadBalancer \
     --protocol HTTP \
     --port 8080 \

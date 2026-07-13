@@ -16,7 +16,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Cloud Control and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Cloud Control and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to get and list resources using the Cloud Control API.
@@ -28,13 +28,13 @@ You can list resources using the [`ListResources`](https://docs.aws.amazon.com/c
 Create an S3 bucket using the following command:
 
 ```bash
-awslocal s3 mb s3://my-bucket
+lstk aws s3 mb s3://my-bucket
 ```
 
 List the resources using the following command:
 
 ```bash
-awslocal cloudcontrol list-resources --type-name AWS::S3::Bucket
+lstk aws cloudcontrol list-resources --type-name AWS::S3::Bucket
 ```
 
 You should see the S3 bucket in the output.
@@ -56,7 +56,7 @@ You should see the S3 bucket in the output.
 You can get a resource using the [`GetResource`](https://docs.aws.amazon.com/cloudcontrolapi/latest/APIReference/API_GetResource.html) API.
 
 ```bash
-awslocal cloudcontrol get-resource --type-name AWS::S3::Bucket --identifier my-bucket
+lstk aws cloudcontrol get-resource --type-name AWS::S3::Bucket --identifier my-bucket
 ```
 
 ```bash title="Output"

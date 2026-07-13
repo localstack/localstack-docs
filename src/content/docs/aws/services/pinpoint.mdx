@@ -22,7 +22,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Pinpoint and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Pinpoint and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Pinpoint application, retrieve all applications, and list tags for the resource.
@@ -33,7 +33,7 @@ Create a Pinpoint application using the [`CreateApp`](https://docs.aws.amazon.co
 Execute the following command:
 
 ```bash
-awslocal pinpoint create-app \
+lstk aws pinpoint create-app \
     --create-application-request Name=ExampleCorp,tags={"Stack"="Test"}
 ```
 
@@ -54,7 +54,7 @@ You can list all applications using the [`GetApps`](https://docs.aws.amazon.com/
 Execute the following command:
 
 ```bash
-awslocal pinpoint get-apps
+lstk aws pinpoint get-apps
 ```
 
 ```bash title="Output"
@@ -78,7 +78,7 @@ You can list all tags for the application using the [`GetApp`](https://docs.aws.
 Execute the following command:
 
 ```bash
-awslocal pinpoint list-tags-for-resource \
+lstk aws pinpoint list-tags-for-resource \
     --resource-arn arn:aws:mobiletargeting:us-east-1:000000000000:apps/4487a55ac6fb4a2699a1b90727c978e7
 ```
 
@@ -106,7 +106,7 @@ Instead it provides alternative ways to retrieve the actual OTP code as illustra
 Begin by making a OTP request:
 
 ```bash
-awslocal pinpoint send-otp-message \
+lstk aws pinpoint send-otp-message \
   --application-id fff5a801e01643c18a13a763e22a8fbf \
   --send-otp-message-request-parameters '{
       "BrandName": "LocalStack Pro",
@@ -159,7 +159,7 @@ The OTP code is also printed in an `INFO` level message in the LocalStack log ou
 Finally, the OTP code can be verified using:
 
 ```bash
-awslocal pinpoint verify-otp-message \
+lstk aws pinpoint verify-otp-message \
   --application-id fff5a801e01643c18a13a763e22a8fbf \
   --verify-otp-message-request-parameters '{
       "ReferenceId": "liftoffcampaign",

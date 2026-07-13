@@ -16,7 +16,7 @@ The supported APIs are available on the API coverage section for [Bedrock](#api-
 
 ## Getting started
 
-This guide is designed for users new to AWS Bedrock and assumes basic knowledge of the AWS CLI and our `awslocal` wrapper script.
+This guide is designed for users new to AWS Bedrock and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method with or without pre-warming the Bedrock engine.
 We will demonstrate how to use Bedrock by following these steps:
@@ -49,7 +49,7 @@ You can define the used model with `DEFAULT_BEDROCK_MODEL`
 Run the following command:
 
 ```bash
-awslocal bedrock list-foundation-models
+lstk aws bedrock list-foundation-models
 ```
 
 ### Invoke a model
@@ -61,7 +61,7 @@ However, the actual model will be defined by the `DEFAULT_BEDROCK_MODEL` environ
 Run the following command:
 
 ```bash
-awslocal bedrock-runtime invoke-model \
+lstk aws bedrock-runtime invoke-model \
     --model-id "meta.llama3-8b-instruct-v1:0" \
     --body '{
         "prompt": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\nSay Hello!\n<|eot_id|>\n<|start_header_id|>assistant<|end_header_id|>",
@@ -80,7 +80,7 @@ You can specify both system prompts and user messages.
 Run the following command:
 
 ```bash
-awslocal bedrock-runtime converse \
+lstk aws bedrock-runtime converse \
     --model-id "meta.llama3-8b-instruct-v1:0" \
     --messages '[{
         "role": "user",
@@ -108,15 +108,15 @@ First, you need to create a `JSONL` file named `batch_input.jsonl` that contains
 Then, you need to define buckets for the input as well as the output and upload the file in the input bucket:
 
 ```bash
-awslocal s3 mb s3://in-bucket
-awslocal s3 cp batch_input.jsonl s3://in-bucket
-awslocal s3 mb s3://out-bucket
+lstk aws s3 mb s3://in-bucket
+lstk aws s3 cp batch_input.jsonl s3://in-bucket
+lstk aws s3 mb s3://out-bucket
 ```
 
 Afterwards you can run the invocation job like this:
 
 ```bash
-awslocal bedrock create-model-invocation-job \
+lstk aws bedrock create-model-invocation-job \
   --job-name "my-batch-job" \
   --model-id "mistral.mistral-small-2402-v1:0" \
   --role-arn "arn:aws:iam::123456789012:role/MyBatchInferenceRole" \
@@ -150,7 +150,7 @@ You can also define models directly in the request, by setting the `model-id` pa
 For example, if you want to access `deepseek-r1`, you can do it like this:
 
 ```bash
-awslocal bedrock-runtime converse \
+lstk aws bedrock-runtime converse \
     --model-id "ollama.deepseek-r1" \
     --messages '[{
         "role": "user",

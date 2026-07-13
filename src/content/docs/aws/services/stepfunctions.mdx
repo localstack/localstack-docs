@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Step Functions and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Step Functions and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create a state machine, execute it, and check the status of the execution.
@@ -29,7 +29,7 @@ The API requires the name of the state machine, the state machine definition, an
 Run the following command to create a state machine:
 
 ```bash showLineNumbers
-awslocal stepfunctions create-state-machine \
+lstk aws stepfunctions create-state-machine \
     --name "CreateAndListBuckets" \
     --definition '{
         "Comment": "Create bucket and list buckets",
@@ -67,7 +67,7 @@ The API requires the state machine's ARN and the state machine's input.
 Run the following command to execute the state machine:
 
 ```bash
-awslocal stepfunctions start-execution \
+lstk aws stepfunctions start-execution \
     --state-machine-arn "arn:aws:states:us-east-1:000000000000:stateMachine:CreateAndListBuckets"
 ```
 
@@ -84,7 +84,7 @@ To check the status of the execution, you can use the [`DescribeExecution`](http
 Run the following command to describe the execution:
 
 ```bash
-awslocal stepfunctions describe-execution \
+lstk aws stepfunctions describe-execution \
         --execution-arn "arn:aws:states:us-east-1:000000000000:execution:CreateAndListBuckets:bf7d2138-e96f-42d1-b1f9-41f0c1c7bc3e"
 ```
 
@@ -421,7 +421,7 @@ Create the state machine to match the name defined in the mock configuration fil
 In this example, create the `LambdaSQSIntegration` state machine using:
 
 ```bash
-awslocal stepfunctions create-state-machine \
+lstk aws stepfunctions create-state-machine \
     --definition file://LambdaSQSIntegration.json \
     --name "LambdaSQSIntegration" \
     --role-arn "arn:aws:iam::000000000000:role/service-role/testrole"
@@ -436,7 +436,7 @@ This tells LocalStack to apply the corresponding mocked responses from the confi
 For example, to run the `BaseCase` test case:
 
 ```bash
-awslocal stepfunctions start-execution \
+lstk aws stepfunctions start-execution \
     --state-machine arn:aws:states:us-east-1:000000000000:stateMachine:LambdaSQSIntegration#BaseCase \
     --input '{"name": "John", "surname": "smith"}' \
     --name "MockExecutionBaseCase"
@@ -448,7 +448,7 @@ States without mock entries invoke the actual emulated service as usual.
 You can inspect the execution using the [`DescribeExecution`](https://docs.aws.amazon.com/step-functions/latest/apireference/API_DescribeExecution.html) API:
 
 ```bash
-awslocal stepfunctions describe-execution \
+lstk aws stepfunctions describe-execution \
     --execution-arn "arn:aws:states:us-east-1:000000000000:execution:LambdaSQSIntegration:MockExecutionBaseCase"
 ```
 
@@ -474,7 +474,7 @@ awslocal stepfunctions describe-execution \
 You can also use the [`GetExecutionHistory`](https://docs.aws.amazon.com/step-functions/latest/apireference/API_GetExecutionHistory.html) API to retrieve the execution history, including the events and their details.
 
 ```bash
-awslocal stepfunctions get-execution-history \
+lstk aws stepfunctions get-execution-history \
     --execution-arn "arn:aws:states:us-east-1:000000000000:execution:LambdaSQSIntegration:MockExecutionBaseCase"
 ```
 

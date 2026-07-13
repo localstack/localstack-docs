@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Elastic Container Registry and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Elastic Container Registry and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to build and push a Docker image to a local ECR repository.
@@ -77,7 +77,7 @@ You can create an ECR repository using the [`CreateRepository`](https://docs.aws
 Run the following command to create a repository named `localstack-ecr-repository`:
 
 ```bash
-awslocal ecr create-repository \
+lstk aws ecr create-repository \
     --repository-name localstack-ecr-repository \
     --image-scanning-configuration scanOnPush=true
 ```
@@ -122,7 +122,7 @@ The image will take a few seconds to push to the repository.
 You can run the following command to verify that the image was pushed successfully:
 
 ```bash
-awslocal ecr list-images --repository-name localstack-ecr-repository
+lstk aws ecr list-images --repository-name localstack-ecr-repository
 ```
 
 ```bash title="Output"

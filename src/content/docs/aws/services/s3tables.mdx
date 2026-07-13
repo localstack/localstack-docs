@@ -18,7 +18,7 @@ The supported APIs are available on the [API coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to S3 Tables and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to S3 Tables and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a table bucket, a namespace, a table, and how to retrieve table details and metadata location with the AWS CLI.
@@ -30,7 +30,7 @@ You can create a table bucket to store S3 Tables using the [`CreateTableBucket`]
 Run the following command to create a table bucket named `my-table-bucket`:
 
 ```bash
-awslocal s3tables create-table-bucket --name my-table-bucket
+lstk aws s3tables create-table-bucket --name my-table-bucket
 ```
 
 ```bash title="Output"
@@ -46,7 +46,7 @@ Namespaces help organize tables within a table bucket. You can create a namespac
 Run the following command to create a namespace named `my_namespace` within the table bucket `my-table-bucket`:
 
 ```bash
-awslocal s3tables create-namespace \
+lstk aws s3tables create-namespace \
     --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
     --namespace my_namespace
 ```
@@ -67,7 +67,7 @@ You can also create a table within the namespace with the [`CreateTable`](https:
 Run the following command to create a table named `my_table` within the namespace `my_namespace`:
 
 ```bash
-awslocal s3tables create-table \
+lstk aws s3tables create-table \
     --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
     --namespace my_namespace \
     --name my_table \
@@ -88,7 +88,7 @@ You can describe the table to view details such as ARN, namespace, format, and w
 Run the following command to describe the table `my_table`:
 
 ```bash
-awslocal s3tables get-table \
+lstk aws s3tables get-table \
     --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
     --namespace my_namespace \
     --name my_table
@@ -121,7 +121,7 @@ You can fetch the warehouse location used for table metadata using the [`GetTabl
 Run the following command to fetch the warehouse location for the table `my_table`:
 
 ```bash
-awslocal s3tables get-table-metadata-location \
+lstk aws s3tables get-table-metadata-location \
     --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
     --namespace my_namespace \
     --name my_table
@@ -142,7 +142,7 @@ You can list tables in the `my_namespace` namespace using the [`ListTables`](htt
 Run the following command to list tables in the namespace `my_namespace`:
 
 ```bash
-awslocal s3tables list-tables \
+lstk aws s3tables list-tables \
     --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
     --namespace my_namespace
 ```

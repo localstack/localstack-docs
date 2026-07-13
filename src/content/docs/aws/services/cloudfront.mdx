@@ -19,7 +19,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 ## Getting started
 
 This guide is intended for users who wish to get more acquainted with CloudFront over LocalStack.
-It assumes you have basic knowledge of the AWS CLI (and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script).
+It assumes you have basic knowledge of the AWS CLI (and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command).
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create an S3 bucket, put a text file named `hello.txt` to the bucket, and then create a CloudFront distribution which makes the file accessible via a `https://abc123.cloudfront.net/hello.txt` proxy URL (where `abc123` is a placeholder for the real distribution ID).
@@ -27,21 +27,21 @@ We will demonstrate how you can create an S3 bucket, put a text file named `hell
 To get started, create an S3 bucket using the `mb` command:
 
 ```bash
-awslocal s3 mb s3://abc123
+lstk aws s3 mb s3://abc123
 ```
 
 You can now go ahead, create a new text file named `hello.txt` and upload it to the bucket:
 
 ```bash
 echo 'Hello World' > /tmp/hello.txt
-awslocal s3 cp /tmp/hello.txt s3://abc123/hello.txt --acl public-read
+lstk aws s3 cp /tmp/hello.txt s3://abc123/hello.txt --acl public-read
 ```
 
 After uploading the file to S3, you can create a CloudFront distribution using the [`CreateDistribution`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateDistribution.html) API call.
 Run the following command to create a distribution with the default settings:
 
 ```bash
-domain=$(awslocal cloudfront create-distribution \
+domain=$(lstk aws cloudfront create-distribution \
    --origin-domain-name abc123.s3.amazonaws.com | jq -r '.Distribution.DomainName')
 curl -k https://$domain/hello.txt
 ```

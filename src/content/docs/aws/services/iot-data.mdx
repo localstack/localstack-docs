@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to IoT Data and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to IoT Data and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a thing, update its shadow, get its shadow, and delete its shadow using IoT Data.
@@ -28,7 +28,7 @@ You can update the shadow of a thing using the [`UpdateThingShadow`](https://doc
 Run the following command to update the shadow of a thing named `MyRPi`:
 
 ```bash
-awslocal iot-data update-thing-shadow \
+lstk aws iot-data update-thing-shadow \
     --thing-name "MyRPi" \
     --payload "{\"state\":{\"reported\":{\"moisture\":\"okay\"}}}" \
     output.txt --cli-binary-format raw-in-base64-out
@@ -61,7 +61,7 @@ You can get the shadow of a thing using the [`GetThingShadow`](https://docs.aws.
 Run the following command to get the shadow:
 
 ```bash
-awslocal iot-data get-thing-shadow \
+lstk aws iot-data get-thing-shadow \
     --thing-name "MyRPi" \
     output.txt
 ```
@@ -74,7 +74,7 @@ You can delete the shadow of a thing using the [`DeleteThingShadow`](https://doc
 Run the following command to delete the shadow:
 
 ```bash
-awslocal iot-data delete-thing-shadow \
+lstk aws iot-data delete-thing-shadow \
     --thing-name "MyRPi" \
     output.txt
 ```

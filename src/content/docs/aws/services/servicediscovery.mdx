@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting Started
 
-This guide is designed for users new to Service Discovery and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Service Discovery and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an ECS service containing a Fargate task that uses Service Discovery with the AWS CLI.
@@ -30,7 +30,7 @@ This API allows you to define a custom name for your namespace and specify the V
 To create the private Cloud Map service discovery namespace, execute the following command:
 
 ```bash
-awslocal servicediscovery create-private-dns-namespace \
+lstk aws servicediscovery create-private-dns-namespace \
       --name tutorial \
       --vpc <vpc-id>
 ```
@@ -42,7 +42,7 @@ This identifier can be used to check the status of the operation.
 To verify the status of the operation, execute the following command:
 
 ```bash
-awslocal servicediscovery get-operation \
+lstk aws servicediscovery get-operation \
       --operation-id <operation-id>
 ```
 
@@ -56,7 +56,7 @@ This service represents a specific component or resource in your application.
 To create a service within the namespace, execute the following command:
 
 ```bash
-awslocal servicediscovery create-service \
+lstk aws servicediscovery create-service \
       --name myapplication \
       --dns-config "NamespaceId="<Namespace-ID>",DnsRecords=[{Type="A",TTL="300"}]" \
       --health-check-custom-config FailureThreshold=1
@@ -73,7 +73,7 @@ Start by creating an ECS cluster using the [`CreateCluster`](https://docs.aws.am
 Execute the following command:
 
 ```bash
-awslocal ecs create-cluster \
+lstk aws ecs create-cluster \
       --cluster-name tutorial
 ```
 
@@ -121,7 +121,7 @@ Register the task definition using the [`RegisterTaskDefinition`](https://docs.a
 Execute the following command:
 
 ```bash
-awslocal ecs register-task-definition \
+lstk aws ecs register-task-definition \
       --cli-input-json file://fargate-task.json
 ```
 
@@ -132,7 +132,7 @@ You can obtain this information by using the [`DescribeVpcs`](https://docs.aws.a
 Execute the following command to retrieve the details of all VPCs:
 
 ```bash
-awslocal ec2 describe-vpcs
+lstk aws ec2 describe-vpcs
 ```
 
 The output will include a list of VPCs.
@@ -141,12 +141,12 @@ Locate the VPC that was used to create the Cloud Map namespace and make a note o
 Next, execute the following commands to retrieve the `securityGroups` and `subnets` associated with the VPC:
 
 ```bash
-awslocal ec2 describe-security-groups \
+lstk aws ec2 describe-security-groups \
     --filters Name=vpc-id,Values=vpc-<ID> \
     --query 'SecurityGroups[*].[GroupId, GroupName]' \
     --output text
 
-awslocal ec2 describe-subnets \
+lstk aws ec2 describe-subnets \
     --filters Name=vpc-id,Values=vpc-<ID> \
     --query 'Subnets[*].[SubnetId, CidrBlock]' \
     --output text
@@ -184,7 +184,7 @@ Create your ECS service using the [`CreateService`](https://docs.aws.amazon.com/
 Execute the following command:
 
 ```bash
-awslocal ecs create-service \
+lstk aws ecs create-service \
       --cli-input-json file://ecs-service-discovery.json
 ```
 
@@ -194,7 +194,7 @@ You can use the Service Discovery service ID to verify that the service was crea
 Execute the following command:
 
 ```bash
-awslocal servicediscovery list-instances \
+lstk aws servicediscovery list-instances \
        --service-id <service-id>
 ```
 
@@ -219,10 +219,10 @@ Both conditions and only support a single value to match by.
 The following examples demonstrate how to use filters with these operations:
 
 ```bash
-awslocal servicediscovery list-namespaces \
+lstk aws servicediscovery list-namespaces \
     --filters "Name=HTTP_NAME,Values=['example-namespace'],Condition=EQ"
 
-awslocal servicediscovery list-services \
+lstk aws servicediscovery list-services \
     --filters "Name=NAMESPACE_ID,Values=['id_to_match']"
 ```
 
@@ -232,7 +232,7 @@ Conditions in parameters must match return values, while if one ore more conditi
 This command will only return instances where the parameter `env` is equal to `fuu`:
 
 ```bash
-awslocal servicediscovery discover-instances \
+lstk aws servicediscovery discover-instances \
     --namespace-name example-namespace \
     --service-name example-service \
     --query-parameters "env"="fuu"
@@ -241,7 +241,7 @@ awslocal servicediscovery discover-instances \
 This command instead will return all instances where the optional parameter `env` is equal to `bar`, but if no instances match, all instances are returned:
 
 ```bash
-awslocal servicediscovery discover-instances \
+lstk aws servicediscovery discover-instances \
     --namespace-name example-namespace \
     --service-name example-service \
     --optional-parameters "env"="bar"

@@ -38,7 +38,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Neptune and assumes basic knowledge of the AWS CLI and our `awslocal` wrapper script.
+This guide is designed for users new to Neptune and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate the following with AWS CLI & Python:
@@ -53,7 +53,7 @@ To create a Neptune cluster you can use the [`CreateDBCluster`](https://docs.aws
 Run the following command to create a Neptune cluster:
 
 ```bash
-awslocal neptune create-db-cluster \
+lstk aws neptune create-db-cluster \
     --engine neptune \
     --db-cluster-identifier my-neptune-db
 ```
@@ -76,7 +76,7 @@ To add an instance you can use the [`CreateDBInstance`](https://docs.aws.amazon.
 Run the following command to create a Neptune instance:
 
 ```bash
-awslocal neptune create-db-instance \
+lstk aws neptune create-db-instance \
     --db-cluster-identifier my-neptune-db \
     --db-instance-identifier my-neptune-instance \
     --engine neptune \
@@ -158,13 +158,13 @@ When LocalStack starts with [IAM enforcement enabled](/aws/developer-tools/secur
 Start LocalStack with `LOCALSTACK_ENFORCE_IAM=1` to create a Neptune cluster with IAM DB authentication enabled.
 
 ```bash
-LOCALSTACK_ENFORCE_IAM=1 localstack start
+LOCALSTACK_ENFORCE_IAM=1 lstk start
 ```
 
 You can then create a cluster.
 
 ```bash
-awslocal neptune create-db-cluster \
+lstk aws neptune create-db-cluster \
     --engine neptune \
     --db-cluster-identifier myneptune-db \
     --enable-iam-database-authentication

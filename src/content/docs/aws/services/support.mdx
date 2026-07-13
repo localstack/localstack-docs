@@ -24,7 +24,7 @@ It's important to note that LocalStack doesn't offer a programmatic interface to
 
 ## Getting started
 
-This guide is designed for users new to Support and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Support and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create a case in the mock Support Center using the AWS CLI.
@@ -35,7 +35,7 @@ To create a support case, you can use the [`CreateCase`](https://docs.aws.amazon
 The following example creates a case with the subject "Test case" and the description "This is a test case" in the category "General guidance".
 
 ```bash
-awslocal support create-case \
+lstk aws support create-case \
     --subject "Test case" \
     --service-code "general-guidance" \
     --category-code "general-guidance" \
@@ -54,7 +54,7 @@ To list all support cases, you can use the [`DescribeCases`](https://docs.aws.am
 The following example lists all cases in the category "General guidance".
 
 ```bash
-awslocal support describe-cases
+lstk aws support describe-cases
 ```
 
 ```bash title="Output"
@@ -87,7 +87,7 @@ To resolve a support case, you can use the [`ResolveCase`](https://docs.aws.amaz
 The following example resolves the case created in the previous step.
 
 ```bash
-awslocal support resolve-case \
+lstk aws support resolve-case \
     --case-id "case-12345678910-2020-kEa16f90bJE766J4"
 ```
 

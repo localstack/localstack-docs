@@ -26,7 +26,7 @@ Any value for this variable now points to an invalid provider configuration and 
 
 ## Getting Started
 
-This guide is designed for users new to EventBridge and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to EventBridge and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate creating an EventBridge rule to run a Lambda function when a custom event is published to an event bus.
@@ -36,7 +36,7 @@ We will demonstrate creating an EventBridge rule to run a Lambda function when a
 First, create a custom EventBridge bus using the [`CreateEventBus`](https://docs.aws.amazon.com/cli/latest/reference/events/create-event-bus.html) API:
 
 ```bash
-awslocal events create-event-bus \
+lstk aws events create-event-bus \
     --name my-custom-bus
 ```
 
@@ -61,7 +61,7 @@ Run the following command to create a new Lambda function using the [`CreateFunc
 ```bash
 zip function.zip index.js
 
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name events-example \
     --runtime nodejs16.x \
     --zip-file fileb://function.zip \
@@ -76,7 +76,7 @@ The output will consist of the `FunctionArn`, which you will need to add the Lam
 Run the following command to create a new EventBridge rule using the [`PutRule`](https://docs.aws.amazon.com/cli/latest/reference/events/put-rule.html) API:
 
 ```bash
-awslocal events put-rule \
+lstk aws events put-rule \
     --name my-custom-rule \
     --event-bus-name my-custom-bus \
     --event-pattern '{"source":["my-source"],"detail-type":["my-detail-type"]}' \
@@ -92,7 +92,7 @@ This rule will trigger whenever an event matching this pattern is published to t
 Next, grant the EventBridge service principal (`events.amazonaws.com`) permission to run the rule, using the [`AddPermission`](https://docs.aws.amazon.com/cli/latest/reference/lambda/add-permission.html) API:
 
 ```bash
-awslocal lambda add-permission \
+lstk aws lambda add-permission \
     --function-name events-example \
     --statement-id my-custom-event \
     --action 'lambda:InvokeFunction' \
@@ -116,7 +116,7 @@ Create a file named `targets.json` with the following content:
 Finally, add the Lambda function as a target to the EventBridge rule using the [`PutTargets`](https://docs.aws.amazon.com/cli/latest/reference/events/put-targets.html) API:
 
 ```bash
-awslocal events put-targets \
+lstk aws events put-targets \
     --rule my-custom-rule \
     --event-bus-name my-custom-bus \
     --targets file://targets.json
@@ -127,7 +127,7 @@ awslocal events put-targets \
 Now, send an event that matches the rule pattern to trigger the Lambda function using the [`PutEvents`](https://docs.aws.amazon.com/cli/latest/reference/events/put-events.html) API:
 
 ```bash
-awslocal events put-events \
+lstk aws events put-events \
     --entries '[{"Source": "my-source", "DetailType": "my-detail-type", "Detail": "{\"key\": \"value\"}", "EventBusName": "my-custom-bus"}]'
 ```
 
@@ -140,24 +140,24 @@ You can verify the Lambda invocation by checking the CloudWatch logs.
 Run the following command to list the CloudWatch log groups:
 
 ```bash
-awslocal logs describe-log-groups
+lstk aws logs describe-log-groups
 ```
 
 The output will contain the log group name, which you can use to list the log streams:
 
 ```bash
-awslocal logs describe-log-streams \
+lstk aws logs describe-log-streams \
     --log-group-name /aws/lambda/events-example
 ```
 
 Alternatively, you can fetch LocalStack logs to verify the Lambda invocation:
 
 ```bash title="Output"
-localstack logs
+lstk logs
 ...
-2023-07-17T09:37:52.028  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS lambda.Invoke => 202
-2023-07-17T09:37:52.106  INFO --- [   asgi_gw_0] localstack.request.http    : POST /_localstack_lambda/97e08ac50c18930f131d9dd9744b8df4/invocations/ecb744d0-b3f2-400f-9e49-c85cf12b1e00/logs => 202
-2023-07-17T09:37:52.114  INFO --- [   asgi_gw_0] localstack.request.http    : POST /_localstack_lambda/97e08ac50c18930f131d9dd9744b8df4/invocations/ecb744d0-b3f2-400f-9e49-c85cf12b1e00/response => 202
+emulator | 2023-07-17T09:37:52.028  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS lambda.Invoke => 202
+emulator | 2023-07-17T09:37:52.106  INFO --- [   asgi_gw_0] localstack.request.http    : POST /_localstack_lambda/97e08ac50c18930f131d9dd9744b8df4/invocations/ecb744d0-b3f2-400f-9e49-c85cf12b1e00/logs => 202
+emulator | 2023-07-17T09:37:52.114  INFO --- [   asgi_gw_0] localstack.request.http    : POST /_localstack_lambda/97e08ac50c18930f131d9dd9744b8df4/invocations/ecb744d0-b3f2-400f-9e49-c85cf12b1e00/response => 202
 ...
 ```
 

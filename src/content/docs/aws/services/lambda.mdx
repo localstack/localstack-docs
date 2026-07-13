@@ -20,7 +20,7 @@ The supported APIs are available on our [API coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Lambda and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Lambda and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Lambda function with a Function URL.
@@ -46,7 +46,7 @@ Enter the following command to create a new Lambda function:
 
 ```bash
 zip function.zip index.js
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name localstack-lambda-url-example \
     --runtime nodejs22.x \
     --zip-file fileb://function.zip \
@@ -57,7 +57,7 @@ awslocal lambda create-function \
 :::note
 To create a predictable URL for the function, you can assign a custom ID by specifying the `_custom_id_` tag on the function itself.
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name localstack-lambda-url-example \
     --runtime nodejs22.x \
     --zip-file fileb://function.zip \
@@ -83,13 +83,13 @@ Run the following command to invoke the function:
 <Tabs>
 <TabItem label="AWS CLI v1">
 ```bash
-awslocal lambda invoke --function-name localstack-lambda-url-example \
+lstk aws lambda invoke --function-name localstack-lambda-url-example \
     --payload '{"body": "{\"num1\": \"10\", \"num2\": \"10\"}" }' output.txt
 ```
 </TabItem>
 <TabItem label="AWS CLI v2">
 ```bash
-awslocal lambda invoke --function-name localstack-lambda-url-example \
+lstk aws lambda invoke --function-name localstack-lambda-url-example \
     --cli-binary-format raw-in-base64-out \
     --payload '{"body": "{\"num1\": \"10\", \"num2\": \"10\"}" }' output.txt
 ```
@@ -106,7 +106,7 @@ With the Function URL property, there is now a new way to call a Lambda Function
 To create a URL for invoking the function, run the following command:
 
 ```bash
-awslocal lambda create-function-url-config \
+lstk aws lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
 ```
@@ -118,7 +118,7 @@ The URL will be in the format `http://<XXXXXXXX>.lambda-url.us-east-1.localhost.
 As previously mentioned, when a Lambda Function has a `_custom_id_` tag, LocalStack sets this tag's value as the subdomain in the Function's URL.
 
 ```bash
-awslocal lambda create-function-url-config \
+lstk aws lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
 ```
@@ -133,7 +133,7 @@ awslocal lambda create-function-url-config \
 In addition, if you pass an existing version alias as a `Qualifier` to the request, the created URL will combine the custom ID and the alias in the form `<custom-id>-<alias>`.
 
 ```bash
-awslocal lambda create-function-url-config \
+lstk aws lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
     --qualifier test-alias
@@ -446,7 +446,7 @@ mkdir -p /tmp/python/
 echo 'def util():' > /tmp/python/testlayer.py
 echo '  print("Output from Lambda layer util function")' >> /tmp/python/testlayer.py
 (cd /tmp; zip -r testlayer.zip python)
-LAYER_ARN=$(awslocal lambda publish-layer-version --layer-name layer1 --zip-file fileb:///tmp/testlayer.zip | jq -r .LayerVersionArn)
+LAYER_ARN=$(lstk aws lambda publish-layer-version --layer-name layer1 --zip-file fileb:///tmp/testlayer.zip | jq -r .LayerVersionArn)
 ```
 
 Next, define a Lambda function that uses our layer:
@@ -456,7 +456,7 @@ echo 'def handler(*args, **kwargs):' > /tmp/testlambda.py
 echo '  import testlayer; testlayer.util()' >> /tmp/testlambda.py
 echo '  print("Debug output from Lambda function")' >> /tmp/testlambda.py
 (cd /tmp; zip testlambda.zip testlambda.py)
-awslocal lambda create-function \
+lstk aws lambda create-function \
   --function-name func1 \
   --runtime python3.8 \
   --role arn:aws:iam::000000000000:role/lambda-role \
@@ -694,7 +694,7 @@ Refer to our [sample `docker-compose.yml` file](https://github.com/localstack/lo
 If you receive a `ResourceConflictException` when trying to invoke a function, it is currently in a `Pending` state and cannot be executed yet.
 
 ```bash
-awslocal lambda get-function --function-name my-function
+lstk aws lambda get-function --function-name my-function
 ```
 
 ```bash title="Output"
@@ -706,13 +706,13 @@ The function is currently in the following state: Pending
 To wait until the function becomes `active`, you can use the following command:
 
 ```bash
-awslocal lambda wait function-active-v2 --function-name my-function
+lstk aws lambda wait function-active-v2 --function-name my-function
 ```
 
 Alternatively, you can check the function state using the [`GetFunction` API](https://docs.aws.amazon.com/lambda/latest/dg/API_GetFunction.html):
 
 ```bash
-awslocal lambda get-function --function-name my-function
+lstk aws lambda get-function --function-name my-function
 ```
 
 ```bash title="Output"
@@ -731,7 +731,7 @@ awslocal lambda get-function --function-name my-function
 When the function is active, the output will be similar to the following:
 
 ```bash
-awslocal lambda get-function --function-name my-function
+lstk aws lambda get-function --function-name my-function
 ```
 
 ```bash title="Output"
