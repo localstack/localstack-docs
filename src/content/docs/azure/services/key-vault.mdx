@@ -141,7 +141,8 @@ az keyvault secret list \
 
 ## Limitations
 
-Key Vault keys, HSM-related operations, and getting a real certificate from an official CA are not supported.
+- **Keys and HSM not supported:** Key Vault keys, HSM-related operations, and getting a real certificate from an official CA are not supported.
+- **RBAC enforcement is opt-in and covers secrets/certificates only:** By default, data-plane operations succeed regardless of role assignments. Set `LS_AZURE_ENFORCE_RBAC` to enforce roles such as `Key Vault Secrets User` or `Key Vault Certificates Officer` on vaults created with `enableRbacAuthorization=true`; keys are not covered. See [Role Assignment: Enabling RBAC enforcement](/azure/services/role-assignment/#enabling-rbac-enforcement).
 
 ## Samples
 
