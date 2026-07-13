@@ -390,7 +390,7 @@ export default defineConfig({
               items: [{ autogenerate: { directory: '/aws/getting-started' } }],
             },
             {
-              label: 'Quick Starts',
+              label: 'Quick Start Library',
               collapsed: true,
               items: [
                 { autogenerate: { directory: '/aws/quickstart-library' } },

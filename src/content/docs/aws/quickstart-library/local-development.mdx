@@ -206,45 +206,19 @@ You can do the same save/restore flow from `lstk` instead of the web applicatin 
 App Inspector requires LocalStack **2026.04.0** or later. If you don't see it in the sidebar, check your version with `lstk status` and update your image.
 :::
 
-## Testing and Validation
-
-Run through this end-to-end check to confirm everything from this guide is working together:
-
-```bash
-# 1. Confirm resources are deployed
-lstk status
-
-# 2. Fetch a fresh function URL (may be unset or stale after reset)
-LAMBDA_URL=$(awslocal lambda list-function-url-configs \
-  --function-name messages-api \
-  --query 'FunctionUrlConfigs[0].FunctionUrl' \
-  --output text)
-echo $LAMBDA_URL
-
-# 3. Trigger the function and capture the response
-curl -X POST "$LAMBDA_URL" \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Final validation check"}'
-
-# 4. Retrieve the full message history
-curl "$LAMBDA_URL"
-```
-
-Cross-check the output of the last command against what you see in the DynamoDB **Items** view in the Resource Browser — the counts and message content should match exactly. Then confirm the same request appears as a fresh row in **App Inspector** with an **OK** status.
-
 ## Troubleshooting
 
 **Instance shows as "not running" in Instance Management**
 Run `lstk status` from your terminal to confirm the container's actual state, and check that Docker is running. Start it again with `lstk start` if needed — remember this gives you an empty instance unless you load a Cloud Pod afterwards.
 
 **Resource Browser shows a "Network Failure" error**
-The LocalStack container isn't running, or isn't reachable at the endpoint configured for the instance. Confirm the endpoint in Instance Management matches your running container (`https://localhost.localstack.cloud:4566` by default).
+The LocalStack container isn't running, or isn't reachable at the endpoint configured for the instance. Confirm the endpoint in Instance Management matches your running container (`https://localhost.localstack.cloud:4566` by default). Ensure that you have enabled **Private Network Access** if you are using Google Chrome (see [Troubleshooting](https://docs.localstack.cloud/aws/getting-started/faq/#why-cant-i-access-my-localstack-instance-in-the-web-application-when-using-chrome) for more details).
 
 **Lambda function or DynamoDB table don't appear anywhere in the web app**
 Check the region dropdown in the top-right of the Resource Browser. If it's set to a region other than the one you deployed to (`us-east-1` by default in the tutorial), switch it.
 
 **Resources are missing after a restart, even though you didn't mean to wipe them**
-LocalStack does not persist state across restarts by default. Either avoid stopping the container, enable [persistence](/aws/developer-tools/snapshots/persistence/), or restore your last Cloud Pod with `lstk snapshot load pod:<name>`.
+LocalStack does not persist state across restarts by default. Either avoid stopping the container, enable [persistence](https://docs.localstack.cloud/aws/developer-tools/snapshots/persistence/), or restore your last Cloud Pod with `lstk snapshot load pod:<name>`.
 
 **`lstk snapshot save` fails with an authentication or license error**
 Cloud Pods require a valid LocalStack account. Run `lstk login`, or confirm `LOCALSTACK_AUTH_TOKEN` is set correctly, and try again.
@@ -252,18 +226,15 @@ Cloud Pods require a valid LocalStack account. Run `lstk login`, or confirm `LOC
 **`lstk snapshot load` warns about a version mismatch**
 This happens when the LocalStack version that saved the pod differs from the one running now. It's safe to proceed for this demo; in real projects, pin your LocalStack version to avoid state incompatibilities.
 
-**App Inspector isn't listed in the sidebar**
-It requires LocalStack **2026.04.0** or later. Check your running version with `lstk status`.
-
 ## Next steps
 
 You've now used all four core areas of the LocalStack Web Application to inspect, manage, snapshot, and debug a running application. To go deeper on any of them:
 
-- [Instance Management](/aws/connecting/console/instance-management/) — bookmarking instances and connecting to a LocalStack instance running on another machine.
-- [Stack Overview](/aws/connecting/console/stack-overview/) — the full list of supported resource types.
-- [Resource Browser](/aws/connecting/console/resource-browser/) — the complete list of supported services beyond Lambda and DynamoDB.
-- [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/) — merge strategies, remotes, auto-loading pods on startup, and sharing state with your team.
-- [App Inspector](/aws/developer-tools/app-inspector/) — using it from the [LocalStack Toolkit for VS Code](/aws/connecting/ides/vscode-extension/) without leaving your editor.
-- [`lstk` CLI reference](/aws/developer-tools/running-localstack/lstk/) — the full set of `snapshot`, `status`, and `reset` commands used in this guide.
+- [Instance Management](https://docs.localstack.cloud/aws/connecting/console/instance-management/) — bookmarking instances and connecting to a LocalStack instance running on another machine.
+- [Stack Overview](https://docs.localstack.cloud/aws/connecting/console/stack-overview/) — the full list of supported resource types.
+- [Resource Browser](https://docs.localstack.cloud/aws/connecting/console/resource-browser/) — the complete list of supported services beyond Lambda and DynamoDB.
+- [Cloud Pods](https://docs.localstack.cloud/aws/developer-tools/snapshots/cloud-pods/) — merge strategies, remotes, auto-loading pods on startup, and sharing state with your team.
+- [App Inspector](https://docs.localstack.cloud/aws/developer-tools/app-inspector/) — using it from the [LocalStack Toolkit for VS Code](https://docs.localstack.cloud/aws/connecting/ides/vscode-extension/) without leaving your editor.
+- [`lstk` CLI reference](https://docs.localstack.cloud/aws/developer-tools/running-localstack/lstk/) — the full set of `snapshot`, `status`, and `reset` commands used in this guide.
 
-Once you're comfortable with the local workflow, continue to the [CI/CD guide](/aws/getting-started/ci-cd/) to bring LocalStack into your automated pipelines.
+Once you're comfortable with the local workflow, continue to the [CI/CD guide](https://docs.localstack.cloud/aws/getting-started/ci-cd/) to bring LocalStack into your automated pipelines.
