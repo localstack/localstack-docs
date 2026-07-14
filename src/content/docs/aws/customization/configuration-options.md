@@ -29,7 +29,7 @@ Options that affect the core LocalStack system.
 | `DEBUG` | `0` (default) \|`1`| Flag to increase log level and print more verbose logs (useful for troubleshooting issues)|
 | `IMAGE_NAME`| `localstack/localstack` (default), `localstack/localstack:0.11.0` | Specific name and tag of LocalStack Docker image to use.|
 | `LOCALSTACK_HOST`| `localhost.localstack.cloud:4566` (default) | This is interpolated into URLs and addresses that are returned by LocalStack. It has the form `<hostname>:<port>`. |
-| `GATEWAY_LISTEN` | `0.0.0.0:4566` (default in Docker mode), `127.0.0.1:4566` (default in host mode) | Configures the bind addresses of LocalStack. It has the form `<ip address>:<port>(,<ip address>:<port>)*`. LocalStack for AWS adds port `443`. |
+| `GATEWAY_LISTEN` | `0.0.0.0:4566,0.0.0.0:443` (default in Docker mode), `127.0.0.1:4566,127.0.0.1:443` (default in host mode) | Configures the bind addresses of LocalStack. It has the form `<ip address>:<port>(,<ip address>:<port>)*`. When unset, LocalStack listens on both the HTTP edge port (`4566`) and HTTPS (`443`). |
 | `USE_SSL` | `0` (default) | Whether to return URLs using HTTP (`0`) or HTTPS (`1`). Changed with 3.0.0. In earlier versions this was toggling SSL support on or off. |
 | `PERSISTENCE` | `0` (default) | Enable persistence. See [Persistence Mechanism](/aws/developer-tools/snapshots/persistence) and [Filesystem Layout](/aws/customization/advanced/filesystem). |
 | `MAIN_CONTAINER_NAME` | `localstack-main` (default) | Specify the main docker container name |
@@ -462,7 +462,6 @@ To learn more about these configuration options, see [DNS Server](/aws/customiza
 
 | Variable             | Example Values | Description |
 |----------------------|----------------|-------------|
-| `ACTIVATE_PRO`       | `0` \| `1`&nbsp;(default)    | Whether Pro should be activated or not. This is set to true by default if using the `localstack/localstack-pro` container image. If set to `1`, LocalStack will fail to start if the license key activation did not work. If set to `0`, an attempt is made to start LocalStack without Pro features. |
 | `LOCALSTACK_AUTH_TOKEN` |             | [Auth token](/aws/getting-started/auth-token) to activate LocalStack for AWS. |
 | `LOCALSTACK_API_KEY` |                | **Deprecated since 3.0.0** API key to activate LocalStack for AWS.<br/> **Use the `LOCALSTACK_AUTH_TOKEN` instead (except for [CI environments](/aws/ci-pipelines/)).** |
 | `LOG_LICENSE_ISSUES` | `0` \| `1`&nbsp;(default)    | Whether to log issues with the license activation to the console. |
@@ -476,6 +475,7 @@ These configurations have already been removed and **won't have any effect** on 
 
 | Variable | Removed in | Example Values | Description |
 | - | - | - | - |
+| `ACTIVATE_PRO` | 2026.7.0 | `0` \| `1` (default) | Whether Pro should be activated or not. Previously allowed starting LocalStack without Pro features when set to `0`. The flag had no remaining effect and was removed; use the community image (`localstack/localstack`) if you do not need Pro features. |
 | `EVENT_RULE_ENGINE` | 4.1.0 | `python` (default) \| `java` (deprecated) | Engine for [event pattern matching](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns-content-based-filtering.html) used in EventBridge, EventBridge Pipes, and Lambda Event Source Mapping. Our new `python` implementation introduced with version `4.0.3` makes the `java` engine (previously in preview) using AWS [event-ruler](https://github.com/aws/event-ruler) obsolete. |
 | `LAMBDA_EVENT_SOURCE_MAPPING` | 4.0.0 | `v2` (default since [3.8.0](https://blog.localstack.cloud/localstack-release-v-3-8-0/#new-default-lambda-event-source-mapping-implementation)) \| `v1` | Feature flag to switch Lambda Event Source Mapping (ESM) implementations. |
 | `PROVIDER_OVERRIDE_STEPFUNCTIONS` | 4.0.0 | `v2` (default) \| `legacy` | The new LocalStack-native StepFunctions provider (v2) is active by default since LocalStack 3.0. |
