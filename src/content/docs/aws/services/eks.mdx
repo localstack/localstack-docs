@@ -648,10 +648,18 @@ volumes:
   - "${HOME}/.kube/config:/root/.kube/config"
 ```
 
-When using the LocalStack CLI, please configure the `DOCKER_FLAGS` to mount the kubeconfig into the container:
+When using `lstk`, add the mount to your `config.toml`:
+
+```toml
+[[containers]]
+type = "aws"
+volumes = ["~/.kube/config:/root/.kube/config"]
+```
+
+Then set the environment variable and start LocalStack:
 
 ```bash
-DOCKER_FLAGS="-v ${HOME}/.kube/config:/root/.kube/config" localstack start
+LOCALSTACK_EKS_K8S_PROVIDER=local lstk start
 ```
 
 :::note
@@ -883,7 +891,7 @@ When LocalStack creates a k3d-backed EKS cluster, it starts the k3s server with 
 By default, LocalStack uses `localstack-k3d-cluster-token` as the cluster token. You can override this value using the `EKS_K3D_CLUSTER_TOKEN` configuration variable:
 
 ```bash
-EKS_K3D_CLUSTER_TOKEN=my-custom-token localstack start
+LOCALSTACK_EKS_K3D_CLUSTER_TOKEN=my-custom-token lstk start
 ```
 
 Any agent nodes added to the cluster — whether via k3d node create or k3s agent — will use the same token to authenticate with the k3s server.

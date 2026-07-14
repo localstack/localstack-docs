@@ -387,10 +387,19 @@ If you're running LocalStack in Docker, mount the file and pass the variable as 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 <Tabs>
-<TabItem label="LocalStack CLI">
+<TabItem label="lstk">
+Add the mount to your `config.toml`:
+
+```toml
+[[containers]]
+type = "aws"
+volumes = ["/path/to/MockConfigFile.json:/tmp/MockConfigFile.json"]
+```
+
+Then set the environment variable and start LocalStack:
+
 ```bash
-LOCALSTACK_SFN_MOCK_CONFIG=/tmp/MockConfigFile.json \
-localstack start --volume /path/to/MockConfigFile.json:/tmp/MockConfigFile.json
+LOCALSTACK_SFN_MOCK_CONFIG=/tmp/MockConfigFile.json lstk start
 ```
 </TabItem>
 <TabItem label="Docker Compose"> 
