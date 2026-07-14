@@ -205,6 +205,7 @@ This section covers configuration options that are specific to certain AWS servi
 | `K3D_START_LB_INGRESS` |      `0` (default)     |  Whether to start the k3d load balancer and Traefik ingress controller automatically when creating an EKS cluster. Set to `1` to enable. (formerly `EKS_START_K3D_LB_INGRESS`, still accepted as a deprecated alias)  |
 | `EKS_PERSIST_CLUSTER_CONTENTS` | `0` (default) | When Persistence is enabled or when saving/loading Cloud Pods, this flag can be used to control whether the content deployed to EKS clusters will be persisted. Set to `1` to enable. |
 | `K3D_CLUSTER_TOKEN` | `localstack-k3d-cluster-token` (default) | Token used to authenticate agent nodes joining a k3d-backed EKS cluster. Setting an explicit token ensures consistent node authentication across k3d versions, which is required for dynamic agent assignment. (formerly `EKS_K3D_CLUSTER_TOKEN`, still accepted as a deprecated alias) |
+| `K3D_VERSION` | `v5.9.0` (default) | Overrides the k3d CLI version used to manage EKS clusters. (formerly `EKS_K3D_VERSION`, still accepted as a deprecated alias) |
 
 :::note
 The EKS configuration variables were renamed to cloud-agnostic names since they're shared across cloud emulators (AWS EKS / Azure AKS). The previous `EKS_*`, `LOCALSTACK_K8S_*`, and `LAMBDA_K8S_*` names still work as deprecated aliases and will be removed in a future release.
