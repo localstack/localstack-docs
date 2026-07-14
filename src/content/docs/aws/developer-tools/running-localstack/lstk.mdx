@@ -20,7 +20,7 @@ Running `lstk` with no arguments takes you through the entire startup flow autom
 
 :::note
 `lstk` supports core lifecycle commands (`start`, `stop`, `restart`, `logs`, `status`) along with state management via snapshots (`snapshot save`/`snapshot load`, `reset`).
-It also proxies developer tools at the emulator so they run against LocalStack with no `*local` wrapper installed: the AWS CLI (`lstk aws`), the Azure CLI (`lstk az`), Terraform (`lstk terraform`), the AWS CDK (`lstk cdk`), and the AWS SAM CLI (`lstk sam`).
+It also proxies developer tools so they run directly against LocalStack: the AWS CLI (`lstk aws`), the Azure CLI (`lstk az`), Terraform (`lstk terraform`), the AWS CDK (`lstk cdk`), and the AWS SAM CLI (`lstk sam`).
 :::
 
 ## Prerequisites
@@ -215,10 +215,10 @@ The `type` field in your `config.toml` selects which one:
 | `azure`     | `localstack/localstack-azure` | LocalStack Azure emulator.           |
 
 On the first interactive run, `lstk` prompts you to pick an emulator (`a` for AWS, `s` for Snowflake, `z` for Azure) and writes your choice to `config.toml`.
-In non-interactive mode the default `aws` emulator is used.
+In non-interactive mode the default `aws` emulator is used if no config file is found.
 
 Lifecycle commands operate on the emulators defined in your `config.toml`.
-Run a single `[[containers]]` block at a time; the AWS-specific commands (`status` resources, `aws`, `snapshot`, `reset`, `setup aws`) require an `aws` emulator to be configured.
+Run a single `[[containers]]` block at a time; the AWS-specific commands (`status` resources, `aws`, `reset`, `setup aws`) require an `aws` emulator to be configured.
 
 :::note
 The AWS emulator's license is validated by `lstk` before the container starts.
@@ -574,13 +574,18 @@ lstk az stop-interception
 
 :::caution
 Interception changes global state that affects every `az` command in any terminal.
-Prefer the isolated `lstk az <args>` mode unless you specifically need plain `az` to target LocalStack.
+Use the isolated `lstk az <args>` mode unless you specifically need plain `az` to target LocalStack.
 :::
 
 ### `terraform`
 
 Run Terraform against LocalStack, using LocalStack endpoints as AWS provider overrides.
 `lstk terraform` (alias `lstk tf`) generates a provider-override file and forwards your arguments to the real `terraform` binary.
+
+:::note
+`lstk terraform` currently targets the AWS emulator only.
+To use Terraform with the other emulators, see the relevant emulator docs.
+:::
 
 ```bash
 lstk terraform init
@@ -1124,7 +1129,7 @@ These options are available for all commands:
 |:--------------------|:---------------------------------------------------------------------------|
 | `--config <path>`   | Path to a specific TOML config file                                        |
 | `--non-interactive` | Disable the interactive TUI, use plain output                              |
-| `--json`            | Output in JSON format (only supported by some commands, e.g. the tool proxies and extensions) |
+| `--json`            | Output in JSON format (only supported by some commands, e.g. the tool proxies) |
 | `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
 | `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
 | `--no-snapshot`     | Skip auto-loading the configured snapshot (on `start`/bare `lstk`)          |
@@ -1227,16 +1232,6 @@ There is no `--offline` flag. Instead, `lstk` degrades gracefully when common en
 - **Telemetry and update checks** are best-effort and fail silently when offline.
 
 Pair this behavior with a custom [`image`](#custom-container-image) that points at an internal-registry mirror or a locally loaded image to run `lstk` in an air-gapped environment.
-
-## Extensions
-
-`lstk` supports Git-style extensions: when `lstk <name>` is not a built-in command or alias, `lstk` looks for an executable named `lstk-<name>` and runs it, forwarding all arguments after `<name>` verbatim, passing through stdin/stdout/stderr, and propagating its exit code.
-Built-in commands always take precedence — extension dispatch happens only for otherwise-unknown commands.
-
-Resolution order is built-ins → the directory containing the `lstk` executable (bundled extensions) → your `PATH`.
-`lstk` passes runtime context to the extension through two environment variables: `LSTK_EXT_API_VERSION` (an integer the extension checks before parsing) and `LSTK_EXT_CONTEXT` (a JSON object with the config directory, auth token, interactive/JSON flags, and the running emulators).
-
-There is no manifest — any resolvable `lstk-<name>` executable is the `<name>` extension.
 
 ## Shell completions
 
