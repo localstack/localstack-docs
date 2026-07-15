@@ -408,6 +408,9 @@ The token can be used in subsequent requests like so:
 curl -H "x-aws-ec2-metadata-token: <TOKEN>" -v http://169.254.169.254/latest/meta-data/
 ```
 
+You can use the [`ModifyInstanceMetadataOptions`](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyInstanceMetadataOptions.html) API to change the metadata options of a running instance, for example to require IMDSv2.
+Parameters that are omitted from the request retain their current value, matching AWS behavior.
+
 :::note
 IMDS IPv6 endpoint is currently not supported.
 :::
@@ -687,6 +690,26 @@ Any operation not listed below will use the mock VM manager.
 | `RebootInstances`     | Restarts a Libvirt domain |
 | `TerminateInstances`  | Stops and undefines a Libvirt domain |
 | `CreateVolume`        | Creates a sparse Libvirt volume |
+
+## IAM Condition Keys
+
+When [IAM Policy Enforcement](/aws/developer-tools/security-testing/iam-policy-enforcement/) is enabled, LocalStack supports the following EC2-specific condition keys, matching the behavior described in the [AWS condition keys reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonec2.html#amazonec2-policy-keys):
+
+- `ec2:MetadataHttpTokens` &mdash; the `HttpTokens` value of an instance's [metadata options](#instance-metadata-service), useful for enforcing IMDSv2.
+- `ec2:Attribute/<AttributeName>` &mdash; exposes request parameters (e.g. `HttpTokens` on `ModifyInstanceMetadataOptions`) as condition keys.
+
+For example, the following policy statement only allows launching instances when IMDSv2 is required:
+
+```json
+{
+    "Effect": "Allow",
+    "Action": "ec2:RunInstances",
+    "Resource": "arn:aws:ec2:*:*:instance/*",
+    "Condition": {
+        "StringEquals": { "ec2:MetadataHttpTokens": "required" }
+    }
+}
+```
 
 ## Resource Browser
 
