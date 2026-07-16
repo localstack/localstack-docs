@@ -86,7 +86,7 @@ Alternatively, you can also set the `AWS_PROFILE=localstack` environment variabl
 
 ### Installation
 
-To make use of `lstk aws`, you must install both the `lstk` CLI and the standard `aws` command from Amazon .
+To make use of `lstk aws`, you must install both the `lstk` CLI and the standard `aws` command from Amazon.
 
 1. To install `lstk`, follow the [`lstk` installation instructions](/aws/developer-tools/running-localstack/lstk/#installation).
 2. To install `aws`, follow the [official AWS CLI installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
