@@ -8,31 +8,27 @@ sidebar:
 
 ## Introduction
 
-The [AWS Command Line Interface (CLI)](https://aws.amazon.com/cli/) is a unified tool for creating and managing AWS services via a command line interface.
-All CLI commands applicable to services implemented within [LocalStack](/aws/connecting/aws-cli/) can be executed when operating against LocalStack.
+The [AWS Command Line Interface (CLI)](https://aws.amazon.com/cli/) is the standard tool from Amazon for creating and managing AWS services via a command line interface.
+Due to LocalStack's compatibility with the AWS APIs, this tool can also access LocalStack's emulated services.
 
-You can use the AWS CLI with LocalStack using either of the following approaches:
+You can use the AWS CLI with LocalStack using one or more of the following approaches:
 
-[AWS CLI](#aws-cli)
-
-[LocalStack AWS CLI](#localstack-aws-cli-awslocal)
+- [AWS CLI](#aws-cli) - Use the standard `aws` command with hand-crafted configuration options necessary to communicate with LocalStack.
+- [LocalStack AWS CLI](#localstack-aws-cli-lstk-aws) - Use the `lstk aws` command to set the configuration options for you.
+- [Using AWS CLI from a pre-built container](#using-aws-cli-from-a-pre-built-container) - Use Amazon's pre-built AWS CLI container image instead of installing `aws` locally.
 
 ## AWS CLI
 
-You can install `aws` by using the following command if it's not already installed.
+If you don't already have `aws` (version 2) installed, follow the [official AWS CLI installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
-```bash
-pip install awscli
-```
-
-You can configure the AWS CLI to redirect AWS API requests to LocalStack using two approaches:
+Once installed, you can configure the AWS CLI to redirect AWS API requests to LocalStack using two approaches:
 
 - [Configuring an endpoint URL](#configuring-an-endpoint-url)
 - [Configuring a custom profile](#configuring-a-custom-profile)
 
 ### Configuring an endpoint URL
 
-You can use AWS CLI with an endpoint URL by configuring test environment variables and include the `--endpoint-url=<localstack-url>` flag in your `aws` CLI commands.
+You can use AWS CLI with an endpoint URL by configuring environment variables and including the `--endpoint-url=<localstack-url>` flag in your `aws` CLI commands.
 For example:
 
 ```bash
@@ -80,86 +76,32 @@ aws s3 ls --profile localstack
 Alternatively, you can also set the `AWS_PROFILE=localstack` environment variable, in which case the `--profile localstack` parameter can be omitted in the commands above.
 :::
 
-## LocalStack AWS CLI (`awslocal`)
+## LocalStack AWS CLI (`lstk aws`)
 
-`awslocal` serves as a thin wrapper and a substitute for the standard `aws` command, enabling you to run AWS CLI commands within the LocalStack environment without specifying the `--endpoint-url` parameter or a profile.
+`lstk aws` serves as a thin wrapper and a substitute for the standard `aws` command, enabling you to run AWS CLI commands within the LocalStack environment without specifying the `--endpoint-url` parameter or a profile.
 
 ### Installation
 
-Install the `awslocal` command using the following command:
+To make use of `lstk aws`, you must install both the `lstk` CLI and the standard `aws` command from Amazon .
 
-```bash
-pip install awscli-local[ver1]
-```
-
-:::tip
-
-The above command installs the most recent version of the underlying AWS CLI version 1 (`awscli`) package.
-If you would rather manage your own `awscli` version (e.g., `v1` or `v2`) and only install the wrapper script, you can use the following command:
-
-```bash
-pip install awscli-local
-```
-
-:::
-
-:::note
-
-Automatic installation of AWS CLI version 2 is currently not supported yet (at the time of writing there is no official pypi package for `v2` available), but the `awslocal` technically also works with AWS CLI v2 (see [this section](#current-limitations) for more details).
-:::
+1. To install `lstk`, follow the [`lstk` installation instructions](/aws/developer-tools/running-localstack/lstk/#installation).
+2. To install `aws`, follow the [official AWS CLI installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
 ### Usage
 
-The `awslocal` command shares identical usage with the standard `aws` command.
-For comprehensive usage instructions, refer to the manual pages by running `awslocal help`.
+The `lstk aws` command shares identical usage with the standard `aws` command.
+For comprehensive usage instructions, refer to the manual pages by running `lstk aws help`.
 
 ```bash
-awslocal kinesis list-streams
+lstk aws kinesis list-streams
 ```
 
-### Configuration
 
-| Variable Name    | Description                                                                         |
-| ---------------- | ----------------------------------------------------------------------------------- |
-| AWS_ENDPOINT_URL | The endpoint URL to connect to (takes precedence over USE_SSL/LOCALSTACK_HOST)      |
-| LOCALSTACK_HOST  | (deprecated) A variable defining where to find LocalStack (default: localhost:4566) |
-| USE_SSL          | (deprecated) Whether to use SSL when connecting to LocalStack (default: False)      |
+## Using AWS CLI from a pre-built container
 
-### Current Limitations
+As an alternative to installing the `aws` command directly on your local machine, Amazon provides a [pre-built container image with the AWS CLI pre-installed](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-docker.html). This approach is most suitable when working in multi-container environments, rather than single-machine installations. If you take this approach, an extra step is required for communication with LocalStack, also running inside a container.
 
-Please note that there is a known limitation for using the `cloudformation package ...` command with the AWS CLI v2.
-The problem is that the AWS CLI v2 is [not available as a package on pypi.org](https://github.com/aws/aws-cli/issues/4947), but is instead shipped as a binary package that cannot be easily patched from `awslocal`.
-To work around this issue, you have 2 options:
-
-- Downgrade to the v1 AWS CLI (this is the recommended approach)
-- There is an unofficial way to install AWS CLI v2 from sources.
-  We do not recommend this, but it is technically possible.
-  Also, you should install these libraries in a Python virtualenv, to avoid version clashes with other libraries on your system:
-
-```bash
-virtualenv .venv
-. .venv/bin/activate
-pip install https://github.com/boto/botocore/archive/v2.zip https://github.com/aws/aws-cli/archive/v2.zip
-```
-
-Please also note there is a known limitation for issuing requests using
-`--no-sign-request` with the AWS CLI.
-LocalStack's routing mechanism depends on
-the signature of each request to identify the correct service for the request.
-Thus, adding the flag `--no-sign-requests` provokes your request to reach the
-wrong service.
-One possible way to address this is to use the `awslocal` CLI
-instead of AWS CLI.
-
-## AWS CLI v2
-
-Automatic installation of AWS CLI version 2 is currently not supported (at the time of writing there is no official pypi package for v2 available), but the awslocal technically also works with AWS CLI v2 (see this section for more details).
-
-### AWS CLI v2 with Docker and LocalStack
-
-By default, the container running [amazon/aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-docker.html) is isolated from `0.0.0.0:4566` on the host machine, that means that aws-cli cannot reach localstack through your shell.
-
-To ensure that the two docker containers can communicate create a network on the docker engine:
+By default, the AWS CLI container is isolated from `0.0.0.0:4566` on the host machine, which means the AWS CLI cannot reach LocalStack. To ensure the two docker containers can communicate create a network on the docker engine:
 
 ```bash
 docker network create localstack
@@ -175,7 +117,7 @@ networks:
       name: 'localstack'
 ```
 
-Run AWS Cli v2 docker container using this network (example):
+Run the AWS CLI v2 docker container using this network (example):
 
 ```bash
 docker run --network localstack --rm -it amazon/aws-cli --endpoint-url=http://localstack:4566 lambda list-functions
