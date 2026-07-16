@@ -17,6 +17,10 @@ You can use the AWS CLI with LocalStack using one or more of the following appro
 - [LocalStack AWS CLI](#localstack-aws-cli-lstk-aws) - Use the `lstk aws` command to set the configuration options for you.
 - [Using AWS CLI from a pre-built container](#using-aws-cli-from-a-pre-built-container) - Use Amazon's pre-built AWS CLI container image instead of installing `aws` locally.
 
+:::note
+`lstk aws` supersedes the older [`awslocal` wrapper script](/aws/connecting/infrastructure-as-code/deprecated-wrapper-scripts#awslocal), which is deprecated but still available if you need it.
+:::
+
 ## AWS CLI
 
 If you don't already have `aws` (version 2) installed, follow the [official AWS CLI installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
