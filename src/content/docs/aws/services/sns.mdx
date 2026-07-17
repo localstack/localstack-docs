@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 ## Getting started
 
 This guide is intended for users who wish to get more acquainted with SNS over LocalStack.
-It assumes you have basic knowledge of the AWS CLI (and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script).
+It assumes you have basic knowledge of the AWS CLI (and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command).
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an SNS topic, publish messages, and subscribe to the topic.
@@ -29,14 +29,14 @@ To create an SNS topic, use the [`CreateTopic`](https://docs.aws.amazon.com/sns/
 Run the following command to create a topic named `localstack-topic`:
 
 ```bash
-awslocal sns create-topic --name localstack-topic
+lstk aws sns create-topic --name localstack-topic
 ```
 
 You can set the SNS topic attribute using the SNS topic you created previously by using the [`SetTopicAttributes`](https://docs.aws.amazon.com/sns/latest/api/API_SetTopicAttributes.html) API.
 Run the following command to set the `DisplayName` attribute for the topic:
 
 ```bash
-awslocal sns set-topic-attributes \
+lstk aws sns set-topic-attributes \
    --topic-arn arn:aws:sns:us-east-1:000000000000:localstack-topic \
    --attribute-name DisplayName \
    --attribute-value MyTopicDisplayName
@@ -46,7 +46,7 @@ You can list all the SNS topics using the [`ListTopics`](https://docs.aws.amazon
 Run the following command to list all the SNS topics:
 
 ```bash
-awslocal sns list-topics
+lstk aws sns list-topics
 ```
 
 ### Get attributes and publish messages to SNS topic
@@ -55,7 +55,7 @@ You can get attributes for a single SNS topic using the [`GetTopicAttributes`](h
 Run the following command to get the attributes for the SNS topic:
 
 ```bash
-awslocal sns get-topic-attributes \
+lstk aws sns get-topic-attributes \
    --topic-arn arn:aws:sns:us-east-1:000000000000:localstack-topic
 ```
 
@@ -65,7 +65,7 @@ To publish messages to the SNS topic, create a new file named `messages.txt` in 
 Run the following command to publish messages to the SNS topic using the [`Publish`](https://docs.aws.amazon.com/sns/latest/api/API_Publish.html) API:
 
 ```bash
-awslocal sns publish \
+lstk aws sns publish \
    --topic-arn "arn:aws:sns:us-east-1:000000000000:localstack-topic" \
    --message file://message.txt
 ```
@@ -76,7 +76,7 @@ You can subscribe to the SNS topic using the [`Subscribe`](https://docs.aws.amaz
 Run the following command to subscribe to the SNS topic:
 
 ```bash
-awslocal sns subscribe \
+lstk aws sns subscribe \
    --topic-arn arn:aws:sns:us-east-1:000000000000:localstack-topic \
    --protocol email \
    --notification-endpoint test@gmail.com
@@ -86,7 +86,7 @@ You can configure the SNS Subscription attributes, using the `SubscriptionArn` r
 For example, run the following command to set the `RawMessageDelivery` attribute for the subscription:
 
 ```bash
-awslocal sns set-subscription-attributes \
+lstk aws sns set-subscription-attributes \
    --subscription-arn arn:aws:sns:us-east-1:000000000000:test-topic:b6f5e924-dbb3-41c9-aa3b-589dbae0cfff \
    --attribute-name RawMessageDelivery --attribute-value true
 ```
@@ -99,7 +99,7 @@ A Common technology to integrate with is SQS.
 First we need to ensure we create an SQS queue named `my-queue`:
 
 ```bash
-awslocal sqs create-queue --queue-name my-queue
+lstk aws sqs create-queue --queue-name my-queue
 ```
 
 ```bash title="Output"
@@ -111,7 +111,7 @@ awslocal sqs create-queue --queue-name my-queue
 Subscribe the SQS queue to the topic we created previously:
 
 ```bash
-awslocal sns subscribe \
+lstk aws sns subscribe \
     --topic-arn "arn:aws:sns:us-east-1:000000000000:localstack-topic" \
     --protocol sqs \
     --notification-endpoint "arn:aws:sqs:us-east-1:000000000000:my-queue"
@@ -126,7 +126,7 @@ awslocal sns subscribe \
 Sending a message to the queue, via the topic
 
 ```bash
-awslocal sns publish --topic-arn "arn:aws:sns:us-east-1:000000000000:localstack-topic" --message "hello"
+lstk aws sns publish --topic-arn "arn:aws:sns:us-east-1:000000000000:localstack-topic" --message "hello"
 {
     "MessageId": "5a1593ce-411b-44dc-861d-907daa05353b"
 }
@@ -135,7 +135,7 @@ awslocal sns publish --topic-arn "arn:aws:sns:us-east-1:000000000000:localstack-
 Check that our message has arrived:
 
 ```bash
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --queue-url "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/my-queue"
 ```
 
@@ -157,7 +157,7 @@ You can list all the SNS subscriptions using the [`ListSubscriptions`](https://d
 Run the following command to list all the SNS subscriptions:
 
 ```bash
-awslocal sns list-subscriptions
+lstk aws sns list-subscriptions
 ```
 
 ```bash title="Output"
@@ -177,7 +177,7 @@ awslocal sns list-subscriptions
 Then, use the ARN to unsubscribe
 
 ```bash
-awslocal sns unsubscribe \
+lstk aws sns unsubscribe \
     --subscription-arn "arn:aws:sns:us-east-1:000000000000:localstack-topic:636e2a73-0dda-4e09-9fdf-77f113d0edd8"
 ```
 
@@ -245,7 +245,7 @@ In this example, we will create a platform endpoint in SNS and publish a message
 Run the following commands to create a platform endpoint:
 
 ```bash
-awslocal sns create-platform-application \
+lstk aws sns create-platform-application \
     --name app-test \
     --platform APNS \
     --attributes {}
@@ -260,7 +260,7 @@ awslocal sns create-platform-application \
 Using the `PlatformApplicationArn` from the previous call:
 
 ```bash
-awslocal sns create-platform-endpoint \
+lstk aws sns create-platform-endpoint \
     --platform-application-arn "arn:aws:sns:us-east-1:000000000000:app/APNS/app-test" \
     --token my-fake-token
 ```
@@ -276,7 +276,7 @@ awslocal sns create-platform-endpoint \
 Publish a message to the platform endpoint:
 
 ```bash
-awslocal sns publish \
+lstk aws sns publish \
     --target-arn "arn:aws:sns:us-east-1:000000000000:endpoint/APNS/app-test/c25f353e-856b-4b02-a725-6bde35e6e944" \
     --message '{"APNS_PLATFORM": "{\"aps\": {\"content-available\": 1}}"}' \
     --message-structure json
@@ -366,7 +366,7 @@ In this example, we will publish a message to a phone number and retrieve it:
 Publish a message to a phone number:
 
 ```bash
-awslocal sns publish \
+lstk aws sns publish \
     --phone-number "" \
     --message "Hello World!"
 ```
@@ -457,7 +457,7 @@ In this example, we will subscribe to an external SNS integration not confirming
 Create an SNS topic, and create a subscription to a external HTTP SNS integration:
 
 ```bash
-awslocal sns create-topic --name "test-external-integration"
+lstk aws sns create-topic --name "test-external-integration"
 ```
 
 ```bash title="Output"
@@ -469,7 +469,7 @@ awslocal sns create-topic --name "test-external-integration"
 We now create an HTTP SNS subscription to an external endpoint:
 
 ```bash
-awslocal sns subscribe \
+lstk aws sns subscribe \
     --topic-arn "arn:aws:sns:us-east-1:000000000000:test-external-integration" \
     --protocol https \
     --notification-endpoint "https://api.opsgenie.com/v1/json/amazonsns?apiKey=b13fd59a-9" \
@@ -486,7 +486,7 @@ Now, we can check the `PendingConfirmation` status of our subscription, showing 
 You will need to use the `SubscriptionArn` from the response of your subscribe call:
 
 ```bash
-awslocal sns get-subscription-attributes \
+lstk aws sns get-subscription-attributes \
     --subscription-arn "arn:aws:sns:us-east-1:000000000000:test-external-integration:c3ab47f3-b964-461d-84eb-903d8765b0c8"
 ```
 
@@ -523,7 +523,7 @@ curl "http://localhost:4566/_aws/sns/subscription-tokens/arn:aws:sns:us-east-1:0
 We can now use this token to manually confirm the subscription:
 
 ```bash
-awslocal sns confirm-subscription \
+lstk aws sns confirm-subscription \
     --topic-arn "arn:aws:sns:us-east-1:000000000000:test-external-integration" \
     --token 75732d656173742d312f3b875fb03b875fb03b875fb03b875fb03b875fb03b87
 ```
@@ -537,7 +537,7 @@ awslocal sns confirm-subscription \
 We can now finally verify the subscription has been confirmed:
 
 ```bash
-awslocal sns get-subscription-attributes \
+lstk aws sns get-subscription-attributes \
     --subscription-arn "arn:aws:sns:us-east-1:000000000000:test-external-integration:c3ab47f3-b964-461d-84eb-903d8765b0c8"
 ```
 

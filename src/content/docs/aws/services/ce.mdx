@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Cost Explorer and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Cost Explorer and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to mock the Cost Explorer APIs with the AWS CLI.
@@ -28,7 +28,7 @@ You can create a Cost Category definition using the [`CreateCostCategoryDefiniti
 The following example creates a Cost Category definition using an empty rule condition of type "REGULAR":
 
 ```bash
-awslocal ce create-cost-category-definition --name test \
+lstk aws ce create-cost-category-definition --name test \
     --rule-version "CostCategoryExpression.v1" --rules '[{"Value": "test", "Rule": {}, "Type": "REGULAR"}]'
 ```
 
@@ -42,7 +42,7 @@ You can describe the Cost Category definition using the [`DescribeCostCategoryDe
 Run the following command:
 
 ```bash
-awslocal ce describe-cost-category-definition \
+lstk aws ce describe-cost-category-definition \
     --cost-category-arn arn:aws:ce::000000000000:costcategory/test
 ```
 
@@ -69,7 +69,7 @@ You can add an alert subscription to a cost anomaly detection monitor to define 
 The following example creates a cost anomaly subscription:
 
 ```bash
-awslocal ce create-anomaly-subscription --anomaly-subscription '{
+lstk aws ce create-anomaly-subscription --anomaly-subscription '{
     "AccountId": "12345",
     "SubscriptionName": "sub1",
     "Frequency": "DAILY",
@@ -89,7 +89,7 @@ You can retrieve the cost anomaly subscriptions using the [`GetAnomalySubscripti
 Run the following command:
 
 ```bash
-awslocal ce get-anomaly-subscriptions
+lstk aws ce get-anomaly-subscriptions
 ```
 
 ```bash title="Output"
@@ -114,7 +114,7 @@ You can create a new cost anomaly detection subscription with the requested type
 The following example creates a cost anomaly monitor:
 
 ```bash
-awslocal ce create-anomaly-monitor --anomaly-monitor '{
+lstk aws ce create-anomaly-monitor --anomaly-monitor '{
     "MonitorName": "mon5463",
     "MonitorType": "DIMENSIONAL"
 }'
@@ -130,7 +130,7 @@ You can retrieve the cost anomaly monitors using the [`GetAnomalyMonitors`](http
 Run the following command:
 
 ```bash
-awslocal ce get-anomaly-monitors
+lstk aws ce get-anomaly-monitors
 ```
 
 ```bash title="Output"

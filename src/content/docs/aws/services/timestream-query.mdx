@@ -20,27 +20,27 @@ The supported APIs are available on our API Coverage Page ([Timestream Query](#a
 
 ## Getting Started
 
-The following example illustrates the basic operations, using the [`awslocal`](https://github.com/localstack/awscli-local) command line.
+The following example illustrates the basic operations, using the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command line.
 
 First, we create a test database and table:
 
 ```bash
-awslocal timestream-write create-database --database-name testDB
-awslocal timestream-write create-table --database-name testDB --table-name testTable
+lstk aws timestream-write create-database --database-name testDB
+lstk aws timestream-write create-table --database-name testDB --table-name testTable
 ```
 
 We can then add a few records with a timestamp, measure name, and value to the table:
 
 ```bash
-awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"60","TimeUnit":"SECONDS","Time":"1636986409"}]'
-awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"80","TimeUnit":"SECONDS","Time":"1636986412"}]'
-awslocal timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"70","TimeUnit":"SECONDS","Time":"1636986414"}]'
+lstk aws timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"60","TimeUnit":"SECONDS","Time":"1636986409"}]'
+lstk aws timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"80","TimeUnit":"SECONDS","Time":"1636986412"}]'
+lstk aws timestream-write write-records --database-name testDB --table-name testTable --records '[{"MeasureName":"cpu","MeasureValue":"70","TimeUnit":"SECONDS","Time":"1636986414"}]'
 ```
 
 Finally, we can run a query to retrieve the timeseries data (or aggregate values) from the table:
 
 ```bash
-awslocal timestream-query query --query-string "SELECT CREATE_TIME_SERIES(time, measure_value::double) as cpu FROM testDB.timeStreamTable WHERE measure_name='cpu'"
+lstk aws timestream-query query --query-string "SELECT CREATE_TIME_SERIES(time, measure_value::double) as cpu FROM testDB.timeStreamTable WHERE measure_name='cpu'"
 ```
 
 ```bash title="Output"

@@ -19,7 +19,7 @@ The list of supported APIs can be found on the [API Coverage section](#api-cover
 
 ## Getting started
 
-This guide is designed for users new to EC2 and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to EC2 and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 We will demonstrate how to create an EC2 instance that runs a simple Python web server.
 LocalStack for AWS running on a Linux host is required as network access to containers is not possible on macOS.
 
@@ -33,7 +33,7 @@ To create a key pair, you can use the [`CreateKeyPair`](https://docs.aws.amazon.
 Run the following command to create the key pair and pipe the output to a file named `key.pem`:
 
 ```bash
-awslocal ec2 create-key-pair \
+lstk aws ec2 create-key-pair \
     --key-name my-key \
     --query 'KeyMaterial' \
     --output text | tee key.pem
@@ -69,7 +69,7 @@ icacls.exe key.pem /inheritance:r
 If you already have an SSH public key that you wish to use, such as the one located in your home directory at `~/.ssh/id_rsa.pub`, you can import it instead.
 
 ```bash
-awslocal ec2 import-key-pair --key-name my-key --public-key-material "$(cat ~/.ssh/id_rsa.pub)"
+lstk aws ec2 import-key-pair --key-name my-key --public-key-material "$(cat ~/.ssh/id_rsa.pub)"
 ```
 
 If you only have the SSH private key, a public key can be generated using the following command, and then imported:
@@ -85,7 +85,7 @@ You can add rules to the security group using the [`AuthorizeSecurityGroupIngres
 Run the following command to add a rule to allow inbound traffic on port 8000:
 
 ```bash
-awslocal ec2 authorize-security-group-ingress \
+lstk aws ec2 authorize-security-group-ingress \
     --group-id default \
     --protocol tcp \
     --port 8000 \
@@ -100,7 +100,7 @@ You can fetch the Security Group ID using the [`DescribeSecurityGroups`](https:/
 Run the following command to fetch the Security Group ID:
 
 ```bash
-awslocal ec2 describe-security-groups
+lstk aws ec2 describe-security-groups
 ```
 
 ```bash title="Output"
@@ -132,7 +132,7 @@ You can now run an EC2 instance using the [`RunInstances`](https://docs.aws.amaz
 Run the following command to run an EC2 instance by adding the appropriate Security Group ID that we fetched in the previous step:
 
 ```bash
-awslocal ec2 run-instances \
+lstk aws ec2 run-instances \
     --image-id ami-df5de72bdb3b \
     --count 1 \
     --instance-type t3.nano \
@@ -147,12 +147,12 @@ You can now open the LocalStack logs to find the IP address of the locally emula
 Run the following command to open the LocalStack logs:
 
 ```bash
-localstack logs
+lstk logs
 ```
 
 ```bash title="Output"
-2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f will be accessible via SSH at: 127.0.0.1:12862, 172.17.0.4:22
-2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f port mappings (container -> host): {'8000/tcp': 29043, '22/tcp': 12862}
+emulator | 2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f will be accessible via SSH at: 127.0.0.1:12862, 172.17.0.4:22
+emulator | 2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f port mappings (container -> host): {'8000/tcp': 29043, '22/tcp': 12862}
 ```
 
 You can now use the IP address to test the Python Web Server.
@@ -186,7 +186,7 @@ This section assumes that you have created or imported an SSH key pair named `my
 When running the EC2 instance, make sure to pass the `--key-name` parameter to the command:
 
 ```bash
-awslocal ec2 run-instances --key-name my-key ...
+lstk aws ec2 run-instances --key-name my-key ...
 ```
 
 Once the instance is up and running, we can use the `ssh` command to set up an SSH connection.
@@ -260,7 +260,7 @@ All LocalStack-managed Docker AMIs bear the resource tag `ec2_vm_manager:docker`
 These can be listed using:
 
 ```bash
-awslocal ec2 describe-images \
+lstk aws ec2 describe-images \
     --filters Name=tag:ec2_vm_manager,Values=docker
 ```
 
@@ -318,12 +318,12 @@ The system supports up to 32 ingress ports.
 This constraint is in place to prevent exhausting free ports on the host.
 
 ```bash
-awslocal ec2 authorize-security-group-ingress \
+lstk aws ec2 authorize-security-group-ingress \
   --group-id default \
   --protocol tcp \
   --port 8080
 
-awslocal ec2 describe-security-groups --group-names default
+lstk aws ec2 describe-security-groups --group-names default
 ```
 
 The port mapping details are provided in the logs when the instance starts up.
@@ -359,7 +359,7 @@ EOF
 We can then start an EC2 instance, specifying a block device mapping under the device name `/ebs-dev/sda1`, and pointing to our `init.sh` user data script:
 
 ```bash
-awslocal ec2 run-instances --image-id ami-ff0fea8310f3 --count 1 --instance-type t3.nano \
+lstk aws ec2 run-instances --image-id ami-ff0fea8310f3 --count 1 --instance-type t3.nano \
     --block-device-mapping '{"DeviceName":"/ebs-dev/sda1","Ebs":{"VolumeSize":10}}' \
     --user-data file://init.sh
 ```
@@ -573,7 +573,7 @@ Only the images that follow the above naming scheme will be recognised by LocalS
 These AMIs will also have the resource tag `ec2_vm_manager:libvirt`.
 
 ```bash
-awslocal ec2 describe-images --filters Name=tag:ec2_vm_manager,Values=libvirt
+lstk aws ec2 describe-images --filters Name=tag:ec2_vm_manager,Values=libvirt
 ```
 
 ### Instances

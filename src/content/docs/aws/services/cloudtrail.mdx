@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to CloudTrail and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to CloudTrail and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to enable S3 object logging to CloudTrail using AWS CLI.
@@ -28,7 +28,7 @@ Before you create a trail, you need to create an S3 bucket where CloudTrail can 
 You can use the [`mb`](https://docs.aws.amazon.com/cli/latest/reference/s3/mb.html) command to create a bucket:
 
 ```bash
-awslocal s3 mb s3://my-bucket
+lstk aws s3 mb s3://my-bucket
 ```
 
 ### Create a trail
@@ -38,7 +38,7 @@ You can use the [`CreateTrail`](https://docs.aws.amazon.com/awscloudtrail/latest
 Run the following command to create a trail:
 
 ```bash
-awslocal cloudtrail create-trail \
+lstk aws cloudtrail create-trail \
     --name MyTrail \
     --s3-bucket-name my-bucket
 ```
@@ -50,7 +50,7 @@ You can use the [`StartLogging`](https://docs.aws.amazon.com/awscloudtrail/lates
 Run the following command to enable logging:
 
 ```bash
-awslocal cloudtrail start-logging --name MyTrail
+lstk aws cloudtrail start-logging --name MyTrail
 ```
 
 You can further configure event selectors for the trail.
@@ -59,7 +59,7 @@ You can use the [`PutEventSelectors`](https://docs.aws.amazon.com/awscloudtrail/
 Run the following command to configure event selectors:
 
 ```bash
-awslocal cloudtrail put-event-selectors \
+lstk aws cloudtrail put-event-selectors \
     --trail-name MyTrail \
     --event-selectors '[{"ReadWriteType": "All", "IncludeManagementEvents":true, "DataResources": [{"Type": "AWS::S3::Object", "Values": ["arn:aws:s3:::my-bucket/"]}]}]'
 ```
@@ -68,7 +68,7 @@ You can verify if your configuration is correct by using the [`GetEventSelectors
 Run the following command to verify your configuration:
 
 ```bash
-awslocal cloudtrail get-event-selectors \
+lstk aws cloudtrail get-event-selectors \
     --trail-name MyTrail
 ```
 
@@ -99,8 +99,8 @@ You can use the [`cp`](https://docs.aws.amazon.com/cli/latest/reference/s3/cp.ht
 
 ```bash
 echo "hello world" > /tmp/hello-world
-awslocal s3 cp /tmp/hello-world s3://my-bucket/hello-world
-awslocal s3 ls s3://my-bucket
+lstk aws s3 cp /tmp/hello-world s3://my-bucket/hello-world
+lstk aws s3 ls s3://my-bucket
 ```
 
 You can verify that the object was created in the S3 bucket.
@@ -108,7 +108,7 @@ You can also verify that the object level event was logged by CloudTrail using t
 Run the following command to verify the event:
 
 ```bash
-awslocal cloudtrail lookup-events \
+lstk aws cloudtrail lookup-events \
     --lookup-attributes AttributeKey=EventName,AttributeValue=PutObject \
     --max-results 1
 ```

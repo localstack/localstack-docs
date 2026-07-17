@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Managed Streaming for Kafka and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Managed Streaming for Kafka and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to configure an MSK Cluster locally, create a Kafka topic, and produce and consume messages.
@@ -45,7 +45,7 @@ Create the file and add the following content to it:
 Run the following command to create the cluster:
 
 ```bash
-awslocal kafka create-cluster \
+lstk aws kafka create-cluster \
     --cluster-name "EventsCluster" \
     --broker-node-group-info file://brokernodegroupinfo.json \
     --kafka-version "2.8.0" \
@@ -65,7 +65,7 @@ You can describe the cluster using the [`DescribeCluster`](https://docs.aws.amaz
 Run the following command, replacing `ClusterArn` with the Amazon Resource Name (ARN) you obtained above when you created cluster.
 
 ```bash
-awslocal kafka describe-cluster \
+lstk aws kafka describe-cluster \
     --cluster-arn "arn:aws:kafka:us-east-1:000000000000:cluster/EventsCluster/b154d18a-8ecb-4691-96b2-50348357fc2f-25"
 ```
 
@@ -147,7 +147,7 @@ ssl.truststore.location=/tmp/kafka.client.truststore.jks
 Run the following command, replacing `ClusterArn` with the Amazon Resource Name (ARN) you have.
 
 ```bash
-awslocal kafka get-bootstrap-brokers \
+lstk aws kafka get-bootstrap-brokers \
     --cluster-arn ClusterArn
 ```
 
@@ -197,7 +197,7 @@ The configuration for this mapping sets the starting position of the topic to `L
 Run the following command to use the [`CreateEventSourceMapping`](https://docs.aws.amazon.com/lambda/latest/dg/API_CreateEventSourceMapping.html) API by specifying the Event Source ARN, the topic name, the starting position, and the Lambda function name.
 
 ```bash
-awslocal lambda create-event-source-mapping \
+lstk aws lambda create-event-source-mapping \
   --event-source-arn arn:aws:kafka:us-east-1:000000000000:cluster/EventsCluster \
   --topics LocalMSKTopic \
   --starting-position LATEST \
@@ -236,13 +236,13 @@ To do so, you must first obtain the ARN of the cluster you want to delete.
 Run the following command to list all the clusters in the region:
 
 ```bash
-awslocal kafka list-clusters --region us-east-1
+lstk aws kafka list-clusters --region us-east-1
 ```
 
 To initiate the deletion of a cluster, select the corresponding `ClusterARN` from the list of clusters, and then execute the following command:
 
 ```bash
-awslocal kafka delete-cluster --cluster-arn ClusterArn
+lstk aws kafka delete-cluster --cluster-arn ClusterArn
 ```
 
 ## Resource Browser

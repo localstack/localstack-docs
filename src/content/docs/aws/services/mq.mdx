@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to MQ and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local)  wrapper script.
+This guide is designed for users new to MQ and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an MQ broker and send a message to a sample queue.
@@ -28,7 +28,7 @@ You can create a broker using the [`CreateBroker`](https://docs.aws.amazon.com/a
 Run the following command to create a broker named `test-broker` with the following configuration:
 
 ```bash
-awslocal mq create-broker \
+lstk aws mq create-broker \
     --broker-name test-broker \
     --deployment-mode SINGLE_INSTANCE \
     --engine-type ACTIVEMQ \
@@ -52,7 +52,7 @@ You can use the [`DescribeBroker`](https://docs.aws.amazon.com/amazon-mq/latest/
 Run the following command to get information about the broker we created above:
 
 ```bash
-awslocal mq describe-broker --broker-id b-f503abb7-66bc-47fb-b1a9-8d8c51ef6545
+lstk aws mq describe-broker --broker-id b-f503abb7-66bc-47fb-b1a9-8d8c51ef6545
 ```
 
 ```bash title="Output"

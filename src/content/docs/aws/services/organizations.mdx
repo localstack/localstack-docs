@@ -17,49 +17,49 @@ Organizations is available over LocalStack for AWS and the supported APIs are av
 ## Getting started
 
 In this getting started guide, you'll learn how to create your local AWS Organization and configure it with member accounts.
-This guide is intended for users who wish to get more acquainted with Organizations, and assumes you have basic knowledge of the AWS CLI (and our `awslocal` wrapper script).
+This guide is intended for users who wish to get more acquainted with Organizations, and assumes you have basic knowledge of the AWS CLI (and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command).
 To get started, start your LocalStack instance using your preferred method:
 
 1. Create a new local AWS Organization with the feature set flag set to `ALL`:
    ```bash
-   awslocal organizations create-organization --feature-set ALL
+   lstk aws organizations create-organization --feature-set ALL
    ```
 
 2. You can now run the `describe-organization` command to see the details of your organization:
    ```bash
-   awslocal organizations describe-organization
+   lstk aws organizations describe-organization
    ```
 
 3. You can now create an AWS account that would be a member of your organization:
    ```bash
-   awslocal organizations create-account \
+   lstk aws organizations create-account \
       --email example@example.com \
       --account-name "Test Account"
    ```
    Since LocalStack essentially mocks AWS, the account creation is instantaneous.
   You can now run the `list-accounts` command to see the details of your organization:
    ```bash
-   awslocal organizations list-accounts
+   lstk aws organizations list-accounts
    ```
 
 4. You can also remove a member account from your organization:
    ```bash
-   awslocal organizations remove-account-from-organization --account-id <ACCOUNT_ID>
+   lstk aws organizations remove-account-from-organization --account-id <ACCOUNT_ID>
    ```
 
 5. To close an account in your organization, you can run the `close-account` command:
    ```bash
-   awslocal organizations close-account --account-id 000000000000
+   lstk aws organizations close-account --account-id 000000000000
    ```
 
 6. You can use organizational units (OUs) to group accounts together to administer as a single unit.
   To create an OU, you can run:
    ```bash
-   awslocal organizations list-roots
-   awslocal organizations list-children \
+   lstk aws organizations list-roots
+   lstk aws organizations list-children \
         --parent-id <PARENT-ID> \
         --child-type ORGANIZATIONAL_UNIT
-   awslocal organizations create-organizational-unit \
+   lstk aws organizations create-organizational-unit \
         --parent-id <PARENT-ID> \
         --name New-Child-OU
    ```
@@ -67,25 +67,25 @@ To get started, start your LocalStack instance using your preferred method:
 7. Before you can create and attach a policy to your organization, you must enable a policy type.
   To enable a policy type, you can run:
    ```bash
-   awslocal organizations enable-policy-type \
+   lstk aws organizations enable-policy-type \
         --root-id <ROOT-ID> \
         --policy-type SERVICE_CONTROL_POLICY
    ```
    To disable a policy type, you can run:
    ```bash
-   awslocal organizations disable-policy-type \
+   lstk aws organizations disable-policy-type \
         --root-id <ROOT-ID> \
         --policy-type SERVICE_CONTROL_POLICY
    ```
 
 8. To view the policies that are attached to your organization, you can run:
    ```bash
-   awslocal organizations list-policies --filter SERVICE_CONTROL_POLICY
+   lstk aws organizations list-policies --filter SERVICE_CONTROL_POLICY
    ```
 
 9. To delete an organization, you can run:
    ```bash
-   awslocal organizations delete-organization
+   lstk aws organizations delete-organization
    ```
 
 ## Service Control Policy enforcement
@@ -116,7 +116,7 @@ Consider a member account that lists the objects of an S3 bucket in another acco
 
 ```bash
 # Run as the member (source) account
-awslocal s3api list-objects-v2 --bucket cross-account-bucket
+lstk aws s3api list-objects-v2 --bucket cross-account-bucket
 ```
 
 The default `FullAWSAccess` SCP lets the request succeed on the bucket policy.
@@ -140,7 +140,7 @@ You can use the [IAM Policy Simulator](https://docs.aws.amazon.com/IAM/latest/Us
 LocalStack evaluates SCPs during policy simulation, so you can validate SCP behavior with [`SimulatePrincipalPolicy`](https://docs.aws.amazon.com/IAM/latest/APIReference/API_SimulatePrincipalPolicy.html) before making live requests.
 
 ```bash
-awslocal iam simulate-principal-policy \
+lstk aws iam simulate-principal-policy \
    --policy-source-arn arn:aws:iam::111111111111:user/test \
    --action-names s3:ListBucket \
    --resource-arns arn:aws:s3:::cross-account-bucket
@@ -178,7 +178,7 @@ LocalStack instead mirrors the behavior observed against real AWS: the enforced 
 For example, the following policy is rejected because it includes a `Principal` element, which is not permitted in an SCP:
 
 ```bash
-awslocal organizations create-policy \
+lstk aws organizations create-policy \
     --name "InvalidSCP" \
     --description "SCP with a Principal element" \
     --type SERVICE_CONTROL_POLICY \

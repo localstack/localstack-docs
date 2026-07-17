@@ -19,7 +19,7 @@ The supported APIs are available on the API coverage section for [S3](#api-cover
 
 ## Getting started
 
-This guide is designed for users new to S3 and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to S3 and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create an S3 bucket, manage S3 objects, and generate pre-signed URLs for S3 objects.
@@ -30,14 +30,14 @@ You can create an S3 bucket using the [`CreateBucket`](https://docs.aws.amazon.c
 Run the following command to create an S3 bucket named `sample-bucket`:
 
 ```bash
-awslocal s3api create-bucket --bucket sample-bucket
+lstk aws s3api create-bucket --bucket sample-bucket
 ```
 
 You can list your S3 buckets using the [`ListBuckets`](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-buckets.html) API.
 Run the following command to list your S3 buckets:
 
 ```bash
-awslocal s3api list-buckets
+lstk aws s3api list-buckets
 ```
 
 ```bash title="Output"
@@ -62,7 +62,7 @@ Download a random image from the internet and save it as `image.jpg`.
 Run the following command to upload the file to your S3 bucket:
 
 ```bash
-awslocal s3api put-object \
+lstk aws s3api put-object \
   --bucket sample-bucket \
   --key image.jpg \
   --body image.jpg
@@ -72,7 +72,7 @@ You can list the objects in your S3 bucket using the [`ListObjects`](https://doc
 Run the following command to list the objects in your S3 bucket:
 
 ```bash
-awslocal s3api list-objects \
+lstk aws s3api list-objects \
   --bucket sample-bucket
 ```
 
@@ -99,7 +99,7 @@ If your image has been uploaded successfully, you will see the following output:
 Run the following command to upload a file named `index.html` to your S3 bucket:
 
 ```bash
-awslocal s3api put-object --bucket sample-bucket --key index.html --body index.html
+lstk aws s3api put-object --bucket sample-bucket --key index.html --body index.html
 ```
 
 ```bash title="Output"
@@ -116,7 +116,7 @@ Pre-signed URL allows anyone to retrieve the S3 object with an HTTP GET request.
 Run the following command to generate a pre-signed URL for your S3 object:
 
 ```bash
-awslocal s3 presign s3://sample-bucket/image.jpg
+lstk aws s3 presign s3://sample-bucket/image.jpg
 ```
 
 You will see a generated pre-signed URL for your S3 object.
@@ -161,7 +161,7 @@ It would allow your local application to communicate directly with an S3 bucket 
 By default, LocalStack will apply specific CORS rules to all requests to allow you to display and access your resources through [LocalStack Web Application](https://app.localstack.cloud).
 If no CORS rules are configured for your S3 bucket, LocalStack will apply default rules unless specified otherwise.
 
-To configure CORS rules for your S3 bucket, you can use the `awslocal` wrapper.
+To configure CORS rules for your S3 bucket, you can use the `lstk aws` command.
 Optionally, you can run a local web application on [localhost:3000](http://localhost:3000).
 You can emulate the same behaviour with an AWS SDK or an integration you use.
 Follow this step-by-step guide to configure CORS rules on your S3 bucket.
@@ -169,7 +169,7 @@ Follow this step-by-step guide to configure CORS rules on your S3 bucket.
 Run the following command on your terminal to create your S3 bucket:
 
 ```bash
-awslocal s3api create-bucket --bucket cors-bucket
+lstk aws s3api create-bucket --bucket cors-bucket
 ```
 
 ```bash title="Output"
@@ -202,13 +202,13 @@ Save the file locally with a name of your choice, for example, `cors-config.json
 Run the following command to apply the CORS configuration to your S3 bucket:
 
 ```bash
-awslocal s3api put-bucket-cors --bucket cors-bucket --cors-configuration file://cors-config.json
+lstk aws s3api put-bucket-cors --bucket cors-bucket --cors-configuration file://cors-config.json
 ```
 
 You can further verify that the CORS configuration was applied successfully by running the following command:
 
 ```bash
-awslocal s3api get-bucket-cors --bucket cors-bucket
+lstk aws s3api get-bucket-cors --bucket cors-bucket
 ```
 
 On applying the configuration successfully, you should see the same JSON configuration file you created earlier.
@@ -237,8 +237,8 @@ We can edit the JSON file `cors-config.json` you created earlier with the follow
 You can now run the same steps as before to update the CORS configuration and verify if it is applied correctly:
 
 ```bash
-awslocal s3api put-bucket-cors --bucket cors-bucket --cors-configuration file://cors-config.json
-awslocal s3api get-bucket-cors --bucket cors-bucket
+lstk aws s3api put-bucket-cors --bucket cors-bucket --cors-configuration file://cors-config.json
+lstk aws s3api get-bucket-cors --bucket cors-bucket
 ```
 
 You can try again to upload files in your bucket from the [LocalStack Web Application](https://app.localstack.cloud) and it should work.

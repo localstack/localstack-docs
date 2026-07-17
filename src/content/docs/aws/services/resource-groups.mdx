@@ -20,7 +20,7 @@ For tag-centric operations across AWS resources, see the [Resource Groups Taggin
 
 ## Getting Started
 
-This guide is designed for users new to Resource Groups and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Resource Groups and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Resource Group using the AWS CLI.
@@ -37,7 +37,7 @@ Use the [`CreateGroup`](https://docs.aws.amazon.com/resource-groups/latest/APIRe
 Run the following command to create a Resource Group named `my-resource-group`:
 
 ```bash
-awslocal resource-groups create-group \
+lstk aws resource-groups create-group \
     --name my-resource-group \
     --resource-query '{"Type":"TAG_FILTERS_1_0","Query":"{\"ResourceTypeFilters\":[\"AWS::EC2::Instance\"],\"TagFilters\":[{\"Key\":\"Stage\",\"Values\":[\"Test\"]}]}"}'
 ```
@@ -50,7 +50,7 @@ To update a Resource Group, use the [`UpdateGroup`](https://docs.aws.amazon.com/
 Execute the following command to update the Resource Group `my-resource-group`:
 
 ```bash
-awslocal resource-groups update-group \
+lstk aws resource-groups update-group \
     --group-name my-resource-group \
     --description "EC2 S3 buckets and RDS DBs that we are using for the test stage"
 ```
@@ -59,7 +59,7 @@ Furthermore, you can also update the query and tags associated with a Resource G
 Run the following command to update the query and tags of the Resource Group `my-resource-group`:
 
 ```bash
-awslocal resource-groups update-group-query \
+lstk aws resource-groups update-group-query \
     --group-name my-resource-group \
     --resource-query '{"Type":"TAG_FILTERS_1_0","Query":"{\"ResourceTypeFilters\":[\"AWS::EC2::Instance\",\"AWS::S3::Bucket\",\"AWS::RDS::DBInstance\"],\"TagFilters\":[{\"Key\":\"Stage\",\"Values\":[\"Test\"]}]}"}'
 ```
@@ -70,7 +70,7 @@ To delete a Resource Group, use the [`DeleteGroup`](https://docs.aws.amazon.com/
 Run the following command to delete the Resource Group `my-resource-group`:
 
 ```bash
-awslocal resource-groups delete-group \
+lstk aws resource-groups delete-group \
     --group-name my-resource-group
 ```
 
