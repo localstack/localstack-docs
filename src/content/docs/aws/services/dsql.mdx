@@ -13,7 +13,7 @@ Aurora DSQL is a serverless, distributed, PostgreSQL-compatible database service
 It offers active-active high availability and is designed for transactional workloads that require scalability without the operational overhead of managing database infrastructure.
 
 LocalStack allows you to use the Aurora DSQL APIs to create and manage clusters, tags, resource policies, and streams in your local environment.
-The data plane is backed by an embedded PostgreSQL instance, so you can connect to a cluster and run SQL against it.
+The data plane is backed by an embedded PostgreSQL instance, so you can connect to a cluster and run SQL against it, including DSQL-specific dialect such as `CREATE INDEX ASYNC` and the `sys.jobs` system view.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Aurora DSQL's integration with LocalStack.
 
 ## Getting started
@@ -266,11 +266,70 @@ awslocal dsql get-vpc-endpoint-service-name --identifier 8a71d298-c086-4fb4-a698
 }
 ```
 
+## SQL dialect
+
+Aurora DSQL is PostgreSQL wire-compatible but adds dialect-specific DDL that vanilla Postgres rejects.
+LocalStack accepts the DSQL-specific statements that applications commonly rely on so DSQL-targeted apps can run against the emulator.
+
+### Asynchronous indexes
+
+On real Aurora DSQL, [`CREATE INDEX ASYNC`](https://docs.aws.amazon.com/aurora-dsql/latest/userguide/working-with-create-index-async.html) (and `CREATE UNIQUE INDEX ASYNC`) submits a background index build, returns a `job_id` immediately, and records the job in the [`sys.jobs`](https://docs.aws.amazon.com/aurora-dsql/latest/userguide/working-with-systems-tables.html) system view for the application to poll.
+
+LocalStack accepts the same syntax.
+The index is built synchronously under the hood; the observable result matches AWS: a `job_id` is returned, the index exists afterwards, and `sys.jobs` reports the job as `completed` with `job_type` `INDEX_BUILD`.
+
+Connect to the cluster as shown in [Connect to the cluster](#connect-to-the-cluster), then run:
+
+```sql
+CREATE TABLE departments (name varchar(255) PRIMARY KEY, manager varchar(255));
+INSERT INTO departments (name, manager) VALUES ('HR', 'John Doe');
+
+CREATE INDEX ASYNC idx_dept_name_manager ON departments (name, manager);
+```
+
+```bash title="Output"
+                job_id
+------------------------------------
+ a1b2c3d4e5f6g7h8i9j0k1l2m3
+(1 row)
+```
+
+Query `sys.jobs` to inspect the job, or call `sys.wait_for_job` to wait until it reports completion:
+
+```sql
+SELECT job_id, status, job_type, object_name FROM sys.jobs;
+SELECT sys.wait_for_job('a1b2c3d4e5f6g7h8i9j0k1l2m3');
+```
+
+```bash title="Output"
+              job_id              |  status   |  job_type   |     object_name
+----------------------------------+-----------+-------------+---------------------
+ a1b2c3d4e5f6g7h8i9j0k1l2m3       | completed | INDEX_BUILD | idx_dept_name_manager
+(1 row)
+
+ wait_for_job
+--------------
+ t
+(1 row)
+```
+
+`CREATE UNIQUE INDEX ASYNC` works the same way and enforces uniqueness once the index exists:
+
+```sql
+CREATE UNIQUE INDEX ASYNC uidx_dept_manager ON departments (manager);
+```
+
+:::note
+Index builds run synchronously under the hood.
+Async timing (background processing, `submitted`/`processing` statuses) and the AWS 30-minute auto-cleanup of completed or failed jobs from `sys.jobs` are not modelled.
+:::
+
 ## Current Limitations
 
 - CloudFormation is not yet supported for Aurora DSQL resources.
 - The data plane is backed by a standard embedded PostgreSQL instance rather than the real Aurora DSQL distributed engine.
-  DSQL-specific SQL dialect restrictions are not enforced, so behaviour may differ from AWS for unsupported statements.
+- LocalStack accepts DSQL-specific `CREATE [UNIQUE] INDEX ASYNC` and exposes `sys.jobs` / `sys.wait_for_job`, but broader DSQL dialect restrictions (for example rejecting foreign keys or `TRUNCATE`) are not enforced, so behaviour may differ from AWS for unsupported statements.
+- Asynchronous index builds complete synchronously; timing semantics and automatic cleanup of old `sys.jobs` rows are not modelled.
 - Multi-region clusters are tracked at the control-plane level only.
   Peering metadata is recorded, but there is no real cross-region replication.
 - Data-plane data is not persisted yet. Cluster metadata survives restarts when persistence is enabled, but the data written through the embedded PostgreSQL backend (tables, rows) is not retained.
