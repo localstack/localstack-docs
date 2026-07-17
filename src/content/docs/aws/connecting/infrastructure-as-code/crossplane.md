@@ -194,10 +194,10 @@ crossplane-test-bucket   True    True     crossplane-test-bucket   30s
 ```
 
 ...
-and the bucket it should also be visible when querying the local S3 buckets in LocalStack via [`awslocal`](https://github.com/localstack/awscli-local):
+and the bucket it should also be visible when querying the local S3 buckets in LocalStack via [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws):
 
 ```bash
-awslocal s3 ls
+lstk aws s3 ls
 ```
 
 ```bash title="Output"
@@ -233,7 +233,7 @@ crossplane-test-queue   True    True     http://host.docker.internal:4566/000000
 ...and the queue should be visible when listing the SQS queues in LocalStack:
 
 ```bash
-awslocal sqs list-queues
+lstk aws sqs list-queues
 ```
 
 ```bash title="Output"
