@@ -5,7 +5,7 @@
   const iconMappings = {
     Welcome: 'cube-icon',
     'Getting Started': 'rocket-icon',
-    'Quick Start Library': 'lightning-icon',
+    'Quickstart Library': 'lightning-icon',
     'Local AWS Services': 'cube-icon',
     'Local Azure Services': 'cube-icon',
     Features: 'cube-icon',
