@@ -20,7 +20,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to CodeConnections and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to CodeConnections and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a connection to a code repository using the CodeConnections API.
@@ -30,7 +30,7 @@ We will demonstrate how to create a connection to a code repository using the Co
 You can create a connection to a code repository using the [`CreateConnection`](https://docs.aws.amazon.com/codeconnections/latest/APIReference/API_CreateConnection.html) API.
 
 ```bash
-awslocal codeconnections create-connection \
+lstk aws codeconnections create-connection \
     --connection-name my-connection
 ```
 
@@ -46,7 +46,7 @@ You should see the connection in the output.
 You can list connections using the [`ListConnections`](https://docs.aws.amazon.com/codeconnections/latest/APIReference/API_ListConnections.html) API.
 
 ```bash
-awslocal codeconnections list-connections
+lstk aws codeconnections list-connections
 ```
 
 ```bash title="Output"
@@ -68,7 +68,7 @@ awslocal codeconnections list-connections
 You can get a connection using the [`GetConnection`](https://docs.aws.amazon.com/codeconnections/latest/APIReference/API_GetConnection.html) API.
 
 ```bash
-awslocal codeconnections get-connection --connection-arn arn:aws:codeconnections:us-east-1:000000000000:connection/023ff7e3
+lstk aws codeconnections get-connection --connection-arn arn:aws:codeconnections:us-east-1:000000000000:connection/023ff7e3
 ```
 
 Replace the `connection-arn` with the ARN of the connection you want to get.
@@ -90,7 +90,7 @@ Replace the `connection-arn` with the ARN of the connection you want to get.
 You can delete a connection using the [`DeleteConnection`](https://docs.aws.amazon.com/codeconnections/latest/APIReference/API_DeleteConnection.html) API.
 
 ```bash
-awslocal codeconnections delete-connection --connection-arn arn:aws:codeconnections:us-east-1:000000000000:connection/023ff7e3
+lstk aws codeconnections delete-connection --connection-arn arn:aws:codeconnections:us-east-1:000000000000:connection/023ff7e3
 ```
 
 Replace the `connection-arn` with the ARN of the connection you want to delete.

@@ -56,7 +56,7 @@ The [API Coverage section](#api-coverage) and [feature coverage](#feature-covera
 
 ## Getting started
 
-This guide is designed for users new to CloudFormation and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to CloudFormation and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to deploy a simple CloudFormation stack consisting of a single S3 Bucket with the AWS CLI.
@@ -100,7 +100,7 @@ The `deploy` command creates and updates CloudFormation stacks.
 Run the following command to deploy the stack:
 
 ```bash
-awslocal cloudformation deploy \
+lstk aws cloudformation deploy \
     --stack-name cfn-quickstart-stack \
     --template-file "./cfn-quickstart-stack.yaml"
 ```
@@ -109,7 +109,7 @@ You can verify that the stack was created successfully by listing the S3 buckets
 Run the following command to list the buckets:
 
 ```bash
-awslocal s3api list-buckets
+lstk aws s3api list-buckets
 ```
 
 ### Delete the CloudFormation Stack
@@ -118,7 +118,7 @@ You can delete the CloudFormation stack using the [`delete-stack`](https://docs.
 Run the following command to delete the stack along with all the resources created by the stack:
 
 ```bash
-awslocal cloudformation delete-stack \
+lstk aws cloudformation delete-stack \
     --stack-name cfn-quickstart-stack
 ```
 
@@ -134,7 +134,7 @@ When a private extension is activated, LocalStack deploys and invokes the embedd
 Build and package your extension using the CloudFormation CLI, then upload the package to S3 and register the type:
 
 ```bash
-awslocal cloudformation register-type \
+lstk aws cloudformation register-type \
     --type RESOURCE \
     --type-name MyOrg::MyService::MyResource \
     --schema-handler-package s3://my-bucket/my-extension.zip

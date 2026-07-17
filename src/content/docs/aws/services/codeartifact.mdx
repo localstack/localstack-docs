@@ -19,9 +19,9 @@ It also has full support to create and use NPM repositories.
 
 ## Getting Started
 
-This guide will help you create a domain, repository, and manage package publishing workflows using the `awslocal` CLI.
+This guide will help you create a domain, repository, and manage package publishing workflows using the `lstk aws` command.
 
-Basic knowledge of the AWS CLI and the [`awslocal`](https://github.com/localstack/awscli-local) wrapper is expected.
+Basic knowledge of the AWS CLI and the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command is expected.
 
 Start LocalStack using your preferred method.
 
@@ -32,7 +32,7 @@ Domains are the top-level containers for repositories in CodeArtifact.
 Create a domain with the [`CreateDomain`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_CreateDomain.html) API.
 
 ```bash
-awslocal codeartifact create-domain --domain demo-domain
+lstk aws codeartifact create-domain --domain demo-domain
 ```
 
 ```json title="Output"
@@ -52,7 +52,7 @@ awslocal codeartifact create-domain --domain demo-domain
 You can use the [`DescribeDomain`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DescribeDomain.html), [`UpdateDomain`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_UpdateDomain.html), and [`DeleteDomain`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DeleteDomain.html) APIs for domain management.
 
 ```bash
-awslocal codeartifact describe-domain --domain demo-domain
+lstk aws codeartifact describe-domain --domain demo-domain
 ```
 
 ```json title="Output"
@@ -72,7 +72,7 @@ awslocal codeartifact describe-domain --domain demo-domain
 You can list all domains using the [`ListDomains`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_ListDomains.html) API.
 
 ```bash
-awslocal codeartifact list-domains
+lstk aws codeartifact list-domains
 ```
 
 ```json title="Output"
@@ -96,7 +96,7 @@ Repositories store packages and are associated with a domain.
 Create a repository using the [`CreateRepository`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_CreateRepository.html) API.
 
 ```bash
-awslocal codeartifact create-repository --domain demo-domain \
+lstk aws codeartifact create-repository --domain demo-domain \
     --repository demo-repo
 ```
 
@@ -118,7 +118,7 @@ awslocal codeartifact create-repository --domain demo-domain \
 You can use the [`DescribeRepository`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DescribeRepository.html), [`UpdateRepository`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_UpdateRepository.html), and [`DeleteRepository`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DeleteRepository.html) APIs to manage repositories.
 
 ```bash
-awslocal codeartifact describe-repository --domain demo-domain \
+lstk aws codeartifact describe-repository --domain demo-domain \
     --repository demo-repo
 ```
 
@@ -140,7 +140,7 @@ awslocal codeartifact describe-repository --domain demo-domain \
 Use the [`ListRepositories`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_ListRepositories.html) API to view all of the repositories.
 
 ```bash
-awslocal codeartifact list-repositories
+lstk aws codeartifact list-repositories
 ```
 
 ```json title="Output"
@@ -161,7 +161,7 @@ awslocal codeartifact list-repositories
 Otherwise, list repositories in a specific domain using the [`ListRepositoriesInDomain`](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_ListRepositoriesInDomain.html) API.
 
 ```bash
-awslocal codeartifact list-repositories-in-domain --domain demo-domain
+lstk aws codeartifact list-repositories-in-domain --domain demo-domain
 ```
 
 ```json title="Output"
@@ -191,7 +191,7 @@ This makes it possible to consume open-source dependencies used by your applicat
 Repositories can be associated with external connections using [AssociateExternalConnection](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssociateExternalConnection.html) and [DisassociateExternalConnection](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_DisassociateExternalConnection.html) APIs.
 
 ```bash
-awslocal codeartifact associate-external-connection --domain demo-domain \
+lstk aws codeartifact associate-external-connection --domain demo-domain \
     --repository demo-repo \
     --external-connection "public:npmjs"
 ```
@@ -220,7 +220,7 @@ awslocal codeartifact associate-external-connection --domain demo-domain \
 Alternatively, repositories can be configured with upstream repositories using the `upstreams` property of [CreateRepository](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_CreateRepository.html) and [UpdateRepository](https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_UpdateRepository.html).
 
 ```bash
-awslocal codeartifact create-repository --domain demo-domain \
+lstk aws codeartifact create-repository --domain demo-domain \
     --repository demo-repo2 \
     --upstreams repositoryName=demo-repo
 ```
@@ -252,10 +252,10 @@ Please note, a repository can have one or more upstream repositories, or an exte
 
 ### Configuring npm with the login command
 
-Use the `awslocal codeartifact login` command to fetch credentials for use with npm.
+Use the `lstk aws codeartifact login` command to fetch credentials for use with npm.
 
 ```bash
-awslocal codeartifact login --tool npm --domain demo-domain --repository demo-repo
+lstk aws codeartifact login --tool npm --domain demo-domain --repository demo-repo
 ```
 
 This command makes the following changes to your `~/.npmrc` file:
@@ -269,20 +269,20 @@ For more information about the authorization token created with the login comman
 
 ### Configuring npm manually
 
-You can configure npm with your CodeArtifact repository without the `awslocal codeartifact login` command by manually updating the npm configuration.
+You can configure npm with your CodeArtifact repository without the `lstk aws codeartifact login` command by manually updating the npm configuration.
 
 1. In a command line, fetch a CodeArtifact authorization token and store it in an environment variable.
   npm will use this token to authenticate with your CodeArtifact repository.
 
     ```bash
-    export CODEARTIFACT_AUTH_TOKEN=$(awslocal codeartifact get-authorization-token --domain demo-domain --query authorizationToken --output text)
+    export CODEARTIFACT_AUTH_TOKEN=$(lstk aws codeartifact get-authorization-token --domain demo-domain --query authorizationToken --output text)
     ```
 
 2. Get your CodeArtifact repository's endpoint by running the following command.
   Your repository endpoint is used to point npm to your repository to install or publish packages.
 
     ```bash
-    awslocal codeartifact get-repository-endpoint --domain demo-domain --repository demo-repo --format npm --output text
+    lstk aws codeartifact get-repository-endpoint --domain demo-domain --repository demo-repo --format npm --output text
     ```
 
     The following URL is an example repository endpoint.

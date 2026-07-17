@@ -19,7 +19,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Backup and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Backup and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a backup job and specify a set of resources to the backup plan name and backup rules with the AWS CLI.
@@ -30,7 +30,7 @@ You can create a backup vault which acts as a logical container where backups ar
 Run the following command to create a backup vault named `my-vault`:
 
 ```bash
-awslocal backup create-backup-vault \
+lstk aws backup create-backup-vault \
     --backup-vault-name primary
 ```
 
@@ -73,7 +73,7 @@ You can use the [`CreateBackupPlan`](https://docs.aws.amazon.com/aws-backup/late
 Run the following command to create a backup plan:
 
 ```bash
-awslocal backup create-backup-plan \
+lstk aws backup create-backup-plan \
     --backup-plan file://backup-plan.json
 ```
 
@@ -109,7 +109,7 @@ You can use the [`CreateBackupSelection`](https://docs.aws.amazon.com/aws-backup
 Run the following command to create a backup selection:
 
 ```bash
-awslocal backup create-backup-selection \
+lstk aws backup create-backup-selection \
     --backup-plan-id 9337aba3 \
     --backup-selection file://backup-plan-resources.json
 ```

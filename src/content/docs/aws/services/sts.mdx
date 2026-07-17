@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to STS and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to STS and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to assume an IAM Role and assume the role as well as creating an IAM user and getting using the STS with the AWS CLI.
@@ -30,7 +30,7 @@ The IAM User will be used to assume the IAM Role.
 Run the following command to create an IAM User, named `localstack-user`:
 
 ```bash
-awslocal iam create-user \
+lstk aws iam create-user \
     --user-name localstack-user
 ```
 
@@ -38,7 +38,7 @@ You can generate long-term access keys for the IAM user using the [`CreateAccess
 Run the following command to create an access key for the IAM user:
 
 ```bash
-awslocal iam create-access-key \
+lstk aws iam create-access-key \
     --user-name localstack-user
 ```
 
@@ -58,7 +58,7 @@ Using STS, you can also fetch temporary credentials for this user using the [`Ge
 Run the following command using your long-term credentials to get your temporary credentials:
 
 ```bash
-awslocal sts get-session-token
+lstk aws sts get-session-token
 ```
 
 ```bash title="Output"
@@ -78,7 +78,7 @@ You can now create an IAM Role, named `localstack-role`, using the [`CreateRole`
 Run the following command to create the IAM Role:
 
 ```bash
-awslocal iam create-role \
+lstk aws iam create-role \
     --role-name localstack-role \
     --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::000000000000:root"},"Action":"sts:AssumeRole"}]}'
 ```
@@ -111,7 +111,7 @@ You can attach the policy to the IAM role using the [`AttachRolePolicy`](https:/
 Run the following command to attach the policy to the IAM role:
 
 ```bash
-awslocal iam attach-role-policy \
+lstk aws iam attach-role-policy \
     --role-name localstack-role \
     --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
 ```
@@ -122,7 +122,7 @@ You can assume an IAM Role using the [`AssumeRole`](https://docs.aws.amazon.com/
 Run the following command to assume the IAM Role:
 
 ```bash
-awslocal sts assume-role \
+lstk aws sts assume-role \
     --role-arn arn:aws:iam::000000000000:role/localstack-role \
     --role-session-name localstack-session
 ```
@@ -151,7 +151,7 @@ You can get the caller identity to identify the principal your current credentia
 Run the following command to get the caller identity for the credentials set in your environment:
 
 ```bash
-awslocal sts get-caller-identity
+lstk aws sts get-caller-identity
 ```
 
 ```bash title="Output"

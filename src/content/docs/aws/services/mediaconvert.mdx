@@ -20,7 +20,7 @@ Elemental MediaConvert is in a preview state.
 
 ## Getting started
 
-This guide is designed for users new to Elemental MediaConvert and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Elemental MediaConvert and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a MediaConvert job, list jobs, create a queue, and list all queues using the AWS CLI.
@@ -100,7 +100,7 @@ You can create a MediaConvert job using the [`CreateJob`](https://docs.aws.amazo
 Execute the following command to create a job using a `job.json` file:
 
 ```bash
-awslocal mediaconvert create-job --cli-input-json file://job.json
+lstk aws mediaconvert create-job --cli-input-json file://job.json
 ```
 
 ```bash title="Output"
@@ -148,7 +148,7 @@ You can list all MediaConvert jobs using the [`ListJobs`](https://docs.aws.amazo
 Execute the following command to list all jobs:
 
 ```bash
-awslocal mediaconvert list-jobs
+lstk aws mediaconvert list-jobs
 ```
 
 ### Create a queue
@@ -157,7 +157,7 @@ You can create a MediaConvert queue using the [`CreateQueue`](https://docs.aws.a
 Execute the following command to create a queue named `MyQueue`:
 
 ```bash
-awslocal mediaconvert create-queue  
+lstk aws mediaconvert create-queue  
     --name MyQueue  
     --description "High priority queue for video encoding"
 ```
@@ -185,7 +185,7 @@ You can list all MediaConvert queues using the [`ListQueues`](https://docs.aws.a
 Execute the following command to list all queues:
 
 ```bash
-awslocal mediaconvert list-queues
+lstk aws mediaconvert list-queues
 ```
 
 ## Current Limitations

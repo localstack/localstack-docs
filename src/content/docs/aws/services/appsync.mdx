@@ -14,7 +14,7 @@ AWS AppSync is a fully managed API management service that connects applications
 LocalStack allows you to use the AppSync APIs in your local environment to connect your applications and services to data and events.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of AppSync's integration with LocalStack.
 
-This guide is designed for users new to **AppSync** in LocalStack, and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to **AppSync** in LocalStack, and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 LocalStack supports two primary ways to work with AppSync, GraphQL and Events API. 
 
@@ -32,7 +32,7 @@ Use schemas and resolvers to interact with data sources like DynamoDB.
 Create serverless GraphQL APIs to query databases, microservices, and other APIs.
 AppSync allows you to define your data models and business logic using a declarative approach, and connect to various data sources, including other AWS services, relational databases, and custom data sources.
 
-This guide is designed for users new to AppSync and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to AppSync and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an AppSync API with a DynamoDB data source using the AWS CLI.
@@ -43,7 +43,7 @@ You can create a DynamoDB table using the [`CreateTable`](https://docs.aws.amazo
 Execute the following command to create a table named `DynamoDBNotesTable` with a primary key named `NoteId`:
 
 ```bash
-awslocal dynamodb create-table \
+lstk aws dynamodb create-table \
     --table-name DynamoDBNotesTable \
     --attribute-definitions AttributeName=NoteId,AttributeType=S \
     --key-schema AttributeName=NoteId,KeyType=HASH \
@@ -54,7 +54,7 @@ After the table is created, you can use the [`ListTables`](https://docs.aws.amaz
 Run the following command to list all tables in your running LocalStack container:
 
 ```bash
-awslocal dynamodb list-tables
+lstk aws dynamodb list-tables
 ```
 
 ```bash title="Output"
@@ -71,7 +71,7 @@ You can create a GraphQL API using the [`CreateGraphqlApi`](https://docs.aws.ama
 Execute the following command to create a GraphQL API named `NotesApi`:
 
 ```bash
-awslocal appsync create-graphql-api \
+lstk aws appsync create-graphql-api \
     --name NotesApi \
     --authentication-type API_KEY
 ```
@@ -97,7 +97,7 @@ You can now create an API key for your GraphQL API using the [`CreateApiKey`](ht
 Execute the following command to create an API key for your GraphQL API:
 
 ```bash
-awslocal appsync create-api-key \
+lstk aws appsync create-api-key \
     --api-id 014d18d0c2b149ee8b66f39173
 ```
 
@@ -142,7 +142,7 @@ You can start the schema creation process using the [`StartSchemaCreation`](http
 Execute the following command to start the schema creation process:
 
 ```bash
-awslocal appsync start-schema-creation \
+lstk aws appsync start-schema-creation \
     --api-id 014d18d0c2b149ee8b66f39173 \
     --definition file://schema.graphql
 ```
@@ -159,7 +159,7 @@ You can create a data source using the [`CreateDataSource`](https://docs.aws.ama
 Execute the following command to create a data source named `DynamoDBNotesTable`:
 
 ```bash
-awslocal appsync create-data-source \
+lstk aws appsync create-data-source \
     --name AppSyncDB \
     --api-id 014d18d0c2b149ee8b66f39173 \
     --type AMAZON_DYNAMODB \
@@ -187,7 +187,7 @@ You can create a custom `request-mapping-template.vtl` and `response-mapping-tem
 Execute the following command to create a VTL resolver attached to the `PaginatedNotes.notes` field:
 
 ```bash
-awslocal appsync create-resolver \
+lstk aws appsync create-resolver \
     --api-id 014d18d0c2b149ee8b66f39173 \
     --type Query \
     --field PaginatedNotes.notes \
@@ -410,7 +410,7 @@ You can create an Events API using the [CreateApi](https://docs.aws.amazon.com/a
 Note the `apiId`, `dns.REALTIME` and `dns.HTTP` in the outputs as it will be reused as `<api-id>`, `<realtime-domain>` and `<http-domain>` for the remainder of this example.
 
 ```bash
-awslocal appsync create-api \
+lstk aws appsync create-api \
     --name my-api \
     --event-config '{
         "authProviders":[{"authType": "API_KEY"}],
@@ -442,7 +442,7 @@ awslocal appsync create-api \
 You can create an `channelNamespace` using the [CreateChannelNamespace](https://docs.aws.amazon.com/appsync/latest/APIReference/API_CreateChannelNamespace.html) API. At least one `channelNamespace` is required in order to subscribe and publish to it.
 
 ```bash
-awslocal appsync create-channel-namespace \
+lstk aws appsync create-channel-namespace \
     --api-id <api-id> \
     --name "default"
 ```
@@ -468,7 +468,7 @@ You can create an Api Key using the [CreateApiKey](https://docs.aws.amazon.com/a
 
 
 ```bash
-awslocal appsync create-api-key --api-id <api-id>
+lstk aws appsync create-api-key --api-id <api-id>
 ```
 
 ```bash title="Output"
@@ -619,7 +619,7 @@ You can employ a pre-defined ID during the creation of AppSync APIs by utilizing
 For example, the following command will create a GraphQL API with the ID `faceb00c`. `--tags` can also be passed when creating an Events API, and both the API id and the endpoint id will use the provided id.
 
 ```bash
-awslocal appsync create-graphql-api \
+lstk aws appsync create-graphql-api \
     --name my-api \
     --authentication-type API_KEY \
     --tags _custom_id_=faceb00c
@@ -666,7 +666,7 @@ See the AWS documentation for [`evaluate-mapping-template`](https://awscli.amazo
 ### VTL template evaluation
 
 ```bash
-awslocal appsync evaluate-mapping-template \
+lstk aws appsync evaluate-mapping-template \
     --template '$ctx.result' \
     --context '{"result":"ok"}'
 ```
@@ -681,7 +681,7 @@ awslocal appsync evaluate-mapping-template \
 ### JavaScript code evaluation
 
 ```bash
-awslocal appsync evaluate-code \
+lstk aws appsync evaluate-code \
     --runtime name=APPSYNC_JS,runtimeVersion=1.0.0 \
     --function request \
     --code 'export function request(ctx) { return ctx.result; } export function response(ctx) {}' \

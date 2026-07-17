@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to SQS and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to SQS and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an SQS queue, retrieve queue attributes and URLs, and receive and delete messages from the queue.
@@ -29,14 +29,14 @@ To create an SQS queue, use the [`CreateQueue`](https://docs.aws.amazon.com/AWSS
 Run the following command to create a queue named `localstack-queue`:
 
 ```bash
-awslocal sqs create-queue --queue-name localstack-queue
+lstk aws sqs create-queue --queue-name localstack-queue
 ```
 
 You can list all queues in your account using the [`ListQueues`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ListQueues.html) API.
 Run the following command to list all queues in your account:
 
 ```bash
-awslocal sqs list-queues
+lstk aws sqs list-queues
 ```
 
 ```bash title="Output"
@@ -53,7 +53,7 @@ You need to pass the `queue-url` and `attribute-names` parameters.
 Run the following command to retrieve the queue attributes:
 
 ```bash
-awslocal sqs get-queue-attributes \
+lstk aws sqs get-queue-attributes \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue \
     --attribute-names All
 ```
@@ -61,7 +61,7 @@ awslocal sqs get-queue-attributes \
 To create a [FIFO queue](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-fifo-queue-message-identifiers.html), the queue name must end with the `.fifo` suffix in addition to the `FifoQueue=true` attribute set:
 
 ```bash
-awslocal sqs create-queue --queue-name localstack-queue.fifo --attributes "FifoQueue=true"
+lstk aws sqs create-queue --queue-name localstack-queue.fifo --attributes "FifoQueue=true"
 {
     "QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue.fifo"
 }
@@ -75,7 +75,7 @@ To send a message to a SQS queue, you can use the [`SendMessage`](https://docs.a
 Run the following command to send a message to the queue:
 
 ```bash
-awslocal sqs send-message \
+lstk aws sqs send-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue \
     --message-body "Hello World"
 ```
@@ -93,7 +93,7 @@ You can receive messages from the queue using the [`ReceiveMessage`](https://doc
 Run the following command to receive messages from the queue:
 
 ```bash
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue
 ```
 
@@ -107,7 +107,7 @@ You need to pass the `queue-url` and `receipt-handle` parameters.
 Run the following command to delete a message from the queue:
 
 ```bash
-awslocal sqs delete-message \
+lstk aws sqs delete-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue \
     --receipt-handle <receipt-handle>
 ```
@@ -118,7 +118,7 @@ If you have sent multiple messages to the queue, you can purge the queue using t
 Run the following command to purge the queue:
 
 ```bash
-awslocal sqs purge-queue \
+lstk aws sqs purge-queue \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/localstack-queue
 ```
 
@@ -131,9 +131,9 @@ First, create three queues.
 One will serve as original input queue, one as DLQ, and the third as target for DLQ redrive.
 
 ```bash
-awslocal sqs create-queue --queue-name input-queue
-awslocal sqs create-queue --queue-name dead-letter-queue
-awslocal sqs create-queue --queue-name recovery-queue
+lstk aws sqs create-queue --queue-name input-queue
+lstk aws sqs create-queue --queue-name dead-letter-queue
+lstk aws sqs create-queue --queue-name recovery-queue
 ```
 
 ```bash title="Output"
@@ -151,7 +151,7 @@ awslocal sqs create-queue --queue-name recovery-queue
 Configure `dead-letter-queue` to be a DLQ for `input-queue`:
 
 ```bash
-awslocal sqs set-queue-attributes \
+lstk aws sqs set-queue-attributes \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue \
     --attributes '{
     "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:000000000000:dead-letter-queue\",\"maxReceiveCount\":\"1\"}"
@@ -161,7 +161,7 @@ awslocal sqs set-queue-attributes \
 Send a message to the input queue:
 
 ```bash
-awslocal sqs send-message \
+lstk aws sqs send-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue \
     --message-body '{"hello": "world"}'
 ```
@@ -169,10 +169,10 @@ awslocal sqs send-message \
 Receive the message twice to provoke a move into the dead-letter queue:
 
 ```bash
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --visibility-timeout 0 \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --visibility-timeout 0 \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/input-queue
 ```
@@ -186,7 +186,7 @@ In the localstack logs you should see something like the following line, indicat
 Now, start a message move task to asynchronously move the messages from the DLQ into the recovery queue:
 
 ```bash
-awslocal sqs start-message-move-task \
+lstk aws sqs start-message-move-task \
     --source-arn arn:aws:sqs:us-east-1:000000000000:dead-letter-queue \
     --destination-arn arn:aws:sqs:us-east-1:000000000000:recovery-queue
 ```
@@ -194,7 +194,7 @@ awslocal sqs start-message-move-task \
 Listing the message move tasks should yield something like
 
 ```bash
-awslocal sqs list-message-move-tasks \
+lstk aws sqs list-message-move-tasks \
     --source-arn arn:aws:sqs:us-east-1:000000000000:dead-letter-queue
 ```
 
@@ -216,7 +216,7 @@ awslocal sqs list-message-move-tasks \
 Receiving messages from the recovery queue should now show us the original message:
 
 ```bash
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/recovery-queue
 ```
 

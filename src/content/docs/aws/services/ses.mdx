@@ -21,7 +21,7 @@ For advanced features like SMTP integration and other emulation capabilities, pl
 ## Getting Started
 
 This is an introductory guide to get started with SES.
-Basic knowledge of the AWS CLI and LocalStack [`awslocal`](https://github.com/localstack/awscli-local) command is assumed.
+Basic knowledge of the AWS CLI and LocalStack [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command is assumed.
 
 Start LocalStack using your preferred method.
 
@@ -31,9 +31,9 @@ A verified identity appears as part of the 'From' field in the sent email.
 A singular email identity can be added using the `VerifyEmailIdentity` operation.
 
 ```bash
-awslocal ses verify-email-identity --email hello@example.com
+lstk aws ses verify-email-identity --email hello@example.com
 
-awslocal ses list-identities
+lstk aws ses list-identities
 ```
 
 ```bash title="Output"
@@ -52,7 +52,7 @@ In LocalStack, identities are automatically verified.
 Next, emails can be sent using the `SendEmail` operation.
 
 ```bash
-awslocal ses send-email \
+lstk aws ses send-email \
         --from "hello@example.com"   \
         --message 'Body={Text={Data="This is the email body"}},Subject={Data="This is the email subject"}'   \
         --destination 'ToAddresses=jeff@aws.com'

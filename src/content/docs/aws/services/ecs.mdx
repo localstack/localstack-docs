@@ -19,7 +19,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting Started
 
-This guide is designed for users new to ECS and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to ECS and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an ECS service using the AWS CLI
@@ -34,7 +34,7 @@ ECS tasks and services run on a cluster.
 Execute the following command to create an ECS cluster named `mycluster`:
 
 ```bash
-awslocal ecs create-cluster --cluster-name mycluster
+lstk aws ecs create-cluster --cluster-name mycluster
 ```
 
 ```bash title="Output"
@@ -90,7 +90,7 @@ To create a task definition that runs an `ubuntu` container forever (by running 
 and then run the following command:
 
 ```bash
-awslocal ecs register-task-definition --cli-input-json file://task_definition.json
+lstk aws ecs register-task-definition --cli-input-json file://task_definition.json
 ```
 
 ```bash title="Output"
@@ -150,7 +150,7 @@ This will create a number of containers in replica mode meaning they are distrib
 To create a service, execute the following command:
 
 ```bash
-awslocal ecs create-service --service-name myservice --cluster mycluster --task-definition myfamily --desired-count 1
+lstk aws ecs create-service --service-name myservice --cluster mycluster --task-definition myfamily --desired-count 1
 ```
 
 ```bash title="Output"
@@ -214,7 +214,7 @@ CONTAINER ID   IMAGE                       COMMAND                  CREATED     
 To access the generated logs from the container, run the following command:
 
 ```bash
-awslocal logs filter-log-events --log-group-name myloggroup --query 'events[].message'
+lstk aws logs filter-log-events --log-group-name myloggroup --query 'events[].message'
 ```
 
 ```bash title="Output"

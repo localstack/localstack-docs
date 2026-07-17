@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Elastic Kubernetes Service and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Elastic Kubernetes Service and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 To interact with the Kubernetes cluster, you should also install [`kubectl`](https://kubernetes.io/docs/tasks/tools/).
 
 Start your LocalStack container using your preferred method.
@@ -31,7 +31,7 @@ First we need to create a VPC for the EKS cluster. You can create a new VPC usin
 Run the following command:
 
 ```bash title="Create VPC"
-awslocal ec2 create-vpc --cidr-block 10.0.0.0/16
+lstk aws ec2 create-vpc --cidr-block 10.0.0.0/16
 ```
 
 ```bash title="Output"
@@ -50,7 +50,7 @@ Next, we need to create a subnet in the VPC. You can create a 2 subnets using th
 Run the following command:
 
 ```bash title="Create Subnet 1"
-awslocal ec2 create-subnet \
+lstk aws ec2 create-subnet \
   --vpc-id <vpc-id> \
   --cidr-block 10.0.1.0/24 \
   --availability-zone us-east-1a
@@ -69,7 +69,7 @@ awslocal ec2 create-subnet \
 ```
 
 ```bash title="Create Subnet 2"
-awslocal ec2 create-subnet \
+lstk aws ec2 create-subnet \
   --vpc-id <vpc-id> \
   --cidr-block 10.0.2.0/24 \
   --availability-zone us-east-1b
@@ -107,7 +107,7 @@ You can create a new cluster using the [`CreateCluster` API](https://docs.aws.am
 Run the following command:
 
 ```bash title="Create Cluster"
-awslocal eks create-cluster \
+lstk aws eks create-cluster \
   --name cluster1 \
   --role-arn "arn:aws:iam::000000000000:role/eks-role" \
   --resources-vpc-config '{"subnetIds":["<subnet-id-1>", "<subnet-id-2>"]}'
@@ -142,7 +142,7 @@ The cluster creation process may take a few moments as LocalStack sets up the ne
 Run the following command to wait for the cluster status to become `ACTIVE`:
 
 ```bash title="Wait for Cluster"
-awslocal eks wait cluster-active --name cluster1
+lstk aws eks wait cluster-active --name cluster1
 ```
 
 :::note
@@ -173,7 +173,7 @@ You can create a managed node group for your EKS cluster using the [`CreateNodeg
 Run the following command:
 
 ```bash title="Create Node Group"
-awslocal eks create-nodegroup \
+lstk aws eks create-nodegroup \
   --cluster-name cluster1 \
   --nodegroup-name nodegroup1 \
   --node-role arn:aws:iam::000000000000:role/eks-nodegroup-role \
@@ -216,7 +216,7 @@ The node group creation process may take a few moments as LocalStack sets up the
 You can wait for the node group status to become `ACTIVE` by running the following command:
 
 ```bash title="Wait for Node Group"
-awslocal eks wait nodegroup-active --cluster-name cluster1 --nodegroup-name nodegroup1
+lstk aws eks wait nodegroup-active --cluster-name cluster1 --nodegroup-name nodegroup1
 ```
 
 At this point, your EKS cluster is fully operational and ready to deploy workloads.
@@ -250,7 +250,7 @@ You can create a new ECR repository using the [`CreateRepository` API](https://d
 Run the following command:
 
 ```bash
-awslocal ecr create-repository --repository-name "fancier-nginx"
+lstk aws ecr create-repository --repository-name "fancier-nginx"
 ```
 
 ```bash title="Output"
@@ -296,7 +296,7 @@ Next, we can configure `kubectl` to use the EKS cluster, using the [`UpdateKubec
 Run the following command:
 
 ```bash
-awslocal eks update-kubeconfig --name cluster1 && \
+lstk aws eks update-kubeconfig --name cluster1 && \
     kubectl config use-context arn:aws:eks:us-east-1:000000000000:cluster/cluster1
 ```
 
@@ -476,7 +476,7 @@ LocalStack resolves the standard EKS AMI [SSM public parameters](https://docs.aw
 <Tabs>
   <TabItem label="AL2023">
 ```bash title="Resolve AL2023 AMI"
-awslocal ssm get-parameter \
+lstk aws ssm get-parameter \
   --name /aws/service/eks/optimized-ami/1.35/amazon-linux-2023/x86_64/standard/recommended/image_id \
   --query 'Parameter.Value' --output text
 ```
@@ -487,7 +487,7 @@ ami-eks-k3d-1.35-amd64-standard
   </TabItem>
   <TabItem label="Bottlerocket">
 ```bash title="Resolve Bottlerocket AMI"
-awslocal ssm get-parameter \
+lstk aws ssm get-parameter \
   --name /aws/service/bottlerocket/aws-k8s-1.35/x86_64/latest/image_id \
   --query 'Parameter.Value' --output text
 ```
@@ -535,7 +535,7 @@ The walkthrough below assumes a cluster named `cluster1` that is already `ACTIVE
     2. Launch an EC2 instance using the resolved AL2023 AMI and the user-data file:
 
        ```bash title="Launch AL2023 node"
-       awslocal ec2 run-instances \
+       lstk aws ec2 run-instances \
          --image-id ami-eks-k3d-1.35-amd64-standard \
          --count 1 \
          --instance-type t3.medium \
@@ -565,7 +565,7 @@ The walkthrough below assumes a cluster named `cluster1` that is already `ACTIVE
     2. Launch an EC2 instance using the resolved Bottlerocket AMI:
 
        ```bash title="Launch Bottlerocket node"
-       awslocal ec2 run-instances \
+       lstk aws ec2 run-instances \
          --image-id ami-eks-k3d-1.35-amd64 \
          --count 1 \
          --instance-type m5.large \
@@ -580,7 +580,7 @@ The walkthrough below assumes a cluster named `cluster1` that is already `ACTIVE
 Point `kubectl` at the cluster and list the nodes:
 
 ```bash
-awslocal eks update-kubeconfig --name cluster1 && \
+lstk aws eks update-kubeconfig --name cluster1 && \
   kubectl config use-context arn:aws:eks:us-east-1:000000000000:cluster/cluster1
 ```
 
@@ -648,10 +648,22 @@ volumes:
   - "${HOME}/.kube/config:/root/.kube/config"
 ```
 
-When using the LocalStack CLI, please configure the `DOCKER_FLAGS` to mount the kubeconfig into the container:
+When using `lstk`, add the mount and provider variable to your `config.toml`:
+
+```toml
+[[containers]]
+type = "aws"
+volumes = ["~/.kube/config:/root/.kube/config"]
+env     = ["k8s-provider"]
+
+[env.k8s-provider]
+MANAGED_K8S_PROVIDER = "local"
+```
+
+Then start LocalStack:
 
 ```bash
-DOCKER_FLAGS="-v ${HOME}/.kube/config:/root/.kube/config" localstack start
+lstk start
 ```
 
 :::note
@@ -667,7 +679,7 @@ By default, the Kubernetes API is assumed to run on the local TCP port `6443`.
 You can create an EKS Cluster configuration using the following command:
 
 ```bash
-awslocal eks create-cluster --name cluster1 --role-arn arn:aws:iam::000000000000:role/eks-role --resources-vpc-config '{}'
+lstk aws eks create-cluster --name cluster1 --role-arn arn:aws:iam::000000000000:role/eks-role --resources-vpc-config '{}'
 ```
 
 ```bash title="Output"
@@ -686,7 +698,7 @@ awslocal eks create-cluster --name cluster1 --role-arn arn:aws:iam::000000000000
 And check that it was created with:
 
 ```bash
-awslocal eks list-clusters
+lstk aws eks list-clusters
 ```
 
 ```bash title="Output"
@@ -713,7 +725,7 @@ If you need to customize the port or expose the load balancer on multiple ports,
 For instance, if you want to expose the load balancer on ports 8085 and 8086, you can use the following tag definition when creating the cluster:
 
 ```bash
-awslocal eks create-cluster \
+lstk aws eks create-cluster \
   --name cluster1 \
   --role-arn arn:aws:iam::000000000000:role/eks-role \
   --resources-vpc-config '{}' --tags '{"_lb_ports_":"8085,8086"}'
@@ -804,7 +816,7 @@ If you have specific directories that you want to mount from your local developm
 When creating your cluster, include the special tag `_volume_mount_`, which allows you to define the desired volume mounting configuration from your local development machine to the cluster nodes.
 
 ```bash
-awslocal eks create-cluster \
+lstk aws eks create-cluster \
   --name cluster1 \
   --role-arn arn:aws:iam::000000000000:role/eks-role \
   --resources-vpc-config '{}' \
@@ -882,8 +894,18 @@ Users can specify the desired version when creating an EKS cluster in LocalStack
 When LocalStack creates a k3d-backed EKS cluster, it starts the k3s server with an explicit cluster token. This token is used to authenticate agent nodes joining the cluster, enabling dynamic node registration.
 By default, LocalStack uses `localstack-k3d-cluster-token` as the cluster token. You can override this value using the `EKS_K3D_CLUSTER_TOKEN` configuration variable:
 
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["k3d-token"]
+
+[env.k3d-token]
+EKS_K3D_CLUSTER_TOKEN = "my-custom-token"
+```
+
 ```bash
-EKS_K3D_CLUSTER_TOKEN=my-custom-token localstack start
+lstk start
 ```
 
 Any agent nodes added to the cluster — whether via k3d node create or k3s agent — will use the same token to authenticate with the k3s server.

@@ -17,17 +17,17 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Serverless Application Repository and assumes basic knowledge of the SAM CLI and our [`samlocal`](https://github.com/localstack/aws-sam-cli-local) wrapper script.
+This guide is designed for users new to Serverless Application Repository and assumes basic knowledge of the SAM CLI and our [`lstk sam`](/aws/developer-tools/running-localstack/lstk/) command.
 
 Start your LocalStack container using your preferred method, such as via docker-compose.
 We will demonstrate how to create a SAM application that comprises a Hello World serverless application with a simple API backend using the SAM CLI and then publish it to the Serverless Application Repository by defining it using a SAM template.
 
 ### Setup the SAM application
 
-To create a sample SAM application using the `samlocal` CLI, execute the following command:
+To create a sample SAM application using the `lstk sam` command, execute the following:
 
 ```bash
-samlocal init --runtime python3.9
+lstk sam init --runtime python3.9
 ```
 
 This command downloads a sample SAM application template and generates a `template.yml` file in the current directory.
@@ -35,10 +35,10 @@ The template includes a Lambda function and an API Gateway endpoint that support
 
 ### Package the SAM application
 
-Next, we can use the `samlocal` CLI to create a deployment package and a packaged SAM template.
+Next, we can use the `lstk sam` command to create a deployment package and a packaged SAM template.
 Add a Metadata section to your SAM template file (`template.yaml`), and specify the following properties:
 
-To create a deployment package and a packaged SAM template using the `samlocal` CLI, add a Metadata section to your SAM template file (`template.yaml`) and specify the desired properties:
+To create a deployment package and a packaged SAM template using the `lstk sam` command, add a Metadata section to your SAM template file (`template.yaml`) and specify the desired properties:
 
 ```yaml title="template.yaml"
 Metadata:
@@ -54,7 +54,7 @@ Metadata:
 Once the Metadata section is added, run the following command to create the Lambda function deployment package and the packaged SAM template:
 
 ```bash
-samlocal package \
+lstk sam package \
     --template-file template.yaml \
     --output-template-file packaged.yaml
 ```
@@ -72,10 +72,10 @@ Resources:
 
 ### Retrieve the Application ID
 
-To retrieve the Application ID for your SAM application, you can utilize the [`awslocal`](https://github.com/localstack/awscli-local) CLI by running the following command:
+To retrieve the Application ID for your SAM application, you can utilize [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) by running the following command:
 
 ```bash
-awslocal serverlessrepo list-applications
+lstk aws serverlessrepo list-applications
 ```
 
 In the output, you will observe the `ApplicationId` property in the output, which is the Application ID for your SAM application, along with other properties such as the `Author`, `Description`, `Name`, `SpdxLicenseId`, and `Version` providing further details about your application.
@@ -85,7 +85,7 @@ In the output, you will observe the `ApplicationId` property in the output, whic
 To publish your application to the Serverless Application Repository, execute the following command:
 
 ```bash
-samlocal publish \
+lstk sam publish \
     --template packaged.yaml \
     --region us-east-1
 ```
@@ -95,7 +95,7 @@ samlocal publish \
 To remove a SAM application from the Serverless Application Repository, you can use the following command:
 
 ```bash
-awslocal serverlessrepo delete-application \
+lstk aws serverlessrepo delete-application \
     --application-id <application-id>
 ```
 

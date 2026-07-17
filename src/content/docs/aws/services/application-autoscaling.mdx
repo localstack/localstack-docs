@@ -19,7 +19,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting Started
 
-This guide is designed for users new to Application Auto Scaling and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Application Auto Scaling and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can configure auto scaling to handle a heavy workload for your Lambda function.
@@ -42,7 +42,7 @@ Run the following command to create a new Lambda function using the [`CreateFunc
 
 ```bash
 zip function.zip index.js
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name autoscaling-example \
     --runtime nodejs18.x \
     --zip-file fileb://function.zip \
@@ -57,8 +57,8 @@ We will use the [`PublishVersion`](https://docs.aws.amazon.com/cli/latest/refere
 Run the following commands:
 
 ```bash
-awslocal lambda publish-version --function-name autoscaling-example
-awslocal lambda create-alias \
+lstk aws lambda publish-version --function-name autoscaling-example
+lstk aws lambda create-alias \
     --function-name autoscaling-example \
     --description "alias for blue version of function" \
     --function-version 1 \
@@ -73,7 +73,7 @@ We will specify the `--service-namespace` as `lambda`, `--scalable-dimension` as
 Run the following command to register the scalable target:
 
 ```bash
-awslocal application-autoscaling register-scalable-target \
+lstk aws application-autoscaling register-scalable-target \
     --service-namespace lambda \
     --scalable-dimension lambda:function:ProvisionedConcurrency \
     --resource-id function:autoscaling-example:BLUE \
@@ -86,7 +86,7 @@ You can create a scheduled action that scales out by specifying the `--schedule`
 Run the following command to create a scheduled action using the [`PutScheduledAction`](https://docs.aws.amazon.com/cli/latest/reference/application-autoscaling/put-scheduled-action.html) API:
 
 ```bash
-awslocal application-autoscaling put-scheduled-action \
+lstk aws application-autoscaling put-scheduled-action \
     --service-namespace lambda \
     --scalable-dimension lambda:function:ProvisionedConcurrency \
     --resource-id function:autoscaling-example:BLUE \
@@ -98,7 +98,7 @@ awslocal application-autoscaling put-scheduled-action \
 You can confirm if the scheduled action exists using [`DescribeScheduledActions`](https://docs.aws.amazon.com/cli/latest/reference/application-autoscaling/describe-scheduled-actions.html) API:
 
 ```bash
-awslocal application-autoscaling describe-scheduled-actions \
+lstk aws application-autoscaling describe-scheduled-actions \
     --service-namespace lambda
 ```
 
@@ -111,7 +111,7 @@ When metrics lack data due to minimal application load, Application Auto Scaling
 Run the following command to create a target-tracking scaling policy:
 
 ```bash
-awslocal application-autoscaling put-scaling-policy \
+lstk aws application-autoscaling put-scaling-policy \
     --service-namespace lambda \
     --scalable-dimension lambda:function:ProvisionedConcurrency \
     --resource-id function:events-example:BLUE \

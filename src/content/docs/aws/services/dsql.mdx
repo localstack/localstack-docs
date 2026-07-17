@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Aurora DSQL and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Aurora DSQL and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a cluster, inspect it, and clean it up using the AWS CLI.
@@ -29,7 +29,7 @@ You can create a cluster using the [`CreateCluster`](https://docs.aws.amazon.com
 Run the following command to create a cluster:
 
 ```bash
-awslocal dsql create-cluster
+lstk aws dsql create-cluster
 ```
 
 ```bash title="Output"
@@ -58,7 +58,7 @@ You can retrieve the details of a cluster using the [`GetCluster`](https://docs.
 Replace the identifier with the one returned in the previous step:
 
 ```bash
-awslocal dsql get-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+lstk aws dsql get-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 ```bash title="Output"
@@ -80,7 +80,7 @@ awslocal dsql get-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 You can list all clusters in the current account and region using the [`ListClusters`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_ListClusters.html) API:
 
 ```bash
-awslocal dsql list-clusters
+lstk aws dsql list-clusters
 ```
 
 ```bash title="Output"
@@ -130,7 +130,7 @@ Because clusters are created with deletion protection enabled, you must first di
 Attempting to delete a protected cluster returns a `ValidationException`.
 
 ```bash
-awslocal dsql update-cluster \
+lstk aws dsql update-cluster \
     --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --no-deletion-protection-enabled
 ```
@@ -138,7 +138,7 @@ awslocal dsql update-cluster \
 You can then delete the cluster using the [`DeleteCluster`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteCluster.html) API:
 
 ```bash
-awslocal dsql delete-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+lstk aws dsql delete-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 ```bash title="Output"
@@ -155,13 +155,13 @@ awslocal dsql delete-cluster --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 You can attach tags at creation time with `--tags`, and manage them afterwards using the [`TagResource`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_TagResource.html), [`UntagResource`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_UntagResource.html), and [`ListTagsForResource`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_ListTagsForResource.html) APIs.
 
 ```bash
-awslocal dsql create-cluster --tags Name=my-cluster,Env=dev
+lstk aws dsql create-cluster --tags Name=my-cluster,Env=dev
 ```
 
 Add or update tags on an existing cluster:
 
 ```bash
-awslocal dsql tag-resource \
+lstk aws dsql tag-resource \
     --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --tags Team=platform
 ```
@@ -169,7 +169,7 @@ awslocal dsql tag-resource \
 List the tags on a resource:
 
 ```bash
-awslocal dsql list-tags-for-resource \
+lstk aws dsql list-tags-for-resource \
     --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
@@ -186,7 +186,7 @@ awslocal dsql list-tags-for-resource \
 Remove tags by key:
 
 ```bash
-awslocal dsql untag-resource \
+lstk aws dsql untag-resource \
     --resource-arn arn:aws:dsql:us-east-1:000000000000:cluster/8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --tag-keys Env
 ```
@@ -196,7 +196,7 @@ awslocal dsql untag-resource \
 You can attach a resource-based policy to a cluster using the [`PutClusterPolicy`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_PutClusterPolicy.html) API, then read and remove it with [`GetClusterPolicy`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_GetClusterPolicy.html) and [`DeleteClusterPolicy`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteClusterPolicy.html).
 
 ```bash
-awslocal dsql put-cluster-policy \
+lstk aws dsql put-cluster-policy \
     --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --policy '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::000000000000:root"},"Action":"dsql:DbConnect","Resource":"*"}]}'
 ```
@@ -210,7 +210,7 @@ awslocal dsql put-cluster-policy \
 Retrieve the stored policy:
 
 ```bash
-awslocal dsql get-cluster-policy --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+lstk aws dsql get-cluster-policy --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 :::note
@@ -222,7 +222,7 @@ Cluster policies are stored and returned as-is but are not enforced by LocalStac
 You can manage stream metadata using the [`CreateStream`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_CreateStream.html), [`GetStream`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_GetStream.html), [`ListStreams`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_ListStreams.html), and [`DeleteStream`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_DeleteStream.html) APIs.
 
 ```bash
-awslocal dsql create-stream \
+lstk aws dsql create-stream \
     --cluster-identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6 \
     --target-definition '{"kinesis":{"streamArn":"arn:aws:kinesis:us-east-1:000000000000:stream/my-stream","roleArn":"arn:aws:iam::000000000000:role/dsql-stream-role"}}' \
     --ordering UNORDERED \
@@ -244,7 +244,7 @@ awslocal dsql create-stream \
 List the streams of a cluster:
 
 ```bash
-awslocal dsql list-streams --cluster-identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+lstk aws dsql list-streams --cluster-identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 :::note
@@ -256,7 +256,7 @@ Streams are backed as metadata only; no change-data-capture (CDC) records are em
 You can retrieve the synthesised VPC endpoint service name for a cluster using the [`GetVpcEndpointServiceName`](https://docs.aws.amazon.com/aurora-dsql/latest/APIReference/API_GetVpcEndpointServiceName.html) API:
 
 ```bash
-awslocal dsql get-vpc-endpoint-service-name --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
+lstk aws dsql get-vpc-endpoint-service-name --identifier 8a71d298-c086-4fb4-a698-d7b4eeb657e6
 ```
 
 ```bash title="Output"
