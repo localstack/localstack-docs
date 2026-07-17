@@ -33,7 +33,15 @@ You must include it in the `env` block of your configuration.
 You can get your Auth Token from the [LocalStack Web App](https://app.localstack.cloud).
 :::
 
-Choose your MCP client below for setup instructions.
+The quickest way to get started with the MCP server is to use the interactive setup wizard:
+
+```bash
+npx -y @localstack/localstack-mcp-server init
+```
+
+The wizard detects your installed clients, asks how you want to run the server, and writes the configuration for you. You need a valid [Auth Token](/aws/getting-started/auth-token/) to configure the server.
+
+For manual setup of the MCP server, choose your MCP client below for setup instructions.
 
 <Tabs>
 <TabItem label="Cursor">
@@ -171,10 +179,10 @@ Refer to your client's documentation for the exact location of its MCP configura
 By default the MCP server connects to `http://localhost:4566`.
 If your LocalStack instance runs on a different host or port, set the following environment variables in the `env` block:
 
-| Variable | Default | Description |
-|---|---|---|
+| Variable              | Default     | Description                         |
+| --------------------- | ----------- | ----------------------------------- |
 | `LOCALSTACK_HOSTNAME` | `localhost` | Hostname of the LocalStack instance |
-| `LOCALSTACK_PORT` | `4566` | Port of the LocalStack instance |
+| `LOCALSTACK_PORT`     | `4566`      | Port of the LocalStack instance     |
 
 You can also pass any [LocalStack configuration variable](/aws/customization/configuration-options/) through the `env` block.
 These are forwarded to the container when the `localstack-management` tool starts it.
@@ -204,11 +212,11 @@ Each tool runs pre-flight checks (verifying the CLI is available, the container 
 
 Manage the LocalStack runtime lifecycle for both the AWS emulator and the Snowflake emulator.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `action` | `start` \| `stop` \| `restart` \| `status` | Yes | The operation to perform |
-| `service` | `aws` \| `snowflake` | No | The stack to manage (default: `aws`) |
-| `envVars` | `Record<string, string>` | No | Extra environment variables passed on `start` |
+| Parameter | Type                                       | Required | Description                                   |
+| --------- | ------------------------------------------ | -------- | --------------------------------------------- |
+| `action`  | `start` \| `stop` \| `restart` \| `status` | Yes      | The operation to perform                      |
+| `service` | `aws` \| `snowflake`                       | No       | The stack to manage (default: `aws`)          |
+| `envVars` | `Record<string, string>`                   | No       | Extra environment variables passed on `start` |
 
 **Example prompts:**
 
@@ -220,17 +228,17 @@ Manage the LocalStack runtime lifecycle for both the AWS emulator and the Snowfl
 
 Deploy or destroy infrastructure on LocalStack using CDK, Terraform, SAM, or CloudFormation.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `action` | `deploy` \| `destroy` \| `create-stack` \| `delete-stack` | Yes | The deployment operation |
-| `projectType` | `cdk` \| `terraform` \| `sam` \| `auto` | No | Framework to use (default: `auto`, detected from project files) |
-| `directory` | `string` | Yes (for `deploy`/`destroy`) | Path to the project directory |
-| `variables` | `Record<string, string>` | No | Variables passed as Terraform `-var` flags, CDK `--context` values, or SAM `--parameter-overrides` |
-| `stackName` | `string` | Yes (for `create-stack`/`delete-stack`) | CloudFormation/SAM stack name |
-| `templatePath` | `string` | No | Path to a CloudFormation/SAM template |
-| `s3Bucket` | `string` | No | S3 bucket for SAM deployments (if omitted, SAM uses `--resolve-s3`) |
-| `resolveS3` | `boolean` | No | For SAM deployments, whether to use `--resolve-s3` when no `s3Bucket` is provided |
-| `saveParams` | `boolean` | No | For SAM deployments, whether to persist resolved parameters to `samconfig.toml` |
+| Parameter      | Type                                                      | Required                                | Description                                                                                        |
+| -------------- | --------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `action`       | `deploy` \| `destroy` \| `create-stack` \| `delete-stack` | Yes                                     | The deployment operation                                                                           |
+| `projectType`  | `cdk` \| `terraform` \| `sam` \| `auto`                   | No                                      | Framework to use (default: `auto`, detected from project files)                                    |
+| `directory`    | `string`                                                  | Yes (for `deploy`/`destroy`)            | Path to the project directory                                                                      |
+| `variables`    | `Record<string, string>`                                  | No                                      | Variables passed as Terraform `-var` flags, CDK `--context` values, or SAM `--parameter-overrides` |
+| `stackName`    | `string`                                                  | Yes (for `create-stack`/`delete-stack`) | CloudFormation/SAM stack name                                                                      |
+| `templatePath` | `string`                                                  | No                                      | Path to a CloudFormation/SAM template                                                              |
+| `s3Bucket`     | `string`                                                  | No                                      | S3 bucket for SAM deployments (if omitted, SAM uses `--resolve-s3`)                                |
+| `resolveS3`    | `boolean`                                                 | No                                      | For SAM deployments, whether to use `--resolve-s3` when no `s3Bucket` is provided                  |
+| `saveParams`   | `boolean`                                                 | No                                      | For SAM deployments, whether to persist resolved parameters to `samconfig.toml`                    |
 
 **Example prompts:**
 
@@ -248,13 +256,13 @@ The `create-stack` and `delete-stack` actions run `awslocal` inside the LocalSta
 
 Analyze LocalStack logs to find errors, summarize API activity, or inspect raw output.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `analysisType` | `summary` \| `errors` \| `requests` \| `logs` | No | Type of analysis (default: `summary`) |
-| `lines` | `number` | No | Number of log lines to fetch (default: `2000`) |
-| `service` | `string` | No | Filter by AWS service name |
-| `operation` | `string` | No | Filter by API operation (used with `service` in `requests` mode) |
-| `filter` | `string` | No | Keyword filter (used with `logs` mode only) |
+| Parameter      | Type                                          | Required | Description                                                      |
+| -------------- | --------------------------------------------- | -------- | ---------------------------------------------------------------- |
+| `analysisType` | `summary` \| `errors` \| `requests` \| `logs` | No       | Type of analysis (default: `summary`)                            |
+| `lines`        | `number`                                      | No       | Number of log lines to fetch (default: `2000`)                   |
+| `service`      | `string`                                      | No       | Filter by AWS service name                                       |
+| `operation`    | `string`                                      | No       | Filter by API operation (used with `service` in `requests` mode) |
+| `filter`       | `string`                                      | No       | Keyword filter (used with `logs` mode only)                      |
 
 **Example prompts:**
 
@@ -266,10 +274,10 @@ Analyze LocalStack logs to find errors, summarize API activity, or inspect raw o
 
 Configure IAM enforcement and generate IAM policies from access denials in the logs.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `action` | `set-mode` \| `analyze-policies` \| `get-status` | Yes | The operation to perform |
-| `mode` | `ENFORCED` \| `SOFT_MODE` \| `DISABLED` | Yes (for `set-mode`) | IAM enforcement level |
+| Parameter | Type                                             | Required             | Description              |
+| --------- | ------------------------------------------------ | -------------------- | ------------------------ |
+| `action`  | `set-mode` \| `analyze-policies` \| `get-status` | Yes                  | The operation to perform |
+| `mode`    | `ENFORCED` \| `SOFT_MODE` \| `DISABLED`          | Yes (for `set-mode`) | IAM enforcement level    |
 
 **Example prompts:**
 
@@ -281,21 +289,21 @@ Configure IAM enforcement and generate IAM policies from access denials in the l
 
 Inject faults and network latency into LocalStack services to test application resilience.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `action` | `inject-faults` \| `add-fault-rule` \| `remove-fault-rule` \| `get-faults` \| `clear-all-faults` \| `inject-latency` \| `get-latency` \| `clear-latency` | Yes | The chaos operation |
-| `rules` | `Array<FaultRule>` | Yes (for `inject-faults`, `add-fault-rule`, `remove-fault-rule`) | Fault rules to inject/modify |
-| `latency_ms` | `number` | Yes (for `inject-latency`) | Latency in milliseconds to add to all requests |
+| Parameter    | Type                                                                                                                                                     | Required                                                         | Description                                    |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------- |
+| `action`     | `inject-faults` \| `add-fault-rule` \| `remove-fault-rule` \| `get-faults` \| `clear-all-faults` \| `inject-latency` \| `get-latency` \| `clear-latency` | Yes                                                              | The chaos operation                            |
+| `rules`      | `Array<FaultRule>`                                                                                                                                       | Yes (for `inject-faults`, `add-fault-rule`, `remove-fault-rule`) | Fault rules to inject/modify                   |
+| `latency_ms` | `number`                                                                                                                                                 | Yes (for `inject-latency`)                                       | Latency in milliseconds to add to all requests |
 
 Each **fault rule** can include:
 
-| Field | Type | Description |
-|---|---|---|
-| `service` | `string` | Target AWS service (e.g., `s3`, `lambda`) |
-| `region` | `string` | Target region (e.g., `us-east-1`) |
-| `operation` | `string` | Target API operation (e.g., `PutObject`) |
-| `probability` | `number` (0-1) | Probability of the fault triggering |
-| `error` | `{ statusCode?: number, code?: string }` | Error response to return |
+| Field         | Type                                     | Description                               |
+| ------------- | ---------------------------------------- | ----------------------------------------- |
+| `service`     | `string`                                 | Target AWS service (e.g., `s3`, `lambda`) |
+| `region`      | `string`                                 | Target region (e.g., `us-east-1`)         |
+| `operation`   | `string`                                 | Target API operation (e.g., `PutObject`)  |
+| `probability` | `number` (0-1)                           | Probability of the fault triggering       |
+| `error`       | `{ statusCode?: number, code?: string }` | Error response to return                  |
 
 **Example prompts:**
 
@@ -307,10 +315,10 @@ Each **fault rule** can include:
 
 Save, load, and manage LocalStack state snapshots using [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/).
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `action` | `save` \| `load` \| `delete` \| `reset` | Yes | The state management operation |
-| `pod_name` | `string` | Yes (for `save`/`load`/`delete`) | Name of the Cloud Pod (alphanumeric, dots, hyphens, underscores; max 128 characters) |
+| Parameter  | Type                                    | Required                         | Description                                                                          |
+| ---------- | --------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------ |
+| `action`   | `save` \| `load` \| `delete` \| `reset` | Yes                              | The state management operation                                                       |
+| `pod_name` | `string`                                | Yes (for `save`/`load`/`delete`) | Name of the Cloud Pod (alphanumeric, dots, hyphens, underscores; max 128 characters) |
 
 **Example prompts:**
 
@@ -322,9 +330,9 @@ Save, load, and manage LocalStack state snapshots using [Cloud Pods](/aws/develo
 
 Execute AWS CLI commands inside the running LocalStack container via `awslocal`.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `command` | `string` | Yes | The AWS CLI command to run (without the `aws` or `awslocal` prefix) |
+| Parameter | Type     | Required | Description                                                         |
+| --------- | -------- | -------- | ------------------------------------------------------------------- |
+| `command` | `string` | Yes      | The AWS CLI command to run (without the `aws` or `awslocal` prefix) |
 
 **Example prompts:**
 
@@ -339,11 +347,11 @@ If a command fails due to a service not being emulated, the tool returns a link 
 
 Install, uninstall, list, and discover [LocalStack Extensions](/aws/customization/integrations/extensions/) from the marketplace.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `action` | `list` \| `install` \| `uninstall` \| `available` | Yes | The extensions operation |
-| `name` | `string` | Yes (for `install`/`uninstall`) | Extension package name (e.g., `localstack-extension-typedb`) |
-| `source` | `string` | No | Git URL to install from (alternative to `name`) |
+| Parameter | Type                                              | Required                        | Description                                                  |
+| --------- | ------------------------------------------------- | ------------------------------- | ------------------------------------------------------------ |
+| `action`  | `list` \| `install` \| `uninstall` \| `available` | Yes                             | The extensions operation                                     |
+| `name`    | `string`                                          | Yes (for `install`/`uninstall`) | Extension package name (e.g., `localstack-extension-typedb`) |
+| `source`  | `string`                                          | No                              | Git URL to install from (alternative to `name`)              |
 
 **Example prompts:**
 
@@ -360,14 +368,14 @@ After installing or uninstalling an extension, the tool automatically restarts L
 
 Manage cloud-hosted [Ephemeral Instances](/aws/developer-tools/cloud-sandbox/ephemeral-instances/) for remote LocalStack testing workflows.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `action` | `create` \| `list` \| `logs` \| `delete` | Yes | The ephemeral instance operation |
-| `name` | `string` | Yes (for `create`/`logs`/`delete`) | Instance name |
-| `lifetime` | `number` | No | Lifetime in minutes for the instance (only for `create`) |
-| `extension` | `string` | No | Extension package to preload on the instance (only for `create`) |
-| `cloudPod` | `string` | No | Cloud Pod name to initialize state from (only for `create`) |
-| `envVars` | `Record<string, string>` | No | Extra environment variables for the instance (only for `create`) |
+| Parameter   | Type                                     | Required                           | Description                                                      |
+| ----------- | ---------------------------------------- | ---------------------------------- | ---------------------------------------------------------------- |
+| `action`    | `create` \| `list` \| `logs` \| `delete` | Yes                                | The ephemeral instance operation                                 |
+| `name`      | `string`                                 | Yes (for `create`/`logs`/`delete`) | Instance name                                                    |
+| `lifetime`  | `number`                                 | No                                 | Lifetime in minutes for the instance (only for `create`)         |
+| `extension` | `string`                                 | No                                 | Extension package to preload on the instance (only for `create`) |
+| `cloudPod`  | `string`                                 | No                                 | Cloud Pod name to initialize state from (only for `create`)      |
+| `envVars`   | `Record<string, string>`                 | No                                 | Extra environment variables for the instance (only for `create`) |
 
 **Example prompts:**
 
@@ -380,10 +388,10 @@ Manage cloud-hosted [Ephemeral Instances](/aws/developer-tools/cloud-sandbox/eph
 
 Search the LocalStack documentation to find guides, API references, and configuration details.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `query` | `string` | Yes | The search query |
-| `limit` | `number` | No | Maximum number of results to return (default: `5`, max: `10`) |
+| Parameter | Type     | Required | Description                                                   |
+| --------- | -------- | -------- | ------------------------------------------------------------- |
+| `query`   | `string` | Yes      | The search query                                              |
+| `limit`   | `number` | No       | Maximum number of results to return (default: `5`, max: `10`) |
 
 **Example prompts:**
 
@@ -394,15 +402,15 @@ Search the LocalStack documentation to find guides, API references, and configur
 
 Execute SQL queries and commands against the [LocalStack Snowflake emulator](/snowflake/) using the Snowflake CLI (`snow`).
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `action` | `execute` \| `check-connection` | Yes | The operation to perform |
-| `query` | `string` | Yes (for `execute`, if `file_path` not provided) | SQL query to execute |
-| `file_path` | `string` | Yes (for `execute`, if `query` not provided) | Absolute path to a `.sql` file to execute |
-| `database` | `string` | No | Snowflake database context |
-| `schema` | `string` | No | Snowflake schema context |
-| `warehouse` | `string` | No | Snowflake warehouse to use |
-| `role` | `string` | No | Snowflake role to use |
+| Parameter   | Type                            | Required                                         | Description                               |
+| ----------- | ------------------------------- | ------------------------------------------------ | ----------------------------------------- |
+| `action`    | `execute` \| `check-connection` | Yes                                              | The operation to perform                  |
+| `query`     | `string`                        | Yes (for `execute`, if `file_path` not provided) | SQL query to execute                      |
+| `file_path` | `string`                        | Yes (for `execute`, if `query` not provided)     | Absolute path to a `.sql` file to execute |
+| `database`  | `string`                        | No                                               | Snowflake database context                |
+| `schema`    | `string`                        | No                                               | Snowflake schema context                  |
+| `warehouse` | `string`                        | No                                               | Snowflake warehouse to use                |
+| `role`      | `string`                        | No                                               | Snowflake role to use                     |
 
 **Example prompts:**
 
@@ -421,31 +429,31 @@ Once your MCP client is configured, verify the setup by opening a conversation w
 
 **1. Start LocalStack**
 
-> *"Start my LocalStack container."*
+> _"Start my LocalStack container."_
 
 The agent uses the `localstack-management` tool to start the container and confirms the status.
 
 **2. Deploy infrastructure**
 
-> *"Deploy my CDK project in the `./my-app` directory."*
+> _"Deploy my CDK project in the `./my-app` directory."_
 
 The agent detects the framework, runs `cdklocal bootstrap` and `cdklocal deploy`, and returns the stack outputs.
 
 **3. Verify resources**
 
-> *"List the Lambda functions and DynamoDB tables that were created."*
+> _"List the Lambda functions and DynamoDB tables that were created."_
 
 The agent runs `awslocal` commands inside the container and returns the results.
 
 **4. Analyze logs**
 
-> *"Check the LocalStack logs for any errors."*
+> _"Check the LocalStack logs for any errors."_
 
 The agent fetches recent logs and highlights any errors or warnings.
 
 **5. Save state**
 
-> *"Save a Cloud Pod named `my-checkpoint`."*
+> _"Save a Cloud Pod named `my-checkpoint`."_
 
 The agent persists the current LocalStack state so you can restore it later.
 
@@ -453,13 +461,13 @@ The agent persists the current LocalStack state so you can restore it later.
 
 The following environment variables can be set in the `env` block of your MCP configuration:
 
-| Variable | Default | Description |
-|---|---|---|
-| `LOCALSTACK_AUTH_TOKEN` (**required**) | None | Your LocalStack Auth Token. Required for all MCP server tools. |
-| `LOCALSTACK_HOSTNAME` | `localhost` | Hostname of the LocalStack instance |
-| `LOCALSTACK_PORT` | `4566` | Port of the LocalStack instance |
-| `MAIN_CONTAINER_NAME` | `localstack-main` | Name of the LocalStack Docker container |
-| `MCP_ANALYTICS_DISABLED` | `0` | Set to `1` to disable MCP analytics |
+| Variable                               | Default           | Description                                                    |
+| -------------------------------------- | ----------------- | -------------------------------------------------------------- |
+| `LOCALSTACK_AUTH_TOKEN` (**required**) | None              | Your LocalStack Auth Token. Required for all MCP server tools. |
+| `LOCALSTACK_HOSTNAME`                  | `localhost`       | Hostname of the LocalStack instance                            |
+| `LOCALSTACK_PORT`                      | `4566`            | Port of the LocalStack instance                                |
+| `MAIN_CONTAINER_NAME`                  | `localstack-main` | Name of the LocalStack Docker container                        |
+| `MCP_ANALYTICS_DISABLED`               | `0`               | Set to `1` to disable MCP analytics                            |
 
 Any [LocalStack configuration variable](/aws/customization/configuration-options/) can also be passed through the `env` block.
 These are forwarded to the container when the `localstack-management` tool starts it.

@@ -3,18 +3,254 @@ title: LocalStack CLI
 description: Reference guide for LocalStack CLI commands, options, and usage.
 template: doc
 sidebar:
-    order: 10
-tags: ["Hobby"]
+  order: 10
+tags: ['Hobby']
 ---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { LinkButton, Code } from '@astrojs/starlight/components';
+import { LOCALSTACK_AWS_VERSION } from 'astro:env/server';
 
 ## Introduction
 
 The LocalStack Command Line Interface (CLI) is a tool for starting, managing, and configuring your LocalStack container.
 It provides convenience features to interact with LocalStack features like Cloud Pods, Extensions, State Management, and more.
 
-To install the LocalStack CLI, follow the [installation guide](/aws/getting-started/installation/#installing-localstack-cli).
+:::caution
+The LocalStack CLI is deprecated and will be removed in a future version.
+Please use [lstk](/aws/developer-tools/running-localstack/lstk/) instead.
+:::
+
+## Installation
+
+<Tabs>
+
+<TabItem label="Linux" >
+
+You can download the pre-built binary for your architecture using the link below:
+
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-amd64-onefile.tar.gz`}
+  icon="download"
+  variant="minimal"
+>
+  {' '}
+  x86-64
+</LinkButton>
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-arm64-onefile.tar.gz`}
+  icon="download"
+  variant="minimal"
+>
+  ARM64
+</LinkButton>
+
+or use the curl commands below:
+
+For x86-64:
+
+<Code
+  code={`curl --output localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-amd64-onefile.tar.gz \\\n    --location https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-amd64-onefile.tar.gz`}
+  lang="bash"
+/>
+
+For ARM64:
+
+<Code
+  code={`curl --output localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-arm64-onefile.tar.gz \\\n    --location https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-arm64-onefile.tar.gz`}
+  lang="bash"
+/>
+
+Then extract the LocalStack CLI from the terminal:
+
+<Code
+  code={`sudo tar xvzf localstack-cli-${LOCALSTACK_AWS_VERSION}-linux-*-onefile.tar.gz -C /usr/local/bin`}
+  lang="bash"
+/>
+
+<details>
+<summary>Alternative: Homebrew on Linux</summary>
+
+If you are using [Homebrew for Linux](https://docs.brew.sh/Homebrew-on-Linux), you can install the LocalStack CLI directly from our official LocalStack tap:
+
+```bash
+brew install localstack/tap/localstack-cli
+```
+
+</details>
+
+</TabItem>
+
+<TabItem label="MacOS" >
+
+You can install the LocalStack CLI using Brew directly from our official LocalStack tap:
+
+```bash
+brew install localstack/tap/localstack-cli
+```
+
+<details>
+<summary>Alternative: Binary Download</summary>
+
+You may download the binary for your architecture using the link below:
+
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz`}
+  icon="download"
+  variant="minimal"
+>
+  {' '}
+  Intel (AMD64)
+</LinkButton>
+
+or use the following curl command:
+
+<Code
+  code={`curl --output ${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz \
+    --location https://github.com/localstack/localstack-cli/releases/download/${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz`}
+  lang="bash"
+/>
+
+Then extract the LocalStack CLI from the terminal:
+
+<Code
+  code={`sudo tar xvzf localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-*-onefile.tar.gz -C /usr/local/bin`}
+  lang="bash"
+/>
+
+</details>
+</TabItem>
+
+<TabItem label="Windows" >
+
+You can download the pre-built binary for your architecture using the link below:
+
+<LinkButton
+  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-windows-amd64-onefile.zip`}
+  icon="download"
+  variant="minimal"
+>
+  {' '}
+  Intel (AMD64)
+</LinkButton>
+
+Then extract the archive and execute the binary in Powershell.
+
+</TabItem>
+
+<TabItem label="Other/Python" >
+
+If you cannot use the binary releases of LocalStack, you can install the Python distribution.
+
+Please make sure to install the following before moving ahead:
+
+- [Python](https://docs.python.org/3/using/index.html)
+- [pip](https://pip.pypa.io/en/stable/installation/)
+
+Next install the LocalStack CLI in your Python environment by running:
+
+```bash
+python3 -m pip install --upgrade localstack
+```
 
 :::note
+To download a specific version of LocalStack, replace `<version>` with the required version from [changelog page](/aws/changelog).
+
+```bash
+python3 -m pip install localstack==<version>
+```
+
+:::
+
+:::tip[MacOS Sierra?]
+If you have problems with permissions in MacOS X Sierra, install with:
+
+```bash
+python3 -m pip install --user localstack
+```
+
+:::
+
+:::danger
+Do not use `sudo` or the `root` user when starting LocalStack.
+It should be installed and started entirely under a local non-root user.
+:::
+
+</TabItem>
+</Tabs>
+
+### Starting LocalStack
+
+To verify that the LocalStack CLI was installed correctly, you can check the version in your terminal:
+
+<Code code={`localstack --version\n${LOCALSTACK_AWS_VERSION}`} lang="bash" />
+
+You are all set!
+
+:::note
+To start LocalStack, you must first [set up your auth token](/aws/getting-started/auth-token).
+:::
+
+Once you've set up your auth token, you can start LocalStack with the following command:
+
+```bash
+localstack start # start localstack in background with -d flag
+```
+
+{/_ prettier-ignore _/}
+
+<Code
+code={`   __                     _______ __             __
+    / /   ____  _________ _/ / ___// /_____ ______/ /__
+   / /   / __ \\/ ___/ __ \`/ /\\** \\/ **/ ** \`/ \_**/ //\_/
+/ /**_/ /_/ / /**/ /\_/ / /**_/ / /_/ /\_/ / /**/ ,<
+/**\_**/\\\_**_/\\_**/\\**,_/_//\_\_**/\\**/\\**,\_/\\_\_\_/_/|\_|
+
+- LocalStack CLI `+
+ LOCALSTACK_AWS_VERSION +
+`
+- Profile: default
+- App: https://app.localstack.cloud
+
+[12:47:13] starting LocalStack in Docker mode 🐳 localstack.py:494
+preparing environment bootstrap.py:1240
+configuring container bootstrap.py:1248
+starting container bootstrap.py:1258
+[12:47:15] detaching bootstrap.py:1262`}
+lang="bash"
+/>
+
+### Updating LocalStack CLI
+
+The LocalStack CLI allows you to easily update the different components of LocalStack.
+To check the various options available for updating, run:
+
+```bash
+localstack update --help
+```
+
+```bash
+Usage: localstack update [OPTIONS] COMMAND [ARGS]...
+
+  Update different LocalStack components.
+
+Options:
+  -h, --help  Show this message and exit.
+
+Commands:
+  all             Update all LocalStack components
+  docker-images   Update docker images LocalStack depends on
+  localstack-cli  Update LocalStack CLI
+```
+
+:::note
+Updating the LocalStack CLI using `localstack update localstack-cli` and `localstack update all` will work only if it was installed from the Python distribution.
+If it was installed using the pre-built binary or via Brew, please run the installation steps again to update to the latest version.
+:::
+
+:::note
+This documentation below was auto-generated from LocalStack CLI version `LocalStack CLI 2026.4.0`.
+
 [`lstk`](/aws/developer-tools/running-localstack/lstk/) is our new Go-based CLI with an interactive terminal UI for lifecycle (`start`, `stop`), monitoring (`status`, `logs`), storage (`snapshot`), and more.
 :::
 
@@ -22,12 +258,12 @@ To install the LocalStack CLI, follow the [installation guide](/aws/getting-star
 
 The following global options are available for the `localstack` CLI:
 
-| Option | Description |
-|--------|-------------|
-| `-v`, `--version` | Show the version and exit |
-| `-d`, `--debug` | Enable CLI debugging mode |
+| Option                 | Description                   |
+| ---------------------- | ----------------------------- |
+| `-v`, `--version`      | Show the version and exit     |
+| `-d`, `--debug`        | Enable CLI debugging mode     |
 | `-p`, `--profile TEXT` | Set the configuration profile |
-| `-h`, `--help` | Show help message and exit |
+| `-h`, `--help`         | Show help message and exit    |
 
 ## Commands
 
@@ -791,8 +1027,6 @@ Commands:
 
 #### `license activate`
 
-
-
 ```bash
 Usage: localstack license activate [OPTIONS]
 
@@ -801,8 +1035,6 @@ Options:
 ```
 
 #### `license info`
-
-
 
 ```bash
 Usage: localstack license info [OPTIONS]

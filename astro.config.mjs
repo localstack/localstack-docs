@@ -390,6 +390,13 @@ export default defineConfig({
               items: [{ autogenerate: { directory: '/aws/getting-started' } }],
             },
             {
+              label: 'Quickstart Library',
+              collapsed: true,
+              items: [
+                { autogenerate: { directory: '/aws/quickstart-library' } },
+              ],
+            },
+            {
               label: 'Local AWS Services',
               slug: 'aws/services',
             },
@@ -604,7 +611,8 @@ export default defineConfig({
                       items: [
                         {
                           autogenerate: {
-                            directory: '/aws/customization/integrations/extensions',
+                            directory:
+                              '/aws/customization/integrations/extensions',
                           },
                         },
                         {
@@ -619,7 +627,8 @@ export default defineConfig({
                       items: [
                         {
                           autogenerate: {
-                            directory: '/aws/customization/integrations/localstack-sdks',
+                            directory:
+                              '/aws/customization/integrations/localstack-sdks',
                           },
                         },
                       ],
@@ -630,7 +639,8 @@ export default defineConfig({
                       items: [
                         {
                           autogenerate: {
-                            directory: '/aws/customization/integrations/app-frameworks',
+                            directory:
+                              '/aws/customization/integrations/app-frameworks',
                           },
                         },
                       ],
@@ -641,7 +651,8 @@ export default defineConfig({
                       items: [
                         {
                           autogenerate: {
-                            directory: '/aws/customization/integrations/testing',
+                            directory:
+                              '/aws/customization/integrations/testing',
                           },
                         },
                       ],

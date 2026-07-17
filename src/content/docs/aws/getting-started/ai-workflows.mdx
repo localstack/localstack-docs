@@ -1,0 +1,108 @@
+---
+title: AI & Agent Workflows
+description: Use LocalStack with AI coding assistants, MCP clients, and agent-driven infrastructure workflows.
+template: doc
+sidebar:
+  order: 5
+---
+
+## Introduction
+
+LocalStack gives AI coding assistants a local AWS-compatible environment to work against. Instead of letting an agent experiment in a real AWS account, you can ask it to create infrastructure, deploy code, inspect logs, and test resources in LocalStack first.
+
+This is useful when you want to:
+
+- Prototype AWS applications & infrastructure code from natural language prompts.
+- Validate AI-generated Terraform, CDK, or AWS CLI commands before using a cloud account.
+- Give an AI assistant a safe place to inspect resources, debug logs, and iterate on deployments.
+- Use reusable agent instructions for LocalStack-aware infrastructure workflows.
+
+## Common workflows
+
+There are three common ways to use LocalStack in AI-assisted development:
+
+- Use the [LocalStack MCP Server](/aws/tooling/mcp-server/) when your AI assistant supports MCP clients such as Cursor, Claude, Codex, or OpenCode.
+- Use [LocalStack Skills](https://github.com/localstack/skills) when you want reusable agent instructions for deploying and testing AWS architectures against LocalStack.
+- Use LocalStack with `tflocal`, `cdklocal`, or `awslocal` when you want the agent to generate infrastructure code or commands that you review and run locally.
+
+You do not need all three approaches to get started. If your editor supports MCP, start with the LocalStack MCP Server. Or, you can use Skills if you want reusable agent instructions. If not, ask your assistant to generate Terraform, CDK, or AWS CLI steps and run them with LocalStack's local wrappers.
+
+## Quick Setup
+
+LocalStack has provided an [`agents.md`](https://blog.localstack.cloud/ai/agents.md) file that provides the full instructions for your AI agent to get started with LocalStack, including how to configure the MCP server and LocalStack Skills. Details can be found at our [agents landing page](https://blog.localstack.cloud/ai/) or you can copy and paste the instructions below into your AI agent's prompt.
+
+```text
+Fetch https://blog.localstack.cloud/ai/agents.md and follow the instructions to set up LocalStack on my machine.
+```
+
+For manual setup of the MCP server and skills, you can follow the steps below.
+
+## Connect an MCP client
+
+The LocalStack MCP Server connects MCP-compatible clients to your LocalStack environment. Once configured, your AI assistant can use LocalStack tools to start the container, deploy infrastructure, run AWS CLI commands, inspect logs, manage state, and query resources. 
+
+Start the MCP server with an interactive setup wizard:
+
+```bash
+npx -y @localstack/localstack-mcp-server init
+```
+
+:::note
+The MCP server runs locally and talks to a LocalStack instance. Your AI assistant is the MCP client. For full installation instructions, detailed setup, and the full tool reference, see the [LocalStack MCP Server guide](/aws/tooling/mcp-server/).
+
+You need a valid [Auth Token](/aws/getting-started/auth-token/) to configure the server.
+:::
+
+## Use agent skills
+
+[LocalStack Skills](https://github.com/localstack/skills) provide reusable instructions for AI agents working with LocalStack. They help agents follow LocalStack-specific conventions when creating infrastructure, deploying resources, running tests, and inspecting local cloud state.
+
+Skills are most useful when you want the assistant to follow a repeatable workflow, for example:
+
+- Scaffold a local AWS application and deploy it to LocalStack.
+- Convert an AWS architecture idea into Terraform or CDK that targets LocalStack first.
+- Debug a failing local deployment by checking resources, logs, and configuration.
+- Save or restore LocalStack state as part of an iterative development loop.
+
+Refer to the [LocalStack Skills repository](https://github.com/localstack/skills) for available skills and setup instructions.
+
+## Example prompt sequence
+
+After LocalStack and your preferred AI tooling are configured, you can use a sequence like this:
+
+```text
+Create a Terraform application with an S3 bucket, a Lambda function, and a DynamoDB table.
+Make it deployable to LocalStack with tflocal.
+```
+
+```text
+Deploy the application to LocalStack and fix any errors from the deployment.
+```
+
+```text
+Invoke the Lambda function locally, inspect the DynamoDB table, and summarize what resources were created.
+```
+
+```text
+Add an integration test that verifies the Lambda writes an item to DynamoDB.
+Run the test against LocalStack.
+```
+
+This keeps the feedback loop local while still giving the assistant a realistic AWS-compatible target.
+
+## Review before applying to AWS
+
+AI-generated infrastructure still needs review. Treat LocalStack as the first validation step, not as a replacement for code review, tests, or production deployment controls.
+
+Before applying changes to AWS, check that:
+
+- The generated infrastructure matches your intended architecture.
+- Resource names, IAM policies, and environment variables are appropriate for your project.
+- Tests pass against LocalStack.
+- You understand any changes the assistant made to application code or deployment configuration.
+
+## Next steps
+
+- Configure the [LocalStack MCP Server](/aws/tooling/mcp-server/) if your AI assistant supports MCP.
+- Review [LocalStack Skills](https://github.com/localstack/skills) for reusable agent workflows.
+- Browse the [LocalStack for AWS services](/aws/services/) reference, or check the [Getting Started FAQ](/aws/getting-started/faq/) for common setup questions.
