@@ -171,7 +171,7 @@ Find out more about ephemeral instances [here](/aws/developer-tools/cloud-sandbo
 ...
 ```
 
-More information about state import and export [here](/aws/developer-tools/snapshots/export-import-state).
+More information about state import and export [here](/aws/developer-tools/snapshots/save-snapshots-locally).
 
 ## Current Limitations
 

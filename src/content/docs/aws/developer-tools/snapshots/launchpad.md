@@ -4,7 +4,7 @@ description: Get started with Cloud Pods Launchpad to share and inject Cloud Pod
 template: doc
 tags: ["Ultimate"]
 sidebar:
-    order: 5
+    order: 6
 ---
 
 The LocalStack Cloud Pods Launchpad enables you to easily share and inject Cloud Pods into a LocalStack instance.

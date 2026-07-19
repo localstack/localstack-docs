@@ -520,7 +520,7 @@ jobs:
       - localstack-load-state
 ```
 
-More information about Localstack's [state import/export](/aws/developer-tools/snapshots/export-import-state).
+More information about Localstack's [state import/export](/aws/developer-tools/snapshots/save-snapshots-locally).
 
 #### Cache
 
@@ -586,4 +586,4 @@ workflows:
       ...
 ```
 
-More information about [state management](/aws/developer-tools/snapshots/export-import-state).
+More information about [state management](/aws/developer-tools/snapshots/save-snapshots-locally).

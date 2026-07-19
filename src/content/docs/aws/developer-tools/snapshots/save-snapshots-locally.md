@@ -1,10 +1,10 @@
 ---
-title: Export & Import State
-description: Export and import the state of the current infrastructure state into a file or a LocalStack instance respectively.
+title: Saving locally
+description: Saving and loading snapshots from local files.
 template: doc
 tags: ["Base"]
 sidebar:
-    order: 4
+    order: 3
 ---
 
 ## Introduction
