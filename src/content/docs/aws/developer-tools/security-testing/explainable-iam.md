@@ -9,8 +9,10 @@ sidebar:
 
 ## Introduction
 
-The IAM Policy Engine logs output related to failed policy evaluation directly to the LocalStack logs.
-You can enable `DEBUG=1` to gain visibility into these log messages, allowing you to identify the additional policies required for your request to succeed.
+When IAM enforcement denies a request, the IAM Policy Engine returns a descriptive denial message in the API response and records the same information in the LocalStack logs.
+These messages identify the action that was denied, the policy type responsible (identity-based policy, resource-based policy, permissions boundary, or service control policy), the specific policy document involved, and whether the denial was explicit or implicit.
+This helps you pinpoint the additional policies required for your request to succeed.
+Enable `DEBUG=1` to surface the full log output.
 
 ## Getting started
 
@@ -91,22 +93,21 @@ awslocal lambda create-function \
     --zip-file fileb://function.zip
 ```
 
-```bash
-An error occurred (AccessDeniedException) when calling the CreateFunction operation: Access to the specified resource is denied
-```
-
-You can inspect the LocalStack logs, to observe the presence of five log entries directly related to the denied request:
+The request is denied, and the error response names the exact action that was missing:
 
 ```bash
-INFO:localstack_ext.services.iam.policy_engine.handler: Request for service lambda for operation CreateFunction denied.
-DEBUG:localstack_ext.services.iam.policy_engine.handler: Necessary permissions for this action: ["Action 'lambda:CreateFunction' for 'arn:aws:lambda:us-east-1:000000000000:function:test-function'", "Action 'iam:PassRole' for 'arn:aws:iam::000000000000:role/lambda-role'"]
-DEBUG:localstack_ext.services.iam.policy_engine.handler: 0 permissions have been explicitly denied: []
-DEBUG:localstack_ext.services.iam.policy_engine.handler: 1 permissions have been explicitly allowed: ["Action 'lambda:CreateFunction' for 'arn:aws:lambda:us-east-1:000000000000:function:test-function'"]
-DEBUG:localstack_ext.services.iam.policy_engine.handler: 1 permissions have been implicitly denied: ["Action 'iam:PassRole' for 'arn:aws:iam::000000000000:role/lambda-role'"]
+An error occurred (AccessDeniedException) when calling the CreateFunction operation: User: arn:aws:iam::000000000000:user/test-user is not authorized to perform: iam:PassRole on resource: arn:aws:iam::000000000000:role/lambda-role because no identity-based policy allows the iam:PassRole action
 ```
 
-Upon examination, it becomes apparent that the action `iam:PassRole` is not allowed; rather, it is implicitly denied for your user concerning the resource `arn:aws:iam::000000000000:role/lambda-role`.
-This implies that there is no explicit deny statement in the relevant policies, but there is also no allow statement, resulting in the implicit denial of the action.
+The same information is written to the LocalStack logs.
+Inspect the logs to see the corresponding Policy Engine entry:
+
+```bash
+2026-06-23T15:48:09.650  INFO --- [PoolThread-twisted.internet.reactor-2] localstack.pro.core.services.iam.policy_engine.handler : User: arn:aws:iam::000000000000:user/test-user is not authorized to perform: iam:PassRole on resource: arn:aws:iam::000000000000:role/lambda-role because no identity-based policy allows the iam:PassRole action
+```
+
+The message tells you that `iam:PassRole` is *implicitly* denied for your user on the resource `arn:aws:iam::000000000000:role/lambda-role`.
+This means there is no explicit deny statement in the relevant policies, but there is also no allow statement, so the action is denied by default.
 You can incorporate this action into the policy.
 
 ### Incorporate the action into the policy
@@ -130,6 +131,28 @@ Edit the `policy_1.json` file to include the `iam:PassRole` action:
 
 Re-run the Lambda [`CreateFunction`](https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html) API.
 You will notice that the request is now successful, and the function is created.
+
+## Reading denial messages
+
+Every denial message follows the same structure: the **principal** that made the request, the **action** it attempted, the **resource** it targeted, and the **cause** of the denial.
+The cause tells you both the policy type and whether the denial was explicit or implicit:
+
+- An **explicit deny** names the policy type and the specific policy document, for example `with an explicit deny in a service control policy: arn:aws:organizations::000000000000:policy/p-abc123`.
+- An **implicit deny** indicates that no policy allowed the action, for example `because no identity-based policy allows the s3:ListBucket action`.
+
+The Policy Engine evaluates identity-based policies, resource-based policies, permissions boundaries, and service control policies, and the denial message identifies whichever one is responsible.
+
+### Inline policies
+
+The logs go one step further for inline policies.
+On AWS, inline policies are reported anonymously, which makes denials caused by them difficult to trace.
+LocalStack instead names the specific inline policy responsible for the denial:
+
+```bash
+2026-06-23T15:57:15.197  INFO --- [PoolThread-twisted.internet.reactor-2] localstack.pro.core.services.iam.policy_engine.handler : User: arn:aws:sts::000000000000:assumed-role/role-881f9fff/TestSession is not authorized to perform: kms:DescribeKey on resource: arn:aws:kms:us-east-1:000000000000:key/ad764663-5e3d-4325-81de-c7e0964f7b7f with an explicit deny in a role inline policy: policy-fc33c780
+```
+
+Here, the request was blocked by an explicit deny in the inline policy `policy-fc33c780` attached to the assumed role, letting you go straight to the policy that needs changing.
 
 ## Soft Mode
 

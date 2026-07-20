@@ -13,6 +13,9 @@ IAM Policy Enforcement feature can be used to test your security policies and cr
 The environment configuration `ENFORCE_IAM=1` is required while starting LocalStack to enable this feature.
 Per default, IAM enforcement is disabled, and all APIs can be accessed without authentication.
 
+When a request is denied, LocalStack returns a descriptive error that identifies the denied action and the policy responsible for the denial.
+See [Explainable IAM](/aws/developer-tools/security-testing/explainable-iam/) for a detailed look at these messages.
+
 ## Getting started
 
 This guide is designed for users new to IAM Policy Enforcement and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
@@ -78,14 +81,15 @@ awslocal s3 mb s3://mybucket
 ```
 
 ```bash
-make_bucket failed: s3://mybucket An error occurred (AccessDeniedException) when calling the CreateBucket operation: Access to the specified resource is denied
+make_bucket failed: s3://mybucket An error occurred (AccessDeniedException) when calling the CreateBucket operation: User: arn:aws:iam::000000000000:user/test is not authorized to perform: s3:CreateBucket on resource: arn:aws:s3:::mybucket because no identity-based policy allows the s3:CreateBucket action
 ```
 
 As anticipated, the attempt to create the bucket fails with an `AccessDeniedException` error, confirming that user `test` lacks the necessary permissions for this action.
+The error message names the denied action (`s3:CreateBucket`) and explains that no identity-based policy allows it.
 You can view the LocalStack logs to validate the policy enforcement:
 
 ```bash
-2023-11-03T12:21:10.971  INFO --- [   asgi_gw_1] l.s.i.p.handler            : Request for service 's3' by principal 'arn:aws:iam::000000000000:user/test' for operation 'CreateBucket' denied.
+2023-11-03T12:21:10.971  INFO --- [   asgi_gw_1] localstack.pro.core.services.iam.policy_engine.handler : User: arn:aws:iam::000000000000:user/test is not authorized to perform: s3:CreateBucket on resource: arn:aws:s3:::mybucket because no identity-based policy allows the s3:CreateBucket action
 2023-11-03T12:21:10.972  INFO --- [   asgi_gw_1] localstack.request.aws     : AWS s3.CreateBucket => 403 (AccessDenied)
 ```
 
