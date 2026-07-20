@@ -84,34 +84,32 @@ The following sections describe the various methods of providing your Auth Token
 - In case your Auth Token is accidentally published, immediately rotate it on the [Auth Token page](https://app.localstack.cloud/workspace/auth-tokens).
   :::
 
-### LocalStack CLI
+### lstk
 
-You should set the `LOCALSTACK_AUTH_TOKEN` environment variable either before or during the startup of LocalStack using the `localstack` command-line interface (CLI).
-When starting the Azure emulator, point the CLI at the Azure image via `IMAGE_NAME`:
+`lstk` resolves your Auth Token in this order: a token stored by a previous `lstk login`, then the `LOCALSTACK_AUTH_TOKEN` environment variable, then a browser-based login prompt in interactive mode.
+
+Set the environment variable before starting the Azure emulator:
 
 <Tabs>
   <TabItem label="macOS/Linux">
     <Code
-      code={`localstack auth set-token <YOUR_AUTH_TOKEN>\nIMAGE_NAME=localstack/localstack-azure localstack start`}
+      code={`export LOCALSTACK_AUTH_TOKEN=<YOUR_AUTH_TOKEN>\nlstk start`}
       lang="shell"
     />
   </TabItem>
   <TabItem label="Windows">
     <Code
-      code={`localstack auth set-token <YOUR_AUTH_TOKEN>\n$env:IMAGE_NAME="localstack/localstack-azure"; localstack start`}
+      code={`$env:LOCALSTACK_AUTH_TOKEN="<YOUR_AUTH_TOKEN>"\nlstk start`}
       lang="powershell"
     />
   </TabItem>
 </Tabs>
 
 :::note
+Alternatively, run `lstk login` to authenticate through a browser-based flow; the resulting token is stored in your system keyring and reused on subsequent starts.
+:::
 
-1. You can alternatively `export LOCALSTACK_AUTH_TOKEN=<YOUR_AUTH_TOKEN>` in your shell session.
-   The CLI transmits the token to the Azure container, enabling license activation.
-2. The `localstack auth set-token` command is only available for the `localstack` CLI and cannot be used with a Docker or Docker Compose setup.
-   :::
-
-You have the option to run the Azure container in the background by appending the `-d` flag to the `localstack start` command.
+Make sure your `config.toml` (or a project-local `.lstk/config.toml`) targets the Azure emulator, as described in [Configure lstk for Azure](/azure/getting-started/installation/#configure-lstk-for-azure).
 
 ### Docker
 
@@ -211,11 +209,7 @@ The most common causes are listed below.
 You need to provide an Auth Token to start the Azure emulator.
 You can find your Auth Token on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application.
 
-If you are using the `localstack` CLI, you can set the `LOCALSTACK_AUTH_TOKEN` environment variable to your Auth Token or use the following command to set it up:
-
-```bash
-localstack auth set-token <YOUR_AUTH_TOKEN>
-```
+If you are using `lstk`, set the `LOCALSTACK_AUTH_TOKEN` environment variable to your Auth Token, or run `lstk login` to authenticate through a browser-based flow instead.
 
 ### Invalid license
 

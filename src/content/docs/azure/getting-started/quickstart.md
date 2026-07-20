@@ -13,8 +13,8 @@ In this guide, you will run some basic Azure CLI commands to manage resource gro
 
 ## Prerequisites
 
-- [`localstack`  CLI](/aws/getting-started/installation/#localstack-cli)
-- [`azlocal` CLI](https://pypi.org/project/azlocal/)
+- [`lstk`](/azure/getting-started/installation/#lstk)
+- [Azure CLI (`az`)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 - [LocalStack for Azure](/azure/getting-started/)
 - A [LocalStack Auth Token](/azure/getting-started/auth-token/)
 
@@ -22,22 +22,21 @@ In this guide, you will run some basic Azure CLI commands to manage resource gro
 
 Before you begin, make sure that the Emulator is running, see the [installation instructions](/azure/getting-started/).
 
-### Setup the `azlocal` tool
+### Set up the `az` CLI integration
 
-To instruct the regular `az` CLI tool to communicate with the Azure emulator, run the following command:
+`lstk az` proxies your host `az` CLI against the Azure emulator, using an isolated configuration directory so your global `~/.azure` setup is left untouched.
+Run the following command once to prepare it:
 
 ```
-$ azlocal start-interception
+$ lstk setup azure
 ```
-
-You may see some warnings about experimental commands, you can safely ignore these.
 
 ### Create a resource group
 
-To create a resource group, you can now the same `az` command as you would normally:
+To create a resource group, prefix the same `az` command you would normally run with `lstk az`:
 
 ```
-$ az group create --name myResourceGroup --location westeurope
+$ lstk az group create --name myResourceGroup --location westeurope
 ```
 
 The following output would be displayed:
@@ -61,13 +60,13 @@ The following output would be displayed:
 To check the resource group details, run the following command:
 
 ```
-$ az group show --name myResourceGroup
+$ lstk az group show --name myResourceGroup
 ```
 
 To list all the resource groups, run the following command:
 
 ```
-$ azlocal group list
+$ lstk az group list
 ```
 
 ### Delete the resource group
@@ -75,15 +74,5 @@ $ azlocal group list
 To delete the resource group, run the following command:
 
 ```
-$ az group delete --name myResourceGroup --yes
+$ lstk az group delete --name myResourceGroup --yes
 ```
-
-### Teardown
-
-When you're done using the Azure Emulator, you can run the following command:
-
-```
-$ azlocal stop-interception
-```
-
-All invocations of the `az` CLI tool will now talk to the real Azure Cloud again.
