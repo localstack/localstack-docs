@@ -215,4 +215,3 @@ The output should be:
 The following limitations apply to Dynamic Tables in the current Snowflake emulator:
 
 - **Always-current refresh behavior**: Dynamic Tables are backed by views in the current implementation, meaning they always reflect the latest state of their source query. As a result, `TARGET_LAG` and `REFRESH_MODE` settings are accepted but have no effect on refresh timing or staleness behavior.
-- **Planned support**: Proper staleness tracking and refresh-timing support is planned for the Rust emulator.
