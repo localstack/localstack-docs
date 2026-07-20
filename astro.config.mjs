@@ -864,6 +864,13 @@ export default defineConfig({
               slug: 'azure/services',
             },
             {
+              label: 'Developer Tools',
+              collapsed: true,
+              items: [
+                { autogenerate: { directory: 'azure/developer-tools' } },
+              ],
+            },
+            {
               label: 'Integrations',
               collapsed: true,
               items: [{ autogenerate: { directory: 'azure/integrations' } }],
