@@ -1,0 +1,88 @@
+---
+title: Service Coverage
+description: Snapshot compatibility rules, and service coverage of LocalStack's snapshot mechanism.
+template: doc
+sidebar:
+    order: 7
+tags: ["Base"]
+---
+
+import { Tabs, TabItem, FileTree } from '@astrojs/starlight/components';
+import PersistenceCoverage from '../../../../../components/persistence-coverage/PersistenceCoverage.tsx';
+
+This page covers two topics: the compatibility rules LocalStack enforces when loading a snapshot, and the current level of snapshot support across AWS services.
+
+## Snapshot compatibility
+
+The internal data structures inside a LocalStack emulator change over time as services evolve.
+To prevent silently loading state into an incompatible runtime, LocalStack ships a set of compatibility rules that compare the LocalStack version recorded in the snapshot with the version of the running emulator.
+These rules apply to all snapshots, whether saved locally to a file, saved to a Cloud Pod, or implicitly saved when persistence is enabled.
+
+If a rule rejects the snapshot, LocalStack does not load it, then logs the reason.
+The rules currently enforced are:
+
+| Rule | Behavior |
+| - | - |
+| Forward compatibility | Reject loading a snapshot into a LocalStack emulator older than the one that produced it. |
+| First CalVer release (`v2026.03`) | Reject loading a snapshot saved before `v2026.03` into LocalStack `v2026.03` or later. The snapshot mechanism was rewritten for several services in the first calendar-versioned release. |
+
+Loading a snapshot saved with `v2026.03` or later into a newer LocalStack version of the same series remains supported.
+For example, a snapshot saved with `v2026.03` can be loaded into `v2026.03.1` or `v2026.04`.
+
+### Disable compatibility checks
+
+If you understand the risks and want LocalStack to load a snapshot regardless of these rules, start the container with `DISABLE_COMPATIBILITY_RULES=1`.
+This bypasses every compatibility rule and lets LocalStack attempt to load the state as-is.
+
+<Tabs>
+<TabItem label="LocalStack CLI">
+```bash
+DISABLE_COMPATIBILITY_RULES=1 lstk start --persist
+```
+</TabItem>
+<TabItem label="Docker Compose">
+```yaml showLineNumbers
+image: localstack/localstack-pro
+environment:
+  - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
+  - PERSISTENCE=1
+  - DISABLE_COMPATIBILITY_RULES=1
+volumes:
+  - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+```
+</TabItem>
+<TabItem label="Docker">
+```bash
+docker run \
+  -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} \
+  -e PERSISTENCE=1 \
+  -e DISABLE_COMPATIBILITY_RULES=1 \
+  -v ./volume:/var/lib/localstack \
+  -p 4566:4566 \
+  localstack/localstack-pro
+```
+</TabItem>
+</Tabs>
+
+:::caution
+Disabling compatibility rules can leave LocalStack in an inconsistent state.
+Use this option only for debugging or when migrating data with a tested workaround in place.
+:::
+
+## Service coverage
+
+Although we are working to support snapshots for all AWS services,
+there are some common issues, known limitations, and also services that are not well tested for snapshot support.
+An overview is available [here](#snapshot-coverage-overview).
+
+For example, when using LocalStack's snapshot feature, ports assigned to certain services (such as RDS or Elasticache) may not be preserved when reloading that snapshot. 
+If you start new services *before* restoring the snapshot, these new instances may use ports originally used by the saved services. 
+
+As a result, restored resources may point to invalid or unintended ports.
+It is suggested to restore services in the same order as initially deployed, though this is not always reliable.
+
+If you encounter a limitation or bug with snapshot support, please [contact support](/aws/help-support/get-help/).
+
+## Snapshot Coverage Overview
+
+<PersistenceCoverage client:load />
