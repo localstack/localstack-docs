@@ -272,14 +272,14 @@ See [Offline and enterprise environments](#offline-and-enterprise-environments) 
 ### Volume mounts
 
 Beyond the single persistence directory set by `volume`, a container block can declare arbitrary Docker-style bind mounts with `volumes`.
-Each entry is a `"host:container[:ro]"` spec — useful, for example, for mounting Snowflake init hooks into `/etc/localstack/init/{boot,start,ready,shutdown}.d`:
+Each entry is a `"host:container[:ro]"` spec — useful, for example, for mounting a [Snowflake init hook](/snowflake/capabilities/init-hooks/) script into `/etc/localstack/init/{boot,start,ready,shutdown}.d`:
 
 ```toml
 [[containers]]
 type = "snowflake"
 port = "4566"
 volumes = [
-  "./init:/etc/localstack/init/ready.d:ro",
+  "./test.sf.sql:/etc/localstack/init/ready.d/test.sf.sql",
   "./data:/var/lib/localstack",
 ]
 ```
@@ -999,8 +999,7 @@ export AWS_PROFILE=localstack
 aws s3 ls
 ```
 
-The endpoint host is resolved automatically: `lstk` probes `localhost.localstack.cloud` and uses it when it resolves to `127.0.0.1`, otherwise it falls back to `127.0.0.1`.
-Set [`LOCALSTACK_HOST`](#environment-variables) to override the host and port written into the profile.
+The endpoint host is resolved the same way as for [`lstk aws`](#endpoint-resolution) (probing `localhost.localstack.cloud` and falling back to `127.0.0.1`), and [`LOCALSTACK_HOST`](#environment-variables) overrides the host and port written into the profile.
 The port comes from your AWS emulator's configured `port` (default `4566`); if no `aws` emulator is configured, the command fails with `no aws emulator configured`.
 
 If the `localstack` profile is already configured correctly, `lstk` reports `LocalStack AWS profile is already configured.` and makes no changes.
