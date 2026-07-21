@@ -7,8 +7,6 @@ sidebar:
     order: 2
 ---
 
-## Introduction
-
 With Snapshots, you can save the state of your LocalStack instance to a local file on disk, then load it back at a later time. This concept is similar to desktop-based word processors, spreadsheets, or practically any software that allows saving and loading the program state.
 
 In addition, LocalStack's snapshot mechanism allows for loading multiple snapshot files into the same emulator instance, useful when multiple teams collaborate to build a running emulator image.

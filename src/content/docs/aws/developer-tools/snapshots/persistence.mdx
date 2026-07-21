@@ -9,23 +9,22 @@ tags: ["Base"]
 
 import { Tabs, TabItem, FileTree } from '@astrojs/starlight/components';
 
-## Introduction
-
-LocalStack's Persistence mechanism enables the saving and restoration of the entire LocalStack state, including all AWS resources and data, on your local machine.
-It functions as a "pause and resume" feature, allowing you to take a snapshot of your LocalStack instance and save this data to disk.
-This mechanism ensures a quick and efficient way to preserve and continue your work with AWS resources locally.
+LocalStack's _Persistence_ mechanism uses snapshots to provide an enhanced level of durability, bringing it closer to the behavior you'd expect from a cloud-based service.
+By default, LocalStack's internal state is emphemeral, reseting when the emulator is shutdown or exits unexpectedly. By enabling the Persistence feature,
+LocalStack takes periodic snapshots of your emulator, then restores it upon restart. This reduces the likelihood of unexpected data loss.
 
 ## Configuration
 
-To start snapshot-based persistence, launch LocalStack with the configuration option `PERSISTENCE=1`.
-This setting instructs LocalStack to save all AWS resources and their respective application states into the LocalStack Volume Directory.
-Upon restarting LocalStack, you'll be able to resume your activities exactly where you left off.
+To start snapshot-based persistence, launch LocalStack with the `--persist` command line option, or the configuration option `PERSISTENCE=1`.
+This instructs LocalStack to periodically generate a snapshot, storing it within LocalStack's internal volume directory. There is no visible
+snapshot file (or Cloud Pod) created, as the snapshot is managed internally to LocalStack.
+
+Upon restarting LocalStack, the last successful snapshot is automatically reloaded, so you can resume your activities exactly where you left off.
 
 <Tabs>
 <TabItem label="LocalStack CLI">
 ```bash
-LOCALSTACK_AUTH_TOKEN=...
-PERSISTENCE=1 localstack start
+lstk start --persist
 ```
 </TabItem>
 <TabItem label="Docker Compose">
@@ -38,7 +37,7 @@ volumes:
   - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
 ```
 </TabItem>
-<TabItem label="Docker">
+<TabItem label="Docker CLI">
 ```bash
 docker run \
   -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} \
@@ -51,24 +50,23 @@ docker run \
 </Tabs>
 
 :::note
-Snapshots may not be compatible across different versions of LocalStack.
-LocalStack applies [state compatibility rules](/aws/developer-tools/snapshots/service-coverage#state-compatibility) that block loading state files known to be incompatible with the running LocalStack version.
+Snapshots (stored in LocalStack's volume) may not remain compatible if you upgrade your version of LocalStack.
+LocalStack applies [snapshot compatibility rules](/aws/developer-tools/snapshots/service-coverage#snapshot-compatibility) to block loading snapshots known to be incompatible with the running LocalStack version.
 :::
 
 ### Save strategies
 
-LocalStack takes point-in-time snapshot of its state and dumps them to disk.
-There are four strategies that you can choose from that govern when these snapshots are taken.
+LocalStack generates periodic snapshots of the running emulator. There are four strategies you can choose from to govern when these snapshots are taken.
 You can select a particular save strategy by setting `SNAPSHOT_SAVE_STRATEGY=<strategy>`.
 
-* **`ON_REQUEST`**: On every AWS API call that potentially modifies the state of a service, LocalStack will save the state of that service.
+* **`ON_REQUEST`**: On every AWS API call that potentially makes a modification, LocalStack saves the state of that service.
   This strategy minimizes the chance for data loss, but also has significant performance implications.
-  The service has to be locked during snapshotting, meaning that any requests to the particular AWS service will be blocked until the snapshot is complete.
+  The service must be locked during snapshotting, with any requests to the particular AWS service being blocked until the snapshot is complete.
    In many cases this is just a few milliseconds, but can become significant in some services.
-* **`ON_SHUTDOWN`**: The state of all services are saved during the shutdown phase of LocalStack.
-  This strategy has zero performance impact, but is not good when you want to minimize the chance for data loss.
+* **`ON_SHUTDOWN`**: The state of all services is saved during the shutdown phase of LocalStack.
+  This strategy has negliable performance impact, but is not good when you want to minimize the chance for data loss.
   Should LocalStack for some reason not shut down properly or is terminated before it can finalize the snapshot, you may be left with an incomplete state on disk.
-* **`SCHEDULED`** (**default**): Saves at regular intervals the state of all the services that have been modified since the last snapshot.
+* **`SCHEDULED`** (**default**): Saves the state of all services at regular intervals, as long as the state has been modified since the last snapshot.
   By default, the flush interval is 15 seconds.
   It can be configured via the `SNAPSHOT_FLUSH_INTERVAL` configuration variable.
   This is a compromise between `ON_REQUEST` and `ON_SHUTDOWN` in terms of performance and reliability.
@@ -78,15 +76,15 @@ You can select a particular save strategy by setting `SNAPSHOT_SAVE_STRATEGY=<st
 
 Similarly, you can configure when LocalStack should restore the state snapshots, by using `SNAPSHOT_LOAD_STRATEGY=<strategy>`.
 
-* **`ON_REQUEST`**: (**default**) The state is loaded lazily when the service is requested.
+* **`ON_REQUEST`**: (**default**) The state is loaded lazily when the service is first used (that, the first API call to that service).
   This maintains LocalStack's lazy-loading behavior for AWS services.
-* **`ON_STARTUP`**: The state of all services in the snapshot is restored when LocalStack starts up.
-  This means that services that have stored state are also started on LocalStack start, which will increase the startup time, but also give you immediate feedback whether the state was restored correctly.
+* **`ON_STARTUP`**: The state of all services in the snapshot is restored when LocalStack starts up, before any of the services are accessed. This
+  reduces the cost of lazy-loading when the data is eventually accessed, but does cause an upfront delay to pre-load everything.
 * **`MANUAL`**: Turns off automatic loading of snapshots and gives you control through the internal state endpoints.
 
 ### Endpoints
 
-As mentioned, with the `MANUAL` save or load strategy you can trigger snapshotting manually when it best suits your application flow.
+With the `MANUAL` save or load strategy you can trigger snapshotting manually when it best suits your application flow.
 
 * `POST /_localstack/state/<service>/save` take a snapshot the given service
 * `POST /_localstack/state/<service>/load` load the most recent snapshot of the given service
