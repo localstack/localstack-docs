@@ -283,6 +283,30 @@
         }
     },
     {
+        "resource_type": "AWS::RDS::DBInstance",
+        "service": "rds",
+        "extra_config": {
+            "master_user_password": {
+                "type": "str",
+                "default": "test",
+                "description": "The master user password for the instance. Only required when the replicated instance does not use managed user secrets"
+            }
+        },
+        "single": {
+            "policy_statements": [
+                "rds:DescribeDBInstances",
+                "cloudformation:GetResource"
+            ],
+            "identifier": "DBInstanceIdentifier"
+        },
+        "batch": {
+            "policy_statements": [
+                "rds:DescribeDBInstances"
+            ],
+            "identifier": "Optional<json string filters for describe_db_instances>"
+        }
+    },
+    {
         "resource_type": "AWS::Route53::HostedZone",
         "service": "route53",
         "single": {
@@ -351,6 +375,16 @@
                 "s3:ListBucket"
             ],
             "identifier": "{\"Prefix\": Optional<str>, \"BucketRegion\": Optional<str>}"
+        }
+    },
+    {
+        "resource_type": "AWS::SNS::Subscription",
+        "service": "sns",
+        "single": {
+            "policy_statements": [
+                "sns:GetSubscriptionAttributes"
+            ],
+            "identifier": "SubscriptionArn"
         }
     },
     {
