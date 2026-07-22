@@ -197,14 +197,20 @@ This section covers configuration options that are specific to certain AWS servi
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `EKS_K3S_FLAGS` | | Customize the `k3s` cluster created by LocalStack to emulate EKS clusters. |
+| `K3S_FLAGS` | | Customize the `k3s` cluster created by LocalStack to emulate EKS clusters. (formerly `EKS_K3S_FLAGS`, still accepted as a deprecated alias) |
 | `EKS_LOADBALANCER_PORT` | `8081` (default) | Local port on which the Kubernetes load balancer is exposed on the host. |
-| `EKS_K3S_IMAGE_TAG` | `v1.31.5-k3s1` (default) | Custom tag of the `rancher/k3s` image used to spin up Kubernetes clusters locally. |
-| `EKS_K8S_PROVIDER` | `k3s` (default)\|`local` | The k8s provider which should be used to start the k8s cluster backing EKS. For more information on the providers, please see [Elastic Kubernetes Service (EKS)](/aws/services/eks) |
-| `EKS_K3S_IMAGE_REPOSITORY` | `rancher/k3s` (default) | Custom repository of the `rancher/k3s` image used to spin up Kubernetes clusters locally. |
-| `EKS_START_K3D_LB_INGRESS` |      `0` (default)     |  Whether to start the k3d load balancer and Traefik ingress controller automatically when creating an EKS cluster. Set to `1` to enable.  |
+| `K3S_IMAGE_TAG` | `v1.31.5-k3s1` (default) | Custom tag of the `rancher/k3s` image used to spin up Kubernetes clusters locally. (formerly `EKS_K3S_IMAGE_TAG`, still accepted as a deprecated alias) |
+| `MANAGED_K8S_PROVIDER` | `k3s` (default)\|`local` | The k8s provider which should be used to start the k8s cluster backing EKS. For more information on the providers, please see [Elastic Kubernetes Service (EKS)](/aws/services/eks) (formerly `EKS_K8S_PROVIDER`, still accepted as a deprecated alias) |
+| `K3S_IMAGE_REPOSITORY` | `rancher/k3s` (default) | Custom repository of the `rancher/k3s` image used to spin up Kubernetes clusters locally. (formerly `EKS_K3S_IMAGE_REPOSITORY`, still accepted as a deprecated alias) |
+| `K3D_START_LB_INGRESS` |      `0` (default)     |  Whether to start the k3d load balancer and Traefik ingress controller automatically when creating an EKS cluster. Set to `1` to enable. (formerly `EKS_START_K3D_LB_INGRESS`, still accepted as a deprecated alias)  |
 | `EKS_PERSIST_CLUSTER_CONTENTS` | `0` (default) | When Persistence is enabled or when saving/loading Cloud Pods, this flag can be used to control whether the content deployed to EKS clusters will be persisted. Set to `1` to enable. |
-| `EKS_K3D_CLUSTER_TOKEN` | `localstack-k3d-cluster-token` (default) | Token used to authenticate agent nodes joining a k3d-backed EKS cluster. Setting an explicit token ensures consistent node authentication across k3d versions, which is required for dynamic agent assignment. Can be overridden via the `EKS_K3D_CLUSTER_TOKEN` environment variable. |
+| `K3D_CLUSTER_TOKEN` | `localstack-k3d-cluster-token` (default) | Token used to authenticate agent nodes joining a k3d-backed EKS cluster. Setting an explicit token ensures consistent node authentication across k3d versions, which is required for dynamic agent assignment. (formerly `EKS_K3D_CLUSTER_TOKEN`, still accepted as a deprecated alias) |
+
+:::note
+The EKS configuration variables were renamed to cloud-agnostic names since they're shared across cloud emulators (AWS EKS / Azure AKS). The previous `EKS_*`, `LOCALSTACK_K8S_*`, and `LAMBDA_K8S_*` names still work as deprecated aliases and will be removed in a future release.
+
+If you configure these options through the LocalStack CLI **v1**, keep the `LOCALSTACK_` prefix on the new names (e.g. `LOCALSTACK_MANAGED_K8S_PROVIDER`). The CLI v1 only forwards host environment variables prefixed with `LOCALSTACK_` into the container, where the prefix is stripped to yield the in-container variable (`MANAGED_K8S_PROVIDER`).
+:::
 
 ### ElastiCache
 

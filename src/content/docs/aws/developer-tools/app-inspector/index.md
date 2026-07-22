@@ -64,6 +64,8 @@ The interface enables you to trace the flow of operations, identify relationship
 
 ![App Inspector event list showing a fanout pipeline across EventBridge, Lambda, SQS, and SNS](/images/aws/app-inspector/app-inspector-fanout-pipeline.png)
 
+Use the search box above the operations list to filter by any text fragment, such as a resource name, an ARN segment, a status message, or a payload snippet. Search is case-insensitive, matches substrings anywhere in the field, and covers the full result set rather than just the operations currently loaded on screen.
+
 ### Graph View and Operation Details
 
 Click **View Detail** to visualize the relationships between AWS services in your application as an interactive graph. Each node represents a service, and each edge represents a call between them, making it easy to follow the path of a request across your architecture.

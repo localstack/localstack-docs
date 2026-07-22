@@ -12,7 +12,7 @@ tags: ["Enterprise"]
 When LocalStack runs inside Kubernetes with the Kubernetes executor enabled, some services create child pods for workloads such as Lambda invocations and ECS tasks.
 In heterogeneous clusters, these child pods may need additional Kubernetes configuration so they are scheduled onto the right node pools, carry the right resource requests, or integrate with cluster policies.
 
-Use the `LOCALSTACK_K8S_POD_CONFIG` environment variable to configure Kubernetes metadata, scheduling, and resource settings for LocalStack-spawned pods.
+Use the `K8S_POD_CONFIG` environment variable to configure Kubernetes metadata, scheduling, and resource settings for LocalStack-spawned pods.
 The variable accepts a JSON object with reusable `profiles` and optional per-service mappings.
 The value must be valid JSON. LocalStack validates this configuration at startup and refuses to start if the value is not valid JSON or contains unknown fields, so misconfigurations surface before any child pods are created.
 
@@ -77,7 +77,7 @@ To use this with the Helm chart, pass the JSON as an environment variable in you
 
 ```yaml
 extraEnvVars:
-  - name: LOCALSTACK_K8S_POD_CONFIG
+  - name: K8S_POD_CONFIG
     value: |
       {
         "profiles": {
@@ -190,15 +190,15 @@ Use them only for global defaults.
 
 Architecture values are normalized before lookup.
 For example, `ARM64` is treated as `arm64`, and `x86_64` or `X86_64` are treated as `amd64`.
-The keys in `LOCALSTACK_K8S_POD_CONFIG` should still be `arm64` and `amd64`.
+The keys in `K8S_POD_CONFIG` should still be `arm64` and `amd64`.
 
 If a service references a profile that does not exist, LocalStack logs a warning and applies no pod configuration for that request.
 It does not silently fall back to `default`.
 
 ## Labels and annotations
 
-`labels` and `annotations` in `LOCALSTACK_K8S_POD_CONFIG` are merged into the metadata of the generated child pod.
-Profile labels override labels set through `LOCALSTACK_K8S_LABELS`, and profile annotations override annotations set through `LOCALSTACK_K8S_ANNOTATIONS`.
+`labels` and `annotations` in `K8S_POD_CONFIG` are merged into the metadata of the generated child pod.
+Profile labels override labels set through `K8S_LABELS`, and profile annotations override annotations set through `K8S_ANNOTATIONS`.
 
 LocalStack also injects the following system labels:
 
@@ -257,8 +257,8 @@ The following example schedules Lambda pods on dedicated nodes, adds tolerations
 
 ## Related configuration
 
-- Use `LOCALSTACK_K8S_NAMESPACE` to choose the namespace for child pods.
-- Use `LOCALSTACK_K8S_LABELS` and `LOCALSTACK_K8S_ANNOTATIONS` for simple labels and annotations that apply to all child pods.
+- Use `K8S_NAMESPACE` to choose the namespace for child pods.
+- Use `K8S_LABELS` and `K8S_ANNOTATIONS` for simple labels and annotations that apply to all child pods.
 - Use `K8S_CONTAINER_SECURITY_CONTEXT` to configure the security context for child pod containers.
 
 For the complete list of Kubernetes executor configuration variables, see the [Kubernetes configuration reference](/aws/customization/kubernetes/configuration/).

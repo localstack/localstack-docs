@@ -98,7 +98,7 @@ The Traefik ingress controller and the default k3d load balancer containers are 
 To restore the previous behavior, set the following configuration variable:
 
 ```bash
-EKS_START_K3D_LB_INGRESS=1
+K3D_START_LB_INGRESS=1
 ```
 :::
 
@@ -464,7 +464,7 @@ Two AMI families are supported:
 LocalStack reads the same set of fields from both formats and propagates them to the registered node, including node labels, taints, topology metadata (region, zone, instance type), and the provider ID. This matches what real EKS nodes look like from the cluster's perspective.
 
 :::note
-Self-managed nodes use the embedded k3d-backed provider (`EKS_K8S_PROVIDER=k3s`), which is the default.
+Self-managed nodes use the embedded k3d-backed provider (`MANAGED_K8S_PROVIDER=k3s`), which is the default.
 The walkthrough below runs entirely between Docker containers, so it also works on macOS where direct host-to-instance networking is not available.
 :::
 
@@ -640,7 +640,7 @@ To try this out, follow the upstream [Getting started with Karpenter](https://ka
 ## Use an existing Kubernetes installation
 
 You can also access the EKS API using your existing local Kubernetes installation.
-This can be achieved by setting the configuration variable `EKS_K8S_PROVIDER=local` and mounting the `$HOME/.kube/config` file into the LocalStack container.
+This can be achieved by setting the configuration variable `MANAGED_K8S_PROVIDER=local` and mounting the `$HOME/.kube/config` file into the LocalStack container.
 When using a `docker-compose.yml` file, you need to add a bind mount like this:
 
 ```yaml
@@ -875,15 +875,15 @@ The default version is `1.35`.
 | 1.31                 | v1.31.14-k3s1 | eks.60                 |
 | 1.30                 | v1.30.14-k3s2 | eks.68                 |
 
-Users can specify the desired version when creating an EKS cluster in LocalStack using the `EKS_K3S_IMAGE_TAG` configuration variable when starting LocalStack.
+Users can specify the desired version when creating an EKS cluster in LocalStack using the `K3S_IMAGE_TAG` configuration variable when starting LocalStack.
 
 ## Configuring the k3d Cluster Token
 
 When LocalStack creates a k3d-backed EKS cluster, it starts the k3s server with an explicit cluster token. This token is used to authenticate agent nodes joining the cluster, enabling dynamic node registration.
-By default, LocalStack uses `localstack-k3d-cluster-token` as the cluster token. You can override this value using the `EKS_K3D_CLUSTER_TOKEN` configuration variable:
+By default, LocalStack uses `localstack-k3d-cluster-token` as the cluster token. You can override this value using the `K3D_CLUSTER_TOKEN` configuration variable:
 
 ```bash
-EKS_K3D_CLUSTER_TOKEN=my-custom-token localstack start
+K3D_CLUSTER_TOKEN=my-custom-token localstack start
 ```
 
 Any agent nodes added to the cluster — whether via k3d node create or k3s agent — will use the same token to authenticate with the k3s server.
