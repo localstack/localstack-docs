@@ -168,13 +168,30 @@ with a payload identifying the resource, the replication strategy, and AWS crede
     "resource_identifier": "<identifier>"
   },
   "source_aws_config": {
-    "aws_access_key_id": "...",
-    "aws_secret_access_key": "...",
+    "aws_access_key_id": "...", // optional, falls back to the default credential chain (e.g. `AWS_PROFILE`) if omitted
+    "aws_secret_access_key": "...", // optional, same as above
     "aws_session_token": "...", // optional
     "region_name": "...",
     "endpoint_url": "..." // optional
   },
   "target_aws_config": {} // optional, same shape as `source_aws_config`
+}
+```
+
+For example, to replicate an SSM parameter named `myparam` using credentials whose default region is `eu-central-1`:
+
+```json showLineNumbers
+{
+  "replication_type": "SINGLE_RESOURCE",
+  "replication_job_config": {
+    "resource_type": "AWS::SSM::Parameter",
+    "resource_identifier": "myparam"
+  },
+  "source_aws_config": {
+    "aws_access_key_id": "AKIAIOSFODNN7EXAMPLE",
+    "aws_secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "region_name": "eu-central-1"
+  }
 }
 ```
 
@@ -189,9 +206,9 @@ For example, to replicate all SSM parameters under `/dev/`:
     "resource_identifier": "/dev/"
   },
   "source_aws_config": {
-    "aws_access_key_id": "...",
-    "aws_secret_access_key": "...",
-    "region_name": "..."
+    "aws_access_key_id": "AKIAIOSFODNN7EXAMPLE",
+    "aws_secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "region_name": "eu-central-1"
   }
 }
 ```
