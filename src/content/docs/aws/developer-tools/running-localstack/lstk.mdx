@@ -272,14 +272,14 @@ See [Offline and enterprise environments](#offline-and-enterprise-environments) 
 ### Volume mounts
 
 Beyond the single persistence directory set by `volume`, a container block can declare arbitrary Docker-style bind mounts with `volumes`.
-Each entry is a `"host:container[:ro]"` spec — useful, for example, for mounting Snowflake init hooks into `/etc/localstack/init/{boot,start,ready,shutdown}.d`:
+Each entry is a `"host:container[:ro]"` spec — useful, for example, for mounting a [Snowflake init hook](/snowflake/capabilities/init-hooks/) script into `/etc/localstack/init/{boot,start,ready,shutdown}.d`:
 
 ```toml
 [[containers]]
 type = "snowflake"
 port = "4566"
 volumes = [
-  "./init:/etc/localstack/init/ready.d:ro",
+  "./test.sf.sql:/etc/localstack/init/ready.d/test.sf.sql",
   "./data:/var/lib/localstack",
 ]
 ```
@@ -397,6 +397,8 @@ lstk stop --non-interactive
 
 `stop` fails fast if the Docker runtime is not healthy (for example, Docker is not running), or if a configured emulator is not currently running (`LocalStack is not running`).
 In an interactive terminal it shows an animated "Stopping LocalStack..." spinner and a styled confirmation; in non-interactive mode it prints the same progress and result as plain text.
+
+`stop` supports [`--json`](#structured-output): the `data` payload lists each configured emulator and whether it `wasRunning`.
 
 ### `restart`
 
@@ -816,6 +818,8 @@ In non-interactive mode it fails unless `--force` is passed:
 reset requires confirmation; use --force to skip in non-interactive mode
 ```
 
+`reset` supports [`--json`](#structured-output): on success the `data` payload reports the reset emulator and `"reset": true`.
+
 :::note
 `reset` clears in-memory state only.
 It does **not** wipe the on-disk volume (certificates, persistence data, cached tools).
@@ -995,8 +999,7 @@ export AWS_PROFILE=localstack
 aws s3 ls
 ```
 
-The endpoint host is resolved automatically: `lstk` probes `localhost.localstack.cloud` and uses it when it resolves to `127.0.0.1`, otherwise it falls back to `127.0.0.1`.
-Set [`LOCALSTACK_HOST`](#environment-variables) to override the host and port written into the profile.
+The endpoint host is resolved the same way as for [`lstk aws`](#endpoint-resolution) (probing `localhost.localstack.cloud` and falling back to `127.0.0.1`), and [`LOCALSTACK_HOST`](#environment-variables) overrides the host and port written into the profile.
 The port comes from your AWS emulator's configured `port` (default `4566`); if no `aws` emulator is configured, the command fails with `no aws emulator configured`.
 
 If the `localstack` profile is already configured correctly, `lstk` reports `LocalStack AWS profile is already configured.` and makes no changes.
@@ -1052,6 +1055,7 @@ lstk update [options]
 |:--------------------|:-------------------------------------------------------------|
 | `--check`           | Check for updates without installing them                    |
 | `--non-interactive` | Use plain output instead of the TUI (update logic unchanged) |
+| `--json`            | Emit the result as a JSON envelope (see [Structured output](#structured-output)). With `--check`, `data` reports `currentVersion`/`latestVersion`/`updateAvailable`; after an applied update, `updatedVersion`/`updated`/`method`. |
 
 Examples:
 
@@ -1126,7 +1130,7 @@ These options are available for all commands:
 |:--------------------|:---------------------------------------------------------------------------|
 | `--config <path>`   | Path to a specific TOML config file                                        |
 | `--non-interactive` | Disable the interactive TUI, use plain output                              |
-| `--json`            | Output in JSON format (only supported by some commands, e.g. the tool proxies) |
+| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `stop`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
 | `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
 | `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
 | `--no-snapshot`     | Skip auto-loading the configured snapshot (on `start`/bare `lstk`)          |
@@ -1153,6 +1157,73 @@ Commands that mutate state without prompting in CI (`reset`, `volume clear`) req
 `lstk setup aws` works non-interactively — it writes the profile with defaults and needs `--force` only to overwrite a conflicting `localstack` profile.
 :::
 
+## Structured output
+
+The global `--json` flag makes a command emit a single, machine-readable JSON object on stdout instead of human-oriented text, for scripting and CI.
+JSON support is being rolled out per command: `stop`, `reset`, and `update` accept `--json`.
+Any other command rejects it with an error envelope (`error.code: NOT_JSON_CAPABLE`) rather than silently printing plain text.
+
+Every JSON-capable command writes **exactly one** JSON object with the following envelope shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "stop",
+  "status": "ok",
+  "data": {
+    "emulators": [
+      { "type": "aws", "name": "localstack-aws", "wasRunning": true }
+    ]
+  },
+  "warnings": [],
+  "error": null
+}
+```
+
+| Field           | Type            | Description                                                                                          |
+|:----------------|:----------------|:-----------------------------------------------------------------------------------------------------|
+| `schemaVersion` | integer         | Wire-format version of the envelope, currently always `1`. Check it once before parsing.             |
+| `command`       | string          | The command that produced the envelope (e.g. `"stop"`, `"reset"`).                                   |
+| `status`        | string          | `"ok"` or `"error"` — branch on this first.                                                          |
+| `data`          | object or `null`| Command-specific result. Non-null when `status` is `"ok"`, `null` when it is `"error"`.              |
+| `warnings`      | array           | Non-fatal notices, always present (empty array when there are none). Each entry is `{ "code", "message" }`. |
+| `error`         | object or `null`| The machine-readable failure. Non-null when `status` is `"error"`, `null` otherwise.                 |
+
+When `status` is `"error"`, the `error` object carries a stable `code` (e.g. `EMULATOR_NOT_RUNNING`, `CONFIRMATION_REQUIRED`, `RUNTIME_UNAVAILABLE`), a coarse `category`, a human-readable `message` (informational only — branch on `code`, not `message`), and a `retryable` boolean:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "reset",
+  "status": "error",
+  "data": null,
+  "warnings": [],
+  "error": {
+    "code": "CONFIRMATION_REQUIRED",
+    "category": "USAGE",
+    "message": "reset requires confirmation; use --force to skip in non-interactive mode",
+    "retryable": false
+  }
+}
+```
+
+### Exit codes
+
+For a full enumeration, read `error.code` from the envelope; the process exit code carries only the two most common, mechanically-remediable failures:
+
+| Exit code | Meaning                                                                                     |
+|:----------|:--------------------------------------------------------------------------------------------|
+| `0`       | `status: "ok"`.                                                                             |
+| `1`       | `status: "error"` for any code other than the two below.                                    |
+| `2`       | A Cobra-level usage error that occurred before `--json` could be recognized (plain-text error on stderr, not an envelope). |
+| `3`       | `error.code == "CONFIRMATION_REQUIRED"` (re-run with `--force`).                            |
+| `4`       | `error.code == "AUTH_REQUIRED"` (run `lstk login` or set `LOCALSTACK_AUTH_TOKEN`).          |
+
+:::note
+`--json` implies non-interactive behavior: no TUI and no prompts.
+Combining it with a destructive command that would otherwise prompt (`reset`) still requires `--force`, which surfaces as `CONFIRMATION_REQUIRED` (exit code `3`) when omitted.
+:::
+
 ## Environment variables
 
 The following environment variables configure `lstk` itself (not the LocalStack container):
@@ -1169,7 +1240,7 @@ The following environment variables configure `lstk` itself (not the LocalStack 
 | `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
 | `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
 
-When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
+When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock` or `~/.config/colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
 
 When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
 
@@ -1225,7 +1296,7 @@ This is separate from the LocalStack container logs (which you view with `lstk l
 There is no `--offline` flag. Instead, `lstk` degrades gracefully when common enterprise blockers (Docker Hub unreachable, a proxy/TLS interceptor, or an unreachable license server) prevent an internet request:
 
 - **Image pull**: if the image pull fails but the image is already present locally, `lstk` warns and uses the local image instead of failing. In interactive mode you can also press <kbd>Esc</kbd> to abort an in-progress pull and fall back to the local image.
-- **License pre-flight**: when the pinned image is already present locally, `lstk` skips its pre-flight license check so a fully offline start is not blocked; the container validates its own bundled license at startup. When a check does run, a definitive server rejection (e.g. HTTP 403/400) is still fatal, but a transport-level failure (offline, proxy, or certificate error) is treated as non-fatal and the container validates its own license instead.
+- **License pre-flight**: when the pinned image is already present locally, `lstk` skips its pre-flight license check so a fully offline start is not blocked; the emulator validates the license itself once it starts. When a check does run, a definitive server rejection (e.g. HTTP 403/400) is still fatal, but a transport-level failure (offline, proxy, or certificate error) is treated as non-fatal and the emulator validates the license instead. The pre-flight is also skipped — with a warning — when the license server does not recognize the image *tag format* (for example a `dev` nightly or a custom internal-mirror tag): that is not a verdict on the license, so `lstk` defers to the emulator's own startup check rather than blocking the start.
 - **Telemetry and update checks** are best-effort and fail silently when offline.
 
 Pair this behavior with a custom [`image`](#custom-container-image) that points at an internal-registry mirror or a locally loaded image to run `lstk` in an air-gapped environment.
