@@ -162,3 +162,12 @@ The Auto Load from remote feature does not automatically configure the remote.
 This needs to be done with the `localstack pod remote add ...` command.
 This commands creates a configuration file for the remote in the [LocalStack volume directory](/aws/customization/advanced/filesystem/#localstack-volume-directory).
 :::
+
+### Miscellaneous
+
+Unless explicitly specified, all Cloud Pods commands default to targeting the LocalStack Platform as the storage remote.
+It's important to note that the CLI must be authenticated correctly with our Platform.
+
+Custom remote configurations are stored within the [LocalStack volume directory](/aws/customization/advanced/filesystem/#localstack-volume-directory) and are managed by the LocalStack container.
+Consequently, when sharing Cloud Pods among your team using a custom remote, each team member must define the identical remote configuration.
+Once added, a remote persists even after LocalStack restarts.
