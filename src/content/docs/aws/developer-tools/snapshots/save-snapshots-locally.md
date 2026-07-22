@@ -58,6 +58,13 @@ A common use case is when snapshots created by multiple teams must be loaded tog
 
 LocalStack supports several _merge strategies_ to support loading a snapshot into an existing emulator instance. You can think of this as loading two or more snapshots into the same emulator instance, one after the other.
 
+The chosen strategy can be passed to `lstk snapshot load` using the `--merge` option, or by setting the `LSTK_MERGE_STRATEGY` environment variable.
+
+```bash
+lstk snapshot load --merge=<strategy> <snapshot-file>
+LSTK_MERGE_STRATEGY=<strategy> lstk snapshot load <snapshot-file>
+```
+
 #### `overwrite` strategy
 
 This strategy completely resets the state of the instance before loading each new snapshot. This results in the instance containing the new snapshot's content, with resources from the older snapshot being completely discarded.
@@ -67,8 +74,8 @@ This strategy completely resets the state of the instance before loading each ne
 For this merge strategy, use the following:
 
 ```bash
-lstk snapshot load snapshot1.snapshot
-lstk snapshot load --merge=overwrite snapshot2.snapshot
+lstk snapshot load snapshot1
+lstk snapshot load --merge=overwrite snapshot2
 
 lstk status                          
   [...]
@@ -85,12 +92,19 @@ Merge snapshots at the service level, for any given account and region. For exam
 For this merge strategy, use the following:
 
 ```bash
-lstk snapshot load snapshot1.snapshot
-lstk snapshot load --merge=account-region-merge snapshot2.snapshot
+lstk snapshot load snapshot1
+lstk snapshot load --merge=account-region-merge snapshot2
 ```
 
-TBD: THE OUTPUT FROM ACCOUNT_REGION_MERGE IS NOT CORRECT YET.
-
+```bash
+lstk status
+  [...]
+  S3       bucket1                                                                         global          000000000000
+  SNS      topic2                                                                          ap-southeast-2  000000000000
+  SNS      topic3                                                                          us-east-1       000000000000
+  SQS      http://sqs.ap-southeast-2.localhost.localstack.cloud:4566/000000000000/queue-2  ap-southeast-2  000000000000
+  SQS      http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/queue-3       us-east-1       000000000000
+```
 
 #### `service-merge` strategy
 
@@ -103,8 +117,8 @@ This is the same behaviour you'd expect if you applied two infrastructure-as-cod
 For this merge strategy, use the following:
 
 ```bash
-lstk snapshot load snapshot1.snapshot
-lstk snapshot load --merge=service-merge snapshot2.snapshot
+lstk snapshot load snapshot1
+lstk snapshot load --merge=service-merge snapshot2
 
 lstk status
   [...]
@@ -141,5 +155,5 @@ To load an existing snapshot, follow these steps:
 To confirm the successful injection of the container state, visit the respective [Resource Browser](https://app.localstack.cloud/inst/default/resources) for the services and verify the resources.
 
 :::note
-Merge Strategies are not currently supported in the LocalStack Console.
+Merge Strategies are not currently supported for file-based snapshots, using the LocalStack Console.
 :::
