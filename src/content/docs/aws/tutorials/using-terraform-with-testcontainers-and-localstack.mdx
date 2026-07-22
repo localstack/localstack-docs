@@ -22,7 +22,7 @@ leadimage: "terraform-init-hooks.png"
 LocalStack is a robust tool that emulates a local AWS cloud stack, allowing engineers to test and develop apps using AWS services directly on their local environments.
 This tool is essential for enhancing developer experience, reducing development costs and increasing efficiency.
 
-In LocalStack, [**initialization hooks**](/aws/configuration/config/initialization-hooks) are scripts that customize or initialize your LocalStack instance at different stages of its lifecycle.
+In LocalStack, [**initialization hooks**](/aws/customization/advanced/initialization-hooks) are scripts that customize or initialize your LocalStack instance at different stages of its lifecycle.
 Up until now, the supported hooks could be shell or Python scripts executed at predefined lifecycle phases — BOOT, START, READY, and SHUTDOWN.
 By placing scripts in the respective directories (`/etc/localstack/init/{stage}.d`), developers can automate tasks like setting up initial states, configuring services, or performing clean-up activities.
 
@@ -80,7 +80,7 @@ localstack start -e EXTENSION_AUTO_INSTALL=localstack-extension-terraform-init \
 ```
 
 This is the easiest way to quickly spin up the desired services at startup.
-The command starts LocalStack with the configuration to automatically install the **`localstack-extension-terraform-init`** [extension](/aws/configuration/extensions/) and
+The command starts LocalStack with the configuration to automatically install the **`localstack-extension-terraform-init`** [extension](/aws/customization/integrations/extensions/) and
 mount the necessary files into the container: the Terraform configuration file and the Lambda JAR file.
 The extension will install both `terraform` and `tflocal` into your LocalStack container, and enable the init hook runners to detect Terraform files.
 You can also organize your Terraform files into subdirectories if you want.
@@ -121,7 +121,7 @@ services:
 Environment Variables:
 - **LOCALSTACK_AUTH_TOKEN**: Required for using LocalStack for AWS.
 - **DEBUG**: Set to 1 to enable verbose logging of the container.
-- **EXTENSION_AUTO_INSTALL**: Automatically installs specified LocalStack [extensions](/aws/configuration/extensions/), in this case, `localstack-extension-terraform-init` which allows Terraform files to be directly used as init hooks.
+- **EXTENSION_AUTO_INSTALL**: Automatically installs specified LocalStack [extensions](/aws/customization/integrations/extensions/), in this case, `localstack-extension-terraform-init` which allows Terraform files to be directly used as init hooks.
 
 Volumes:
 - Docker Socket: Mounts the Docker socket `/var/run/docker.sock` from the host into the container.

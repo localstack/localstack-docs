@@ -1,0 +1,28 @@
+name: "Restrict Docs PR merges"
+
+on:
+  pull_request:
+    types: [opened, reopened, edited]
+
+jobs:
+  validate-refs:
+    name: "Validate Refs"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate
+        run: |
+          # We allow merging to a branch which is a feature branch for documentation.
+          if [[ $GITHUB_BASE_REF == aws-docs-* || $GITHUB_BASE_REF == snowflake-docs-* ]]; then
+              echo "Merging to a feature branch. Allowing."
+              exit 0
+          fi
+
+          # We allow merging to main so long as it's from a feature branch for documentation.
+          if [[ $GITHUB_BASE_REF == main && ($GITHUB_HEAD_REF == aws-docs-* || $GITHUB_HEAD_REF == snowflake-docs-*) ]]; then
+              echo "Merging feature branch to main. Allowing."
+              exit 0
+          fi
+
+          # All other scenarios aren't valid for merging.
+          echo "Please ensure all changes are merged to a feature branch. Only feature branches can be merged into main. Rejecting."
+          exit 1

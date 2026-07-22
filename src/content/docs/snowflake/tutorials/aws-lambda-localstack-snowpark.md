@@ -114,11 +114,12 @@ Run the following command:
 
 ```bash showLineNumbers
 pip3 install \
-		--platform manylinux2010_x86_64 \
+		--platform manylinux2014_x86_64 \
 		--implementation cp \
+		--python-version 3.10 \
 		--only-binary=:all: --upgrade \
 		--target ./libs \
- 		snowflake-connector-python==2.7.9 boto3==1.26.153 botocore==1.29.153
+		snowflake-connector-python==2.7.9 boto3==1.26.153 botocore==1.29.153
 ```
 
 ## Package the Lambda function
@@ -127,6 +128,7 @@ Package the Lambda function and its dependencies into a ZIP file. Run the follow
 
 ```bash showLineNumbers
 mkdir -p build
+cp handler.py build/
 cp -r libs/* build/
 (cd build && zip -q -r function-py.zip .)
 ```
@@ -164,7 +166,8 @@ After successfully deploying the Lambda function, you will receive a response wi
 
 ```bash showLineNumbers
 awslocal lambda invoke --function-name localstack-snowflake-lambda-example \
-	--payload '{"body": "test" }' output.txt
+	--cli-binary-format raw-in-base64-out \
+	--payload '{"body": "test"}' output.txt
 ```
 
 You will receive a response with the details of the invocation. You can view the output in the `output.txt` file. To see the SQL queries executed by the Lambda function, check the logs by navigating to LocalStack logs (`localstack logs`).

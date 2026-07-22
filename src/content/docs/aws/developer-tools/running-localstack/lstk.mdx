@@ -15,14 +15,15 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 It provides a built-in terminal UI (TUI) for interactive use and plain text output for CI/CD pipelines and scripting.
 
 `lstk` handles the full emulator lifecycle: authentication, pulling the Docker image, starting, stopping, and restarting the container, streaming logs, and checking status.
-It can also save and load emulator state — as local snapshots, Cloud Pods, or in your own S3 bucket — reset running state, and manage the on-disk volume.
-It proxies your existing tooling — the AWS and Azure CLIs, Terraform, AWS CDK, and the AWS SAM CLI — so they run directly against LocalStack.
+It can also save and load emulator state (as local snapshots or Cloud Pods) reset running state, run AWS CLI commands against the emulator, and manage the on-disk volume.
 Running `lstk` with no arguments takes you through the entire startup flow automatically.
+
+`lstk` also proxies developer tools so they run directly against LocalStack: the AWS CLI (`lstk aws`), the Azure CLI (`lstk az`), Terraform (`lstk terraform`), the AWS CDK (`lstk cdk`), and the AWS SAM CLI (`lstk sam`).
 
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) installed and running.
-- A [LocalStack account](https://app.localstack.cloud/sign-up) with a [license](/aws/getting-started/auth-token/#managing-your-license), and `lstk` handles authentication for you (see [Authentication](#authentication)).
+- A [LocalStack account](https://www.localstack.cloud/pricing) with a [license](/aws/getting-started/auth-token/#managing-your-license), and `lstk` handles authentication for you (see [Authentication](#authentication)).
 
 ## Installation
 
@@ -169,28 +170,28 @@ The default `config.toml` created on first run:
 
 ```toml
 [[containers]]
-type = "aws"     # Emulator type. Supported: "aws", "snowflake", "azure"
-tag  = "latest"  # Docker image tag, e.g. "latest", "2026.4"
-port = "4566"    # Host port the emulator will be accessible on
-# image = ""     # Override the default Docker image (internal registry mirror or offline image)
-# volume = ""    # Host directory for persistent state (default: OS cache dir)
-# volumes = []   # Docker-style "host:container[:ro]" bind mounts (see below)
-# snapshot = ""  # Snapshot REF auto-loaded after the AWS emulator starts (e.g. "pod:my-baseline")
-# env = []       # Named environment profiles to apply (see [env.*] sections below)
+type = "aws"      # Emulator type. Supported: "aws", "snowflake", "azure"
+tag  = "latest"   # Docker image tag, e.g. "latest", "2026.4"
+port = "4566"     # Host port the emulator will be accessible on
+# image = ""      # Full image override (e.g. an internal mirror or offline image)
+# volume = ""     # Host directory for persistent state (default: OS cache dir)
+# volumes = []    # Docker-style "host:container[:ro]" bind mounts (see Volumes)
+# env = []        # Named environment profiles to apply (see [env.*] sections below)
+# snapshot = ""   # Snapshot REF to auto-load after start (AWS only)
 ```
 
 ### Config field reference
 
-| Field    | Type     | Default    | Description                                                                                          |
-|:---------|:---------|:-----------|:-----------------------------------------------------------------------------------------------------|
-| `type`   | string   | `"aws"`    | Emulator type. One of `"aws"`, `"snowflake"`, `"azure"`. Run a single `[[containers]]` block at a time. See [Emulator types](#emulator-types). |
-| `tag`    | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.4"`, etc.). Useful for pinning a specific version. Zero-padded months (`"2026.04"`) are normalized to `"2026.4"`. |
-| `port`   | string   | `"4566"`   | Host port the emulator listens on (1–65535). The in-container port is always `4566`.                 |
-| `image`  | string   | (unset)    | Override the default Docker image, e.g. an internal-registry mirror or a locally loaded offline image. If it already carries a tag, `tag` is dropped; otherwise `tag` (or `latest`) is appended. When unset, the default `localstack/<product>` image is used. |
-| `volume` | string   | (OS cache) | Host directory for persistent emulator state (mounted at `/var/lib/localstack`). Defaults to `<os-cache>/lstk/volume/<container-name>`. Used verbatim (no path resolution). |
-| `volumes`| string[] | `[]`       | Docker-style `"host:container[:ro]"` bind mounts (e.g. Snowflake init hooks). May also carry the persistence mount (the entry targeting `/var/lib/localstack`); relative host sources are resolved against the config file's directory and a leading `~/` is expanded. See [Volume mounts](#volume-mounts). |
-| `snapshot` | string | (unset)    | Snapshot `REF` (a `pod:<name>`, local path, or `s3://` location) auto-loaded after the AWS emulator starts. See [Auto-loading a snapshot on start](#auto-loading-a-snapshot-on-start). |
-| `env`    | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
+| Field      | Type     | Default    | Description                                                                                          |
+|:-----------|:---------|:-----------|:-----------------------------------------------------------------------------------------------------|
+| `type`     | string   | `"aws"`    | Emulator type. One of `"aws"`, `"snowflake"`, `"azure"`. Run a single `[[containers]]` block at a time. See [Emulator types](#emulator-types). |
+| `tag`      | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.4"`, etc.). Useful for pinning a specific version. Zero-padded months (`"2026.04"`) are normalized to `"2026.4"`. |
+| `port`     | string   | `"4566"`   | Host port the emulator listens on (1–65535). The in-container port is always `4566`.                 |
+| `image`    | string   | (default)  | Full image reference that overrides the default Docker Hub image, e.g. an internal-registry mirror or a locally loaded offline image. If it already carries a tag, `tag` is ignored; otherwise `tag` (or `latest`) is appended. |
+| `volume`   | string   | (OS cache) | Host directory for persistent emulator state. Defaults to `<os-cache>/lstk/volume/<container-name>`. See also `volumes`. |
+| `volumes`  | string[] | `[]`       | Docker-style `"host:container[:ro]"` bind mounts (e.g. init hooks). May also carry the persistence mount (target `/var/lib/localstack`). See [Volume mounts](#volume-mounts). |
+| `env`      | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
+| `snapshot` | string   | `""`       | Snapshot REF (e.g. `pod:my-baseline` or a local path) to auto-load after the emulator starts. AWS emulator only. See [Auto-loading a snapshot on start](#auto-loading-a-snapshot-on-start). |
 
 :::note
 There is no `update_prompt` config key.
@@ -211,12 +212,10 @@ The `type` field in your `config.toml` selects which one:
 | `azure`     | `localstack/localstack-azure` | LocalStack Azure emulator.           |
 
 On the first interactive run, `lstk` prompts you to pick an emulator (`a` for AWS, `s` for Snowflake, `z` for Azure) and writes your choice to `config.toml`.
-In non-interactive mode the default `aws` emulator is used.
+In non-interactive mode the default `aws` emulator is used if no config file is found.
 
 Lifecycle commands operate on the emulators defined in your `config.toml`.
-Run a single `[[containers]]` block at a time.
-The AWS-specific commands — the resources listing in `status`, `reset`, the `aws` CLI proxy, the IaC proxies (`terraform`, `cdk`, `sam`), and `setup aws` — require an `aws` emulator; `az` and `setup azure` require an `azure` emulator.
-`snapshot` (`save`/`load`/`list`/`remove`/`show`) works with any emulator, though some snapshot features are fully supported only on the AWS emulator for now — see the snapshot docs for your emulator for details.
+Run a single `[[containers]]` block at a time; the AWS-specific commands (`status` resources, `aws`, `reset`, `setup aws`) require an `aws` emulator to be configured.
 
 :::note
 The AWS emulator's license is validated by `lstk` before the container starts.
@@ -255,31 +254,41 @@ If you reference an `env` profile name that doesn't exist in your config, `lstk`
 In addition to your custom profiles, `lstk` always injects several variables into the container.
 See [Container-injected variables](#container-injected-variables) for the full list.
 
-### Volume mounts
+### Custom container image
 
-Each `[[containers]]` block accepts a `volumes` list of Docker-style `"host:container[:ro]"` bind specs, in addition to the singular `volume` field.
-This is useful for mounting initialization hooks (scripts run at the container lifecycle stages under `/etc/localstack/init/{boot,start,ready,shutdown}.d`) or any other host path into the emulator.
-
-The example below uses `volumes` to map multiple mounts — a `ready`-stage init-hook script and the persistence directory:
+By default the emulator image is pulled from Docker Hub (`localstack/localstack-pro`, `localstack/snowflake`, or `localstack/localstack-azure` depending on `type`).
+Set `image` on a container block to override it — for example, to pull from an internal-registry mirror or to run a locally loaded image in an air-gapped environment:
 
 ```toml
 [[containers]]
-type = "aws"
+type  = "aws"
+image = "registry.internal.example.com/localstack/localstack-pro"
+tag   = "2026.4"
+```
+
+If `image` already carries a tag (e.g. `...:2026.4`), the separate `tag` field is ignored; otherwise `tag` (or `latest`) is appended.
+See [Offline and enterprise environments](#offline-and-enterprise-environments) for how `lstk` falls back to a locally present image when a pull fails.
+
+### Volume mounts
+
+Beyond the single persistence directory set by `volume`, a container block can declare arbitrary Docker-style bind mounts with `volumes`.
+Each entry is a `"host:container[:ro]"` spec — useful, for example, for mounting a [Snowflake init hook](/snowflake/capabilities/init-hooks/) script into `/etc/localstack/init/{boot,start,ready,shutdown}.d`:
+
+```toml
+[[containers]]
+type = "snowflake"
 port = "4566"
 volumes = [
-  "./init/ready.d/init.sh:/etc/localstack/init/ready.d/init.sh",  # ready init hook
-  "./data:/var/lib/localstack",                                    # persistence mount
+  "./test.sf.sql:/etc/localstack/init/ready.d/test.sf.sql",
+  "./data:/var/lib/localstack",
 ]
 ```
 
-Init-hook script naming and behavior differ per emulator; see the Initialization Hooks guide for your emulator ([AWS](/aws/configuration/config/initialization-hooks/), [Snowflake](/snowflake/capabilities/init-hooks/)) for the full details.
+- A `volumes` entry whose container target is `/var/lib/localstack` sets the persistence directory (the same mount `volume` configures); this is what [`lstk volume path`](#volume) and [`lstk volume clear`](#volume) resolve.
+- Relative host sources and a leading `~/` are resolved against the config file's directory. This differs from the legacy `volume` field, whose value is passed to Docker verbatim.
+- Setting the persistence directory through both `volume` and a `volumes` entry with a different source is a validation error.
 
-Resolution rules:
-
-- Relative host sources (`./data`) are resolved against the **directory of the config file** that declared them, and a leading `~/` is expanded. This is required because the Docker SDK treats a non-absolute source as a *named volume* rather than a bind mount.
-- The entry whose container target is `/var/lib/localstack` defines the persistence directory — the same one `lstk volume path` and `lstk volume clear` act on. Precedence: a `volumes` entry targeting `/var/lib/localstack` → the legacy `volume` field → the default OS cache directory.
-- `volume` and `volumes` overlap only for the persistence mount. The legacy `volume` value is used **verbatim** (no path resolution); `volumes` sources are resolved. Setting the persistence directory via both `volume` and a `volumes` entry with different sources is a validation error.
-- The persistence directory is created automatically if missing; other `volumes` sources are expected to already exist (they are typically files, such as init hooks) and `lstk` errors if one is missing.
+`volume` and `volumes` overlap only for the persistence mount: `volume` can *only* set the persistence directory, while `volumes` is a superset that can also express init hooks and other mounts.
 
 ### Using a project-local config
 
@@ -331,11 +340,11 @@ lstk start --non-interactive
 | Option              | Description                                                                  |
 |:--------------------|:-----------------------------------------------------------------------------|
 | `--persist`         | Persist emulator state across restarts (sets `LOCALSTACK_PERSISTENCE=1` in the container) |
-| `--snapshot <ref>`  | Snapshot `REF` to auto-load once the emulator starts, overriding the `snapshot` config field for this run |
-| `--no-snapshot`     | Skip auto-loading the configured snapshot for this run                       |
-| `--non-interactive` | Disable the interactive TUI and use plain output (a global flag)             |
+| `--snapshot <REF>`  | Auto-load this snapshot after the emulator starts, overriding the configured `snapshot` for one run (AWS only) |
+| `--no-snapshot`     | Skip auto-loading the configured `snapshot` for this run                      |
+| `--non-interactive` | Disable the interactive TUI and use plain output                             |
 
-Host environment variables prefixed with `LOCALSTACK_` are forwarded to the emulator on start (the host `LOCALSTACK_AUTH_TOKEN` is dropped so it cannot override the token `lstk` resolves). See [Container-injected variables](#container-injected-variables).
+`lstk start` forwards host environment variables prefixed with `LOCALSTACK_` to the emulator (the host `LOCALSTACK_AUTH_TOKEN` is dropped so it cannot override the token `lstk` resolved). See [Container-injected variables](#container-injected-variables).
 
 By default the emulator starts with a fresh state on every run.
 Pass `--persist` to keep data across restarts: `lstk` injects `LOCALSTACK_PERSISTENCE=1` into the container so state is written to the mounted [`volume`](#config-field-reference) and reloaded on the next start.
@@ -353,8 +362,8 @@ For finer-grained control, you can also set `PERSISTENCE = "1"` in an environmen
 
 #### Auto-loading a snapshot on start
 
-The AWS emulator can auto-load a snapshot as it comes up.
-Set the `snapshot` field on the AWS `[[containers]]` block to any load `REF` — a `pod:<name>` Cloud Pod, a local snapshot path, or an `s3://` location:
+For the **AWS emulator**, you can have `lstk` load a snapshot automatically every time it starts the emulator.
+Set the `snapshot` field on the container block to any load REF (a `pod:<name>` Cloud Pod or a local path):
 
 ```toml
 [[containers]]
@@ -363,10 +372,18 @@ port     = "4566"
 snapshot = "pod:my-baseline"
 ```
 
-The snapshot is loaded only when the emulator is **freshly started** this run (it is skipped when the emulator is already running).
-Override the configured `REF` for a single run with `lstk start --snapshot <ref>`, or skip auto-loading entirely with `lstk start --no-snapshot`.
-An invalid `REF` fails before the emulator starts.
-`snapshot save` never writes this field back — it is set manually.
+The snapshot is loaded only when the emulator is **freshly started** this run; if it is already running, the auto-load is skipped.
+Override it for a single run with `--snapshot REF`, or skip it entirely with `--no-snapshot`:
+
+```bash
+# Start and load a different snapshot for this run only
+lstk start --snapshot pod:other-baseline
+
+# Start without loading the configured snapshot
+lstk start --no-snapshot
+```
+
+The `snapshot` field is only read on start; [`snapshot save`](#snapshot-save) never writes it back into your config.
 
 ### `stop`
 
@@ -380,6 +397,8 @@ lstk stop --non-interactive
 
 `stop` fails fast if the Docker runtime is not healthy (for example, Docker is not running), or if a configured emulator is not currently running (`LocalStack is not running`).
 In an interactive terminal it shows an animated "Stopping LocalStack..." spinner and a styled confirmation; in non-interactive mode it prints the same progress and result as plain text.
+
+`stop` supports [`--json`](#structured-output): the `data` payload lists each configured emulator and whether it `wasRunning`.
 
 ### `restart`
 
@@ -525,33 +544,47 @@ The port comes from the AWS container's `port` in `config.toml` (default `4566`)
 ### `az`
 
 Run Azure CLI commands against the running LocalStack Azure emulator.
-`lstk az <args>` runs `az <args>` with an isolated `AZURE_CONFIG_DIR` in which a custom Azure cloud (`LocalStack`) is registered against LocalStack's endpoints, so your global `~/.azure` configuration is left untouched and plain `az` keeps talking to real Azure.
+`lstk az` runs `az` with an isolated `AZURE_CONFIG_DIR` in which a custom Azure cloud is registered against LocalStack's endpoints, so your global `~/.azure` configuration is left untouched and plain `az` keeps talking to real Azure.
+
+Run [`lstk setup azure`](#setup-azure) once before using this mode.
+Everything after `lstk az` is forwarded verbatim to the host `az` binary, and its exit code and output are passed through unchanged.
 
 ```bash
 lstk az group list
 lstk az storage account list
 ```
 
-Run [`lstk setup azure`](#setup-azure) once before using this mode.
-`lstk az` requires the `az` CLI on your `PATH`, a healthy Docker runtime, a running Azure emulator, and that `*.localhost.localstack.cloud` resolves to `127.0.0.1` (the Azure emulator serves its endpoints under that host). Set [`LOCALSTACK_HOST`](#environment-variables) to override the host.
+The Azure CLI has no `--endpoint-url`/`--profile` equivalent, so the isolation relies entirely on the dedicated config directory prepared by `setup azure`.
 
-Everything after `lstk az` is forwarded verbatim to the host `az` binary; its exit code and `stdout`/`stderr` pass through unchanged.
+#### Global interception (optional)
 
-#### `az start-interception` / `az stop-interception`
-
-An opt-in interception mode mutates your **global** `~/.azure` configuration so plain `az` (in any terminal or script) targets LocalStack, then switches it back.
+If a script must invoke plain `az` (not `lstk az`), you can redirect your **global** `~/.azure` to LocalStack instead:
 
 ```bash
-lstk az start-interception   # global 'az' now targets LocalStack
-lstk az stop-interception    # switch back to real Azure
+# Point global 'az' at the LocalStack Azure emulator
+lstk az start-interception
+
+# Switch back to real Azure
+lstk az stop-interception
 ```
 
-- `start-interception` registers and activates the `LocalStack` cloud in `~/.azure` and disables instance discovery, so existing `az` scripts run unmodified against LocalStack. It is independent of `lstk setup azure`.
-- `stop-interception` switches the active cloud back to `AzureCloud` (override with `--cloud <name>`) and re-enables instance discovery — but only if `LocalStack` is still the active cloud, to avoid clobbering an unrelated selection.
+`start-interception` registers and activates the `LocalStack` cloud in your global Azure configuration so every `az` invocation targets LocalStack until you stop it.
+`stop-interception` switches the active cloud back to `AzureCloud` (override with `--cloud <name>`) and re-enables instance discovery, but only when `LocalStack` is still the active cloud, to avoid clobbering an unrelated selection.
+
+:::caution
+Interception changes global state that affects every `az` command in any terminal.
+Use the isolated `lstk az <args>` mode unless you specifically need plain `az` to target LocalStack.
+:::
 
 ### `terraform`
 
-Proxy Terraform commands to LocalStack, injecting LocalStack endpoints as AWS provider overrides so your existing configuration runs unchanged. Aliased as `lstk tf`.
+Run Terraform against LocalStack, using LocalStack endpoints as AWS provider overrides.
+`lstk terraform` (alias `lstk tf`) generates a provider-override file and forwards your arguments to the real `terraform` binary.
+
+:::note
+`lstk terraform` currently targets the AWS emulator only.
+To use Terraform with the other emulators, see the relevant emulator docs.
+:::
 
 ```bash
 lstk terraform init
@@ -559,29 +592,18 @@ lstk terraform --region us-west-2 plan
 lstk tf apply
 ```
 
-`lstk`-specific flags must appear **before** the Terraform subcommand:
+lstk-specific flags must appear **before** the Terraform action:
 
-| Flag                | Description                                                        |
-|:--------------------|:------------------------------------------------------------------|
-| `--region <region>` | Deployment region (default `us-east-1`; falls back to `AWS_REGION`). |
-| `--account <id>`    | Target AWS account id, 12 digits (default `test`; falls back to `AWS_ACCESS_KEY_ID`). |
+| Option            | Default              | Description                            |
+|:------------------|:---------------------|:---------------------------------------|
+| `--region <region>` | `us-east-1`        | Deployment region.                     |
+| `--account <id>`    | `test`             | Target AWS account id (12 digits).     |
 
-Commands that don't contact AWS (`fmt`, `validate`, `version`, and `init` when no S3 backend is declared) run without a running emulator; everything else requires the AWS emulator to be running and Docker healthy.
-
-Supported environment variables:
-
-| Variable                     | Description                                                          |
-|:-----------------------------|:---------------------------------------------------------------------|
-| `AWS_ENDPOINT_URL`           | Override the auto-resolved LocalStack endpoint.                       |
-| `LSTK_TF_CMD`                | Terraform binary to invoke (e.g. `tofu`; default `terraform`).       |
-| `LSTK_TF_OVERRIDE_FILE_NAME` | Provider-override file name (default `localstack_providers_override.tf`). |
-| `LSTK_TF_DRY_RUN`            | Generate the override file but do not run Terraform.                 |
-| `AWS_REGION`                 | Fallback for `--region`.                                             |
-| `AWS_ACCESS_KEY_ID`          | Fallback for `--account`.                                            |
+Relevant environment variables: `AWS_ENDPOINT_URL` (override the auto-resolved endpoint), `LSTK_TF_CMD` (binary to invoke, e.g. `tofu`; default `terraform`), `LSTK_TF_OVERRIDE_FILE_NAME` (override file name; default `localstack_providers_override.tf`), `LSTK_TF_DRY_RUN` (generate the override file but do not run Terraform), `AWS_REGION` (fallback for `--region`), and `AWS_ACCESS_KEY_ID` (fallback for `--account`).
 
 ### `cdk`
 
-Proxy AWS CDK commands to the running LocalStack emulator.
+Run the AWS CDK against LocalStack.
 Requires the AWS CDK CLI version `2.177.0` or newer on your `PATH`.
 
 ```bash
@@ -590,26 +612,12 @@ lstk cdk --region us-west-2 deploy
 lstk cdk synth
 ```
 
-CDK always targets the default LocalStack account `000000000000`; there is **no** `--account` flag (passing one is an error). The `--region <region>` flag (default `us-east-1`, falling back to `AWS_REGION`) must appear before the CDK action.
-
-Offline subcommands (e.g. `synth`) run without a running emulator; deploy-time commands require the AWS emulator to be running.
-
-Supported environment variables:
-
-| Variable              | Description                                          |
-|:----------------------|:-----------------------------------------------------|
-| `AWS_ENDPOINT_URL`    | Override the auto-resolved LocalStack endpoint.      |
-| `AWS_ENDPOINT_URL_S3` | Override the auto-derived S3 endpoint.               |
-| `LSTK_CDK_CMD`        | CDK binary to invoke (default `cdk`).                |
-| `AWS_REGION`          | Fallback for `--region`.                             |
-
-:::note
-If `localhost.localstack.cloud` does not resolve and `lstk` falls back to `127.0.0.1`, CDK's S3 asset operations (bootstrap, asset deploys) may fail virtual-host addressing. Ensure the host resolves, or set `AWS_ENDPOINT_URL`/`AWS_ENDPOINT_URL_S3` to a virtual-host-capable endpoint.
-:::
+The only lstk-specific flag (before the CDK action) is `--region <region>` (default `us-east-1`); CDK always targets the default LocalStack account `000000000000`, so there is no `--account` flag.
+Relevant environment variables: `AWS_ENDPOINT_URL`, `AWS_ENDPOINT_URL_S3`, `LSTK_CDK_CMD` (default `cdk`), and `AWS_REGION`.
 
 ### `sam`
 
-Proxy AWS SAM CLI commands to the running LocalStack emulator.
+Run the AWS SAM CLI against LocalStack.
 Requires the AWS SAM CLI version `1.95.0` or newer on your `PATH` (older versions ignore `AWS_ENDPOINT_URL` and would target real AWS).
 
 ```bash
@@ -618,39 +626,28 @@ lstk sam --region us-west-2 deploy
 lstk sam validate
 ```
 
-`lstk`-specific flags must appear **before** the SAM action:
-
-| Flag                | Description                                                        |
-|:--------------------|:------------------------------------------------------------------|
-| `--region <region>` | Deployment region (default `us-east-1`; falls back to `AWS_REGION`). |
-| `--account <id>`    | Target AWS account id, 12 digits (default `000000000000`; falls back to `AWS_ACCESS_KEY_ID`). |
-
-Offline subcommands (e.g. `build`, `validate`) run without a running emulator; deploy-time commands require the AWS emulator to be running.
-
-Supported environment variables:
-
-| Variable              | Description                                     |
-|:----------------------|:------------------------------------------------|
-| `AWS_ENDPOINT_URL`    | Override the auto-resolved LocalStack endpoint. |
-| `AWS_ENDPOINT_URL_S3` | Override the S3 endpoint.                       |
-| `LSTK_SAM_CMD`        | SAM binary to invoke (default `sam`).           |
-| `AWS_REGION`          | Fallback for `--region`.                        |
-| `AWS_ACCESS_KEY_ID`   | Fallback for `--account`.                       |
+lstk-specific flags (before the SAM action): `--region <region>` (default `us-east-1`) and `--account <id>` (12 digits, default `000000000000`).
+Relevant environment variables: `AWS_ENDPOINT_URL`, `AWS_ENDPOINT_URL_S3`, `LSTK_SAM_CMD` (default `sam`), `AWS_REGION` (fallback for `--region`), and `AWS_ACCESS_KEY_ID` (fallback for `--account`).
 
 :::note
-Compared to `samlocal`, image/container-based Lambda (ECR) deploys and nested CloudFormation stacks are not supported; use `samlocal` for those workflows.
+Compared with `samlocal`, image/container-based Lambda (ECR) deploys and nested CloudFormation stacks are not supported; use `samlocal` for those workflows.
+:::
+
+:::note
+Like `lstk aws`, the `az`, `terraform`, `cdk`, and `sam` proxies do not start the emulator — start it first with `lstk start`.
+Each requires the corresponding third-party CLI to be installed and on your `PATH`.
 :::
 
 ### `snapshot`
 
 Manage emulator snapshots.
-A snapshot captures the running emulator's state — as a local file on disk, a Cloud Pod on the LocalStack platform, or an object in your own S3 bucket.
+A snapshot captures the running emulator's state, either as a local file on disk, as a Cloud Pod on the LocalStack platform, or in your own S3 bucket.
 The `snapshot` command groups five subcommands — `save`, `load`, `list`, `remove`, and `show`. The first two are also exposed as the top-level aliases `lstk save` and `lstk load`.
 
 :::note
-`snapshot` works with any emulator, but the AWS emulator is the well-tested path.
-For the Snowflake and Azure emulators, snapshot support is still maturing, so `snapshot` commands print a warning (`Snapshot support for the <type> emulator is experimental and not fully tested.`) — results may be incomplete.
-[`reset`](#reset), by contrast, operates on the **AWS emulator only** and errors out otherwise (`reset is only supported for the AWS emulator`).
+Snapshots are best supported on the **AWS emulator**.
+`snapshot save`/`load` (and the `save`/`load` aliases) also work for the Snowflake and Azure emulators, but their snapshot support is experimental and not fully tested — `lstk` prints a warning such as `Snapshot support for the snowflake emulator is experimental and not fully tested.`
+[`reset`](#reset) remains **AWS-only** and errors out with `reset is only supported for the AWS emulator` otherwise.
 :::
 
 #### `snapshot save`
@@ -668,27 +665,24 @@ lstk snapshot save ./my-snapshot
 # Save to a Cloud Pod on the LocalStack platform (requires auth)
 lstk snapshot save pod:my-baseline
 
-# Save to your own S3 bucket (pod name optional, auto-generated when omitted)
+# Save to your own S3 bucket (pod name is auto-generated if omitted)
 lstk snapshot save my-pod s3://my-bucket/prefix
-lstk snapshot save my-pod s3://my-bucket/prefix --profile my-aws-profile
 ```
 
 The optional `[destination]` argument takes one of these forms:
 
-| Destination        | Description                                                                                     |
-|:-------------------|:------------------------------------------------------------------------------------------------|
-| (omitted)          | Auto-generates a timestamped `.snapshot` file in the current directory.                          |
-| local path         | Writes a snapshot file to that path (the `.snapshot` extension is forced).                        |
-| `pod:<name>`       | Saves a Cloud Pod to the LocalStack platform. Requires authentication.                           |
-| `s3://bucket/prefix` | Saves into your own S3 bucket. The pod name is a separate positional (auto-generated when omitted). |
+| Destination                     | Description                                                                                     |
+|:--------------------------------|:------------------------------------------------------------------------------------------------|
+| (omitted)                       | Auto-generates a timestamped snapshot file in the current directory (`./snapshot-<timestamp>-<hex>.snapshot`). |
+| local path                      | Writes a snapshot archive to that path. The `.snapshot` extension is forced.                     |
+| `pod:<name>`                    | Saves a Cloud Pod to the LocalStack platform. Requires authentication.                           |
+| `<pod-name> s3://bucket/prefix` | Saves to your own S3 bucket. The pod name is a separate positional (auto-generated when omitted). See [S3 remotes](#s3-remotes). |
 
 Pod operations require an auth token (`LOCALSTACK_AUTH_TOKEN` or a prior `lstk login`); local-file snapshots do not.
 
-| Option              | Description                                                                                  |
-|:--------------------|:---------------------------------------------------------------------------------------------|
-| `--profile <name>`  | AWS profile to read S3 credentials from (S3 destinations only).                              |
-
-For S3 destinations, credentials follow AWS CLI precedence: `--profile <name>` wins, otherwise the static `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` (with optional `AWS_SESSION_TOKEN`), otherwise the profile named by `AWS_PROFILE`. Only static credentials are supported (no SSO, assume-role, or credential-process). Never put credentials in the URL. See [S3 remotes](#s3-remotes).
+| Option              | Description                                                                                   |
+|:--------------------|:----------------------------------------------------------------------------------------------|
+| `--profile <name>`  | AWS profile to read S3 credentials from (used only for `s3://` destinations). Defaults to `AWS_*` env vars, then `AWS_PROFILE`. |
 
 #### `snapshot load`
 
@@ -702,19 +696,20 @@ lstk snapshot load ./checkpoint
 # Load from a Cloud Pod (requires auth)
 lstk snapshot load pod:my-baseline
 
-# Load from your own S3 bucket (pod name required)
-lstk snapshot load my-pod s3://my-bucket/prefix --profile my-aws-profile
+# Load from your own S3 bucket (pod name is required)
+lstk snapshot load my-pod s3://my-bucket/prefix
 
 # Control how the snapshot merges with running state
 lstk snapshot load pod:my-baseline --merge=overwrite
 ```
 
-The `REF` argument is required and identifies a local path/name, a `pod:<name>` Cloud Pod, or (with a separate pod-name positional) an `s3://` location. Older `.zip` snapshots saved by earlier `lstk` versions are still accepted.
+The `REF` argument is required and identifies a local path/name or a `pod:<name>` Cloud Pod.
+To load from S3, pass the pod name followed by an `s3://bucket/prefix` location (see [S3 remotes](#s3-remotes)).
 
 | Option               | Description                                                                                              |
 |:---------------------|:--------------------------------------------------------------------------------------------------------|
 | `--merge <strategy>` | How the loaded state combines with running state. One of `account-region-merge` (default), `overwrite`, `service-merge`. |
-| `--profile <name>`   | AWS profile to read S3 credentials from (S3 sources only; see [S3 remotes](#s3-remotes)).                |
+| `--profile <name>`   | AWS profile to read S3 credentials from (used only for `s3://` sources). Defaults to `AWS_*` env vars, then `AWS_PROFILE`. |
 
 - `account-region-merge` (default): the snapshot wins on any `(service, account, region)` overlap.
 - `overwrite`: running state is reset first, then the snapshot is imported onto a clean state.
@@ -741,18 +736,15 @@ lstk snapshot list
 lstk snapshot list --all
 
 # List snapshots in your own S3 bucket (requires a running emulator)
-lstk snapshot list s3://my-bucket/prefix --profile my-aws-profile
+lstk snapshot list s3://my-bucket/prefix
 ```
 
-| Option             | Description                                                  |
-|:-------------------|:------------------------------------------------------------|
-| `--all`            | List all snapshots in your organization, not just your own. |
-| `--profile <name>` | AWS profile to read S3 credentials from (S3 listings only). |
+Passing an `s3://bucket/prefix` location lists snapshots stored in your own S3 bucket instead of the platform (see [S3 remotes](#s3-remotes)). Unlike the platform listing, this queries the emulator, so it requires a running emulator.
 
-:::note
-`lstk snapshot list` (Cloud Pods) queries the LocalStack platform and does not need a running emulator.
-`lstk snapshot list s3://…`, by contrast, queries a **running emulator** (which performs the S3 transfer), so an emulator must be up. See [S3 remotes](#s3-remotes).
-:::
+| Option             | Description                                                  |
+|:-------------------|:-------------------------------------------------------------|
+| `--all`            | List all snapshots in your organization, not just your own.  |
+| `--profile <name>` | AWS profile to read S3 credentials from (used only with an `s3://` location). Defaults to `AWS_*` env vars, then `AWS_PROFILE`. |
 
 #### `snapshot remove`
 
@@ -775,8 +767,8 @@ The required `REF` argument must be a `pod:<name>` Cloud Pod reference.
 
 #### `snapshot show`
 
-Show metadata for a single Cloud Pod snapshot on the LocalStack platform: name, created date, size, LocalStack version, message, services, and per-service resource counts (resource counts render only when the platform has them for that snapshot).
-Cloud-only and requires authentication.
+Show metadata for a single Cloud Pod snapshot on the LocalStack platform: its name, created date, size, LocalStack version, message, the services it contains, and per-service resource counts (resource counts render only when the platform has them for that snapshot).
+This subcommand is cloud-only and requires authentication.
 
 ```bash
 lstk snapshot show pod:my-baseline
@@ -786,13 +778,24 @@ The required `REF` argument must be a `pod:<name>` Cloud Pod reference.
 
 #### S3 remotes
 
-`snapshot save`, `load`, and `list` can target your own S3 bucket with an `s3://bucket/prefix` location.
-The pod name (the snapshot's identity within the bucket) is a positional argument separate from the `s3://` location — required for `load`, auto-generated for `save` when omitted, and unused for `list`.
+`snapshot save`, `load`, and `list` can target a snapshot stored in your **own S3 bucket** by passing an `s3://bucket/prefix` location.
+The pod name (the snapshot's identity within the bucket) is a positional separate from the `s3://` location — required for `load`, auto-generated for `save` when omitted, and unused for `list`.
 
-- **Credentials** follow AWS CLI precedence: `--profile <name>` wins, otherwise static `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` (with optional `AWS_SESSION_TOKEN`), otherwise the profile named by `AWS_PROFILE`. Only static credentials are supported (no SSO, assume-role, or credential-process). Credentials are never accepted in the URL.
-- **The emulator performs the transfer**, not the CLI; credentials are passed as ephemeral parameters on each operation and are never persisted.
-- Before each operation, `lstk` runs a bucket-existence pre-flight check and errors out rather than letting the emulator auto-create a bucket on a typo.
-- `remove`, `show`, and snapshot versions are **not** yet supported on S3 remotes; ORAS and other remote types are not supported.
+```bash
+lstk snapshot save my-pod s3://my-bucket/prefix
+lstk snapshot load my-pod s3://my-bucket/prefix
+lstk snapshot list s3://my-bucket/prefix
+```
+
+Credentials follow AWS CLI precedence: `--profile <name>` wins, otherwise the static `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` (plus optional `AWS_SESSION_TOKEN`) environment variables, otherwise the profile named by `AWS_PROFILE`.
+Only static credentials are supported (no SSO, assume-role, or `credential_process`), and credentials must never be embedded in the URL.
+
+`lstk` runs a pre-flight check that the target bucket exists and errors out rather than letting the emulator auto-create a bucket on a typo.
+Because the transfer is performed by the emulator (not the CLI), S3 remotes require a **running emulator**, and `list s3://…` in particular queries the emulator rather than the platform API.
+
+:::note
+`remove` and `show` do not support S3; they operate on Cloud Pods only.
+:::
 
 ### `reset`
 
@@ -814,6 +817,8 @@ In non-interactive mode it fails unless `--force` is passed:
 ```text
 reset requires confirmation; use --force to skip in non-interactive mode
 ```
+
+`reset` supports [`--json`](#structured-output): on success the `data` payload reports the reset emulator and `"reset": true`.
 
 :::note
 `reset` clears in-memory state only.
@@ -948,7 +953,7 @@ If a LocalStack emulator is still running after logout, `lstk` prints a note rem
 ### `setup`
 
 Set up CLI integration for an emulator type.
-`lstk setup` is a grouping command with no action of its own; the work is done by its subcommands (`aws` and `azure`).
+`lstk setup` is a grouping command with no action of its own; the work is done by its subcommands, `setup aws` and `setup azure`.
 
 ```bash
 lstk setup aws
@@ -964,9 +969,13 @@ lstk setup aws
 lstk setup aws --force
 ```
 
-| Option    | Description                                                                                       |
-|:----------|:--------------------------------------------------------------------------------------------------|
-| `--force` | Skip the confirmation prompt and overwrite an existing `localstack` profile whose values differ. |
+| Option    | Description                                                                              |
+|:----------|:-----------------------------------------------------------------------------------------|
+| `--force` | Overwrite an existing `localstack` profile whose values differ, and skip the confirmation prompt. |
+
+On an interactive terminal it prompts (Y/n) before making changes.
+In non-interactive mode (piped output, CI, or `--non-interactive`) it writes the profile with defaults without prompting and exits `0`; a failed write or check returns a non-zero exit code so automation notices.
+Overwriting an existing `localstack` profile whose values differ requires `--force` (which also skips the interactive prompt); creating a fresh profile, completing a partial one, or leaving an already-correct profile in place never needs it.
 
 It writes the following profile (existing unrelated profiles are preserved):
 
@@ -990,35 +999,30 @@ export AWS_PROFILE=localstack
 aws s3 ls
 ```
 
-The endpoint host is resolved automatically: `lstk` probes `localhost.localstack.cloud` and uses it when it resolves to `127.0.0.1`, otherwise it falls back to `127.0.0.1`.
-Set [`LOCALSTACK_HOST`](#environment-variables) to override the host and port written into the profile.
+The endpoint host is resolved the same way as for [`lstk aws`](#endpoint-resolution) (probing `localhost.localstack.cloud` and falling back to `127.0.0.1`), and [`LOCALSTACK_HOST`](#environment-variables) overrides the host and port written into the profile.
 The port comes from your AWS emulator's configured `port` (default `4566`); if no `aws` emulator is configured, the command fails with `no aws emulator configured`.
 
 If the `localstack` profile is already configured correctly, `lstk` reports `LocalStack AWS profile is already configured.` and makes no changes.
 
-On an interactive terminal, `setup aws` prompts (Y/n) before writing. Overwriting an existing `localstack` profile whose values differ requires `--force` (which also skips the prompt); writing a fresh profile, completing a partial one, or leaving an already-correct profile unchanged never needs it.
-
 :::note
-In non-interactive mode (piped output, CI, or `--non-interactive`), `setup aws` does not prompt — it writes the profile with defaults and exits `0`. A write or check failure returns a non-zero exit code so automation fails loudly.
-:::
-
-:::caution
-`lstk config profile` is the deprecated form of this command.
-It still works and behaves identically, but you should use `lstk setup aws` instead.
+The former `lstk config profile` command has been removed; use `lstk setup aws`.
 :::
 
 #### `setup azure`
 
-Prepare an isolated Azure CLI config directory (under the `lstk` config dir, via `AZURE_CONFIG_DIR`) that routes [`lstk az`](#az) commands to the LocalStack Azure emulator.
-It registers a custom Azure cloud (`LocalStack`) pointing at LocalStack's Azure endpoints, activates it, disables Azure CLI instance discovery and telemetry, and performs a one-time dummy service-principal login.
+Prepare an isolated Azure CLI configuration directory that routes [`lstk az`](#az) commands to the LocalStack Azure emulator.
 Your global `~/.azure` configuration is left untouched.
 
 ```bash
 lstk setup azure
+# alias:
+lstk setup az
 ```
 
-Requires the `az` CLI on your `PATH` and a running LocalStack Azure emulator.
-Run this once; afterwards use `lstk az <args>` to run Azure CLI commands against LocalStack.
+`setup azure` registers a custom Azure cloud (`LocalStack`) whose endpoints point at the LocalStack Azure emulator, activates it, disables Azure CLI instance discovery and telemetry, and performs a one-time dummy service-principal login — all inside a dedicated config directory under the `lstk` config dir (via `AZURE_CONFIG_DIR`).
+It requires the `az` CLI to be installed and a running LocalStack Azure emulator.
+
+To instead redirect your **global** `az` (so existing scripts run unmodified against LocalStack), see [`lstk az start-interception`](#az).
 
 ### `config`
 
@@ -1037,26 +1041,6 @@ This subcommand is read-only: it never creates or initializes a config file.
 If `--config <path>` is set, it prints that path verbatim.
 Otherwise it prints the already-loaded config path, the first existing config in the search order, or the path where a config would be created on first run.
 
-#### `config profile`
-
-:::caution[Deprecated]
-`config profile` is deprecated. Use [`setup aws`](#setup) instead.
-:::
-
-Write a LocalStack AWS CLI profile into `~/.aws/config` and `~/.aws/credentials`, pointing at your configured emulator.
-
-```bash
-lstk config profile   # prefer: lstk setup aws
-```
-
-Requires an interactive terminal. In non-interactive mode it fails with:
-
-```text
-config profile requires an interactive terminal
-```
-
-The generated profile uses the host from the `LOCALSTACK_HOST` environment variable (when set) and your configured containers, identical to [`setup aws`](#setup).
-
 ### `update`
 
 Check for and apply updates to the `lstk` CLI itself.
@@ -1071,6 +1055,7 @@ lstk update [options]
 |:--------------------|:-------------------------------------------------------------|
 | `--check`           | Check for updates without installing them                    |
 | `--non-interactive` | Use plain output instead of the TUI (update logic unchanged) |
+| `--json`            | Emit the result as a JSON envelope (see [Structured output](#structured-output)). With `--check`, `data` reports `currentVersion`/`latestVersion`/`updateAvailable`; after an applied update, `updatedVersion`/`updated`/`method`. |
 
 Examples:
 
@@ -1145,9 +1130,10 @@ These options are available for all commands:
 |:--------------------|:---------------------------------------------------------------------------|
 | `--config <path>`   | Path to a specific TOML config file                                        |
 | `--non-interactive` | Disable the interactive TUI, use plain output                              |
+| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `stop`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
 | `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
-| `--snapshot <ref>`  | Snapshot `REF` to auto-load after start (on `start`/bare `lstk`; overrides config for the run) |
-| `--no-snapshot`     | Skip auto-loading the configured snapshot for the run (on `start`/bare `lstk`) |
+| `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
+| `--no-snapshot`     | Skip auto-loading the configured snapshot (on `start`/bare `lstk`)          |
 | `-v`, `--version`   | Print the version and exit                                                 |
 | `-h`, `--help`      | Print help and exit                                                        |
 
@@ -1166,9 +1152,76 @@ lstk --non-interactive start
 ```
 
 :::note
-`lstk login` requires an interactive terminal.
-If you need to authenticate in CI, set `LOCALSTACK_AUTH_TOKEN` instead.
-`setup aws` runs non-interactively (it writes the profile with defaults), but commands that mutate state without prompting in CI (`reset`, `volume clear`, `snapshot remove`) require `--force`.
+`lstk login` requires an interactive terminal; if you need to authenticate in CI, set `LOCALSTACK_AUTH_TOKEN` instead.
+Commands that mutate state without prompting in CI (`reset`, `volume clear`) require `--force`.
+`lstk setup aws` works non-interactively — it writes the profile with defaults and needs `--force` only to overwrite a conflicting `localstack` profile.
+:::
+
+## Structured output
+
+The global `--json` flag makes a command emit a single, machine-readable JSON object on stdout instead of human-oriented text, for scripting and CI.
+JSON support is being rolled out per command: `stop`, `reset`, and `update` accept `--json`.
+Any other command rejects it with an error envelope (`error.code: NOT_JSON_CAPABLE`) rather than silently printing plain text.
+
+Every JSON-capable command writes **exactly one** JSON object with the following envelope shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "stop",
+  "status": "ok",
+  "data": {
+    "emulators": [
+      { "type": "aws", "name": "localstack-aws", "wasRunning": true }
+    ]
+  },
+  "warnings": [],
+  "error": null
+}
+```
+
+| Field           | Type            | Description                                                                                          |
+|:----------------|:----------------|:-----------------------------------------------------------------------------------------------------|
+| `schemaVersion` | integer         | Wire-format version of the envelope, currently always `1`. Check it once before parsing.             |
+| `command`       | string          | The command that produced the envelope (e.g. `"stop"`, `"reset"`).                                   |
+| `status`        | string          | `"ok"` or `"error"` — branch on this first.                                                          |
+| `data`          | object or `null`| Command-specific result. Non-null when `status` is `"ok"`, `null` when it is `"error"`.              |
+| `warnings`      | array           | Non-fatal notices, always present (empty array when there are none). Each entry is `{ "code", "message" }`. |
+| `error`         | object or `null`| The machine-readable failure. Non-null when `status` is `"error"`, `null` otherwise.                 |
+
+When `status` is `"error"`, the `error` object carries a stable `code` (e.g. `EMULATOR_NOT_RUNNING`, `CONFIRMATION_REQUIRED`, `RUNTIME_UNAVAILABLE`), a coarse `category`, a human-readable `message` (informational only — branch on `code`, not `message`), and a `retryable` boolean:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "reset",
+  "status": "error",
+  "data": null,
+  "warnings": [],
+  "error": {
+    "code": "CONFIRMATION_REQUIRED",
+    "category": "USAGE",
+    "message": "reset requires confirmation; use --force to skip in non-interactive mode",
+    "retryable": false
+  }
+}
+```
+
+### Exit codes
+
+For a full enumeration, read `error.code` from the envelope; the process exit code carries only the two most common, mechanically-remediable failures:
+
+| Exit code | Meaning                                                                                     |
+|:----------|:--------------------------------------------------------------------------------------------|
+| `0`       | `status: "ok"`.                                                                             |
+| `1`       | `status: "error"` for any code other than the two below.                                    |
+| `2`       | A Cobra-level usage error that occurred before `--json` could be recognized (plain-text error on stderr, not an envelope). |
+| `3`       | `error.code == "CONFIRMATION_REQUIRED"` (re-run with `--force`).                            |
+| `4`       | `error.code == "AUTH_REQUIRED"` (run `lstk login` or set `LOCALSTACK_AUTH_TOKEN`).          |
+
+:::note
+`--json` implies non-interactive behavior: no TUI and no prompts.
+Combining it with a destructive command that would otherwise prompt (`reset`) still requires `--force`, which surfaces as `CONFIRMATION_REQUIRED` (exit code `3`) when omitted.
 :::
 
 ## Environment variables
@@ -1187,7 +1240,7 @@ The following environment variables configure `lstk` itself (not the LocalStack 
 | `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
 | `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
 
-When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
+When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock` or `~/.config/colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
 
 When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
 
@@ -1195,18 +1248,25 @@ When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment var
 
 `lstk` injects several environment variables into the LocalStack container on every start, in addition to any profiles you configure:
 
-| Variable                | Default value                                | Description                                  |
-|:------------------------|:---------------------------------------------|:---------------------------------------------|
-| `LOCALSTACK_AUTH_TOKEN` | (your resolved token)                        | Passed from the CLI to activate the license. |
-| `GATEWAY_LISTEN`        | `:4566,:443`                                 | Ports the emulator binds inside the container. |
-| `MAIN_CONTAINER_NAME`   | `localstack-aws`                             | Container name for internal references.       |
-| `LOCALSTACK_HOST`       | `localhost.localstack.cloud:<host port>`     | Hostname/port the emulator advertises.        |
-| `LOCALSTACK_PERSISTENCE`| `1` (only with `--persist`)                  | Enables state persistence across restarts.    |
+| Variable                   | Default value                                | Description                                  |
+|:---------------------------|:---------------------------------------------|:---------------------------------------------|
+| `LOCALSTACK_AUTH_TOKEN`    | (your resolved token)                        | Passed from the CLI to activate the license. |
+| `GATEWAY_LISTEN`           | `:4566,:443`                                 | Ports the emulator binds inside the container. |
+| `MAIN_CONTAINER_NAME`      | `localstack-aws`                             | Container name for internal references.       |
+| `LOCALSTACK_HOST`          | `localhost.localstack.cloud:<host port>`     | Hostname/port the emulator advertises.        |
+| `LOCALSTACK_PERSISTENCE`   | `1` (only with `--persist`)                  | Enables state persistence across restarts.    |
+| `LOCALSTACK_CLIENT_NAME`   | `lstk`                                       | Identifies the client that started the emulator. |
+| `LOCALSTACK_CLIENT_VERSION`| (the `lstk` version)                         | Version of the client that started the emulator. |
 
 When a Docker socket is detected it is bind-mounted into the container and `DOCKER_HOST=unix:///var/run/docker.sock` is injected so the emulator can spawn its own containers.
 `lstk` also forwards host environment variables matching `CI` and `LOCALSTACK_*` (the host `LOCALSTACK_AUTH_TOKEN` is dropped so it cannot override the token resolved by `lstk`).
 
 The container also gets port mappings for `4566`, `443`, and the service port range `4510-4559`.
+
+:::note
+`GATEWAY_LISTEN` is read from the container's resolved environment (set it via an `[env.*]` profile), not hardcoded.
+Beyond controlling which ports the emulator binds, its host part sets the host publish IP for all published ports: a value like `GATEWAY_LISTEN = "0.0.0.0:4566,0.0.0.0:443"` exposes the emulator beyond loopback (e.g. on a remote host), whereas the default binds to `127.0.0.1` only.
+:::
 
 ## OpenTelemetry tracing
 
@@ -1230,6 +1290,16 @@ This is separate from the LocalStack container logs (which you view with `lstk l
 - The log file is created automatically and appended to across runs.
 - When the file exceeds **1 MB**, it is cleared on the next run.
 - Use `lstk config path` to find the config directory; `lstk.log` sits alongside `config.toml`.
+
+## Offline and enterprise environments
+
+There is no `--offline` flag. Instead, `lstk` degrades gracefully when common enterprise blockers (Docker Hub unreachable, a proxy/TLS interceptor, or an unreachable license server) prevent an internet request:
+
+- **Image pull**: if the image pull fails but the image is already present locally, `lstk` warns and uses the local image instead of failing. In interactive mode you can also press <kbd>Esc</kbd> to abort an in-progress pull and fall back to the local image.
+- **License pre-flight**: when the pinned image is already present locally, `lstk` skips its pre-flight license check so a fully offline start is not blocked; the emulator validates the license itself once it starts. When a check does run, a definitive server rejection (e.g. HTTP 403/400) is still fatal, but a transport-level failure (offline, proxy, or certificate error) is treated as non-fatal and the emulator validates the license instead. The pre-flight is also skipped — with a warning — when the license server does not recognize the image *tag format* (for example a `dev` nightly or a custom internal-mirror tag): that is not a verdict on the license, so `lstk` defers to the emulator's own startup check rather than blocking the start.
+- **Telemetry and update checks** are best-effort and fail silently when offline.
+
+Pair this behavior with a custom [`image`](#custom-container-image) that points at an internal-registry mirror or a locally loaded image to run `lstk` in an air-gapped environment.
 
 ## Shell completions
 

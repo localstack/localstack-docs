@@ -5,6 +5,7 @@
   const iconMappings = {
     Welcome: 'cube-icon',
     'Getting Started': 'rocket-icon',
+    'Quickstart Library': 'lightning-icon',
     'Local AWS Services': 'cube-icon',
     'Local Azure Services': 'cube-icon',
     Features: 'cube-icon',
@@ -13,9 +14,11 @@
     Connecting: 'plug-icon',
     'Developer Tools': 'wrench-icon',
     Capabilities: 'starburst-icon',
-    Configuration: 'starburst-icon',
+    Customization: 'starburst-icon',
     Tooling: 'wrench-icon',
+    'CI Pipelines': 'change-icon',
     Integrations: 'connections-icon',
+    'Organizations & Admin': 'users-icon',
     Enterprise: 'buildings-icon',
     Tutorials: 'book-icon',
     Changelog: 'change-icon',
@@ -40,7 +43,13 @@
 
     const navElements = [];
     for (const topLevelNav of topLevelNavs) {
-      navElements.push(...topLevelNav.querySelectorAll('span'));
+      for (const span of topLevelNav.querySelectorAll('span')) {
+        // Only consider labels that belong directly to this top-level list,
+        // not labels nested inside a collapsed sub-section's own list.
+        if (span.closest('ul') === topLevelNav) {
+          navElements.push(span);
+        }
+      }
     }
 
     for (const element of navElements) {
