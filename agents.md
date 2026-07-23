@@ -39,7 +39,7 @@ If you encounter a conflict between what AWS docs state and what LocalStack code
    - Search `github.com/localstack-samples` to see if real, working sample applications already exist for this service.
 
 **For configuration or capability docs:**
-1. Open and thoroughly review the existing files under `src/content/docs/aws/configuration/`.
+1. Open and thoroughly review the existing files under `src/content/docs/aws/customization/`.
 2. Look up the specific environment variables or configuration flags in LocalStack's core source code or release notes to verify their exact type, default values, and behavioral impact.
 
 **For tutorials:**
@@ -304,7 +304,7 @@ Use this for destructive or irreversible actions.
 Always use **root-relative paths**. Never use relative paths (`../../`).
 
 ```mdx
-[SDK documentation](/aws/configuration/localstack-sdks/)
+[SDK documentation](/aws/customization/integrations/localstack-sdks/)
 [API coverage](/aws/services/s3/#api-coverage)
 ```
 
@@ -403,24 +403,29 @@ Sidebars are auto-generated from directory structure — adding a file in the ri
 ```
 aws/
 ├── index.mdx
-├── getting-started/          # Installation, quickstart, auth token, FAQ
-├── configuration/            # ← was "capabilities/" before July 2026
-│   ├── config/               # Environment vars, initialization hooks, logging
+├── getting-started/          # Installation, quickstart, auth token, CI/CD, FAQ
+├── customization/            # Config, logging, networking, Kubernetes, extensions, SDKs
+│   ├── kubernetes/           # Helm chart, eksctl, concepts, FAQ
 │   ├── networking/           # Port mapping, DNS, endpoint injection
-│   ├── web-app/              # LocalStack Web App UI
-│   ├── localstack-sdks/      # Python SDK, Java SDK
-│   └── extensions/           # Developing and managing extensions
-├── developer-tools/          # CLI, Lambda tools, snapshots, MCP server
-├── connecting/               # AWS CLI, SDKs, Console, IDEs
+│   ├── advanced/             # Init hooks, filesystem, multi-account, ARM64
+│   ├── other-installations/  # Docker images, devcontainers, Podman, Rancher Desktop
+│   └── integrations/         # Extensions, SDKs, app frameworks, testing tools
+├── developer-tools/          # CLI, Lambda tools, snapshots, MCP server, security testing
+├── connecting/               # AWS CLI, SDKs, Console, IDEs, IaC, credentials
 ├── services/                 # One .mdx per AWS service (100+ files)
 ├── tutorials/                # Step-by-step tutorials
-├── integrations/             # CI/CD, containers, frameworks
-├── enterprise/               # Kubernetes, SSO
-├── help-support/             # FAQ, troubleshooting
-└── changelog.md
+├── quickstart-library/       # Curated quickstart tutorials
+├── ci-pipelines/             # CI provider guides (GitHub Actions, GitLab CI, etc.)
+├── organizations-admin/      # Accounts, workspaces, licenses, SSO, stack insights
+├── tooling/                  # Extensions marketplace listing
+├── help-support/             # FAQ, troubleshooting, support offerings
+├── legal/                    # Third-party software/tools
+├── changelog.md
+├── licensing.mdx
+└── sample-apps.mdx
 ```
 
-> **Important:** The directory was renamed from `aws/capabilities/` to `aws/configuration/` in mid-2026. All new content goes in `aws/configuration/`. Old URLs are covered by `public/_redirects`.
+> **Note:** There is no `aws/configuration/` or `aws/capabilities/` directory. Environment variables, networking, Kubernetes, extensions, and SDK integration docs all live under `aws/customization/`. Check the actual directory listing before citing a path — this tree can drift from reality as the repo evolves.
 
 ---
 
@@ -530,7 +535,7 @@ There are 80+ existing redirects. Check for conflicts before adding new ones.
 
 1. **No relative links.** Use root-relative paths (`/aws/services/s3/`). Relative paths (`../../s3`) fail the build.
 
-2. **`aws/capabilities/` is now `aws/configuration/`.** Rename happened mid-2026. All new content goes in `aws/configuration/`.
+2. **The directory is `aws/customization/`, not `aws/configuration/` or `aws/capabilities/`.** Neither of those exists. All configuration, networking, Kubernetes, extensions, and SDK content goes there.
 
 3. **Frontmatter schema is strict.** Unknown fields throw a Zod error at build time. Check `src/content.config.ts` first.
 
