@@ -10,11 +10,13 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
-You can set up the Azure emulator by utilizing LocalStack for Azure Docker image, [`localstack/localstack-azure`](https://hub.docker.com/r/localstack/localstack-azure).
-Before starting, ensure you have a valid Auth Token to access the Azure emulator; see the [Auth Token guide](/azure/getting-started/auth-token/) to obtain one.
+LocalStack provides multiple installation paths depending on your development environment and requirements. We recommend a CLI-based installation for the most consistent local startup experience.
 
-We recommend installing with [`lstk`](#lstk) for the simplest setup — it handles authentication, image pulls, and the container lifecycle in a single workflow.
-Alternatively, you can start the Azure emulator directly with the [`docker` CLI](#docker-cli) or [Docker Compose](#docker-compose).
+Use [`lstk`](#lstk) to install, authenticate, and start the Azure emulator with minimal setup.
+
+LocalStack for Azure features require an [Auth Token](/azure/getting-started/auth-token/) to activate your running instance. `lstk` handles authentication through a browser-based login flow, while Docker and CI workflows can use `LOCALSTACK_AUTH_TOKEN`.
+
+Alternatively, you can set up the Azure emulator directly using the LocalStack for Azure Docker image, [`localstack/localstack-azure`](https://hub.docker.com/r/localstack/localstack-azure), with the [`docker` CLI](#docker-cli) or [Docker Compose](#docker-compose).
 
 ## lstk
 
@@ -40,26 +42,13 @@ Alternatively, you can start the Azure emulator directly with the [`docker` CLI]
   </TabItem>
 </Tabs>
 
-### Configure lstk for Azure
-
-`lstk` starts the AWS emulator by default. To target the Azure emulator instead, create a project-local `.lstk/config.toml`:
-
-```toml
-# .lstk/config.toml
-[[containers]]
-type = "azure"
-port = "4566"
-```
-
-Alternatively, run `lstk` interactively with no existing config file and choose `z` for Azure when prompted; your choice is written to `config.toml` automatically.
-
 ### Start lstk
 
 ```bash
 lstk start
 ```
 
-The first execution initiates a browser-based login flow. Subsequent starts use credentials stored in your system keyring.
+The first execution initiates a browser-based login flow and, in an interactive terminal, prompts you to pick which emulator to run — choose `z` for Azure. Your choice is written to `config.toml` and used as the default on subsequent runs. Subsequent starts use credentials stored in your system keyring.
 
 ### Update lstk
 
@@ -68,6 +57,17 @@ lstk update
 ```
 
 For more details, see the [lstk documentation](/aws/developer-tools/running-localstack/lstk/).
+
+### Already using lstk with a different default emulator?
+
+If your global `config.toml` already defaults to a different emulator (for example, AWS), target Azure for a specific project instead by creating a project-local `.lstk/config.toml`:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "azure"
+port = "4566"
+```
 
 ## Container and orchestration tools
 

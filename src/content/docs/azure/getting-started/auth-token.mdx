@@ -6,7 +6,7 @@ sidebar:
   order: 1
 ---
 
-import { Code, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -86,30 +86,11 @@ The following sections describe the various methods of providing your Auth Token
 
 ### lstk
 
-`lstk` resolves your Auth Token in this order: a token stored by a previous `lstk login`, then the `LOCALSTACK_AUTH_TOKEN` environment variable, then a browser-based login prompt in interactive mode.
+`lstk` handles authentication for you — just run `lstk` or `lstk start` and it takes care of the rest. See the [lstk documentation](/aws/developer-tools/running-localstack/lstk/) for details on how it resolves your Auth Token.
 
-Set the environment variable before starting the Azure emulator:
+On first run, `lstk` prompts you to pick an emulator and remembers your choice. If your `config.toml` already defaults to a different emulator, see [Already using lstk with a different default emulator?](/azure/getting-started/installation/#already-using-lstk-with-a-different-default-emulator) to target Azure instead.
 
-<Tabs>
-  <TabItem label="macOS/Linux">
-    <Code
-      code={`export LOCALSTACK_AUTH_TOKEN=<YOUR_AUTH_TOKEN>\nlstk start`}
-      lang="shell"
-    />
-  </TabItem>
-  <TabItem label="Windows">
-    <Code
-      code={`$env:LOCALSTACK_AUTH_TOKEN="<YOUR_AUTH_TOKEN>"\nlstk start`}
-      lang="powershell"
-    />
-  </TabItem>
-</Tabs>
-
-:::note
-Alternatively, run `lstk login` to authenticate through a browser-based flow; the resulting token is stored in your system keyring and reused on subsequent starts.
-:::
-
-Make sure your `config.toml` (or a project-local `.lstk/config.toml`) targets the Azure emulator, as described in [Configure lstk for Azure](/azure/getting-started/installation/#configure-lstk-for-azure).
+For CI environments, see [CI Environments](#ci-environments) below.
 
 ### Docker
 
@@ -209,7 +190,7 @@ The most common causes are listed below.
 You need to provide an Auth Token to start the Azure emulator.
 You can find your Auth Token on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application.
 
-If you are using `lstk`, set the `LOCALSTACK_AUTH_TOKEN` environment variable to your Auth Token, or run `lstk login` to authenticate through a browser-based flow instead.
+If you are using `lstk`, run `lstk login` to authenticate through a browser-based flow. In CI, set the `LOCALSTACK_AUTH_TOKEN` environment variable instead; see [CI Environments](#ci-environments).
 
 ### Invalid license
 

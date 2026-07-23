@@ -15,28 +15,32 @@ In this guide, you will run some basic Azure CLI commands to manage resource gro
 
 - [`lstk`](/azure/getting-started/installation/#lstk)
 - [Azure CLI (`az`)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
-- [LocalStack for Azure](/azure/getting-started/)
-- A [LocalStack Auth Token](/azure/getting-started/auth-token/)
+- A LocalStack account with a license that covers Azure usage — `lstk` handles authentication for you (see [Authentication](/azure/getting-started/auth-token/))
 
 ## Instructions
 
-Before you begin, make sure that the Emulator is running, see the [installation instructions](/azure/getting-started/).
+Start the Azure emulator:
+
+```
+$ lstk start
+```
+
+For more installation details, see the [installation instructions](/azure/getting-started/).
 
 ### Set up the `az` CLI integration
 
-`lstk az` proxies your host `az` CLI against the Azure emulator, using an isolated configuration directory so your global `~/.azure` setup is left untouched.
-Run the following command once to prepare it:
+To make sure the `az` tool sends requests to the Azure Emulator REST API, run the following command:
 
 ```
-$ lstk setup azure
+$ lstk az start-interception
 ```
 
 ### Create a resource group
 
-To create a resource group, prefix the same `az` command you would normally run with `lstk az`:
+To create a resource group, you can now run the same `az` command as you would normally:
 
 ```
-$ lstk az group create --name myResourceGroup --location westeurope
+$ az group create --name myResourceGroup --location westeurope
 ```
 
 The following output would be displayed:
@@ -60,13 +64,13 @@ The following output would be displayed:
 To check the resource group details, run the following command:
 
 ```
-$ lstk az group show --name myResourceGroup
+$ az group show --name myResourceGroup
 ```
 
 To list all the resource groups, run the following command:
 
 ```
-$ lstk az group list
+$ az group list
 ```
 
 ### Delete the resource group
@@ -74,5 +78,31 @@ $ lstk az group list
 To delete the resource group, run the following command:
 
 ```
+$ az group delete --name myResourceGroup --yes
+```
+
+### Teardown
+
+When you're done, disable interception and stop the emulator:
+
+```
+$ lstk az stop-interception
+$ lstk stop
+```
+
+### Alternative: prefixed commands
+
+Instead of interception, you can prefix each `az` command with `lstk az` individually, without changing your global `~/.azure` configuration. Run this once to prepare the integration:
+
+```
+$ lstk setup azure
+```
+
+Then prefix every command:
+
+```
+$ lstk az group create --name myResourceGroup --location westeurope
+$ lstk az group show --name myResourceGroup
+$ lstk az group list
 $ lstk az group delete --name myResourceGroup --yes
 ```
