@@ -44,6 +44,25 @@ No IAM policies are created or attached, and no permission enforcement takes pla
 
 For all other resource types, the functionality is limited to mocking.
 
+## IAM Condition Keys
+
+When [IAM Policy Enforcement](/aws/developer-tools/security-testing/iam-policy-enforcement/) is enabled, LocalStack supports the following RAM-specific condition key, matching the behavior described in the [AWS condition keys reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsresourceaccessmanager.html#awsresourceaccessmanager-policy-keys):
+
+- `ram:RequestedAllowsExternalPrincipals` &mdash; the `allowExternalPrincipals` value of a `CreateResourceShare` or `UpdateResourceShare` request, useful for restricting resource shares to principals within your organization.
+
+For example, the following policy statement only allows creating or updating a resource share when it does not allow external principals:
+
+```json
+{
+    "Effect": "Allow",
+    "Action": ["ram:CreateResourceShare", "ram:UpdateResourceShare"],
+    "Resource": "*",
+    "Condition": {
+        "Bool": { "ram:RequestedAllowsExternalPrincipals": "false" }
+    }
+}
+```
+
 ## API Coverage
 
 <FeatureCoverage service="ram" client:load />
