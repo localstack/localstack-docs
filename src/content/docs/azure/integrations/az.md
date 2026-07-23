@@ -18,31 +18,57 @@ We will demonstrate how to create, show and delete an Azure resource group.
 
 ### Prerequisites
 
-This guide uses [`lstk`](/aws/developer-tools/running-localstack/lstk/), which proxies your host `az` CLI against the Azure emulator using an isolated configuration directory, so your global `~/.azure` setup is left untouched.
+This guide uses [`lstk`](/aws/developer-tools/running-localstack/lstk/) to point the `az` CLI at the Azure emulator.
 
-Run the following command once to prepare the integration:
+To make sure the `az` tool sends requests to the Azure Emulator REST API, run the following command:
 
 ```
-$ lstk setup azure
+$ lstk az start-interception
 ```
 
 ### Create and manage the Resource Group
 
-Run the following command to create a resource group in the Emulator, prefixing the same `az` command you would normally run with `lstk az`:
+Run the following command to create a resource group in the Emulator:
 
 ```
-$ lstk az group create --name MyResourceGroup --location westeurope
+$ az group create --name MyResourceGroup --location westeurope
 ```
 
 To check the resource group details, run the following command:
 
 ```
-$ lstk az group show --name MyResourceGroup
+$ az group show --name MyResourceGroup
 ```
 
 To delete the resource group, run the following command:
 
 ```
+$ az group delete --name MyResourceGroup --yes
+```
+
+### Teardown
+
+When you're done using the Azure Emulator, you can run the following command:
+
+```
+$ lstk az stop-interception
+```
+
+The `az` CLI tool will now communicate with the Azure REST API on future invocations.
+
+### Alternative: prefixed commands
+
+Instead of interception, you can prefix each `az` command with `lstk az` individually, without changing your global `~/.azure` configuration. Run this once to prepare the integration:
+
+```
+$ lstk setup azure
+```
+
+Then prefix every command:
+
+```
+$ lstk az group create --name MyResourceGroup --location westeurope
+$ lstk az group show --name MyResourceGroup
 $ lstk az group delete --name MyResourceGroup --yes
 ```
 
