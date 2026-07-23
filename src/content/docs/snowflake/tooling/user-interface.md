@@ -10,9 +10,8 @@ The Snowflake emulator provides a User Interface (UI) via the [LocalStack Web Ap
 
 * Run SQL queries and view results using a Query Editor.
 * View detailed request/response traces of API calls.
-* Forward queries to a real Snowflake instance using a proxy.
 
-To access the User Interface, you need to start the Snowflake emulator and access the **Snowflake** tab in your default instance of the LocalStack Web Application. This User Interface is available only when the Snowflake emulator is running. Please note that it does not connect to the real Snowflake cloud environment (except during a proxy connection) or any other external service on the Internet.
+To access the User Interface, you need to start the Snowflake emulator and access the **Snowflake** tab in your default instance of the LocalStack Web Application. This User Interface is available only when the Snowflake emulator is running. Please note that it does not connect to the real Snowflake cloud environment or any other external service on the Internet.
 
 :::note
 Please note that the Snowflake User Interface is still experimental and under active development.
