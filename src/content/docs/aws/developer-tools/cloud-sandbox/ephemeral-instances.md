@@ -13,7 +13,8 @@ Ephemeral Instances allows you to run a LocalStack instance in the cloud.
 You can interact with these instances via the LocalStack Web Application, or by configuring your integrations and developer tools with the endpoint URL of the ephemeral instance.
 
 :::note
-Ephemeral Instances is offered as a **preview** feature and is under active development.
+Ephemeral Instances is offered as a **preview** feature. `lstk` does not yet support Ephemeral Instances.
+Continue using the legacy [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/) for this feature.
 :::
 
 ## Getting started

@@ -30,7 +30,7 @@ They all can be summarised as:
 
 ## Creating a custom docker image
 
-If you run LocalStack in a docker container (which includes using [the CLI](/aws/getting-started/installation/#install-localstack-cli), [docker](/aws/getting-started/installation/#docker-compose), [docker-compose](/aws/getting-started/installation/#docker-compose), or [helm](/aws/customization/kubernetes/deploy-helm-chart)), to include a custom TLS root certificate a new docker image should be created.
+If you run LocalStack in a docker container (which includes using [`lstk`](/aws/developer-tools/running-localstack/lstk/), [docker](/aws/getting-started/installation/#docker-compose), [docker-compose](/aws/getting-started/installation/#docker-compose), or [helm](/aws/customization/kubernetes/deploy-helm-chart)), to include a custom TLS root certificate a new docker image should be created.
 
 Create a `Dockerfile` containing the following commands:
 
@@ -63,9 +63,16 @@ LocalStack now needs to be configured to use this custom image.
 The workflow is different depending on how you start localstack.
 
 <Tabs>
-<TabItem label="CLI">
+<TabItem label="lstk">
+```toml
+# .lstk/config.toml
+[[containers]]
+type  = "aws"
+image = "<image name>"
+```
+
 ```bash
-IMAGE_NAME=<image name> localstack start
+lstk start
 ```
 </TabItem>
 <TabItem label="Docker">
@@ -112,8 +119,18 @@ and follow the instructions fn the [init hooks documentation](/aws/customization
 
 If your proxy intercepts traffic to LocalStack cloud services (e.g., license server), you can disable TLS verification for these specific requests using the `SSL_NO_VERIFY` [configuration variable](/aws/customization/configuration-options#security) (or `LOCALSTACK_SSL_NO_VERIFY` in Docker).
 
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["tls"]
+
+[env.tls]
+SSL_NO_VERIFY = "1"
+```
+
 ```bash
-SSL_NO_VERIFY=1 localstack start
+lstk start
 ```
 
 :::caution
