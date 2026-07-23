@@ -83,42 +83,18 @@ brew install localstack/tap/localstack-cli
 
 <TabItem label="MacOS" >
 
+:::caution
+macOS x86_64 (Intel) is no longer officially supported for the legacy LocalStack CLI.
+The `cryptography` package used by the CLI has dropped support for macOS x86_64, so the CLI now pins an older, unsupported version of it as a stopgap to keep working on Intel Macs.
+If you are on an Intel Mac, we recommend switching to [`lstk`](/aws/developer-tools/running-localstack/lstk/) instead.
+:::
+
 You can install the LocalStack CLI using Brew directly from our official LocalStack tap:
 
 ```bash
 brew install localstack/tap/localstack-cli
 ```
 
-<details>
-<summary>Alternative: Binary Download</summary>
-
-You may download the binary for your architecture using the link below:
-
-<LinkButton
-  href={`https://github.com/localstack/localstack-cli/releases/download/v${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz`}
-  icon="download"
-  variant="minimal"
->
-  {' '}
-  Intel (AMD64)
-</LinkButton>
-
-or use the following curl command:
-
-<Code
-  code={`curl --output ${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz \
-    --location https://github.com/localstack/localstack-cli/releases/download/${LOCALSTACK_AWS_VERSION}/localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-amd64-onefile.tar.gz`}
-  lang="bash"
-/>
-
-Then extract the LocalStack CLI from the terminal:
-
-<Code
-  code={`sudo tar xvzf localstack-cli-${LOCALSTACK_AWS_VERSION}-darwin-*-onefile.tar.gz -C /usr/local/bin`}
-  lang="bash"
-/>
-
-</details>
 </TabItem>
 
 <TabItem label="Windows" >
