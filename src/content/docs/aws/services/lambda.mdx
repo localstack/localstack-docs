@@ -306,7 +306,7 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@
     <TableRow>
       <TableCell className="font-medium">ScalingConfig</TableCell>
       <TableCell>The scaling configuration for the event source. [^3]</TableCell>
-      <TableCell className="text-center">🟡</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
       <TableCell className="text-center">🟡</TableCell>
       <TableCell className="text-center">➖</TableCell>
       <TableCell className="text-center">➖</TableCell>
@@ -428,7 +428,7 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@
 
 [^1]: Read more at [Control which events Lambda sends to your function](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html)
 [^2]: The available Metadata properties may not have full parity with AWS depending on the event source (read more at [Understanding event filtering basics](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics)).
-[^3]: For SQS Standard, `ScalingConfig` is accepted but not automatically applied — the poller count is currently hard-coded rather than scaled based on `MaximumConcurrency`. For SQS FIFO, a single poller is always used to preserve message-group ordering, so the scaling configuration is accepted but has no effect.
+[^3]: For SQS Standard, LocalStack spawns multiple concurrent pollers per event source mapping (`LAMBDA_EVENT_SOURCE_MAPPING_SQS_POLLER_COUNT`, default `5`), and `ScalingConfig.MaximumConcurrency` caps the poller count when set. For SQS FIFO, a single poller is always used to preserve message-group ordering, so the scaling configuration is accepted but has no effect.
 [^4]: For SQS Standard, only `MinimumPollers` is honored (it sets the poller count); `MaximumPollers` has no effect. For SQS FIFO, the single-poller model means the configuration is accepted but ignored.
 
 Create a [GitHub Discussion](https://github.com/orgs/localstack/discussions/new/choose) or reach out to [LocalStack Support](/aws/help-support/get-help/) if you experience any challenges.
