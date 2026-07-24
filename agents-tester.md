@@ -41,8 +41,8 @@ If your independent research contradicts the doc, or if you find a conflict the 
 
 **For AWS service docs:**
 1. **Re-parse LocalStack Coverage independently:** Open `src/data/coverage/<service>.json` yourself. Build your own list of supported / partially supported / missing operations. Then diff it against what the doc claims. Any mismatch is a Blocking finding.
-2. **Check every command in the doc actually appears possible per coverage data.** An `awslocal` command exercising an operation marked unsupported is a Blocking finding (invented capability).
-3. **Cross-Reference Live AWS Docs independently:** Look up the official AWS API reference for each operation mentioned. Confirm payload structures, required parameters, and described behavior match what the doc says — not what the writer's audit trail says it verified.
+2. **Check every command in the doc actually appears possible per coverage data.** A `lstk aws`, `lstk cdk`, or `lstk terraform` command exercising an operation marked unsupported is a Blocking finding (invented capability).
+3. **Cross-Reference Live AWS Docs independently:** Look up the official AWS API reference for each operation mentioned. Confirm payload structures, required parameters, and described behavior match what the doc says — not what the writer's audit trail says it verified. This includes the CLI invocation itself: check each command's flags and arguments against the official [AWS CLI reference](https://docs.aws.amazon.com/cli/latest/reference/), not just that the underlying API operation exists.
 4. **Audit the Ecosystem claims:** If the doc links to a `localstack-samples` repo or references a core-repo PR/issue, follow the link and confirm it exists, is not a placeholder, and actually demonstrates what the doc claims it does.
 
 **For configuration or capability docs:**
@@ -84,7 +84,7 @@ For every doc you review, produce a Verification Report structured as follows:
 
 #### Anti-Hallucination Cross-Check
 
-**Zero-Tolerance for Fictional APIs:** For every `awslocal` command, CLI flag, config variable, or JSON field in the doc, confirm it exists in LocalStack source, docs, or coverage data. If you cannot find it independently, it is a Blocking finding — regardless of whether the writer's audit trail claims to have verified it.
+**Zero-Tolerance for Fictional APIs:** For every `lstk aws`/`lstk cdk`/`lstk terraform` command, CLI flag, config variable, or JSON field in the doc, confirm it exists in LocalStack source, docs, or coverage data. If you cannot find it independently, it is a Blocking finding — regardless of whether the writer's audit trail claims to have verified it.
 
 ### Step 3: Check against sibling doc conventions
 
@@ -122,7 +122,7 @@ Use these as literal checklists — mark each item present/absent, don't summari
 ### Service doc checklist
 
 - [ ] Introduction: 2–4 sentences on what the service does + what LocalStack lets you do + link to API coverage section
-- [ ] Getting started: self-contained `awslocal` walkthrough, real commands, real (verified) output
+- [ ] Getting started: self-contained `lstk aws` walkthrough, real commands, real (verified) output
 - [ ] At least one feature/behavior/limitation section with `:::note`/`:::tip` where relevant
 - [ ] Resource Browser section present if the service has one (verify by checking the LocalStack Web App or asking, don't assume it's optional)
 - [ ] Examples section links to `localstack-samples` (verify each link resolves)
