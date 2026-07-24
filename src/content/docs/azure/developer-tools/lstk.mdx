@@ -11,7 +11,6 @@ import QuickStart from '@/components/lstk/QuickStart.mdx';
 import Authentication from '@/components/lstk/Authentication.mdx';
 import Configuration from '@/components/lstk/Configuration.mdx';
 import LifecycleCommands from '@/components/lstk/LifecycleCommands.mdx';
-import SnapshotCommands from '@/components/lstk/SnapshotCommands.mdx';
 import CommonCommands from '@/components/lstk/CommonCommands.mdx';
 import GlobalOptionsAndOutput from '@/components/lstk/GlobalOptionsAndOutput.mdx';
 import EnvironmentAndLogging from '@/components/lstk/EnvironmentAndLogging.mdx';
@@ -25,7 +24,7 @@ import TroubleshootingCommon from '@/components/lstk/TroubleshootingCommon.mdx';
 It provides a built-in terminal UI (TUI) for interactive use and plain text output for CI/CD pipelines and scripting.
 
 `lstk` handles the full emulator lifecycle: authentication, pulling the Docker image, starting, stopping, and restarting the container, streaming logs, and checking status.
-It can also save and load emulator state (as local snapshots or Cloud Pods) and manage the on-disk volume.
+It can also persist emulator state across restarts and manage the on-disk volume.
 Running `lstk` with no arguments takes you through the entire startup flow automatically.
 
 `lstk` also proxies the Azure CLI (`lstk az`) so it runs directly against the Azure emulator.
@@ -87,7 +86,9 @@ Like the other CLI proxies, `lstk az` does not start the emulator — start it f
 It requires the `az` CLI to be installed and on your `PATH`.
 :::
 
-<SnapshotCommands />
+:::note
+`lstk` does not currently support `snapshot` or `reset` for the Azure emulator — those commands are AWS-only. `lstk start --persist` is the only state-retention option available.
+:::
 
 <CommonCommands />
 
