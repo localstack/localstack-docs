@@ -1,0 +1,42 @@
+## Authentication
+
+`lstk` resolves your auth token in the following order:
+
+1. **System keyring**: a token stored by a previous `lstk login`.
+2. **`LOCALSTACK_AUTH_TOKEN` environment variable**: used only when the keyring has no token.
+3. **Browser login**: triggered automatically in interactive mode when neither of the above provides a token.
+
+:::caution
+The keyring token takes precedence over `LOCALSTACK_AUTH_TOKEN`.
+If you set or change the environment variable but a keyring token already exists, the environment variable is ignored.
+Run `lstk logout` to clear the stored keyring token first.
+:::
+
+### Logging in
+
+```bash
+lstk login
+```
+
+Opens a browser window for authentication and stores the resulting token in your system keyring.
+This command requires an interactive terminal.
+See the [`login`](#login) command for the full flow and the endpoints it uses.
+
+### Logging out
+
+```bash
+lstk logout
+```
+
+Removes the stored credentials from the system keyring and the file-based fallback, and clears the cached license.
+`logout` cannot clear a token supplied via `LOCALSTACK_AUTH_TOKEN`; if you authenticated that way, unset the variable instead.
+See the [`logout`](#logout) command for the full behavior.
+
+### File-based token storage
+
+On systems where the system keyring is unavailable, `lstk` automatically falls back to storing the token in a file (`<config-dir>/auth-token`, mode `0600`).
+You can force file-based storage by setting:
+
+```bash
+export LSTK_KEYRING=file
+```

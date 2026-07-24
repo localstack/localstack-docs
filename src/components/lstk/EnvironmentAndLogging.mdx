@@ -1,0 +1,76 @@
+## Environment variables
+
+The following environment variables configure `lstk` itself (not the LocalStack container):
+
+| Variable                     | Description                                                                                                      |
+|:-----------------------------|:-----------------------------------------------------------------------------------------------------------------|
+| `LOCALSTACK_AUTH_TOKEN`      | Auth token for non-interactive runs or to skip browser login. Used when no keyring token is stored.              |
+| `LOCALSTACK_HOST`            | Override the host (and optional port) used when resolving and printing the emulator endpoint, and when writing the AWS CLI profile. Bypasses the `localhost.localstack.cloud` DNS probe. |
+| `LOCALSTACK_DISABLE_EVENTS`  | Set to `1` to disable anonymous telemetry event reporting.                                                       |
+| `DOCKER_HOST`                | Override the Docker daemon socket (e.g. `unix:///home/user/.colima/default/docker.sock`).                        |
+| `LSTK_KEYRING`               | Set to `file` to force file-based token storage instead of the system keyring.                                   |
+| `LSTK_OTEL`                  | Set to `1` to enable OpenTelemetry trace export (disabled by default). See [OpenTelemetry tracing](#opentelemetry-tracing). |
+| `LSTK_GITHUB_TOKEN`          | Optional GitHub token used when checking for or downloading `lstk` updates (raises GitHub API rate limits).      |
+| `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
+| `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
+
+When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock` or `~/.config/colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
+
+When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
+
+### Container-injected variables
+
+`lstk` injects several environment variables into the LocalStack container on every start, in addition to any profiles you configure:
+
+| Variable                   | Default value                                | Description                                  |
+|:----------------------------|:----------------------------------------------|:-----------------------------------------------|
+| `LOCALSTACK_AUTH_TOKEN`    | (your resolved token)                        | Passed from the CLI to activate the license. |
+| `GATEWAY_LISTEN`           | `:4566,:443`                                 | Ports the emulator binds inside the container. |
+| `MAIN_CONTAINER_NAME`      | `localstack-<type>` (e.g. `localstack-aws`)  | Container name for internal references, derived from the configured `type`. |
+| `LOCALSTACK_HOST`          | `localhost.localstack.cloud:<host port>`     | Hostname/port the emulator advertises.        |
+| `LOCALSTACK_PERSISTENCE`   | `1` (only with `--persist`)                  | Enables state persistence across restarts.    |
+| `LOCALSTACK_CLIENT_NAME`   | `lstk`                                       | Identifies the client that started the emulator. |
+| `LOCALSTACK_CLIENT_VERSION`| (the `lstk` version)                         | Version of the client that started the emulator. |
+
+When a Docker socket is detected it is bind-mounted into the container and `DOCKER_HOST=unix:///var/run/docker.sock` is injected so the emulator can spawn its own containers.
+`lstk` also forwards host environment variables matching `CI` and `LOCALSTACK_*` (the host `LOCALSTACK_AUTH_TOKEN` is dropped so it cannot override the token resolved by `lstk`).
+
+The container also gets port mappings for `4566`, `443`, and the service port range `4510-4559`.
+
+:::note
+`GATEWAY_LISTEN` is read from the container's resolved environment (set it via an `[env.*]` profile), not hardcoded.
+Beyond controlling which ports the emulator binds, its host part sets the host publish IP for all published ports: a value like `GATEWAY_LISTEN = "0.0.0.0:4566,0.0.0.0:443"` exposes the emulator beyond loopback (e.g. on a remote host), whereas the default binds to `127.0.0.1` only.
+:::
+
+## OpenTelemetry tracing
+
+`lstk` can export traces of its own command execution over OTLP/HTTP.
+Tracing is **disabled by default**.
+Enable it with:
+
+```bash
+LSTK_OTEL=1 lstk start
+```
+
+When enabled, every command is wrapped in a span (e.g. `lstk.start`) recording the exit code and any error.
+`lstk` does not hardcode an export target, so the OpenTelemetry Go SDK reads the standard `OTEL_EXPORTER_OTLP_*` environment variables automatically (default target: OTLP/HTTP at `localhost:4318`).
+You need an OTLP-compatible backend running to receive the traces.
+
+## Logging
+
+`lstk` writes its own diagnostic logs to `lstk.log` in the same directory as the active config file.
+This is separate from the LocalStack container logs (which you view with `lstk logs`).
+
+- The log file is created automatically and appended to across runs.
+- When the file exceeds **1 MB**, it is cleared on the next run.
+- Use `lstk config path` to find the config directory; `lstk.log` sits alongside `config.toml`.
+
+## Offline and enterprise environments
+
+There is no `--offline` flag. Instead, `lstk` degrades gracefully when common enterprise blockers (Docker Hub unreachable, a proxy/TLS interceptor, or an unreachable license server) prevent an internet request:
+
+- **Image pull**: if the image pull fails but the image is already present locally, `lstk` warns and uses the local image instead of failing. In interactive mode you can also press <kbd>Esc</kbd> to abort an in-progress pull and fall back to the local image.
+- **License pre-flight**: when the pinned image is already present locally, `lstk` skips its pre-flight license check so a fully offline start is not blocked; the emulator validates the license itself once it starts. When a check does run, a definitive server rejection (e.g. HTTP 403/400) is still fatal, but a transport-level failure (offline, proxy, or certificate error) is treated as non-fatal and the emulator validates the license instead. The pre-flight is also skipped — with a warning — when the license server does not recognize the image *tag format* (for example a `dev` nightly or a custom internal-mirror tag): that is not a verdict on the license, so `lstk` defers to the emulator's own startup check rather than blocking the start.
+- **Telemetry and update checks** are best-effort and fail silently when offline.
+
+Pair this behavior with a custom [`image`](#custom-container-image) that points at an internal-registry mirror or a locally loaded image to run `lstk` in an air-gapped environment.

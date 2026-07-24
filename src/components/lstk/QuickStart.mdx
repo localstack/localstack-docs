@@ -1,0 +1,19 @@
+## Quick start
+
+```bash
+lstk
+```
+
+Running `lstk` without arguments performs the full startup sequence: authenticates you automatically, pulls the latest image if needed, and starts the LocalStack container.
+In an interactive terminal it launches the TUI; in a non-interactive environment it prints plain text output.
+
+On the very first interactive run, `lstk` prompts you to pick which emulator to run (AWS, Snowflake, or Azure) and writes your choice to `config.toml`.
+See [Emulator types](#emulator-types) for the available options.
+
+For CI or headless environments, set `LOCALSTACK_AUTH_TOKEN` and use `--non-interactive`:
+
+```bash
+LOCALSTACK_AUTH_TOKEN=<your-ci-auth-token> lstk --non-interactive
+```
+
+CI environments require a CI Auth Token; a personal Developer Auth Token cannot be used there.

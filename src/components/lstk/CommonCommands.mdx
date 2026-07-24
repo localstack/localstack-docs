@@ -1,0 +1,221 @@
+### `volume`
+
+Manage the emulator volume: the host directory that holds persistent state such as certificates, downloaded tools, and persistence data.
+
+```bash
+lstk volume path
+lstk volume clear [options]
+```
+
+#### `volume path`
+
+Prints the resolved volume directory for every emulator in your config, one per line.
+With the default config (a single `aws` emulator) it prints one path.
+Each path is the container's configured `volume` value, or the default OS cache location if `volume` is unset (`~/Library/Caches/lstk/volume/localstack-aws` on macOS, `~/.cache/lstk/volume/localstack-aws` on Linux).
+
+```bash
+# Print the volume directory for each configured emulator
+lstk volume path
+```
+
+#### `volume clear`
+
+Removes all data from the emulator volume directory, resetting cached state.
+It operates on all configured emulators by default, or a single one with `--type`.
+Before clearing, it lists each target as `<emulator>: <path> (<size>)`.
+
+| Option          | Description                              |
+|:----------------|:------------------------------------------|
+| `--force`       | Skip the confirmation prompt             |
+| `--type <type>` | Clear only the emulator of this type     |
+
+```bash
+# Clear all configured emulator volumes (prompts for confirmation)
+lstk volume clear
+
+# Clear only the AWS emulator volume
+lstk volume clear --type aws
+
+# Skip the confirmation prompt
+lstk volume clear --force
+
+# Clear without prompting in a non-interactive environment
+lstk volume clear --type snowflake --force
+```
+
+In an interactive terminal, `lstk volume clear` prompts `Clear volume data? This cannot be undone` before deleting anything; choosing **NO** or pressing Ctrl+C cancels with no changes.
+In non-interactive mode, `--force` is required, otherwise the command fails with `volume clear requires confirmation; use --force to skip in non-interactive mode`.
+
+:::caution
+If the volume contains files owned by `root` (created by Docker), clearing fails with a permission error.
+Re-run with elevated privileges:
+
+```bash
+sudo lstk volume clear
+```
+:::
+
+### `login`
+
+Authenticate with LocalStack via a browser-based device authorization flow and store the resulting credential in your system keyring.
+This command requires an interactive terminal.
+
+```bash
+lstk login
+```
+
+`lstk` opens your default browser to the LocalStack Web Application, shows a one-time code, and waits for you to approve the request.
+If the browser cannot open automatically, `lstk` prints the URL to visit manually.
+On success it stores the **license token** returned by the platform (not the raw browser bearer token).
+
+If you are already authenticated — either `LOCALSTACK_AUTH_TOKEN` is set or a token already exists in storage — `login` prints `You're already logged in` and exits without starting a new flow.
+
+In non-interactive mode (piped output, CI, or `--non-interactive`), `login` fails with `login requires an interactive terminal`.
+The `--config <path>` flag selects which `config.toml` is loaded, which affects `keyring`, `web_app_url`, and `api_endpoint` resolution.
+
+:::note
+If you approve the request in the browser only *after* pressing a key in the terminal, `lstk` reports `auth request not confirmed - please complete the authentication in your browser`.
+Re-run `lstk login` and approve in the browser before continuing.
+:::
+
+The credential is written to the system keyring (service `lstk`, key `lstk.auth-token`).
+When the keyring is unavailable — or `LSTK_KEYRING=file` is set — `lstk` stores it in a file at `<config-dir>/auth-token` (mode `0600`) instead.
+
+Endpoints used by the flow can be overridden via config or environment:
+
+| Config key     | Env var             | Default                        | Description                                                                  |
+|:---------------|:---------------------|:---------------------------------|:-----------------------------------------------------------------------------|
+| `keyring`      | `LSTK_KEYRING`      | (system keyring)               | Set to `file` to force file-based token storage instead of the OS keyring.   |
+| `web_app_url`  | `LSTK_WEB_APP_URL`  | `https://app.localstack.cloud` | Base URL used to build the browser authorization link.                       |
+| `api_endpoint` | `LSTK_API_ENDPOINT` | `https://api.localstack.cloud` | LocalStack platform API endpoint used for the device flow and license token. |
+
+```bash
+# Force file-based token storage during login
+LSTK_KEYRING=file lstk login
+
+# Use a specific config file
+lstk --config ./.lstk/config.toml login
+```
+
+### `logout`
+
+Remove stored authentication credentials.
+
+```bash
+lstk logout
+lstk logout --non-interactive
+```
+
+`logout` deletes the auth token from your system keyring (falling back to the file-based token at `<config-dir>/auth-token` when the keyring is unavailable or `LSTK_KEYRING=file` is set) and removes the cached license file.
+On success it prints `Logged out successfully`.
+
+The outcome depends on how you are authenticated:
+
+| Situation | Behavior |
+|:----------|:---------|
+| A token is stored (from `lstk login`) | The token is deleted from the keyring and file fallback, the cached license is removed, and `lstk` prints `Logged out successfully`. |
+| No stored token, but `LOCALSTACK_AUTH_TOKEN` is set | Nothing is deleted. `lstk` prints a note that you are authenticated via the environment variable and to unset it to log out. |
+| No stored token and no `LOCALSTACK_AUTH_TOKEN` | `lstk` prints `Not currently logged in` and exits successfully. |
+
+:::note
+`logout` never clears the `LOCALSTACK_AUTH_TOKEN` environment variable, and it does not stop running emulators.
+If a LocalStack emulator is still running after logout, `lstk` prints a note reminding you it is running in the background; run `lstk stop` to stop it.
+:::
+
+### `config`
+
+Manage CLI configuration.
+`config` has no behavior of its own; run it with a subcommand.
+
+#### `config path`
+
+Print the resolved path to the active `config.toml`.
+
+```bash
+lstk config path
+```
+
+This subcommand is read-only: it never creates or initializes a config file.
+If `--config <path>` is set, it prints that path verbatim.
+Otherwise it prints the already-loaded config path, the first existing config in the search order, or the path where a config would be created on first run.
+
+### `update`
+
+Check for and apply updates to the `lstk` CLI itself.
+`lstk` auto-detects how it was installed (Homebrew, npm, or direct binary) and updates using that same method.
+Development builds (version `dev`) are skipped, and updates are checked against the latest [GitHub release](https://github.com/localstack/lstk/releases/latest).
+
+```bash
+lstk update [options]
+```
+
+| Option              | Description                                                  |
+|:--------------------|:---------------------------------------------------------------|
+| `--check`           | Check for updates without installing them                    |
+| `--non-interactive` | Use plain output instead of the TUI (update logic unchanged) |
+| `--json`            | Emit the result as a JSON envelope (see [Structured output](#structured-output)). With `--check`, `data` reports `currentVersion`/`latestVersion`/`updateAvailable`; after an applied update, `updatedVersion`/`updated`/`method`. |
+
+Examples:
+
+```bash
+# Check for updates without installing
+lstk update --check
+
+# Update to the latest version
+lstk update
+
+# Update with plain (non-TUI) output
+lstk update --non-interactive
+```
+
+By install method:
+
+- **Homebrew** (binary under a `Caskroom` path): runs `brew upgrade localstack/tap/lstk`.
+- **npm** (binary under `node_modules`): runs `npm install -g @localstack/lstk@latest`.
+- **Binary** (anything else): downloads the release asset for your OS/arch from GitHub, extracts it, and replaces the running executable in place.
+
+With `--check`, `lstk` only reports whether a newer version is available and exits without downloading or installing anything.
+
+:::note
+Set `LSTK_GITHUB_TOKEN` to send an authenticated GitHub request and avoid API rate limits during update checks.
+It is optional; updates also work unauthenticated.
+:::
+
+#### Update notification on start
+
+Separately from `lstk update`, `lstk` checks for a newer version when you run `lstk start` (the default command), using a short timeout that fails silently if GitHub is unreachable.
+
+In an interactive terminal, when an update is available `lstk` prints the new version and a release-notes link, then prompts:
+
+```text
+Update lstk to latest version?
+> Update now [U]
+  Remind me next time [R]
+  Skip this version [S]
+```
+
+- **Update now [U]**: downloads and applies the update, then asks you to re-run your command.
+- **Remind me next time [R]**: does nothing; you are reminded on the next run.
+- **Skip this version [S]**: records the version in `config.toml` so you are not prompted about it again.
+
+In non-interactive mode the notification is not a prompt — `lstk` emits a single note (`Update available: <current> → <latest> (run lstk update)`) and continues.
+
+When you choose **Skip this version**, `lstk` writes the skipped version under a `[cli]` table:
+
+```toml
+[cli]
+update_skipped_version = "0.5.0"
+```
+
+While this value matches the latest available version, the start-time update notification for that version is suppressed.
+This key is managed automatically and is not intended to be edited by hand.
+
+### `completion`
+
+Generate shell completion scripts.
+
+```bash
+lstk completion [bash|zsh|fish|powershell]
+```
+
+See [Shell completions](#shell-completions) for setup instructions.

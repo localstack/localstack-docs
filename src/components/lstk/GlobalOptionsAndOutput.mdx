@@ -1,0 +1,101 @@
+## Global options
+
+These options are available for all commands:
+
+| Option              | Description                                                                |
+|:--------------------|:---------------------------------------------------------------------------|
+| `--config <path>`   | Path to a specific TOML config file                                        |
+| `--non-interactive` | Disable the interactive TUI, use plain output                              |
+| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `stop`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
+| `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
+| `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
+| `--no-snapshot`     | Skip auto-loading the configured snapshot (on `start`/bare `lstk`)          |
+| `-v`, `--version`   | Print the version and exit                                                 |
+| `-h`, `--help`      | Print help and exit                                                        |
+
+## Interactive and non-interactive mode
+
+`lstk` automatically selects its output mode:
+
+- **Interactive mode** (TUI): used when both stdin and stdout are connected to a terminal.
+  Commands like `start`, `stop`, `restart`, `status`, `login`, `update`, and the confirmation prompts of `reset`/`volume clear` display a Bubble Tea-powered terminal UI.
+- **Non-interactive mode** (plain text): used when the output is piped, redirected, or running in CI.
+  Force this in a TTY with `--non-interactive`.
+
+```bash
+# Force plain output even in an interactive terminal
+lstk --non-interactive start
+```
+
+:::note
+`lstk login` requires an interactive terminal; if you need to authenticate in CI, set `LOCALSTACK_AUTH_TOKEN` instead.
+Commands that mutate state without prompting in CI (`reset`, `volume clear`) require `--force`.
+`lstk setup aws` works non-interactively — it writes the profile with defaults and needs `--force` only to overwrite a conflicting `localstack` profile.
+:::
+
+## Structured output
+
+The global `--json` flag makes a command emit a single, machine-readable JSON object on stdout instead of human-oriented text, for scripting and CI.
+JSON support is being rolled out per command: `stop`, `reset`, and `update` accept `--json`.
+Any other command rejects it with an error envelope (`error.code: NOT_JSON_CAPABLE`) rather than silently printing plain text.
+
+Every JSON-capable command writes **exactly one** JSON object with the following envelope shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "stop",
+  "status": "ok",
+  "data": {
+    "emulators": [
+      { "type": "aws", "name": "localstack-aws", "wasRunning": true }
+    ]
+  },
+  "warnings": [],
+  "error": null
+}
+```
+
+| Field           | Type            | Description                                                                                          |
+|:----------------|:----------------|:-----------------------------------------------------------------------------------------------------|
+| `schemaVersion` | integer         | Wire-format version of the envelope, currently always `1`. Check it once before parsing.             |
+| `command`       | string          | The command that produced the envelope (e.g. `"stop"`, `"reset"`).                                   |
+| `status`        | string          | `"ok"` or `"error"` — branch on this first.                                                          |
+| `data`          | object or `null`| Command-specific result. Non-null when `status` is `"ok"`, `null` when it is `"error"`.              |
+| `warnings`      | array           | Non-fatal notices, always present (empty array when there are none). Each entry is `{ "code", "message" }`. |
+| `error`         | object or `null`| The machine-readable failure. Non-null when `status` is `"error"`, `null` otherwise.                 |
+
+When `status` is `"error"`, the `error` object carries a stable `code` (e.g. `EMULATOR_NOT_RUNNING`, `CONFIRMATION_REQUIRED`, `RUNTIME_UNAVAILABLE`), a coarse `category`, a human-readable `message` (informational only — branch on `code`, not `message`), and a `retryable` boolean:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "reset",
+  "status": "error",
+  "data": null,
+  "warnings": [],
+  "error": {
+    "code": "CONFIRMATION_REQUIRED",
+    "category": "USAGE",
+    "message": "reset requires confirmation; use --force to skip in non-interactive mode",
+    "retryable": false
+  }
+}
+```
+
+### Exit codes
+
+For a full enumeration, read `error.code` from the envelope; the process exit code carries only the two most common, mechanically-remediable failures:
+
+| Exit code | Meaning                                                                                     |
+|:----------|:--------------------------------------------------------------------------------------------|
+| `0`       | `status: "ok"`.                                                                             |
+| `1`       | `status: "error"` for any code other than the two below.                                    |
+| `2`       | A Cobra-level usage error that occurred before `--json` could be recognized (plain-text error on stderr, not an envelope). |
+| `3`       | `error.code == "CONFIRMATION_REQUIRED"` (re-run with `--force`).                            |
+| `4`       | `error.code == "AUTH_REQUIRED"` (run `lstk login` or set `LOCALSTACK_AUTH_TOKEN`).          |
+
+:::note
+`--json` implies non-interactive behavior: no TUI and no prompts.
+Combining it with a destructive command that would otherwise prompt (`reset`) still requires `--force`, which surfaces as `CONFIRMATION_REQUIRED` (exit code `3`) when omitted.
+:::

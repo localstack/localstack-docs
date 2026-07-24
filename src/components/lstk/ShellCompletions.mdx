@@ -1,0 +1,52 @@
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Shell completions
+
+`lstk` includes completion scripts for bash, zsh, fish, and powershell.
+If you installed via Homebrew, completions are set up automatically.
+
+For manual setup:
+
+<Tabs>
+<TabItem label="Bash">
+
+```bash
+# Load in current session
+source <(lstk completion bash)
+
+# Persist (Linux)
+lstk completion bash > /etc/bash_completion.d/lstk
+
+# Persist (macOS with Homebrew)
+lstk completion bash > $(brew --prefix)/etc/bash_completion.d/lstk
+```
+
+</TabItem>
+<TabItem label="Zsh">
+
+```bash
+# Load in current session
+source <(lstk completion zsh)
+
+# Persist (Linux)
+lstk completion zsh > "${fpath[1]}/_lstk"
+
+# Persist (macOS with Homebrew)
+lstk completion zsh > $(brew --prefix)/share/zsh/site-functions/_lstk
+```
+
+</TabItem>
+<TabItem label="Fish">
+
+```bash
+# Load in current session
+lstk completion fish | source
+
+# Persist
+lstk completion fish > ~/.config/fish/completions/lstk.fish
+```
+
+</TabItem>
+</Tabs>
+
+Restart your shell after persisting completions.

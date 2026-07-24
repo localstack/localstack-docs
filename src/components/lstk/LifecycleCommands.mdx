@@ -1,0 +1,191 @@
+export const AwsOnly = ({ emulator, children }) => (emulator === 'aws' ? children : null);
+
+`lstk` uses a flat command structure.
+Running `lstk` with no command is equivalent to `lstk start`.
+
+### `start`
+
+Start the LocalStack emulator.
+Launches the TUI in interactive terminals and prints plain output otherwise.
+`lstk start` launches the emulator defined in the first `[[containers]]` entry of the resolved `config.toml` (not necessarily AWS).
+
+```bash
+lstk start
+lstk start --persist
+lstk start --non-interactive
+```
+
+| Option              | Description                                                                  |
+|:--------------------|:-----------------------------------------------------------------------------|
+| `--persist`         | Persist emulator state across restarts (sets `LOCALSTACK_PERSISTENCE=1` in the container) |
+| `--non-interactive` | Disable the interactive TUI and use plain output                             |
+
+<AwsOnly emulator={props.emulator}>
+
+On the **AWS emulator**, `start` also accepts:
+
+| Option              | Description                                                                  |
+|:--------------------|:-----------------------------------------------------------------------------|
+| `--snapshot <REF>`  | Auto-load this snapshot after the emulator starts, overriding the configured `snapshot` for one run |
+| `--no-snapshot`     | Skip auto-loading the configured `snapshot` for this run                      |
+
+</AwsOnly>
+
+`lstk start` forwards host environment variables prefixed with `LOCALSTACK_` to the emulator (the host `LOCALSTACK_AUTH_TOKEN` is dropped so it cannot override the token `lstk` resolved). See [Container-injected variables](#container-injected-variables).
+
+By default the emulator starts with a fresh state on every run.
+Pass `--persist` to keep data across restarts: `lstk` injects `LOCALSTACK_PERSISTENCE=1` into the container so state is written to the mounted [`volume`](#config-field-reference) and reloaded on the next start.
+When persistence is active, the AWS emulator's startup summary includes a `• Persistence: Enabled` line.
+
+```bash
+# Start with persistent state
+lstk start --persist
+```
+
+:::note
+`--persist` is a flag on `start` (and the bare `lstk` command) and on [`restart`](#restart).
+For finer-grained control, you can also set `PERSISTENCE = "1"` in an environment profile (see [Passing environment variables to the container](#passing-environment-variables-to-the-container)).
+:::
+
+<AwsOnly emulator={props.emulator}>
+
+#### Auto-loading a snapshot on start
+
+For the **AWS emulator**, you can have `lstk` load a snapshot automatically every time it starts the emulator.
+Set the `snapshot` field on the container block to any load REF (a `pod:<name>` Cloud Pod or a local path):
+
+```toml
+[[containers]]
+type     = "aws"
+port     = "4566"
+snapshot = "pod:my-baseline"
+```
+
+The snapshot is loaded only when the emulator is **freshly started** this run; if it is already running, the auto-load is skipped.
+Override it for a single run with `--snapshot REF`, or skip it entirely with `--no-snapshot`:
+
+```bash
+# Start and load a different snapshot for this run only
+lstk start --snapshot pod:other-baseline
+
+# Start without loading the configured snapshot
+lstk start --no-snapshot
+```
+
+The `snapshot` field is only read on start; [`snapshot save`](#snapshot-save) never writes it back into your config.
+
+</AwsOnly>
+
+### `stop`
+
+Stop the running LocalStack emulator.
+Stops every emulator container defined in the resolved `config.toml` (the `[[containers]]` entries), with a 30-second stop timeout per container.
+
+```bash
+lstk stop
+lstk stop --non-interactive
+```
+
+`stop` fails fast if the Docker runtime is not healthy (for example, Docker is not running), or if a configured emulator is not currently running (`LocalStack is not running`).
+In an interactive terminal it shows an animated "Stopping LocalStack..." spinner and a styled confirmation; in non-interactive mode it prints the same progress and result as plain text.
+
+`stop` supports [`--json`](#structured-output): the `data` payload lists each configured emulator and whether it `wasRunning`.
+
+### `restart`
+
+Stop and restart the LocalStack emulator.
+Performs a stop of the running emulator followed by a fresh start, using the same auth, config, and Docker settings as [`start`](#start).
+Launches the TUI in interactive terminals and prints plain output otherwise.
+
+```bash
+lstk restart
+lstk restart --persist
+```
+
+| Option       | Description                                |
+|:-------------|:--------------------------------------------|
+| `--persist`  | Persist emulator state across the restart  |
+
+By default, emulator state is **not** retained across the restart and the container starts clean.
+Pass `--persist` to keep the emulator's state so it survives the restart.
+
+### `status`
+
+Show the status of a running emulator and its deployed resources.
+Before contacting the emulator, `lstk` checks that the Docker runtime is healthy; if it is not, the command reports `runtime not healthy` and exits with a non-zero status.
+
+```bash
+lstk status
+lstk --non-interactive status
+```
+
+For each emulator configured in your `config.toml` (the `[[containers]]` entries), `status` reports whether it is running and, if so, prints an instance summary:
+
+```text
+LocalStack AWS Emulator is running
+• Endpoint: localhost:4566
+• Persistence: Enabled
+• Container: localstack-aws
+• Version: 4.0.0
+• Uptime: 1h 12m 4s
+```
+
+- **Endpoint** is the live `host:port`, queried from Docker, so it stays correct even if the configured `port` was changed while the container kept running.
+- **Persistence** appears only for the AWS emulator and only when persistence is enabled.
+- **Uptime** is computed from the container's start time and is omitted if it cannot be determined.
+
+If an emulator is not running, `status` prints an error and exits non-zero without checking the remaining emulators:
+
+```text
+LocalStack AWS Emulator is not running
+
+  Start LocalStack: lstk
+  See help: lstk -h
+```
+
+<AwsOnly emulator={props.emulator}>
+
+For the **AWS emulator**, `status` additionally lists deployed resources.
+When resources exist it prints a summary line followed by a table; when none exist it prints `No resources deployed`.
+
+```text
+~ 3 resources · 2 services
+
+Service  Resource     Region     Account
+S3       my-bucket    us-east-1  000000000000
+SQS      my-queue     us-east-1  000000000000
+```
+
+</AwsOnly>
+
+In an interactive terminal the output is rendered through the TUI; in non-interactive mode (or with `--non-interactive`) the same content is printed as plain text, with the resource table shown at full width when stdout is not a TTY.
+The Snowflake and Azure emulators show the instance summary only and never report resources.
+
+### `logs`
+
+Show or stream emulator logs.
+
+```bash
+lstk logs [options]
+```
+
+| Option      | Description                              |
+|:------------|:-----------------------------------------|
+| `--follow`, `-f`  | Stream logs in real-time. Without this flag, `lstk` prints the currently available logs and exits. |
+| `--verbose`, `-v` | Show all logs without filtering. By default, `lstk` drops noisy lines (internal request logs, provider chatter); `--verbose` shows every line verbatim. |
+
+By default, `lstk logs` reads from the first configured emulator container and applies a noise filter.
+In an interactive terminal, lines are color-coded by log level (`DEBUG`, `INFO`, `WARN`, `ERROR`); in non-interactive mode, raw log lines are written to stdout.
+
+Example:
+
+```bash
+# Print current filtered logs and exit
+lstk logs
+
+# Stream filtered logs in real-time
+lstk logs --follow
+
+# Stream all logs without filtering
+lstk logs --follow --verbose
+```

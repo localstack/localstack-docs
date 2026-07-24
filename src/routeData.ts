@@ -1,4 +1,14 @@
+import { resolve } from 'node:path';
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
+import { buildFlatHeadings, injectHeadingsIntoToc } from './lib/lstk-toc';
+
+// Pages under these paths compose their content from shared .mdx components (see
+// src/components/lstk/), whose headings Starlight's own per-file extraction can't see.
+const PAGES_WITH_SHARED_COMPONENT_HEADINGS = [
+  /^\/aws\/developer-tools\/running-localstack\/lstk$/,
+  /^\/azure\/developer-tools\/lstk$/,
+  /^\/snowflake\/developer-tools\/lstk$/,
+];
 
 export const onRequest = defineRouteMiddleware((context) => {
   const locals = context.locals as typeof context.locals & {
@@ -64,6 +74,15 @@ export const onRequest = defineRouteMiddleware((context) => {
         data.isCurrentSidebar = data.label?.label === sidebarLabel;
       });
     }
+  }
+
+  if (starlightRoute.toc && PAGES_WITH_SHARED_COMPONENT_HEADINGS.some((match) => match.test(pathname))) {
+    const pageFilePath = resolve(process.cwd(), starlightRoute.entry.filePath);
+    const flatHeadings = buildFlatHeadings(pageFilePath);
+    const overview = starlightRoute.toc.items[0];
+    const items = overview ? [overview] : [];
+    injectHeadingsIntoToc(items as any, flatHeadings, starlightRoute.toc);
+    starlightRoute.toc.items = items as typeof starlightRoute.toc.items;
   }
 
   const overviewItem = starlightRoute.toc?.items[0];

@@ -365,6 +365,18 @@ export default defineConfig({
           errorOnRelativeLinks: true,
           errorOnLocalLinks: false, // Allow localhost links in tutorials (they're instructional)
           errorOnInvalidHashes: true,
+          // The lstk pages and their shared components (src/components/lstk/) compose a single
+          // page out of multiple .mdx files, so same-page "#hash" links often point at a heading
+          // defined in a different file than the one linking to it. The validator checks each
+          // file in isolation and can't see that composition, so skip hash checks there; the
+          // headings themselves (and their slugs) are still real and verified via the lstk pages'
+          // right-hand nav (see src/routeData.ts).
+          exclude: ({ file, link }) =>
+            link.startsWith('#') &&
+            (file.includes('/components/lstk/') ||
+              /\/content\/docs\/(aws\/developer-tools\/running-localstack|azure\/developer-tools|snowflake\/developer-tools)\/lstk\.mdx$/.test(
+                file
+              )),
         }),
         starlightUtils({
           multiSidebar: {
@@ -806,6 +818,13 @@ export default defineConfig({
               collapsed: true,
               items: [
                 { autogenerate: { directory: '/snowflake/capabilities' } },
+              ],
+            },
+            {
+              label: 'Developer Tools',
+              collapsed: true,
+              items: [
+                { autogenerate: { directory: '/snowflake/developer-tools' } },
               ],
             },
             {

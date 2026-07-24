@@ -1,0 +1,31 @@
+### Can I use `lstk` with Docker Compose?
+
+No. `lstk` manages its own Docker container directly.
+If you use a `docker-compose.yml` to run LocalStack, you do not need `lstk`, and vice versa.
+Do not mix `lstk start` with a Docker Compose setup; they are separate, independent methods.
+
+For Docker Compose configuration, see the [Docker Compose installation guide](/aws/getting-started/installation/#docker-compose).
+
+### Which Docker image does `lstk` use?
+
+It depends on the emulator type configured in your `config.toml`.
+The AWS emulator uses `localstack/localstack-pro`, the Snowflake emulator uses `localstack/snowflake`, and the Azure emulator uses `localstack/localstack-azure`.
+All require a valid auth token (including the free Hobby tier).
+See [Emulator types](#emulator-types).
+
+### How do I pass configuration options like `DEBUG` or `PERSISTENCE` to the container?
+
+Use environment profiles in your `config.toml`.
+Define the variables under an `[env.<name>]` section and reference that name in the `env` list of your container config.
+See [Passing environment variables to the container](#passing-environment-variables-to-the-container) for details.
+
+### How do I pin a specific LocalStack version?
+
+Set the `tag` field in your `config.toml` to a specific version tag:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "2026.4"
+port = "4566"
+```
