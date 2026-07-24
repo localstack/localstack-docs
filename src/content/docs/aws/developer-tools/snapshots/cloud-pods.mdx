@@ -11,8 +11,8 @@ import { Tabs, TabItem, FileTree } from '@astrojs/starlight/components';
 import { Badge } from '@astrojs/starlight/components';
 
 In [the previous section](/aws/developer-tools/snapshots/save-snapshots-locally/) you learned how to save a snapshot of the emulator's state to a local file,
-then to re-load the snapshot into a different emulator instance. However, when working in a team environment, it's important to have a standard mechanism for sharing
-snapshot files across your team, and for managing updates as new versions are published.
+then to re-load the snapshot into a different emulator instance. When working in a team environment, it's important to have a standard mechanism for sharing
+snapshot files amongst your team, and for managing updates as new versions are published.
 
 <div style="padding: 1em 0;">
   <img src="/images/aws/pods-workflow.png" alt="Cloud Pods workflows" width="90%" style="margin: 0 auto;" />
@@ -26,13 +26,13 @@ back into an emulator instance, either on a desktop environment or a CI environm
   <img src="/images/aws/pods-ui.png" alt="Cloud Pods Web UI" width="90%" style="margin: 0 auto;" />
 </div>
 
-Each organization has their own private Cloud Pods repository, securely managed in LocalStack's cloud. Each user or organization is allocated a dedicated and 
-isolated Amazon S3 bucket. The LocalStack CLI utilizes secure S3 presigned URLs to directly interface with the S3 bucket, bypassing the need to
-transmit the snapshot files through LocalStack Platform APIs.
+Each organization has its own private Cloud Pods repository, securely managed in LocalStack's cloud. These are backed by dedicated,
+isolated Amazon S3 buckets. The LocalStack CLI utilizes secure S3 presigned URLs to directly interface with the S3 bucket, bypassing the need to
+transmit the snapshot files through LocalStack's Platform APIs.
 
 ## Using the `lstk` CLI
 
-You can save and load the snapshots to/from your Cloud Pods repository using the [`lstk snapshot`](/aws/developer-tools/running-localstack/lstk/#snapshot) command.
+You can save and load the snapshots to or from your Cloud Pods repository using the [`lstk snapshot`](/aws/developer-tools/running-localstack/lstk/#snapshot) command.
 
 ```bash
 lstk snapshot --help
@@ -54,7 +54,7 @@ Commands:
 
 ### Saving a snapshot to Cloud Pods
 
-The command for saving a snapshot to Cloud Pods is similar to saving locally, but instead of a file name, provide the `pod:` prefix followed by a valid Pod name.
+The command for saving a snapshot to Cloud Pods is similar to saving locally, but instead of a file name, provide the `pod:` prefix followed by a valid Cloud Pod name.
 
 ```bash
 lstk snapshot save pod:sample-application
@@ -63,96 +63,84 @@ lstk snapshot save pod:sample-application
 ```bash
 ✔︎ Snapshot saved to pod:sample-application
 • Version: 1
-• Services: s3, sns, sqs, lambda
-• Size: 64.2 KB
+• Services: sqs, sns, cloudwatch, cloudcontrol, s3, sts
+• Size: 127.0 KB
 ```
 
-Optionally, you can include a message with the saved snapshot using the `--message` flag.
-
-You can access the list of available Cloud Pods for both you and your organization by utilizing the `list` command:
+You can access the list of available Cloud Pods for both you and your organization by using the `list` command:
 
 ```bash
-localstack pod list
+lstk snapshot list  
 ```
 
 ```bash
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
-┃ Name                         ┃ Max Version ┃ Last Change         ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━┩
-│ s3-test                      │ 1           │ 2024-01-04 11:03:00 │
-└──────────────────────────────┴─────────────┴─────────────────────┘
+~ 3 snapshots
+
+  NAME                VERSION  LAST CHANGED
+  snapshot1           1        2026-07-20 20:02 UTC
+  sample-application  1        2026-07-23 23:47 UTC
+  snapshot2           1        2026-07-20 20:04 UTC
 ```
 
 With the `save` command you can create multiple versions of a Cloud Pod.
-For instance, let us create a SQS queue and second version of `s3-test`.
+For instance, let us create a SQS queue and second version of `sample-application`.
 
 ```bash
-awslocal sqs create-queue --queue-name test-queue
-
-localstack pod save s3-test
+lstk aws sqs create-queue --queue-name test-queue
+lstk snapshot save pod:sample-application
 ```
 
 ```bash
-Cloud Pod `s3-test` successfully created ✅
-Version: 2
-Remote: platform
-Services: s3,sqs
+✔︎ Snapshot saved to pod:sample-application
+• Version: 2
+• Services: sqs, sns, cloudwatch, cloudcontrol, s3, sts
+• Size: 130.9 KB
 ```
 
 :::note
-Permission on Cloud Pods are assigned at organization level.
-This means that every individual in the organization can view, load, and delete Cloud Pods created by other team members.
-Similarly, everyone can save a new version of a Cloud Pod on top of a Pod originally created by someone else.
+Permissions on Cloud Pods are assigned at organization level.
+This means that every individual in the organization can view, load, and delete snapshots created by other team members.
+Similarly, everyone can save a new version on top of a snapshot originally created by someone else.
 :::
 
-### Pull your Pod state
+### Loading snapshots from a Cloud Pod
 
-On a separate machine, start LocalStack while ensuring the Auth Token is properly configured.
-Then, retrieve the previously created Cloud Pod by employing the `load` command, specifying the Cloud Pod name as the first argument:
+To load a snapshot from a Cloud Pod into a running emulator, use the `lstk snapshot load` command:
 
 ```bash
-localstack pod load s3-test
+lstk snapshot load pod:sample-application
 ```
 
 ```bash
-Cloud Pod s3-test successfully loaded
+✔︎ Snapshot loaded from pod:sample-application
+• Services: sts, s3, sqs, cloudwatch, cloudcontrol, sns
 ```
 
-You can examine the S3 buckets within the Cloud Pod:
-
-```bash
-awslocal s3 ls s3://test/
-```
-
-```bash
-2022-10-04 22:33:54         12 hello-world
-```
-
-You can also load a specific version by appending a version number to the pod name after a colon.
-If not specified, the latest version will be loaded.
-```bash
-localstack pod load s3-test:1
-```
-
-```bash
-Cloud Pod s3-test:1 successfully loaded
-```
-
-After loading the Cloud Pod's content, you can use the `state inspect` command to observe the state of the running LocalStack instance.
-
-TBD: lstk snapshot show
+You can examine the loaded resources with the `lstk status` command:
 
 ```bash
 lstk status
 ```
 
 ```bash
-xxx
+✔︎ LocalStack AWS Emulator is running
+• Endpoint: localhost.localstack.cloud:4566
+• Container: localstack-aws-dev
+• Version: 2026.7.0
+• Uptime: 25m 46s
+
+~ 6 resources · 3 services
+
+  SERVICE  RESOURCE                                                                        REGION          ACCOUNT
+  S3       bucket1                                                                         global          000000000000
+  SNS      topic1                                                                          us-east-1       000000000000
+  SNS      topic2                                                                          ap-southeast-2  000000000000
+  SQS      http://sqs.ap-southeast-2.localhost.localstack.cloud:4566/000000000000/queue-2  ap-southeast-2  000000000000
+  SQS      http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/queue-1       us-east-1       000000000000
+  SQS      http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/test-queue    us-east-1       000000000000
 ```
 
-TBD: lstk snapshot remove
-
-For comprehensive instructions, navigate to our [`lstk` CLI Guide](/aws/developer-tools/running-localstack/lstk/#snapshot).
+Comprehensive instructions on using the `lstk snapshot` CLI command are found in the [`lstk` CLI Guide](/aws/developer-tools/running-localstack/lstk/#snapshot).
 
 :::note
 The snapshots stored in a Cloud Pod may not remain compatible if used with a different version of LocalStack.
@@ -161,69 +149,69 @@ LocalStack applies [snapshot compatibility rules](/aws/developer-tools/snapshots
 
 ## Using the LocalStack Console
 
-The LocalStack Web Application enables you to :
+The LocalStack Console enables you to:
 
-- Browse your Cloud Pods and access your version history.
-- Export & import Cloud Pods to and from LocalStack instances.
-- View Cloud Pods metadata, resources, regions, and version history.
+- Browse your Cloud Pods and access your snapshot version history.
+- Save and load snapshots to and from Cloud Pods.
+- View snapshot metadata, resources, regions, and version history.
 
 ### Browse Cloud Pods
 
-[Cloud Pods Browser](https://app.localstack.cloud/pods) allows you to view, manage, and explore your Cloud Pods through the LocalStack Web Application.
+The [Cloud Pods Browser](https://app.localstack.cloud/pods) allows you to view, manage, and explore your snapshots through the LocalStack Console.
 With Cloud Pods, you can have individual or shared ownership of a snapshot of your LocalStack instance.
 
-![LocalStack Web Application's Cloud Pods Browser outlining various saved Clod Pods" title="Cloud Pods Browser](/images/aws/cloud-pods-browser.png)
+![LocalStack Web Application's Cloud Pods Browser outlining various saved snapshots](/images/aws/cloud-pods-browser.png "Cloud Pods Browser")
 
 The Cloud Pods Browser provides the following functionalities:
 
-- **View Cloud Pods**: View all Cloud Pods saved by you or your organization.
-- **View Versions**: View the version history of a Cloud Pod and access previous versions of specific Cloud Pods by clicking on the Cloud Pod's name.
-- **View Cloud Pod Details**: View the details of a specific Cloud Pod version by clicking on the version.
+- **View Cloud Pods**: View all snapshots saved by you or your organization.
+- **View Versions**: View the version history of a snapshot and access previous snapshots by clicking on the Cloud Pod's name.
+- **View Snapshot Details**: View the details of a specific snapshot version by clicking on the version.
 - **View Cloud Pod storage**: View the organization storage usage and user storage usage on top of the Cloud Pods Browser.
-- **Delete Cloud Pod**: Delete a Cloud Pod by selecting the Cloud Pod and navigating to the **Actions** button, followed by **Delete**.
+- **Delete Snapshot**: Delete a snapshot by selecting the snapshot and navigating to the **Actions** button, followed by **Delete**.
 
-### View Cloud Pods metadata
+### View snapshot metadata
 
-You can view Cloud Pods metadata by selecting any Cloud Pod in the  [Cloud Pods Browser](https://app.localstack.cloud/pods).
+You can view snapshot metadata by selecting any snapshot in the  [Cloud Pods Browser](https://app.localstack.cloud/pods).
 The metadata includes details such as:
 
-- The user who created the Cloud Pod
+- The user who created the snapshot
 - The creation timestamp
-- The LocalStack version used to create the Cloud Pod
-- The size of the Cloud Pod
-- The service resources contained in the Cloud Pod
+- The LocalStack version used to create the snapshot
+- The size of the snapshot
+- The service resources contained in the snapshot
 
-You can view detailed information within a Cloud Pod, including available resources, categorized services with configurations, and quick access to resource identifiers and endpoints—all without loading the Cloud Pod into your LocalStack runtime.
+You can view detailed information within a snapshot, including available resources, categorized services with configurations, and quick access to resource identifiers and endpoints—all without loading the snapshot into your LocalStack runtime.
 
-To save metadata with resource details in the Cloud Pod, ensure your LocalStack container is running and save the Cloud Pod with `ENABLE_POD_RESOURCES=1`.
-Cloud Pods saved without this configuration enabled will not display granular details.
+To save metadata with resource details in the Cloud Pod, ensure your LocalStack container is running and save the snapshot with `ENABLE_POD_RESOURCES=1`.
+Snapshots saved without this configuration enabled will not display granular details.
 
 ![Cloud Pods details](/images/aws/cloud-pod-details.png)
 
-### Export & Import Cloud Pods
+### Save and load snapshots to or from Cloud Pods
 
-You can export and import your LocalStack infrastructure state as a Cloud Pod using the LocalStack Web Application.
-This feature is particularly useful when you need to use a user-friendly interface to manage your Cloud Pods, without the need to interact with the CLI.
+You can save and load your LocalStack infrastructure state as a snapshot to or from a Cloud Pod using the LocalStack Console.
+This feature is particularly useful when you need to use a user-friendly interface to manage your snapshots, without the need to interact with the CLI.
 
-![LocalStack Export/Import State Cloud Pod Mode](/images/aws/export-import-state-cloud-pod.png)
+![LocalStack Save/Load Snapshot Cloud Pod Mode](/images/aws/export-import-state-cloud-pod.png)
 
-#### Export the State
+#### Save the snapshot
 
-To export the state, follow these steps:
+To save a snapshot, follow these steps:
 
 1. Navigate to the **Cloud Pod** tab within the [Export/Import State](https://app.localstack.cloud/inst/default/state) page.
 2. Create AWS resources locally as needed.
-3. Enter the Pod name and toggle between the **New Pod** and **Existing Pod** options.
+3. Enter the Cloud Pod name and toggle between the **New Pod** and **Existing Pod** options.
 4. Enter the services to save resources for.
   By default, all available service resources are saved.
 5. Click on **Create New Pod**.
 
-A new Cloud Pod will be created and will be available for import into another LocalStack instance.
-You can check out the list of available Cloud Pods in the [Cloud Pod](https://app.localstack.cloud/pods) page.
+A new Cloud Pod will be created and the snapshot will be available for loading into another LocalStack instance.
+You can check out the list of available Cloud Pods in the [Cloud Pods](https://app.localstack.cloud/pods) page.
 
-#### Import the State
+#### Load the snapshot
 
-To import the state, follow these steps:
+To load a snapshot, follow these steps:
 
 1. Navigate to the **Cloud Pod** tab within the [Export/Import State](https://app.localstack.cloud/inst/default/state) page.
 2. Choose the Cloud Pod from the drop-down list.
@@ -231,11 +219,11 @@ To import the state, follow these steps:
 
 To confirm the successful injection of the container state, visit the respective [Resource Browser](https://app.localstack.cloud/inst/default/resources) for the services and verify the resources.
 
-## Auto Loading Cloud Pods
+## Auto Loading from Cloud Pods
 
-In addition to loading Cloud Pods through the Command-Line Interface (CLI) or the Web Application, you can configure the automatic loading of one or more Cloud Pods upon the startup of the LocalStack container.
+In addition to loading snapshots through the Command-Line Interface (CLI) or the Console, you can configure the automatic loading of one or more Cloud Pods upon the startup of the LocalStack container.
 
-### Environmental variables
+### Environment variables
 
 To automatically load a Cloud Pod at startup, utilize the `AUTO_LOAD_POD` [configuration variable](/aws/customization/configuration-options/).
 
@@ -284,7 +272,7 @@ docker run \
 
 LocalStack allows for the use of configuration files to automatically load Cloud Pods during startup.
 
-Within the container, LocalStack searches through the `/etc/localstack/init-pod.d` directory for two file types: `zip` files created using the `localstack state export` command, and `txt` files, where each line represents the name of a Cloud Pod.
+Within the container, LocalStack searches through the `/etc/localstack/init-pods.d` directory for two file types: `zip` files created using the `localstack state export` command, and `txt` files, where each line represents the name of a Cloud Pod.
 
 Take the following example of a project layout:
 
@@ -324,7 +312,7 @@ services:
 
 ## End-to-End Encryption <Badge text="Enterprise" size="large" />
 
-Cloud Pods artifacts are stored in S3 buckets when using the LocalStack platform as the storage remote.
+Cloud Pods' artifacts are stored in S3 buckets when using the LocalStack platform as the storage remote.
 By default, Amazon S3 encrypts all objects before saving them on disks, while the opposite operation happens at download time.
 This ensures encryption **at rest** for Cloud Pods.
 
@@ -332,7 +320,7 @@ When this is not enough, LocalStack also offers end-to-end encryption for enterp
 To activate this feature, make sure to start LocalStack with the `POD_ENCRYPTION` environment variable set to 1.
 
 The next step is to generate a passphrase used to encrypt and decrypt the Cloud Pods' artifacts.
-We advise to create a strong passphrase by using the `openssl` utility, e,g.:
+We advise creating a strong passphrase by using the `openssl` utility, e.g.:
 
 ```bash
 openssl rand --base64 32
@@ -359,7 +347,7 @@ The process is the following:
 
 - Customers would have to export both their private and public keys into two files, `private.pgp` and `public.pgp` respectively.
 - These files need to be mounted in a specific `pods.keys.d` folder when starting LocalStack, i.e., `localstack start -v $PWD/pods.keys.d:/etc/localstack/pods.keys.d`.
-- The `secret` option passed to the `save` and `load` command corresponds to the passphrase needed to import the private key into the LocalStack runtime.
+- The `secret` option passed to the `save` and `load` commands corresponds to the passphrase needed to import the private key into the LocalStack runtime.
 
 ### Limitations
 
