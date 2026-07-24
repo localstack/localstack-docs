@@ -11,7 +11,7 @@ import ReplicatorCoverage from '@/components/replicator-coverage/ReplicatorCover
 ## Introduction
 
 Applications deployed on AWS often depend on shared resources defined outside their own stack, for example a VPC managed by another team.
-Replicating this kind of setup in LocalStack is hard: the dependencies may not live in IaC you have access to, and some resources are referenced by ARN, which is partly random, so simply recreating the resource in LocalStack produces a different ARN.
+Reproducing this kind of setup in LocalStack is hard: the dependencies may not live in IaC you have access to, and some resources are referenced by ARN, which is partly random, so simply recreating the resource in LocalStack produces a different ARN.
 
 The AWS Replicator solves this by creating identical copies of existing AWS resources directly inside a running LocalStack instance.
 This lets you replicate external dependencies before deploying your application, without changing existing stacks or building custom bootstrap infrastructure.
@@ -36,7 +36,7 @@ These operations can be limited by creating a minimal IAM role with just the pol
 
 See the [supported resources section](#supported-resources) for details of what policy actions are required for each resource.
 
-Replication is triggered from a shell that has access to AWS.
+Replication should be triggered from a shell that has access to AWS.
 Here are some options for providing credentials:
 
 <Tabs>
@@ -88,7 +88,7 @@ Two options apply regardless of strategy:
 The Replicator CLI is part of the LocalStack CLI.
 Follow the [installation instructions](/aws/getting-started/installation/#install-localstack-cli) to set it up.
 
-Trigger a job with `localstack replicator start`, identifying the resource by its CloudControl type and identifier:
+Trigger a job with `localstack replicator start`, identifying the resource by its ARN:
 
 ```bash showLineNumbers
 export LOCALSTACK_AUTH_TOKEN=<auth token>
@@ -96,15 +96,15 @@ export AWS_DEFAULT_REGION=...
 # if required
 # export AWS_ACCESS_KEY_ID=
 # export AWS_SECRET_ACCESS_KEY=
+localstack replicator start --resource-arn <resource-arn>
+```
+
+Or, identify the resource by its CloudControl type and identifier instead, using `--resource-type` and `--resource-identifier`:
+
+```bash
 localstack replicator start \
   --resource-type <resource-type> \
   --resource-identifier <identifier>
-```
-
-Or, if you have the resource's ARN, use `--resource-arn` instead of `--resource-type` and `--resource-identifier`:
-
-```bash
-localstack replicator start --resource-arn <resource-arn>
 ```
 
 The command outputs the new job, including its `job_id`:
@@ -168,8 +168,8 @@ with a payload identifying the resource, the replication strategy, and AWS crede
     "resource_identifier": "<identifier>"
   },
   "source_aws_config": {
-    "aws_access_key_id": "...", // optional, falls back to the default credential chain (e.g. `AWS_PROFILE`) if omitted
-    "aws_secret_access_key": "...", // optional, same as above
+    "aws_access_key_id": "...",
+    "aws_secret_access_key": "...",
     "aws_session_token": "...", // optional
     "region_name": "...",
     "endpoint_url": "..." // optional
@@ -177,6 +177,8 @@ with a payload identifying the resource, the replication strategy, and AWS crede
   "target_aws_config": {} // optional, same shape as `source_aws_config`
 }
 ```
+
+Unlike the CLI, the HTTP API always requires `aws_access_key_id` and `aws_secret_access_key` in `source_aws_config` — it cannot fall back to a local AWS profile.
 
 For example, to replicate an SSM parameter named `myparam` using credentials whose default region is `eu-central-1`:
 
@@ -188,8 +190,8 @@ For example, to replicate an SSM parameter named `myparam` using credentials who
     "resource_identifier": "myparam"
   },
   "source_aws_config": {
-    "aws_access_key_id": "AKIAIOSFODNN7EXAMPLE",
-    "aws_secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "aws_access_key_id": "...",
+    "aws_secret_access_key": "...",
     "region_name": "eu-central-1"
   }
 }
@@ -206,8 +208,8 @@ For example, to replicate all SSM parameters under `/dev/`:
     "resource_identifier": "/dev/"
   },
   "source_aws_config": {
-    "aws_access_key_id": "AKIAIOSFODNN7EXAMPLE",
-    "aws_secret_access_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "aws_access_key_id": "...",
+    "aws_secret_access_key": "...",
     "region_name": "eu-central-1"
   }
 }
