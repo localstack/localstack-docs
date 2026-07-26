@@ -67,7 +67,7 @@ lstk snapshot save pod:sample-application
 • Size: 127.0 KB
 ```
 
-You can access the list of available Cloud Pods for both you and your organization by using the `list` command:
+You can access the list of available Cloud Pods, for both you and your organization, using the `list` command:
 
 ```bash
 lstk snapshot list  
@@ -83,7 +83,7 @@ lstk snapshot list
 ```
 
 With the `save` command you can create multiple versions of a Cloud Pod.
-For instance, let us create a SQS queue and second version of `sample-application`.
+For instance, to create an SQS queue and second version of `sample-application`:
 
 ```bash
 lstk aws sqs create-queue --queue-name test-queue
@@ -158,11 +158,11 @@ The LocalStack Console enables you to:
 ### Browse Cloud Pods
 
 The [Cloud Pods Browser](https://app.localstack.cloud/pods) allows you to view, manage, and explore your snapshots through the LocalStack Console.
-With Cloud Pods, you can have individual or shared ownership of a snapshot of your LocalStack instance.
+With Cloud Pods, you can have individual or shared ownership of snapshots.
 
 ![LocalStack Web Application's Cloud Pods Browser outlining various saved snapshots](/images/aws/cloud-pods-browser.png "Cloud Pods Browser")
 
-The Cloud Pods Browser provides the following functionalities:
+The Cloud Pods Browser provides the following functionality:
 
 - **View Cloud Pods**: View all snapshots saved by you or your organization.
 - **View Versions**: View the version history of a snapshot and access previous snapshots by clicking on the Cloud Pod's name.
@@ -181,17 +181,17 @@ The metadata includes details such as:
 - The size of the snapshot
 - The service resources contained in the snapshot
 
-You can view detailed information within a snapshot, including available resources, categorized services with configurations, and quick access to resource identifiers and endpoints—all without loading the snapshot into your LocalStack runtime.
-
-To save metadata with resource details in the Cloud Pod, ensure your LocalStack container is running and save the snapshot with `ENABLE_POD_RESOURCES=1`.
-Snapshots saved without this configuration enabled will not display granular details.
+You can view detailed information within a snapshot, including available resources, categorized services with configurations, and quick access to resource identifiers and endpoints—all without loading the snapshot into your LocalStack runtime. 
 
 ![Cloud Pods details](/images/aws/cloud-pod-details.png)
 
+:::note
+To save a snapshot with enhanced detail for each of the resources, start your LocalStack instance with the `ENABLE_POD_RESOURCES=1` option.
+:::
+
 ### Save and load snapshots to or from Cloud Pods
 
-You can save and load your LocalStack infrastructure state as a snapshot to or from a Cloud Pod using the LocalStack Console.
-This feature is particularly useful when you need to use a user-friendly interface to manage your snapshots, without the need to interact with the CLI.
+You can save and load snapshots using the LocalStack Console. This is useful when you prefer a user-friendly interface, without the need to interact with the CLI.
 
 ![LocalStack Save/Load Snapshot Cloud Pod Mode](/images/aws/export-import-state-cloud-pod.png)
 
@@ -199,43 +199,52 @@ This feature is particularly useful when you need to use a user-friendly interfa
 
 To save a snapshot, follow these steps:
 
-1. Navigate to the **Cloud Pod** tab within the [Export/Import State](https://app.localstack.cloud/inst/default/state) page.
+1. Navigate to the **Cloud** tab within the [State](https://app.localstack.cloud/inst/default/state) page.
 2. Create AWS resources locally as needed.
 3. Enter the Cloud Pod name and toggle between the **New Pod** and **Existing Pod** options.
 4. Enter the services to save resources for.
   By default, all available service resources are saved.
 5. Click on **Create New Pod**.
 
-A new Cloud Pod will be created and the snapshot will be available for loading into another LocalStack instance.
+A new Cloud Pod will be created, or an existing Cloud Pod will be updated. The snapshot is immediately available for loading into another LocalStack instance.
 You can check out the list of available Cloud Pods in the [Cloud Pods](https://app.localstack.cloud/pods) page.
 
 #### Load the snapshot
 
 To load a snapshot, follow these steps:
 
-1. Navigate to the **Cloud Pod** tab within the [Export/Import State](https://app.localstack.cloud/inst/default/state) page.
-2. Choose the Cloud Pod from the drop-down list.
+1. Navigate to the **Cloud** tab within the [State](https://app.localstack.cloud/inst/default/state) page.
+2. Choose the relevant Cloud Pod from the drop-down list.
 3. Click on **Load State From Pod**.
 
 To confirm the successful injection of the container state, visit the respective [Resource Browser](https://app.localstack.cloud/inst/default/resources) for the services and verify the resources.
 
 ## Auto Loading from Cloud Pods
 
-In addition to loading snapshots through the Command-Line Interface (CLI) or the Console, you can configure the automatic loading of one or more Cloud Pods upon the startup of the LocalStack container.
+In addition to loading snapshots through the Command-Line Interface (CLI) or the Console, you can configure the automatic loading of one or more Cloud Pods upon the startup of the LocalStack instance.
 
-### Environment variables
 
-To automatically load a Cloud Pod at startup, utilize the `AUTO_LOAD_POD` [configuration variable](/aws/customization/configuration-options/).
+The recommended way to automatically load a snapshot from a Cloud Pod at startup is to set the `snapshot` field in your `lstk` [`config.toml`](/aws/developer-tools/running-localstack/lstk/#auto-loading-a-snapshot-on-start).
 
+However, if you run the LocalStack container directly, for example via Docker Compose or `docker run`, you can instead use the `AUTO_LOAD_POD` [configuration variable](/aws/customization/configuration-options/).
 `AUTO_LOAD_POD` can accept multiple Cloud Pod names separated by commas.
 To autoload multiple Cloud Pods, such as `foo-pod` and `bar-pod`, use: `AUTO_LOAD_POD=foo-pod,bar-pod`.
 The order of Cloud Pods in `AUTO_LOAD_POD` dictates their loading sequence.
 When autoloading multiple Cloud Pods, later pods might overwrite the state of earlier ones if they share the same service, account, and region.
 
 <Tabs>
-<TabItem label="LocalStack CLI">
+<TabItem label="lstk CLI">
+Set the `snapshot` field on the container block in your [`config.toml`](/aws/developer-tools/running-localstack/lstk/#auto-loading-a-snapshot-on-start) to the Cloud Pod's `pod:` REF:
+
+```toml
+[[containers]]
+type     = "aws"
+port     = "4566"
+snapshot = "pod:foo-pod"
+```
+
 ```bash
-AUTO_LOAD_POD=foo-pod localstack start
+lstk start
 ```
 </TabItem>
 <TabItem label="Docker Compose">
@@ -268,58 +277,15 @@ docker run \
 </TabItem>
 </Tabs>
 
-### Configuration file
-
-LocalStack allows for the use of configuration files to automatically load Cloud Pods during startup.
-
-Within the container, LocalStack searches through the `/etc/localstack/init-pods.d` directory for two file types: `zip` files created using the `localstack state export` command, and `txt` files, where each line represents the name of a Cloud Pod.
-
-Take the following example of a project layout:
-
-<FileTree>
-- docker-compose.yml
-- init-pods.d
-  - pod-list.txt
-  - my-state.pod.zip
-</FileTree>
-
-The `pod-list.txt` contains the following:
-
-```text
-foo-pod
-bar-pod
-```
-
-LocalStack, upon mounting `init-pods.d` to the appropriate location, will sequentially load `foo-pod` and `bar-pod` as listed in `pod-list.txt`, and then proceed to load `my-state.pod.zip`.
-
-The docker compose file for correctly mounting `init-pods.d` will look like:
-
-```yaml showLineNumbers
-services:
-  localstack:
-    container_name: "localstack-main"
-    image: localstack/localstack-pro
-    ports:
-      - "127.0.0.1:4566:4566"
-      - "127.0.0.1:4510-4559:4510-4559"
-    environment:
-      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
-      - DEBUG=1
-    volumes:
-      - "./volume:/var/lib/localstack"
-      - "./init-pods.d:/etc/localstack/init-pods.d"
-```
-
 ## End-to-End Encryption <Badge text="Enterprise" size="large" />
 
-Cloud Pods' artifacts are stored in S3 buckets when using the LocalStack platform as the storage remote.
-By default, Amazon S3 encrypts all objects before saving them on disks, while the opposite operation happens at download time.
+Snapshots in the Cloud Pods repository are stored in S3 buckets. By default, Amazon S3 encrypts all objects as part of uploading them to the cloud, while the decryption happens at download time.
 This ensures encryption **at rest** for Cloud Pods.
 
 When this is not enough, LocalStack also offers end-to-end encryption for enterprise customers as a preview feature.
-To activate this feature, make sure to start LocalStack with the `POD_ENCRYPTION` environment variable set to 1.
+To activate this feature, start your LocalStack instance with the `POD_ENCRYPTION` environment variable set to 1.
 
-The next step is to generate a passphrase used to encrypt and decrypt the Cloud Pods' artifacts.
+Next, generate a passphrase used to encrypt and decrypt the snapshots.
 We advise creating a strong passphrase by using the `openssl` utility, e.g.:
 
 ```bash
@@ -355,79 +321,3 @@ The process is the following:
 - It is not possible to have both encrypted and non-encrypted versions for a Cloud Pod.
   Encryption is set at the moment of the creation and it cannot be changed.
 
-
-## Troubleshooting
-
-### Unable to obtain Auth Token
-
-When you try to save a Cloud Pod and see the error in LocalStack logs like this:
-
-```bash
-localstack.cli.exceptions.CLIError: Failed to create Cloud Pod sample-pod ❌ - Unable to obtain auth token (code 401) - please log in again.
-```
-
-It would be good to check if you have outdated authentication credentials (bearer token from a previous LocalStack login) in the `remotes.yaml` file for cloud pods.
-You have two options to fix this:
-
-1. Run another `localstack auth login` command.
-2. Find the `remotes.yaml` file in the `<localstack_volume>` directory on your machine and delete the file, or at least remove the `"default"` entry from it.
-
-Additionally, if there is a `~/.localstack/auth.json` file in your home directory, delete it as well if it still exists.
-
-### License not found
-
-When you try to save a Cloud Pod and see the `license.not_found` error in LocalStack logs like this:
-
-```bash
-lsmulti-localstack  | 2024-03-15T13:06:16.358  WARN --- [functhread31] l.p.remotes.remotes        : Failed to register pod sample-pod: {"error": true, "message": "licensing.license.not_found"}
-```
-
-To fix this, clear the LocalStack cache directory and restart the LocalStack instance before trying to save the Cloud Pod again.
-You can find the cache directories at:
-
-- `/Users/localstack/Library/Caches/localstack`
-- `/Users/localstack/Library/Caches/localstack-cli`
-
-Adjust the path based on your operating system.
-
-### SSL Certificate verification failed
-
-If you get an SSL certificate verification error while trying to save a Cloud Pod, as shown below:
-
-```bash
-An error occurred while checking remote management for pod "cloud-pod-product-app": "MyHTTPSConnectionPool(host='api.localstack.cloud', port=443): Max retries exceeded with url: /v1/cloudpods/cloud-pod-product-app (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'api.localstack.cloud'. (_ssl.c:1006)")))"
-```
-
-Check if your machine's clock is set incorrectly or if the certificate store is outdated.
-This error can also occur if you use `localstack` as `LOCALSTACK_HOST`.
-In this case, the DNS incorrectly resolves `api.localstack.cloud` to `localhost`, causing a certificate mismatch.
-
-### `InvalidAccessKeyId` during `CreateBucket` API call
-
-You may see this error:
-
-```bash
-An error occurred (InvalidAccessKeyId) when calling the CreateBucket operation: The AWS Access Key Id you provided does not exist in our records.
-```
-
-This usually means you're using temporary AWS credentials, but `AWS_SESSION_TOKEN` is missing from the environment.
-
-To fix this, ensure that you export the `AWS_SESSION_TOKEN` environment variable:
-
-```bash
-export AWS_SESSION_TOKEN=...
-```
-
-Then, add `session_token` to the `pod remote add` URL:
-
-```bash
-localstack pod remote add s3-storage-aws 's3://ls-pods-bucket-test/?access_key_id={access_key_id}&secret_access_key={secret_access_key}&session_token={session_token}'
-```
-
-If you're still unable to connect to the S3 bucket, add the bucket hostname to the upstream DNS resolution list:
-
-```bash
-DNS_NAME_PATTERNS_TO_RESOLVE_UPSTREAM=ls-pods-bucket-test.s3.amazonaws.com/
-```
-
-For more details, see the [Skip LocalStack DNS Resolution](/aws/customization/networking/dns-server/#skip-localstack-dns-resolution) section. 
