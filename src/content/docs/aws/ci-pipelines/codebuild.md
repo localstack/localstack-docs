@@ -241,7 +241,7 @@ Find out more about [ephemeral instances](/aws/developer-tools/cloud-sandbox/eph
 
 #### Artifact
 
-Find out more about [state management](/aws/developer-tools/snapshots/save-snapshots-locally/).
+Find out more about [state management](/aws/developer-tools/snapshots/saving-snapshots-locally/).
 
 ```yml showshowLineNumbers
 ...
@@ -274,7 +274,7 @@ To use previously stored artifacts as inputs, set them as a source in the projec
 
 #### Cache
 
-Additional information about [state export and import](/aws/developer-tools/snapshots/save-snapshots-locally/).
+Additional information about [state export and import](/aws/developer-tools/snapshots/saving-snapshots-locally/).
 
 ##### Native Runner
 
