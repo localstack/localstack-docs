@@ -170,20 +170,48 @@ You can fetch the CloudWatch logs for your Lambda function reading records from 
 
 ### Performance Tuning
 
-For high-volume workloads or large payloads, we recommend switching to the Scala engine via the `KINESIS_MOCK_PROVIDER_ENGINE=scala` flag, delivering up to 10x better performance compared to the default Node.js engine.
+By default, Kinesis Mock runs on the Node.js engine (`KINESIS_MOCK_PROVIDER_ENGINE=node`).
+For high-volume workloads, large payloads, or long-running setups, you can switch to a different engine using the `KINESIS_MOCK_PROVIDER_ENGINE` flag.
 
-Additionally, the following parameters can be tuned:
+#### Scala engine
+
+The Scala engine (`KINESIS_MOCK_PROVIDER_ENGINE=scala`) delivers up to 10x better performance compared to the default Node.js engine.
+The following parameters can be tuned for the Scala engine:
 
 - Increase `KINESIS_MOCK_MAXIMUM_HEAP_SIZE` beyond the default `512m` to reduce JVM memory pressure.
 - Increase `KINESIS_MOCK_INITIAL_HEAP_SIZE` beyond the default `256m` to pre-allocate more JVM heap memory.
-- Reduce `KINESIS_LATENCY` artificial response delays from the default `500` milliseconds (or disable entirely with `0`).
-
-Refer to our [Kinesis configuration documentation](https://docs.localstack.cloud/references/configuration/#kinesis) for more details on these parameters.
 
 :::note
 `KINESIS_MOCK_MAXIMUM_HEAP_SIZE` and `KINESIS_MOCK_INITIAL_HEAP_SIZE` are only applicable when using the Scala engine.
-Future versions of LocalStack will likely default to using the `scala` engine over the less-performant `node` version currently in use.
 :::
+
+#### Rust engine
+
+The Rust engine (`KINESIS_MOCK_PROVIDER_ENGINE=rust`) is a LocalStack-native rebuild of Kinesis Mock.
+It is the recommended choice for demanding or long-lived workloads.
+It provides:
+
+- Native multi-account and multi-region support from a single process, which removes the per-account instance overhead described under [Limitations](#limitations).
+- AWS-parity throttling for control-plane TPS limits and per-shard data-plane throughput.
+- A durable persistence model that avoids the unbounded in-memory growth of the Node.js and Scala engines under sustained load.
+
+By default, the Rust engine enforces AWS-style rate limits.
+Set `KINESIS_MOCK_ENFORCE_RATE_LIMITS=0` to disable those throttles for load testing or high-throughput local runs.
+This flag only affects the Rust engine; it is a no-op for Node.js and Scala.
+
+:::caution
+The Rust engine is an opt-in feature and should be treated as experimental.
+
+When persistence is enabled, the Rust engine stores state in a `kinesis.redb` file.
+On startup, it automatically imports any legacy per-account `<account-id>.json` persistence files written by the Node.js or Scala engines into that persisted store.
+Switching back from `rust` to `node` or `scala` does not convert the redb store back to JSON; those engines start from empty state unless the original JSON files are still present.
+:::
+
+#### All engines
+
+Regardless of the selected engine, you can reduce `KINESIS_LATENCY` artificial response delays from the default `500` milliseconds (or disable them entirely with `0`).
+
+Refer to the [Kinesis configuration documentation](/aws/customization/configuration-options/#kinesis) for more details on these parameters.
 
 ## Resource Browser
 
@@ -209,8 +237,10 @@ The following code snippets and sample applications provide practical examples o
 
 ## Limitations
 
-In multi-account setups, each AWS account launches a separate instance of Kinesis Mock, which is very resource intensive when a large number of AWS accounts are used.
-[This Kinesis Mock issue](https://github.com/etspaceman/kinesis-mock/issues/377) is being used to keep track of this feature.
+When using the default Node.js or the Scala engine, each AWS account launches a separate instance of Kinesis Mock in multi-account setups, which is very resource intensive when a large number of AWS accounts are used.
+[This Kinesis Mock issue](https://github.com/etspaceman/kinesis-mock/issues/377) is being used to keep track of this feature for the upstream engines.
+
+The [Rust engine](#performance-tuning) (`KINESIS_MOCK_PROVIDER_ENGINE=rust`) is not affected by this limitation, as it natively supports any number of accounts and regions from a single process.
 
 ## API Coverage
 
