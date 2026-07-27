@@ -10,17 +10,14 @@ import ReplicatorCoverage from '@/components/replicator-coverage/ReplicatorCover
 
 ## Introduction
 
-Infrastructure deployed on AWS often requires access to shared resources defined externally.
-For example a VPC defined by another team to contain the application infrastructure.
-This makes it harder to deploy applications into LocalStack as these resource dependencies must be deployed first.
-These dependencies may not live in IaC where deployment is easy, or accessing the IaC may not be easy.
-Some resources may be referred to by ARN, for example Secrets Manager secrets, but these ARNs are partly random meaning that simply creating a new resource in LocalStack will generate a resource with a different ARN.
+Applications deployed on AWS often depend on shared resources defined outside their own stack, for example a VPC managed by another team.
+Reproducing this kind of setup in LocalStack is hard: the dependencies may not live in IaC you have access to, and some resources are referenced by ARN, which is partly random, so simply recreating the resource in LocalStack produces a different ARN.
 
-LocalStack AWS Replicator creates identical copies of AWS resources in a running LocalStack instance.
-This means that external resources can easily be replicated before deploying the main application, and removes the need to change existing stacks or create custom infrastructure, making LocalStack setup easier.
+The AWS Replicator solves this by creating identical copies of existing AWS resources directly inside a running LocalStack instance.
+This lets you replicate external dependencies before deploying your application, without changing existing stacks or building custom bootstrap infrastructure.
 
 :::note
-The AWS Replicator is in a preview state, supporting only [selected resources](#supported-resources).
+The AWS Replicator supports only [selected resources](#supported-resources).
 :::
 
 ## Getting started
@@ -28,7 +25,7 @@ The AWS Replicator is in a preview state, supporting only [selected resources](#
 A valid `LOCALSTACK_AUTH_TOKEN` must be configured to start the LocalStack for AWS image.
 
 :::note
-The Replicator is in limited preview and is available from LocalStack CLI version 4.2.0.
+The Replicator is available from LocalStack CLI version 4.2.0.
 If you encounter issues, update your [LocalStack CLI](/aws/getting-started/installation/#update-localstack-cli).
 :::
 
@@ -39,8 +36,8 @@ These operations can be limited by creating a minimal IAM role with just the pol
 
 See the [supported resources section](#supported-resources) for details of what policy actions are required for each resource.
 
-When the replication is triggered using the LocalStack CLI, which must run in a shell configured to access AWS.
-Here are some options:
+Replication should be triggered from a shell that has access to AWS.
+Here are some options for providing credentials:
 
 <Tabs>
 <TabItem label="AWS CLI v2">
@@ -76,18 +73,22 @@ The Replicator supports different strategies depending on how many resources you
 The [supported resources](#supported-resources) table shows which strategies are available for each resource type, along with the IAM actions required for each.
 
 - **Single** (`SINGLE_RESOURCE`): replicate a single resource identified by its identifier or ARN. This is the default.
-- **Batch** (`BATCH`): discover and replicate every matching resource in a single job, for example all SSM parameters under a path prefix or all S3 buckets matching a prefix.
+- **Batch** (`BATCH`): discover and replicate every matching resource in a single job, for example all SSM parameters under a path prefix or all S3 buckets matching a prefix. Only some resource types support batch discovery, check the **Batch** badge in the [supported resources](#supported-resources) table.
 - **Tree** (`TREE` explore strategy): starting from a single resource, also replicate its related child resources. For example, replicating an `AWS::Organizations::Organization` also replicates its organizational units, accounts, and policies.
 
-The replication type and explore strategy are independent: `replication_type` selects between single-resource and batch discovery, while `explore_strategy` (`SIMPLE` or `TREE`) controls whether related resources are followed.
+`replication_type` (single vs. batch discovery) and `explore_strategy` (`SIMPLE` or `TREE`, whether related resources are followed) are independent settings and can be combined.
+
+Two options apply regardless of strategy:
+
+- **Cross-region source discovery**: if the resource lives in a different AWS region than your credentials' default region (or its ARN has no region component, as with S3 buckets), set a source region explicitly.
+- **Skip existing resources**: by default a job fails if the target resource already exists. Set `ignore_already_existing` to skip it instead and continue the job.
 
 #### Using the LocalStack CLI
 
 The Replicator CLI is part of the LocalStack CLI.
-
 Follow the [installation instructions](/aws/getting-started/installation/#install-localstack-cli) to set it up.
 
-To start a replication job, get the ARN of the resource to replicate. Then, trigger the job using the command:
+Trigger a job with `localstack replicator start`, identifying the resource by its ARN:
 
 ```bash showLineNumbers
 export LOCALSTACK_AUTH_TOKEN=<auth token>
@@ -95,26 +96,31 @@ export AWS_DEFAULT_REGION=...
 # if required
 # export AWS_ACCESS_KEY_ID=
 # export AWS_SECRET_ACCESS_KEY=
-localstack replicator start \
-  --resource-type <resource-type> \
-  --resource-identifier <identifier> \
-  [--target-account-id <account-id>] \
-  [--target-region-name <region-name>]
-```
-
-:::note
-Resources that supports replicating with arn can be replicated by providing `--resource-arn` instead of `--resource-type` and `--resource-identifier`.
-
-```bash
 localstack replicator start --resource-arn <resource-arn>
 ```
-:::
 
-You can also trigger batch replication jobs using the `--replication-type BATCH` flag.
+Or, identify the resource by its CloudControl type and identifier instead, using `--resource-type` and `--resource-identifier`:
 
-This currently supports the `AWS::SSM::Parameter` resource type and allows you to replicate all parameters under a given path prefix.
+```bash
+localstack replicator start \
+  --resource-type <resource-type> \
+  --resource-identifier <identifier>
+```
 
-For example, to replicate all parameters under `/dev/`:
+The command outputs the new job, including its `job_id`:
+
+```json showLineNumbers
+{
+  "job_id": "50005865-1589-4f6d-a720-c86f5a5dd021",
+  "state": "TESTING_CONNECTION",
+  "resources": {"succeeded": [], "failed": [], "skipped": []},
+  "error_message": null,
+  "type": "SINGLE_RESOURCE",
+  "explore_strategy": "SIMPLE"
+}
+```
+
+**Batch replication**: pass `--replication-type BATCH` to discover and replicate every matching resource in a single job, instead of one resource at a time. Only some resource types support batch discovery, check the **Batch** badge in the [supported resources](#supported-resources) table. For example, to replicate all SSM parameters under `/dev/`:
 
 ```bash
 localstack replicator start \
@@ -123,50 +129,43 @@ localstack replicator start \
   --resource-identifier /dev/
 ```
 
-The `--resource-identifier` in this case must be a path prefix (not a wildcard or glob). All parameters under that prefix will be discovered and replicated.
+`--resource-identifier` means something different for each resource type in batch mode: for `AWS::SSM::Parameter` it's a path prefix (not a wildcard or glob). Check the [supported resources](#supported-resources) table for the identifier format each resource type expects.
 
-If `--replication-type` is not specified, the default is `SINGLE_RESOURCE`.
+**Targeting**:
 
-The command triggers a replication job. The output will look similar to:
+- `--target-account-id` sets the destination LocalStack account. Defaults to `000000000000`.
+- `--target-region-name` sets the destination region. Defaults to the source region.
+- `--source-region-name` sets the AWS region to read the resource from. Use it when the resource lives in a different region than your credentials' default region, or when its ARN has no region component, as with S3 buckets.
 
-```json showLineNumbers
-{
-  "job_id": "50005865-1589-4f6d-a720-c86f5a5dd021",
-  "state": "TESTING_CONNECTION",
-  "error_message": null,
-  "type": "SINGLE_RESOURCE",
-  "replication_config": {
-    "resource_type": "AWS::SSM::PARAMETER",
-    "identifier": "myParameter"
-  }
-}
-``` 
+**Resource-specific configuration**: some resource types accept parameters that aren't covered by the flags above. Pass them with `--extra-config KEY=VALUE` (repeat the flag for multiple entries). For example, replicating an `AWS::RDS::DBCluster` or `AWS::RDS::DBInstance` accepts a `master_user_password`:
 
-:::note
-- `--target-account-id` specifies the destination AWS account for replication.
-  If not set, the resource is replicated into account `000000000000`.
+```bash
+localstack replicator start \
+  --resource-type AWS::RDS::DBCluster \
+  --resource-identifier my-cluster \
+  --extra-config master_user_password=<password>
+```
 
-- `--target-region-name` specifies the destination AWS region.
-  If not set, the resource is replicated into the default region from the provided credentials.
-:::
+Check the [supported resources](#supported-resources) table for which resource types accept extra configuration and which keys they support.
 
+By default, a job fails if the target resource already exists. To skip it instead and continue the job, add `--extra-config ignore_already_existing=true`.
 
 #### Using the HTTP API
 
 To trigger replication via the HTTP API, send a `POST` request to:
 
-```bash 
- http://localhost.localstack.cloud:4566/_localstack/replicator/jobs
- ```
- 
-Use the following payload:
+```bash
+http://localhost.localstack.cloud:4566/_localstack/replicator/jobs
+```
+
+with a payload identifying the resource, the replication strategy, and AWS credentials to read it:
 
 ```json showLineNumbers
 {
   "replication_type": "SINGLE_RESOURCE",
   "replication_job_config": {
     "resource_type": "<resource-type>",
-    "identifier": "<identifier>"
+    "resource_identifier": "<identifier>"
   },
   "source_aws_config": {
     "aws_access_key_id": "...",
@@ -179,28 +178,44 @@ Use the following payload:
 }
 ```
 
-To replicate multiple SSM parameters under a shared path, you can use `replication_type: "BATCH"` with the same `resource_type` and a path-style `identifier`. 
+Unlike the CLI, the HTTP API always requires `aws_access_key_id` and `aws_secret_access_key` in `source_aws_config` — it cannot fall back to a local AWS profile.
 
-For example:
+For example, to replicate an SSM parameter named `myparam` using credentials whose default region is `eu-central-1`:
+
+```json showLineNumbers
+{
+  "replication_type": "SINGLE_RESOURCE",
+  "replication_job_config": {
+    "resource_type": "AWS::SSM::Parameter",
+    "resource_identifier": "myparam"
+  },
+  "source_aws_config": {
+    "aws_access_key_id": "...",
+    "aws_secret_access_key": "...",
+    "region_name": "eu-central-1"
+  }
+}
+```
+
+Use `replication_type: "BATCH"` to discover and replicate every matching resource instead of one.
+For example, to replicate all SSM parameters under `/dev/`:
 
 ```json
 {
   "replication_type": "BATCH",
   "replication_job_config": {
     "resource_type": "AWS::SSM::Parameter",
-    "identifier": "/dev/"
+    "resource_identifier": "/dev/"
   },
   "source_aws_config": {
     "aws_access_key_id": "...",
     "aws_secret_access_key": "...",
-    "region_name": "..."
+    "region_name": "eu-central-1"
   }
-} 
+}
 ```
 
-This triggers a batch replication job that discovers and replicates all SSM parameters under the `/dev/` path prefix.
-
-To replicate a resource together with its related resources, set `explore_strategy` to `TREE`.
+Set `explore_strategy` to `TREE` to also replicate a resource's related resources.
 For example, to replicate an entire organization tree:
 
 ```json
@@ -209,7 +224,7 @@ For example, to replicate an entire organization tree:
   "explore_strategy": "TREE",
   "replication_job_config": {
     "resource_type": "AWS::Organizations::Organization",
-    "identifier": "o-exampleorgid"
+    "resource_identifier": "o-exampleorgid"
   },
   "source_aws_config": {
     "aws_access_key_id": "...",
@@ -219,10 +234,12 @@ For example, to replicate an entire organization tree:
 }
 ```
 
-When `explore_strategy` is omitted, the default is `SIMPLE`, which replicates only the requested resource.
-With `TREE`, the Replicator follows the resource's relationships and replicates the related resources listed in the [supported resources](#supported-resources) table.
-The additional IAM actions shown for the **Tree** strategy must also be granted.
+When omitted, `explore_strategy` defaults to `SIMPLE`, which replicates only the requested resource.
+The related resources replicated by `TREE` are listed in the [supported resources](#supported-resources) table, along with the additional IAM actions they require.
 
+`replication_job_config` also accepts `source_region_name` and `ignore_already_existing`, and any resource-specific extra configuration such as `master_user_password`, as additional keys alongside `resource_type`/`resource_identifier`.
+
+To list every replication job instead of one, send a `GET` request to the same `/_localstack/replicator/jobs` endpoint without a job ID.
 
 ### Check Replication Job Status
 
@@ -246,38 +263,32 @@ This command returns the job status in JSON format. For example, here's a single
 {
   "job_id": "50005865-1589-4f6d-a720-c86f5a5dd021",
   "state": "SUCCEEDED",
+  "resources": {"succeeded": ["myParameter"], "failed": [], "skipped": []},
   "error_message": null,
   "type": "SINGLE_RESOURCE",
-  "replication_config": {
-    "resource_type": "AWS::SSM::PARAMETER",
-    "identifier": "myParameter"
-  }
+  "explore_strategy": "SIMPLE"
 }
 ```
 
-For a batch replication job, the output may include additional fields indicating how many resources were successfully replicated or failed:
+`state` is one of `TESTING_CONNECTION`, `RUNNING`, `SUCCEEDED`, or `ERROR`.
+`resources` lists the identifiers of resources that succeeded, failed, or were skipped (see `ignore_already_existing` above) — for a single-resource job these lists have at most one entry, for a batch job they can have many:
 
 ```json
 {
   "job_id": "9acdc850-f71b-4474-b138-1668eb8b8396",
   "state": "SUCCEEDED",
+  "resources": {
+    "succeeded": ["/dev/param1", "/dev/param2"],
+    "failed": [],
+    "skipped": []
+  },
   "error_message": null,
   "type": "BATCH",
-  "replication_config": {
-    "resource_type": "AWS::SSM::Parameter",
-    "identifier": "/dev/"
-  },
-  "result": {
-    "resources_succeeded": 2,
-    "resources_failed": 0
-  }
+  "explore_strategy": "SIMPLE"
 }
-``` 
-
-Jobs of type `BATCH` may include a `result` object with `resources_succeeded` and `resources_failed` fields.
+```
 
 For long-running jobs, the CLI can poll the status until the job reaches a terminal state. To wait for the job to finish, use the `--follow` flag.
-
 
 #### Using the HTTP API
 
@@ -307,7 +318,6 @@ AWS_PROFILE=ls-sandbox aws ssm put-parameter\
     "Tier": "Standard"
 }
 ```
-
 
 ```bash
 AWS_PROFILE=ls-sandbox aws ssm get-parameters --names myparam
@@ -347,30 +357,24 @@ awslocal ssm get-parameters --name myparam
 }
 ```
 
-Next, trigger replication from AWS to LocalStack.
-This example uses an SSO profile named `ls-sandbox` for AWS configuration.
+Next, trigger replication from AWS to LocalStack, using the same `ls-sandbox` profile:
 
 ```bash
 LOCALSTACK_AUTH_TOKEN=<ls-auth-token> \
   AWS_PROFILE=ls-sandbox \
-  localstack replicator start  \
+  localstack replicator start \
     --resource-type AWS::SSM::Parameter \
- --resource-identifier <identifier> \
+    --resource-identifier myparam
 ```
-
-
-Configured credentials from the AWS CLI
 
 ```json showLineNumbers
 {
   "job_id": "9acdc850-f71b-4474-b138-1668eb8b8396",
   "state": "TESTING_CONNECTION",
+  "resources": {"succeeded": [], "failed": [], "skipped": []},
   "error_message": null,
   "type": "SINGLE_RESOURCE",
-  "replication_config": {
-    "resource_type": "AWS::SSM::PARAMETER",
-    "identifier": "myparam"
-  }
+  "explore_strategy": "SIMPLE"
 }
 ```
 
@@ -385,11 +389,10 @@ LOCALSTACK_AUTH_TOKEN=<ls-auth-token> \
 {
   "job_id": "9acdc850-f71b-4474-b138-1668eb8b8396",
   "state": "SUCCEEDED",
+  "resources": {"succeeded": ["myparam"], "failed": [], "skipped": []},
   "error_message": null,
   "type": "SINGLE_RESOURCE",
-  "replication_config": {
-    "resource_arn": "arn:aws:ssm:eu-central-1:<account-id>:parameter/myparam"
-  }
+  "explore_strategy": "SIMPLE"
 }
 ```
 
@@ -424,7 +427,7 @@ Use the `--target-account-id` flag to specify a different account.
 
 ## Supported Resources
 
-The project is still in preview state and we welcome feedback and bug reports.
+We welcome feedback and bug reports.
 Please open a [new GitHub Discussion](https://github.com/orgs/localstack/discussions/new/choose) to request and upvote for support for new resources.
 
 :::tip
