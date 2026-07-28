@@ -29,6 +29,11 @@ The `azlocal` package is provided by LocalStack to simplify the process of inter
 
 The other two packages are packages provided by Azure to interact with Azure services in Python.
 
+:::note
+Elsewhere in these docs, `az` CLI examples use [`lstk az`](/aws/developer-tools/running-localstack/lstk/) instead of `azlocal`.
+`lstk` proxies the `az` CLI, but does not provide a Python SDK interception helper — for Python, `azlocal`'s `PythonLocalSdk` (used below) remains the supported approach.
+:::
+
 ### Create a Python file
 
 You can now use the Azure SDK for Python to interact with LocalStack.
