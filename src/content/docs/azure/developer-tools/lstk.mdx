@@ -269,14 +269,14 @@ See [Offline and enterprise environments](#offline-and-enterprise-environments) 
 ### Volume mounts
 
 Beyond the single persistence directory set by `volume`, a container block can declare arbitrary Docker-style bind mounts with `volumes`.
-Each entry is a `"host:container[:ro]"` spec — useful, for example, for mounting a [Snowflake init hook](/snowflake/capabilities/init-hooks/) script into `/etc/localstack/init/{boot,start,ready,shutdown}.d`:
+Each entry is a `"host:container[:ro]"` spec — useful, for example, for mounting an initialization script into `/etc/localstack/init/{boot,start,ready,shutdown}.d`, or a directory to persist state across restarts:
 
 ```toml
 [[containers]]
-type = "snowflake"
+type = "azure"
 port = "4566"
 volumes = [
-  "./test.sf.sql:/etc/localstack/init/ready.d/test.sf.sql",
+  "./init-ready.sh:/etc/localstack/init/ready.d/init-ready.sh",
   "./data:/var/lib/localstack",
 ]
 ```
