@@ -6,34 +6,73 @@ sidebar:
     order: 0
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Introduction
 
-You can set up the Azure emulator by utilizing LocalStack for Azure Docker image.
-Before starting, ensure you have a valid `LOCALSTACK_AUTH_TOKEN` to access the Azure emulator.
-Refer to the [Auth Token guide](/azure/getting-started/auth-token/) to obtain your Auth Token and specify it in the `LOCALSTACK_AUTH_TOKEN` environment variable.
+LocalStack provides multiple installation paths depending on your development environment and requirements. We recommend a CLI-based installation for the most consistent local startup experience.
 
-The Azure Docker image is available on the [LocalStack Docker Hub](https://hub.docker.com/r/localstack/localstack-azure).
-To pull the Azure Docker image, execute the following command:
+Use [`lstk`](#lstk) to install, authenticate, and start the Azure emulator with minimal setup.
 
+LocalStack for Azure features require an [Auth Token](/azure/getting-started/auth-token/) to activate your running instance. `lstk` handles authentication through a browser-based login flow, while Docker and CI workflows can use `LOCALSTACK_AUTH_TOKEN`.
+
+Alternatively, you can set up the Azure emulator directly using the LocalStack for Azure Docker image, [`localstack/localstack-azure`](https://hub.docker.com/r/localstack/localstack-azure), with the [`docker` CLI](#docker-cli) or [Docker Compose](#docker-compose).
+
+## lstk
+
+`lstk` is a lightweight CLI for LocalStack that manages the authentication and container lifecycle for the AWS, Azure, and Snowflake emulators.
+
+**Requirement:** You must have a working [Docker installation](https://docs.docker.com/get-docker/) before proceeding.
+
+### Install lstk
+
+<Tabs>
+  <TabItem label="Homebrew">
+    ```bash
+    brew install localstack/tap/lstk
+    ```
+  </TabItem>
+  <TabItem label="npm">
+    ```bash
+    npm install -g @localstack/lstk
+    ```
+  </TabItem>
+  <TabItem label="Binary">
+    Download the binary for your platform from the [GitHub Releases](https://github.com/localstack/lstk/releases) and add it to your `PATH`.
+  </TabItem>
+</Tabs>
+
+### Start lstk
+
+```bash
+lstk start
 ```
-$ docker pull localstack/localstack-azure
+
+The first execution initiates a browser-based login flow and, in an interactive terminal, prompts you to pick which emulator to run — choose `z` for Azure. Your choice is written to `config.toml` and used as the default on subsequent runs. Subsequent starts use credentials stored in your system keyring.
+
+### Update lstk
+
+```bash
+lstk update
 ```
 
-You can start the Azure emulator using the following methods:
+For more details, see the [lstk documentation](/aws/developer-tools/running-localstack/lstk/).
 
-1. [`localstack` CLI](/aws/getting-started/installation/#localstack-cli)
-2. [`docker` CLI](https://docs.docker.com/get-docker/)
-3. [Docker Compose](https://docs.docker.com/compose/install/)
+### Already using lstk with a different default emulator?
 
-### `localstack` CLI
+If your global `config.toml` already defaults to a different emulator (for example, AWS), target Azure for a specific project instead by creating a project-local `.lstk/config.toml`:
 
-To start the Azure emulator using the `localstack` CLI, execute the following command:
-
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "azure"
+port = "4566"
 ```
-$ export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-$ IMAGE_NAME=localstack/localstack-azure localstack start
-```
+
+## Container and orchestration tools
+
+Use these methods when you need explicit container configuration or want to run LocalStack alongside other services.
+For everyday local development, `lstk` is usually simpler.
 
 ### `docker` CLI
 
@@ -74,7 +113,7 @@ Start the Azure emulator with the following command:
 $ docker-compose up
 ```
 
-### Updating
+### Updating the Docker image
 
 To update the Azure Docker container, pull the latest image and restart the container.
 
