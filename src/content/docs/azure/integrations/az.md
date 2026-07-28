@@ -54,7 +54,7 @@ When you're done using the Azure Emulator, you can run the following command:
 $ lstk az stop-interception
 ```
 
-The `az` CLI tool will now communicate with the Azure REST API on future invocations.
+The `az` CLI tool will now communicate with the Azure cloud on future invocations.
 
 ### Alternative: prefixed commands
 
