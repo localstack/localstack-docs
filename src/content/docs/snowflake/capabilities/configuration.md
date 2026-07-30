@@ -30,7 +30,6 @@ Options that affect the core Snowflake emulator functionality.
 | `SF_CSV_IMPORT_MAX_ROWS` | `50000` (default) | Maximum number of rows to import from CSV files into tables |
 | `SF_DEFAULT_USER` | `test` (default) | Specify the default user to be used by the Snowflake emulator. |
 | `SF_DEFAULT_PASSWORD` | `test` (default) | Specify the default password to be used by the Snowflake emulator. |
-| `SF_PROXY_PRIVATE_KEY` | | Specify the private key to be used by the Snowflake emulator. |
 
 ### Custom Snowflake hostnames
 
@@ -84,16 +83,6 @@ Options to configure how LocalStack interacts with Docker.
 | `LEGACY_DOCKER_CLIENT` | `0`\|`1` | Whether LocalStack should use the command-line Docker client and subprocess execution to run Docker commands, rather than the Docker SDK. |
 | `DOCKER_CMD` | `docker` (default), `sudo docker`| Shell command used to run Docker containers (only used in combination with `LEGACY_DOCKER_CLIENT`) |
 | `FORCE_NONINTERACTIVE` | | When running with Docker, disables the `--interactive` and `--tty` flags. Useful when running headless. |
-
-## Proxy Configuration
-
-Options to configure Snowflake proxy settings for LocalStack.
-
-| Variable | Example Values | Description |
-| - | - | - |
-| `SF_PROXY_HOST` | `proxy.example.com` | Hostname or IP address of the proxy server to be used for connecting to Snowflake. |
-| `SF_PROXY_USER` | `proxy_user` | Username for authentication with the proxy server. |
-| `SF_PROXY_PASSWORD` | `password123` | Password associated with the proxy user account. |
 
 ## Profiles
 
