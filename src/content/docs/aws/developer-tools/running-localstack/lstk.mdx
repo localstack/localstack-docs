@@ -343,11 +343,12 @@ lstk start --non-interactive
 | `--type <type>`, `-t <type>` | Select the emulator to start (`aws`, `snowflake`, or `azure`) non-interactively, recording the choice in `config.toml`. See [Selecting the emulator with `--type`](#selecting-the-emulator-with---type). |
 | `--snapshot <REF>`  | Auto-load this snapshot after the emulator starts, overriding the configured `snapshot` for one run (AWS only) |
 | `--no-snapshot`     | Skip auto-loading the configured `snapshot` for this run                      |
+| `--timeout <duration>` | Maximum time to wait for the emulator to become ready, as a Go duration (e.g. `90s`, `2m`). Overrides `LSTK_STARTUP_TIMEOUT` for this run; `0` uses the per-mode default. |
 | `--non-interactive` | Disable the interactive TUI and use plain output                             |
 
 `lstk start` forwards host environment variables prefixed with `LOCALSTACK_` to the emulator (the host `LOCALSTACK_AUTH_TOKEN` is dropped so it cannot override the token `lstk` resolved). See [Container-injected variables](#container-injected-variables).
 
-`lstk` applies a readiness deadline while waiting for the emulator to come up (a crash during startup is detected instantly, with its exit code, and does not wait for the deadline). In an interactive terminal the deadline defaults to 20 seconds and is only a recoverable prompt — you can keep waiting or stop; in non-interactive mode it defaults to 60 seconds and is fatal, leaving the container running for inspection. Override the deadline with [`LSTK_STARTUP_TIMEOUT`](#environment-variables) (a Go duration such as `90s` or `2m`).
+`lstk` applies a readiness deadline while waiting for the emulator to come up (a crash during startup is detected instantly, with its exit code, and does not wait for the deadline). In an interactive terminal the deadline defaults to 20 seconds and is only a recoverable prompt — you can keep waiting or stop; in non-interactive mode it defaults to 60 seconds and is fatal, leaving the container running for inspection. Override the deadline for a single run with `--timeout` (a Go duration such as `90s` or `2m`), or for every run with [`LSTK_STARTUP_TIMEOUT`](#environment-variables); an explicit `--timeout` wins over the environment variable, and `--timeout 0` falls back to the per-mode default. The flag is available on `start` and the bare `lstk` command only — `restart` and the snapshot auto-start path do not expose it.
 
 By default the emulator starts with a fresh state on every run.
 Pass `--persist` to keep data across restarts: `lstk` injects `LOCALSTACK_PERSISTENCE=1` into the container so state is written to the mounted [`volume`](#config-field-reference) and reloaded on the next start.
@@ -614,7 +615,7 @@ Run Terraform against LocalStack, using LocalStack endpoints as AWS provider ove
 `lstk terraform` (alias `lstk tf`) generates a provider-override file and forwards your arguments to the real `terraform` binary.
 
 :::note
-`lstk terraform` currently targets the AWS emulator only.
+`lstk terraform` targets the AWS emulator.
 To use Terraform with the other emulators, see the relevant emulator docs.
 :::
 
@@ -703,6 +704,9 @@ lstk snapshot save pod:my-baseline
 
 # Save to your own S3 bucket (pod name is auto-generated if omitted)
 lstk snapshot save my-pod s3://my-bucket/prefix
+
+# Limit the snapshot to a subset of services
+lstk snapshot save --services s3,lambda
 ```
 
 The optional `[destination]` argument takes one of these forms:
@@ -716,8 +720,11 @@ The optional `[destination]` argument takes one of these forms:
 
 Pod operations require an auth token (`LOCALSTACK_AUTH_TOKEN` or a prior `lstk login`); local-file snapshots do not.
 
+By default a snapshot captures every service's state. Pass `-s`/`--services` with a comma-separated list to limit it to a subset; this applies uniformly to local files, `pod:` Cloud Pods, and `s3://` remotes.
+
 | Option              | Description                                                                                   |
 |:--------------------|:----------------------------------------------------------------------------------------------|
+| `--services <list>`, `-s <list>` | Comma-separated list of services to include in the snapshot (all services by default). Applies to local, `pod:`, and `s3://` destinations. |
 | `--profile <name>`  | AWS profile to read S3 credentials from (used only for `s3://` destinations). Defaults to `AWS_*` env vars, then `AWS_PROFILE`. |
 
 #### `snapshot load`
@@ -737,6 +744,9 @@ lstk snapshot load my-pod s3://my-bucket/prefix
 
 # Control how the snapshot merges with running state
 lstk snapshot load pod:my-baseline --merge=overwrite
+
+# Preview what a Cloud Pod load would change, without applying it
+lstk snapshot load pod:my-baseline --dry-run
 ```
 
 The `REF` argument is required and identifies a local path/name or a `pod:<name>` Cloud Pod.
@@ -745,6 +755,7 @@ To load from S3, pass the pod name followed by an `s3://bucket/prefix` location 
 | Option               | Description                                                                                              |
 |:---------------------|:--------------------------------------------------------------------------------------------------------|
 | `--merge <strategy>` | How the loaded state combines with running state. One of `account-region-merge` (default), `overwrite`, `service-merge`. |
+| `--dry-run`          | Preview the resource additions and modifications the load would produce, per service, without changing any state. Supported for `pod:` refs only; requires a running emulator (it does not auto-start one). |
 | `--profile <name>`   | AWS profile to read S3 credentials from (used only for `s3://` sources). Defaults to `AWS_*` env vars, then `AWS_PROFILE`. |
 
 - `account-region-merge` (default): the snapshot wins on any `(service, account, region)` overlap.
@@ -752,6 +763,8 @@ To load from S3, pass the pod name followed by an `s3://bucket/prefix` location 
 - `service-merge`: the snapshot wins per resource; non-overlapping resources are combined.
 
 Set [`LSTK_MERGE_STRATEGY`](#environment-variables) to change the default strategy used when `--merge` is not passed; an explicit `--merge` always wins.
+
+Pass `--dry-run` with a `pod:` ref to preview a load before committing to it: `lstk` queries the platform and prints, per service, how many resources the snapshot would add or modify under the chosen merge strategy, without touching running state. It is supported for `pod:` refs only (other refs are rejected) and requires the emulator to already be running, since it does not auto-start one.
 
 The aliases behave identically:
 
@@ -1175,6 +1188,7 @@ These options are available for all commands:
 | `--type <type>`, `-t <type>` | Emulator type to start: `aws`, `snowflake`, or `azure` (on `start`/bare `lstk`; records the choice in config). See [Selecting the emulator with `--type`](#selecting-the-emulator-with---type). |
 | `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
 | `--no-snapshot`     | Skip auto-loading the configured snapshot (on `start`/bare `lstk`)          |
+| `--timeout <duration>` | Startup readiness deadline for `start`/bare `lstk`, as a Go duration; overrides `LSTK_STARTUP_TIMEOUT` for one run. See [`start`](#start). |
 | `-v`, `--version`   | Print the version and exit                                                 |
 | `-h`, `--help`      | Print help and exit                                                        |
 
@@ -1201,7 +1215,7 @@ Commands that mutate state without prompting in CI (`reset`, `volume clear`) req
 ## Structured output
 
 The global `--json` flag makes a command emit a single, machine-readable JSON object on stdout instead of human-oriented text, for scripting and CI.
-JSON support is being rolled out per command: `stop`, `reset`, and `update` accept `--json`.
+JSON support is available per command: `stop`, `reset`, and `update` accept `--json`.
 Any other command rejects it with an error envelope (`error.code: NOT_JSON_CAPABLE`) rather than silently printing plain text.
 
 Every JSON-capable command writes **exactly one** JSON object with the following envelope shape:
@@ -1223,7 +1237,7 @@ Every JSON-capable command writes **exactly one** JSON object with the following
 
 | Field           | Type            | Description                                                                                          |
 |:----------------|:----------------|:-----------------------------------------------------------------------------------------------------|
-| `schemaVersion` | integer         | Wire-format version of the envelope, currently always `1`. Check it once before parsing.             |
+| `schemaVersion` | integer         | Wire-format version of the envelope, always `1` for this schema. Check it once before parsing.        |
 | `command`       | string          | The command that produced the envelope (e.g. `"stop"`, `"reset"`).                                   |
 | `status`        | string          | `"ok"` or `"error"` — branch on this first.                                                          |
 | `data`          | object or `null`| Command-specific result. Non-null when `status` is `"ok"`, `null` when it is `"error"`.              |
@@ -1339,7 +1353,7 @@ This is separate from the LocalStack container logs (which you view with `lstk l
 There is no `--offline` flag. Instead, `lstk` degrades gracefully when common enterprise blockers (Docker Hub unreachable, a proxy/TLS interceptor, or an unreachable license server) prevent an internet request:
 
 - **Image pull**: if the image pull fails but the image is already present locally, `lstk` warns and uses the local image instead of failing. In interactive mode you can also press <kbd>Esc</kbd> to abort an in-progress pull and fall back to the local image.
-- **License pre-flight**: when the pinned image is already present locally, `lstk` skips its pre-flight license check so a fully offline start is not blocked; the emulator validates the license itself once it starts. When a check does run, a definitive server rejection (e.g. HTTP 403/400) is still fatal, but a transport-level failure (offline, proxy, or certificate error) is treated as non-fatal and the emulator validates the license instead. The pre-flight is also skipped — with a warning — when the license server does not recognize the image *tag format* (for example a `dev` nightly or a custom internal-mirror tag): that is not a verdict on the license, so `lstk` defers to the emulator's own startup check rather than blocking the start.
+- **License pre-flight**: when the pinned image is already present locally, `lstk` skips its pre-flight license check so a fully offline start is not blocked; the emulator validates the license itself once it starts. When a check does run, a transport-level failure (offline, proxy, or certificate error) is treated as non-fatal and the emulator validates the license instead. A definitive server rejection (HTTP 400/401/403) is handled differently: `lstk` drops the cached license and, in an interactive terminal, offers to log in again and retries the start once with the refreshed credentials (a rejected token often just predates a license purchase or plan change); in non-interactive mode it fails with an error pointing at `lstk logout && lstk login` or a valid `LOCALSTACK_AUTH_TOKEN`. The pre-flight is also skipped — with a warning — when the license server does not recognize the image *tag format* (for example a `dev` nightly or a custom internal-mirror tag): that is not a verdict on the license, so `lstk` defers to the emulator's own startup check rather than blocking the start.
 - **Telemetry and update checks** are best-effort and fail silently when offline.
 
 Pair this behavior with a custom [`image`](#custom-container-image) that points at an internal-registry mirror or a locally loaded image to run `lstk` in an air-gapped environment.
@@ -1513,7 +1527,7 @@ No credentials were found in the environment.
 
 - Verify your token is valid at the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens).
 - Make sure the token is set correctly, either via `lstk login` or the `LOCALSTACK_AUTH_TOKEN` environment variable.
-- If a stale keyring token is interfering, run `lstk logout` first and then set `LOCALSTACK_AUTH_TOKEN`.
+- A stale token or cached license no longer requires a manual `lstk logout`: when the platform definitively rejects it, `lstk` drops the cached license and, in an interactive terminal, prompts you to log in again and retries automatically. In non-interactive mode, run `lstk logout && lstk login` (or set a valid `LOCALSTACK_AUTH_TOKEN`) and re-run.
 
 ### Image pull failed
 
