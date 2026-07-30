@@ -152,7 +152,7 @@ It only includes operations performed with a principal, not as root, so test set
 |                | - StringEqualsIgnoreCase                                                             |
 |                | - StringLike                                                                         |
 |                | - ArnLike/ArnEquals                                                                  |
-|                | Supported condition keys:                                                            |
+|                | Supported [global condition keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html): |
 |                | - aws:RequestedRegion                                                                |
 |                | - aws:PrincipalArn                                                                   |
 |                | - aws:SourceArn                                                                      |
@@ -161,6 +161,12 @@ It only includes operations performed with a principal, not as root, so test set
 |                | - aws:RequestTag                                                                     |
 |                | - aws:PrincipalTag                                                                    |
 
+## Service-Specific Condition Keys
+
+In addition to the global condition keys above, some services support their own condition keys, matching AWS's [per-service condition key reference](https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html):
+
+- [EC2](/aws/services/ec2/#iam-condition-keys): `ec2:MetadataHttpTokens`, `ec2:Attribute/<AttributeName>`
+- [RAM](/aws/services/ram/#iam-condition-keys): `ram:RequestedAllowsExternalPrincipals`
 
 ## Current Limitations
 
