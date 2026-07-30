@@ -1,6 +1,6 @@
 ---
-title: LocalStack CLI
-description: Reference guide for LocalStack CLI commands, options, and usage.
+title: Deprecated LocalStack CLI
+description: Reference guide for the deprecated LocalStack CLI commands, options, and usage. We recommend using lstk instead.
 template: doc
 sidebar:
     order: 10

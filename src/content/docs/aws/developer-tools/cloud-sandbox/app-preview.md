@@ -105,7 +105,7 @@ preview-cmd: |
     make deploy;
     make build-frontend;
     make deploy-frontend;
-    distributionId=$(awslocal cloudfront list-distributions | jq -r '.DistributionList.Items[0].Id');
+    distributionId=$(lstk aws cloudfront list-distributions | jq -r '.DistributionList.Items[0].Id');
     echo LS_PREVIEW_URL=$AWS_ENDPOINT_URL/cloudfront/$distributionId/ >> $GITHUB_ENV;
 ```
 
