@@ -510,7 +510,7 @@ lstk logs [options]
 | `--tail <N>`, `-n <N>` | Show only the last `N` lines from the end of the logs. Accepts a non-negative integer or `all` (the default, showing all available lines). |
 
 By default, `lstk logs` reads from the first configured emulator container and applies a noise filter.
-In an interactive terminal, lines are color-coded by log level (`DEBUG`, `INFO`, `WARN`, `ERROR`); in non-interactive mode, raw log lines are written to stdout.
+In an interactive terminal, lines are color-coded by log level (`DEBUG`, `INFO`, `WARN`, `ERROR`) and written to the terminal's scrollback, so the full history stays available above the TUI (like `docker logs`); in non-interactive mode, raw log lines are written to stdout.
 
 Example:
 
@@ -1297,7 +1297,7 @@ The following environment variables configure `lstk` itself (not the LocalStack 
 | `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
 | `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
 
-When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock` or `~/.config/colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
+`lstk` works with Docker Desktop, Rancher Desktop, Colima, OrbStack, Lima, and Podman without extra configuration. An explicit `DOCKER_HOST` always wins; otherwise `lstk` uses your `DOCKER_CONTEXT` (or your current Docker CLI context) when it names a non-default, reachable daemon, then probes the well-known socket location for each supported runtime, and finally falls back to the Docker SDK default. When it cannot reach a runtime, the error names a start command tailored to the runtime it detects (for example `rdctl start`, `colima start`, or `podman machine start`); set `DOCKER_HOST` to force a specific endpoint.
 
 When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
 
@@ -1457,18 +1457,13 @@ port = "4566"
 
 ### Port 443 already in use
 
-By default, LocalStack binds to both port `4566` and port `443` inside the container (controlled by the `GATEWAY_LISTEN` variable).
-On some systems, particularly Windows with Hyper-V, IIS, or VPN software, port 443 may already be in use.
+By default, LocalStack binds both port `4566` and port `443` inside the container (controlled by the `GATEWAY_LISTEN` variable).
+On some systems port 443 is already taken — for example Windows with Hyper-V, IIS, or VPN software, or Rancher Desktop, whose Traefik ingress holds the port (and which also cannot bind ports below 1024 without Administrative Access).
 
-**Symptoms:**
+With the default `GATEWAY_LISTEN`, a busy or unbindable port 443 is **not** fatal: `lstk` drops it, prints a warning, and starts the emulator without it.
+HTTPS is still served on the edge port (`4566`), so only clients hardwired to `https://…:443` are affected — point them at `https://localhost:4566` instead.
 
-```text
-failed to start LocalStack: Error response from daemon: ports are not available:
-exposing port TCP 127.0.0.1:443 -> 127.0.0.1:0: listen tcp4 127.0.0.1:443: bind:
-address already in use
-```
-
-**Fix:** Override `GATEWAY_LISTEN` to bind only to port 4566:
+To silence the warning when you do not need port 443, override `GATEWAY_LISTEN` to bind only to port `4566`:
 
 ```toml
 [[containers]]
@@ -1481,7 +1476,7 @@ env  = ["nossl"]
 GATEWAY_LISTEN = "0.0.0.0:4566"
 ```
 
-This tells the container to skip the port 443 binding entirely.
+A port you list explicitly in `GATEWAY_LISTEN` is a demand rather than a default, so if it is busy the start fails instead of dropping the port. To publish 443, free whatever is holding it and restart.
 
 ### Docker is not running
 
@@ -1492,8 +1487,8 @@ If Docker is not reachable, you will see an error like:
 Error: runtime not healthy
 ```
 
-**Fix:** Start Docker Desktop (macOS/Windows) or the Docker daemon (`sudo systemctl start docker` on Linux).
-If you use Colima or OrbStack, make sure the VM is running.
+**Fix:** Start your container runtime and try again.
+`lstk` supports Docker Desktop, Rancher Desktop, Colima, OrbStack, Lima, and Podman; when it cannot reach one, the error names a start command tailored to the runtime it detects (for example `sudo systemctl start docker`, `rdctl start`, `colima start`, or `podman machine start`).
 You can also point `lstk` at a custom socket with `DOCKER_HOST`.
 
 ### Authentication required in non-interactive mode
