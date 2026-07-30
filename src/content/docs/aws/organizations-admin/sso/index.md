@@ -195,6 +195,84 @@ Save the application and assign users or groups who should access LocalStack via
 
 
 
+## SSO for Google Workspace
+
+This example outlines the required configuration when using **Google Workspace** as a SAML Identity Provider for LocalStack.
+
+### 1. Create a custom SAML app
+
+In the Google Workspace Admin Console, navigate to **Apps → Web and mobile apps** in the left side menu.
+
+![Navigate to Web and mobile apps in Google Workspace Admin Console](/images/aws/google-sso/google-sso-1.png)
+
+Select **Add app**, then **Add custom SAML app**.
+
+![Add a custom SAML app in Google Workspace](/images/aws/google-sso/google-sso-2.png)
+
+Fill out a name for your custom app (e.g., "LocalStack"), then continue to the next page and download the IdP metadata file. You'll upload this to LocalStack in a later step.
+
+![Download the IdP metadata file from Google Workspace](/images/aws/google-sso/google-sso-3.png)
+
+### 2. Configure service provider details
+
+Navigate to our web application, or follow this [link](https://app.localstack.cloud/workspace/sso), and create a new Identity provider to retrieve your **Callback URL** and **Identifier (Entity Id)**.
+
+![Callback URL and Identifier (Entity Id) in the LocalStack Web Application](/images/aws/google-sso/google-sso-4.png)
+
+Back in the Google SAML app wizard, on the **Service provider details** step:
+
+* Paste the Callback URL into **ACS URL**
+* Paste the Identifier (Entity Id) into **Entity ID**
+* Set **Name ID format** to `EMAIL`
+* Set **Name ID** to `Basic Information > Primary email`
+
+![Google Workspace Service provider details, including ACS URL, Entity ID, and Name ID](/images/aws/google-sso/google-sso-5.png)
+
+Example mapping:
+
+| LocalStack name        | Google field name |
+| ----------------------- | ------------------ |
+| Callback URL            | ACS URL             |
+| Identifier (Entity Id)  | Entity ID           |
+
+### 3. Configure SAML attribute mapping
+
+On the **Attribute mapping** step, map the following Google Directory attributes to service provider attributes:
+
+| Google Directory attribute        | App attribute |
+| ---------------------------------- | -------------- |
+| Basic Information > First name     | `firstName`    |
+| Basic Information > Last name      | `lastName`     |
+| Basic Information > Primary email  | `email`        |
+
+![Google Workspace Attribute mapping](/images/aws/google-sso/google-sso-6.png)
+
+### 4. Configure LocalStack Identity Provider
+
+In the LocalStack SSO configuration screen:
+
+* Select **Provider type: SAML**
+* Enter an **Identity provider name** (e.g., "Google-Workspace")
+* Upload the metadata file you downloaded from Google in step 1
+
+![Uploading the Google Workspace metadata file in the LocalStack Web Application](/images/aws/google-sso/google-sso-7.png)
+
+Then fill in the attribute mappings:
+
+| Your attributes (from Google) | LocalStack attributes |
+| ------------------------------ | ----------------------- |
+| email                          | Email                   |
+| firstName                      | First Name               |
+| lastName                       | Last Name                |
+
+![Attribute mapping in the LocalStack Web Application](/images/aws/google-sso/google-sso-8.png)
+
+### 5. Assign Users to the Google Workspace Application
+
+Ensure the correct users and groups have access to the custom SAML app in Google Workspace. Only assigned users will be able to authenticate into LocalStack via SSO.
+
+
+
 ## Attribute mapping
 
 These attributes can be defined to automatically map attributes of user entities in your internal IdP to user attributes in the LocalStack platform.
