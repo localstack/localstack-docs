@@ -15,12 +15,23 @@ Per default, IAM enforcement is disabled, and all APIs can be accessed without a
 
 ## Getting started
 
-This guide is designed for users new to IAM Policy Enforcement and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to IAM Policy Enforcement and assumes basic knowledge of the AWS CLI and our `lstk aws` AWS CLI proxy.
 
 Start your LocalStack container with the `DEBUG=1` and `ENFORCE_IAM=1` environment variables set:
 
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["iam-enforcement"]
+
+[env.iam-enforcement]
+DEBUG = "1"
+ENFORCE_IAM = "1"
+```
+
 ```bash
-DEBUG=1 ENFORCE_IAM=1 localstack start
+lstk start
 ```
 
 We will demonstrate IAM Policy Enforcement, by creating a user and obtaining the access/secret keys.
@@ -36,7 +47,7 @@ This way, we can demonstrate the differentiation in access permissions between t
 In **Terminal 1**, execute the following commands to create a `test` user and obtain the access/secret keys:
 
 ```bash
-awslocal iam create-user --user-name test
+lstk aws iam create-user --user-name test
 ```
 
 ```bash
@@ -52,7 +63,7 @@ awslocal iam create-user --user-name test
 ```
 
 ```bash
-awslocal iam create-access-key --user-name test
+lstk aws iam create-access-key --user-name test
 ```
 
 ```bash
@@ -74,7 +85,7 @@ Once the access keys are set, you will attempt to create an S3 bucket using thes
 
 ```bash
 export AWS_ACCESS_KEY_ID=LKIAQAAAAAAAHFR7QTN3 AWS_SECRET_ACCESS_KEY=EYUHpIol7bRJpKd/28c/LI2C4bbEnp82LJCRwXRV
-awslocal s3 mb s3://mybucket
+lstk aws s3 mb s3://mybucket
 ```
 
 ```bash
@@ -94,8 +105,8 @@ You can view the LocalStack logs to validate the policy enforcement:
 Let's now return to **Terminal 1** and execute the following commands to attach a policy to the user `test`:
 
 ```bash
-awslocal iam create-policy --policy-name p1 --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":"s3:CreateBucket","Resource":"*"}]}'
-awslocal iam attach-user-policy --user-name test --policy-arn arn:aws:iam::000000000000:policy/p1
+lstk aws iam create-policy --policy-name p1 --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":"s3:CreateBucket","Resource":"*"}]}'
+lstk aws iam attach-user-policy --user-name test --policy-arn arn:aws:iam::000000000000:policy/p1
 ```
 
 ### Create a bucket
@@ -103,7 +114,7 @@ awslocal iam attach-user-policy --user-name test --policy-arn arn:aws:iam::00000
 Now, let's switch back to **Terminal 2** and observe how the bucket creation succeeds with the `test` IAM user:
 
 ```bash
-awslocal s3 mb s3://mybucket
+lstk aws s3 mb s3://mybucket
 ```
 
 ```bash

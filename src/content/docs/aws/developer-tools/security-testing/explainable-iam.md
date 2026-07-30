@@ -14,12 +14,23 @@ You can enable `DEBUG=1` to gain visibility into these log messages, allowing yo
 
 ## Getting started
 
-This guide is designed for users new to Explainable IAM and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Explainable IAM and assumes basic knowledge of the AWS CLI and our [`lstk aws` AWS CLI proxy](/aws/developer-tools/running-localstack/lstk#aws).
 
 Start your LocalStack container with the `DEBUG=1` and `ENFORCE_IAM=1` environment variables set:
 
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["iam-enforcement"]
+
+[env.iam-enforcement]
+DEBUG = "1"
+ENFORCE_IAM = "1"
+```
+
 ```bash
-DEBUG=1 ENFORCE_IAM=1 localstack start
+lstk start
 ```
 
 In this guide, we will create a policy for creating Lambda functions by only allowing the `lambda:CreateFunction` permission.
@@ -46,7 +57,7 @@ Create a policy document named `policy_1.json` and add the following content:
 You can now create a new user named `test-user`, and put the policy in place by executing the following commands:
 
 ```bash
-awslocal iam create-user --user-name test-user
+lstk aws iam create-user --user-name test-user
 ```
 
 ```bash
@@ -62,13 +73,13 @@ awslocal iam create-user --user-name test-user
 ```
 
 ```bash
-awslocal iam put-user-policy --user-name test-user --policy-name policy1 --policy-document file://policy_1.json
+lstk aws iam put-user-policy --user-name test-user --policy-name policy1 --policy-document file://policy_1.json
 ```
 
 You can further create an access key for the user by executing the following command:
 
 ```bash
-awslocal iam create-access-key --user-name test-user
+lstk aws iam create-access-key --user-name test-user
 ```
 
 Export the access key and secret key as environment variables:
@@ -83,7 +94,7 @@ export AWS_SECRET_ACCESS_KEY=...
 You can now attempt to create a Lambda function using the newly created user's credentials:
 
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name test-function \
     --role arn:aws:iam::000000000000:role/lambda-role \
     --runtime python3.8 \
