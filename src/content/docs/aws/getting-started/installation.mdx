@@ -23,22 +23,17 @@ LocalStack for AWS features require an [Auth Token](/aws/getting-started/auth-to
 
 **Requirement:** You must have a working [Docker installation](https://docs.docker.com/get-docker/) before proceeding.
 
-
 ### Install lstk
 
 <Tabs>
   <TabItem label="Homebrew">
-    ```bash
-    brew install localstack/tap/lstk
-    ```
+    ```bash brew install localstack/tap/lstk ```
   </TabItem>
-  <TabItem label="npm">
-    ```bash
-    npm install -g @localstack/lstk
-    ```
-  </TabItem>
+  <TabItem label="npm">```bash npm install -g @localstack/lstk ```</TabItem>
   <TabItem label="Binary">
-    Download the binary for your platform from the [GitHub Releases](https://github.com/localstack/lstk/releases) and add it to your `PATH`.
+    Download the binary for your platform from the [GitHub
+    Releases](https://github.com/localstack/lstk/releases) and add it to your
+    `PATH`.
   </TabItem>
 </Tabs>
 
@@ -138,78 +133,70 @@ Install the [official extension](https://hub.docker.com/extensions/localstack/lo
 
 ## Troubleshooting
 
-#### The LocalStack CLI installation is successful, but I cannot execute `localstack`
+Installation issues typically fall into one of three areas: getting your chosen install method working, activating your license, or reaching LocalStack over the network. This section will guide you to the appropriate guide that contains detailed fixes based on your installation method.
 
-If you can successfully install LocalStack using `pip` but you cannot use it in your terminal, you most likely haven't set up your operating system's / terminal's `PATH` variable (in order to tell them where to find programs installed via `pip`).
+### lstk
 
-- If you are using Windows, you can enable the `PATH` configuration when installing Python, [as described in the official docs of Python](https://docs.python.org/3/using/windows.html#finding-the-python-executable).
-- If you are using a MacOS or Linux operating system, please make sure that the `PATH` is correctly set up - either system wide, or in your terminal.
+If you installed via [`lstk`](#lstk) and LocalStack fails to start, authenticate, or pull its image, see [lstk troubleshooting](/aws/developer-tools/running-localstack/lstk/#troubleshooting).
 
-As a workaround you can call the LocalStack CLI python module directly:
+For first-run authentication (browser login, keyring tokens, or `LOCALSTACK_AUTH_TOKEN` in CI), refer to [Authentication](/aws/developer-tools/running-localstack/lstk/#authentication) and the [Auth Token guide](/aws/getting-started/auth-token/).
 
-```bash
-python3 -m localstack.cli.main
-```
+### Docker Compose and Docker CLI
 
-#### The `localstack` CLI does not start the LocalStack container
+If you started LocalStack with [Docker Compose](#docker-compose) or the [Docker CLI](#docker-cli):
 
-If you are using the `localstack` CLI to start LocalStack, but the container is not starting, please check the following:
+- **License or credential errors**: see [Auth Token troubleshooting](/aws/getting-started/auth-token/#troubleshooting).
+- **Container exits during startup, proxy/DNS/TLS issues, or port conflicts**: see [Startup Troubleshooting FAQs](/aws/getting-started/faq/#startup-troubleshooting-faqs).
+- **DNS server or port conflicts**: see the [DNS Server guide](/aws/customization/networking/dns-server/).
 
-- Uncheck the **Use kernel networking for UDP** option in Docker Desktop (**Settings** → **Resources** → **Network**) or follow the steps in our [documentation](/aws/customization/networking/dns-server#system-dns-configuration) to disable it.
-- Start LocalStack with a specific DNS address:
+Ensure you have exported `LOCALSTACK_AUTH_TOKEN` in your shell before running `docker compose up` or `docker run`.
 
-```bash
-DNS_ADDRESS=0 localstack start
-```
+### View logs
 
-- Remove port 53 as indicated in our [standard `docker-compose.yml` file](https://github.com/localstack/localstack/blob/main/docker-compose-pro.yml).
-
-#### How should I access the LocalStack logs on my local machine?
-
-You can now avail logging output and error reporting using LocalStack logs.
-To access the logs, run the following command:
+Stream container logs using the command that matches your install method:
 
 <Tabs>
 <TabItem label="lstk">
+
 ```bash
 lstk logs
 ```
+
+For `lstk` CLI diagnostics (separate from container logs), see [Logging](/aws/developer-tools/running-localstack/lstk/#logging).
+
+</TabItem>
+<TabItem label="Docker Compose">
+
+```bash
+docker compose logs -f localstack
+```
+
+</TabItem>
+<TabItem label="Docker CLI">
+
+```bash
+docker logs -f localstack-main
+```
+
+Use the container name from your `docker run --name` flag if you set one.
+
+</TabItem>
+<TabItem label="Helm">
+
+```bash
+kubectl logs -f deployment/localstack
+```
+
+The deployment name follows your Helm release name (default: `localstack`).
+
 </TabItem>
 </Tabs>
 
-AWS requests are now logged uniformly in the INFO log level (set by default or when `DEBUG=0`).
-The format is:
+To enable verbose startup logging, capture logs from a failed container, or share a diagnose bundle with support, see [How do I capture and share LocalStack container logs for troubleshooting?](/aws/getting-started/faq/#how-do-i-capture-and-share-localstack-container-logs-for-troubleshooting).
 
-```text
-AWS <service>.<operation> => <http-status> (<error type>)
-```
+### Network connectivity
 
-Requests to HTTP endpoints are logged in a similar way:
-
-```text
-2022-09-12T10:39:21.165  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS s3.ListBuckets => 200
-2022-09-12T10:39:41.315  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS s3.CreateBucket => 200
-2022-09-12T10:40:04.662  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS s3.PutObject => 200
-2022-09-12T11:01:55.799  INFO --- [   asgi_gw_0] localstack.request.http    : GET / => 200
-```
-
-#### How should I share the LocalStack logs for troubleshooting?
-
-You can share the LocalStack logs with us to help us identify issues.
-To share the logs, call the diagnostic endpoint:
-
-```bash
-curl -s localhost:4566/_localstack/diagnose | gzip -cf > diagnose.json.gz
-```
-
-Ensure that the diagnostic endpoint is run after you have tried reproducing the affected task.
-After running the task, run the diagnostic endpoint and share the archive file with your team members or LocalStack Support.
-
-#### My application cannot reach LocalStack over the network
-
-We have extensive network troubleshooting documentation available [here](/aws/customization/networking/).
-
-If this does not solve your problem then please [reach out to LocalStack Support](/aws/help-support/get-help/).
+If your application cannot reach LocalStack after installation, see the [networking documentation](/aws/customization/networking/).
 
 ## Next steps
 

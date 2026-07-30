@@ -13,7 +13,7 @@ In this guide, you will run some basic Azure CLI commands to manage resource gro
 
 ## Prerequisites
 
-- [`lstk`](/azure/getting-started/installation/#lstk)
+- [`lstk`](/azure/getting-started/#lstk)
 - [Azure CLI (`az`)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 - A LocalStack account with a license that covers Azure usage — `lstk` handles authentication for you (see [Authentication](/azure/getting-started/auth-token/))
 
