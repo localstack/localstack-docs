@@ -29,7 +29,7 @@ To create an account for LocalStack for AWS, please visit our [pricing page](h
 
 Follow the prompts to fill out your information and remember to verify your email to continue. 
 
-All new users are granted a 14-day free Trial of our Ultimate tier with no commitment. 
+All new users get their first month free (a 30-day trial of our Ultimate tier) with no commitment. 
 
 At the end of your free trial period, you may select your preferred plan.
 
