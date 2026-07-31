@@ -13,6 +13,18 @@ Starting with the end-of-March 2026 release, LocalStack for Snowflake follows [c
 For example, `2026.03.0` is the initial March 2026 release.
 :::
 
+## 2026.07.0
+
+- Tables and data stored with `PERSISTENCE=1` remain available after the emulator restarts.
+- DDL statements now commit an open transaction before they run, matching Snowflake and making newly created objects visible to other sessions.
+- `MAX(GREATEST(...))` works when source columns share names with aggregate aliases.
+- `UNPIVOT` preserves passthrough columns when its input comes from a chain of `SELECT *` CTEs.
+- Boolean comparisons inside `COALESCE` work when the result is used with `NOT`, `AND`, or `WHERE`.
+- `QUALIFY` branches can be combined with `UNION ALL` without leaking internal columns into the result.
+- `SHOW USER FUNCTIONS` respects schema scope and no longer exposes internal emulator functions.
+- Scripting keywords such as `loop`, `while`, and `cursor` can qualify columns when used as table aliases.
+- JavaScript stored procedures can call `ResultSet.getColumnValue()` with either a column name or a column index.
+
 ## 2026.06.0
 
 - 'Added support for `PERCENTILE_CONT` and `PERCENTILE_DISC`, the standard percentile aggregate functions used for medians, quartiles, and other distribution cutoffs.'
