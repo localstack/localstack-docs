@@ -13,6 +13,10 @@ IAM Policy Enforcement feature can be used to test your security policies and cr
 The environment configuration `ENFORCE_IAM=1` is required while starting LocalStack to enable this feature.
 Per default, IAM enforcement is disabled, and all APIs can be accessed without authentication.
 
+When enabled, LocalStack evaluates identity-based policies, resource-based policies, permissions boundaries, and [service control policies](#service-control-policies) together to decide whether a request is allowed.
+When a request is denied, LocalStack returns a descriptive error that identifies the denied action and the policy responsible for the denial.
+See [Explainable IAM](/aws/developer-tools/security-testing/explainable-iam/) for a detailed look at these messages.
+
 ## Getting started
 
 This guide is designed for users new to IAM Policy Enforcement and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
@@ -78,14 +82,15 @@ awslocal s3 mb s3://mybucket
 ```
 
 ```bash
-make_bucket failed: s3://mybucket An error occurred (AccessDeniedException) when calling the CreateBucket operation: Access to the specified resource is denied
+make_bucket failed: s3://mybucket An error occurred (AccessDeniedException) when calling the CreateBucket operation: User: arn:aws:iam::000000000000:user/test is not authorized to perform: s3:CreateBucket on resource: arn:aws:s3:::mybucket because no identity-based policy allows the s3:CreateBucket action
 ```
 
 As anticipated, the attempt to create the bucket fails with an `AccessDeniedException` error, confirming that user `test` lacks the necessary permissions for this action.
+The error message names the denied action (`s3:CreateBucket`) and explains that no identity-based policy allows it.
 You can view the LocalStack logs to validate the policy enforcement:
 
 ```bash
-2023-11-03T12:21:10.971  INFO --- [   asgi_gw_1] l.s.i.p.handler            : Request for service 's3' by principal 'arn:aws:iam::000000000000:user/test' for operation 'CreateBucket' denied.
+2023-11-03T12:21:10.971  INFO --- [   asgi_gw_1] localstack.pro.core.services.iam.policy_engine.handler : User: arn:aws:iam::000000000000:user/test is not authorized to perform: s3:CreateBucket on resource: arn:aws:s3:::mybucket because no identity-based policy allows the s3:CreateBucket action
 2023-11-03T12:21:10.972  INFO --- [   asgi_gw_1] localstack.request.aws     : AWS s3.CreateBucket => 403 (AccessDenied)
 ```
 
@@ -121,6 +126,62 @@ You can view the LocalStack logs to validate the policy enforcement:
 
 You can further use the IAM Policy Enforcement feature to test your Infrastructure as Code (IaC) deployments and ensure that your policies are correctly enforced.
 If the IAM policies are not correctly enforced, you will get an unsuccessful response from the API call, and the LocalStack logs will provide you with the necessary information to debug the issue.
+
+## Service Control Policies
+
+Service Control Policies (SCPs) are a policy type managed by [AWS Organizations](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html).
+Unlike identity-based and resource-based policies, SCPs do not grant permissions on their own — they act as guardrails that define the maximum permissions available to the accounts they apply to.
+If an SCP does not allow an action (or explicitly denies it), no `Allow` in an identity-based policy can override that result.
+
+With `ENFORCE_IAM=1`, LocalStack evaluates SCPs alongside identity-based policies, resource-based policies, and permissions boundaries.
+This applies both to single-account access and to cross-account access, where a principal in one account acts on a resource owned by another.
+
+The steps below extend the walkthrough above: user `test` already has an identity-based policy that allows `s3:CreateBucket`.
+We will add an SCP that denies the action and confirm that the request is blocked despite the identity-based `Allow`.
+
+In **Terminal 1**, create an organization and a service control policy that denies `s3:CreateBucket`:
+
+```bash
+awslocal organizations create-organization --feature-set ALL
+```
+
+
+```bash
+awslocal organizations create-policy \
+    --name deny-create-bucket \
+    --type SERVICE_CONTROL_POLICY \
+    --description "Deny S3 bucket creation" \
+    --content '{"Version":"2012-10-17","Statement":[{"Effect":"Deny","Action":"s3:CreateBucket","Resource":"*"}]}'
+```
+
+Attach the SCP to the target account:
+
+```bash
+awslocal organizations attach-policy \
+    --policy-id <POLICY_ID> \
+    --target-id <TARGET_ID>
+```
+
+Back in **Terminal 2**, attempt to create the bucket again as user `test`:
+
+```bash
+awslocal s3 mb s3://mybucket
+```
+
+Even though the user's identity-based policy allows `s3:CreateBucket`, the SCP guardrail blocks the request, and the denial message names the responsible SCP:
+
+```bash
+make_bucket failed: s3://mybucket An error occurred (AccessDeniedException) when calling the CreateBucket operation: User: arn:aws:iam::000000000000:user/test is not authorized to perform: s3:CreateBucket on resource: arn:aws:s3:::mybucket with an explicit deny in a service control policy: arn:aws:organizations::000000000000:policy/<POLICY_ID>
+```
+
+The LocalStack logs record the same information:
+
+```bash
+2023-11-03T12:30:44.512  INFO --- [   asgi_gw_1] localstack.pro.core.services.iam.policy_engine.handler : User: arn:aws:iam::000000000000:user/test is not authorized to perform: s3:CreateBucket on resource: arn:aws:s3:::mybucket with an explicit deny in a service control policy: arn:aws:organizations::000000000000:policy/<POLICY_ID>
+2023-11-03T12:30:44.513  INFO --- [   asgi_gw_1] localstack.request.aws     : AWS s3.CreateBucket => 403 (AccessDenied)
+```
+
+This confirms that the SCP overrides the identity-based `Allow`, matching the AWS evaluation order in which an SCP guardrail takes precedence.
 
 ## Feature coverage
 

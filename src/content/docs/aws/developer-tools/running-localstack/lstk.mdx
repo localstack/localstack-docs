@@ -1055,6 +1055,8 @@ The port comes from your AWS emulator's configured `port` (default `4566`); if n
 
 If the `localstack` profile is already configured correctly, `lstk` reports `LocalStack AWS profile is already configured.` and makes no changes.
 
+On an interactive terminal, `setup aws` prompts (Y/n) before writing. Overwriting an existing `localstack` profile whose values differ requires `--force` (which also skips the prompt); writing a fresh profile, completing a partial one, or leaving an already-correct profile unchanged never needs it.
+
 :::note
 The former `lstk config profile` command has been removed; use `lstk setup aws`.
 :::
@@ -1074,6 +1076,19 @@ lstk setup az
 It requires the `az` CLI to be installed and a running LocalStack Azure emulator.
 
 To instead redirect your **global** `az` (so existing scripts run unmodified against LocalStack), see [`lstk az start-interception`](#az).
+
+#### `setup azure`
+
+Prepare an isolated Azure CLI config directory (under the `lstk` config dir, via `AZURE_CONFIG_DIR`) that routes [`lstk az`](#az) commands to the LocalStack Azure emulator.
+It registers a custom Azure cloud (`LocalStack`) pointing at LocalStack's Azure endpoints, activates it, disables Azure CLI instance discovery and telemetry, and performs a one-time dummy service-principal login.
+Your global `~/.azure` configuration is left untouched.
+
+```bash
+lstk setup azure
+```
+
+Requires the `az` CLI on your `PATH` and a running LocalStack Azure emulator.
+Run this once; afterwards use `lstk az <args>` to run Azure CLI commands against LocalStack.
 
 ### `config`
 
