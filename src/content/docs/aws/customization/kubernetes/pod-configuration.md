@@ -16,10 +16,28 @@ Use the `K8S_POD_CONFIG` environment variable to configure Kubernetes metadata, 
 The variable accepts a JSON object with reusable `profiles` and optional per-service mappings.
 The value must be valid JSON. LocalStack validates this configuration at startup and refuses to start if the value is not valid JSON or contains unknown fields, so misconfigurations surface before any child pods are created.
 
-::::note
-This feature currently applies to Lambda and ECS pods created by the Kubernetes executor.
-Support for additional service integrations is being added incrementally.
-::::
+## Supported services
+
+`LOCALSTACK_K8S_POD_CONFIG` applies to child pods created by the following services:
+
+- Lambda (`lambda`)
+- ECS (`ecs`)
+- CodeBuild (`codebuild`)
+- DocumentDB (`docdb`)
+- ElastiCache (`elasticache`)
+- Kafka (`kafka`)
+- Kinesis Data Analytics (`kinesisanalyticsv2`)
+- MWAA (`mwaa`)
+- RDS (`rds`), for the MySQL and SQL Server (MSSQL) engines only
+- Glue (`glue`)
+- EC2 (`ec2`)
+
+The value in parentheses is the key to use for that service under the `services` block.
+
+:::note
+RDS pod configuration only applies to the MySQL and SQL Server engines.
+The PostgreSQL and MariaDB engines run in-process inside the main LocalStack pod rather than spawning a separate child pod, so `LOCALSTACK_K8S_POD_CONFIG` doesn't apply to them.
+:::
 
 ## Supported fields
 
@@ -157,6 +175,11 @@ A service can reference a single profile with `profile`, or it can map `arm64` a
       "nodeSelector": {
         "pool": "ecs-nodes"
       }
+    },
+    "database": {
+      "nodeSelector": {
+        "pool": "db-nodes"
+      }
     }
   },
   "services": {
@@ -165,6 +188,9 @@ A service can reference a single profile with `profile`, or it can map `arm64` a
     },
     "ecs": {
       "profile": "ecs-tasks"
+    },
+    "rds": {
+      "profile": "database"
     }
   }
 }
@@ -172,7 +198,7 @@ A service can reference a single profile with `profile`, or it can map `arm64` a
 
 In this example, ARM Lambda pods use `lambda-arm`.
 AMD64 Lambda pods use `defaultAmd64`.
-ECS pods always use `ecs-tasks`, regardless of architecture, because `services.ecs.profile` bypasses architecture-based routing.
+ECS pods always use `ecs-tasks`, and RDS pods always use `database`, regardless of architecture, because `services.<service>.profile` bypasses architecture-based routing.
 Workloads without architecture information use `default`.
 
 ## Profile resolution
