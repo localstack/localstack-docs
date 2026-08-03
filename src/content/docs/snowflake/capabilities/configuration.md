@@ -34,15 +34,35 @@ Options that affect the core Snowflake emulator functionality.
 ### Custom Snowflake hostnames
 
 By default, the Snowflake emulator accepts requests for hostnames such as `snowflake.localhost.localstack.cloud` and other `*.snowflake.*` hostnames.
-If you expose the emulator through a custom DNS name, for example in Kubernetes or behind an ingress, set `SF_HOSTNAMES` to the exact hostnames clients use to reach the emulator:
+If you expose the emulator through a custom DNS name, for example in Kubernetes or behind an ingress, set `SF_HOSTNAMES` to the exact hostnames clients use to reach the emulator.
+When you use the `localstack` CLI, add the `LOCALSTACK_` prefix so the CLI passes the variable to the container:
 
 ```bash
-SF_HOSTNAMES=snowflake.internal.example.com,snowflake.internal \
+LOCALSTACK_SF_HOSTNAMES=snowflake.internal.example.com,snowflake.internal,snowflake.localhost.localstack.cloud \
 localstack start --stack snowflake
 ```
 
 The first hostname in `SF_HOSTNAMES` is used as the primary hostname for local connection defaults and generated URLs.
 When `SF_HOSTNAMES` is set, the default wildcard fallback is disabled, and only the configured hostnames are routed to the Snowflake emulator.
+Include `snowflake.localhost.localstack.cloud` in the list, as shown above, if you want the default hostname to continue working.
+
+`SF_HOSTNAMES` controls Host-header routing only.
+It does not configure DNS or TLS for custom hostnames.
+Configure each hostname to resolve to the LocalStack host from every client that connects to the emulator.
+For example, add the following entries to the client's `/etc/hosts` file when LocalStack runs on the same machine:
+
+```text title="/etc/hosts"
+127.0.0.1 snowflake.internal.example.com
+127.0.0.1 snowflake.internal
+```
+
+The default LocalStack certificate does not match custom domains.
+Configure a matching custom TLS certificate before connecting through a custom hostname.
+
+::::caution
+Do not use `insecure_mode=True` in the Snowflake Connector for Python to work around a certificate hostname mismatch.
+This deprecated option disables certificate revocation checks, but the connector still verifies the certificate and hostname.
+::::
 
 ::::note
 `SF_HOSTNAME_REGEX` is no longer supported.
@@ -52,7 +72,7 @@ If you previously used `SF_HOSTNAME_REGEX`, migrate to `SF_HOSTNAMES` and list e
 If your custom hostname also needs a matching TLS certificate, use LocalStack's standard certificate configuration options:
 
 ```bash
-SF_HOSTNAMES=snowflake.internal.example.com \
+LOCALSTACK_SF_HOSTNAMES=snowflake.internal.example.com \
 CUSTOM_SSL_CERT_PATH=/var/lib/localstack/custom/cert.pem \
 SKIP_SSL_CERT_DOWNLOAD=1 \
 localstack start --stack snowflake
