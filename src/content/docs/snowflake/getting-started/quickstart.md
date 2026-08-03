@@ -13,7 +13,7 @@ This guide explains how to set up the Snowflake emulator and use Snowflake CLI t
 ## Prerequisites
 
 - [LocalStack for Snowflake](/snowflake/getting-started/)
-- [`localstack` CLI](/aws/getting-started/installation/#localstack-cli)
+- [LocalStack CLI](/snowflake/getting-started/)
 - A [LocalStack Auth Token](/snowflake/getting-started/auth-token/)
 - [Snowflake CLI](/snowflake/integrations/snow-cli/)
 

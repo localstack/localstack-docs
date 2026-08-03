@@ -3,7 +3,7 @@ title: FAQ
 description: Frequently asked questions about LocalStack for AWS.
 template: doc
 sidebar:
-  order: 5
+  order: 7
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
@@ -19,7 +19,7 @@ To resolve the issue follow the steps:
    This can be done by deleting the cached certificate file.
    For example, on Linux systems, you can locate and remove the file at `~/.cache/localstack/volume/cache/server.test.pem`.
    The exact path may differ depending on your operating system and how you've started LocalStack.
-   Please refer to our [documentation](/aws/configuration/config/filesystem/#localstack-volume-directory) for specific instructions.
+   Please refer to our [documentation](/aws/customization/advanced/filesystem/#localstack-volume-directory) for specific instructions.
 
 **Workarounds for older (&lt;v3.7.0) LocalStack versions:**
 
@@ -35,20 +35,6 @@ To resolve the issue follow the steps:
 
 For other SSL-related issues encountered during startup — such as Python `CERTIFICATE_VERIFY_FAILED` tracebacks or corporate TLS interception — see [How do I diagnose if my SSL traffic is being intercepted by a corporate proxy?](#how-do-i-diagnose-if-my-ssl-traffic-is-being-intercepted-by-a-corporate-proxy).
 
-### How to update my LocalStack CLI?
-
-If the LocalStack CLI version is heavily outdated, it might lead to issues with container startup and debug commands.
-If you are using an older version of LocalStack, you can update it by running the following command:
-
-```bash
-pip install --upgrade localstack localstack-ext
-```
-
-If you are running a newer version of LocalStack, you can check the version by running the following command:
-
-```bash
-localstack update localstack-cli
-```
 
 ### Is using `localhost.localstack.cloud:4566` to set as the endpoint for AWS services recommended?
 
@@ -122,23 +108,6 @@ aws ssm put-parameter --name "//test/parameter/new" --type String --value "test"
 
 For additional known issues related to Git Bash, you can refer to the following link: [Git Bash Known Issues](https://github.com/git-for-windows/build-extra/blob/main/ReleaseNotes.md#known-issues)
 
-### How to fix LocalStack CLI (Python) UTF-8 encoding issue under Windows?
-
-If you are using LocalStack CLI under Windows, you might run into encoding issues.
-To fix this, set the following environment variables:
-Set the system locale (language for non-Unicode programs) to UTF-8 to avoid Unicode errors.
-
-Follow these steps:
-
-- Open the Control Panel.
-- Go to "Clock and Region" or "Region and Language."
-- Click on the "Administrative" tab.
-- Click on the "Change system locale" button.
-- Select "Beta: Use Unicode UTF-8 for worldwide language support" and click "OK."
-- Restart your computer to apply the changes.
-
-If you would like to keep the system locale as it is, you can mitigate the issue by using the command `localstack --no-banner`.
-
 ### How do I resolve connection issues with proxy blocking access to LocalStack's BigData image?
 
 A company proxy can lead to connection issues.
@@ -183,7 +152,7 @@ If the container can reach the internet generally but not LocalStack endpoints s
 Using LocalStack inside a Docker network with multiple other containers can lead to connectivity issues from/to those containers.
 For example, a container which attempts to deploy a stack and interact with the services directly, from within the same Docker network.
 
-Refer to our [network troubleshooting guide](/aws/configuration/networking/) covering several scenarios.
+Refer to our [network troubleshooting guide](/aws/customization/networking/) covering several scenarios.
 
 ### How to resolve the pull rate limit issue for LocalStack's Docker image?
 
@@ -314,7 +283,7 @@ The CLI also supports a `--debug` flag that prints host-side debug output (host 
 localstack --debug start
 ```
 
-See the [Logging reference](/aws/configuration/config/logging/) for the full list of log-related options.
+See the [Logging reference](/aws/customization/logging/) for the full list of log-related options.
 
 ### How do I capture and share LocalStack container logs for troubleshooting?
 
@@ -389,7 +358,7 @@ Common causes:
    ```
 
 3. **The billing system has not yet activated your renewal.** Check the subscription status at [app.localstack.cloud/account/subscriptions](https://app.localstack.cloud/account/subscriptions). If the subscription is paid but still shows `EXPIRED`, open a support ticket with your workspace name and the last four characters of the auth token.
-4. **Wrong license type assigned.** Sometimes a user is on an expired Trial or Hobby license. Unassign the old license and assign a paid one — see [Managing users and licenses](/aws/configuration/web-app/managing-users-licenses/#managing-licenses).
+4. **Wrong license type assigned.** Sometimes a user is on an expired Trial or Hobby license. Unassign the old license and assign a paid one — see [Managing users and licenses](/aws/organizations-admin/managing-users-licenses/#managing-licenses).
 
 ### Why does my license show as SUSPENDED?
 
@@ -626,14 +595,6 @@ If that happens, see [How do I trust my corporate TLS interceptor certificate in
 
 Offline images for airgapped environments are available on our enterprise tier, please reach out to our sales team.
 
-### Why does LocalStack startup fail with "Docker not available"?
-
-The LocalStack CLI cannot reach the Docker daemon. Common fixes:
-
-- Start Docker Desktop and confirm it's running.
-- Verify `docker ps` works as your current user (no `sudo`).
-- On macOS, check that `/var/run/docker.sock` is reachable from Docker Desktop.
-- If you use Colima, Rancher, or Podman, make sure the `DOCKER_HOST` environment variable points at the correct socket.
 
 ### Why does LocalStack fail with "ports are not available: exposing port TCP 127.0.0.1:443"?
 
@@ -699,9 +660,8 @@ Open a ticket by emailing `support@localstack.cloud`.
 | `LOCALSTACK_REQUESTS_CA_BUNDLE` | Prefixed form of `REQUESTS_CA_BUNDLE` that avoids the CLI auto-forward warning |
 | `SKIP_SSL_CERT_DOWNLOAD` | `1` to skip the per-org TLS cert download on startup |
 | `SSL_NO_VERIFY` | `1` to disable outbound TLS verification (debug only) |
-| `ACTIVATE_PRO` | `0` to start LocalStack without Pro features (lets the container boot even if license activation fails) |
 
-For the full configuration reference, see the [Configuration reference](/aws/configuration/config/configuration/) and the broader [Networking documentation](/aws/configuration/networking/).
+For the full configuration reference, see the [Configuration reference](/aws/customization/configuration-options/) and the broader [Networking documentation](/aws/customization/networking/).
 
 ## LocalStack Platform FAQs
 

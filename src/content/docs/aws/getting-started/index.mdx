@@ -1,0 +1,68 @@
+---
+title: Overview
+description: Introduction to LocalStack for AWS, covering core use cases, local cloud capabilities, and deployment options for development and testing.
+template: doc
+editUrl: false
+sidebar:
+  order: 1
+---
+
+import { SectionCards } from '../../../../components/SectionCards.tsx';
+
+LocalStack provides a cloud service emulator that runs within a single container on your local machine or CI environment. It delivers a functional AWS environment including Lambda, DynamoDB, S3, SQS, and [80+ supported services](/aws/services/), enabling development and testing without an AWS account or cloud-related costs.
+
+### Core Use Cases
+
+- **Accelerate development loops**: Test changes against local AWS services instantly to bypass deployment wait times.
+- **Automate integration testing**: Execute integration tests against local AWS infrastructure within pull requests to identify regressions before production.
+- **Validate IaC**: Deploy Terraform, CDK, or CloudFormation templates to LocalStack to verify infrastructure logic before applying changes to a cloud environment.
+- **Experimental sandbox**: Explore new AWS services and architectures in a risk-free environment.
+
+LocalStack also provides advanced features for team collaboration and security, including [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/) for state management, [IAM policy enforcement](/aws/developer-tools/security-testing/iam-policy-enforcement/), and [Chaos Engineering](/aws/developer-tools/chaos-engineering/).
+
+## Start with the basics
+
+<SectionCards
+  sections={[
+    {
+      title: 'Installation',
+      description:
+        'Install LocalStack with lstk, Docker, Docker Compose, or Helm.',
+      href: '/aws/getting-started/installation/',
+    },
+    {
+      title: 'Local Development',
+      description:
+        'New to LocalStack? Start here to deploy a serverless application using Lambda and DynamoDB.',
+      href: '/aws/getting-started/local-development/',
+    },
+    {
+      title: 'CI Integration',
+      description:
+        'Run integration tests against LocalStack in GitHub Actions, CircleCI, GitLab CI, and other CI systems.',
+      href: '/aws/getting-started/ci-cd/',
+    },
+    {
+      title: 'AI & Agent Workflows',
+      description:
+        'Integrate LocalStack with AI coding assistants via MCP or automate infrastructure tasks using LocalStack Skills.',
+      href: '/aws/getting-started/ai-workflows/',
+    },
+    {
+      title: 'Auth Token',
+      description:
+        'Configure the Auth Token required to activate LocalStack and access licensed features.',
+      href: '/aws/getting-started/auth-token/',
+    },
+    {
+      title: 'FAQ',
+      description: 'Frequently asked questions about LocalStack for AWS.',
+      href: '/aws/getting-started/faq/',
+    },
+  ]}
+  client:load
+/>
+
+:::note
+**Enterprise Kubernetes Deployment:** LocalStack also supports execution within Kubernetes clusters via the Operator or Helm charts. This model enables dynamic scaling, environment isolation, and native orchestration. See our [Kubernetes Deployment guide](/aws/customization/kubernetes/) for more information.
+:::

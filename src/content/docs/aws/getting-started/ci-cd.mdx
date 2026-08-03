@@ -1,0 +1,211 @@
+---
+title: CI Integration
+description: Use LocalStack in CI pipelines to run integration tests against local AWS infrastructure.
+template: doc
+sidebar:
+  order: 4
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Introduction
+
+LocalStack helps you run integration tests in CI against emulated AWS infrastructure. Your pipeline starts LocalStack inside the CI job, deploys or prepares the resources your application needs, runs tests against the local endpoint, and then discards the environment when the job ends.
+
+## How LocalStack works in CI
+
+A typical CI job with LocalStack follows this flow:
+
+1. Check out your application code.
+2. Start LocalStack in the CI runner.
+3. Configure a CI Auth Token through the CI provider's secret manager.
+4. Deploy test infrastructure with tools such as `awslocal`, `tflocal`, `cdklocal`, or your application's test harness.
+5. Run integration tests against the LocalStack endpoint.
+6. Collect logs, test reports, and artifacts from the job.
+
+This gives every pipeline run a fresh AWS-compatible environment without creating cloud resources in an AWS account.
+
+## What changes from local development
+
+CI runs are usually more constrained than local development:
+
+- Use a dedicated **CI Auth Token** instead of a personal Developer Token.
+- Store `LOCALSTACK_AUTH_TOKEN` as a protected CI secret.
+- Start LocalStack non-interactively as part of the job.
+- Treat the LocalStack container as ephemeral unless your workflow explicitly saves state.
+- Export logs and test reports before the runner shuts down.
+
+Docker and Docker Compose are still common ways to run containers inside CI runners, but they are not CI tools by themselves. For container startup details, see the [Installation guide](/aws/getting-started/installation/#container-and-orchestration-tools). For provider-specific CI setup, use the integration guides below.
+
+## Choose your CI provider
+
+Start with the CI system you use. These snippets show the basic LocalStack startup shape for each provider; the linked guides include authentication, configuration, logs, state management, and provider-specific caveats.
+
+:::note
+For brevity, these snippets show only the LocalStack startup shape. Apart from the GitHub Actions example, they assume your CI Auth Token is already exposed to the job as the `LOCALSTACK_AUTH_TOKEN` environment variable. Store it as a secret in your CI provider before running them, and see [Authentication in CI](#authentication-in-ci) below.
+:::
+
+<Tabs>
+  <TabItem label="GitHub Actions">
+
+    ```yaml
+    - name: Start LocalStack
+      uses: LocalStack/setup-localstack@main
+      with:
+        image-tag: 'latest'
+        install-awslocal: 'true'
+      env:
+        LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+    ```
+
+    See the [GitHub Actions guide](/aws/ci-pipelines/github-actions/) for the full setup.
+
+  </TabItem>
+  <TabItem label="CircleCI">
+
+    ```yaml
+    version: '2.1'
+    orbs:
+      python: circleci/python@4.0.0
+    jobs:
+      localstack-test:
+        machine:
+          image: ubuntu-2204:current
+        steps:
+          - checkout
+          - run:
+              name: Install lstk and awslocal
+              command: |
+                python3 -m pip install --user --upgrade pip
+                python3 -m pip install --user localstack awscli-local[ver1]
+                echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
+          - run:
+              name: Start LocalStack
+              command: |
+                source "$BASH_ENV"
+                docker pull localstack/localstack:latest
+                localstack start -d
+                localstack wait -t 60
+    ```
+
+    See the [CircleCI guide](/aws/ci-pipelines/circleci/) for the full setup.
+
+  </TabItem>
+  <TabItem label="Bitbucket">
+
+    ```yaml
+    image: python:3.9
+
+    definitions:
+      services:
+        docker:
+          memory: 2048
+
+    pipelines:
+      default:
+        - step:
+            name: Test LocalStack
+            services:
+              - docker
+            script:
+              - export DOCKER_SOCK=$DOCKER_HOST
+              - export AWS_ENDPOINT_URL="http://localhost.localstack.cloud:4566"
+              - echo "${BITBUCKET_DOCKER_HOST_INTERNAL} localhost.localstack.cloud " >> /etc/hosts
+              - pip install localstack awscli-local
+              - docker run -d --rm -p 4566:4566 -p 4510-4559:4510-4559 -e DOCKER_SOCK=tcp://${BITBUCKET_DOCKER_HOST_INTERNAL}:2375 -e DOCKER_HOST=tcp://${BITBUCKET_DOCKER_HOST_INTERNAL}:2375 --name localstack-main localstack/localstack
+              - localstack wait -t 60
+    ```
+
+    See the [Bitbucket Pipelines guide](/aws/ci-pipelines/bitbucket/) for the full setup.
+
+  </TabItem>
+  <TabItem label="CodeBuild">
+
+    ```yaml
+    version: 0.2
+
+    phases:
+      pre_build:
+        commands:
+          - pip3 install localstack awscli
+          - docker pull public.ecr.aws/localstack/localstack:latest
+          - localstack start -d
+          - localstack wait -t 30
+    ```
+
+    See the [CodeBuild guide](/aws/ci-pipelines/codebuild/) for the full setup.
+
+  </TabItem>
+  <TabItem label="GitLab CI">
+
+    ```yaml
+    stages:
+      - test
+
+    variables:
+      DOCKER_HOST: tcp://docker:2375
+      DOCKER_TLS_CERTDIR: ""
+      LOCALSTACK_HOST: "localstack:4566"
+
+    services:
+      - name: localstack/localstack:latest
+        alias: localstack
+      - name: docker:dind
+        alias: docker
+        command: ["--tls=false"]
+
+    localstack-test:
+      stage: test
+      image: python:3.11
+      script:
+        - pip install awscli-local
+        - awslocal s3 mb s3://test-bucket
+    ```
+
+    See the [GitLab CI guide](/aws/ci-pipelines/gitlab-ci/) for the full setup.
+
+  </TabItem>
+  <TabItem label="Travis CI">
+
+    ```yaml
+    language: python
+
+    services:
+      - docker
+
+    python:
+      - "3.8"
+
+    before_install:
+      - python -m pip install localstack awscli-local[ver1]
+      - docker pull localstack/localstack
+      - localstack start -d
+      - localstack wait -t 30
+    ```
+
+    See the [Travis CI guide](/aws/ci-pipelines/travis-ci/) for the full setup.
+
+  </TabItem>
+</Tabs>
+
+You can also start from the [CI integrations overview](/aws/ci-pipelines/) if you want a broader explanation of the CI workflow.
+
+## Authentication in CI
+
+CI environments should use a CI Auth Token. Create one from the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens), then store it as `LOCALSTACK_AUTH_TOKEN` in your CI provider's secret manager.
+
+Do not commit tokens to your repository or write them directly into workflow files. For more details on token types and rotation, see the [Auth Token guide](/aws/getting-started/auth-token/).
+
+## State in CI
+
+Most CI jobs should start with a clean LocalStack instance. A fresh instance makes test runs reproducible and avoids hidden dependencies between jobs.
+
+If your pipeline needs state across jobs or workflow stages, use one of the state management options documented outside this getting started page:
+
+- [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/) to save and restore named LocalStack state snapshots.
+- [State export and import](/aws/developer-tools/snapshots/export-import-state/) to move state through artifacts or caches.
+- [Persistence](/aws/developer-tools/snapshots/persistence/) when the same runner keeps a mounted LocalStack volume.
+
+## Next steps
+
+After choosing your CI provider, continue to [AI & Agent Workflows](/aws/getting-started/ai-workflows/) to learn how AI coding assistants can help generate, deploy, and test LocalStack-backed AWS applications.

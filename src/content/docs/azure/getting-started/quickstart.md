@@ -13,28 +13,31 @@ In this guide, you will run some basic Azure CLI commands to manage resource gro
 
 ## Prerequisites
 
-- [`localstack`  CLI](/aws/getting-started/installation/#localstack-cli)
-- [`azlocal` CLI](https://pypi.org/project/azlocal/)
-- [LocalStack for Azure](/azure/getting-started/)
-- A [LocalStack Auth Token](/azure/getting-started/auth-token/)
+- [`lstk`](/azure/getting-started/#lstk)
+- [Azure CLI (`az`)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+- A LocalStack account with a license that covers Azure usage — `lstk` handles authentication for you (see [Authentication](/azure/getting-started/auth-token/))
 
 ## Instructions
 
-Before you begin, make sure that the Emulator is running, see the [installation instructions](/azure/getting-started/).
-
-### Setup the `azlocal` tool
-
-To instruct the regular `az` CLI tool to communicate with the Azure emulator, run the following command:
+Start the Azure emulator:
 
 ```
-$ azlocal start-interception
+$ lstk start
 ```
 
-You may see some warnings about experimental commands, you can safely ignore these.
+For more installation details, see the [installation instructions](/azure/getting-started/).
+
+### Set up the `az` CLI integration
+
+To make sure the `az` tool sends requests to the Azure Emulator REST API, run the following command:
+
+```
+$ lstk az start-interception
+```
 
 ### Create a resource group
 
-To create a resource group, you can now the same `az` command as you would normally:
+To create a resource group, you can now run the same `az` command as you would normally:
 
 ```
 $ az group create --name myResourceGroup --location westeurope
@@ -67,7 +70,7 @@ $ az group show --name myResourceGroup
 To list all the resource groups, run the following command:
 
 ```
-$ azlocal group list
+$ az group list
 ```
 
 ### Delete the resource group
@@ -80,10 +83,26 @@ $ az group delete --name myResourceGroup --yes
 
 ### Teardown
 
-When you're done using the Azure Emulator, you can run the following command:
+When you're done, disable interception and stop the emulator:
 
 ```
-$ azlocal stop-interception
+$ lstk az stop-interception
+$ lstk stop
 ```
 
-All invocations of the `az` CLI tool will now talk to the real Azure Cloud again.
+### Alternative: prefixed commands
+
+Instead of interception, you can prefix each `az` command with `lstk az` individually, without changing your global `~/.azure` configuration. Run this once to prepare the integration:
+
+```
+$ lstk setup azure
+```
+
+Then prefix every command:
+
+```
+$ lstk az group create --name myResourceGroup --location westeurope
+$ lstk az group show --name myResourceGroup
+$ lstk az group list
+$ lstk az group delete --name myResourceGroup --yes
+```
