@@ -62,6 +62,11 @@ kubectl cluster-info
 
 The [LocalStack Operator](https://github.com/localstack/localstack-operator) manages the LocalStack deployment and configures cluster DNS so that AWS-style hostnames resolve correctly inside the cluster.
 
+:::note
+The LocalStack Operator and Kubernetes executor are part of the [Enterprise plan](https://localstack.cloud/pricing) and are not enabled by default on a trial license.
+If your Auth Token doesn't have access, contact your LocalStack account team or [support](/aws/help-support/get-help/) to get the Kubernetes pack enabled on your trial.
+:::
+
 ```bash
 kubectl apply -f https://github.com/localstack/localstack-operator/releases/latest/download/controller.yaml
 ```
@@ -115,6 +120,10 @@ This runs in the foreground. Open a new terminal for the remaining steps. Verify
 ```bash
 awslocal sts get-caller-identity
 ```
+
+You can also confirm connectivity using the [LocalStack Web Application](https://app.localstack.cloud/inst/default/overview).
+With the port forward active, open the [Stack Overview](https://app.localstack.cloud/inst/default/overview) in your browser.
+It should load and show your LocalStack instance as connected, which is a quick way to confirm your cluster setup before deploying the sample application.
 
 ### Step 6: Deploy the sample application with Terraform
 
