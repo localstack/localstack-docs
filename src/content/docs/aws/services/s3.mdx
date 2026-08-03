@@ -143,7 +143,7 @@ By default, most SDKs will try to use **Virtual-Hosted style** requests and prep
 However, if the endpoint is not prefixed by `s3.`, LocalStack will not be able to understand the request and it will most likely result in an error.
 
 You can either change the endpoint to an S3-specific one, or configure your SDK to use **Path style** requests instead.
-Check out our [SDK documentation](/aws/configuration/localstack-sdks/) to learn how you can configure AWS SDKs to access LocalStack and S3.
+Check out our [SDK documentation](/aws/customization/integrations/localstack-sdks/) to learn how you can configure AWS SDKs to access LocalStack and S3.
 
 :::tip
 While using [AWS SDKs](https://aws.amazon.com/developer/tools/#SDKs), you would need to configure the `ForcePathStyle` parameter to `true` in the S3 client configuration to use **Path style** requests.
@@ -259,6 +259,48 @@ LocalStack supports SSE-C parameter validation for the following S3 APIs:
 - [`UploadPart`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html)
 
 However, LocalStack does not support the actual encryption and decryption of objects using SSE-C.
+
+## S3 Replication
+
+S3 Replication allows you to automatically copy objects from a source bucket to one or more destination buckets.
+Replication can occur within the same region or across regions, and across different accounts.
+
+LocalStack supports the following replication configurations:
+
+- **One-way replication**: Objects are replicated from a source bucket to a destination bucket. You can scope replication using prefix-based or tag-based filtering, and optionally override the storage class for objects written to the destination bucket.
+- **Two-way replication**: Both buckets are configured as source and destination for each other, and replication is configured to work in both directions.
+
+### IAM enforcement
+
+LocalStack supports IAM enforcement for S3 replication.
+IAM permissions are evaluated in the context of each replication task using the IAM engine directly, which mirrors how AWS itself handles replication permissions.
+
+### Metadata replication
+
+LocalStack supports replication of object metadata, specifically tags and Object Lock settings. Metadata replication operates in two modes:
+
+- **Default metadata replication**: When a source object's metadata is modified, those changes are automatically propagated to all of its replicas. This behavior is enabled by default and requires no additional configuration.
+- **Replica metadata synchronization**: When enabled on the destination bucket, metadata changes made directly to a replica are synced back to the source object. This applies only when two-way replication is configured. See [Replication for metadata changes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-for-metadata-changes.html) in the AWS documentation for more details.
+
+### ReplicationStatus
+
+Replicated objects are assigned a `ReplicationStatus` field, which you can inspect with `GetObject` or `HeadObject`.
+The possible values follow AWS semantics:
+
+| Status | Meaning |
+|---|---|
+| `PENDING` | Replication has been queued but not yet completed |
+| `COMPLETED` | Object was successfully replicated to the destination |
+| `FAILED` | Replication could not be completed |
+| `REPLICA` | This object is itself a copy created by replication |
+
+:::note
+The following replication features are not yet supported in LocalStack and will be available in a future release:
+
+- **`s3:ReplicateTags` deny evaluation**: Explicitly denying `s3:ReplicateTags` will not cause replication to be denied if the object has tags.
+- **KMS-encrypted object replication**: Objects encrypted with customer-provided KMS keys are not replicated, even when replication of KMS-encrypted objects is explicitly configured. See [Replicating objects created with server-side encryption using AWS KMS keys](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication-config-for-kms-objects.html#replications) in the AWS documentation for more details.
+- **ACL replication**: Replication of Access Control Lists is not currently supported.
+:::
 
 ## Resource Browser
 

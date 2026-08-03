@@ -87,7 +87,7 @@ If you have created a Cloud Pod from an older version of LocalStack, you need to
 
 ## Ephemeral Instances CLI
 
-The Ephemeral Instances CLI is included in the [LocalStack CLI installation](/aws/getting-started/installation/#installing-localstack-cli), so no additional installations are needed to start using it.
+The Ephemeral Instances CLI is included in the [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/#installation), so no additional installations are needed to start using it.
 If you're a licensed user, setting the `LOCALSTACK_AUTH_TOKEN` as an environment variable is recommended to access all features of the Ephemeral Instances CLI.
 
 Access the Ephemeral Instances CLI by running the `localstack ephemeral` command from your terminal.

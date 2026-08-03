@@ -22,14 +22,14 @@ This guide walks you through creating a custom role definition, listing role def
 Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
 ```bash
-azlocal start-interception
+lstk az start-interception
 ```
 
 This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
 To revert this configuration, run:
 
 ```bash
-azlocal stop-interception
+lstk az stop-interception
 ```
 
 This reconfigures the `az` CLI to send commands to the official Azure management REST API.
@@ -166,7 +166,7 @@ az role definition list --name "Custom Storage Reader"
 
 ## Limitations
 
-- **RBAC not enforced:** Role definitions and assignments are stored in the emulator but permissions are not enforced: API calls are not gated the way they are in Azure, and effective access for a principal at a scope is not evaluated from assignments and role definitions.
+- **RBAC enforcement is opt-in:** By default, role definitions and assignments are stored but permissions are not enforced, so API calls are not gated the way they are in Azure. Set `LS_AZURE_ENFORCE_RBAC` to enable enforcement; see [Role Assignment: Enabling RBAC enforcement](/azure/services/role-assignment/#enabling-rbac-enforcement) for scope and coverage.
 - **Management group scopes:** Management group–level assignable scopes are not supported.
 
 ## Samples

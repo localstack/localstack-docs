@@ -15,26 +15,13 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Blob Storage and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+This guide is designed for users new to Blob Storage and assumes basic knowledge of the Azure CLI and our `lstk az` proxy.
 
 Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
 ```bash
-azlocal start-interception
+lstk az start-interception
 ```
-
-:::note
-As an alternative to using the `azlocal` CLI, users can run:
-
-`azlocal start-interception`
-
-This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator REST API.
-To revert this configuration, run:
-
-`azlocal stop-interception`
-
-This reconfigures the `az` CLI to send commands to the official Azure management REST API
-:::
 
 ### Create a resource group
 
@@ -264,6 +251,7 @@ The Blob Storage emulator supports the following features:
 - **Storage account keys**: Keys are emulator-generated rather than managed by Azure.
 - **Header validation**: Unsupported request headers or parameters are silently accepted instead of being rejected.
 - **API version enforcement**: The emulator does not validate the `x-ms-version` header; all API versions are accepted.
+- **RBAC enforcement is opt-in**: By default, data-plane operations succeed regardless of role assignments. Set `LS_AZURE_ENFORCE_RBAC` to require the caller to hold a role such as `Storage Blob Data Contributor`; see [Role Assignment: Enabling RBAC enforcement](/azure/services/role-assignment/#enabling-rbac-enforcement).
 
 ## Samples
 

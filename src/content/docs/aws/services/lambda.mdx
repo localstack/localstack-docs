@@ -290,8 +290,8 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@
       <TableCell className="text-center">🟢</TableCell>
       <TableCell className="text-center">🟢</TableCell>
       <TableCell className="text-center">🟢</TableCell>
-      <TableCell className="text-center">➖</TableCell>
-      <TableCell className="text-center">➖</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
+      <TableCell className="text-center">🟠</TableCell>
     </TableRow>
     <TableRow>
       <TableCell className="font-medium">BisectBatchOnFunctionError</TableCell>
@@ -305,9 +305,9 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@
     </TableRow>
     <TableRow>
       <TableCell className="font-medium">ScalingConfig</TableCell>
-      <TableCell>The scaling configuration for the event source.</TableCell>
-      <TableCell className="text-center">🟠</TableCell>
-      <TableCell className="text-center">🟠</TableCell>
+      <TableCell>The scaling configuration for the event source. [^3]</TableCell>
+      <TableCell className="text-center">🟢</TableCell>
+      <TableCell className="text-center">🟡</TableCell>
       <TableCell className="text-center">➖</TableCell>
       <TableCell className="text-center">➖</TableCell>
       <TableCell className="text-center">➖</TableCell>
@@ -375,9 +375,9 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@
     </TableRow>
     <TableRow>
       <TableCell className="font-medium">ProvisionedPollerConfig</TableCell>
-      <TableCell>Control throughput via min-max limits.</TableCell>
-      <TableCell className="text-center">➖</TableCell>
-      <TableCell className="text-center">➖</TableCell>
+      <TableCell>Control throughput via min-max limits. [^4]</TableCell>
+      <TableCell className="text-center">🟡</TableCell>
+      <TableCell className="text-center">🟡</TableCell>
       <TableCell className="text-center">➖</TableCell>
       <TableCell className="text-center">➖</TableCell>
       <TableCell className="text-center">🟠</TableCell>
@@ -428,6 +428,8 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@
 
 [^1]: Read more at [Control which events Lambda sends to your function](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html)
 [^2]: The available Metadata properties may not have full parity with AWS depending on the event source (read more at [Understanding event filtering basics](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics)).
+[^3]: For SQS Standard, LocalStack spawns multiple concurrent pollers per event source mapping (`LAMBDA_EVENT_SOURCE_MAPPING_SQS_POLLER_COUNT`, default `5`), and `ScalingConfig.MaximumConcurrency` caps the poller count when set. For SQS FIFO, a single poller is always used to preserve message-group ordering, so the scaling configuration is accepted but has no effect.
+[^4]: For SQS Standard, only `MinimumPollers` is honored (it sets the poller count); `MaximumPollers` has no effect. For SQS FIFO, the single-poller model means the configuration is accepted but ignored.
 
 Create a [GitHub Discussion](https://github.com/orgs/localstack/discussions/new/choose) or reach out to [LocalStack Support](/aws/help-support/get-help/) if you experience any challenges.
 
@@ -526,7 +528,7 @@ This init binary is used as the entry point for every Lambda container.
 
 Our custom implementation offers additional configuration options,
 but these configurations are primarily intended for LocalStack developers and could change in the future.
-The LocalStack [configuration](/aws/configuration/config/configuration) `LAMBDA_DOCKER_FLAGS` can be used to configure all Lambda containers,
+The LocalStack [configuration](/aws/customization/configuration-options) `LAMBDA_DOCKER_FLAGS` can be used to configure all Lambda containers,
 for example `LAMBDA_DOCKER_FLAGS=-e LOCALSTACK_INIT_LOG_LEVEL=debug`.
 Some noteworthy configurations include:
 - `LOCALSTACK_INIT_LOG_LEVEL` defines the log level of the Golang binary.
@@ -589,7 +591,7 @@ With the new implementation, the following changes have been introduced:
 
 - To run Lambda functions in LocalStack, mount the Docker socket into the LocalStack container.
   Add the following Docker volume mount to your LocalStack startup configuration: `/var/run/docker.sock:/var/run/docker.sock`.
-  You can find an example of this configuration in our official [`docker-compose.yml` file](/aws/getting-started/installation/#starting-localstack-with-docker-compose).
+  You can find an example of this configuration in our official [`docker-compose.yml` file](/aws/getting-started/installation/#docker-compose).
 - The `v2` provider discontinues Lambda Executor Modes such as `LAMBDA_EXECUTOR=local`.
   Previously, this mode was used as a fallback when the Docker socket was unavailable in the LocalStack container, but many users unintentionally used it instead of the configured `LAMBDA_EXECUTOR=docker`.
   The new provider now behaves similarly to the old `docker-reuse` executor and does not require such configuration.
@@ -602,7 +604,7 @@ With the new implementation, the following changes have been introduced:
   The ARM containers for compatible runtimes are based on Amazon Linux 2, and ARM-compatible hosts can create functions with the `arm64` architecture.
 - Lambda functions in LocalStack resolve AWS domains, such as `s3.amazonaws.com`, to the LocalStack container.
   This domain resolution is DNS-based and can be disabled by setting `DNS_ADDRESS=0`.
-  For more information, refer to [Transparent Endpoint Injection](/aws/configuration/networking/transparent-endpoint-injection).
+  For more information, refer to [Transparent Endpoint Injection](/aws/customization/networking/transparent-endpoint-injection).
   Previously, LocalStack provided patched AWS SDKs to redirect AWS API calls transparently to LocalStack.
 - The new provider may generate more exceptions due to invalid input.
   For instance, while the old provider accepted arbitrary strings (such as `r1`) as Lambda roles when creating a function, the new provider validates role ARNs using a regular expression that requires them to be in the format `arn:aws:iam::000000000000:role/lambda-role`.
@@ -613,7 +615,7 @@ With the new implementation, the following changes have been introduced:
   The configuration `LAMBDA_SYNCHRONOUS_CREATE=1` can force synchronous function creation, but it is not recommended.
 - LocalStack's Lambda implementation, allows you to customize the Lambda execution environment using the [Lambda Extensions API](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-extensions-api.html).
   This API allows for advanced monitoring, observability, or developer tooling, providing greater control and flexibility over your Lambda functions.
-  Lambda functions can also be run on hosts with [multi-architecture support](/aws/configuration/config/arm64-support/), allowing you to leverage LocalStack's Lambda API to develop and test Lambda functions with high parity.
+  Lambda functions can also be run on hosts with [multi-architecture support](/aws/customization/advanced/arm64-support/), allowing you to leverage LocalStack's Lambda API to develop and test Lambda functions with high parity.
 
 The following configuration options from the old provider are discontinued in the new provider:
 

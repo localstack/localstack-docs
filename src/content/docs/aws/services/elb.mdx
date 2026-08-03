@@ -170,6 +170,81 @@ With the alternative URL structure:
 http(s)://localhost.localstack.cloud:4566/_aws/elb/example-lb/test/path
 ```
 
+## Multiple Listeners and Port-Based Routing
+
+An Application Load Balancer can have multiple listeners, each bound to a different port.
+In LocalStack, same-scheme listeners (for example, two HTTP listeners on ports 80 and 8080) are routed by matching the request's arrival port to the listener's configured port.
+
+### Configuring LocalStack for multiple listener ports
+
+To reach two same-scheme listeners on distinct ports, both ports must be published in [`GATEWAY_LISTEN`](/aws/customization/configuration-options/#core) when starting LocalStack:
+
+```bash
+GATEWAY_LISTEN=0.0.0.0:4566,0.0.0.0:80,0.0.0.0:8080 localstack start
+```
+
+### Creating multiple listeners
+
+With LocalStack running and both ports published, create a load balancer and two HTTP listeners on different ports.
+The following example uses the `subnet_id` variable set in the [Getting started](#getting-started) steps above, and creates two listeners with distinct `fixed-response` default actions so you can verify that each port routes to the correct listener:
+
+```bash
+# Create the load balancer
+loadBalancer=$(awslocal elbv2 create-load-balancer \
+    --name multi-listener-lb \
+    --subnets $subnet_id | jq -r '.LoadBalancers[].LoadBalancerArn')
+
+# Listener on port 80
+awslocal elbv2 create-listener \
+    --load-balancer-arn $loadBalancer \
+    --protocol HTTP \
+    --port 80 \
+    --default-actions '{"Type":"fixed-response","FixedResponseConfig":{"StatusCode":"200","MessageBody":"Listener 80","ContentType":"text/plain"}}'
+
+# Listener on port 8080
+awslocal elbv2 create-listener \
+    --load-balancer-arn $loadBalancer \
+    --protocol HTTP \
+    --port 8080 \
+    --default-actions '{"Type":"fixed-response","FixedResponseConfig":{"StatusCode":"200","MessageBody":"Listener 8080","ContentType":"text/plain"}}'
+```
+
+A request to port 80 is handled by the listener bound to that port:
+
+```bash
+curl multi-listener-lb.elb.localhost.localstack.cloud:80
+```
+
+```bash title="Output"
+Listener 80
+```
+
+A request to port 8080 is handled by the listener bound to that port:
+
+```bash
+curl multi-listener-lb.elb.localhost.localstack.cloud:8080
+```
+
+```bash title="Output"
+Listener 8080
+```
+
+### By-design limitation: shared gateway port
+
+When a request arrives on the shared `:4566` gateway port, LocalStack cannot determine which same-scheme listener was intended and falls back to the first-created listener:
+
+```bash
+curl multi-listener-lb.elb.localhost.localstack.cloud:4566
+```
+
+```bash title="Output"
+Listener 80
+```
+
+:::note
+If your setup uses only the default `:4566` gateway port and you need multiple listeners, consolidate to a single listener per scheme. Same-scheme listeners on distinct ports can only be told apart when those ports are added to `GATEWAY_LISTEN` and targeted directly.
+:::
+
 ## Examples
 
 The following code snippets and sample applications provide practical examples of how to use ELB in LocalStack for various use cases:

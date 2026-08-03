@@ -20,19 +20,19 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Managed Identity and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+This guide is designed for users new to Managed Identity and assumes basic knowledge of the Azure CLI and our `lstk az` proxy.
 
 Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
 ```bash
-azlocal start-interception
+lstk az start-interception
 ```
 
 This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
 To revert this configuration, run:
 
 ```bash
-azlocal stop-interception
+lstk az stop-interception
 ```
 
 This reconfigures the `az` CLI to send commands to the official Azure management REST API.
@@ -276,6 +276,7 @@ The Managed Identity emulator supports the following features:
 - **Management locks**: Create, delete, retrieve, and list management locks at the resource group level. Supported lock levels are `CanNotDelete` and `ReadOnly`.
 - **Microsoft Graph service principal queries**: List, create, and delete service principals through the Microsoft Graph `/v1.0/servicePrincipals` endpoint with OData query support including `$filter`, `$select`, `$top`, `$count`, and `$orderby`.
 - **Directory object lookups**: Resolve multiple directory objects by ID through the `/v1.0/directoryObjects/getByIds` endpoint.
+- **Principal propagation**: Tokens minted for a managed identity via the Instance Metadata Service (IMDS) or AKS Workload Identity carry that identity's principal ID, which is what [RBAC enforcement](/azure/services/role-assignment/#enabling-rbac-enforcement) evaluates role assignments against when enabled.
 
 ## Limitations
 

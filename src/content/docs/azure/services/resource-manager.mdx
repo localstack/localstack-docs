@@ -20,19 +20,19 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Resource Manager and assumes basic knowledge of the Azure CLI and our `azlocal` wrapper script.
+This guide is designed for users new to Resource Manager and assumes basic knowledge of the Azure CLI and our `lstk az` proxy.
 
 Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
 ```bash
-azlocal start-interception
+lstk az start-interception
 ```
 
 This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
 To revert this configuration, run:
 
 ```bash
-azlocal stop-interception
+lstk az stop-interception
 ```
 
 This reconfigures the `az` CLI to send commands to the official Azure management REST API.
@@ -241,7 +241,7 @@ The Resource Manager emulator supports the following features:
 - **No what-if analysis**: The `az deployment group what-if` operation is not implemented.
 - **ARM template function coverage**: While over 60 functions are supported, some less common functions or advanced overloads may not be fully implemented.
 - **No resource tags on generic resource listings**: Tags and extended properties may not be fully populated when listing resources across a subscription.
-- **No RBAC enforcement on resource operations**: All API calls succeed without role-based access control checks.
+- **RBAC enforcement on resource operations is opt-in**: By default, all API calls succeed without role-based access control checks. Set `LS_AZURE_ENFORCE_RBAC` to enable control-plane checks across ARM resource types; see [Role Assignment: Enabling RBAC enforcement](/azure/services/role-assignment/#enabling-rbac-enforcement).
 - **Deployment concurrency**: Resources within a single deployment are created sequentially with dependency resolution, not in full parallel as in Azure.
 - **No deployment cancellation**: Running deployments cannot be cancelled.
 - **No deployment deletion**: Deployments are retained in memory and cannot be explicitly deleted via the API.

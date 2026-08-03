@@ -24,6 +24,19 @@
     vertical-align: middle;
 }
 
+.lightning-icon::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url('/src/assets/images/lightning.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
 .file-icon::before {
     content: "";
     display: inline-block;
@@ -95,6 +108,19 @@
     width: 16px;
     height: 16px;
     background-image: url('/src/assets/images/buildings.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.users-icon::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url('/src/assets/images/users.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -184,6 +210,16 @@
     border-radius: 4px;
 }
 
+/* Nested group label (e.g. SCIM under Single Sign-On) - match sibling links.
+   Starlight renders these as <span class="large">; the rule targets the class
+   directly when it appears inside a nested level. */
+.sidebar-content .top-level li details ul li .large {
+    font-family: var(--font-aeonik-fono) !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    color: var(--sl-color-gray-3) !important;
+}
+
 /* Third level navigation text styles */
 .sidebar-content .top-level li details ul li details ul li a span {
     font-size: 14px !important;
@@ -213,15 +249,9 @@ starlight-multi-sidebar-select select {
     font-size: 18px;
 }
 
-:where(.astro-3ii7xxms)[aria-current="page"],
-:where(.astro-3ii7xxms)[aria-current="page"]>span {
-    background-color: transparent;
-    color: var(--sl-color-accent) !important;
-}
-
-/* Additional rule to ensure span inside active page link is styled */
-.sidebar-content .top-level li details ul li details ul li a[aria-current="page"] span {
-    background-color: transparent;
+.sidebar-content a[aria-current="page"],
+.sidebar-content a[aria-current="page"] > span {
+    background-color: transparent !important;
     color: var(--sl-color-accent) !important;
 }
 
@@ -322,7 +352,7 @@ h2#starlight__on-this-page::before {
     vertical-align: middle;
 }
 
-.right-sidebar-panel:where(.astro-pb3aqygn) :where(a) {
+.right-sidebar-panel a {
     font-size: 14px;
 }
 

@@ -1,10 +1,10 @@
 ---
-title: "Role Assignment"
+title: 'Role Assignment'
 description: Get started with Azure Role Assignments on LocalStack
 template: doc
 ---
 
-import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+import AzureFeatureCoverage from '../../../../components/feature-coverage/AzureFeatureCoverage';
 
 ## Introduction
 
@@ -22,14 +22,14 @@ This guide walks you through assigning a built-in role to a managed identity, li
 Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
 
 ```bash
-azlocal start-interception
+lstk az start-interception
 ```
 
 This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
 To revert this configuration, run:
 
 ```bash
-azlocal stop-interception
+lstk az stop-interception
 ```
 
 This reconfigures the `az` CLI to send commands to the official Azure management REST API.
@@ -316,6 +316,18 @@ az role assignment delete \
   --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/rg-rbac-demo"
 ```
 
+## Enabling RBAC enforcement
+
+By default, Azure RBAC on LocalStack is **not enforced**: role assignments and role definitions are stored, but every operation succeeds regardless of the assigned roles. Set `LS_AZURE_ENFORCE_RBAC` to `true`, `yes`, or `1` when starting the emulator to turn on enforcement.
+
+With enforcement enabled:
+
+- **Control plane**: every ARM request, across all Azure services and resource types, is checked against the caller's role assignments at the target scope and denied with a `403` if unauthorized.
+- **Data plane**: checked for [Blob](/azure/services/blob-storage/), [Queue](/azure/services/queue-storage/), and [Table](/azure/services/table-storage/) Storage, RBAC-mode [Key Vault](/azure/services/key-vault/) vaults (secrets and certificates only), and Event Grid publish/receive. Denials match the shape Azure returns for each service, for example a Storage `AuthorizationPermissionMismatch` XML error or a Key Vault `ForbiddenByRbac` error.
+- **Not covered yet**, even with enforcement enabled: Storage File, the Service Bus data plane, Cosmos DB's data plane, and Microsoft Entra database authentication for Azure SQL, PostgreSQL, and MySQL flexible servers. Requests to these continue to succeed regardless of role assignments.
+
+The default SDK/Terraform service principal and the `az` CLI's `any-app` principal are always treated as a Global Administrator and subscription Owner, and bypass data-plane checks by default too. To observe a deny, use a managed identity or service principal that assumes neither role — for example, the identity created in [Create a user-assigned managed identity](#create-a-user-assigned-managed-identity) without a role assigned at the target scope.
+
 ## Features
 
 - **Role assignment creation:** Create role assignments by specifying an assignee principal ID, role name or ID, and scope.
@@ -327,7 +339,7 @@ az role assignment delete \
 
 ## Limitations
 
-- **RBAC not enforced:** Role assignments are stored but not evaluated. All operations on LocalStack succeed regardless of assigned roles.
+- **RBAC enforcement is opt-in:** By default, role assignments are stored but not evaluated, and all operations succeed regardless of assigned roles. Set `LS_AZURE_ENFORCE_RBAC` to enable enforcement.
 - **Condition-based assignments:** Attribute-based access control (ABAC) conditions in assignments are accepted at the model level but are not evaluated.
 - **Deny assignments:** `Microsoft.Authorization/denyAssignments` are not supported.
 - **Management group scopes:** Assignments at management group scope are not supported.
