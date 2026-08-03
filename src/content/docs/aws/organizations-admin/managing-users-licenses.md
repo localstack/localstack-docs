@@ -15,7 +15,7 @@ To access this page:
 1. Click on your name in the top-left corner of the dashboard.
 2. Go to **Settings** → **Users & Licenses** under the **Administration** section.
 
-![Users & Licenses management screen](/images/aws/users-licenses-page.png)
+![Users & Licenses management screen](/images/aws/webapp-managing-users-licenses.png) 
 
 ## User Roles
 
