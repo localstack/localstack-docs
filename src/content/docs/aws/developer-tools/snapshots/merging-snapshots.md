@@ -32,8 +32,10 @@ For this merge strategy, use the following:
 ```bash
 lstk snapshot load snapshot1
 lstk snapshot load --merge=overwrite snapshot2
+lstk status
+```
 
-lstk status                          
+```bash title="Output"
   [...]
   SNS      topic3                                                                     us-east-1  000000000000
   SQS      http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/queue-3  us-east-1  000000000000
@@ -50,10 +52,10 @@ For this merge strategy, use the following:
 ```bash
 lstk snapshot load snapshot1
 lstk snapshot load --merge=account-region-merge snapshot2
+lstk status
 ```
 
-```bash
-lstk status
+```bash title="Output"
   [...]
   S3       bucket1                                                                         global          000000000000
   SNS      topic2                                                                          ap-southeast-2  000000000000
@@ -75,8 +77,10 @@ For this merge strategy, use the following:
 ```bash
 lstk snapshot load snapshot1
 lstk snapshot load --merge=service-merge snapshot2
-
 lstk status
+```
+
+```bash title="Output"
   [...]
   S3       bucket1                                                                         global          000000000000
   SNS      topic1                                                                          us-east-1       000000000000

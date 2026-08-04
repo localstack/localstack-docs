@@ -37,7 +37,7 @@ You can save and load snapshots to or from your Cloud Pods repository using the 
 lstk snapshot --help
 ```
 
-```bash
+```bash title="Output"
 Manage emulator snapshots
 
 Usage: lstk snapshot [flags]
@@ -76,7 +76,7 @@ The command for saving a snapshot to Cloud Pods is similar to the one for saving
 lstk snapshot save pod:sample-application
 ```
 
-```bash
+```bash title="Output"
 ✔︎ Snapshot saved to pod:sample-application
 • Version: 1
 • Services: s3
@@ -89,7 +89,7 @@ You can list the available Cloud Pods, for both you and your organization, using
 lstk snapshot list
 ```
 
-```bash
+```bash title="Output"
 ~ 1 snapshot
 
   NAME                VERSION  LAST CHANGED
@@ -104,7 +104,7 @@ lstk aws sqs create-queue --queue-name queue-1
 lstk snapshot save pod:sample-application
 ```
 
-```bash
+```bash title="Output"
 ✔︎ Snapshot saved to pod:sample-application
 • Version: 2
 • Services: sqs, s3
@@ -118,7 +118,7 @@ lstk aws sns create-topic --name topic1
 lstk snapshot save pod:sample-application
 ```
 
-```bash
+```bash title="Output"
 ✔︎ Snapshot saved to pod:sample-application
 • Version: 3
 • Services: sqs, sns, s3
@@ -132,7 +132,7 @@ Note how each version covers the services that existed in the emulator at the ti
 lstk snapshot versions pod:sample-application
 ```
 
-```bash
+```bash title="Output"
 ~ 3 versions
 
   VERSION  CREATED               LOCALSTACK  SERVICES
@@ -156,7 +156,7 @@ lstk restart
 lstk snapshot load pod:sample-application
 ```
 
-```bash
+```bash title="Output"
 ✔︎ Snapshot loaded from pod:sample-application
 • Services: s3, sns, sqs
 ```
@@ -167,7 +167,7 @@ You can examine the loaded resources with the `lstk status` command:
 lstk status
 ```
 
-```bash
+```bash title="Output"
 ✔︎ LocalStack AWS Emulator is running
 • Endpoint: localhost.localstack.cloud:4566
 • Container: localstack-aws-dev
@@ -187,7 +187,7 @@ Cloud Pod name. Before loading, you can inspect the metadata for a specific vers
 lstk snapshot show pod:sample-application:1
 ```
 
-```bash
+```bash title="Output"
 Name            sample-application
 Version         1
 Created         2026-08-04 01:00 UTC
@@ -205,7 +205,7 @@ lstk restart
 lstk snapshot load pod:sample-application:1
 ```
 
-```bash
+```bash title="Output"
 ✔︎ Snapshot loaded from pod:sample-application:1
 • Services: s3
 ```

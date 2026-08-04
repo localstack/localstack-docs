@@ -10,14 +10,14 @@ tags: ["Base"]
 import { Tabs, TabItem, FileTree } from '@astrojs/starlight/components';
 
 LocalStack's _Persistence_ mechanism uses snapshots to provide an enhanced level of durability, bringing it closer to the behavior you'd expect from a cloud-based service.
-By default, LocalStack's internal state is emphemeral, reseting when the emulator is shutdown or exits unexpectedly. By enabling the Persistence feature,
+By default, LocalStack's internal state is ephemeral, resetting when the emulator is shut down or exits unexpectedly. When the Persistence feature is enabled,
 LocalStack takes periodic snapshots of your emulator, then restores it upon restart. This reduces the likelihood of unexpected data loss.
 
 ## Configuration
 
-To start snapshot-based persistence, launch LocalStack with the `--persist` command line option, or the configuration option `PERSISTENCE=1`.
+To start snapshot-based persistence, launch LocalStack with the `--persist` command-line option, or the configuration option `PERSISTENCE=1`.
 This instructs LocalStack to periodically generate a snapshot, storing it within LocalStack's internal volume directory. There is no visible
-snapshot file (or Cloud Pod) created, as the snapshot is managed internally to LocalStack.
+snapshot file (or Cloud Pod) created, as the snapshot is managed internally by LocalStack.
 
 Upon restarting LocalStack, the last successful snapshot is automatically reloaded, so you can resume your activities exactly where you left off.
 
@@ -28,7 +28,7 @@ lstk start --persist
 ```
 </TabItem>
 <TabItem label="Docker Compose">
-```yaml showshowLineNumbers
+```yaml showLineNumbers
 image: localstack/localstack-pro
 environment:
   - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
@@ -60,23 +60,23 @@ LocalStack generates periodic snapshots of the running emulator. There are four 
 You can select a particular save strategy by setting `SNAPSHOT_SAVE_STRATEGY=<strategy>`.
 
 * **`ON_REQUEST`**: On every AWS API call that potentially makes a modification, LocalStack saves the state of that service.
-  This strategy minimizes the chance for data loss, but also has significant performance implications.
+  This strategy minimizes the chance of data loss, but also has significant performance implications.
   The service must be locked during snapshotting, with any requests to the particular AWS service being blocked until the snapshot is complete.
-   In many cases this is just a few milliseconds, but can become significant in some services.
+  In many cases this is just a few milliseconds, but can become significant in some services.
 * **`ON_SHUTDOWN`**: The state of all services is saved during the shutdown phase of LocalStack.
-  This strategy has negliable performance impact, but is not good when you want to minimize the chance for data loss.
-  Should LocalStack for some reason not shut down properly or is terminated before it can finalize the snapshot, you may be left with an incomplete state on disk.
+  This strategy has negligible performance impact, but is not good for minimizing the chance of data loss.
+  Should LocalStack for some reason not shut down properly, or be terminated before it can finalize the snapshot, you may be left with an incomplete state on disk.
 * **`SCHEDULED`** (**default**): Saves the state of all services at regular intervals, as long as the state has been modified since the last snapshot.
   By default, the flush interval is 15 seconds.
   It can be configured via the `SNAPSHOT_FLUSH_INTERVAL` configuration variable.
   This is a compromise between `ON_REQUEST` and `ON_SHUTDOWN` in terms of performance and reliability.
 * **`MANUAL`**: Turns off automatic snapshotting and gives you control through the internal state endpoints.
 
-### Load Strategies
+### Load strategies
 
 Similarly, you can configure when LocalStack should restore the state snapshots, by using `SNAPSHOT_LOAD_STRATEGY=<strategy>`.
 
-* **`ON_REQUEST`**: (**default**) The state is loaded lazily when the service is first used (that, the first API call to that service).
+* **`ON_REQUEST`**: (**default**) The state is loaded lazily when the service is first used (that is, the first API call to that service).
   This maintains LocalStack's lazy-loading behavior for AWS services.
 * **`ON_STARTUP`**: The state of all services in the snapshot is restored when LocalStack starts up, before any of the services are accessed. This
   reduces the cost of lazy-loading when the data is eventually accessed, but does cause an upfront delay to pre-load everything.
@@ -84,9 +84,9 @@ Similarly, you can configure when LocalStack should restore the state snapshots,
 
 ### Endpoints
 
-With the `MANUAL` save or load strategy you can trigger snapshotting manually when it best suits your application flow.
+With the `MANUAL` save or load strategy, you can trigger snapshotting manually when it best suits your application flow.
 
-* `POST /_localstack/state/<service>/save` take a snapshot the given service
+* `POST /_localstack/state/<service>/save` take a snapshot of the given service
 * `POST /_localstack/state/<service>/load` load the most recent snapshot of the given service
 
 For example, a snapshot for a particular service (e.g., `s3`) can be triggered by running the following command.
@@ -102,13 +102,13 @@ We provide the following endpoints:
 * `POST /_localstack/state/save`
 * `POST /_localstack/state/load`
 
-The response streams line by line the service that has been saved/loaded and the status of the operation.
+The response is a service-by-service JSON stream, showing the service that has been saved/loaded and the status of the operation.
 
 ```bash
 curl -X POST localhost:4566/_localstack/state/save
 ```
 
-```bash
+```bash title="Output"
 {"service": "sqs", "status": "ok"}
 {"service": "s3", "status": "ok"}
 ```

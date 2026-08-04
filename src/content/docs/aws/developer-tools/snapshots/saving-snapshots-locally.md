@@ -30,7 +30,7 @@ The `lstk status` command confirms that the three resources are deployed:
 lstk status
 ```
 
-```bash
+```bash title="Output"
 ✔︎ LocalStack AWS Emulator is running
 • Endpoint: localhost.localstack.cloud:4566
 • Container: localstack-aws-dev
@@ -47,6 +47,9 @@ To save the state to a local file, run:
 
 ```bash
 lstk snapshot save my-snapshot
+```
+
+```bash title="Output"
 ✔︎ Snapshot saved to ./my-snapshot.snapshot
 • Services: sns, sqs, s3
 • Size: 85.4 KB
@@ -57,6 +60,9 @@ If you omit it, `lstk` auto-generates a timestamped snapshot file in the current
 
 ```bash
 lstk snapshot save
+```
+
+```bash title="Output"
 ✔︎ Snapshot saved to ./snapshot-2026-08-04T20-16-49-5e3.snapshot
 • Services: sns, sqs, s3
 • Size: 85.4 KB
@@ -66,6 +72,9 @@ Since saving is a common operation, the `lstk save` abbreviation is also availab
 
 ```bash
 lstk save
+```
+
+```bash title="Output"
 ✔︎ Snapshot saved to ./snapshot-2026-08-04T20-16-49-db4.snapshot
 • Services: sns, sqs, s3
 • Size: 85.4 KB
@@ -78,7 +87,7 @@ lstk restart
 lstk status
 ```
 
-```bash
+```bash title="Output"
 ✔︎ LocalStack AWS Emulator is running
 • Endpoint: localhost.localstack.cloud:4566
 • Container: localstack-aws-dev
@@ -91,6 +100,9 @@ To load a previously saved snapshot, run:
 
 ```bash
 lstk snapshot load my-snapshot
+```
+
+```bash title="Output"
 ✔︎ Snapshot loaded from ./my-snapshot.snapshot
 ```
 
@@ -98,6 +110,9 @@ Alternatively, the `lstk load` command is also available:
 
 ```bash
 lstk load my-snapshot
+```
+
+```bash title="Output"
 ✔︎ Snapshot loaded from ./my-snapshot.snapshot
 ```
 
@@ -107,7 +122,7 @@ Running `lstk status` once more confirms that the bucket, topic, and queue have 
 lstk status
 ```
 
-```bash
+```bash title="Output"
 ✔︎ LocalStack AWS Emulator is running
 • Endpoint: localhost.localstack.cloud:4566
 • Container: localstack-aws-dev
