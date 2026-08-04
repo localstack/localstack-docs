@@ -415,7 +415,7 @@ To learn more about these configuration options, see [Cloud Pods](/aws/developer
 | `POD_LOAD_CLI_TIMEOUT` | 60 (default) | Timeout in seconds to wait before returning from load operations on the Cloud Pods CLI |
 | `POD_ENCRYPTION` | `0` (default) \| `1` | Whether to encrypt the Cloud Pods artifacts at rest. |
 | `ENABLE_POD_RESOURCES=1` | `0` (default) \| `1`  | Whether to save a detailed Stack Overview including available resources for the Cloud Pod |
-| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [snapshot merging](/aws/developer-tools/snapshots/saving-snapshots-locally/#snapshot-merging)) |
+| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [merging snapshots](/aws/developer-tools/snapshots/merging-snapshots/)) |
 
 ## Extensions
 
