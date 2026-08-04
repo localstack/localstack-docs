@@ -34,14 +34,16 @@ lstk snapshot save my-snapshot s3://ls-s3-bucket-example
 ```bash title="Output"
 ✔︎ Snapshot saved to s3://ls-s3-bucket-example as "my-snapshot"
 • Version: 1
-• Size: 22 B
+• Size: 74.6 KB
 ```
 
 :::caution
 Snapshots are transferred to a real Amazon S3 bucket, so [transparent endpoint injection](/aws/customization/networking/transparent-endpoint-injection) must be disabled.
 Otherwise LocalStack's [DNS server](/aws/customization/networking/dns-server) resolves the AWS domains back to the emulator, and the transfer never reaches your bucket.
 
-Disable this feature by setting [`LOCALSTACK_DNS_ADDRESS=0`](/aws/customization/configuration-options/), either on the command line when starting `lstk`, or in your `config.toml` file.
+Disable this feature by setting [`DNS_ADDRESS=0`](/aws/customization/configuration-options/) when starting the emulator.
+On the command line, use `LOCALSTACK_DNS_ADDRESS=0 lstk start` — host variables prefixed with `LOCALSTACK_` are forwarded to the emulator.
+In a `config.toml` [environment profile](/aws/developer-tools/running-localstack/lstk/#passing-environment-variables-to-the-container), use the unprefixed form `DNS_ADDRESS = "0"`.
 :::
 
 Once the snapshot has been saved, you can confirm the presence of the snapshot artifacts in the S3 bucket by running:
@@ -51,7 +53,7 @@ aws s3 ls s3://ls-s3-bucket-example
 ```
 
 ```bash title="Output"
-2026-08-05 10:08:55         22 localstack-pod-my-snapshot-state-1.zip
+2026-08-05 10:08:55      76390 localstack-pod-my-snapshot-state-1.zip
 ```
 
 You can then use `lstk snapshot load` to load the previously saved snapshot:
