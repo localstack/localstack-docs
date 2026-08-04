@@ -18,7 +18,7 @@ The internal data structures inside a LocalStack emulator change over time as se
 To prevent silently loading state into an incompatible runtime, LocalStack ships a set of compatibility rules that compare the LocalStack version recorded in the snapshot with the version of the running emulator.
 These rules apply to all snapshots, whether saved locally to a file, saved to a Cloud Pod, or implicitly saved when persistence is enabled.
 
-If a rule rejects the snapshot, LocalStack does not load it, then logs the reason.
+If a rule rejects the snapshot, LocalStack does not load it, and logs the reason.
 The rules currently enforced are:
 
 | Rule | Behavior |
@@ -37,7 +37,7 @@ This bypasses every compatibility rule and lets LocalStack attempt to load the s
 <Tabs>
 <TabItem label="LocalStack CLI">
 ```bash
-DISABLE_COMPATIBILITY_RULES=1 lstk start --persist
+LOCALSTACK_DISABLE_COMPATIBILITY_RULES=1 lstk start --persist
 ```
 </TabItem>
 <TabItem label="Docker Compose">
@@ -72,17 +72,17 @@ Use this option only for debugging or when migrating data with a tested workarou
 ## Service coverage
 
 Although we are working to support snapshots for all AWS services,
-there are some common issues, known limitations, and also services that are not well tested for snapshot support.
-An overview is available [here](#snapshot-coverage-overview).
+there are some common issues, known limitations, and services that are not well tested for snapshot support.
+See the [snapshot coverage overview](#snapshot-coverage-overview) below for the current state of support.
 
-For example, when using LocalStack's snapshot feature, ports assigned to certain services (such as RDS or Elasticache) may not be preserved when reloading that snapshot. 
-If you start new services *before* restoring the snapshot, these new instances may use ports originally used by the saved services. 
+For example, when using LocalStack's snapshot feature, ports assigned to certain services (such as RDS or ElastiCache) may not be preserved when reloading that snapshot.
+If you start new services *before* restoring the snapshot, these new instances may use ports originally used by the saved services.
 
 As a result, restored resources may point to invalid or unintended ports.
-It is suggested to restore services in the same order as initially deployed, though this is not always reliable.
+We suggest restoring services in the same order they were initially deployed, though this is not always reliable.
 
 If you encounter a limitation or bug with snapshot support, please [contact support](/aws/help-support/get-help/).
 
-## Snapshot Coverage Overview
+## Snapshot coverage overview
 
 <PersistenceCoverage client:load />
