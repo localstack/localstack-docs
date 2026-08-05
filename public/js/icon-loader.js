@@ -20,7 +20,6 @@
     Integrations: 'connections-icon',
     'Organizations & Admin': 'users-icon',
     Enterprise: 'buildings-icon',
-    'Quickstart Library': 'book-icon',
     Tutorials: 'book-icon',
     Changelog: 'change-icon',
     'SQL Functions': 'sql-icon',
