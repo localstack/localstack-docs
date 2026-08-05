@@ -367,6 +367,12 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | - | - | - |
 | `SFN_MOCK_CONFIG` | `/tmp/MockConfigFile.json` | Specifies the file path to the mock configuration file that defines mock service integrations for Step Functions. |
 
+### Verified Permissions
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `VERIFIEDPERMISSIONS_DISABLE_JWT_VERIFICATION` | `0` (default) \| `1` | Disables JWT signature verification for OIDC identity sources. When enabled, LocalStack will decode tokens without validating signatures against the issuer's JWKS, allowing use of unreachable or self-signed OIDC providers in local development. |
+
 ## Security
 
 :::danger
