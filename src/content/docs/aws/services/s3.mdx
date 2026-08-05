@@ -122,37 +122,82 @@ awslocal s3 presign s3://sample-bucket/image.jpg
 You will see a generated pre-signed URL for your S3 object.
 You can use [curl](https://curl.se/) or [`wget`](https://www.gnu.org/software/wget/) to retrieve the S3 object using the pre-signed URL.
 
-## Path-Style and Virtual Hosted-Style Requests
+## Configuring S3 Endpoint
 
-Similar to AWS, LocalStack categorizes requests as either [Path style or Virtual-Hosted style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) based on the Host header of the request.
-The following example illustrates this distinction:
+LocalStack supports both [Virtual-Hosted style and Path style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) S3 requests.
+AWS recommends Virtual-Hosted style addressing, and some AWS regions do not support path-style requests at all.
+LocalStack follows this recommendation: **Virtual-Hosted style is the default and recommended approach**.
+
+### Recommended: Using AWS_ENDPOINT_URL_S3
+
+The simplest way to configure your application to use LocalStack's S3 endpoint is with the `AWS_ENDPOINT_URL_S3` environment variable.
+This approach works with modern AWS SDKs and tools without requiring code changes:
 
 ```bash
-http://<bucket-name>.s3.<region>.localhost.localstack.cloud:4566/<key-name> # host-style request
-http://<bucket-name>.s3.localhost.localstack.cloud:4566/<key-name> # host-style request, region is not mandatory in LocalStack
-http://s3.<region>.localhost.localstack.cloud:4566/<bucket-name>/<key-name> # path-style request
-http://localhost:4566/<bucket-name>/<key-name> # path-style request
+export AWS_ENDPOINT_URL_S3=http://s3.localhost.localstack.cloud:4566
 ```
 
-A **Virtual-Hosted style** request will have the `bucket` as part of the `Host` header of your request.
-In order for LocalStack to be able to parse the bucket name from your request, your endpoint needs to be prefixed with `s3.`, like `s3.localhost.localstack.cloud`.
+This environment variable is supported by:
+- **AWS CLI v2**: All `aws s3` and `aws s3api` commands automatically use this endpoint
+- **boto3** (Python SDK) with botocore >= 1.29: `boto3.client("s3")` resolves the endpoint automatically
+- **Terraform** with terraform-provider-aws >= 5.x: No `endpoints {}` block needed in your configuration
 
-If your endpoint cannot be prefixed with `s3.`, you should configure your SDK to use **Path style** request instead, and make the bucket part of the path.
+With this variable set, your application code remains unchanged and can run against both LocalStack and real AWS by simply changing the environment.
 
-By default, most SDKs will try to use **Virtual-Hosted style** requests and prepend your endpoint with the bucket name.
-However, if the endpoint is not prefixed by `s3.`, LocalStack will not be able to understand the request and it will most likely result in an error.
+### Virtual-Hosted Style Requests
 
-You can either change the endpoint to an S3-specific one, or configure your SDK to use **Path style** requests instead.
-Check out our [SDK documentation](/aws/customization/integrations/localstack-sdks/) to learn how you can configure AWS SDKs to access LocalStack and S3.
+A **Virtual-Hosted style** request includes the bucket name as part of the `Host` header.
+For LocalStack to parse the bucket name correctly, your endpoint must be prefixed with `s3.`, like `s3.localhost.localstack.cloud`:
+
+```bash
+http://<bucket-name>.s3.localhost.localstack.cloud:4566/<key-name>
+```
+
+This is the format that `AWS_ENDPOINT_URL_S3` uses, and it's what most modern AWS SDKs use by default.
+
+### Path Style Requests (Fallback)
+
+**Path style** requests include the bucket as part of the URL path instead of the hostname:
+
+```bash
+http://localhost:4566/<bucket-name>/<key-name>
+```
+
+You should only use path-style requests if you have a specific reason:
+- Your bucket names are not DNS-compliant (contain underscores, uppercase letters, etc.)
+- You're using an older SDK or tool that doesn't support virtual-hosted style
+- You have specific networking constraints that prevent using wildcard DNS
+
+To use path-style requests with AWS SDKs, you must explicitly enable it and use a non-S3-prefixed endpoint:
 
 :::tip
-While using [AWS SDKs](https://aws.amazon.com/developer/tools/#SDKs), you would need to configure the `ForcePathStyle` parameter to `true` in the S3 client configuration to use **Path style** requests.
-If you want to use virtual host addressing of buckets, you can remove `ForcePathStyle` from the configuration.
-The `ForcePathStyle` parameter name can vary between SDK and languages, please check our [SDK documentation](/aws/connecting/aws-sdks/)
+To enable path-style requests in [AWS SDKs](https://aws.amazon.com/developer/tools/#SDKs), set the `ForcePathStyle` parameter to `true` in your S3 client configuration.
+The parameter name varies by SDK:
+- Python (boto3): `s3={'addressing_style': 'path'}` in the Session config, or `S3ForcePathStyle=true` in the Config
+- JavaScript: `forcePathStyle: true`
+- Go: `WithS3ForcePathStyle(true)`
+- Terraform: `s3_use_path_style = true`
+- PHP: `use_path_style_endpoint => true`
+
+Check our [SDK documentation](/aws/connecting/aws-sdks/) for language-specific examples.
 :::
 
-If your endpoint is not prefixed with `s3.`, all requests are treated as **Path style** requests.
-Using the `s3.localhost.localstack.cloud` endpoint URL is recommended for all requests aimed at S3.
+### Endpoint URL Formats
+
+LocalStack recognizes the following endpoint formats:
+
+```bash
+# Virtual-Hosted style (recommended)
+http://<bucket-name>.s3.localhost.localstack.cloud:4566/<key-name>
+http://<bucket-name>.s3.<region>.localhost.localstack.cloud:4566/<key-name>
+
+# Path style (fallback)
+http://s3.localhost.localstack.cloud:4566/<bucket-name>/<key-name>
+http://s3.<region>.localhost.localstack.cloud:4566/<bucket-name>/<key-name>
+http://localhost:4566/<bucket-name>/<key-name>
+```
+
+For detailed configuration instructions for specific SDKs and tools, see our [SDK documentation](/aws/customization/integrations/localstack-sdks/) and [Infrastructure as Code guides](/aws/connecting/infrastructure-as-code/).
 
 ## Configuring Cross-Origin Resource Sharing on S3
 

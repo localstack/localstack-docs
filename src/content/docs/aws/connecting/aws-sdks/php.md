@@ -19,13 +19,25 @@ Here is an example of how to create an `S3Client` with the endpoint set to Local
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 
-// Configuring S3 Client
+// Configuring S3 Client with virtual-hosted-style addressing (recommended)
 $s3 = new Aws\S3\S3Client([
     'version' => '2006-03-01',
     'region' => 'us-east-1',
-    // Enable 'use_path_style_endpoint' => true, if bucket name is non DNS compliant
-    'use_path_style_endpoint' => true,
     'endpoint' => 'http://s3.localhost.localstack.cloud:4566',
+]);
+```
+
+This configuration uses virtual-hosted-style addressing, which AWS recommends and some regions require.
+
+If you need to use path-style addressing (for non-DNS-compliant bucket names or other specific requirements), enable it explicitly:
+
+```php showshowLineNumbers
+// Only use path-style if you have a specific requirement for it
+$s3 = new Aws\S3\S3Client([
+    'version' => '2006-03-01',
+    'region' => 'us-east-1',
+    'use_path_style_endpoint' => true,
+    'endpoint' => 'http://localhost:4566',  // Use non-S3-prefixed endpoint with path-style
 ]);
 ```
 
