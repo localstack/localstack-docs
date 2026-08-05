@@ -198,19 +198,19 @@ kubectl delete secret -n workspace localstack-auth-token
 
 ## Troubleshooting
 
-**LocalStack pod is stuck in `Pending` or `ImagePullBackOff`**
+### LocalStack pod is stuck in `Pending` or `ImagePullBackOff`
 Verify that your Auth Token secret was created correctly and that your cluster nodes can pull from the LocalStack registry. Check pod events with `kubectl describe pod -n workspace <pod-name>`.
 
-**`awslocal sts get-caller-identity` times out**
+### `awslocal sts get-caller-identity` times out
 Confirm that port forwarding is still running in a separate terminal. If it dropped, restart it with `kubectl port-forward -n workspace svc/localstack-env-1 4566`.
 
-**Lambda invocation returns an error after the first call**
+### Lambda invocation returns an error after the first call
 The first invocation takes up to 30 seconds for the Lambda pod to start. Wait and retry.
 
-**Terraform apply fails with a connection error**
+### Terraform apply fails with a connection error
 Ensure port forwarding is active before running `tflocal apply`. LocalStack must be accessible on `localhost:4566`.
 
-**MySQL pod does not start**
+### MySQL pod does not start
 Check cluster resource availability. The MySQL pod requires sufficient CPU and memory. Run `kubectl describe pod -n workspace <ls-mysql-pod-name>` to inspect scheduling events.
 
 ## Next Steps
