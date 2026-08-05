@@ -1,14 +1,14 @@
 ---
-title: "Quickstart: LocalStack on Kubernetes"
+title: "Deploy LocalStack on Kubernetes"
 description: Deploy LocalStack into a Kubernetes cluster and run a sample Lambda + RDS application in under 5 minutes.
 template: doc
 sidebar:
-  order: 1
+  order: 3
 ---
 
 ## Introduction
 
-This quickstart gets LocalStack running in a local Kubernetes cluster in about 5 minutes. You will deploy a sample application consisting of a Lambda function that queries an RDS MySQL database, with both services running as pods in your cluster managed by LocalStack's Kubernetes executor.
+This quickstart spins up LocalStack in a local Kubernetes cluster and deploys a sample application in 5 minutes. You'll run an AWS Lambda function that queries an RDS MySQL database, with both services executing as pods managed by LocalStack.
 
 LocalStack's Kubernetes integration is available as part of the [Enterprise plan](https://localstack.cloud/pricing).
 
@@ -109,7 +109,7 @@ Proceed once the pod shows `1/1 Running`.
 
 ### Step 5: Set up port forwarding
 
-Forward port 4566 so you can run AWS commands against LocalStack from your local machine:
+Forward `port 4566` so you can run AWS commands against LocalStack from your local machine:
 
 ```bash
 kubectl port-forward -n workspace svc/localstack-env-1 4566
