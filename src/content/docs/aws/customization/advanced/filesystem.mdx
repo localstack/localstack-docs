@@ -100,12 +100,17 @@ In this case, the effective layout would be something like:
         - zipfile.4986fb95
 </FileTree>
 
-### Using the CLI
+### Using lstk
 
-When using the CLI to start LocalStack, the volume directory can be configured via the `LOCALSTACK_VOLUME_DIR`.
-It should point to a directory on the host which is then automatically mounted into `/var/lib/localstack`.
-The defaults are:
+When using [`lstk`](/aws/developer-tools/running-localstack/lstk) to start LocalStack, the volume directory is configured with the `volume` field on a container block.
+It should point to a directory on the host which is then automatically mounted into `/var/lib/localstack`:
 
-- Mac: `~/Library/Caches/localstack/volume`
-- Linux: `~/.cache/localstack/volume`
-- Windows: `%LOCALAPPDATA%\cache\localstack\volume`
+```toml
+# .lstk/config.toml
+[[containers]]
+type   = "aws"
+volume = "./volume"
+```
+
+If `volume` is not set, `lstk` defaults to `<os-cache>/lstk/volume/<container-name>`.
+Run [`lstk volume path`](/aws/developer-tools/running-localstack/lstk#volume) to print the resolved directory.

@@ -27,10 +27,19 @@ This offline functionality is enabled by:
 
 - After the image is pushed to the customer-specific ECR repository, the customer can pull and push it to their internal Docker registry.
 - Developers within the customer’s network can then pull the image from this registry.
-- To use the image from the command line interface (CLI), set the `IMAGE_NAME` configuration to the name of the Enterprise image, typically using the command:
-    ```bash
-    IMAGE_NAME=localstack-enterprise localstack start
+- To use the image from the command line interface (CLI), set the `image` field on the container block to the name of the Enterprise image:
+    ```toml
+    # .lstk/config.toml
+    [[containers]]
+    type  = "aws"
+    image = "localstack-enterprise"
     ```
+
+    ```bash
+    lstk start
+    ```
+
+    See [Custom container image](/aws/developer-tools/running-localstack/lstk#custom-container-image) for details, including how `lstk` falls back to a locally present image when a pull fails.
 
 ## "Online" vs "Offline" image
 
