@@ -29,6 +29,12 @@ Each organization has its own private Cloud Pods repository, securely managed in
 isolated Amazon S3 buckets. The LocalStack CLI utilizes secure S3 presigned URLs to directly interface with the S3 bucket, bypassing the need to
 transmit the snapshot files through LocalStack's Platform APIs.
 
+:::note[Data residency]
+Cloud Pods are stored on LocalStack-managed infrastructure in the AWS `eu-central-1` region. This is the only part of the LocalStack platform that
+retains your data long-term. If your organization requires snapshots to remain within infrastructure you control, save them to
+[your own S3 bucket](/aws/developer-tools/snapshots/saving-snapshots-to-s3/) instead.
+:::
+
 ## Using the `lstk` CLI
 
 You can save and load snapshots to or from your Cloud Pods repository using the [`lstk snapshot`](/aws/developer-tools/running-localstack/lstk/#snapshot) command.
