@@ -207,7 +207,8 @@ All tiers support the mock/CRUD capability.
 For advanced setups, LocalStack for AWS comes with emulation capability for certain resource types so that they behave more closely like AWS.
 
 The underlying method for this can be controlled using the [`EC2_VM_MANAGER`](/aws/customization/configuration-options#ec2) configuration option.
-You may choose between plain mocked resources, containerized or virtualized.
+You may choose between plain mocked resources, containerized emulation, or the [Kubernetes executor](/aws/customization/kubernetes/kubernetes-executor/#ec2-kubernetes-executor).
+Fully virtualized instances via the [Libvirt VM manager](#libvirt-vm-manager) are deprecated and will be removed in a future release.
 
 ## Mock VM Manager
 
@@ -456,10 +457,9 @@ Any operation not listed below will use the mock VM manager.
 
 ## Libvirt VM Manager
 
-:::note
-The Libvirt VM manager is under active development.
-It is currently offered as a preview and will be part of the Ultimate plan upon release.
-If a functionality you desire is missing, please create a feature request on the [GitHub issue tracker](https://github.com/orgs/localstack/discussions/new/choose).
+:::caution[Deprecated]
+The Libvirt VM manager is deprecated and will be removed in a future release.
+Prefer the [Docker VM manager](#docker-vm-manager) or [Mock VM manager](#mock-vm-manager) instead.
 :::
 
 The Libvirt VM manager uses the [Libvirt](https://libvirt.org/index.html) API to create fully virtualized EC2 resources.

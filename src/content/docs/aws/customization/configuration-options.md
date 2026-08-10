@@ -185,13 +185,13 @@ This section covers configuration options that are specific to certain AWS servi
 | `EC2_DOCKER_INIT` | `0`\|`1` (default) | Start container instances with docker-init system, learn more [here](https://docs.docker.com/reference/cli/docker/container/run/#init). Disable this if you want to use a custom init system. |
 | `EC2_DOWNLOAD_DEFAULT_IMAGES` | `0`\|`1` (default) | At startup, LocalStack for AWS downloads latest Ubuntu images from Docker Hub for use as AMIs. This can be disabled for security reasons. |
 | `EC2_EBS_MAX_VOLUME_SIZE` | `1000` (default) | Maximum size (in MiBs) of user-specified EBS block devices mounted into EC2 container instances. |
-| `EC2_HYPERVISOR_URI` | `qemu:///system` (default) | [Libvirt connection URI](https://libvirt.org/uri.html#remote-uris) that indicates the hypervisor host. Only QEMU drivers are supported at this time. |
-| `EC2_LIBVIRT_NETWORK` | `default` (default) | Name of the Libvirt network to use for all instances when using the Libvirt VM manager. |
-| `EC2_LIBVIRT_POOL` | `default` (default) | Name of the Libvirt storage pool to use for all images when using the Libvirt VM manager. |
+| `EC2_HYPERVISOR_URI` | `qemu:///system` (default) | **Deprecated**. [Libvirt connection URI](https://libvirt.org/uri.html#remote-uris) that indicates the hypervisor host. Only QEMU drivers are supported at this time. Used with the deprecated Libvirt VM manager. |
+| `EC2_LIBVIRT_NETWORK` | `default` (default) | **Deprecated**. Name of the Libvirt network to use for all instances when using the Libvirt VM manager. |
+| `EC2_LIBVIRT_POOL` | `default` (default) | **Deprecated**. Name of the Libvirt storage pool to use for all images when using the Libvirt VM manager. |
 | `EC2_MOUNT_BLOCK_DEVICES` | `1`\|`0` (default) | Whether to create and mount user-specified EBS block devices into EC2 container instances. |
-| `EC2_REFERENCE_DOMAIN` | `my-template-vm` | Name of a shut-off Libvirt domain whose configuration will be cloned for all new VMs created by LocalStack. If unset or the domain is not found/not shut-off, LocalStack uses a generic configuration. |
+| `EC2_REFERENCE_DOMAIN` | `my-template-vm` | **Deprecated**. Name of a shut-off Libvirt domain whose configuration will be cloned for all new VMs created by LocalStack. If unset or the domain is not found/not shut-off, LocalStack uses a generic configuration. Used with the deprecated Libvirt VM manager. |
 | `EC2_REMOVE_CONTAINERS` | `0`\|`1` (default) | Controls whether created Docker containers are removed at instance termination or LocalStack shuts down. Disable this if there is a need to examine the container filesystem for debugging. |
-| `EC2_VM_MANAGER` | `docker`(default)\|`libvirt`\|`mock` | Emulation method to use in LocalStack for AWS. |
+| `EC2_VM_MANAGER` | `docker` (default) \| `kubernetes` (Enterprise) \| `libvirt` (deprecated) \| `mock` | Emulation method to use in LocalStack for AWS. The `kubernetes` value runs instances as Kubernetes pods. The `libvirt` value is **Deprecated** and will be removed in a future release. |
 
 ### EKS
 
