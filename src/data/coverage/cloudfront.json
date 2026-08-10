@@ -810,8 +810,8 @@
     },
     {
       "GetCloudFrontOriginAccessIdentityConfig": {
-        "implemented": false,
-        "availability": "",
+        "implemented": true,
+        "availability": "pro",
         "internal_test_suite": false,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -1785,15 +1785,15 @@
     },
     {
       "PublishFunction": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -1878,19 +1878,19 @@
       "UpdateCachePolicy": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "UpdateCloudFrontOriginAccessIdentity": {
-        "implemented": false,
-        "availability": "",
+        "implemented": true,
+        "availability": "pro",
         "internal_test_suite": false,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -2076,8 +2076,8 @@
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": true
       }
@@ -2187,6 +2187,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_cachepolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_policy",
+            "test": "test_cache_policy",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       }
@@ -2365,10 +2385,20 @@
             "test": "test_create_avp_stack_with_cognito",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..identitySources..configuration.cognitoUserPoolConfiguration.clientIds', '$..cedarVersion', '$..encryptionState']",
+            "snapshot_skipped": "['$..identitySources..configuration.cognitoUserPoolConfiguration.clientIds', '$..encryptionState']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_behavior_path_pattern_without_leading_slash",
+            "test": "test_cache_behavior_path_pattern_without_leading_slash",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cloudfront_alias_with_s3_backend",
@@ -2575,7 +2605,7 @@
             "test": "test_get_distribution",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..Distribution.DistributionConfig.DefaultCacheBehavior.ForwardedValues', '$..Distribution.Status']",
+            "snapshot_skipped": "['$..Distribution.Status']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2585,7 +2615,7 @@
             "test": "test_get_distribution_config",
             "response": "201",
             "error": "",
-            "snapshot_skipped": "['$..DistributionConfig.DefaultCacheBehavior.ForwardedValues']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2623,6 +2653,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_cache_behaviors_path_routing",
             "test": "test_multiple_cache_behaviors_path_routing",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_set_cookie_headers_not_folded",
+            "test": "test_multiple_set_cookie_headers_not_folded",
             "response": "201",
             "error": "",
             "snapshot_skipped": "",
@@ -2726,6 +2766,16 @@
             "response": "201",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_lambda_at_edge_create_distribution_cross_region_client",
+            "test": "test_lambda_at_edge_create_distribution_cross_region_client",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "['$..Distribution.DistributionConfig.Origins.Items..S3OriginConfig.OriginReadTimeout']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2887,6 +2937,16 @@
             "error": "",
             "snapshot_skipped": "all",
             "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "test": "test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
           },
@@ -3313,6 +3373,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_function/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_function",
             "test": "test_create_function",
             "response": "201",
@@ -3385,6 +3455,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originaccesscontrol/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_behavior_path_pattern_without_leading_slash",
+            "test": "test_cache_behavior_path_pattern_without_leading_slash",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cloudfront_alias_with_s3_backend",
             "test": "test_cloudfront_alias_with_s3_backend",
             "response": "201",
@@ -3431,6 +3521,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originrequestpolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_origin_request_policy",
             "test": "test_create_origin_request_policy",
             "response": "201",
@@ -3467,6 +3567,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_responseheaderspolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "201",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_response_headers_policy",
             "test": "test_create_response_headers_policy",
             "response": "201",
@@ -3497,6 +3607,36 @@
             "test": "test_cache_policies",
             "response": "204",
             "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_cachepolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_policy",
+            "test": "test_cache_policy",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_cachepolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NoSuchCachePolicy",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -3583,6 +3723,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_behavior_path_pattern_without_leading_slash",
+            "test": "test_cache_behavior_path_pattern_without_leading_slash",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cloudfront_alias_with_s3_backend",
@@ -3809,7 +3959,7 @@
             "test": "test_get_distribution",
             "response": "204",
             "error": "",
-            "snapshot_skipped": "['$..Distribution.DistributionConfig.DefaultCacheBehavior.ForwardedValues', '$..Distribution.Status']",
+            "snapshot_skipped": "['$..Distribution.Status']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3819,7 +3969,7 @@
             "test": "test_get_distribution_config",
             "response": "204",
             "error": "",
-            "snapshot_skipped": "['$..DistributionConfig.DefaultCacheBehavior.ForwardedValues']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -3867,6 +4017,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_cache_behaviors_path_routing",
             "test": "test_multiple_cache_behaviors_path_routing",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_set_cookie_headers_not_folded",
+            "test": "test_multiple_set_cookie_headers_not_folded",
             "response": "204",
             "error": "",
             "snapshot_skipped": "",
@@ -3950,6 +4110,16 @@
             "response": "204",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_lambda_at_edge_create_distribution_cross_region_client",
+            "test": "test_lambda_at_edge_create_distribution_cross_region_client",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "['$..Distribution.DistributionConfig.Origins.Items..S3OriginConfig.OriginReadTimeout']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4111,6 +4281,16 @@
             "error": "",
             "snapshot_skipped": "all",
             "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "test": "test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
           },
@@ -4211,6 +4391,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_function/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_function",
             "test": "test_create_function",
             "response": "204",
@@ -4235,6 +4425,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originaccesscontrol/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_behavior_path_pattern_without_leading_slash",
+            "test": "test_cache_behavior_path_pattern_without_leading_slash",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cloudfront_alias_with_s3_backend",
@@ -4283,6 +4493,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originrequestpolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_origin_request_policy",
             "test": "test_create_origin_request_policy",
             "response": "204",
@@ -4304,6 +4524,16 @@
             "response": "204",
             "error": "",
             "snapshot_skipped": "['$..StackResources..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_responseheaderspolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -4333,6 +4563,36 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_function/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_function/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_function/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NoSuchFunctionExists",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ]
       }
@@ -4345,6 +4605,46 @@
             "test": "test_cache_policies",
             "response": "200",
             "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_cachepolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_cachepolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_policy",
+            "test": "test_cache_policy",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_policy",
+            "test": "test_cache_policy",
+            "response": "404",
+            "error": "NoSuchCachePolicy",
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
@@ -4398,6 +4698,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "all",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_behavior_path_pattern_without_leading_slash",
+            "test": "test_cache_behavior_path_pattern_without_leading_slash",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "external"
@@ -4627,7 +4937,7 @@
             "test": "test_get_distribution",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Distribution.DistributionConfig.DefaultCacheBehavior.ForwardedValues', '$..Distribution.Status']",
+            "snapshot_skipped": "['$..Distribution.Status']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4637,7 +4947,7 @@
             "test": "test_get_distribution_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..DistributionConfig.DefaultCacheBehavior.ForwardedValues']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -4675,6 +4985,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_cache_behaviors_path_routing",
             "test": "test_multiple_cache_behaviors_path_routing",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_set_cookie_headers_not_folded",
+            "test": "test_multiple_set_cookie_headers_not_folded",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -4773,6 +5093,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_lambda_at_edge_create_distribution_cross_region_client",
+            "test": "test_lambda_at_edge_create_distribution_cross_region_client",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Distribution.DistributionConfig.Origins.Items..S3OriginConfig.OriginReadTimeout']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_lambda_at_edge_delete_distribution",
             "test": "test_lambda_at_edge_delete_distribution",
             "response": "200",
@@ -4933,6 +5263,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "test": "test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_get_distribution_not_found",
             "test": "test_get_distribution_not_found",
             "response": "404",
@@ -4987,6 +5327,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_behavior_path_pattern_without_leading_slash",
+            "test": "test_cache_behavior_path_pattern_without_leading_slash",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cloudfront_alias_with_s3_backend",
@@ -5213,7 +5563,7 @@
             "test": "test_get_distribution",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Distribution.DistributionConfig.DefaultCacheBehavior.ForwardedValues', '$..Distribution.Status']",
+            "snapshot_skipped": "['$..Distribution.Status']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5223,7 +5573,7 @@
             "test": "test_get_distribution_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..DistributionConfig.DefaultCacheBehavior.ForwardedValues']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5271,6 +5621,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_cache_behaviors_path_routing",
             "test": "test_multiple_cache_behaviors_path_routing",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_set_cookie_headers_not_folded",
+            "test": "test_multiple_set_cookie_headers_not_folded",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -5354,6 +5714,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_lambda_at_edge_create_distribution_cross_region_client",
+            "test": "test_lambda_at_edge_create_distribution_cross_region_client",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Distribution.DistributionConfig.Origins.Items..S3OriginConfig.OriginReadTimeout']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -5515,6 +5885,16 @@
             "error": "",
             "snapshot_skipped": "all",
             "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "test": "test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
           },
@@ -5657,6 +6037,16 @@
       "Id": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originaccesscontrol/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_origin_access_control",
             "test": "test_origin_access_control",
             "response": "200",
@@ -5683,6 +6073,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originaccesscontrol/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_behavior_path_pattern_without_leading_slash",
+            "test": "test_cache_behavior_path_pattern_without_leading_slash",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cloudfront_alias_with_s3_backend",
             "test": "test_cloudfront_alias_with_s3_backend",
             "response": "200",
@@ -5701,6 +6111,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originaccesscontrol/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NoSuchOriginAccessControl",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ]
       }
@@ -5739,6 +6159,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originrequestpolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originrequestpolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_origin_request_policy",
             "test": "test_create_origin_request_policy",
             "response": "200",
@@ -5747,6 +6187,16 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originrequestpolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NoSuchOriginRequestPolicy",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_origin_request_policy",
@@ -5775,6 +6225,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_responseheaderspolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_responseheaderspolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_response_headers_policy",
             "test": "test_create_response_headers_policy",
             "response": "200",
@@ -5790,6 +6260,16 @@
             "response": "404",
             "error": "NoSuchResponseHeadersPolicy",
             "snapshot_skipped": "['$..StackResources..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_responseheaderspolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NoSuchResponseHeadersPolicy",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -5837,8 +6317,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/integration/services/internal/resources/test_resources.py::TestResourcesEndpoint::test_get_global_resource",
-            "test": "test_get_global_resource",
+            "node_id": "LocalStack Pro: tests/integration/services/internal/resources/test_resources.py::TestResourcesEndpoint::test_filter_by_service",
+            "test": "test_filter_by_service",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -5929,6 +6409,32 @@
         ]
       }
     },
+    "PublishFunction": {
+      "IfMatch, Name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_cloudfront.py::test_create_stack_cloudfront",
+            "test": "test_create_stack_cloudfront",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResources..PhysicalResourceId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_function/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      }
+    },
     "TagResource": {
       "Resource, Tags": {
         "ls_pro": [
@@ -5952,6 +6458,32 @@
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_distribution_with_tags",
             "test": "test_distribution_with_tags",
             "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateCachePolicy": {
+      "CachePolicyConfig, Id, IfMatch": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_cachepolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_policy",
+            "test": "test_cache_policy",
+            "response": "200",
             "error": "",
             "snapshot_skipped": "",
             "aws_validated": true,
@@ -5993,6 +6525,16 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cache_behavior_path_pattern_without_leading_slash",
+            "test": "test_cache_behavior_path_pattern_without_leading_slash",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_cloudfront_alias_with_s3_backend",
@@ -6219,7 +6761,7 @@
             "test": "test_get_distribution",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..Distribution.DistributionConfig.DefaultCacheBehavior.ForwardedValues', '$..Distribution.Status']",
+            "snapshot_skipped": "['$..Distribution.Status']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6229,7 +6771,7 @@
             "test": "test_get_distribution_config",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..DistributionConfig.DefaultCacheBehavior.ForwardedValues']",
+            "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6277,6 +6819,16 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_cache_behaviors_path_routing",
             "test": "test_multiple_cache_behaviors_path_routing",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_multiple_set_cookie_headers_not_folded",
+            "test": "test_multiple_set_cookie_headers_not_folded",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -6370,6 +6922,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_lambda_at_edge_create_distribution_cross_region_client",
+            "test": "test_lambda_at_edge_create_distribution_cross_region_client",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Distribution.DistributionConfig.Origins.Items..S3OriginConfig.OriginReadTimeout']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -6535,6 +7097,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontLambdaAtEdge::test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "test": "test_multiple_set_cookie_headers_not_folded_with_lambda_edge",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFrontRestApiOrigin::test_query_string_parameters_forward",
             "test": "test_query_string_parameters_forward",
             "response": "200",
@@ -6571,6 +7143,16 @@
       "FunctionCode, FunctionConfig, IfMatch, Name": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_function/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_function",
             "test": "test_create_function",
             "response": "200",
@@ -6586,6 +7168,16 @@
     "UpdateOriginAccessControl": {
       "Id, IfMatch, OriginAccessControlConfig": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originaccesscontrol/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_origin_access_control",
             "test": "test_origin_access_control",
@@ -6603,6 +7195,16 @@
       "Id, IfMatch, OriginRequestPolicyConfig": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_originrequestpolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_origin_request_policy",
             "test": "test_create_origin_request_policy",
             "response": "200",
@@ -6618,6 +7220,16 @@
     "UpdateResponseHeadersPolicy": {
       "Id, IfMatch, ResponseHeadersPolicyConfig": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudfront/resource_providers/aws_cloudfront_responseheaderspolicy/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudfront/test_cloudfront.py::TestCloudFront::test_create_response_headers_policy",
             "test": "test_create_response_headers_policy",

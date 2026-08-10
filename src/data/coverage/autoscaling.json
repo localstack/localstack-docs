@@ -851,13 +851,13 @@
       "UpdateAutoScalingGroup": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     }
   ],
@@ -931,6 +931,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..capacityProvider.status', '$..capacityProvider.type', '$..capacityProvider.updateStatus', '$..capacityProviders..type', '$..capacityProviders..updateStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_update_capacity_provider_tags",
+            "test": "test_update_capacity_provider_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..capacityProviders..type', '$..capacityProviders..updateStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1077,8 +1087,32 @@
           }
         ]
       },
+      "AutoScalingGroupName, DefaultInstanceWarmup, LaunchTemplate, MaxSize, MinSize, VPCZoneIdentifier": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_default_instance_warmup",
+            "test": "test_default_instance_warmup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AutoScalingGroups..AvailabilityZoneDistribution', '$..AutoScalingGroups..AvailabilityZoneIds', '$..AutoScalingGroups..AvailabilityZoneImpairmentPolicy', '$..AutoScalingGroups..CapacityRebalance', '$..AutoScalingGroups..CapacityReservationSpecification', '$..AutoScalingGroups..Context', '$..AutoScalingGroups..DeletionProtection', '$..AutoScalingGroups..HealthCheckGracePeriod', '$..AutoScalingGroups..InstanceLifecyclePolicy', '$..AutoScalingGroups..InstanceMaintenancePolicy', '$..AutoScalingGroups..TrafficSources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "AutoScalingGroupName, DesiredCapacity, LaunchTemplate, MaxSize, MinSize, VPCZoneIdentifier": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
             "test": "test_eksctl_stack",
@@ -1140,6 +1174,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestK3SCluster::test_create_nodegroup_with_tags",
             "test": "test_create_nodegroup_with_tags",
             "response": "200",
@@ -1168,6 +1212,30 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "internal"
+          }
+        ]
+      },
+      "AutoScalingGroupName, InstanceMaintenancePolicy, LaunchTemplate, MaxSize, MinSize, VPCZoneIdentifier": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_instance_maintenance_policy",
+            "test": "test_instance_maintenance_policy",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AutoScalingGroups..AvailabilityZoneDistribution', '$..AutoScalingGroups..AvailabilityZoneIds', '$..AutoScalingGroups..AvailabilityZoneImpairmentPolicy', '$..AutoScalingGroups..CapacityRebalance', '$..AutoScalingGroups..CapacityReservationSpecification', '$..AutoScalingGroups..Context', '$..AutoScalingGroups..DeletionProtection', '$..AutoScalingGroups..HealthCheckGracePeriod', '$..AutoScalingGroups..InstanceLifecyclePolicy', '$..AutoScalingGroups..TrafficSources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_instance_maintenance_policy_partial_reset_invalid",
+            "test": "test_instance_maintenance_policy_partial_reset_invalid",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           }
         ]
       },
@@ -1298,6 +1366,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
             "test": "test_eksctl_stack",
             "response": "200",
@@ -1358,6 +1436,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestK3SCluster::test_create_nodegroup_with_tags",
             "test": "test_create_nodegroup_with_tags",
             "response": "200",
@@ -1392,8 +1480,38 @@
       "AutoScalingGroupName, ForceDelete": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_default_instance_warmup",
+            "test": "test_default_instance_warmup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AutoScalingGroups..AvailabilityZoneDistribution', '$..AutoScalingGroups..AvailabilityZoneIds', '$..AutoScalingGroups..AvailabilityZoneImpairmentPolicy', '$..AutoScalingGroups..CapacityRebalance', '$..AutoScalingGroups..CapacityReservationSpecification', '$..AutoScalingGroups..Context', '$..AutoScalingGroups..DeletionProtection', '$..AutoScalingGroups..HealthCheckGracePeriod', '$..AutoScalingGroups..InstanceLifecyclePolicy', '$..AutoScalingGroups..InstanceMaintenancePolicy', '$..AutoScalingGroups..TrafficSources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_describe_auto_scaling_group_enabled_metrics",
             "test": "test_describe_auto_scaling_group_enabled_metrics",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_instance_maintenance_policy",
+            "test": "test_instance_maintenance_policy",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AutoScalingGroups..AvailabilityZoneDistribution', '$..AutoScalingGroups..AvailabilityZoneIds', '$..AutoScalingGroups..AvailabilityZoneImpairmentPolicy', '$..AutoScalingGroups..CapacityRebalance', '$..AutoScalingGroups..CapacityReservationSpecification', '$..AutoScalingGroups..Context', '$..AutoScalingGroups..DeletionProtection', '$..AutoScalingGroups..HealthCheckGracePeriod', '$..AutoScalingGroups..InstanceLifecyclePolicy', '$..AutoScalingGroups..TrafficSources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_instance_maintenance_policy_partial_reset_invalid",
+            "test": "test_instance_maintenance_policy_partial_reset_invalid",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -1557,6 +1675,16 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..capacityProvider.status', '$..capacityProvider.type', '$..capacityProvider.updateStatus', '$..capacityProviders..type', '$..capacityProviders..updateStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_update_capacity_provider_tags",
+            "test": "test_update_capacity_provider_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..capacityProviders..type', '$..capacityProviders..updateStatus']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1634,11 +1762,31 @@
       "AutoScalingGroupNames": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_default_instance_warmup",
+            "test": "test_default_instance_warmup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AutoScalingGroups..AvailabilityZoneDistribution', '$..AutoScalingGroups..AvailabilityZoneIds', '$..AutoScalingGroups..AvailabilityZoneImpairmentPolicy', '$..AutoScalingGroups..CapacityRebalance', '$..AutoScalingGroups..CapacityReservationSpecification', '$..AutoScalingGroups..Context', '$..AutoScalingGroups..DeletionProtection', '$..AutoScalingGroups..HealthCheckGracePeriod', '$..AutoScalingGroups..InstanceLifecyclePolicy', '$..AutoScalingGroups..InstanceMaintenancePolicy', '$..AutoScalingGroups..TrafficSources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_describe_auto_scaling_group_enabled_metrics",
             "test": "test_describe_auto_scaling_group_enabled_metrics",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_instance_maintenance_policy",
+            "test": "test_instance_maintenance_policy",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AutoScalingGroups..AvailabilityZoneDistribution', '$..AutoScalingGroups..AvailabilityZoneIds', '$..AutoScalingGroups..AvailabilityZoneImpairmentPolicy', '$..AutoScalingGroups..CapacityRebalance', '$..AutoScalingGroups..CapacityReservationSpecification', '$..AutoScalingGroups..Context', '$..AutoScalingGroups..DeletionProtection', '$..AutoScalingGroups..HealthCheckGracePeriod', '$..AutoScalingGroups..InstanceLifecyclePolicy', '$..AutoScalingGroups..TrafficSources']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1804,6 +1952,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestCapacityProvidersCrud::test_update_capacity_provider_tags",
+            "test": "test_update_capacity_provider_tags",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..capacityProviders..type', '$..capacityProviders..updateStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestTaskExecution::test_firelens_config_from_s3",
             "test": "test_firelens_config_from_s3",
             "response": "200",
@@ -1869,6 +2027,46 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateAutoScalingGroup": {
+      "AutoScalingGroupName, DefaultInstanceWarmup": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_default_instance_warmup",
+            "test": "test_default_instance_warmup",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AutoScalingGroups..AvailabilityZoneDistribution', '$..AutoScalingGroups..AvailabilityZoneIds', '$..AutoScalingGroups..AvailabilityZoneImpairmentPolicy', '$..AutoScalingGroups..CapacityRebalance', '$..AutoScalingGroups..CapacityReservationSpecification', '$..AutoScalingGroups..Context', '$..AutoScalingGroups..DeletionProtection', '$..AutoScalingGroups..HealthCheckGracePeriod', '$..AutoScalingGroups..InstanceLifecyclePolicy', '$..AutoScalingGroups..InstanceMaintenancePolicy', '$..AutoScalingGroups..TrafficSources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "AutoScalingGroupName, InstanceMaintenancePolicy": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_instance_maintenance_policy",
+            "test": "test_instance_maintenance_policy",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AutoScalingGroups..AvailabilityZoneDistribution', '$..AutoScalingGroups..AvailabilityZoneIds', '$..AutoScalingGroups..AvailabilityZoneImpairmentPolicy', '$..AutoScalingGroups..CapacityRebalance', '$..AutoScalingGroups..CapacityReservationSpecification', '$..AutoScalingGroups..Context', '$..AutoScalingGroups..DeletionProtection', '$..AutoScalingGroups..HealthCheckGracePeriod', '$..AutoScalingGroups..InstanceLifecyclePolicy', '$..AutoScalingGroups..TrafficSources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/autoscaling/test_autoscaling.py::TestAutoScaling::test_instance_maintenance_policy_partial_reset_invalid",
+            "test": "test_instance_maintenance_policy_partial_reset_invalid",
+            "response": "400",
+            "error": "ValidationError",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
