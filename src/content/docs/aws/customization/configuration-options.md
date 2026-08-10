@@ -423,7 +423,6 @@ To learn more about these configuration options, see [Cloud Pods](/aws/developer
 | Variable | Example Values | Description |
 | - | - | - |
 | `EXTENSION_AUTO_INSTALL` | | Install a list of extensions automatically at startup. Comma-separated list of extensions directives which will be installed automatically at startup (see [managing extensions](/aws/customization/integrations/extensions/managing-extensions#automating-extensions-installation))|
-| `EXTENSION_DEV_MODE` | `0` (default) \| `1` | Enables development mode for extensions. Refer to the [Extensions Development Guide](/aws/customization/integrations/extensions/developing-extensions) for more information. |
 
 ## Miscellaneous
 
