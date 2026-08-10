@@ -84,13 +84,13 @@
       "CreateLoadBalancer": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -123,13 +123,13 @@
       "DeleteLoadBalancer": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -240,13 +240,13 @@
       "DescribeLoadBalancers": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -380,5 +380,78 @@
       }
     }
   ],
-  "details": {}
+  "details": {
+    "CreateLoadBalancer": {
+      "AvailabilityZones, Listeners, LoadBalancerName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestClassicELB::test_create_load_balancer_default_health_check",
+            "test": "test_create_load_balancer_default_health_check",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..LoadBalancerDescriptions..CanonicalHostedZoneNameID']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "Listeners, LoadBalancerName, SecurityGroups, Subnets": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_availability_zone_rebalancing_with_classic_load_balancer",
+            "test": "test_service_availability_zone_rebalancing_with_classic_load_balancer",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..enableECSManagedTags', '$..enableExecuteCommand', '$..placementConstraints', '$..propagateTags', '$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..healthCheckGracePeriodSeconds', '$..roleArn', '$..currentServiceRevisions', '$..deploymentConfiguration.bakeTimeInMinutes', '$..deploymentConfiguration.strategy', '$..resourceManagementType', '$..deploymentConfiguration.deploymentCircuitBreaker']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "DeleteLoadBalancer": {
+      "LoadBalancerName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_availability_zone_rebalancing_with_classic_load_balancer",
+            "test": "test_service_availability_zone_rebalancing_with_classic_load_balancer",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..enableECSManagedTags', '$..enableExecuteCommand', '$..placementConstraints', '$..propagateTags', '$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..healthCheckGracePeriodSeconds', '$..roleArn', '$..currentServiceRevisions', '$..deploymentConfiguration.bakeTimeInMinutes', '$..deploymentConfiguration.strategy', '$..resourceManagementType', '$..deploymentConfiguration.deploymentCircuitBreaker']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestClassicELB::test_create_load_balancer_default_health_check",
+            "test": "test_create_load_balancer_default_health_check",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..LoadBalancerDescriptions..CanonicalHostedZoneNameID']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "DescribeLoadBalancers": {
+      "LoadBalancerNames": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/elb/test_elb.py::TestClassicELB::test_create_load_balancer_default_health_check",
+            "test": "test_create_load_balancer_default_health_check",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..LoadBalancerDescriptions..CanonicalHostedZoneNameID']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    }
+  }
 }
