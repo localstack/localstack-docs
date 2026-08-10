@@ -397,7 +397,7 @@ To learn more about these configuration options, see [Persistence](/aws/develope
 | `SNAPSHOT_SAVE_STRATEGY` | `ON_SHUTDOWN`\|`ON_REQUEST`\|`SCHEDULED`\|`MANUAL` | Strategy that governs when LocalStack should make state snapshots |
 | `SNAPSHOT_LOAD_STRATEGY` | `ON_STARTUP`\|`ON_REQUEST`\|`MANUAL` | Strategy that governs when LocalStack restores state snapshots |
 | `SNAPSHOT_FLUSH_INTERVAL` | 15 (default) | The interval (in seconds) between persistence snapshots. It only applies to a `SCHEDULED` save strategy (see [Persistence Mechanism](/aws/developer-tools/snapshots/persistence))|
-| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [state compatibility rules](/aws/developer-tools/snapshots/persistence#state-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
+| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [snapshot compatibility rules](/aws/developer-tools/snapshots/service-coverage#snapshot-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
 
 ## Cloud Pods
 
@@ -409,7 +409,7 @@ To learn more about these configuration options, see [Cloud Pods](/aws/developer
 | `POD_LOAD_CLI_TIMEOUT` | 60 (default) | Timeout in seconds to wait before returning from load operations on the Cloud Pods CLI |
 | `POD_ENCRYPTION` | `0` (default) \| `1` | Whether to encrypt the Cloud Pods artifacts at rest. |
 | `ENABLE_POD_RESOURCES=1` | `0` (default) \| `1`  | Whether to save a detailed Stack Overview including available resources for the Cloud Pod |
-| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [state merging](/aws/developer-tools/snapshots/cloud-pods/#state-merging)) |
+| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [merging snapshots](/aws/developer-tools/snapshots/merging-snapshots/)) |
 
 ## Extensions
 

@@ -136,7 +136,7 @@ job:
 ...
 ```
 
-More info about Localstack's state export and import [here](/aws/developer-tools/snapshots/export-import-state/).
+More info about Localstack's state export and import [here](/aws/developer-tools/snapshots/saving-snapshots-locally/).
 
 #### Cache
 
@@ -159,7 +159,7 @@ job:
 ...
 ```
 
-Additional information about state export and import [here](/aws/developer-tools/snapshots/export-import-state/).
+Additional information about state export and import [here](/aws/developer-tools/snapshots/saving-snapshots-locally/).
 
 #### Cloud Pod
 
