@@ -123,15 +123,16 @@ If you have more complex states, [Cloud Pods](/aws/developer-tools/snapshots/clo
 To execute aws cli commands when LocalStack becomes ready,
 simply create a script `init-aws.sh` and mount it into `/etc/localstack/init/ready.d/`.
 Make sure the script is executable: run `chmod +x init-aws.sh` on the file first.
-You can use anything available inside the container, including `awslocal`:
+You can use anything available inside the container, and can install new software:
 
 ```bash
 #!/bin/bash
 
-export AWS_ACCESS_KEY_ID=000000000000 AWS_SECRET_ACCESS_KEY=000000000000
+npm install -g @localstack/lstk
+lstk setup aws
 
-awslocal s3 mb s3://my-bucket
-awslocal sqs create-queue --queue-name my-queue
+lstk aws s3 mb s3://my-bucket
+lstk aws sqs create-queue --queue-name my-queue
 ```
 
 Start Localstack:
@@ -153,11 +154,22 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
 ```
 </TabItem>
-<TabItem value="CLI" label="CLI">
-```bash
-# DOCKER_FLAGS are additional parameters to the `docker run` command of localstack start
+<TabItem value="lstk" label="lstk">
+Declare the bind mount and the `DEBUG` profile in your config file, then start LocalStack:
 
-DOCKER_FLAGS='-v /path/to/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh' localstack start
+```toml
+# .lstk/config.toml
+[[containers]]
+type    = "aws"
+env     = ["debug"]
+volumes = ["/path/to/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"]
+
+[env.debug]
+DEBUG = "1"
+```
+
+```bash
+lstk start
 ```
 </TabItem>
 </Tabs>
@@ -172,8 +184,8 @@ and for more details on running init hooks in development mode, you can check ou
 
 Start LocalStack with **`EXTENSION_AUTO_INSTALL="localstack-extension-terraform-init"`**.
 Mount a **`main.tf`** file into **`/etc/localstack/init/ready.d`**
-When LocalStack starts up, it will install the extension, which in turn installs Terraform and [`tflocal`](https://github.com/localstack/terraform-local) into the container.
-If one of the init stage directories contain a `main.tf` file, the extension will run `tflocal init` and `tflocal apply` on that directory.
+When LocalStack starts up, it will install the extension, which in turn installs Terraform into the container.
+If one of the init stage directories contain a `main.tf` file, the extension will run `terraform init` and `terraform apply` on that directory.
 
 ```terraform
 # main.tf
@@ -210,11 +222,20 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
 ```
 </TabItem>
-<TabItem value="LocalStack CLI" label="LocalStack CLI">
+<TabItem value="lstk" label="lstk">
+```toml
+# .lstk/config.toml
+[[containers]]
+type    = "aws"
+env     = ["terraform-init"]
+volumes = ["./main.tf:/etc/localstack/init/ready.d/main.tf"]
+
+[env.terraform-init]
+EXTENSION_AUTO_INSTALL = "localstack-extension-terraform-init"
+```
+
 ```bash
-localstack start \
-  -e EXTENSION_AUTO_INSTALL="localstack-extension-terraform-init" \
-  -v ./main.tf:/etc/localstack/init/ready.d/main.tf
+lstk start
 ```
 </TabItem>
 </Tabs>
@@ -222,7 +243,7 @@ localstack start \
 You can wait for LocalStack to complete the startup process, and then print the created S3 bucket:
 
 ```bash
-localstack wait && awslocal s3 ls
+lstk aws s3 ls
 ```
 
 The logs should show something like:
