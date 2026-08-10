@@ -45,7 +45,8 @@ aws --endpoint-url=http://localhost.localstack.cloud:4566 kinesis list-streams
 
 :::note
 
-To enable the creation of pre-signed URLs for S3 buckets, please set both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to the value "test." Our pre-signed URL signature verification algorithm validates the pre-signed URL and its expiration.
+Pre-signed URLs for S3 are generated with the credentials configured on the client, such as the default `test`/`test` pair shown above.
+For LocalStack to be able to validate a pre-signed URL, it must be generated with valid credentials. More details at [S3 signature validation](/aws/services/s3/#signature-validation).
 :::
 
 ### Configuring a custom profile

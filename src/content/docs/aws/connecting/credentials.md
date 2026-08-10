@@ -41,6 +41,8 @@ In all such cases, the account ID is evaluated to `000000000000`.
 
 ## Secret Access Key
 
-The value of the secret access key are currently ignored by LocalStack.
+The value of the secret access key is generally ignored by LocalStack.
+We recommend using the same value as access key ID or `test`.
 
-We recommend using the same value as access key ID or `test`
+S3 can optionally validate request signatures, in which case the secret access key matters: it must be the secret the access key ID was issued with, or `test` for access key IDs not issued by LocalStack.
+See [S3 signature validation](/aws/services/s3/#signature-validation) for details.
