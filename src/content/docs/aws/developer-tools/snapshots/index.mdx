@@ -1,0 +1,69 @@
+---
+title: Overview
+description: Snapshots in LocalStack allow you to save and load the state of your LocalStack instance.
+template: doc
+sidebar:
+    order: 1
+---
+
+import { SectionCards } from '../../../../../components/SectionCards.tsx';
+
+LocalStack is designed to be ephemeral by default, meaning all state is lost when the container stops. The _Snapshot_ feature provides tools to persist, reuse, and share the state of your LocalStack instance across sessions or teams. This is useful for preloading test data, debugging workflows, or collaborating with teammates.
+
+<div style="padding: 1em 0;">
+  <img src="/images/aws/snapshot-lifecycle-overview.png" alt="Overview of the LocalStack snapshot lifecycle" width="75%" style="margin: 0 auto;" />
+</div>
+
+Snapshots enhance your development workflow in the following ways:
+
+* **Faster loading** - Snapshots can be loaded into your instance within a few seconds. Use this to avoid lengthy redeploys of your infrastructure as code, such as Terraform or CDK, each time the emulator is started.
+
+* **Team sharing** - Use a repository, such as _Cloud Pods_, to share snapshots with your team. Snapshots provide a curated set of resources for team members to use as a starting point for their work.
+
+* **Automatic durability** - Enable the _Persistence_ feature to gain the same durability semantics you expect from the AWS cloud. A snapshot is taken automatically when the instance is shut down, or at user-defined intervals during operation, then reloaded when the instance is restarted.
+
+* **Application preview** - During the code review process, share a snapshot so reviewers can see the software in action without redeploying it for themselves.
+
+* **Debugging failures** - Save the state of an instance after a failure has occurred to allow debugging at a later time or by a different team member.
+
+For more detail, see the following sections:
+
+<SectionCards
+  sections={[
+    {
+      title: "Saving snapshots locally",
+      description: "Saving and loading snapshots from local files.",
+      href: "/aws/developer-tools/snapshots/saving-snapshots-locally"
+    },
+    {
+      title: "Saving snapshots to Cloud Pods",
+      description: "Using LocalStack's Cloud Pods repository to share snapshots with your team.",
+      href: "/aws/developer-tools/snapshots/cloud-pods"
+    },
+    {
+      title: "Saving snapshots to S3",
+      description: "Save snapshots directly to your Amazon S3 bucket.",
+      href: "/aws/developer-tools/snapshots/saving-snapshots-to-s3"
+    },
+    {
+      title: "Merging snapshots",
+      description: "Merge strategies for loading multiple snapshots into the same emulator instance.",
+      href: "/aws/developer-tools/snapshots/merging-snapshots"
+    },
+    {
+      title: "Persistence",
+      description: "Enabling automatic persistence of data, providing enhanced durability.",
+      href: "/aws/developer-tools/snapshots/persistence"
+    },
+    {
+      title: "Service coverage",
+      description: "Snapshot compatibility rules and service coverage for LocalStack's snapshot mechanism.",
+      href: "/aws/developer-tools/snapshots/service-coverage"
+    }
+  ]}
+  client:load
+/>
+
+:::caution
+Not all LocalStack services support snapshots. If you encounter a limitation, please [contact support](/aws/help-support/get-help/).
+:::
