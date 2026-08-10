@@ -210,6 +210,9 @@ awslocal s3api list-buckets
 :::note
 An access key ID that was not issued by LocalStack through IAM or STS is expected to be paired with the `test` secret access key.
 Signing a request with such an access key ID and a different secret access key results in a `SignatureDoesNotMatch` error.
+
+One exception is a 12-digit account ID used as access key ID for [multi-account namespacing](/aws/customization/advanced/multi-account-setups/), which cannot pass signature validation.
+To send signed requests to another account than the default, use the credentials of an IAM user created in that account, or temporary credentials of a role assumed in it.
 :::
 
 Signature validation authenticates a request, but does not authorize it: LocalStack does not check whether the credentials are allowed to perform the operation.
