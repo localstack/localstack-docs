@@ -14,7 +14,7 @@ An Auth Token is required to activate the LocalStack for Azure emulator.
 It identifies and authenticates users outside the LocalStack Web Application, granting access to your workspace and to advanced features such as the Azure emulator image.
 
 Auth Tokens are issued at the workspace level in [app.localstack.cloud](https://app.localstack.cloud) and are not specific to any single LocalStack product.
-The same token works across every LocalStack product your account has access to, including LocalStack for AWS, Azure, and Snowflake.
+The same token works across every LocalStack product your account has access to.
 
 Auth Tokens come in two types: a **Developer Auth Token** and a **CI Auth Token**:
 
@@ -68,7 +68,7 @@ If you do not assign a license, the Azure emulator will not start even if you ha
 :::
 
 To view your own assigned license, visit the [My License page](https://app.localstack.cloud/workspace/my-license).
-For more details on inviting users, assigning licenses, or managing roles, see [Users and Licenses](/aws/organizations-admin/managing-users-licenses/).
+For more details on inviting users, assigning licenses, or managing roles, see [Licensing & Tiers](/azure/licensing/).
 
 ## Configuring your Auth Token
 
@@ -86,7 +86,7 @@ The following sections describe the various methods of providing your Auth Token
 
 ### lstk
 
-`lstk` handles authentication for you — just run `lstk` or `lstk start` and it takes care of the rest. See the [lstk documentation](/aws/developer-tools/running-localstack/lstk/) for details on how it resolves your Auth Token.
+`lstk` handles authentication for you — just run `lstk` or `lstk start` and it takes care of the rest. See the [lstk documentation](/azure/developer-tools/running-localstack/lstk/) for details on how it resolves your Auth Token.
 
 On first run, `lstk` prompts you to pick an emulator and remembers your choice. If your `config.toml` already defaults to a different emulator, see [Already using lstk with a different default emulator?](/azure/getting-started/#already-using-lstk-with-a-different-default-emulator) to target Azure instead.
 
@@ -126,7 +126,7 @@ Developer Auth Tokens cannot be used in CI.
 CI Auth Tokens are available on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) and are configured similarly to Developer Auth Tokens.
 
 To set the CI Auth Token, add the Auth Token value in the `LOCALSTACK_AUTH_TOKEN` environment variable of your CI provider, and reference it when starting the Azure emulator in your CI workflow.
-The same patterns used for [LocalStack in CI](/aws/ci-pipelines/) apply to Azure — swap the image for `localstack/localstack-azure`.
+See [CI Pipelines](/azure/ci-pipelines/) for a working pipeline.
 
 ## Rotating the Auth Token
 

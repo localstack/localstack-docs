@@ -1,6 +1,6 @@
 ---
-title: az
-description: Get started with the az tool on LocalStack for Azure.
+title: Azure CLI
+description: Point the Azure CLI at the LocalStack Azure emulator with lstk az.
 template: doc
 sidebar:
     order: 1
@@ -18,7 +18,7 @@ We will demonstrate how to create, show and delete an Azure resource group.
 
 ### Prerequisites
 
-This guide uses [`lstk`](/aws/developer-tools/running-localstack/lstk/) to point the `az` CLI at the Azure emulator.
+This guide uses [`lstk`](/azure/developer-tools/running-localstack/lstk/) to point the `az` CLI at the Azure emulator.
 
 To make sure the `az` tool sends requests to the Azure Emulator REST API, run the following command:
 

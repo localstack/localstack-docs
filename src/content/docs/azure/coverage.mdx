@@ -1,0 +1,54 @@
+---
+title: API Coverage
+description: How much of each Azure resource provider the LocalStack Azure emulator implements.
+template: doc
+editUrl: false
+sidebar:
+    order: 4
+---
+
+import AzureCoverageOverview from '../../../components/AzureCoverageOverview.astro';
+
+How much of Azure does the emulator cover? The
+[Local Azure Services](/azure/services/) page lists what is documented; this page reports how
+completely each resource provider is implemented, so you can judge whether a provider is ready for
+what you need before you build on it.
+
+The figures come from `src/data/azure-coverage/*.json`, regenerated weekly from the running emulator
+by introspecting its routing tables against the implemented provider classes. They are counts of
+**API operations**, not features — an operation counted as implemented may still have limitations,
+which the individual service pages describe.
+
+<AzureCoverageOverview />
+
+## Reading the table
+
+**Doc pages** is how many resource types under that provider have a documentation page. A provider
+with operations but no pages is emulated and callable, just not yet written up.
+
+**Operations** is implemented over total, where total is every operation the emulator routes for
+that provider — including ones deliberately out of scope.
+
+**Maturity** is a documentation convention derived from the coverage percentage, not something the
+emulator reports:
+
+| Band | Coverage | What it means in practice |
+|---|---|---|
+| **Broad** | 70% or more | Most of the provider's surface is present. |
+| **Partial** | 25–69% | Core operations work; expect gaps at the edges. |
+| **Early** | under 25% | Enough for specific scenarios. Check the service page before relying on it. |
+
+A low percentage does not mean a provider is unusable. `Microsoft.Network` sits in the Early band
+because it routes a very large API surface, yet the resource types most applications need —
+virtual networks, subnets, private endpoints, private DNS zones — are implemented and exercised by
+the [sample applications](/azure/sample-apps/) on every pull request.
+
+## Per-operation detail
+
+Each service page carries a searchable table of every operation for its resource provider, with
+implementation status. See [Virtual Network](/azure/services/virtual-network/) for an example.
+
+## Plan availability
+
+Coverage is a separate question from licensing. See [Licensing & Tiers](/azure/licensing/) for how
+entitlement works.

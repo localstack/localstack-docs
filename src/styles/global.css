@@ -207,3 +207,504 @@ td code, td pre, td .variable {
   word-break: keep-all;
   overflow-x: auto;
 }
+
+/* ---------------------------------------------------------------------------
+   Local Azure Services — provider-grouped browsing
+   --------------------------------------------------------------------------- */
+
+/* One control row: the search box and the view toggle share a height and a
+   baseline. `stretch` is what makes the toggle exactly as tall as the input —
+   without it the buttons size to their text and the active fill only covers
+   part of the control. */
+/* Both controls get the SAME explicit height and are centre-aligned. Relying on
+   `align-items: stretch` meant whichever control was intrinsically taller set
+   the row height and the other stretched to match — which is how the search box
+   ended up 68px against a 52px toggle. */
+.azure-services-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  --azure-control-height: 3.25rem;
+}
+
+.azure-services-controls .search-input-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1 1 260px;
+  max-width: none;
+  margin: 0;
+  height: var(--azure-control-height);
+}
+
+.azure-services-controls .search-input {
+  height: var(--azure-control-height);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Grid, not flex. Two earlier attempts with inline-flex left the buttons
+   vertically offset from each other and the accent fill covering only part of
+   the control: `height: 100%` resolves against the toggle's *specified* height
+   while flex `stretch` grows the toggle past it, and inline-level children can
+   still pick up baseline alignment. Grid items stretch to fill their cell in
+   both axes and have no baseline behaviour, so neither failure is possible. */
+.azure-view-toggle {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
+  align-items: stretch;
+  height: var(--azure-control-height);
+  /* Starlight's `.sl-markdown-content > * + *` rule adds margin-top: 1rem to any
+     element following a sibling. On the toggle that grew the control row to 68px
+     and pushed it 8px below the search box. */
+  margin: 0;
+  border: 1px solid #999CAD;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.azure-view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  /* `background` shorthand, not `background-color`, so any inherited
+     background-image is cleared along with the colour. */
+  background: transparent;
+  color: var(--sl-color-gray-2);
+  border: 0;
+  line-height: 1;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Inline SVGs sit on the text baseline and add descender space, which was part
+   of why the two labels did not line up. */
+.azure-view-button svg {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+}
+
+.azure-view-button + .azure-view-button {
+  border-left: 1px solid #999CAD;
+}
+
+.azure-view-button:hover {
+  background: var(--sl-color-gray-6);
+}
+
+/* Literal #fff, matching the "Get Started for Free" button. `--sl-color-white`
+   is theme-flipped (#212229 in light mode), so using it here rendered the label
+   and icon near-black on the purple fill. */
+.azure-view-button.is-active {
+  background: #703cea;
+  color: #fff;
+}
+
+.azure-view-button.is-active:hover {
+  background: #6134cc;
+  color: #fff;
+}
+
+.azure-view-button:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: -2px;
+}
+
+.azure-services-count {
+  margin: 1.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-3);
+}
+
+/* Provider tiles reuse .service-box; these are the button-specific resets and
+   the extra namespace/count affordances. */
+.azure-provider-box {
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  font-family: inherit;
+}
+
+/* Full ARM type under a service tile's title, e.g.
+   Microsoft.Storage/storageAccounts — the string people paste into a template. */
+.azure-resource-type {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  padding: 0.125rem 0.4rem;
+  border-radius: 4px;
+  background-color: var(--sl-color-gray-6);
+  color: var(--sl-color-gray-3);
+  font-size: 0.8125rem;
+  word-break: break-all;
+}
+
+.azure-provider-namespace {
+  display: inline-block;
+  font-size: 0.8125rem;
+  color: var(--sl-color-gray-3);
+  background-color: var(--sl-color-gray-6);
+  padding: 0.125rem 0.4rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+/* Maturity bands, shared by the provider tiles and the coverage table. */
+.azure-band {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.azure-band-broad {
+  background-color: #1a7f4b;
+  color: #ffffff;
+}
+
+.azure-band-partial {
+  background-color: #8a6100;
+  color: #ffffff;
+}
+
+.azure-band-early {
+  background-color: var(--sl-color-gray-5);
+  color: var(--sl-color-gray-1);
+}
+
+.azure-provider-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.azure-provider-meta .azure-provider-count {
+  margin-top: 0;
+}
+
+/* Aggregate coverage page. */
+.azure-coverage-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  /* Every panel the same height, whichever row it wraps onto. Rows are sized
+     independently by default, so a panel alone on the last row ends up shorter
+     than the ones above it. */
+  grid-auto-rows: 1fr;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.azure-coverage-stats > div {
+  display: flex;
+  flex-direction: column;
+  /* Starlight's `.sl-markdown-content <el> + <el>` rule matches descendants, not
+     just direct children, so it lands 1rem of margin-top on every panel except
+     the first. Grid stretches the margin box, which then shortens those panels
+     by exactly that much — the cause of the uneven heights. */
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid #999CAD;
+  border-radius: 12px;
+}
+
+.azure-coverage-stats strong {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  color: var(--sl-color-white);
+}
+
+.azure-coverage-stats span {
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-3);
+}
+
+.azure-coverage-table {
+  width: 100%;
+  font-size: 0.9375rem;
+}
+
+.azure-coverage-table th.num,
+.azure-coverage-table td.num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.azure-coverage-table code {
+  font-size: 0.8125rem;
+}
+
+.azure-coverage-note {
+  font-size: 0.9375rem;
+  color: var(--sl-color-gray-3);
+}
+
+.azure-provider-count {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sl-color-accent);
+}
+
+/* Back link at the foot of a provider page. */
+.azure-provider-back {
+  margin-top: 2rem;
+  font-size: 0.9375rem;
+}
+
+.azure-ungrouped {
+  margin-top: 3rem;
+}
+
+.azure-ungrouped h3 {
+  font-size: 1rem;
+  color: var(--sl-color-gray-3);
+}
+
+/* Site-wide breadcrumb trail above the page title (Azure pages only). */
+.azure-page-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-3);
+}
+
+.azure-page-breadcrumbs a {
+  color: var(--sl-color-gray-3);
+  text-decoration: none;
+}
+
+.azure-page-breadcrumbs a:hover {
+  color: var(--sl-color-accent);
+  text-decoration: underline;
+}
+
+.azure-page-breadcrumbs [aria-current='page'] {
+  color: var(--sl-color-gray-2);
+  font-weight: 500;
+}
+
+@media (max-width: 50rem) {
+  .azure-services-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .azure-view-toggle {
+    width: 100%;
+  }
+
+  .azure-view-button {
+    flex: 1;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Azure showcase — sample apps and tutorials
+   --------------------------------------------------------------------------- */
+
+.azure-showcase {
+  margin-top: 1.5rem;
+}
+
+.azure-showcase-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.azure-showcase-search {
+  width: 100%;
+  height: 3rem;
+  /* Starlight's `.sl-markdown-content > * + *` adds margin-top: 1rem to any
+     element following a sibling, which staggered the controls. */
+  margin: 0;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  border: 1px solid #999CAD;
+  border-radius: 6px;
+  background-color: var(--sl-color-bg-nav);
+  color: var(--sl-color-white);
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.azure-showcase-search::placeholder {
+  color: var(--sl-color-gray-3);
+}
+
+.azure-showcase-search:focus {
+  border-color: var(--sl-color-accent);
+}
+
+/* Three equal filters sitting directly beneath the search box, so their outer
+   edges line up with it. */
+.azure-showcase-filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.azure-showcase-filters select {
+  width: 100%;
+  height: 2.5rem;
+  margin: 0;
+  padding: 0 0.6rem;
+  box-sizing: border-box;
+  border: 1px solid #999CAD;
+  border-radius: 6px;
+  background-color: var(--sl-color-bg);
+  color: var(--sl-color-white);
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.azure-showcase-count {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-3);
+}
+
+.azure-showcase-reset {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--sl-color-accent);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.azure-showcase-grid {
+  display: grid;
+  margin: 1rem 0 0;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.azure-showcase-card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #999CAD;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.azure-showcase-card:hover {
+  border-color: var(--sl-color-accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.azure-showcase-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.75rem 1rem;
+}
+
+.azure-showcase-heading h3 {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--sl-color-white);
+}
+
+.azure-showcase-ci {
+  flex-shrink: 0;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background-color: #1a7f4b;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Architecture diagrams are line art on white, and must fit rather than crop. */
+.azure-showcase-image {
+  height: 220px;
+  padding: 0.5rem;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.azure-showcase-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.azure-showcase-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  flex-grow: 1;
+}
+
+.azure-showcase-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.azure-showcase-pill {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background-color: var(--sl-color-gray-6);
+  color: var(--sl-color-gray-2);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.azure-showcase-description {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--sl-color-gray-3);
+  flex-grow: 1;
+}
+
+.azure-showcase-link {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--sl-color-accent);
+}
+
+@media (max-width: 40rem) {
+  .azure-showcase-filters {
+    grid-template-columns: 1fr;
+  }
+}

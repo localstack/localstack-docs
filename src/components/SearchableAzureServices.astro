@@ -1,28 +1,82 @@
 ---
 import { getCollection } from 'astro:content';
 import { SearchableAzureServices } from './SearchableAzureServices.tsx';
+import {
+  canonicalProvider,
+  providerMetadata,
+  providerSlug,
+} from '../data/azure-providers';
 
 const allServices = await getCollection('docs', ({ id }) => {
-  return id.startsWith('azure/services/') && !id.includes('/index');
+  return (
+    id.startsWith('azure/services/') &&
+    !id.includes('/index') &&
+    // The per-provider landing pages live under this tree but are not services.
+    !id.includes('/providers/')
+  );
 });
 
 const sortedServices = allServices.sort((a, b) => {
-  const titleA = a.data.title || a.data.linkTitle || '';
-  const titleB = b.data.title || b.data.linkTitle || '';
+  const titleA = a.data.title || '';
+  const titleB = b.data.title || '';
   return titleA.localeCompare(titleB);
 });
 
 const serviceData = sortedServices.map((service) => {
-  const title = service.data.title || service.data.linkTitle || 'Unknown Service';
-  const description = service.data.description || `Implementation details for ${title} API`;
-  const href = `/${service.id}`;
+  const title = service.data.title || 'Unknown Service';
+  const description =
+    service.data.description || `Implementation details for ${title} API`;
+
+  // Fold data-plane namespaces (Microsoft.BlobStorage, …) into their real ARM
+  // parent so the hierarchy matches Azure's actual taxonomy.
+  const declared = service.data.resourceProvider ?? '';
+  const provider = declared ? canonicalProvider(declared) : '';
 
   return {
     title,
     description,
-    href,
+    href: `/${service.id}`,
+    provider,
+    // Full ARM type, shown under the title in the flat view.
+    resourceType: service.data.resourceType ?? '',
+    // Kept so a data-plane page can be labelled as such inside its parent group.
+    declaredProvider: declared,
   };
 });
+
+// Build the provider groups from the pages themselves — the taxonomy is never
+// hardcoded, only its presentation is.
+const groupMap = new Map<string, typeof serviceData>();
+for (const service of serviceData) {
+  if (!service.provider) continue;
+  const bucket = groupMap.get(service.provider) ?? [];
+  bucket.push(service);
+  groupMap.set(service.provider, bucket);
+}
+
+const providerGroups = [...groupMap.entries()]
+  .map(([namespace, services]) => {
+    const meta = providerMetadata(namespace);
+    return {
+      namespace,
+      slug: providerSlug(namespace),
+      displayName: meta.displayName,
+      description: meta.description,
+      order: meta.order,
+      services,
+    };
+  })
+  // Alphabetical by display name, matching the sidebar and the coverage table.
+  .sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+// Any page missing `resourceProvider` would silently vanish from the grouped
+// view, so surface it rather than losing it.
+const ungrouped = serviceData.filter((s) => !s.provider);
 ---
 
-<SearchableAzureServices services={serviceData} client:load />
+<SearchableAzureServices
+  services={serviceData}
+  providerGroups={providerGroups}
+  ungrouped={ungrouped}
+  client:load
+/>

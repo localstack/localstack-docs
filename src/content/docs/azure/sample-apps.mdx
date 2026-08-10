@@ -1,7 +1,29 @@
 ---
 title: Sample Apps
-description: Sample apps for LocalStack for Azure.
+description: Runnable Azure applications you can deploy against the LocalStack Azure emulator.
 template: doc
+editUrl: false
 sidebar:
-    order: 4
+    order: 5
 ---
+
+import AzureShowcase from '../../../components/AzureShowcase.astro';
+
+Applications you can clone and deploy against the LocalStack Azure emulator. Each card links to the
+source, which carries the README, the deployment scripts and — where available — Bicep and Terraform
+variants alongside the Azure CLI path.
+
+They come from two repositories:
+
+- [localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) — App Service,
+  Function App, Container Instances and data services. Most are exercised on every pull request by
+  the repository's [samples CI workflow](/azure/ci-pipelines/github-actions/), which runs 31
+  deployments across the Azure CLI, Bicep and Terraform. Those carry a **CI verified** badge.
+- [aks-samples](https://github.com/localstack-samples/aks-samples) — the same vacation-planner
+  application on an emulated AKS cluster against a range of backing stores. These are run manually
+  through numbered shell scripts, so treat them as demonstrations rather than continuously verified
+  samples.
+
+---
+
+<AzureShowcase kind="samples" />

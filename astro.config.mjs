@@ -860,24 +860,122 @@ export default defineConfig({
               items: [{ autogenerate: { directory: 'azure/getting-started' } }],
             },
             {
+              // The provider pages must appear in the sidebar tree: the
+              // multiSidebar plugin resolves which product a page belongs to by
+              // finding it there, and pages it cannot find fall back to the
+              // first product (AWS).
               label: 'Local Azure Services',
-              slug: 'azure/services',
+              collapsed: true,
+              items: [
+                { label: 'All resource types', slug: 'azure/services' },
+                {
+                  label: 'By resource provider',
+                  collapsed: true,
+                  items: [
+                    { autogenerate: { directory: 'azure/services/providers' } },
+                  ],
+                },
+              ],
+            },
+            {
+              label: 'API Coverage',
+              slug: 'azure/coverage',
+            },
+            {
+              label: 'Sample Apps',
+              slug: 'azure/sample-apps',
+            },
+            {
+              label: 'Connecting',
+              collapsed: true,
+              items: [
+                { label: 'Overview', slug: 'azure/connecting' },
+                { label: 'Azure CLI', slug: 'azure/connecting/azure-cli' },
+                { label: 'Credentials', slug: 'azure/connecting/credentials' },
+                { label: 'LocalStack Console', slug: 'azure/connecting/console' },
+                {
+                  label: 'Azure SDKs',
+                  collapsed: true,
+                  items: [
+                    { autogenerate: { directory: 'azure/connecting/azure-sdks' } },
+                  ],
+                },
+                {
+                  label: 'Infrastructure as Code',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: 'azure/connecting/infrastructure-as-code',
+                      },
+                    },
+                  ],
+                },
+              ],
             },
             {
               label: 'Developer Tools',
               collapsed: true,
               items: [
-                { autogenerate: { directory: 'azure/developer-tools' } },
+                { label: 'Overview', slug: 'azure/developer-tools' },
+                {
+                  label: 'Running LocalStack',
+                  collapsed: true,
+                  items: [
+                    {
+                      autogenerate: {
+                        directory: 'azure/developer-tools/running-localstack',
+                      },
+                    },
+                  ],
+                },
               ],
             },
             {
-              label: 'Integrations',
+              label: 'CI Pipelines',
               collapsed: true,
-              items: [{ autogenerate: { directory: 'azure/integrations' } }],
+              items: [{ autogenerate: { directory: 'azure/ci-pipelines' } }],
+            },
+            {
+              label: 'Customization',
+              collapsed: true,
+              items: [
+                { label: 'Overview', slug: 'azure/customization' },
+                { label: 'Configuration Options', slug: 'azure/customization/configuration-options' },
+                { label: 'Logging', slug: 'azure/customization/logging' },
+                {
+                  label: 'Networking',
+                  collapsed: true,
+                  items: [{ autogenerate: { directory: 'azure/customization/networking' } }],
+                },
+                {
+                  label: 'Other Installations',
+                  collapsed: true,
+                  items: [{ autogenerate: { directory: 'azure/customization/other-installations' } }],
+                },
+                {
+                  label: 'Advanced Features',
+                  collapsed: true,
+                  items: [{ autogenerate: { directory: 'azure/customization/advanced' } }],
+                },
+              ],
+            },
+            {
+              label: 'Tutorials',
+              slug: 'azure/tutorials',
             },
             {
               label: 'Changelog',
               slug: 'azure/changelog',
+            },
+            {
+              label: 'Licensing & Tiers',
+              slug: 'azure/licensing',
+            },
+            {
+              label: 'Help & Support',
+              collapsed: true,
+              items: [{ autogenerate: { directory: 'azure/help-support' } }],
             },
           ],
         },

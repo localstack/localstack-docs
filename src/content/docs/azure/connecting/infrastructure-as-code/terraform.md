@@ -3,7 +3,7 @@ title: Terraform
 description: Get started with the `terraform` tool on LocalStack.
 template: doc
 sidebar:
-    order: 4
+    order: 3
 ---
 
 ## Introduction

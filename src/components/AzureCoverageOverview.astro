@@ -1,0 +1,106 @@
+---
+/**
+ * Aggregate Azure coverage table — one row per resource provider.
+ *
+ * Exists to answer a question the flat services page cannot: how much of Azure
+ * does the emulator actually cover? Documented resource types come from the doc
+ * pages; operation counts come from the generated coverage data.
+ */
+import { getCollection } from 'astro:content';
+import {
+  canonicalProvider,
+  providerMetadata,
+  providerSlug,
+} from '../data/azure-providers';
+import {
+  coverageByProvider,
+  coverageBand,
+  coverageTotals,
+} from '../data/azure-coverage-summary';
+
+const pages = await getCollection('docs', ({ id }) =>
+  id.startsWith('azure/services/') &&
+  !id.includes('/index') &&
+  !id.includes('/providers/')
+);
+
+// How many doc pages exist per provider, so gaps are visible.
+const documented = new Map<string, number>();
+for (const page of pages) {
+  const declared = page.data.resourceProvider ?? '';
+  if (!declared) continue;
+  const ns = canonicalProvider(declared);
+  documented.set(ns, (documented.get(ns) ?? 0) + 1);
+}
+
+const rows = [...coverageByProvider().values()]
+  .map((c) => {
+    const meta = providerMetadata(c.namespace);
+    return {
+      ...c,
+      displayName: meta.displayName,
+      order: meta.order,
+      slug: providerSlug(c.namespace),
+      pages: documented.get(c.namespace) ?? 0,
+      band: coverageBand(c.percent),
+    };
+  })
+  .sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+const totals = coverageTotals();
+const documentedProviders = rows.filter((r) => r.pages > 0).length;
+const undocumented = rows.filter((r) => r.pages === 0);
+---
+
+<div class="azure-coverage-summary">
+  <div class="azure-coverage-stats">
+    <div><strong>{documentedProviders}</strong><span>resource providers documented</span></div>
+    <div><strong>{totals.providers}</strong><span>resource providers emulated</span></div>
+    <div><strong>{pages.length}</strong><span>resource type pages</span></div>
+    <div><strong>{totals.implemented.toLocaleString()}</strong><span>operations implemented</span></div>
+  </div>
+</div>
+
+<table class="azure-coverage-table">
+  <thead>
+    <tr>
+      <th>Resource provider</th>
+      <th>Namespace</th>
+      <th class="num">Doc pages</th>
+      <th class="num">Operations</th>
+      <th class="num">Coverage</th>
+      <th>Maturity</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((r) => (
+        <tr>
+          <td>
+            {r.pages > 0 ? (
+              <a href={`/azure/services/providers/${r.slug}/`}>{r.displayName}</a>
+            ) : (
+              <span>{r.displayName}</span>
+            )}
+          </td>
+          <td><code>{r.namespace}</code></td>
+          <td class="num">{r.pages > 0 ? r.pages : '—'}</td>
+          <td class="num">{r.implemented} / {r.total}</td>
+          <td class="num">{r.percent}%</td>
+          <td>
+            <span class={`azure-band azure-band-${r.band.toLowerCase()}`}>{r.band}</span>
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+{
+  undocumented.length > 0 && (
+    <p class="azure-coverage-note">
+      <strong>{undocumented.length} providers are emulated but not yet documented:</strong>{' '}
+      {undocumented.map((r) => r.namespace).join(', ')}.
+    </p>
+  )
+}

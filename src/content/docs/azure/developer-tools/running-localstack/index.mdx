@@ -1,0 +1,28 @@
+---
+title: Overview
+description: Ways to start, stop and manage the LocalStack Azure emulator.
+template: doc
+editUrl: false
+sidebar:
+    order: 1
+---
+
+import SectionCards from '../../../../../components/SectionCards.astro';
+
+Three interfaces manage the emulator lifecycle. All of them run the same container image,
+`localstack/localstack-azure`.
+
+<SectionCards
+  basePath="azure/developer-tools/running-localstack/"
+  useDirectFiles
+  customTitles={{
+    "localstack-cli": "LocalStack CLI",
+    "lstk": "lstk CLI",
+    "localstack-desktop": "LocalStack Desktop",
+  }}
+/>
+
+Whichever you use, the emulator needs a [licensed Auth Token](/azure/getting-started/auth-token/)
+covering Azure and `ACTIVATE_PRO=1`. `lstk` is the recommended path — it handles authentication,
+the image pull and the lifecycle in one step, and it proxies the Azure CLI through
+[`lstk az`](/azure/connecting/azure-cli/).

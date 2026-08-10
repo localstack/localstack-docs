@@ -1,6 +1,7 @@
 ---
 import Default from '@astrojs/starlight/components/PageTitle.astro';
 import { CopyPageDropdown } from './CopyPageDropdown';
+import AzureBreadcrumbs from './AzureBreadcrumbs.astro';
 
 // Get the current page route
 const route = Astro.locals.starlightRoute;
@@ -37,8 +38,15 @@ const hideCopyPage = route.entry?.data?.hideCopyPage ?? isHiddenPath;
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://docs.localstack.cloud';
 const pageUrl = `${siteUrl}/${route.id}/`;
 const pageTitle = route.entry?.data?.title || 'Documentation';
+
+// Gate the breadcrumb here as well as inside it. The component renders nothing
+// outside `azure/` either way, but reaching that conclusion costs a
+// `getCollection('docs')` call, and this override runs on every page of every
+// product. Skipping it keeps AWS and Snowflake off the Azure code path entirely.
+const isAzure = route.id === 'azure' || route.id.startsWith('azure/');
 ---
 
+{isAzure && <AzureBreadcrumbs />}
 <div class="page-title-header">
   <Default />
   {!hideCopyPage && (

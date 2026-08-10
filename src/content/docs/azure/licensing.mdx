@@ -1,0 +1,66 @@
+---
+title: "Licensing & Tiers"
+description: How licensing works for the LocalStack for Azure emulator.
+template: doc
+---
+
+## Introduction
+
+The LocalStack for Azure emulator is a licensed product. It will not start without a valid
+[Auth Token](/azure/getting-started/auth-token/), and the token must belong to a workspace whose
+subscription covers Azure.
+
+Azure is a separate product entitlement. A subscription for another LocalStack product does not
+automatically cover Azure — check your workspace entitlements in
+[app.localstack.cloud](https://app.localstack.cloud), or talk to Sales.
+
+## How licensing works
+
+Licensing is handled at the **workspace** level and assigned to individual users:
+
+- Each workspace has a single pricing plan. Plans cannot be mixed within a workspace.
+- A license is assigned to a user, which generates the Auth Token that activates the emulator.
+- **Developer Auth Tokens** identify a user; **CI Auth Tokens** identify a subscription and are
+  intended for automated environments.
+
+Both token types are managed on the
+[Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens). See
+[Auth Token](/azure/getting-started/auth-token/) for how to configure one.
+
+:::note
+`lstk` handles authentication for you once you have signed in — see
+[Getting Started](/azure/getting-started/quickstart/). You only need to handle the token directly in
+CI, where a CI Auth Token is supplied as a secret.
+:::
+
+## Using the emulator in CI
+
+CI runs need a CI Auth Token supplied as a secret, and the emulator started with `ACTIVATE_PRO=1`.
+The [CI Pipelines](/azure/ci-pipelines/) section covers this, and
+[GitHub Actions](/azure/ci-pipelines/github-actions/) documents a working pipeline.
+
+## Plan comparison
+
+Plan definitions, allocations and pricing are shared across LocalStack products and are published on
+the [pricing page](https://www.localstack.cloud/pricing).
+
+:::caution
+There is no per-service plan availability table for Azure yet. What varies by plan is whether your
+subscription covers Azure at all, not which resource types are available. If you need a per-service
+breakdown for procurement, contact Sales.
+:::
+
+## What the emulator supports
+
+Plan entitlement is a separate question from API coverage. For what each Azure resource type
+actually implements, see:
+
+- [Local Azure Services](/azure/services/) — every emulated resource type, with per-operation
+  coverage on each page
+- [API coverage overview](/azure/coverage/) — aggregate coverage across resource providers
+
+## Related
+
+- [Auth Token](/azure/getting-started/auth-token/)
+- [Help & Support](/azure/help-support/)
+- [LocalStack pricing](https://www.localstack.cloud/pricing)

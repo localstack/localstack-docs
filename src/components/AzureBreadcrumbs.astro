@@ -1,0 +1,101 @@
+---
+/**
+ * Breadcrumb trail for LocalStack for Azure pages.
+ *
+ * Renders nothing outside `azure/`, so AWS and Snowflake are untouched.
+ *
+ * Service pages gain a resource-provider crumb, which is what makes the
+ * hierarchy legible: a reader on Bastion Host sees it lives under Networking and
+ * can jump back to the other networking resource types.
+ *
+ *   Azure / Local Azure Services / Networking
+ *   Azure / Local Azure Services / Networking / Bastion Host
+ *
+ * The `providers/` path segment is deliberately not shown — it is a routing
+ * detail, not a level in the hierarchy a reader thinks in.
+ */
+import { getCollection } from 'astro:content';
+import {
+  canonicalProvider,
+  providerMetadata,
+  providerSlug,
+} from '../data/azure-providers';
+
+const route = Astro.locals.starlightRoute;
+const id: string = route.id ?? '';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+let crumbs: Crumb[] = [];
+
+if (id === 'azure' || id.startsWith('azure/')) {
+  const azurePages = await getCollection('docs', ({ id: pageId }) =>
+    pageId === 'azure' || pageId.startsWith('azure/')
+  );
+  const titleById = new Map(
+    azurePages.map((page) => [page.id, page.data.title as string])
+  );
+
+  const currentTitle = route.entry?.data?.title ?? 'Azure';
+  const servicesLabel = titleById.get('azure/services') ?? 'Local Azure Services';
+
+  // Fixed root label — the Welcome page's own title is far too long for a crumb.
+  crumbs.push({ label: 'Azure', href: '/azure/' });
+
+  const segments = id.split('/').slice(1).filter(Boolean);
+
+  if (segments[0] === 'services' && segments[1] === 'providers') {
+    // azure/services/providers/<slug> — the provider is the current page.
+    crumbs.push({ label: servicesLabel, href: '/azure/services/' });
+    crumbs.push({ label: currentTitle });
+  } else if (segments[0] === 'services' && segments.length > 1) {
+    // azure/services/<resource-type>
+    crumbs.push({ label: servicesLabel, href: '/azure/services/' });
+
+    const declared = route.entry?.data?.resourceProvider as string | undefined;
+    if (declared) {
+      const namespace = canonicalProvider(declared);
+      crumbs.push({
+        label: providerMetadata(namespace).displayName,
+        href: `/azure/services/providers/${providerSlug(namespace)}/`,
+      });
+    }
+    crumbs.push({ label: currentTitle });
+  } else if (segments.length > 0) {
+    // Any other azure/<section>/<...>/<page>
+    let path = 'azure';
+    segments.forEach((segment, index) => {
+      path = `${path}/${segment}`;
+      if (index === segments.length - 1) {
+        crumbs.push({ label: currentTitle });
+        return;
+      }
+      const known = titleById.get(path) ?? titleById.get(`${path}/index`);
+      if (known) crumbs.push({ label: known, href: `/${path}/` });
+    });
+  }
+
+  // A single crumb is just the page itself — not worth a trail.
+  if (crumbs.length < 2) crumbs = [];
+}
+---
+
+{
+  crumbs.length > 1 && (
+    <nav class="azure-page-breadcrumbs" aria-label="Breadcrumb">
+      {crumbs.map((crumb, index) => (
+        <>
+          {index > 0 && <span aria-hidden="true">/</span>}
+          {crumb.href ? (
+            <a href={crumb.href}>{crumb.label}</a>
+          ) : (
+            <span aria-current="page">{crumb.label}</span>
+          )}
+        </>
+      ))}
+    </nav>
+  )
+}

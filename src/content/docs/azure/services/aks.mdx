@@ -1,0 +1,115 @@
+---
+title: "Azure Kubernetes Service (AKS)"
+description: Get started with Azure Kubernetes Service on LocalStack
+template: doc
+resourceProvider: Microsoft.ContainerService
+resourceType: Microsoft.ContainerService/managedClusters
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Kubernetes Service (AKS) is Azure's managed Kubernetes offering. It provisions and operates
+the control plane for you, while you manage node pools of worker machines that run your workloads.
+For more information, see [What is Azure Kubernetes Service?](https://learn.microsoft.com/en-us/azure/aks/what-is-aks).
+
+LocalStack for Azure creates real, working Kubernetes clusters locally. `az aks create` produces a
+cluster you can reach with `kubectl`, and `az aks get-credentials` writes a usable kubeconfig
+entry — so Kubernetes manifests, Helm charts and operators behave as they would against a real
+cluster. Cluster-level features layered on top by Azure, such as the KEDA add-on, workload identity
+and the managed Gateway API, are supported to the extent listed in the
+[API coverage](#api-coverage) section below.
+
+The supported APIs are available in the [API Coverage section](#api-coverage).
+
+## Getting started
+
+This guide assumes basic familiarity with the Azure CLI, `kubectl`, and our `lstk az` proxy.
+
+Launch LocalStack using your preferred method. For more information, see
+[Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running,
+enable Azure CLI interception:
+
+```bash
+lstk az start-interception
+```
+
+### Create a resource group
+
+```bash
+az group create --name local-rg --location westeurope
+```
+
+### Create a cluster
+
+```bash
+az aks create \
+  --resource-group local-rg \
+  --name local-aks-test \
+  --node-count 1 \
+  --generate-ssh-keys
+```
+
+### Connect with kubectl
+
+```bash
+az aks get-credentials --resource-group local-rg --name local-aks-test
+kubectl get nodes
+```
+
+### Manage node pools
+
+```bash
+az aks nodepool add \
+  --resource-group local-rg \
+  --cluster-name local-aks-test \
+  --name workers \
+  --node-count 2
+
+az aks nodepool list --resource-group local-rg --cluster-name local-aks-test -o table
+```
+
+### Stop, start and delete
+
+```bash
+az aks stop  --resource-group local-rg --name local-aks-test
+az aks start --resource-group local-rg --name local-aks-test
+az aks delete --resource-group local-rg --name local-aks-test --yes
+```
+
+### Teardown
+
+```bash
+az group delete --name local-rg --yes
+lstk az stop-interception
+```
+
+## Samples and tutorials
+
+AKS has the widest tutorial coverage of any Azure service in these docs. All of them are maintained
+in the [aks-samples](https://github.com/localstack-samples/aks-samples) repository:
+
+- **Event-driven autoscaling with KEDA** —
+  [Storage Queue](/azure/tutorials/aks-keda-queue-storage-autoscaling/),
+  [Service Bus](/azure/tutorials/aks-keda-service-bus-autoscaling/) and
+  [Event Hubs](/azure/tutorials/aks-keda-event-hubs-autoscaling/)
+- **Network policy** — [Calico](/azure/tutorials/aks-calico-network-policy/),
+  [Cilium egress](/azure/tutorials/aks-cilium-egress-policy/) and
+  [Cilium ingress](/azure/tutorials/aks-cilium-ingress-policy/)
+- **[Managed Gateway API](/azure/tutorials/aks-gateway-api/)** with NGINX Gateway Fabric
+- **[Cloud controller manager](/azure/tutorials/aks-cloud-controller-manager/)** — public and
+  internal load balancers, source ranges, ingress
+- **[Key Vault CSI driver](/azure/tutorials/aks-key-vault-csi-driver/)** — mount secrets with
+  workload identity or a user-assigned managed identity
+- **Full cluster stacks** in [Bicep](/azure/tutorials/aks-bicep-tags-labels-taints/) and
+  [Terraform](/azure/tutorials/aks-terraform-tags-labels-taints/), covering OIDC, workload identity,
+  Azure RBAC, the Key Vault Secrets Provider, VPA and Container Insights
+
+Eight [sample applications](/azure/sample-apps/) deploy the same web application to AKS against
+different backing stores — Azure SQL, MySQL, PostgreSQL, Cosmos DB, Blob Storage, and an in-cluster
+PostgreSQL StatefulSet.
+
+## API coverage
+
+<AzureFeatureCoverage service="Microsoft.ContainerService" client:load />

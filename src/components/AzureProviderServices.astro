@@ -1,0 +1,59 @@
+---
+/**
+ * Resource-type tiles for a single Azure resource provider.
+ *
+ * Used by the generated pages under `azure/services/providers/`. Each provider
+ * has a real route, so the page title, its description and the site breadcrumb
+ * all come from Starlight rather than being simulated client-side.
+ */
+import { getCollection } from 'astro:content';
+import { canonicalProvider, providerSlug } from '../data/azure-providers';
+
+interface Props {
+  provider: string;
+}
+const { provider } = Astro.props;
+
+const pages = await getCollection('docs', ({ id }) =>
+  id.startsWith('azure/services/') &&
+  !id.includes('/index') &&
+  !id.includes('/providers/')
+);
+
+const services = pages
+  .filter((page) => {
+    const declared = page.data.resourceProvider ?? '';
+    return declared && canonicalProvider(declared) === provider;
+  })
+  .map((page) => ({
+    title: page.data.title ?? 'Unknown',
+    description: page.data.description ?? '',
+    resourceType: page.data.resourceType ?? '',
+    href: `/${page.id}`,
+  }))
+  .sort((a, b) => a.title.localeCompare(b.title));
+---
+
+<p class="azure-services-count">
+  {services.length} resource {services.length === 1 ? 'type' : 'types'}
+</p>
+
+<div class="service-grid">
+  {
+    services.map((service) => (
+      <a href={service.href} class="service-box">
+        <div class="service-box-content">
+          <h3 class="service-box-title">{service.title}</h3>
+          {service.resourceType && (
+            <code class="azure-resource-type">{service.resourceType}</code>
+          )}
+          <p class="service-box-description">{service.description}</p>
+        </div>
+      </a>
+    ))
+  }
+</div>
+
+<p class="azure-provider-back">
+  <a href={`/azure/services/#${providerSlug(provider)}`}>← All resource providers</a>
+</p>

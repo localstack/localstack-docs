@@ -1,0 +1,53 @@
+---
+title: Networking
+description: How to reach the LocalStack Azure emulator and the resources it creates.
+template: doc
+editUrl: false
+sidebar:
+    order: 4
+---
+
+import SectionCards from '../../../../../components/SectionCards.astro';
+
+The emulator serves every Azure API on a single endpoint, `localhost.localstack.cloud:4566`, and
+issues per-resource hostnames beneath it.
+
+## The endpoint
+
+| Purpose | Address |
+|---|---|
+| Resource Manager and data planes | `https://localhost.localstack.cloud:4566` |
+| Entra ID authority | `https://azure.localhost.localstack.cloud:4566` |
+| Storage suffix | `core.azure.localhost.localstack.cloud` |
+
+`localhost.localstack.cloud` and all of its subdomains resolve to `127.0.0.1` through public DNS.
+That is what makes per-resource hostnames work without a hosts-file entry — a storage account
+created in the emulator is reachable at, for example:
+
+```text
+https://mystorageaccount.blob.core.azure.localhost.localstack.cloud:4566
+```
+
+The same pattern applies to queue, table, Key Vault and Container Registry endpoints, so SDKs that
+build a hostname from a resource name work unchanged.
+
+## From inside a container
+
+A container on the same Docker network reaches the emulator by its container name rather than
+`localhost`:
+
+```text
+http://localstack-main:4566
+```
+
+The emulator sets this up automatically for containers it launches itself — Container Instances,
+Function App runtimes and AKS nodes.
+
+## Ports
+
+`4566` is the gateway. The emulator also reserves a range for services that expose their own
+listener, such as databases and container workloads; see
+[Configuration Options](/azure/customization/configuration-options/) for
+`LS_AZURE_PORT_RESERVATION_DURATION` and `LS_AZURE_MAP_HOST_PORTS`.
+
+<SectionCards basePath="azure/customization/networking/" useDirectFiles={true} />

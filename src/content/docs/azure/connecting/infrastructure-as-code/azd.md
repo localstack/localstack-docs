@@ -3,7 +3,7 @@ title: azd
 description: Get started with the azd tool on LocalStack for Azure.
 template: doc
 sidebar:
-    order: 2
+    order: 6
 ---
 
 ## Introduction
@@ -28,10 +28,13 @@ You now have access to the following LocalStack tools:
 
 | CLI tool  | LocalStack tool | Purpose                       |
 |-----------|-----------------|-------------------------------|
-| az        | azlocal         | Interact with Azure resources |
 | azd       | azdlocal        | Deploy ARM/Bicep templates    |
 
-The LocalStack variants are wrappers around the existing tools, so you keep the full functionality of the original tool. It will just redirect all commands to the running LocalStack Emulator.
+The LocalStack variant is a wrapper around the existing tool, so you keep the full functionality of the original tool. It will just redirect all commands to the running LocalStack Emulator.
+
+:::note
+For the `az` CLI itself, these docs use [`lstk az`](/azure/developer-tools/running-localstack/lstk/) rather than the `azlocal` wrapper. `lstk` does not proxy `azd`, so `azdlocal` remains the way to run `azd` against the emulator.
+:::
 
 ### Create a template
 
@@ -96,9 +99,9 @@ When the deployment has finished, you should see the following:
 SUCCESS: Your up workflow to provision and deploy to Azure completed in 33 seconds.
 ```
 
-You can now verify that the resource exist by using the `azlocal` tool:
+You can now verify that the resource exists using `lstk az`:
 
 ```shell
-azlocal login
-azlocal group list
+lstk az start-interception
+az group list
 ```

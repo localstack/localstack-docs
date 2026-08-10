@@ -1,0 +1,55 @@
+---
+/**
+ * Loads the Azure samples/tutorials catalogue and resolves each entry's diagram
+ * to a built asset URL, then hands the result to the client-side showcase.
+ *
+ * Images are imported rather than referenced from `public/` so they are
+ * fingerprinted like every other asset. SVGs are passed through as-is —
+ * rasterising a diagram blurs its labels.
+ */
+import { getImage } from 'astro:assets';
+import { AzureShowcase } from './AzureShowcase.tsx';
+import catalogue from '../data/azure-showcase.json';
+
+interface Props {
+  kind: 'samples' | 'tutorials';
+}
+const { kind } = Astro.props as Props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/images/azure/**/*.{png,jpg,jpeg,gif,svg}'
+);
+
+const raw = (catalogue as Record<string, any[]>)[kind] ?? [];
+
+const entries = await Promise.all(
+  raw.map(async (entry) => {
+    let image: string | undefined;
+    if (entry.image) {
+      const path = `/src/assets/images/azure/${entry.image}`;
+      const loader = images[path];
+      if (loader) {
+        if (entry.image.endsWith('.svg')) {
+          const asset = await loader();
+          image = (asset.default as any).src ?? (asset.default as any);
+        } else {
+          const optimized = await getImage({ src: loader(), format: 'png', width: 800 });
+          image = optimized.src;
+        }
+      } else {
+        // A catalogue entry naming a diagram that is not in the repo is a
+        // content bug; surface it at build time rather than shipping a 404.
+        throw new Error(`azure-showcase: image not found for "${entry.name}": ${path}`);
+      }
+    }
+    return { ...entry, image };
+  })
+);
+---
+
+<AzureShowcase
+  entries={entries}
+  noun={kind === 'samples' ? 'sample apps' : 'tutorials'}
+  showCiStatus={kind === 'samples'}
+  client:load
+/>

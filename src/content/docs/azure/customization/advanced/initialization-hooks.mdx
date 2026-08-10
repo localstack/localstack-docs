@@ -1,0 +1,121 @@
+---
+title: Initialization Hooks
+description: Run scripts at defined points in the LocalStack Azure emulator lifecycle.
+template: doc
+sidebar:
+    order: 3
+---
+
+## Introduction
+
+Initialization hooks are scripts the emulator runs at fixed points in its lifecycle. They are the
+standard way to seed an emulator with resources so a test suite, a CI job or a new developer starts
+from a known state — which matters here, because
+[state does not survive a restart](/azure/customization/configuration-options/#state-persistence).
+
+## Stages
+
+Mount scripts into `/etc/localstack/init/<stage>.d/`. Within a stage they run in alphabetical order.
+
+| Stage | Directory | Runs |
+|---|---|---|
+| `BOOT` | `/etc/localstack/init/boot.d/` | Before the emulator runtime starts |
+| `START` | `/etc/localstack/init/start.d/` | As the runtime starts, before the APIs answer |
+| `READY` | `/etc/localstack/init/ready.d/` | Once the emulator reports healthy |
+| `SHUTDOWN` | `/etc/localstack/init/shutdown.d/` | As the emulator shuts down |
+
+`READY` is almost always the one you want: it is the first stage at which the Azure Resource Manager
+APIs will answer.
+
+## Seeding resources
+
+Scripts run inside the container, where the `az` CLI already targets the emulator.
+
+```bash title="init-azure.sh"
+#!/bin/bash
+set -euo pipefail
+
+az group create --name seeded-rg --location westeurope
+
+az storage account create \
+  --name seededstorage \
+  --resource-group seeded-rg \
+  --sku Standard_LRS
+
+az keyvault create --name seeded-kv --resource-group seeded-rg
+```
+
+Mount it into the ready stage:
+
+```yaml title="docker-compose.yml"
+services:
+  localstack:
+    image: localstack/localstack-azure:latest
+    ports:
+      - "4566:4566"
+    environment:
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}
+      - ACTIVATE_PRO=1
+    volumes:
+      - "./init-azure.sh:/etc/localstack/init/ready.d/init-azure.sh"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+```
+
+Make the script executable, or it is skipped:
+
+```bash
+chmod +x init-azure.sh
+```
+
+## Seeding from a template
+
+Beyond a handful of resources, deploy a
+[Bicep](/azure/connecting/infrastructure-as-code/bicep/) or
+[ARM template](/azure/connecting/infrastructure-as-code/arm-templates/) rather than a long script —
+the same template you deploy elsewhere:
+
+```bash title="init-template.sh"
+#!/bin/bash
+set -euo pipefail
+
+az group create --name seeded-rg --location westeurope
+az deployment group create \
+  --resource-group seeded-rg \
+  --template-file /etc/localstack/init/ready.d/main.bicep
+```
+
+Mount the template beside the script:
+
+```yaml
+volumes:
+  - "./init-template.sh:/etc/localstack/init/ready.d/init-template.sh"
+  - "./main.bicep:/etc/localstack/init/ready.d/main.bicep"
+```
+
+## Verifying that hooks ran
+
+Hook output goes to the emulator log:
+
+```bash
+lstk logs | grep -i init
+```
+
+Then confirm from outside the container:
+
+```bash
+lstk az start-interception
+az group list -o table
+```
+
+## Notes
+
+- Scripts run **inside** the container, so paths are container paths.
+- A non-zero exit does not stop the emulator — check the logs rather than assuming success.
+- Python files in the same directories are executed too, useful when a shell script gets unwieldy.
+- Hooks re-run on every start, which is what makes them a dependable substitute for persistence.
+
+## Related
+
+- [Configuration Options](/azure/customization/configuration-options/)
+- [Infrastructure as Code](/azure/connecting/infrastructure-as-code/)
+- [CI Pipelines](/azure/ci-pipelines/)

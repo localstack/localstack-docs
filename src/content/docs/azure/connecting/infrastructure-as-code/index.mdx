@@ -1,0 +1,48 @@
+---
+title: Infrastructure as Code
+description: Provision Azure resources against the LocalStack Azure emulator with Bicep, Terraform, and the Azure CLI.
+template: doc
+editUrl: false
+sidebar:
+    order: 0
+---
+
+import SectionCards from '../../../../../components/SectionCards.astro';
+
+Every declarative deployment against Azure ends up as an
+[Azure Resource Manager](/azure/connecting/infrastructure-as-code/arm-templates/) operation, and the
+emulator implements that control plane. Tools reach it by overriding the endpoint they use to
+discover Azure — for most of them, one setting:
+
+| Tool | How it targets the emulator |
+|---|---|
+| Azure CLI, Bicep, ARM templates | `lstk az start-interception` |
+| Terraform (`azurerm`) | `metadata_host = "localhost.localstack.cloud:4566"` |
+| Terraform (`azapi`) | explicit `endpoint` block plus `disable_instance_discovery` |
+| Pulumi (`azure-native`) | `metadataHost` plus `disableInstanceDiscovery` |
+| Azure PowerShell | `Add-AzEnvironment` with explicit endpoints |
+
+The emulator serves the Resource Manager metadata discovery document at `/metadata/endpoints`, which
+is what these settings point the tool at. Once discovery resolves to the emulator, authentication and
+resource operations follow the same path they would against real Azure.
+
+<SectionCards basePath="azure/connecting/infrastructure-as-code/" useDirectFiles={true} />
+
+## Tool support
+
+Every page above documents a tool that has been executed against the emulator. Bicep, the Azure CLI
+and Terraform are the well-trodden paths: the
+[localstack-azure-samples](https://github.com/localstack/localstack-azure-samples) repository
+deploys 31 configurations across them on every pull request. Pulumi and Azure PowerShell are
+verified but not covered by that CI, since no sample uses them yet.
+
+Two tools are **not** documented, deliberately:
+
+- **Crossplane** — `upbound/provider-azure` wraps the Terraform `azurerm` provider but does not
+  honour `ARM_METADATA_HOSTNAME` or `AZURE_AUTHORITY_HOST` for authority discovery, and its
+  `ProviderConfig` exposes no endpoint fields. It resolves `login.microsoftonline.com` regardless
+  and fails authentication. This is a provider limitation, not an emulator one — the same resource
+  group creation succeeds from every other tool on this page. Azure Service Operator, which uses the
+  Azure SDK directly rather than wrapping Terraform, has not been evaluated.
+- **`azd`** — [documented separately](/azure/connecting/infrastructure-as-code/azd/) because it uses
+  the `azdlocal` wrapper; `lstk` proxies `az` but not `azd`.

@@ -1,0 +1,75 @@
+---
+title: HTTPS/TLS Support
+description: TLS certificate coverage for the localhost.localstack.cloud domain, so Azure SDKs, the az CLI and browsers can reach the emulator over HTTPS with hostname validation intact.
+template: doc
+sidebar:
+    order: 4
+---
+
+## Introduction
+
+LocalStack serves a publicly trusted certificate for `localhost.localstack.cloud`, so you can reach
+the emulator over HTTPS without disabling certificate verification:
+
+```bash
+curl https://localhost.localstack.cloud:4566/_localstack/health
+```
+
+The certificate also covers the per-resource hostnames the Azure emulator issues, which is what
+lets the Azure SDKs, the `az` CLI, and browsers validate the hostname they were handed by a
+`GET`/`PUT` response rather than the endpoint you configured. For example, a storage account
+returns its own blob endpoint:
+
+```text
+https://mystorageaccount.blob.core.azure.localhost.localstack.cloud:4566
+```
+
+## Covered hostnames
+
+The certificate is a wildcard bundle. A wildcard matches exactly one label, so
+`*.blob.core.azure.localhost.localstack.cloud` covers `mystorageaccount.blob.core.azure.localhost.localstack.cloud`
+but nothing deeper.
+
+| Pattern | Used by |
+|---|---|
+| `localhost.localstack.cloud` | Resource Manager and every control-plane call |
+| `*.localhost.localstack.cloud` | `azure.localhost.localstack.cloud` (Entra ID authority), `management.localhost.localstack.cloud` |
+| `*.azure.localhost.localstack.cloud` | Data-plane hosts that sit directly under the `azure` label |
+| `*.blob.core.azure.localhost.localstack.cloud` | Blob Storage |
+| `*.file.core.azure.localhost.localstack.cloud` | File Storage |
+| `*.queue.core.azure.localhost.localstack.cloud` | Queue Storage |
+| `*.table.core.azure.localhost.localstack.cloud` | Table Storage |
+| `*.azurewebsites.azure.localhost.localstack.cloud` | Web Apps and Function Apps |
+| `*.scm.azurewebsites.azure.localhost.localstack.cloud` | Kudu / SCM endpoints |
+| `*.azurecr.azure.localhost.localstack.cloud` | Container Registry login servers |
+| `*.aca.azure.localhost.localstack.cloud` | Container Apps |
+| `*.vault.azure.localhost.localstack.cloud` | Key Vault |
+| `*.servicebus.azure.localhost.localstack.cloud` | Service Bus and Event Hubs |
+| `*.mysql.azure.localhost.localstack.cloud` | Azure Database for MySQL |
+| `*.postgresql.azure.localhost.localstack.cloud` | Azure Database for PostgreSQL |
+| `*.redis.azure.localhost.localstack.cloud` | Azure Cache for Redis |
+
+Unlike the public cloud, these hostnames are not region-scoped — the region you pass when creating
+a resource does not appear in its emulator endpoint, so there is no per-region certificate
+coverage to check.
+
+To see the list your running emulator actually serves:
+
+```bash
+echo | openssl s_client -connect localhost.localstack.cloud:4566 \
+       -servername localhost.localstack.cloud 2>/dev/null \
+  | openssl x509 -noout -ext subjectAltName
+```
+
+## Troubleshooting
+
+A hostname that is not covered — or a nested subdomain a wildcard cannot match — surfaces as a
+verification failure from whichever client you are using:
+
+```text
+SSL: CERTIFICATE_VERIFY_FAILED
+x509: certificate is not valid for any names
+```
+
+If you hit one, check the hostname against the list above with the `openssl` command, and report
+the gap through [Get Help](/azure/help-support/get-help/) with the failing hostname included.
