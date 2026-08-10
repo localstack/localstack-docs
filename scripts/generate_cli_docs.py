@@ -24,10 +24,6 @@ from pathlib import Path
 # Output path for the generated documentation
 DEFAULT_OUTPUT_PATH = Path("src/content/docs/aws/tooling/localstack-cli.md")
 
-HIDDEN_SUBCOMMANDS = {
-    "extensions": {"dev"},
-}
-
 
 @dataclass
 class Subcommand:
@@ -141,13 +137,6 @@ def populate_command_details(cmd: Command) -> None:
     """Fetch help output for a command and its subcommands."""
     # Get main command help
     cmd.help_output = run_command(["localstack", cmd.name, "--help"])
-
-    for subcommand in HIDDEN_SUBCOMMANDS.get(cmd.name, set()):
-        cmd.help_output = re.sub(
-            rf"(?m)^  {re.escape(subcommand)}(?:[ \t].*)?\n?",
-            "",
-            cmd.help_output,
-        )
     
     # Parse and fetch subcommands
     subcommand_info = parse_subcommands_from_help(cmd.help_output)
