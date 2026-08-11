@@ -89,6 +89,14 @@ SLUG_PREFIX = {
     "localstack/localstack-azure-samples": "",
 }
 
+# Samples whose card image is neither images/architecture.png nor the README's
+# Mermaid block: slug -> image path inside the sample directory. Wins over both.
+IMAGE_OVERRIDES = {
+    # Front Door's README carries five screenshots; multi.png is the
+    # architecture one (chosen by Paolo, 11 Aug 2026).
+    "function-app-front-door": "images/multi.png",
+}
+
 
 def readme_url(url: str, readme: pathlib.Path) -> str | None:
     """Blob URL of the README that `readme` points at.
@@ -202,7 +210,17 @@ def main() -> int:
             elif entry.pop("readme", None) is not None:
                 changed.append(f"{kind}/{slug} (readme link removed)")
 
-            if png.exists():
+            override = IMAGE_OVERRIDES.get(slug)
+            if override is not None:
+                src_img = src_dir / override
+                if not src_img.exists():
+                    unresolved.append(f"{kind}: {name} (override image {override} missing)")
+                    continue
+                target = IMAGES / subdir / f"{slug}{src_img.suffix}"
+                if write_if_changed(target, src_img.read_bytes(), args.check):
+                    changed.append(f"{kind}/{slug}{src_img.suffix}")
+                rel = f"{subdir}/{slug}{src_img.suffix}"
+            elif png.exists():
                 target = IMAGES / subdir / f"{slug}.png"
                 if write_if_changed(target, png.read_bytes(), args.check):
                     changed.append(f"{kind}/{slug}.png")
