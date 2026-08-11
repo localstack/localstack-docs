@@ -43,6 +43,10 @@ The table below compares these methods.
 | **Helm chart** | · Simplifies deployment using templates and `values.yaml`<br> · Supports versioning, upgrades, and rollbacks<br> · Supports LocalStack for AWS under all Licences | · Customization is limited to chart values and overrides |
 | **DIY (YAML manifests)** | · Full control over Kubernetes configuration and resources | · Time-consuming to set up and maintain<br> · Manual updates and lifecycle management |
 
+If you already run Kubernetes on Sealos, you can also use the one-click deployment template to provision LocalStack with HTTPS and the Kubernetes-native executor:
+
+[![Deploy on Sealos](https://sealos.io/Deploy-on-Sealos.svg)](https://sealos.io/products/app-store/localstack)
+
 ## Limitations
 | Service | Supported | Explanation |
 | ------- | --------- | ----------- |
