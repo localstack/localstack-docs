@@ -47,7 +47,9 @@ This reconfigures the `az` CLI to send commands to the official Azure management
 Create a resource group to hold the cluster:
 
 ```bash
-az group create --name rg-aks-demo --location westeurope
+az group create \
+  --name rg-aks-demo \
+  --location westeurope
 ```
 
 ```bash title="Output"
@@ -101,7 +103,9 @@ emulator provisions a k3d cluster, so what you get back is a live API server, no
 Retrieve the details of a single cluster:
 
 ```bash
-az aks show --resource-group rg-aks-demo --name aks-demo
+az aks show \
+  --resource-group rg-aks-demo \
+  --name aks-demo
 ```
 
 ```bash title="Output"
@@ -120,7 +124,9 @@ az aks show --resource-group rg-aks-demo --name aks-demo
 List the clusters in a resource group:
 
 ```bash
-az aks list --resource-group rg-aks-demo --output table
+az aks list \
+  --resource-group rg-aks-demo \
+  --output table
 ```
 
 ```bash title="Output"
@@ -264,31 +270,64 @@ az aks nodepool delete \
 
 ### Stop, start, and delete
 
-Stop the cluster to free local resources, start it again, and delete it once you are done:
+Stop the cluster to free local resources while preserving its state:
 
 ```bash
-az aks stop --resource-group rg-aks-demo --name aks-demo
-az aks start --resource-group rg-aks-demo --name aks-demo
-az aks delete --resource-group rg-aks-demo --name aks-demo --yes
+az aks stop \
+  --resource-group rg-aks-demo \
+  --name aks-demo
+```
+
+Verify that the cluster has stopped by confirming that `powerState` reports `Stopped`:
+
+```bash
+az aks show \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --query powerState.code \
+  --output tsv
+```
+
+Start the cluster again. It restarts with the previous control plane state and number of agent nodes:
+
+```bash
+az aks start \
+  --resource-group rg-aks-demo \
+  --name aks-demo
+```
+
+Delete the cluster once you are done. A deleted cluster cannot be recovered:
+
+```bash
+az aks delete \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --yes
 ```
 
 ### Teardown
 
-Remove the resource group and disable interception:
+Remove the resource group and any resources it still contains:
 
 ```bash
-az group delete --name rg-aks-demo --yes
+az group delete \
+  --name rg-aks-demo \
+  --yes
+```
+
+Disable Azure CLI interception to point the `az` CLI back to the official Azure management REST API:
+
+```bash
 lstk az stop-interception
 ```
 
 ## Features
 
-The local control plane implements the following capabilities, exercised by the emulator test
-suite:
+The local control plane implements the following capabilities:
 
-- **Networking**: The Cilium data plane with network policies, Hubble observability, and the Azure
-  CNI overlay network profile, Calico network policies, the managed Gateway API add-on, and NGINX
-  Gateway Fabric as its implementation.
+- **Networking**: Azure CNI overlay with the Cilium data plane, Cilium and Calico network
+  policies, Hubble observability, and the managed Gateway API add-on with NGINX Gateway Fabric
+  as its implementation.
 - **Storage**: The Secrets Store CSI driver for Azure Key Vault and the Azure Files CSI driver.
   The Azure Disk CSI driver is in progress.
 - **Scaling**: The cluster autoscaler, node auto-provisioning based on the AKS Karpenter provider,
