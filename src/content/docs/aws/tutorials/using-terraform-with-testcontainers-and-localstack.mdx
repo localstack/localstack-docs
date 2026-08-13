@@ -40,11 +40,11 @@ For this tutorial, you will need:
 - [LocalStack for AWS](/aws/getting-started/auth-token) to emulate the AWS services and to use LocalStack Extensions.
   If you don't have LocalStack for AWS yet, you can sign up on our [webapp](https://app.localstack.cloud) to get a trial license for free.
 - [Docker](https://docker.io/)
-- [LocalStack CLI](/aws/getting-started/installation)
+- [`lstk`](/aws/getting-started/installation#lstk)
 - [AWS CLI](https://aws.amazon.com/cli/)
 - Optional for building the Lambda functions: [Java 17](https://openjdk.org/install/)
 - Optional for building the Lambda functions: [Apache Maven 3.9.8](https://maven.apache.org/install.html)
-- Optional: [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) and [tflocal](https://github.com/localstack/terraform-local)
+- Optional: [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) and [`lstk terraform`](/aws/connecting/infrastructure-as-code/terraform#lstk-terraform)
 
 ## Project overview
 
@@ -71,24 +71,66 @@ on their official documentation page.
 
 #### LocalStack CLI
 
-In the root folder of the demo project run:
+`lstk` takes container environment variables and bind mounts from its [`config.toml`](/aws/developer-tools/running-localstack/lstk/#configuration)
+rather than from command-line flags.
+In the root folder of the demo project, create a project-local `.lstk/config.toml`:
+
+```toml title=".lstk/config.toml"
+[[containers]]
+type = "aws"
+tag  = "latest"
+port = "4566"
+env  = ["terraform-init"]
+volumes = [
+    "../terraform:/etc/localstack/init/ready.d",
+]
+
+[env.terraform-init]
+EXTENSION_AUTO_INSTALL = "localstack-extension-terraform-init"
+```
+
+:::note
+Relative host paths in `volumes` are resolved against the directory that holds `config.toml` — here `.lstk/` — which is why the mount is written as `../terraform` rather than `./terraform`.
+:::
+
+`main.tf` refers to the Lambda JAR as `target/product-lambda.jar`, relative to the Terraform working directory.
+Build it and stage it inside `terraform/`, so that the single mount above carries both the configuration and the JAR into the container:
 
 ```bash
-export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-localstack start -e EXTENSION_AUTO_INSTALL=localstack-extension-terraform-init \
-    -v ./terraform/main.tf:/etc/localstack/init/
+mvn clean package -DskipTests
+mkdir -p terraform/target
+cp target/product-lambda.jar terraform/target/product-lambda.jar
+```
+
+Then start LocalStack from the project root:
+
+```bash
+lstk start
 ```
 
 This is the easiest way to quickly spin up the desired services at startup.
-The command starts LocalStack with the configuration to automatically install the **`localstack-extension-terraform-init`** [extension](/aws/customization/integrations/extensions/) and
-mount the necessary files into the container: the Terraform configuration file and the Lambda JAR file.
+The [`env` profile](/aws/developer-tools/running-localstack/lstk/#passing-environment-variables-to-the-container) tells LocalStack to automatically install the **`localstack-extension-terraform-init`** [extension](/aws/customization/integrations/extensions/), and
+the [`volumes` entry](/aws/developer-tools/running-localstack/lstk/#volume-mounts) mounts the Terraform configuration and the Lambda JAR into the container.
 The extension will install both `terraform` and `tflocal` into your LocalStack container, and enable the init hook runners to detect Terraform files.
 You can also organize your Terraform files into subdirectories if you want.
 
-If Docker gives you any trouble regarding mounting permissions, you can add `$(pwd)` in front of the local paths, to turn them into
-absolute paths.
+Since the initialization hook runs `terraform init`, the AWS Terraform provider would be downloaded in the container on every start. Mounting the whole `terraform` directory, as above, avoids this: any Terraform state including the `.terraform` folder that contains the provider will be cached on your host directory, however it may require `sudo` permissions to modify or delete, as it is created by the container.
 
-Since the initialization hook runs `terraform init`, the AWS Terraform provider will be downloaded in the container every time. You can avoid this by mounting a directory instead of a single file. Any Terraform state including the `.terraform` folder that contains the provider, will be cached on your host directory, however they may require `sudo` permissions to modify or delete, as they are created by the container.
+Once the `Ready.` message appears, you can list what the init hook created:
+
+```bash
+lstk status
+```
+
+```bash title="Output"
+~ 5 resources · 4 services
+  SERVICE     RESOURCE     REGION     ACCOUNT
+  ApiGateway  nq7sycvcbw   us-east-1  000000000000
+  DynamoDB    Products     us-east-1  000000000000
+  IAM         productRole  global     000000000000
+  Lambda      add-product  us-east-1  000000000000
+  Lambda      get-product  us-east-1  000000000000
+```
 
 #### Docker compose
 
@@ -135,9 +177,8 @@ After running `docker compose up`, we should keep an eye on the container logs u
 Now we can test the functionality of our stack by running the following commands:
 
 ```bash
-aws apigateway get-rest-apis \
-    --query 'items[?name==`product-api-gateway`].id' \
-    --endpoint http://localhost.localstack.cloud:4566
+lstk aws apigateway get-rest-apis \
+    --query 'items[?name==`product-api-gateway`].id'
 ```
 
 ```bash title="Output"
