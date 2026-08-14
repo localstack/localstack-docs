@@ -18,10 +18,6 @@ For IdP-specific setup instructions, see:
 - [SCIM with Okta](/aws/organizations-admin/sso/scim/okta/)
 - [SCIM with Microsoft Entra ID](/aws/organizations-admin/sso/scim/entra/)
 
-:::note
-License assignment via SCIM is currently supported with **Okta** only. Microsoft Entra ID supports user provisioning, deprovisioning, and role management, but not license assignment.
-:::
-
 ## Prerequisites
 
 - An active Enterprise subscription with the SCIM feature enabled
