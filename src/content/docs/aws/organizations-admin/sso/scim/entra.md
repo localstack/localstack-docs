@@ -150,7 +150,3 @@ The `409` is transient - Entra retries the failed operation on the next cycle, a
 #### Last-Admin Protection
 
 LocalStack will reject any SCIM request that would leave the workspace without an admin. If you attempt to remove the only admin from the admin role group, the request fails with `409 Cannot remove the last workspace admin`. Assign another admin in LocalStack first, then retry the removal.
-
-:::note
-License assignment via SCIM is not supported with Microsoft Entra ID. To assign licenses through SCIM, use [Okta](/aws/organizations-admin/sso/scim/okta/#license-management). Otherwise, manage license assignments directly in the LocalStack web app.
-:::
