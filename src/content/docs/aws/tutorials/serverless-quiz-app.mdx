@@ -30,8 +30,8 @@ Using LocalStack, we can develop and test this entire serverless infrastructure 
 For this tutorial, you will need:
 
 - [LocalStack for AWS](https://localstack.cloud/pricing/) with a valid auth token
-- [AWS CLI](https://docs.localstack.cloud/user-guide/integrations/aws-cli/) with [`awslocal` wrapper](https://docs.localstack.cloud/user-guide/integrations/aws-cli/#localstack-aws-cli-awslocal)
-- [AWS CDK](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/) with [`cdklocal` wrapper](https://github.com/localstack/aws-cdk-local) (**optional**)
+- [AWS CLI](https://docs.localstack.cloud/user-guide/integrations/aws-cli/) with [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws)
+- [AWS CDK](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/) with [`lstk cdk`](/aws/connecting/infrastructure-as-code/aws-cdk#aws-cdk-cli-for-localstack) (**optional**)
 - [Python 3.11+](https://www.python.org/downloads/) and `pip`
 - [curl](https://curl.se/) for testing API endpoints
 - [`make`](https://www.gnu.org/software/make/) (**optional**, but recommended for running the sample application)
@@ -90,8 +90,7 @@ pip install -r tests/requirements-dev.txt
 First, start LocalStack with your auth token:
 
 ```bash
-localstack auth set-token <your-auth-token>
-localstack start
+lstk start
 ```
 
 ### Deploy the Infrastructure
@@ -110,10 +109,11 @@ bin/deploy.sh
 
 Alternatively, deploy using AWS CDK with LocalStack:
 
+{/* lstk migration: this script (in the external sample repo) takes the wrapper binary as a single-word env var (AWS_CMD/CDK_CMD) — `lstk aws`/`lstk cdk` are two-word invocations that may not work as a drop-in value depending on how deploy_cdk.sh invokes them. Review the script before relying on this */}
 ```bash
 cd cdk
-cdklocal bootstrap
-AWS_CMD=awslocal CDK_CMD=cdklocal bash ../bin/deploy_cdk.sh
+lstk cdk bootstrap
+AWS_CMD="lstk aws" CDK_CMD="lstk cdk" bash bin/deploy_cdk.sh
 ```
 
 Both deployment methods will:
@@ -150,6 +150,9 @@ Navigate to the CloudFront URL from the deployment output to interact with the q
 Run the complete test suite to validate quiz creation, submission, and scoring:
 
 ```bash
+export AWS_DEFAULT_REGION=us-east-1
+export AWS_ACCESS_KEY_ID=test
+export AWS_SECRET_ACCESS_KEY=test
 pytest tests/test_infra.py
 ```
 
@@ -170,8 +173,8 @@ Use the LocalStack Web Application to inspect your deployed resources:
 Skip the deployment step by loading a pre-configured environment:
 
 ```bash
-localstack restart
-localstack pod load serverless-quiz-app
+lstk restart
+lstk snapshot load pod:serverless-quiz-app
 ```
 
 This instantly loads the complete application infrastructure from a saved state.
