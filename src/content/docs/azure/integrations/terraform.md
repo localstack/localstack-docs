@@ -30,10 +30,10 @@ terraform {
       version = "5.1.0"
     }
 
-    # only needed for the `random_uuid` resource 
+    # only needed for the `random_uuid` resource
     random = {
       source  = "hashicorp/random"
-      version = "3.9.0"
+      version = "= 3.9.0"
     }
   }
 }
