@@ -185,13 +185,13 @@ This section covers configuration options that are specific to certain AWS servi
 | `EC2_DOCKER_INIT` | `0`\|`1` (default) | Start container instances with docker-init system, learn more [here](https://docs.docker.com/reference/cli/docker/container/run/#init). Disable this if you want to use a custom init system. |
 | `EC2_DOWNLOAD_DEFAULT_IMAGES` | `0`\|`1` (default) | At startup, LocalStack for AWS downloads latest Ubuntu images from Docker Hub for use as AMIs. This can be disabled for security reasons. |
 | `EC2_EBS_MAX_VOLUME_SIZE` | `1000` (default) | Maximum size (in MiBs) of user-specified EBS block devices mounted into EC2 container instances. |
-| `EC2_HYPERVISOR_URI` | `qemu:///system` (default) | [Libvirt connection URI](https://libvirt.org/uri.html#remote-uris) that indicates the hypervisor host. Only QEMU drivers are supported at this time. |
-| `EC2_LIBVIRT_NETWORK` | `default` (default) | Name of the Libvirt network to use for all instances when using the Libvirt VM manager. |
-| `EC2_LIBVIRT_POOL` | `default` (default) | Name of the Libvirt storage pool to use for all images when using the Libvirt VM manager. |
+| `EC2_HYPERVISOR_URI` | `qemu:///system` (default) | **Deprecated**. [Libvirt connection URI](https://libvirt.org/uri.html#remote-uris) that indicates the hypervisor host. Only QEMU drivers are supported at this time. Used with the deprecated Libvirt VM manager. |
+| `EC2_LIBVIRT_NETWORK` | `default` (default) | **Deprecated**. Name of the Libvirt network to use for all instances when using the Libvirt VM manager. |
+| `EC2_LIBVIRT_POOL` | `default` (default) | **Deprecated**. Name of the Libvirt storage pool to use for all images when using the Libvirt VM manager. |
 | `EC2_MOUNT_BLOCK_DEVICES` | `1`\|`0` (default) | Whether to create and mount user-specified EBS block devices into EC2 container instances. |
-| `EC2_REFERENCE_DOMAIN` | `my-template-vm` | Name of a shut-off Libvirt domain whose configuration will be cloned for all new VMs created by LocalStack. If unset or the domain is not found/not shut-off, LocalStack uses a generic configuration. |
+| `EC2_REFERENCE_DOMAIN` | `my-template-vm` | **Deprecated**. Name of a shut-off Libvirt domain whose configuration will be cloned for all new VMs created by LocalStack. If unset or the domain is not found/not shut-off, LocalStack uses a generic configuration. Used with the deprecated Libvirt VM manager. |
 | `EC2_REMOVE_CONTAINERS` | `0`\|`1` (default) | Controls whether created Docker containers are removed at instance termination or LocalStack shuts down. Disable this if there is a need to examine the container filesystem for debugging. |
-| `EC2_VM_MANAGER` | `docker`(default)\|`libvirt`\|`mock` | Emulation method to use in LocalStack for AWS. |
+| `EC2_VM_MANAGER` | `docker` (default) \| `kubernetes` (Enterprise) \| `libvirt` (deprecated) \| `mock` | Emulation method to use in LocalStack for AWS. The `kubernetes` value runs instances as Kubernetes pods. The `libvirt` value is **Deprecated** and will be removed in a future release. |
 
 ### EKS
 
@@ -205,6 +205,7 @@ This section covers configuration options that are specific to certain AWS servi
 | `K3D_START_LB_INGRESS` |      `0` (default)     |  Whether to start the k3d load balancer and Traefik ingress controller automatically when creating an EKS cluster. Set to `1` to enable. (formerly `EKS_START_K3D_LB_INGRESS`, still accepted as a deprecated alias)  |
 | `EKS_PERSIST_CLUSTER_CONTENTS` | `0` (default) | When Persistence is enabled or when saving/loading Cloud Pods, this flag can be used to control whether the content deployed to EKS clusters will be persisted. Set to `1` to enable. |
 | `K3D_CLUSTER_TOKEN` | `localstack-k3d-cluster-token` (default) | Token used to authenticate agent nodes joining a k3d-backed EKS cluster. Setting an explicit token ensures consistent node authentication across k3d versions, which is required for dynamic agent assignment. (formerly `EKS_K3D_CLUSTER_TOKEN`, still accepted as a deprecated alias) |
+| `K3D_VERSION` | `v5.9.0` (default) | Overrides the k3d CLI version used to manage EKS clusters. (formerly `EKS_K3D_VERSION`, still accepted as a deprecated alias) |
 
 :::note
 The EKS configuration variables were renamed to cloud-agnostic names since they're shared across cloud emulators (AWS EKS / Azure AKS). The previous `EKS_*`, `LOCALSTACK_K8S_*`, and `LAMBDA_K8S_*` names still work as deprecated aliases and will be removed in a future release.
@@ -423,7 +424,6 @@ To learn more about these configuration options, see [Cloud Pods](/aws/developer
 | Variable | Example Values | Description |
 | - | - | - |
 | `EXTENSION_AUTO_INSTALL` | | Install a list of extensions automatically at startup. Comma-separated list of extensions directives which will be installed automatically at startup (see [managing extensions](/aws/customization/integrations/extensions/managing-extensions#automating-extensions-installation))|
-| `EXTENSION_DEV_MODE` | `0` (default) \| `1` | Enables development mode for extensions. Refer to the [Extensions Development Guide](/aws/customization/integrations/extensions/developing-extensions) for more information. |
 
 ## Miscellaneous
 

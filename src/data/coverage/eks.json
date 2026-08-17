@@ -42,6 +42,19 @@
       }
     },
     {
+      "CancelUpdate": {
+        "implemented": false,
+        "availability": "",
+        "internal_test_suite": false,
+        "external_test_suite": false,
+        "terraform_test_suite": false,
+        "aws_validated": false,
+        "snapshot_tested": false,
+        "snapshot_skipped": "",
+        "k8s_test_suite": false
+      }
+    },
+    {
       "CreateAccessEntry": {
         "implemented": true,
         "availability": "pro",
@@ -799,11 +812,11 @@
       "UpdateNodegroupConfig": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -896,8 +909,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
-            "test": "test_access_entry_lifecycle[iam_role]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[eks_iam_role]",
+            "test": "test_access_entry_lifecycle[eks_iam_role]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -969,6 +982,56 @@
       },
       "clientRequestToken, clusterName, principalArn, type": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2]",
+            "test": "test_access_entry_managed_type[EC2]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2_LINUX]",
+            "test": "test_access_entry_managed_type[EC2_LINUX]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2_WINDOWS]",
+            "test": "test_access_entry_managed_type[EC2_WINDOWS]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[FARGATE_LINUX]",
+            "test": "test_access_entry_managed_type[FARGATE_LINUX]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[HYBRID_LINUX]",
+            "test": "test_access_entry_managed_type[HYBRID_LINUX]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks_self_managed_node.py::TestEKSSelfManagedNode::test_self_managed_node_joins_cluster",
             "test": "test_self_managed_node_joins_cluster",
@@ -1073,11 +1136,11 @@
       }
     },
     "CreateCluster": {
-      "accessConfig, clientRequestToken, name, resourcesVpcConfig, roleArn": {
+      "accessConfig, clientRequestToken, name, resourcesVpcConfig, roleArn, version": {
         "ls_pro": [
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
-            "test": "test_access_entry_lifecycle[iam_role]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[eks_iam_role]",
+            "test": "test_access_entry_lifecycle[eks_iam_role]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -1117,8 +1180,28 @@
           }
         ]
       },
-      "clientRequestToken, kubernetesNetworkConfig, name, resourcesVpcConfig, roleArn, tags": {
+      "clientRequestToken, kubernetesNetworkConfig, name, resourcesVpcConfig, roleArn, tags, version": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
+            "test": "test_eksctl_stack",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..SecurityGroup', '$..ServiceRoleARN', '$..NodeGroupId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAddons::test_cluster_addons_lifecycle",
             "test": "test_cluster_addons_lifecycle",
@@ -1191,20 +1274,6 @@
           }
         ]
       },
-      "clientRequestToken, kubernetesNetworkConfig, name, resourcesVpcConfig, roleArn, tags, version": {
-        "ls_pro": [
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
-            "test": "test_eksctl_stack",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..SecurityGroup', '$..ServiceRoleARN', '$..NodeGroupId']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "internal"
-          }
-        ]
-      },
       "clientRequestToken, name, resourcesVpcConfig, roleArn": {
         "ls_pro": [
           {
@@ -1226,6 +1295,54 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKS::test_create_cluster_nonexistent_subnet",
+            "test": "test_create_cluster_nonexistent_subnet",
+            "response": "400",
+            "error": "InvalidParameterException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSClusterCRUD::test_cluster_already_exists",
+            "test": "test_cluster_already_exists",
+            "response": "409",
+            "error": "ResourceInUseException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "clientRequestToken, name, resourcesVpcConfig, roleArn, tags, version": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSClusterWithIngressAndLB::test_create_cluster_with_ingress_and_lb",
+            "test": "test_create_cluster_with_ingress_and_lb",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      },
+      "clientRequestToken, name, resourcesVpcConfig, roleArn, version": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/batch/test_batch_compute_environments.py::TestBatchComputeEnvironmentEks::test_create_compute_environment_with_eks_configuration",
+            "test": "test_create_compute_environment_with_eks_configuration",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..computeEnvironments..status', '$..computeEnvironments..statusReason', '$..computeEnvironments..computeResources.desiredvCpus', '$..computeEnvironments..computeResources.ec2Configuration', '$..computeEnvironments..computeResources.tags', '$..computeEnvironments..ecsClusterArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSClusterWithoutIngressAndLB::test_create_cluster_without_ingress_and_lb",
@@ -1287,34 +1404,6 @@
             "snapshot_tested": false,
             "origin": "external"
           },
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSClusterCRUD::test_cluster_already_exists",
-            "test": "test_cluster_already_exists",
-            "response": "409",
-            "error": "ResourceInUseException",
-            "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          }
-        ]
-      },
-      "clientRequestToken, name, resourcesVpcConfig, roleArn, tags": {
-        "ls_pro": [
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSClusterWithIngressAndLB::test_create_cluster_with_ingress_and_lb",
-            "test": "test_create_cluster_with_ingress_and_lb",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
-          }
-        ]
-      },
-      "clientRequestToken, name, resourcesVpcConfig, roleArn, version": {
-        "ls_pro": [
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKS::test_invalid_k8s_versions[0]",
             "test": "test_invalid_k8s_versions[0]",
@@ -1463,6 +1552,20 @@
           }
         ]
       },
+      "amiType, clientRequestToken, clusterName, launchTemplate, nodeRole, nodegroupName, scalingConfig, subnets, taints": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "clientRequestToken, clusterName, labels, launchTemplate, nodeRole, nodegroupName, scalingConfig, subnets": {
         "ls_pro": [
           {
@@ -1471,6 +1574,20 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..SecurityGroup', '$..ServiceRoleARN', '$..NodeGroupId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      },
+      "clientRequestToken, clusterName, labels, launchTemplate, nodeRole, nodegroupName, scalingConfig, subnets, taints": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1528,8 +1645,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
-            "test": "test_access_entry_lifecycle[iam_role]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[eks_iam_role]",
+            "test": "test_access_entry_lifecycle[eks_iam_role]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -1540,6 +1657,56 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_user]",
             "test": "test_access_entry_lifecycle[iam_user]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2]",
+            "test": "test_access_entry_managed_type[EC2]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2_LINUX]",
+            "test": "test_access_entry_managed_type[EC2_LINUX]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2_WINDOWS]",
+            "test": "test_access_entry_managed_type[EC2_WINDOWS]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[FARGATE_LINUX]",
+            "test": "test_access_entry_managed_type[FARGATE_LINUX]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[HYBRID_LINUX]",
+            "test": "test_access_entry_managed_type[HYBRID_LINUX]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -1620,6 +1787,16 @@
       "name": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/batch/test_batch_compute_environments.py::TestBatchComputeEnvironmentEks::test_create_compute_environment_with_eks_configuration",
+            "test": "test_create_compute_environment_with_eks_configuration",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..computeEnvironments..status', '$..computeEnvironments..statusReason', '$..computeEnvironments..computeResources.desiredvCpus', '$..computeEnvironments..computeResources.ec2Configuration', '$..computeEnvironments..computeResources.tags', '$..computeEnvironments..ecsClusterArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_fargate_cluster",
             "test": "test_eks_fargate_cluster",
             "response": "200",
@@ -1640,6 +1817,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
             "test": "test_eksctl_stack",
             "response": "200",
@@ -1652,16 +1839,6 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_policy_errors",
             "test": "test_access_policy_errors",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_disabled_default_access_entry",
-            "test": "test_disabled_default_access_entry",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -1730,13 +1907,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_nodegroup_instance_type",
-            "test": "test_nodegroup_instance_type",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -1856,6 +2033,16 @@
       "clusterName, nodegroupName": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
             "test": "test_eksctl_stack",
             "response": "200",
@@ -1906,6 +2093,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestK3SCluster::test_create_nodegroup_with_tags",
             "test": "test_create_nodegroup_with_tags",
             "response": "200",
@@ -1936,13 +2133,13 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_nodegroup_instance_type",
-            "test": "test_nodegroup_instance_type",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
             "response": "404",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
             "aws_validated": true,
-            "snapshot_tested": false,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -1988,8 +2185,8 @@
       "clusterName, principalArn": {
         "ls_pro": [
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
-            "test": "test_access_entry_lifecycle[iam_role]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[eks_iam_role]",
+            "test": "test_access_entry_lifecycle[eks_iam_role]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -2000,6 +2197,56 @@
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_user]",
             "test": "test_access_entry_lifecycle[iam_user]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2]",
+            "test": "test_access_entry_managed_type[EC2]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2_LINUX]",
+            "test": "test_access_entry_managed_type[EC2_LINUX]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[EC2_WINDOWS]",
+            "test": "test_access_entry_managed_type[EC2_WINDOWS]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[FARGATE_LINUX]",
+            "test": "test_access_entry_managed_type[FARGATE_LINUX]",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_managed_type[HYBRID_LINUX]",
+            "test": "test_access_entry_managed_type[HYBRID_LINUX]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -2028,8 +2275,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
-            "test": "test_access_entry_lifecycle[iam_role]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[eks_iam_role]",
+            "test": "test_access_entry_lifecycle[eks_iam_role]",
             "response": "404",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -2140,8 +2387,8 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAddons::test_describe_addon_configuration[vpc-cni-v1.20.0-eksbuild.1]",
-            "test": "test_describe_addon_configuration[vpc-cni-v1.20.0-eksbuild.1]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAddons::test_describe_addon_configuration[vpc-cni-v1.22.1-eksbuild.2]",
+            "test": "test_describe_addon_configuration[vpc-cni-v1.22.1-eksbuild.2]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
@@ -2210,6 +2457,16 @@
       "name": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/batch/test_batch_compute_environments.py::TestBatchComputeEnvironmentEks::test_create_compute_environment_with_eks_configuration",
+            "test": "test_create_compute_environment_with_eks_configuration",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..computeEnvironments..status', '$..computeEnvironments..statusReason', '$..computeEnvironments..computeResources.desiredvCpus', '$..computeEnvironments..computeResources.ec2Configuration', '$..computeEnvironments..computeResources.tags', '$..computeEnvironments..ecsClusterArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_fargate_cluster",
             "test": "test_eks_fargate_cluster",
             "response": "200",
@@ -2240,6 +2497,16 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
             "test": "test_eksctl_stack",
             "response": "200",
@@ -2250,8 +2517,8 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
-            "test": "test_access_entry_lifecycle[iam_role]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[eks_iam_role]",
+            "test": "test_access_entry_lifecycle[eks_iam_role]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -2507,17 +2774,47 @@
             "snapshot_skipped": "['$..cluster.accessConfig', '$..cluster.endpoint', '$..cluster.health', '$..cluster.kubernetesNetworkConfig.serviceIpv4Cidr', '$..cluster.logging', '$..cluster.platformVersion', '$..cluster.tags', '$..cluster.deletionProtection', '$..fargateProfile.health', '$..fargateProfile.selectors', '$..fargateProfile..labels', '$..fargateProfile..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
-            "origin": "external"
+            "origin": "internal"
           },
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_disabled_default_access_entry",
-            "test": "test_disabled_default_access_entry",
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_fargate_cluster",
+            "test": "test_eks_fargate_cluster",
             "response": "404",
             "error": "ResourceNotFoundException",
-            "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
+            "snapshot_skipped": "['$..cluster.accessConfig', '$..cluster.endpoint', '$..cluster.health', '$..cluster.kubernetesNetworkConfig.serviceIpv4Cidr', '$..cluster.logging', '$..cluster.platformVersion', '$..cluster.tags', '$..cluster.deletionProtection', '$..fargateProfile.health', '$..fargateProfile.selectors', '$..fargateProfile..labels', '$..fargateProfile..tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_fargate_profile_without_subnets",
+            "test": "test_eks_fargate_profile_without_subnets",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..fargateProfile.health', '$..fargateProfile.selectors', '$..fargateProfile.subnets', '$..fargateProfile.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
+            "test": "test_eksctl_stack",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..SecurityGroup', '$..ServiceRoleARN', '$..NodeGroupId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestK3SClusterCidrRouting::test_pod_cidr_route_added_and_removed",
@@ -2722,6 +3019,26 @@
       "clusterName, nodegroupName": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
             "test": "test_eksctl_stack",
             "response": "200",
@@ -2772,6 +3089,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestK3SCluster::test_create_nodegroup_with_tags",
             "test": "test_create_nodegroup_with_tags",
             "response": "200",
@@ -2800,6 +3127,16 @@
             "aws_validated": true,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eks_nodegroup_taints",
+            "test": "test_eks_nodegroup_taints",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..nodegroup.amiType', '$..nodegroup.releaseVersion', '$..nodegroup.tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resources/test_eks.py::test_eksctl_stack",
@@ -2847,6 +3184,16 @@
             "response": "404",
             "error": "ResourceNotFoundException",
             "snapshot_skipped": "[\"$..'beta.kubernetes.io/instance-type'\", \"$..'eks.amazonaws.com/capacityType'\", \"$..'eks.amazonaws.com/nodegroup'\", \"$..'eks.amazonaws.com/nodegroup-image'\", \"$..'eks.amazonaws.com/sourceLaunchTemplateId'\", \"$..'eks.amazonaws.com/sourceLaunchTemplateVersion'\", \"$..'k8s.io/cloud-provider-aws'\", \"$..'kubernetes.io/hostname'\", \"$..'node.kubernetes.io/instance-type'\", \"$..'topology.k8s.aws/zone-id'\"]",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
+            "response": "404",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2950,8 +3297,8 @@
       "clusterName": {
         "ls_pro": [
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
-            "test": "test_access_entry_lifecycle[iam_role]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[eks_iam_role]",
+            "test": "test_access_entry_lifecycle[eks_iam_role]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -3260,8 +3607,8 @@
       "clientRequestToken, clusterName, kubernetesGroups, principalArn": {
         "ls_pro": [
           {
-            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[iam_role]",
-            "test": "test_access_entry_lifecycle[iam_role]",
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEKSAccessEntries::test_access_entry_lifecycle[eks_iam_role]",
+            "test": "test_access_entry_lifecycle[eks_iam_role]",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..deletionProtection', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..platformVersion']",
@@ -3305,6 +3652,22 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..accessConfig', '$..endpoint', '$..health', '$..identity.oidc.issuer', '$..logging', '$..tags', '$..namespaceConfig']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateNodegroupConfig": {
+      "clientRequestToken, clusterName, nodegroupName, taints": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/eks/test_eks.py::TestEksClusterNodes::test_managed_nodegroup_taints_applied_to_nodes",
+            "test": "test_managed_nodegroup_taints_applied_to_nodes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..nodegroup.releaseVersion', '$..update.status']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"

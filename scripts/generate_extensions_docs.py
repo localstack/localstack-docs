@@ -161,7 +161,7 @@ def generate_documentation(extensions: list[Extension]) -> str:
         "localstack extensions install <extension-name>",
         "```",
         "",
-        "See [Managing extensions](/aws/tooling/extensions/managing-extensions) for more details "
+        "See [Managing extensions](/aws/customization/integrations/extensions/managing-extensions/) for more details "
         "on installing, listing, and removing extensions.",
         "",
         ":::note",
