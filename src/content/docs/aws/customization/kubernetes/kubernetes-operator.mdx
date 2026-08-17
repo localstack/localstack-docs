@@ -22,7 +22,8 @@ This guide explains how to deploy and manage LocalStack in a Kubernetes cluster 
 
 The Operator supports the following advanced capabilities:
 
-* Cluster DNS configuration to correctly resolve AWS-style subdomains in the same namespace
+* Opt-in DNS and endpoint injection for Kubernetes workloads
+* Cluster DNS configuration to resolve AWS-style subdomains in the same namespace
 * Automatic loading of Cloud Pods on startup
 * Support for initialization hooks
 * Simplified logging configuration
@@ -128,6 +129,109 @@ Using standard Kubernetes DNS resolution, the Service can be reached at:
 
 When `dnsProvider: coredns` is configured, LocalStack can also be reached through **any subdomain** of these service names.
 
+## Inject LocalStack endpoints into workloads
+
+:::note
+Transparent endpoint injection requires LocalStack Operator version 0.4.13 or later.
+:::
+
+The Operator can configure individual workloads to use the LocalStack instance in their namespace without changing cluster-wide DNS.
+It uses an admission webhook to update opted-in Pods when Kubernetes creates them.
+Pods without the opt-in label are not affected.
+
+### Opt in a workload
+
+Add the `localstack.cloud/inject-dns: "true"` label to the Pod template of each Deployment, StatefulSet, Job, or other workload that needs to access LocalStack:
+
+```yaml
+spec:
+  template:
+    metadata:
+      labels:
+        localstack.cloud/inject-dns: "true"
+```
+
+Add the same label directly under `metadata.labels` when you create a standalone Pod.
+
+### Injected configuration
+
+For an opted-in Pod, the Operator:
+
+* Sets `dnsPolicy: None` and replaces the Pod's nameserver list with the LocalStack Service IP. This allows LocalStack domains such as `my-bucket.s3.localhost.localstack.cloud` to resolve to LocalStack.
+* Preserves custom DNS search domains and adds `<namespace>.svc.cluster.local`, `svc.cluster.local`, and `cluster.local` after them so in-cluster Service names continue to resolve.
+* Adds the `ndots:5` resolver option unless the Pod already defines `ndots`.
+* Sets `AWS_ENDPOINT_URL` to `http://localstack-<localstack-name>.<namespace>:4566` in every regular, init, and ephemeral container. [AWS SDKs and tools that support this setting](https://docs.aws.amazon.com/sdkref/latest/guide/feature-ss-endpoints.html#ss-endpoints-support) use the LocalStack endpoint without application-specific endpoint configuration.
+
+If a container already defines `AWS_ENDPOINT_URL`, the Operator replaces its value with the LocalStack endpoint.
+An endpoint configured directly in application code, with the AWS CLI `--endpoint-url` option, or with a service-specific endpoint environment variable takes precedence over `AWS_ENDPOINT_URL`.
+
+:::note
+The injected DNS search domains assume that the cluster uses the default `cluster.local` domain.
+Clusters configured with a different cluster domain require additional DNS configuration.
+:::
+
+### Injection requirements and behavior
+
+The namespace must contain exactly one `LocalStack` resource.
+If the namespace contains no `LocalStack` resources or more than one, the Operator creates the Pod without injecting DNS or the endpoint.
+The Operator also skips injection when the LocalStack Service does not have a usable ClusterIP.
+
+Injection occurs only when Kubernetes creates a Pod.
+After adding the label to an existing workload, recreate its Pods to apply the configuration.
+
+The webhook does not block Pod creation.
+If the Operator or LocalStack Service is unavailable, Kubernetes creates the Pod without the injected configuration.
+
+## Manage webhook certificates
+
+The endpoint injection webhook uses TLS.
+Choose how the Operator manages its serving certificate when you install the Operator.
+
+### Self-managed certificates
+
+The default `self-managed` mode requires no additional cluster components.
+The Operator creates and rotates the certificate and keeps the Kubernetes API server's trust configuration up to date.
+Existing installations continue to use this mode without configuration changes.
+
+### cert-manager certificates
+
+Use `cert-manager` mode to delegate certificate issuance and rotation to [cert-manager](https://cert-manager.io/docs/).
+Install cert-manager and create an `Issuer` or `ClusterIssuer` before starting the Operator in this mode.
+The Operator reports an error at startup if the cert-manager `Certificate` resource is unavailable.
+
+Configure the Operator manager with the following flags or equivalent environment variables:
+
+| Flag | Environment variable | Default | Description |
+| --- | --- | --- | --- |
+| `--certificate-mode` | `CERTIFICATE_MODE` | `self-managed` | Set to `cert-manager` to delegate certificate management. |
+| `--certificate-issuer-name` | `CERTIFICATE_ISSUER_NAME` | Unset | Name of the issuer. Required in `cert-manager` mode. |
+| `--certificate-issuer-kind` | `CERTIFICATE_ISSUER_KIND` | `ClusterIssuer` | Set to `Issuer` or `ClusterIssuer`. |
+
+When you install the Operator from the published `controller.yaml`, add the environment variables to the Operator's ConfigMap and restart the manager:
+
+```bash
+kubectl patch configmap localstack-operator-controller-manager-config \
+  --namespace localstack-operator-system \
+  --type merge \
+  --patch '{"data":{"CERTIFICATE_MODE":"cert-manager","CERTIFICATE_ISSUER_NAME":"<issuer-name>","CERTIFICATE_ISSUER_KIND":"ClusterIssuer"}}'
+
+kubectl rollout restart deployment/localstack-operator-controller-manager \
+  --namespace localstack-operator-system
+```
+
+Replace `<issuer-name>` with the name of your issuer.
+Set `CERTIFICATE_ISSUER_KIND` to `Issuer` if you use a namespaced issuer.
+
+Use a cert-manager [`CA` issuer](https://cert-manager.io/docs/configuration/ca/) rather than a `SelfSigned` issuer.
+A `SelfSigned` issuer changes the trust anchor during each renewal, which can temporarily prevent the API server from reaching the webhook.
+
+:::caution
+Before switching from `cert-manager` back to `self-managed`, delete the Operator's `webhook-server-cert` `Certificate` resource.
+Otherwise, cert-manager and the Operator both update the same certificate Secret.
+:::
+
+The webhook does not block Pod creation while you switch certificate modes.
+
 
 ## CRDs
 
@@ -176,7 +280,7 @@ Additional ClusterRoles are created for:
 
 ## DNS handling
 
-The LocalStack Operator configures cluster DNS to forward AWS-style subdomain requests to the LocalStack DNS server.
+With `dnsProvider: coredns`, the LocalStack Operator configures cluster DNS to forward AWS-style subdomain requests to the LocalStack DNS server.
 
 This enables features such as:
 
@@ -208,6 +312,22 @@ curl http://1d4b6907.execute-api.localstack-localstack.my-namespace:4566/json
 ```
 
 This works without additional DNS configuration in client applications.
+
+### EKS Auto Mode
+
+Amazon EKS Auto Mode does not expose the CoreDNS configuration for the Operator to modify.
+Set `dnsProvider: eksauto` on the `LocalStack` resource to prevent the Operator from trying to update CoreDNS:
+
+```yaml
+spec:
+  # ... other fields
+  dnsProvider: eksauto
+  dnsConfigName: coredns
+  dnsConfigNamespace: kube-system
+```
+
+The `dnsConfigName` and `dnsConfigNamespace` fields remain required by the `LocalStack` resource schema, but the Operator does not use their values in `eksauto` mode.
+Use opt-in [endpoint injection](#inject-localstack-endpoints-into-workloads) to configure workloads that need to access LocalStack.
 
 ## Storage
 
