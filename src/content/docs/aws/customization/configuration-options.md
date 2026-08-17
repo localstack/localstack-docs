@@ -95,6 +95,7 @@ This section covers configuration options that are specific to certain AWS servi
 | `BEDROCK_PREWARM` | `0` (default) \| `1` | Pre-warm the Bedrock engine directly on LocalStack startup instead of on demand. |
 | `DEFAULT_BEDROCK_MODEL` | `smollm2:360m` (default) | The model that is used initially to handle text model invocations in Bedrock. Any text-based model available for Ollama is usable. |
 | `BEDROCK_PULL_MODELS` | `deepseek-r1,mistral` \' '' (default)  | A list of models that should get pulled into the model cache on startup. `DEFAULT_BEDROCK_MODEL` is automatically in there |
+| `BEDROCK_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Bedrock containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### BigData (EMR, Athena, Glue)
 
@@ -129,6 +130,7 @@ This section covers configuration options that are specific to certain AWS servi
 | - | - | - |
 | `CODEBUILD_REMOVE_CONTAINERS` | `0`\|`1` (default) | Remove Docker containers associated with a CodeBuild build tasks after execution. Disabling this and dumping container logs might help with troubleshooting failing builds. |
 | `CODEBUILD_ENABLE_CUSTOM_IMAGES` | `0` (default) \|`1` | Enable the usage of arbitrary CodeBuild build images. By default, all the builds are executed in a Amazon Linux 2023 container. |
+| `CODEBUILD_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating CodeBuild build containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### CodePipeline
 
@@ -148,6 +150,7 @@ This section covers configuration options that are specific to certain AWS servi
 | Variable | Example Values | Description |
 | - | - | - |
 | `DOCDB_PROXY_CONTAINER` | `0` (default) \|`1` | Whether the DocumentDB starts the MongoDB container proxied over LocalStack container. When enabled lambda functions can use the `Endpoint` configuration of the DocDB cluster or instance to connect to the DocumentDB. By default the container starts without proxy as standalone container. |
+| `DOCDB_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating DocumentDB containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### DynamoDB
 
@@ -219,6 +222,7 @@ If you configure these options through the LocalStack CLI **v1**, keep the `LOCA
 | - | - | - |
 | `PROVIDER_OVERRIDE_ELASTICACHE` | `legacy` | Use the legacy ElastiCache provider. |
 | `REDIS_CONTAINER_MODE` | `1`\|`0` (default) | Start ElastiCache cache nodes in separate containers instead of in the LocalStack container |
+| `ELASTICACHE_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating ElastiCache containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### ElasticSearch
 
@@ -237,6 +241,7 @@ Also see [OpenSearch configuration variables](#opensearch) which are used to man
 | - | - | - |
 | `GLUE_JOB_EXECUTOR` | `docker` (default) \| `kubernetes` | Whether to run Glue jobs when LocalStack is deployed on Kubernetes. Jobs are run as pods in the Kubernetes cluster. |
 | `DOCKER_GLOBAL_IMAGE_PREFIX` | | Specify custom images for Glue jobs by configuring their custom image repository. |
+| `GLUE_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Glue job containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### IAM
 
@@ -256,6 +261,18 @@ Also see [OpenSearch configuration variables](#opensearch) which are used to man
 | `KINESIS_MOCK_PROVIDER_ENGINE` | `node` (default) \| `scala` | String value of `node` (default) or `scala` that determines the underlying build of Kinesis Mock. |
 | `KINESIS_MOCK_MAXIMUM_HEAP_SIZE` | `512m` (default) | JVM memory format string that sets the maximum memory size for the Kinesis Mock Scala server, corresponds to the JVM `-Xmx` flag. |
 | `KINESIS_MOCK_INITIAL_HEAP_SIZE` | `256m` (default) | JVM memory format string that sets the initial memory size for the Kinesis Mock Scala server, corresponds to the JVM `-Xms` flag. | 
+
+### Kinesis Analytics
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `KINESISANALYTICSV2_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Kinesis Analytics v2 (Flink) containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
+
+### Kafka
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `KAFKA_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Kafka/MSK containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### Lambda
 
@@ -298,6 +315,7 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | Variable | Example Values | Description |
 | - | - | - |
 | `REDIS_CONTAINER_MODE` | `1`\|`0` (default) | Start MemoryDB cluster nodes in separate containers instead of in the LocalStack container |
+| `MEMORYDB_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating MemoryDB containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### MWAA
 
@@ -306,6 +324,12 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | `MWAA_PIP_TRUSTED_HOSTS` | `pypi.org,files.pythonhosted.org` | Comma-separated list of hosts for which SSL verification is not performed when installing Python dependencies for MWAA environment. |
 | `MWAA_S3_POLL_INTERVAL` | `30` (default) | Interval in seconds with which MWAA polls S3 bucket to check for new or updated assets. |
 | `MWAA_DOCKER_FLAGS` | `-e TEST_ENV=1337` | Additional flags provided to the Airflow container. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
+
+### MQ
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `MQ_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Amazon MQ broker containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### Neptune
 
@@ -337,6 +361,7 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | `MSSQL_IMAGE`                    | `mcr.microsoft.com/mssql/server:2022-latest` | Defines a specific image that should be used when spinning up a SQL server engine. |
 | `MSSQL_ACCEPT_EULA`              | `Y`     | Set to `Y` if you accept the [EULA from MSSQL](https://hub.docker.com/_/microsoft-mssql-server). |
 | `RDS_PG_MAX_CONNECTIONS` | `0` (default) | Sets the maximum number of connections for Postgres RDS instances. |
+| `RDS_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating RDS containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### S3
 
@@ -344,6 +369,12 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | - | - | - |
 | `S3_SKIP_SIGNATURE_VALIDATION`| `0` \| `1` (default) | Used to toggle validation of S3 pre-signed URL request signature. Set to `0` to validate. Note that validation can only pass if the `AWS_SECRET_ACCESS_KEY` is set to `test` or if using credentials returned from `STS.AssumeRole`  |
 | `S3_SKIP_KMS_KEY_VALIDATION` | `0` \| `1` (default) | Used to toggle validation of provided KMS key in S3 operations. |
+
+### SageMaker
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `SAGEMAKER_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating SageMaker training and endpoint containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### SNS
 
