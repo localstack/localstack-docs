@@ -176,6 +176,7 @@ port = "4566"     # Host port the emulator will be accessible on
 # image = ""      # Full image override (e.g. an internal mirror or offline image)
 # volume = ""     # Host directory for persistent state (default: OS cache dir)
 # volumes = []    # Docker-style "host:container[:ro]" bind mounts (see Volumes)
+# expose_ports = []  # Extra container ports to publish on the host, e.g. [53] for the emulator's DNS server
 # env = []        # Named environment profiles to apply (see [env.*] sections below)
 # snapshot = ""   # Snapshot REF to auto-load after start (AWS only)
 ```
@@ -191,6 +192,7 @@ port = "4566"     # Host port the emulator will be accessible on
 | `image`    | string   | (default)  | Full image reference that overrides the default Docker Hub image, e.g. an internal-registry mirror or a locally loaded offline image. If it already carries a tag, `tag` is ignored; otherwise `tag` (or `latest`) is appended. |
 | `volume`   | string   | (OS cache) | Host directory for persistent emulator state. Defaults to `<os-cache>/lstk/volume/<container-name>`. See also `volumes`. |
 | `volumes`  | string[] | `[]`       | Docker-style `"host:container[:ro]"` bind mounts (e.g. init hooks). May also carry the persistence mount (target `/var/lib/localstack`). See [Volume mounts](#volume-mounts). |
+| `expose_ports` | string[] | `[]`   | Additional container ports to publish on the host, beyond the gateway and service ports `lstk` publishes by default. Each entry is a bare port number (published on the same host port) or a Docker-style `"[host:]container[/proto]"` string; an entry that names no protocol publishes both TCP and UDP. For example, `expose_ports = [53]` publishes the emulator's DNS server, and `expose_ports = ["5354:5353/udp"]` maps container port `5353/udp` to host port `5354`. |
 | `env`      | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
 | `snapshot` | string   | `""`       | Snapshot REF (e.g. `pod:my-baseline` or a local path) to auto-load after the emulator starts. AWS emulator only. See [Auto-loading a snapshot on start](#auto-loading-a-snapshot-on-start). |
 
@@ -538,6 +540,7 @@ Run AWS CLI commands against the running LocalStack emulator.
 lstk aws s3 ls
 lstk aws sqs list-queues
 lstk aws s3 mb s3://my-bucket
+lstk aws --account 111111111111 s3 mb s3://my-bucket
 ```
 
 It is equivalent to running:
@@ -553,7 +556,10 @@ The exit code and `stdout`/`stderr` of the underlying `aws` process are passed t
 
 | Option              | Description                                                                                       |
 |:--------------------|:--------------------------------------------------------------------------------------------------|
+| `--account <id>`    | Target LocalStack account id (12 digits, default `000000000000`). Must appear **before** the `aws` subcommand; falls back to the ambient `AWS_ACCESS_KEY_ID`. Consumed by `lstk` rather than forwarded to `aws`. |
 | `--non-interactive` | Suppress the loading spinner. Unlike other commands, this flag is stripped before invoking `aws` (not forwarded). |
+
+LocalStack derives the AWS account from the access key id it receives, so `--account <12 digits>` simply sets the key `lstk` passes through. `lstk terraform` and `lstk sam` accept the same leading flag; `lstk cdk` does not (see [`cdk`](#cdk)).
 
 :::note
 `lstk aws` does not start the emulator.
