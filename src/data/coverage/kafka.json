@@ -35,8 +35,8 @@
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": true
       }
@@ -654,41 +654,41 @@
     },
     {
       "UpdateBrokerCount": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "UpdateBrokerType": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "UpdateBrokerStorage": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -706,15 +706,15 @@
     },
     {
       "UpdateConnectivity": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -758,15 +758,15 @@
     },
     {
       "UpdateMonitoring": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -797,28 +797,28 @@
     },
     {
       "UpdateSecurity": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "UpdateStorage": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -839,6 +839,26 @@
     "CreateCluster": {
       "BrokerNodeGroupInfo, ClusterName, KafkaVersion, NumberOfBrokerNodes": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update_multiple_attributes_is_rejected",
+            "test": "test_update_multiple_attributes_is_rejected",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..DeploymentConfig', '$..LastOperations', '$..ChangeSetId', '$..DeletionTime', '$..Outputs..OutputValue', '$..StackId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/test_msk_cluster.py::test_create_cluster",
             "test": "test_create_cluster",
@@ -894,7 +914,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -914,7 +934,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -940,11 +960,71 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_count",
+            "test": "test_update_broker_count",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_storage",
+            "test": "test_update_broker_storage",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_type",
+            "test": "test_update_broker_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_connectivity",
+            "test": "test_update_connectivity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_security",
+            "test": "test_update_security",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_storage",
+            "test": "test_update_storage",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka_kraft.py::TestKafkaKRaft::test_cluster_v2_lifecycle",
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -954,7 +1034,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1174,6 +1254,20 @@
             "origin": "external"
           }
         ]
+      },
+      "ClusterName, Provisioned, Tags": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_monitoring",
+            "test": "test_update_monitoring",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
       }
     },
     "CreateConfiguration": {
@@ -1198,7 +1292,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1208,7 +1302,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1244,6 +1338,16 @@
       "ClusterArn": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/test_msk_cluster.py::test_create_cluster",
             "test": "test_create_cluster",
             "response": "200",
@@ -1268,7 +1372,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1288,7 +1392,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1324,11 +1428,81 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_count",
+            "test": "test_update_broker_count",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_storage",
+            "test": "test_update_broker_storage",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_type",
+            "test": "test_update_broker_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_connectivity",
+            "test": "test_update_connectivity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_monitoring",
+            "test": "test_update_monitoring",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_security",
+            "test": "test_update_security",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_storage",
+            "test": "test_update_storage",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka_kraft.py::TestKafkaKRaft::test_cluster_v2_lifecycle",
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1338,7 +1512,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1402,6 +1576,16 @@
             "aws_validated": false,
             "snapshot_tested": false,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/test_msk_cluster.py::test_create_cluster",
@@ -1454,7 +1638,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1474,7 +1658,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1485,6 +1669,36 @@
     "DescribeCluster": {
       "ClusterArn": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update_multiple_attributes_is_rejected",
+            "test": "test_update_multiple_attributes_is_rejected",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..DeploymentConfig', '$..LastOperations', '$..ChangeSetId', '$..DeletionTime', '$..Outputs..OutputValue', '$..StackId']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/test_msk_cluster.py::test_create_cluster",
             "test": "test_create_cluster",
@@ -1510,7 +1724,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1556,11 +1770,81 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_count",
+            "test": "test_update_broker_count",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_storage",
+            "test": "test_update_broker_storage",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_type",
+            "test": "test_update_broker_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_connectivity",
+            "test": "test_update_connectivity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_monitoring",
+            "test": "test_update_monitoring",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_security",
+            "test": "test_update_security",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_storage",
+            "test": "test_update_storage",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka_kraft.py::TestKafkaKRaft::test_cluster_v2_lifecycle",
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1626,6 +1910,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/test_msk_cluster.py::test_create_cluster",
             "test": "test_create_cluster",
             "response": "404",
@@ -1656,7 +1950,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1676,7 +1970,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1696,7 +1990,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1706,7 +2000,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1794,7 +2088,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1804,7 +2098,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..LastProcessingResult', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1814,7 +2108,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1824,7 +2118,7 @@
             "test": "test_kafka_event_source_mapping_single_topic",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
+            "snapshot_skipped": "['$..ClusterInfo.CurrentVersion', '$..ClusterInfo.Provisioned.CurrentBrokerSoftwareInfo.ConfigurationArn', '$..ClusterInfo.Provisioned.EncryptionInfo.EncryptionAtRest', '$..ClusterInfo.Tags', '$..ConnectivityInfo.NetworkType', '$..BootstrapBrokerString', '$..bootstrapServers', '$..ClusterInfo.Tags', '$..BisectBatchOnFunctionError', '$..FunctionResponseTypes', '$..LastProcessingResult', '$..MaximumRecordAgeInSeconds', '$..MaximumRetryAttempts', '$..StateTransitionReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1982,7 +2276,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1992,7 +2286,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2008,7 +2302,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2028,7 +2322,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2106,7 +2400,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2116,7 +2410,7 @@
             "test": "test_cluster_v2_lifecycle",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
+            "snapshot_skipped": "['$..CurrentVersion', '$..EncryptionInfo', '$..ClusterArn', '$..NetworkInterfaces..Description', '$..NodeARN', '$..Endpoints', '$..Tags', '$..ConnectivityInfo.NetworkType', '$..NetworkInterfaces..Attachment', '$..NetworkInterfaces..Operator', '$..NetworkInterfaces..PrivateIpAddresses..PrivateDnsName', '$..NetworkInterfaces..PrivateDnsName', '$..NetworkInterfaces..Status', '$..NetworkInterfaces..AvailabilityZoneId', '$..NetworkInterfaces..PublicDnsName', '$..NodeInfoList..BrokerNodeInfo.BrokerId', '$..NodeInfoList..BrokerNodeInfo.CurrentBrokerSoftwareInfo']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2128,11 +2422,31 @@
       "ResourceArn": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_tagging_resources",
             "test": "test_tagging_resources",
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_monitoring",
+            "test": "test_update_monitoring",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2143,6 +2457,16 @@
     "TagResource": {
       "ResourceArn, Tags": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_tagging_resources",
             "test": "test_tagging_resources",
@@ -2160,11 +2484,69 @@
       "ResourceArn, TagKeys": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_tagging_resources",
             "test": "test_tagging_resources",
             "response": "204",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateBrokerCount": {
+      "ClusterArn, CurrentVersion, TargetNumberOfBrokerNodes": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_count",
+            "test": "test_update_broker_count",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateBrokerStorage": {
+      "ClusterArn, CurrentVersion, TargetBrokerEBSVolumeInfo": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_storage",
+            "test": "test_update_broker_storage",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateBrokerType": {
+      "ClusterArn, CurrentVersion, TargetInstanceType": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_broker_type",
+            "test": "test_update_broker_type",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2209,6 +2591,84 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateConnectivity": {
+      "ClusterArn, ConnectivityInfo, CurrentVersion": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_connectivity",
+            "test": "test_update_connectivity",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateMonitoring": {
+      "ClusterArn, CurrentVersion, EnhancedMonitoring, LoggingInfo, OpenMonitoring": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_monitoring",
+            "test": "test_update_monitoring",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
+      "ClusterArn, CurrentVersion, EnhancedMonitoring, OpenMonitoring": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/resource_providers/aws_msk_cluster/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..BrokerNodeGroupInfo.BrokerAZDistribution', '$..BrokerNodeGroupInfo.ConnectivityInfo.NetworkType', '$..BrokerNodeGroupInfo.StorageInfo.EbsStorageInfo.ProvisionedThroughput', '$..BrokerNodeGroupInfo.ZoneIds', '$..ClientAuthentication', '$..EncryptionInfo', '$..initial-cluster.Tags', '$..updated-cluster.Tags', '$..reduced-cluster.Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      }
+    },
+    "UpdateSecurity": {
+      "ClusterArn, CurrentVersion, EncryptionInfo": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_security",
+            "test": "test_update_security",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateStorage": {
+      "ClusterArn, CurrentVersion, StorageMode": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/kafka/test_kafka.py::TestKafka::test_update_storage",
+            "test": "test_update_storage",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..ClusterArn', '$..ClusterOperationArn']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
