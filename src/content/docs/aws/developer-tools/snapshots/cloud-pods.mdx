@@ -414,6 +414,14 @@ export AWS_SECRET_ACCESS_KEY=...
 
 A possible option is to obtain credentials via [AWS SSO CLI](https://github.com/synfinatic/aws-sso-cli).
 
+:::note
+**LocalStack v2026.08 or later:** Cloud Pods can be saved to and loaded from real AWS S3 buckets while [Transparent Endpoint Injection](/aws/customization/networking/transparent-endpoint-injection/) is enabled (the default configuration).
+
+**LocalStack versions before v2026.08:** If you encounter TLS certificate validation errors when saving Cloud Pods to a real S3 bucket, disable the DNS server by setting `DNS_ADDRESS=0` and restart LocalStack.
+This workaround disables transparent endpoint injection application-wide.
+For more details, see [DNS Server configuration](/aws/customization/networking/dns-server/#dns-server-bind-address).
+:::
+
 Next, we establish a new remote specifically designed for an S3 bucket.
 By running the following command, we create a remote named `s3-storage-aws` responsible for storing Cloud Pod artifacts in an S3 bucket called `ls-pods-bucket-test`.
 
