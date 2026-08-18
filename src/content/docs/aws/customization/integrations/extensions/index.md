@@ -31,4 +31,7 @@ Our [MailHog tutorial](/aws/customization/integrations/extensions/mailhog) teach
 :::note
 The feature and the API are currently in preview stage and may be subject to change.
 Please report any issues or feature requests on [LocalStack Extension's GitHub repository](https://github.com/localstack/localstack-extensions).
+
+The new CLI experience, `lstk`, does not support LocalStack Extensions. There is no `lstk extensions` command suite.
+Continue using the legacy [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/) to install, manage, and develop extensions.
 :::

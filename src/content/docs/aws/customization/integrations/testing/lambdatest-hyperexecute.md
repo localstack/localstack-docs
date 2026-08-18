@@ -36,22 +36,24 @@ parallelism: 2
 concurrency: 2
 scenarioCommandStatusOnly: true
 runtime:
-  language: python
-  version: 3.10
+  - language: python
+    version: '3.10'
+  - language: node
+    version: '18'
 pre:
-  - pip install localstack awscli awscli-local
-  - localstack start -d
-  - localstack wait -t 60
-  - awslocal s3 mb s3://test-bucket
-  - awslocal sqs create-queue --queue-name test-queue
-  - awslocal sns create-topic --name test-topic
+  - npm install -g @localstack/lstk
+  - pip install awscli
+  - LOCALSTACK_AUTH_TOKEN=${{ .secrets.LOCALSTACK_AUTH_TOKEN }} lstk start --non-interactive --timeout 60s
+  - lstk aws s3 mb s3://test-bucket
+  - lstk aws sqs create-queue --queue-name test-queue
+  - lstk aws sns create-topic --name test-topic
 ```
 
 The above minimal configuration file starts LocalStack and creates an S3 bucket, SQS queue, and SNS topic.
 
 :::note
-To use the LocalStack for AWS image, configure a LocalStack Auth Token by appending `LOCALSTACK_AUTH_TOKEN=${{ .secrets.LOCALSTACK_AUTH_TOKEN }}` to the `localstack start` command.
-Subsequently, you need to add your LocalStack Auth Token to your HyperExecute Portal as a secret.
+`lstk` requires a LocalStack Auth Token, and CI environments need a [CI Auth Token](/aws/getting-started/auth-token/) rather than a personal Developer Token.
+Add it to your HyperExecute Portal as a secret named `LOCALSTACK_AUTH_TOKEN` so `${{ .secrets.LOCALSTACK_AUTH_TOKEN }}` resolves at runtime.
 :::
 
 ### Enabling test execution on HyperExecute

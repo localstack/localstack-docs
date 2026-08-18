@@ -20,9 +20,18 @@ LocalStack supports routing traffic to various AWS resources including [S3 stati
 LocalStack also integrates with its DNS server to respond to DNS queries with these domains.
 
 :::note
-LocalStack CLI does not publish port `53` anymore by default.
-Use the CLI flag `--host-dns` to expose the port on the host.
-This would be required if you want to reach out to Route53 domain names from your host machine, using the LocalStack DNS server.
+`lstk` does not publish port `53` on the host by default.
+Add `expose_ports = [53]` to the container block in your `config.toml` to expose it:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type         = "aws"
+expose_ports = [53]
+```
+
+This is required if you want to reach out to Route53 domain names from your host machine, using the LocalStack DNS server.
+See [System DNS configuration](/aws/customization/networking/dns-server#system-dns-configuration) for details.
 :::
 
 ## Getting started

@@ -243,10 +243,19 @@ When using OpenSearch Dashboards with LocalStack, you need to make sure to:
 - Ensure that the OpenSearch Dashboards Docker container uses the LocalStack DNS.
   You can find more information on how to connect your Docker container to Localstack in our [Network Troubleshooting guide](/aws/customization/networking/).
 
-First, you need to make sure to start LocalStack in a specific Docker network:
+First, you need to create a dedicated Docker network and start LocalStack within it (note: custom networks are not supported by the `lstk` CLI)
 
 ```bash
-localstack start --network ls
+docker network create ls
+
+docker run \
+  -d --rm \
+  --name localstack-main \
+  --network ls \
+  -p 127.0.0.1:4566:4566 \
+  -p 127.0.0.1:4510-4559:4510-4559 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  localstack/localstack
 ```
 
 Now you can provision a new OpenSearch domain.
