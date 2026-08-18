@@ -1,13 +1,13 @@
 ---
 title: SCIM with Entra ID
-description: Configuring Microsoft Entra ID as the SCIM client for LocalStack user provisioning.
+description: Configuring Microsoft Entra ID as the SCIM client for LocalStack user and license provisioning.
 template: doc
 tags: ['Enterprise']
 sidebar:
   order: 3
 ---
 
-This page covers configuring **Microsoft Entra ID** as your SCIM client to provision users and groups into LocalStack. Before starting, make sure you've completed the steps in the [SCIM overview](/aws/organizations-admin/sso/scim/) to enable SCIM and obtain the **SCIM Base Connector URL** and **Bearer Auth Token** from the LocalStack web app.
+This page covers configuring **Microsoft Entra ID** as your SCIM client to provision users, groups, and licenses into LocalStack. Before starting, make sure you've completed the steps in the [SCIM overview](/aws/organizations-admin/sso/scim/) to enable SCIM and obtain the **SCIM Base Connector URL** and **Bearer Auth Token** from the LocalStack web app.
 
 ## Configuring SCIM with Microsoft Entra ID
 
@@ -150,3 +150,56 @@ The `409` is transient - Entra retries the failed operation on the next cycle, a
 #### Last-Admin Protection
 
 LocalStack will reject any SCIM request that would leave the workspace without an admin. If you attempt to remove the only admin from the admin role group, the request fails with `409 Cannot remove the last workspace admin`. Assign another admin in LocalStack first, then retry the removal.
+
+### License Management
+
+Licenses are assigned to users by syncing specifically named SCIM groups that correspond to your LocalStack subscriptions.
+
+:::caution
+Each user can only be a member of one license group (subscription) per organization. Assigning a user to multiple license groups will result in an error and provisioning will fail for that user.
+:::
+
+#### Group Name Format
+
+License group names follow this format:
+
+```text
+{PLAN}-{EMULATOR}-{SUBSCRIPTION_ID}
+```
+
+For example: `Enterprise Plan-AWS-sub_1RqpMYGCs0LNOzY9UszOGJkL`
+
+The exact group name for each subscription is displayed in the SCIM configuration panel in the LocalStack web app. Use the subscription dropdown to select the plan you want to manage, and the correct group name will be shown for you to copy.
+
+:::tip
+Legacy users can be added to a license assignment group in Entra, provided their email address matches their LocalStack registration email, they have been assigned to the LocalStack Enterprise Application, and the group name matches the correct subscription.
+:::
+
+#### Creating a License Group in Microsoft Entra ID
+
+1. In **Microsoft Entra ID → Groups → All groups**, click **+ New group**. Create a **Security** group with **Membership type: Assigned** named exactly as shown in the LocalStack SCIM configuration panel.
+2. Add users to the group (users must already be assigned to the LocalStack Enterprise Application).
+3. Assign the group to the LocalStack Enterprise Application via **Manage → Users and groups**.
+4. Confirm that **Provision Microsoft Entra ID Groups** is enabled under **Provisioning → Mappings**.
+5. On the next provisioning cycle (or via **Provision on Demand**), Entra will sync the group to LocalStack and assign the corresponding license to all members.
+
+:::danger[License revocation risk]
+
+The Entra group's membership is the source of truth for license assignments on this subscription. Any change to this group in Entra (adding users, removing users, or syncing it) will reconcile the subscription's licenses to match the group exactly. Users who are licensed on this subscription but not in the Entra group will have their licenses revoked, regardless of how the license was originally assigned (manually or via SCIM).
+
+This means:
+
+- If you sync an **empty group**, every license on this subscription will be revoked.
+- If you sync a **partial group** (for example, 2 users in Entra but 5 currently licensed), the 3 users not in the group will lose their licenses.
+
+If you are enabling SCIM on a subscription that already has licensed users, follow the [Migrating Users with Existing Licenses](#migrating-users-with-existing-licenses) steps below **before** any sync occurs. Once SCIM is enabled, manage license assignments exclusively through Entra.
+
+:::
+
+#### Migrating Users with Existing Licenses
+
+If your organization already has users with assigned licenses and you want to manage them through SCIM:
+
+1. Create a license group in Entra with the correct name.
+2. Assign it to the LocalStack Enterprise Application via **Manage → Users and groups**.
+3. Add the existing licensed users to that group. Once synced - either on the next provisioning cycle, or immediately via **Provision on Demand** - they will be managed through SCIM going forward.
