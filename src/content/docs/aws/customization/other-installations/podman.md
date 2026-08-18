@@ -10,6 +10,11 @@ By default, the LocalStack CLI starts the LocalStack runtime inside a Docker con
 Docker may not be available on your system, and a popular alternative is [Podman](https://podman.io/get-started) which you can use to run LocalStack.
 Podman support is still experimental, and the following docs give you an overview of the current state.
 
+:::note
+The new CLI experience, `lstk`, does not yet fully support Podman.
+The commands and environment variables on this page refer to the legacy [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/), which you should continue to use for Podman setups.
+:::
+
 From the Podman docs:
 
 > Podman is a daemonless, open source, Linux native tool designed to make it easy to find, run, build, share and deploy applications using Open Containers Initiative (OCI) Containers and Container Images.
