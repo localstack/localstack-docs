@@ -13,7 +13,11 @@ tags: ['Hobby']
 
 `lstk` is the new command-line interface for LocalStack. It is a single, self-contained binary that starts and manages the emulator, runs the AWS CLI and your infrastructure-as-code tools, and saves and restores emulator state. In other words, it replaces both the Python-based `localstack` CLI and the family of wrapper scripts that many projects installed alongside it. Those scripts are `awslocal`, `tflocal`, `samlocal`, and `cdklocal`.
 
-There are three good reasons to start using `lstk`. The first is that installation is simpler, because there is no Python environment to manage, and no separate wrapper script to install for each tool you use. The second is that `lstk` works with every LocalStack emulator, not just AWS. Snowflake and Azure are supported today, and future emulators will be available too. The third is that `lstk` is the place for new CLI functionality to be added from now on. The `localstack` CLI is deprecated, and will no longer be supported.
+There are three good reasons to start using `lstk`:
+
+1. Installation is simpler, because there is no Python environment to manage, and no separate wrapper script to install for each tool you use.
+2. `lstk` works with every LocalStack emulator, not just AWS. Snowflake and Azure are supported today, and future emulators will be available too.
+3. `lstk` is the place for new CLI functionality to be added from now on. The `localstack` CLI is deprecated, and will no longer be supported.
 
 What does not change is LocalStack itself. The emulator is the same Docker image with the same behavior and the same configuration variables (`DEBUG`, `SERVICES`, `PERSISTENCE`, and the rest). You are changing the tool you drive LocalStack with, not the LocalStack emulator itself. For most teams the migration is a short exercise in translating a handful of commands in shell history, scripts, and CI pipelines.
 
@@ -37,7 +41,7 @@ With npm:
 npm install -g @localstack/lstk
 ```
 
-Check for correct installation by invoking `lstk --version`. Docker must be installed and running, exactly as before. Homebrew installs shell completions automatically, although with the other methods you can generate them yourself, using `lstk completion bash|zsh|fish|powershell`. Full instructions are in the lstk documentation.
+Check for correct installation by invoking `lstk --version`. Docker must be installed and running, exactly as before. Homebrew installs shell completions automatically. With the other methods you'll need generate them yourself, using `lstk completion bash|zsh|fish|powershell`. Full instructions are in the [lstk documentation](https://docs.localstack.cloud/aws/developer-tools/running-localstack/lstk/).
 
 There is no need to uninstall the `localstack` CLI, as the two can exist side by side. This is useful while you migrate, and necessary if you rely on a feature that is not yet available with `lstk`. However, we recommend against using them at the same time. Each CLI starts and manages its own LocalStack container, so stop whichever is running before you start the other.
 
@@ -53,7 +57,7 @@ lstk login
 
 Similarly, use `lstk logout` to remove the auth token from your machine.
 
-Continuous integration has no browser, so auth tokens remain the right approach there. Set `LOCALSTACK_AUTH_TOKEN` as a secret in your pipeline, and `lstk` will use it without any login step. If necessary, use a CI Auth Token rather than a personal developer token, as described in the Auth Token documentation.
+Continuous integration has no browser, so auth tokens remain the right approach there. Set `LOCALSTACK_AUTH_TOKEN` as a secret in your pipeline, and `lstk` will use it without any login step. Use a CI Auth Token rather than a personal developer token, as described in the [Auth Token documentation](https://docs.localstack.cloud/aws/getting-started/auth-token/#ci-environments).
 
 ## The `config.toml` file
 
