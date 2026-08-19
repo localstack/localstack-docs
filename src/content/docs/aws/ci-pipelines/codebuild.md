@@ -3,7 +3,7 @@ title: CodeBuild
 description: Use LocalStack in CodeBuild.
 template: doc
 sidebar:
-    order: 6
+    order: 7
 ---
 
 ## Introduction

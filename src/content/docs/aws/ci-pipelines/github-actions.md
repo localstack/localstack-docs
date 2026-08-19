@@ -3,7 +3,7 @@ title: GitHub Actions
 description: Use LocalStack in GitHub Actions.
 template: doc
 sidebar:
-    order: 4
+    order: 5
 ---
 
 This page contains easily customisable snippets to show you how to manage LocalStack in a GitHub Actions pipeline.

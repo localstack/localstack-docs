@@ -3,7 +3,7 @@ title: CircleCI
 description: Use LocalStack in CircleCI.
 template: doc
 sidebar:
-    order: 2
+    order: 3
 ---
 
 ## Introduction

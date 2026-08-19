@@ -3,7 +3,7 @@ title: BitBucket
 description: Use LocalStack in BitBucket Pipelines.
 template: doc
 sidebar:
-    order: 3
+    order: 4
 ---
 
 ## Introduction

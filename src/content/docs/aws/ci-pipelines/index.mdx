@@ -1,0 +1,55 @@
+---
+title: Overview
+description: Use LocalStack in your CI environment to run tests against your AWS infrastructure in a high-fidelity cloud emulator.
+template: doc
+sidebar:
+    order: 1
+---
+
+import SectionCards from '../../../../components/SectionCards.astro';
+
+Running integration tests against real AWS in CI means maintaining cloud accounts, waiting on slow provisioning, and sharing a staging environment with every other pipeline.
+LocalStack replaces all of that with an emulator that runs inside the CI job itself.
+Deploy with the same Infrastructure as Code you already use in production, run your test suite against emulated AWS APIs, and discard the environment when the job ends.
+Every run gets a fresh emulator instance, and no test ever requires a real AWS account.
+
+## CI workflow overview
+
+The following diagram illustrates a typical CI workflow, using LocalStack instead of the AWS cloud:
+
+![An example CI/CD workflow using LocalStack](/images/aws/localstack-in-ci.svg)
+
+A CI build is triggered when you push source code to your version control repository (such as GitHub).
+The CI runner checks out the source code, then runs a sequence of build and test steps.
+Where those tests depend on AWS services, they run against the LocalStack emulator rather than the real AWS cloud.
+You create the resources they need with standard tools such as Terraform, or load them from a [Cloud Pod](/aws/developer-tools/snapshots/cloud-pods/) to avoid redeploying your infrastructure on every run.
+
+If the tests pass, your CD pipeline takes over and deploys the application to real AWS infrastructure.
+A deployment therefore only ever starts from a build that has already been validated against emulated AWS, which increases your confidence in the code you ship.
+
+## CI integrations
+
+The steps required to run LocalStack in CI are largely the same, no matter which CI provider you use (such as GitHub Actions, GitLab CI, or CircleCI):
+
+1. Expose a CI Auth Token
+2. Install the `lstk` CLI and related tools
+3. Start the emulator
+4. Seed the emulator with the resources you need
+5. Run your tests
+6. Collect the output logs
+
+Start with the [CI Best Practices](/aws/ci-pipelines/best-practices/) page for the commands behind each step, then select your CI provider below for its own syntax and features.
+
+<SectionCards
+  basePath="aws/ci-pipelines/"
+  useDirectFiles
+  customTitles={{
+    "best-practices": "CI Best Practices",
+    "bitbucket": "Bitbucket Pipelines",
+    "circleci": "CircleCI",
+    "codebuild": "AWS CodeBuild",
+    "github-actions": "GitHub Actions",
+    "gitlab-ci": "GitLab CI",
+    "travis-ci": "Travis CI",
+  }}
+/>

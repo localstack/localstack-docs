@@ -3,7 +3,7 @@ title: GitLab CI
 description: Use LocalStack in GitLab CI.
 template: doc
 sidebar:
-    order: 5
+    order: 6
 ---
 
 This page contains easily customisable snippets to show you how to manage LocalStack in a GitLab CI pipeline.

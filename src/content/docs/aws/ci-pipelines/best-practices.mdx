@@ -1,0 +1,188 @@
+---
+title: CI Best Practices
+description: Commands and general practices for running LocalStack in any CI system, from authentication and tool installation to seeding state and collecting logs.
+template: doc
+sidebar:
+    order: 2
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Every CI system has its own configuration syntax, runner model, and feature set.
+Consult your CI provider's own documentation for how to declare jobs, secrets, caches, and artifacts.
+This page covers the parts that are the same everywhere, such as the LocalStack-specific commands you run, and the best practices for running a LocalStack job.
+
+Whatever the provider, a CI job follows the same steps:
+
+1. Expose your CI Auth Token to the job as `LOCALSTACK_AUTH_TOKEN`.
+2. Install `lstk` and any tools your tests need, such as the AWS CLI or Terraform.
+3. Configure and start the emulator with `lstk start`.
+4. Deploy your infrastructure, using an Infrastructure as Code tool.
+5. Alternatively, seed state from a snapshot with `lstk load`.
+6. Run your tests.
+7. Collect the emulator logs as a build artifact.
+
+## Set your Auth Token
+
+Every LocalStack CI run needs a [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens), rather than a personal Developer Auth Token.
+Store the token in your CI system as `LOCALSTACK_AUTH_TOKEN`.
+Every CI provider offers somewhere to keep sensitive values, and most distinguish secrets from plain environment variables.
+Secrets are masked in job logs and withheld from forked-repository builds.
+Never commit a token to your repository or paste it into a pipeline definition.
+
+The `lstk` CLI tool automatically passes the `LOCALSTACK_AUTH_TOKEN` value into the emulator container when it starts.
+There is no need to invoke `lstk login`, which is only useful in an interactive session.
+
+## Install the tools
+
+Your job needs the `lstk` CLI, plus whichever AWS tooling your tests use.
+Many hosted runners already ship Docker, the AWS CLI, and Terraform, so check your runner image before adding an install step.
+
+### `lstk`
+
+[`lstk`](/aws/developer-tools/running-localstack/lstk/) is the recommended way to run and manage LocalStack.
+It is a single binary, so installing it in CI is quick with tools such as `npm` or `brew`.
+
+<Tabs>
+<TabItem label="npm">
+
+```bash
+npm install -g @localstack/lstk
+```
+
+</TabItem>
+<TabItem label="Homebrew">
+
+```bash
+brew install localstack/tap/lstk
+```
+
+</TabItem>
+</Tabs>
+
+See the [`lstk` installation guide](/aws/developer-tools/running-localstack/lstk/#installation) for all installation methods.
+`lstk` also needs a working Docker daemon on the runner, with access to a Docker socket so the emulator can spawn its own containers for services such as Lambda and ECS.
+
+### AWS CLI
+
+`lstk aws` proxies your host `aws` binary with the LocalStack endpoint, credentials, and region already configured, so the AWS CLI must be installed separately (if not already installed in your CI system).
+
+Refer to the [AWS CLI installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) for details, and to the [AWS CLI guide](/aws/connecting/aws-cli/) for using it against LocalStack.
+
+### Terraform
+
+`lstk terraform` drives the real `terraform` binary, so Terraform itself must be on the job's `PATH`.
+Install it with your provider's setup step where one exists (for example `hashicorp/setup-terraform` on GitHub Actions), or install it directly.
+
+Refer to the [Terraform installation instructions](https://developer.hashicorp.com/terraform/install) for details, and to the [Terraform guide](/aws/connecting/infrastructure-as-code/terraform/) for using it against LocalStack.
+
+## Configure the emulator
+
+The `lstk` CLI tool uses a `config.toml` file to discover the required configuration parameters when starting the emulator.
+Commit a `.lstk/config.toml` to your repository, and both your developers and your CI jobs get the same emulator configuration, with no environment variables to duplicate across pipeline files.
+`lstk` picks up `./.lstk/config.toml` automatically when it is run from the root of your source tree:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"      # Emulator type: "aws", "snowflake", or "azure"
+tag  = "2026.4"   # Pin the image tag for reproducible builds
+port = "4566"
+env  = ["ci"]     # Apply the [env.ci] profile below
+
+[env.ci]
+DEBUG = "1"
+```
+
+See the [configuration reference](/aws/developer-tools/running-localstack/lstk/#configuration) for every available field.
+
+Keep a single `.lstk/config.toml` for local development and CI where you can.
+However, if a CI job needs different settings, pass an alternative file with `lstk --config ./ci/lstk.toml start`.
+
+## Start the emulator
+
+Start LocalStack with a single command:
+
+```bash
+lstk start
+```
+
+`lstk start` brings the LocalStack emulator all the way to a ready state.
+It pulls the container image if needed, validates your license, starts the container, and returns only once the emulator is ready, so there is no need for a separate wait or health-check step.
+If startup fails, the command exits with a non-zero return code, causing your CI job to fail.
+
+For machine-readable output, add the global `--json` flag to any command.
+See [structured output](/aws/developer-tools/running-localstack/lstk/#structured-output) and [exit codes](/aws/developer-tools/running-localstack/lstk/#exit-codes) if your pipeline needs to inspect results programmatically.
+
+## Seed state from Infrastructure as Code
+
+Most CI pipelines create the resources their tests need by applying the same Infrastructure as Code they use for production.
+The `lstk` proxies automatically point those tools at the emulator, without any explicit configuration.
+
+For example, with Terraform, run your usual commands through `lstk terraform` (or its `lstk tf` alias):
+
+```bash
+lstk terraform init
+lstk terraform apply -auto-approve
+```
+
+The [`lstk cdk`](/aws/connecting/infrastructure-as-code/aws-cdk/) and [`lstk sam`](/aws/connecting/infrastructure-as-code/aws-sam/) proxies work the same way, and [other IaC tools](/aws/connecting/infrastructure-as-code/) can target the emulator through its endpoint directly.
+
+## Seed state from a snapshot
+
+Rather than deploying your whole infrastructure on every run, you can seed the emulator from a [snapshot](/aws/developer-tools/snapshots/) captured earlier, either from a Cloud Pod or from a local snapshot file:
+
+```bash
+# Load a Cloud Pod (requires LOCALSTACK_AUTH_TOKEN)
+lstk load pod:my-baseline
+
+# Load a snapshot file produced by an earlier job
+lstk load ./baseline.snapshot
+```
+
+`lstk load` starts the emulator first, if it is not already running, so it can replace a separate `lstk start` step.
+Alternatively, name the snapshot in your config, and `lstk start` loads it for you on every fresh start:
+
+```toml
+[[containers]]
+type     = "aws"
+port     = "4566"
+snapshot = "pod:my-baseline"
+```
+
+Override the configured snapshot for a single run with `lstk start --snapshot pod:other-baseline`, or skip auto-loading entirely with `lstk start --no-snapshot`.
+
+To produce the snapshot in the first place, see [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/) and [saving snapshots locally](/aws/developer-tools/snapshots/saving-snapshots-locally/).
+
+## Run your tests
+
+Once the emulator is running, point your tooling at it.
+For Infrastructure as Code tools (such as Terraform), use the `lstk` proxy version of the tool, such as `lstk terraform`.
+
+For test suites and SDK-based code, either set the endpoint and test credentials in the job's environment:
+
+```bash
+export AWS_ENDPOINT_URL=http://localhost.localstack.cloud:4566
+export AWS_ACCESS_KEY_ID=test
+export AWS_SECRET_ACCESS_KEY=test
+```
+
+Or create a `localstack` AWS profile and select it:
+
+```bash
+lstk setup aws
+export AWS_PROFILE=localstack
+```
+
+See [connecting to LocalStack](/aws/connecting/) for the full set of options.
+
+## Collect logs
+
+The emulator container disappears when the job ends, so consider exporting the logs before the test terminates, then store them as a build artifact:
+
+```bash
+lstk logs --verbose > localstack.log
+```
+
+Run this step even when the tests fail, so you capture the logs regardless of success or failure. To make failures easier to diagnose in the first place, set `DEBUG = "1"` in your CI environment profile.
+See [logging](/aws/customization/logging/) for the available log levels.
