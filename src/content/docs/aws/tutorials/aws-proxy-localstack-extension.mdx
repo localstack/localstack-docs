@@ -29,9 +29,9 @@ In this tutorial, you will learn how to install the AWS Cloud Proxy extension an
 
 ## Prerequisites
 
-- [LocalStack CLI](/aws/getting-started/installation#localstack-cli)  with  [`LOCALSTACK_AUTH_TOKEN`](/aws/getting-started/auth-token)
+- [`lstk`](/aws/getting-started/installation#lstk)  with  [`LOCALSTACK_AUTH_TOKEN`](/aws/getting-started/auth-token)
 - [Docker](https://docs.docker.com/)
-- [AWS CLI](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html) with  [`awslocal` wrapper](https://github.com/localstack/awscli-local)
+- [AWS CLI](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html) with  [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws)
 - [LocalStack account](https://www.localstack.cloud/pricing)
 - [AWS Account](https://aws.amazon.com/) with an [`AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey)
 
@@ -39,29 +39,13 @@ In this tutorial, you will learn how to install the AWS Cloud Proxy extension an
 
 To install the AWS Cloud Proxy Extension, follow these steps:
 
-1. Launch your LocalStack container using the `localstack` CLI, ensuring that `LOCALSTACK_AUTH_TOKEN` is available in the environment.
+1. Launch your LocalStack container using the `lstk` CLI, ensuring that `LOCALSTACK_AUTH_TOKEN` is available in the environment.
 2. Visit the [Extensions library](https://app.localstack.cloud/extensions/library) page on the LocalStack Web Application.
   ![Extensions Library](/images/aws/aws-proxy-tutorial/extensions-library.png)
 3. Scroll down to find the **AWS Cloud Proxy** card, then click on the **Install on Instance** button.
   ![Installing AWS Cloud Proxy extension](/images/aws/aws-proxy-tutorial/installing-aws-proxy-extensions.png)
 
 Once the installation is complete, you will notice that your LocalStack container has restarted with the AWS Cloud Proxy extension successfully installed.
-To confirm the installation, execute the following command:
-
-```bash
-localstack extensions list
-```
-
-```bash title="Output"
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
-┃ Name                         ┃ Summary                      ┃ Version ┃ Author          ┃ Plugin name    ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
-│ localstack-extension-aws-re… │ LocalStack Extension: AWS    │ 0.1.11  │ LocalStack Team │ aws-proxy      │
-│                              │ Cloud Proxy                  │         │                 │                │
-└──────────────────────────────┴──────────────────────────────┴─────────┴─────────────────┴────────────────┘
-```
-
-After verifying the successful installation, you can shut down the LocalStack container to re-start it with additional configuration variables.
 
 ## Tutorial: Working with the AWS Cloud Proxy Extension
 
@@ -83,15 +67,15 @@ In the following sections, you will create the SQS queue on your local machine a
 Begin by running your LocalStack container with the following configuration:
 
 ```bash
-EXTRA_CORS_ALLOWED_ORIGINS=https://aws-proxy.localhost.localstack.cloud:4566 \
-DEBUG=1 \
-localstack start
+LOCALSTACK_EXTRA_CORS_ALLOWED_ORIGINS=https://aws-proxy.localhost.localstack.cloud:4566 \
+LOCALSTACK_DEBUG=1 \
+lstk start
 ```
 
 In the above command:
 
-- The `EXTRA_CORS_ALLOWED_ORIGINS` variable allows the AWS Cloud Proxy extension's web interface to connect with the LocalStack container.
-- The `DEBUG` variable enables verbose logging allowing you to see the printed statements from the Lambda function.
+- The `LOCALSTACK_EXTRA_CORS_ALLOWED_ORIGINS` variable allows the AWS Cloud Proxy extension's web interface to connect with the LocalStack container.
+- The `LOCALSTACK_DEBUG` variable enables verbose logging allowing you to see the printed statements from the Lambda function.
 
 Next, create a file named `testlambda.py` and add the following Python code to it:
 
@@ -104,7 +88,7 @@ Execute the following commands to create the local Lambda function:
 
 ```bash
 (zip testlambda.zip testlambda.py)
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name func1 \
     --runtime python3.8 \
     --role arn:aws:iam::000000000000:role/r1 --handler testlambda.handler \
@@ -129,7 +113,7 @@ awslocal lambda create-function \
 You can create the local SQS queue named `test-queue` by executing the following command:
 
 ```bash
-awslocal sqs create-queue --queue-name test-queue
+lstk aws sqs create-queue --queue-name test-queue
 ```
 
 ```bash title="Output"
@@ -152,7 +136,7 @@ Before invoking, set up an event source mapping between the SQS queue and the La
 Configure the queue for Lambda using the following command:
 
 ```bash
-awslocal lambda create-event-source-mapping \
+lstk aws lambda create-event-source-mapping \
     --function-name func1 \
     --batch-size 1 \
     --event-source-arn arn:aws:sqs:us-east-1:000000000000:test-queue
@@ -172,7 +156,7 @@ awslocal lambda create-event-source-mapping \
 You can then send a message to the SQS queue to trigger the local Lambda function:
 
 ```bash
-awslocal sqs send-message \
+lstk aws sqs send-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/test-queue \
     --message-body '{}'
 ```
@@ -227,7 +211,7 @@ You will observe the local Lambda function being invoked once again, with corres
 2024-03-26T07:45:16.524 DEBUG --- [db58fad602e5] l.s.l.i.version_manager    : [func1-ed938bb0-e1ee-41fb-a844-db58fad602e5] END RequestId: ed938bb0-e1ee-41fb-a844-db58fad602e5
 ```
 
-You can even run the standard `awslocal` commands in your terminal that would query the remote cloud resources, instead of the local ones.
+You can even run the standard `lstk aws` commands in your terminal that would query the remote cloud resources, instead of the local ones.
 
 Upon completion, you can click **Disable** on the AWS Cloud Proxy extension web interface to deactivate the proxy configuration.
 Additionally, you can delete the remote SQS queue to avoid AWS billing for long-running resources.

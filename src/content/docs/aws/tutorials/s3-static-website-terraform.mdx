@@ -1,7 +1,7 @@
 ---
 title: "Host a static website locally using Simple Storage Service (S3) and Terraform with LocalStack"
 description: >
-  Host a static website using a Simple Storage Service (S3) bucket to serve static content by provisioning the infrastructure using Terraform in LocalStack. Learn how to configure S3 buckets locally for testing and integration, and make use of LocalStack's S3 API & `tflocal` CLI to provision infrastructure locally.
+  Host a static website using a Simple Storage Service (S3) bucket to serve static content by provisioning the infrastructure using Terraform in LocalStack. Learn how to configure S3 buckets locally for testing and integration, and make use of LocalStack's S3 API & `lstk terraform` CLI to provision infrastructure locally.
 services:
 - s3
 platform:
@@ -26,15 +26,15 @@ LocalStack also supports the creation of S3 buckets with static website hosting 
 
 In this tutorial, we will deploy a static website using an S3 bucket over a locally emulated AWS infrastructure on LocalStack.
 We will use Terraform to automate the creation & management of AWS resources by declaring them in the HashiCorp Configuration Language (HCL).
-We will also learn about `tflocal`, a CLI wrapper created by LocalStack, that allows you to run Terraform locally against LocalStack.
+We will also learn about `lstk terraform`, part of the `lstk` CLI, that allows you to run Terraform locally against LocalStack.
 
 ## Prerequisites
 
 For this tutorial, you will need:
 
-- [LocalStack for AWS](https://hub.docker.com/r/localstack/localstack)
+- [LocalStack for AWS](https://www.localstack.cloud/localstack-for-aws)
 - [Terraform](https://www.terraform.io/downloads.html)
-- [awslocal](https://github.com/localstack/awscli-local)
+- [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws)
 
 ## Architecture
 
@@ -97,16 +97,16 @@ Create a file named `error.html` next to `index.html` inside `www/` and add the 
 S3 will return the above file content only for HTTP 4XX error codes.
 Some browsers might choose to display their custom error message if a user tries to access a resource that does not exist.
 In this case, browsers might ignore the above error document.
-With the initial setup complete, we can now move on to creating a static website using S3 via `awslocal`, LocalStack's wrapper for the AWS CLI.
+With the initial setup complete, we can now move on to creating a static website using S3 via `lstk aws`, LocalStack's wrapper for the AWS CLI.
 
 ## Hosting a static website using S3
 
 To create a static website using S3, we need to create a bucket, enable static website hosting, and upload the files to the bucket.
-We will use the `awslocal` CLI for these operations.
+We will use the `lstk aws` CLI for these operations.
 Navigate to the root directory of the project and create a bucket named `testwebsite` using LocalStack's S3 API:
 
 ```bash
-awslocal s3api create-bucket --bucket testwebsite
+lstk aws s3api create-bucket --bucket testwebsite
 ```
 
 With the bucket created, we can now attach a policy to it to allow public access and its contents.
@@ -130,19 +130,19 @@ Let's create a file named `bucket_policy.json` in the project root (next to the 
 Let's now attach the policy to the bucket:
 
 ```bash
-awslocal s3api put-bucket-policy --bucket testwebsite --policy file://bucket_policy.json
+lstk aws s3api put-bucket-policy --bucket testwebsite --policy file://bucket_policy.json
 ```
 
 With the policy attached, we can now sync the contents of our `www/` directory to the bucket:
 
 ```bash
-awslocal s3 sync ./www/ s3://testwebsite
+lstk aws s3 sync ./www/ s3://testwebsite
 ```
 
 We'll now enable static website hosting on the bucket and configure the index and error documents:
 
 ```bash
-awslocal s3 website s3://testwebsite/ --index-document index.html --error-document error.html
+lstk aws s3 website s3://testwebsite/ --index-document index.html --error-document error.html
 ```
 
 If you are deploying a static website using S3 on real AWS cloud, your S3 website endpoint will follow one of these two formats:
@@ -366,19 +366,19 @@ name = "testwebsite"
 website_endpoint = "http://testwebsite.s3-website.localhost.localstack.cloud:4566"
 ```
 
-In the above command, we specified `testwebsite` as the bucket name to keep it consistent with the `awslocal` flow above and the testing commands further down.
+In the above command, we specified `testwebsite` as the bucket name to keep it consistent with the `lstk aws` flow above and the testing commands further down.
 You can specify any bucket name since LocalStack is ephemeral, and stopping your LocalStack container will delete all the created resources.
 The above command output includes the ARN, name, LocalStack website domain, and the website endpoint URL of the bucket.
 You can navigate directly to the printed `website_endpoint` to view your site, since the endpoint uses `localhost.localstack.cloud`, no real AWS resources have been created.
 
-You can optionally use the `tflocal` CLI as a drop-in replacement for the official Terraform CLI. `tflocal` uses the Terraform Override mechanism to create a temporary `localstack_providers_override.tf` file, which is deleted after the infrastructure is created.
+You can optionally use the `lstk terraform` command as a drop-in replacement for the official Terraform CLI. `lstk terraform` uses the Terraform Override mechanism to create a temporary `localstack_providers_override.tf` file, which is deleted after the infrastructure is created.
 It mitigates the need to create the `provider.tf` file manually.
-You can use `tflocal` to create the infrastructure by running the following commands:
+You can use `lstk terraform` to create the infrastructure by running the following commands:
 
 ```bash
-tflocal init
-tflocal plan
-tflocal apply
+lstk terraform init
+lstk terraform plan
+lstk terraform apply
 ```
 
 ## Testing the application
@@ -418,10 +418,10 @@ You should receive the content from your `error.html` file: "Something is amiss.
 
 ### Checking bucket configuration
 
-You can verify the bucket's website configuration using `awslocal`:
+You can verify the bucket's website configuration using `lstk aws`:
 
 ```bash
-awslocal s3api get-bucket-website --bucket testwebsite
+lstk aws s3api get-bucket-website --bucket testwebsite
 ```
 
 This command should return the index and error document configuration for your bucket.
@@ -431,7 +431,7 @@ This command should return the index and error document configuration for your b
 To confirm all your files were uploaded correctly:
 
 ```bash
-awslocal s3 ls s3://testwebsite/
+lstk aws s3 ls s3://testwebsite/
 ```
 
 This will display all the files in your bucket, including `index.html`, `error.html`, and any additional assets.
