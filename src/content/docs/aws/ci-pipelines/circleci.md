@@ -28,6 +28,9 @@ jobs:
           name: Install lstk
           command: npm install -g @localstack/lstk
       - run:
+          name: Configure the AWS profile
+          command: lstk setup aws
+      - run:
           name: Start LocalStack
           command: lstk start
       - run:
@@ -43,6 +46,7 @@ workflows:
 
 `lstk start` pulls the image, validates your license, and returns only once the emulator is ready, so no separate wait step is needed.
 `lstk aws` proxies the `aws` binary with LocalStack's endpoint and credentials applied, so the AWS CLI must be available on the runner; add an install step if your image does not provide it.
+`lstk setup aws` writes a `localstack` AWS profile for that binary to use. It is optional, but without it `lstk` notes on every call that no profile was found.
 
 ### Configuration
 
@@ -315,7 +319,9 @@ jobs:
       - run:
           name: Load the snapshot
           command: |
-            test -f ls-state.snapshot && lstk load ./ls-state.snapshot --merge=overwrite
+            if [ -f ls-state.snapshot ]; then
+              lstk load ./ls-state.snapshot --merge=overwrite
+            fi
 ...
   workflows:
   localstack-build:
@@ -348,7 +354,10 @@ jobs:
           key: ls-state-
       - run:
           name: Load the snapshot
-          command: test -f ls-state.snapshot && lstk load ./ls-state.snapshot --merge=overwrite
+          command: |
+            if [ -f ls-state.snapshot ]; then
+              lstk load ./ls-state.snapshot --merge=overwrite
+            fi
       ...
       # Infrastructure had been updated
       # Let's update cached LocalStack state
@@ -371,7 +380,10 @@ jobs:
           key: ls-state-
       - run:
           name: Load the snapshot
-          command: test -f ls-state.snapshot && lstk load ./ls-state.snapshot --merge=overwrite
+          command: |
+            if [ -f ls-state.snapshot ]; then
+              lstk load ./ls-state.snapshot --merge=overwrite
+            fi
       ...
 
 
