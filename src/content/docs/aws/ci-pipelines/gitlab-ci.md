@@ -6,17 +6,19 @@ sidebar:
     order: 6
 ---
 
-This page contains easily customisable snippets to show you how to manage LocalStack in a GitLab CI pipeline.
+This page contains easily customizable snippets to show you how to manage LocalStack in a GitLab CI pipeline with the [`lstk` CLI](/aws/developer-tools/running-localstack/lstk/).
 
-## Snippets
-
-### Start up Localstack
+GitLab runs your job in one container and the Docker daemon in another, so every snippet below pairs the job with a Docker-in-Docker (`dind`) service.
 
 :::tip
 While working with a Docker-in-Docker (`dind`) setup, the Docker runner requires `privileged` mode.
 You must always use `privileged = true` in your GitLab CI's `config.toml` file while setting up LocalStack in GitLab CI runners.
 For more information, see [GitLab CI Docker-in-Docker](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor) documentation.
 :::
+
+## Snippets
+
+### Start up LocalStack
 
 LocalStack requires a [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens), which you must add to the repository's environment variables as `LOCALSTACK_AUTH_TOKEN`.
 Go to your project's **Settings > CI/CD** and expand the **Variables** section.
@@ -26,29 +28,12 @@ After you create the variable, you can use it in the `.gitlab-ci.yml` file.
 However, variables set in the GitLab UI are not automatically passed down to service containers.
 You need to assign them as variables in the UI, and then re-assign them in your `.gitlab-ci.yml`.
 
-#### Service
-
-```yaml showshowLineNumbers
-...
-variables:
-  LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
-  DOCKER_SOCK: tcp://docker:2375
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTDIR: ""
-...
-services:
-  - name: localstack/localstack-pro:latest
-    alias: localstack
-  - name: docker:dind
-    alias: docker
-    command: ["--tls=false"]
-...
-```
-
 #### Container
 
+In this setup, `lstk` owns the emulator's lifecycle: `DOCKER_HOST` points it at the `dind` daemon, and `lstk start` runs the emulator container there.
+
 ```yaml showshowLineNumbers
-image: docker:latest
+image: node:22
 
 stages:
   - job
@@ -56,12 +41,10 @@ stages:
 job:
   stage: job
   variables:
-    ...
-    LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-    AWS_ENDPOINT_URL: "http://localhost.localstack.cloud:4566"
-    ...
+    LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
+    LOCALSTACK_HOST: localhost.localstack.cloud:4566
 
   services:
     - name: docker:dind
@@ -69,36 +52,95 @@ job:
       command: ["--tls=false"]
 
   before_script:
-    - apk update
-    - apk add gcc musl-dev linux-headers py3-pip python3 python3-dev
-    - python3 -m pip install localstack awscli
-  script:
-    - docker pull localstack/localstack-pro:latest
+    - npm install -g @localstack/lstk
+    - apt-get update && apt-get install -y awscli
     - dind_ip="$(getent hosts docker | cut -d' ' -f1)"
-    - echo "${dind_ip} localhost.localstack.cloud " >> /etc/hosts
-    - DOCKER_HOST="tcp://${dind_ip}:2375" localstack start -d
+    - echo "${dind_ip} localhost.localstack.cloud" >> /etc/hosts
+    - lstk setup aws
+  script:
+    - lstk start
+    - lstk aws s3 mb s3://test-bucket
+    - lstk aws s3 ls
 ```
 
-You can check the logs of the LocalStack container to see if the activation was successful.
-If the CI Auth Token activation fails, LocalStack container will exit with an error code.
+`lstk start` pulls the image, validates your license, and returns only once the emulator is ready, so no separate wait step is needed.
+Because the emulator runs on the `dind` daemon, its ports are published on the `docker` service rather than on the job container.
+The `/etc/hosts` entry and `LOCALSTACK_HOST` are what let `lstk` and your tests reach it at `localhost.localstack.cloud:4566`; without them `lstk` falls back to `127.0.0.1`, where nothing is listening.
 
-### Dump Localstack logs
+:::note
+`lstk` bind-mounts the Docker socket into the emulator, and sets the emulator's own `DOCKER_HOST`, only when it reaches the daemon over a Unix socket.
+A TCP `dind` daemon has no socket to mount, so services that spawn their own containers (Lambda, ECS, EKS) need the daemon address passed in explicitly.
+`lstk start` forwards `LOCALSTACK_`-prefixed variables to the emulator, which strips the prefix, so set `LOCALSTACK_DOCKER_HOST` to the `dind` daemon as seen from inside the `dind` network (its bridge gateway, usually `tcp://172.17.0.1:2375`).
+:::
+
+#### Service
+
+Alternatively, run LocalStack as a GitLab service container and use `lstk` purely as a client, pointing it at the service with `LSTK_ENDPOINT_URL`.
+GitLab passes the job's `variables` to service containers too, so the emulator picks up both the auth token and the Docker connection directly, with no prefixing required.
+
+```yaml showshowLineNumbers
+image: node:22
+
+stages:
+  - job
+
+job:
+  stage: job
+  variables:
+    DOCKER_SOCK: tcp://docker:2375
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
+    LSTK_ENDPOINT_URL: http://localstack:4566
+
+  services:
+    - name: localstack/localstack-pro:latest
+      alias: localstack
+    - name: docker:dind
+      alias: docker
+      command: ["--tls=false"]
+
+  before_script:
+    - npm install -g @localstack/lstk
+    - apt-get update && apt-get install -y awscli curl
+    - |
+      for _ in $(seq 1 60); do
+        curl -sf "${LSTK_ENDPOINT_URL}/_localstack/health" > /dev/null && break
+        sleep 2
+      done
+  script:
+    - lstk aws s3 mb s3://test-bucket
+    - lstk aws s3 ls
+```
+
+GitLab starts service containers before the job's first command, but does not wait for them to become ready, hence the health poll.
+
+### Dump LocalStack logs
 
 ```yaml showshowLineNumbers
 ...
 job:
-  variables:
-    LOCALSTACK_HOST: <LS_HOST>:<LS_PORT>
   script:
-  - localstack logs | tee localstack.log
-... 
+    - set +e
+    - <your test command>; status=$?
+    - lstk logs --verbose | tee localstack.log
+    - exit $status
+  artifacts:
+    when: always
+    paths:
+      - localstack.log
+...
 ```
 
-In case of the service setup `LOCALSTACK_HOST` will be `localstack:4566`.
+Collect the logs as the last `script` step rather than in `after_script`, where the emulator container is no longer reachable.
+Capturing the test command's exit code keeps the job's result intact while still writing the logs after a failing test, which is when they matter most.
 
-### Store Localstack state
+In the [Service](#service) setup, `lstk logs` is not available, because `lstk` does not manage the service container.
+Set `CI_DEBUG_SERVICES: "true"` to have GitLab stream the service container's logs into the job log instead.
 
-You can preserve your AWS infrastructure with Localstack in various ways.
+### Store LocalStack state
+
+You can preserve your AWS infrastructure with LocalStack in various ways.
 
 #### Artifact
 
@@ -106,18 +148,18 @@ You can preserve your AWS infrastructure with Localstack in various ways.
 ...
 job:
   before_script:
-    - (test -f ./ls-state-pod.zip && localstack state import ./ls-state-pod.zip) || true
+    - (test -f ./ls-state.snapshot && lstk load ./ls-state.snapshot --merge=overwrite) || true
   script:
   ...
-    - localstack state export ./ls-state-pod.zip
+    - lstk save ./ls-state.snapshot
   ...
   artifacts:
     paths:
-      - $CI_PROJECT_DIR/ls-state-pod.zip
+      - $CI_PROJECT_DIR/ls-state.snapshot
 ...
 ```
 
-More info about Localstack's state export and import [here](/aws/developer-tools/snapshots/saving-snapshots-locally/).
+More info about LocalStack's snapshots [here](/aws/developer-tools/snapshots/saving-snapshots-locally/).
 
 #### Cache
 
@@ -125,22 +167,22 @@ More info about Localstack's state export and import [here](/aws/developer-tools
 ...
 job:
   before_script:
-    - (test -f ./ls-state-pod.zip && localstack state import ./ls-state-pod.zip) || true
+    - (test -f ./ls-state.snapshot && lstk load ./ls-state.snapshot --merge=overwrite) || true
   script:
   ...
-    - localstack state export ./ls-state-pod.zip
+    - lstk save ./ls-state.snapshot
   ...
   cache:
     key:
       untracked: true
       files:
-        - $CI_PROJECT_DIR/ls-state-pod.zip
+        - $CI_PROJECT_DIR/ls-state.snapshot
     paths:
-      - $CI_PROJECT_DIR/ls-state-pod.zip
+      - $CI_PROJECT_DIR/ls-state.snapshot
 ...
 ```
 
-Additional information about state export and import [here](/aws/developer-tools/snapshots/saving-snapshots-locally/).
+Additional information about snapshots [here](/aws/developer-tools/snapshots/saving-snapshots-locally/).
 
 #### Cloud Pod
 
@@ -148,19 +190,19 @@ Additional information about state export and import [here](/aws/developer-tools
 ...
 job:
   before_script:
-    - localstack pod load <POD_NAME> || true
+    - lstk load pod:<POD_NAME> || true
   script:
   ...
-    - localstack pod save <POD_NAME>
+    - lstk save pod:<POD_NAME>
 ...
 ```
 
-Find more information about cloud pods [here](/aws/developer-tools/snapshots/cloud-pods).
+Find more information about Cloud Pods [here](/aws/developer-tools/snapshots/cloud-pods).
 
 ## Current Limitations
 
-- Localstack must be able to reach a docker socket to provision containers for certain services, ie Lambda, EKS, ECS...etc
-- the runner must be able to resolve the Localstack domain (by default _localhost.localstack.cloud_), see the sample pipelines for a possible solution
-- to be able to separate steps into their own jobs one must preserve Localstack's state, since Gitlab is not preserving job related containers/services during the pipelines
-- to start up Localstack in Gitlab CI Docker tools are necessary
-- when Localstack run as a container, it's not accessible during the `after_script` phase
+- LocalStack must be able to reach a Docker socket to provision containers for certain services, such as Lambda, EKS, and ECS.
+- The runner must be able to resolve the LocalStack domain (by default _localhost.localstack.cloud_); see the sample pipelines for a possible solution.
+- To separate steps into their own jobs, you must preserve LocalStack's state, since GitLab does not preserve job-related containers or services across a pipeline.
+- Docker tooling is necessary to start up LocalStack in GitLab CI.
+- When LocalStack runs as a container, it is not accessible during the `after_script` phase.
