@@ -1,169 +1,111 @@
 ---
 title: Auth Token
-description: Configure your Auth Token to access and activate LocalStack for Snowflake.
+description: Configure and manage your LocalStack Auth Token to activate LocalStack for Snowflake and access licensed features.
 template: doc
 sidebar:
-  order: 1
+  order: 6
 ---
 
-import { Code, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-## Introduction
+## What is an Auth Token?
 
-An Auth Token is required to activate the LocalStack for Snowflake emulator.
-It identifies and authenticates users outside the LocalStack Web Application, granting access to your workspace and to advanced features such as the Snowflake emulator image.
+An Auth Token is a mandatory credential required to start the Snowflake emulator and activate licensed features. It links your running LocalStack instance to your workspace license and unlocks the services and capabilities available to your account.
 
-Auth Tokens are issued at the workspace level in [app.localstack.cloud](https://app.localstack.cloud) and are not specific to any single LocalStack product.
-The same token works across every LocalStack product your account has access to, including LocalStack for AWS, Azure, and Snowflake.
+Auth Tokens are issued at the workspace level in [app.localstack.cloud](https://app.localstack.cloud) and are not specific to any single LocalStack product. The same token works across every LocalStack product your account has access to, including LocalStack for AWS, Snowflake, and Azure.
 
-Auth Tokens come in two types: a **Developer Auth Token** and a **CI Auth Token**:
+You can manage Auth Tokens from the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application.
 
-- The **Developer Auth Token** uniquely identifies a user within a workspace.
-  Every user has their own Auth Token.
-  It cannot be deleted but can be rotated for security reasons if needed.
-- The **CI Auth Token** uniquely identifies a subscription rather than a specific user.
-  It is designed for use in CI environments and other non-developer contexts, and is stored in the workspace where it can be managed by members with appropriate permissions.
-
-In both cases, the Auth Token grants access to whatever product(s) the associated user or subscription is entitled to.
-Both the **Developer Auth Token** and **CI Auth Token** can be managed on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens).
-
-:::danger
-
-- It's crucial to keep your Auth Token confidential.
-  Do not include it in source code management systems, such as Git repositories.
-- Be aware that if an Auth Token is committed to a public repository, it is at risk of exposure and could remain in the repository's history, even if attempts are made to rewrite it.
-- In case your Auth Token is accidentally published, immediately rotate it on the [Auth Token page](https://app.localstack.cloud/workspace/auth-tokens).
-  :::
-
-## Managing your License
-
-To use the LocalStack for Snowflake emulator, a license with access to Snowflake is required.
-You can get a license by [signing up for a free LocalStack account](https://www.localstack.cloud/pricing) and starting a trial, or by exploring additional features with a paid offering.
-
-After initiating your trial or acquiring a license, assign it to a user by following these steps:
-
-- Visit the [Users & Licenses page](https://app.localstack.cloud/workspace/members).
-- Select a user in the **Workspace Members** section for license assignment.
-- Define the user's role via the **Member Role** dropdown.
-  Single users automatically receive the **Admin** role.
-- Toggle **Advanced Permissions** to set specific permissions.
-  Single users automatically receive full permissions.
-- Click **Save** to complete the assignment.
-  Single users assign licenses to themselves.
-
-If you have joined a workspace, you need to be assigned a license by the workspace administrator.
-When switching workspaces or licenses, make sure you are assigned to the correct license.
-
-:::note
-If you do not assign a license, the Snowflake emulator will not start even if you have a valid Auth Token.
+:::danger[Credential security]
+Auth Tokens provide access to your license and workspace. Do not commit tokens to version control. If a token is exposed, rotate it immediately in the LocalStack Web Application.
 :::
 
-To view your own assigned license, visit the [My License page](https://app.localstack.cloud/workspace/my-license).
-For more details on inviting users, assigning licenses, or managing roles, see [Users and Licenses](/aws/organizations-admin/managing-users-licenses/).
+## Token types
 
-## Configuring your Auth Token
+| Token Type | Scope | Use Case |
+| :--- | :--- | :--- |
+| **Developer Token** | Individual | Local development workstations. Managed per user. |
+| **CI Auth Token** | Workspace | Automated pipelines and shared runners. Managed by workspace admins. |
 
-The Snowflake emulator reads the Auth Token from the `LOCALSTACK_AUTH_TOKEN` environment variable.
-You can configure the Auth Token in several ways, depending on your setup.
-The following sections describe the various methods of providing your Auth Token to the Snowflake container.
+## Managing your license
 
-:::danger
+To use the LocalStack for Snowflake emulator, a license with access to Snowflake is required. You can get a license by [signing up for a free LocalStack account](https://www.localstack.cloud/pricing) and starting a trial, or by exploring additional features with a paid offering.
 
-- It's crucial to keep your Auth Token confidential.
-  Do not include it in source code management systems, such as Git repositories.
-- Be aware that if an Auth Token is committed to a public repository, it is at risk of exposure and could remain in the repository's history, even if attempts are made to rewrite it.
-- In case your Auth Token is accidentally published, immediately rotate it on the [Auth Token page](https://app.localstack.cloud/workspace/auth-tokens).
-  :::
+After initiating your trial or acquiring a license, assign it to a user:
 
-### LocalStack CLI
+1. Navigate to the [Users & Licenses page](https://app.localstack.cloud/workspace/members).
+2. Identify the target user in **Workspace Members**.
+3. Select the appropriate **Member Role**.
+4. Save the configuration to activate the license for that identity.
 
-You should set the `LOCALSTACK_AUTH_TOKEN` environment variable either before or during the startup of LocalStack using the `localstack` command-line interface (CLI).
-When starting the Snowflake emulator, use the `--stack snowflake` flag:
-
-<Tabs>
-  <TabItem label="macOS/Linux">
-    <Code
-      code={`localstack auth set-token <YOUR_AUTH_TOKEN>\nlocalstack start --stack snowflake`}
-      lang="shell"
-    />
-  </TabItem>
-  <TabItem label="Windows">
-    <Code
-      code={`localstack auth set-token <YOUR_AUTH_TOKEN>\nlocalstack start --stack snowflake`}
-      lang="powershell"
-    />
-  </TabItem>
-</Tabs>
+If you have joined a workspace, you need to be assigned a license by the workspace administrator.
 
 :::note
+LocalStack cannot activate the Snowflake emulator unless the token belongs to a user or workspace with an assigned license, even if the Auth Token itself is valid.
+:::
 
-1. You can alternatively `export LOCALSTACK_AUTH_TOKEN=<YOUR_AUTH_TOKEN>` in your shell session.
-   The CLI transmits the token to the Snowflake container, enabling license activation.
-2. The `localstack auth set-token` command is only available for the `localstack` CLI and cannot be used with a Docker or Docker Compose setup.
-   :::
+To view your own assigned license, visit the [My License page](https://app.localstack.cloud/workspace/my-license). For more details on inviting users, assigning licenses, or managing roles, see [Users and Licenses](/aws/organizations-admin/managing-users-licenses/).
 
-You have the option to run the Snowflake container in the background by appending the `-d` flag to the `localstack start` command.
+## Configure your token
 
-### Docker
+Authentication requirements vary based on your chosen execution method.
 
-To start the Snowflake emulator via Docker, provide the Auth Token using the `-e` flag:
+### lstk
 
-```bash {6}
-docker run \
-  --rm -it \
-  -p 4566:4566 \
-  -p 4510-4559:4510-4559 \
-  -p 443:443 \
-  -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:- } \
-  localstack/snowflake
+The `lstk` CLI automates the authentication lifecycle. On initial execution, it triggers a browser-based OAuth flow and stores the resulting token in your system keyring. No manual environment variable configuration is required.
+
+```bash
+lstk start --type snowflake
 ```
 
-For more information about starting the Snowflake emulator with Docker, take a look at our [Snowflake installation guide](/snowflake/getting-started/#alternatives).
+You can alternatively set the `LOCALSTACK_AUTH_TOKEN` environment variable in your shell session; `lstk` uses it when no keyring token is present. See [Authentication](/aws/developer-tools/running-localstack/lstk/#authentication) for the full resolution order.
 
-### Docker Compose
+### Docker and Docker Compose
 
-To start the Snowflake emulator using `docker compose`, include the `LOCALSTACK_AUTH_TOKEN` environment variable in your `docker-compose.yml` file:
+For direct container execution, inject the token as an environment variable. For complete startup examples, see the [Docker Compose](/snowflake/getting-started/installation/#docker-compose) and [Docker CLI](/snowflake/getting-started/installation/#docker-cli) installation options.
+
+**Docker CLI:**
+
+```bash
+-e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}
+```
+
+**Docker Compose:**
 
 ```yaml
 environment:
-  - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?}
+  - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}
 ```
 
-You can manually set the Auth Token, or use the `export` command to establish the Auth Token in your current shell session.
-This ensures the Auth Token is transmitted to the Snowflake container, enabling license activation.
+### CI environments
 
-### CI Environments
+CI environments require a CI Auth Token. Developer Auth Tokens cannot be used in CI. CI Auth Tokens are available on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) and are configured similarly to Developer Auth Tokens.
 
-CI environments require a CI Auth Token.
-Developer Auth Tokens cannot be used in CI.
-CI Auth Tokens are available on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) and are configured similarly to Developer Auth Tokens.
+For complete examples, see the [CI Integration guide](/snowflake/getting-started/ci-cd/).
 
-To set the CI Auth Token, add the Auth Token value in the `LOCALSTACK_AUTH_TOKEN` environment variable of your CI provider, and reference it when starting the Snowflake emulator in your CI workflow.
-The same patterns used for [LocalStack in CI](/aws/ci-pipelines/) apply to Snowflake.
+## Verify activation
 
-## Rotating the Auth Token
+Verify the activation status by querying the Snowflake emulator's session endpoint:
 
-Your personal Auth Token provides full access to your workspace and LocalStack license.
-Treat it as confidential and avoid sharing or storing it in source control management systems (SCMs) like Git.
+<Tabs>
+  <TabItem label="macOS/Linux">
 
-If you believe your Auth Token has been compromised or becomes known to someone else, reset it without delay.
-When you reset a token, the old one is immediately deactivated and can no longer access your license or workspace.
-Previous tokens cannot be restored.
+    ```bash
+    curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
+    ```
 
-To rotate your Auth Token, go to the [Auth Token page](https://app.localstack.cloud/workspace/auth-tokens) and select the **Reset Auth Token** option.
+  </TabItem>
+  <TabItem label="Windows">
 
-## Verifying activation
+    ```powershell
+    Invoke-WebRequest -Method POST -Body '{}' -Uri http://snowflake.localhost.localstack.cloud:4566/session
+    ```
 
-The simplest way to verify that the Snowflake emulator activated successfully is to query the session endpoint:
+  </TabItem>
+</Tabs>
 
-```bash
-curl -d '{}' snowflake.localhost.localstack.cloud:4566/session
-```
-
-A successful activation returns:
-
-```json
-{"success": true}
+```json title="Output"
+{ "success": true }
 ```
 
 You can also check the container logs for a message indicating successful license activation:
@@ -174,14 +116,19 @@ You can also check the container logs for a message indicating successful licens
 
 Otherwise, check the [Troubleshooting](#troubleshooting) section below.
 
+## Rotate a token
+
+Rotate an Auth Token if it has been exposed, shared accidentally, or stored in a place where it should not be. Go to the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) and select the reset option for the affected token.
+
+After rotation, update every local shell, container configuration, or CI secret that used the old token.
+
 ## Troubleshooting
 
-The Snowflake emulator requires a successful license activation to start.
-If activation fails, the container exits and prints an error message similar to:
+The Snowflake emulator requires a successful license activation to start. If activation fails, the container exits and prints an error message similar to:
 
 ```bash
 ===============================================
-License activation failed! 
+License activation failed!
 
 Reason: The credentials defined in your environment are invalid. Please make sure to set the LOCALSTACK_AUTH_TOKEN variable to a valid auth token. You can find your Auth Token in the LocalStack web app https://app.localstack.cloud.
 
@@ -192,32 +139,26 @@ The most common causes are listed below.
 
 ### Missing credentials
 
-You need to provide an Auth Token to start the Snowflake emulator.
-You can find your Auth Token on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application.
+You need to provide an Auth Token to start the Snowflake emulator. You can find your Auth Token on the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens) in the LocalStack Web Application.
 
-If you are using the `localstack` CLI, you can set the `LOCALSTACK_AUTH_TOKEN` environment variable to your Auth Token or use the following command to set it up:
-
-```bash
-localstack auth set-token <YOUR_AUTH_TOKEN>
-```
+If you are using `lstk`, run `lstk login` to authenticate through a browser-based flow, or set the `LOCALSTACK_AUTH_TOKEN` environment variable directly.
 
 ### Invalid license
 
-The issue may occur if there is no valid license linked to your account (for example, because it has expired), or if the license has not been assigned to your user.
-You can check your license status in the LocalStack Web Application on the [My License page](https://app.localstack.cloud/workspace/my-license).
-If your license does not grant access to the Snowflake emulator, [contact us](https://localstack.cloud/contact/) to upgrade.
+The issue may occur if there is no valid license linked to your account (for example, because it has expired), or if the license has not been assigned to your user. You can check your license status in the LocalStack Web Application on the [My License page](https://app.localstack.cloud/workspace/my-license). If your license does not grant access to the Snowflake emulator, [contact us](https://localstack.cloud/contact/) to upgrade.
 
 ### License server unreachable
 
-LocalStack initiates offline activation when the license server is unreachable, requiring re-activation every 24 hours.
-Log output may indicate issues with your machine resolving the LocalStack API domain, which can be verified using a tool like `dig`:
+LocalStack initiates offline activation when the license server is unreachable, requiring re-activation every 24 hours. Log output may indicate issues with your machine resolving the LocalStack API domain, which can be verified using a tool like `dig`:
 
 ```bash
 dig api.localstack.cloud
 ```
 
-If the result shows a status other than `status: NOERROR`, your machine is unable to resolve this domain.
-Certain corporate DNS servers may filter requests to specific domains.
-Kindly reach out to your network administrator to safelist the `localstack.cloud` domain.
+If the result shows a status other than `status: NOERROR`, your machine is unable to resolve this domain. Certain corporate DNS servers may filter requests to specific domains. Reach out to your network administrator to safelist the `localstack.cloud` domain.
 
 If you continue to have problems with license activation, or if the steps above do not help, do not hesitate to [contact us](https://localstack.cloud/contact/).
+
+## Next steps
+
+After configuring your Auth Token, continue to the [Local Development guide](/snowflake/getting-started/local-development/) to start the Snowflake emulator and run your first query.

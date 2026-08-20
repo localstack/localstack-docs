@@ -3,7 +3,7 @@ title: FAQ
 description: Frequently asked questions about LocalStack for Snowflake
 template: doc
 sidebar:
-  order: 3
+  order: 7
 ---
 
 ## Core FAQs
@@ -28,12 +28,24 @@ Note: In case you are deploying the LocalStack for Snowflake in a Kubernetes clu
 
 You can set the `SF_LOG=trace` environment variable in the Snowflake container to enable detailed trace logs that show all the request/response message.
 
-When using `docker-compose` then simply add this variable to the `environment` section of the YAML configuration file.
-If you're starting up via the `localstack start` CLI, then make sure to start up via the following configuration:
+If you're using `lstk`, define an environment profile in your `config.toml` and reference it from your container block:
+
+```toml
+[[containers]]
+type = "snowflake"
+port = "4566"
+env  = ["debug"]
+
+[env.debug]
+DEBUG  = "1"
+SF_LOG = "trace"
+```
 
 ```bash
-DOCKER_FLAGS='-e SF_LOG=trace' DEBUG=1 localstack start --stack snowflake
+lstk start --type snowflake
 ```
+
+If you're using `docker-compose`, simply add these variables to the `environment` section of the YAML configuration file instead.
 
 ### The `snowflake.localhost.localstack.cloud` hostname doesn't resolve on my machine, what can I do?
 

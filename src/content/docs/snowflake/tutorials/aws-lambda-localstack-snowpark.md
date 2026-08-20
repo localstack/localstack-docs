@@ -19,7 +19,7 @@ The code in this tutorial is available on [GitHub](https://github.com/localstack
 
 ## Prerequisites
 
-- [`localstack` CLI](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
+- [`localstack` CLI](/snowflake/getting-started/installation/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
 - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`awslocal` wrapper](/aws/connecting/aws-cli/#localstack-aws-cli-awslocal)
 - Python 3.10 installed locally

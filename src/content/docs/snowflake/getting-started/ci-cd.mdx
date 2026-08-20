@@ -1,0 +1,117 @@
+---
+title: CI Integration
+description: Use LocalStack for Snowflake in CI pipelines to run integration tests against a local Snowflake-compatible emulator.
+template: doc
+sidebar:
+  order: 4
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Introduction
+
+LocalStack for Snowflake helps you run integration tests in CI against an emulated Snowflake instance. Your pipeline starts the Snowflake emulator inside the CI job, connects the Snowflake CLI or your test harness (dbt, Airflow, etc.), runs tests against the local endpoint, and then discards the environment when the job ends.
+
+## How LocalStack works in CI
+
+A typical CI job with LocalStack for Snowflake follows this flow:
+
+1. Check out your application code.
+2. Start the Snowflake emulator in the CI runner.
+3. Configure a CI Auth Token through the CI provider's secret manager.
+4. Connect with the Snowflake CLI or your test harness.
+5. Run integration tests against the LocalStack endpoint.
+6. Collect logs, test reports, and artifacts from the job.
+
+This gives every pipeline run a fresh Snowflake-compatible environment without creating cloud resources in a real Snowflake account.
+
+## What changes from local development
+
+CI runs are usually more constrained than local development:
+
+- Use a dedicated **CI Auth Token** instead of a personal Developer Token.
+- Store `LOCALSTACK_AUTH_TOKEN` as a protected CI secret.
+- Start LocalStack non-interactively as part of the job.
+- Treat the LocalStack container as ephemeral unless your workflow explicitly saves state.
+- Export logs and test reports before the runner shuts down.
+
+Docker and Docker Compose are still common ways to run containers inside CI runners, but they are not CI tools by themselves. For container startup details, see the [Installation guide](/snowflake/getting-started/installation/#container-and-orchestration-tools).
+
+## Choose your CI provider
+
+Start with the CI system you use. These snippets show the basic emulator startup shape for each provider.
+
+:::note
+For brevity, these snippets show only the LocalStack startup shape. They assume your CI Auth Token is already exposed to the job as the `LOCALSTACK_AUTH_TOKEN` environment variable. Store it as a secret in your CI provider before running them, and see [Authentication in CI](#authentication-in-ci) below.
+:::
+
+<Tabs>
+  <TabItem label="GitHub Actions">
+
+    ```yaml
+    - name: Start LocalStack for Snowflake
+      run: |
+        npm install -g @localstack/lstk
+        lstk start --type snowflake --non-interactive
+      env:
+        LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+    ```
+
+  </TabItem>
+  <TabItem label="CircleCI">
+
+    ```yaml
+    version: '2.1'
+    jobs:
+      localstack-snowflake-test:
+        machine:
+          image: ubuntu-2204:current
+        steps:
+          - checkout
+          - run:
+              name: Install lstk
+              command: npm install -g @localstack/lstk
+          - run:
+              name: Start LocalStack for Snowflake
+              command: lstk start --type snowflake --non-interactive
+    ```
+
+  </TabItem>
+  <TabItem label="GitLab CI">
+
+    ```yaml
+    stages:
+      - test
+
+    localstack-snowflake-test:
+      stage: test
+      image: node:20
+      services:
+        - docker:dind
+      script:
+        - npm install -g @localstack/lstk
+        - lstk start --type snowflake --non-interactive
+    ```
+
+  </TabItem>
+</Tabs>
+
+`lstk start --non-interactive` blocks until the emulator reports healthy, or exits non-zero if it fails to start within the readiness deadline (60 seconds by default). This means no separate wait step is required, unlike CI setups based on the legacy `localstack` CLI's `localstack start -d && localstack wait -t 60` pattern. Override the deadline with `--timeout` or [`LSTK_STARTUP_TIMEOUT`](/aws/developer-tools/running-localstack/lstk/#environment-variables) if your runner needs more time to pull the image.
+
+You can also start the emulator directly with Docker or Docker Compose inside your CI job — see the [Installation guide](/snowflake/getting-started/installation/#container-and-orchestration-tools) for the container configuration, and the existing [Continuous Integration](/snowflake/integrations/continuous-integration/) guide for complete Docker-based examples.
+
+## Authentication in CI
+
+CI environments should use a CI Auth Token. Create one from the [Auth Tokens page](https://app.localstack.cloud/workspace/auth-tokens), then store it as `LOCALSTACK_AUTH_TOKEN` in your CI provider's secret manager.
+
+Do not commit tokens to your repository or write them directly into workflow files. For more details on token types and rotation, see the [Auth Token guide](/snowflake/getting-started/auth-token/).
+
+## State in CI
+
+Most CI jobs should start with a clean LocalStack instance. A fresh instance makes test runs reproducible and avoids hidden dependencies between jobs.
+
+If your pipeline needs state across jobs or workflow stages, see [State Management](/snowflake/capabilities/state-management/) to save and restore named LocalStack state snapshots.
+
+## Next steps
+
+After choosing your CI provider, continue to [AI & Agent Workflows](/snowflake/getting-started/ai-workflows/) to learn how AI coding assistants can help generate, run, and test Snowflake SQL against LocalStack.

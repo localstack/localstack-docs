@@ -1,0 +1,193 @@
+---
+title: Installation
+description: Install LocalStack for Snowflake with lstk, Docker, or Docker Compose.
+template: doc
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Introduction
+
+LocalStack provides multiple installation paths depending on your development environment and requirements. We recommend a CLI-based installation for the most consistent local startup experience.
+
+Use [`lstk`](#lstk) to install, authenticate, and start LocalStack for Snowflake with minimal setup.
+
+LocalStack for Snowflake features require an [Auth Token](/snowflake/getting-started/auth-token/) to activate your running instance. `lstk` handles authentication through a browser-based login flow, while Docker and CI workflows can use `LOCALSTACK_AUTH_TOKEN`.
+
+## lstk
+
+`lstk` is a lightweight CLI for LocalStack that manages the authentication and container lifecycle for the AWS, Snowflake, and Azure emulators in a single workflow.
+
+**Requirement:** You must have a working [Docker installation](https://docs.docker.com/get-docker/) before proceeding.
+
+### Install lstk
+
+<Tabs>
+  <TabItem label="Homebrew">
+    ```bash
+    brew install localstack/tap/lstk
+    ```
+  </TabItem>
+  <TabItem label="npm">
+    ```bash
+    npm install -g @localstack/lstk
+    ```
+  </TabItem>
+  <TabItem label="Binary">
+    Download the binary for your platform from the [GitHub
+    Releases](https://github.com/localstack/lstk/releases) and add it to your
+    `PATH`.
+  </TabItem>
+</Tabs>
+
+### Start the Snowflake emulator
+
+`lstk` starts the AWS emulator by default. Select the Snowflake emulator with `--type snowflake` on your first start; `lstk` records the choice in your `config.toml`, so subsequent `lstk start` calls reuse it:
+
+```bash
+lstk start --type snowflake
+```
+
+The first execution initiates a browser-based login flow. Subsequent starts use credentials stored in your system keyring.
+
+Alternatively, run `lstk` interactively with no existing config file and choose `s` for Snowflake when prompted at the first-run emulator picker.
+
+To pin the emulator per-project instead of changing your global default, create a project-local `.lstk/config.toml`:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "snowflake"
+port = "4566"
+```
+
+### Update lstk
+
+```bash
+lstk update
+```
+
+For more details, see the [lstk documentation](/aws/developer-tools/running-localstack/lstk/).
+
+## Container and orchestration tools
+
+Use these methods when you need explicit container configuration, want to run LocalStack alongside other services, or deploy LocalStack in CI environments.
+For everyday local development, `lstk` is usually simpler.
+
+### Docker Compose
+
+Use Docker Compose when you want a reusable configuration file that can be shared across a team or checked into a project repository.
+Create a `docker-compose.yml` with the following configuration:
+
+```yaml showLineNumbers
+services:
+  localstack:
+    container_name: '${LOCALSTACK_DOCKER_NAME:-localstack-snowflake}'
+    image: localstack/snowflake
+    ports:
+      - '127.0.0.1:4566:4566' # LocalStack Gateway
+      - '127.0.0.1:4510-4559:4510-4559' # external services port range
+      - '127.0.0.1:443:443' # LocalStack HTTPS Gateway
+    environment:
+      # Activate LocalStack for Snowflake: https://docs.localstack.cloud/snowflake/getting-started/auth-token/
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} # required
+      - DEBUG=${DEBUG:-0}
+      - PERSISTENCE=${PERSISTENCE:-0}
+    volumes:
+      - '${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack'
+```
+
+Execute `docker compose up` to start.
+
+### Docker CLI
+
+Use the Docker CLI for one-off starts or when you want to test a container configuration before moving it into Compose:
+
+```bash
+docker run \
+  --rm -it \
+  -p 127.0.0.1:4566:4566 \
+  -p 127.0.0.1:4510-4559:4510-4559 \
+  -p 127.0.0.1:443:443 \
+  -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} \
+  localstack/snowflake
+```
+
+:::note
+The Docker Compose and Docker CLI examples above use the same runtime settings:
+
+- The `4566` port exposes the LocalStack Gateway, including the Snowflake-compatible SQL API.
+- The `4510-4559` range exposes external service ports used by services that bind additional endpoints.
+- The `443` port exposes the LocalStack HTTPS Gateway.
+- Docker reuses a local image if one already exists. Pull explicitly or pin an image tag, such as `localstack/snowflake:<version>`, when you need reproducible CI or team environments.
+- Configuration variables can be prefixed with `LOCALSTACK_` in Docker. For instance, setting `LOCALSTACK_PERSISTENCE=1` is equivalent to `PERSISTENCE=1`.
+
+For more details, see the general [Docker images](/aws/customization/other-installations/docker-images/), [configuration](/aws/customization/configuration-options/), and [networking](/aws/customization/networking/) documentation, which applies across LocalStack products.
+:::
+
+## Graphical user interfaces (GUIs)
+
+### LocalStack Desktop
+
+Manage local instances via a standalone desktop application. [Download here](https://app.localstack.cloud/download).
+
+## Troubleshooting
+
+Installation issues typically fall into one of three areas: getting your chosen install method working, activating your license, or reaching the emulator over the network.
+
+### lstk
+
+If you installed via [`lstk`](#lstk) and LocalStack fails to start, authenticate, or pull its image, see [lstk troubleshooting](/aws/developer-tools/running-localstack/lstk/#troubleshooting).
+
+For first-run authentication (browser login, keyring tokens, or `LOCALSTACK_AUTH_TOKEN` in CI), refer to [Authentication](/aws/developer-tools/running-localstack/lstk/#authentication) and the [Auth Token guide](/snowflake/getting-started/auth-token/).
+
+### Docker Compose and Docker CLI
+
+If you started LocalStack with [Docker Compose](#docker-compose) or the [Docker CLI](#docker-cli):
+
+- **License or credential errors**: see [Auth Token troubleshooting](/snowflake/getting-started/auth-token/#troubleshooting).
+- **Hostname resolution or network issues**: see the [Getting Started FAQ](/snowflake/getting-started/faq/).
+
+Ensure you have exported `LOCALSTACK_AUTH_TOKEN` in your shell before running `docker compose up` or `docker run`.
+
+### View logs
+
+Stream container logs using the command that matches your install method:
+
+<Tabs>
+<TabItem label="lstk">
+
+```bash
+lstk logs
+```
+
+For `lstk` CLI diagnostics (separate from container logs), see [Logging](/aws/developer-tools/running-localstack/lstk/#logging).
+
+</TabItem>
+<TabItem label="Docker Compose">
+
+```bash
+docker compose logs -f localstack
+```
+
+</TabItem>
+<TabItem label="Docker CLI">
+
+```bash
+docker logs -f localstack-snowflake
+```
+
+Use the container name from your `docker run --name` flag if you set one.
+
+</TabItem>
+</Tabs>
+
+### Network connectivity
+
+If your Snowflake client cannot reach the emulator after installation, see the [Getting Started FAQ](/snowflake/getting-started/faq/#the-snowflakelocalhostlocalstackcloud-hostname-doesnt-resolve-on-my-machine-what-can-i-do).
+
+## Next steps
+
+Now that you've completed installation, proceed to the [Auth Token guide](/snowflake/getting-started/auth-token/) to activate LocalStack and prepare your environment for local development.

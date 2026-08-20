@@ -1,0 +1,90 @@
+---
+title: AI & Agent Workflows
+description: Use LocalStack for Snowflake with AI coding assistants and MCP clients.
+template: doc
+sidebar:
+  order: 5
+---
+
+## Introduction
+
+LocalStack gives AI coding assistants a local Snowflake-compatible environment to work against. Instead of letting an agent run SQL experiments against a real Snowflake account, you can ask it to create schemas, run queries, inspect results, and test data pipelines in LocalStack first.
+
+This is useful when you want to:
+
+- Prototype SQL, schemas, and data pipeline logic from natural language prompts.
+- Validate AI-generated SQL, dbt models, or Snowpark code before using a real Snowflake account.
+- Give an AI assistant a safe place to run queries, inspect results, and iterate on a data pipeline.
+
+## Common workflows
+
+There are two common ways to use LocalStack for Snowflake in AI-assisted development:
+
+- Use the [LocalStack MCP Server](/aws/developer-tools/running-localstack/mcp-server/) when your AI assistant supports MCP clients such as Cursor, Claude, Codex, or OpenCode. The server includes a dedicated Snowflake tool that runs SQL against your local emulator via the Snowflake CLI.
+- Use LocalStack with the [Snowflake CLI](/snowflake/integrations/snow-cli/) directly when you want the agent to generate SQL, dbt models, or Snowpark code that you review and run locally.
+
+Unlike the AWS emulator, `lstk` does not proxy the Snowflake CLI the way it proxies `aws`, `terraform`, or `cdk` commands. Agent workflows that run SQL directly use the Snowflake CLI's own `localstack` connection profile, as set up in [Local Development](/snowflake/getting-started/local-development/#step-2-connect-the-snowflake-cli).
+
+## Quick Setup
+
+LocalStack provides an [`agents.md`](https://docs.localstack.cloud/agents.md) file with the full instructions your AI agent needs to get started with LocalStack, including how to configure the MCP server for the AWS, Snowflake, and Azure emulators. You can give the file directly to your agent or copy and paste the prompt below.
+
+```text
+Fetch https://docs.localstack.cloud/agents.md and follow the instructions to set up LocalStack on my machine.
+```
+
+For manual setup of the MCP server, you can follow the steps below.
+
+## Connect an MCP client
+
+The LocalStack MCP Server connects MCP-compatible clients to your LocalStack environment. Once configured, your AI assistant can use LocalStack tools to start the Snowflake emulator, run SQL queries and files against it via the Snowflake CLI, inspect logs, and manage state.
+
+Start the MCP server with an interactive setup wizard:
+
+```bash
+npx -y @localstack/localstack-mcp-server init
+```
+
+:::note
+The MCP server runs locally and talks to a LocalStack instance. Your AI assistant is the MCP client. For full installation instructions, detailed setup, and the full tool reference (including the Snowflake-specific `localstack-snowflake-client` tool), see the [LocalStack MCP Server guide](/aws/developer-tools/running-localstack/mcp-server/).
+
+You need a valid [Auth Token](/snowflake/getting-started/auth-token/) to configure the server, and the [Snowflake CLI](https://docs.snowflake.com/en/developer-guide/snowflake-cli/index) (`snow`) installed on your `PATH` if you want the agent to run SQL directly.
+:::
+
+## Example prompt sequence
+
+After LocalStack and your preferred AI tooling are configured, you can use a sequence like this:
+
+```text
+Start the LocalStack Snowflake emulator.
+```
+
+```text
+Create a database, schema, and table for storing customer orders, then insert a few sample rows.
+```
+
+```text
+Run a query that summarizes total order value by customer and show me the results.
+```
+
+```text
+Write a dbt model that reproduces this summary, and validate it against the LocalStack Snowflake emulator.
+```
+
+This keeps the feedback loop local while still giving the assistant a realistic Snowflake-compatible target.
+
+## Review before applying to Snowflake
+
+AI-generated SQL and data pipeline code still needs review. Treat LocalStack as the first validation step, not as a replacement for code review, tests, or production deployment controls.
+
+Before applying changes to a real Snowflake account, check that:
+
+- The generated schema and queries match your intended data model.
+- Roles, warehouses, and resource names are appropriate for your project.
+- Tests pass against LocalStack.
+- You understand any changes the assistant made to pipeline code or configuration.
+
+## Next steps
+
+- Configure the [LocalStack MCP Server](/aws/developer-tools/running-localstack/mcp-server/) if your AI assistant supports MCP.
+- Browse the [Feature Coverage](/snowflake/feature-coverage/) reference, or check the [Getting Started FAQ](/snowflake/getting-started/faq/) for common setup questions.
