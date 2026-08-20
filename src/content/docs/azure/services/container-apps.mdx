@@ -1,0 +1,355 @@
+---
+title: "Container Apps"
+description: Get started with Azure Container Apps on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Container Apps is a serverless container platform for running containerized applications and microservices without managing Kubernetes infrastructure.
+Applications are deployed into a managed environment, receive an HTTPS ingress endpoint, and are versioned through revisions, while background and scheduled work runs as jobs.
+For more information, see [Azure Container Apps overview](https://learn.microsoft.com/en-us/azure/container-apps/overview).
+
+LocalStack for Azure provides a local environment for building and testing applications that use Azure Container Apps.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Container Apps' integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Container Apps and assumes basic knowledge of the Azure CLI and our `lstk az` proxy.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+lstk az start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+lstk az stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group that will contain your Container Apps resources:
+
+```bash
+az group create \
+  --name rg-aca-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aca-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-aca-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a Container Apps environment
+
+Create a managed environment that will host your container apps and jobs:
+
+```bash
+az containerapp env create \
+  --name my-environment \
+  --resource-group rg-aca-demo \
+  --location westeurope \
+  --logs-destination none
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aca-demo/providers/Microsoft.App/managedEnvironments/my-environment",
+  "location": "westeurope",
+  "name": "my-environment",
+  "properties": {
+    "appLogsConfiguration": {
+      "destination": null
+    },
+    "defaultDomain": "nicesmoke-4f9d21-westeurope.aca.azure.localhost.localstack.cloud",
+    "provisioningState": "Succeeded"
+  },
+  "type": "Microsoft.App/managedEnvironments"
+  ...
+}
+```
+
+Each environment receives a `defaultDomain` under `aca.azure.localhost.localstack.cloud`.
+This domain resolves to `127.0.0.1`, so the ingress endpoints of apps in the environment are directly reachable from your machine.
+
+### Create a container app
+
+Create a container app with external HTTP ingress:
+
+```bash
+az containerapp create \
+  --name quickstart \
+  --resource-group rg-aca-demo \
+  --environment my-environment \
+  --image mcr.microsoft.com/k8se/quickstart:latest \
+  --ingress external \
+  --target-port 80 \
+  --cpu 0.5 --memory 1Gi \
+  --min-replicas 1 --max-replicas 3 \
+  --revision-suffix v1
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aca-demo/providers/Microsoft.App/containerapps/quickstart",
+  "location": "westeurope",
+  "name": "quickstart",
+  "properties": {
+    "configuration": {
+      "activeRevisionsMode": "Single",
+      "ingress": {
+        "allowInsecure": false,
+        "external": true,
+        "fqdn": "quickstart--nicesmoke-4f9d21-westeurope.aca.azure.localhost.localstack.cloud",
+        "targetPort": 80,
+        "transport": "Auto"
+      }
+    },
+    "latestReadyRevisionName": "quickstart--v1",
+    "latestRevisionName": "quickstart--v1",
+    "provisioningState": "Succeeded",
+    "runningStatus": "Running",
+    "template": {
+      "containers": [
+        {
+          "image": "mcr.microsoft.com/k8se/quickstart:latest",
+          "name": "quickstart",
+          "resources": {
+            "cpu": 0.5,
+            "memory": "1Gi"
+          }
+        }
+      ],
+      "revisionSuffix": "v1",
+      "scale": {
+        "maxReplicas": 3,
+        "minReplicas": 1
+      }
+    }
+  },
+  "type": "Microsoft.App/containerApps"
+  ...
+}
+```
+
+:::note
+The first container app or job in an environment provisions a local Kubernetes (k3d) cluster backing that environment, so the first create can take a few minutes.
+Subsequent deployments into the same environment are much faster.
+:::
+
+### Invoke the container app
+
+Retrieve the ingress FQDN and send a request to the running app.
+The FQDN is served by the LocalStack gateway on port `4566` with a valid TLS certificate:
+
+```bash
+FQDN=$(az containerapp show \
+  --name quickstart \
+  --resource-group rg-aca-demo \
+  --query "properties.configuration.ingress.fqdn" \
+  --output tsv)
+
+curl -s -o /dev/null -w "%{http_code}\n" "https://$FQDN:4566/"
+```
+
+```bash title="Output"
+200
+```
+
+You can also open `https://$FQDN:4566/` in your browser to see the welcome page of the quickstart image.
+
+### Manage secrets
+
+Add a secret to the container app:
+
+```bash
+az containerapp secret set \
+  --name quickstart \
+  --resource-group rg-aca-demo \
+  --secrets api-key=top-secret
+```
+
+List the secrets, including their values:
+
+```bash
+az containerapp secret list \
+  --name quickstart \
+  --resource-group rg-aca-demo \
+  --show-values
+```
+
+```bash title="Output"
+[
+  {
+    "identity": null,
+    "keyVaultUrl": null,
+    "name": "api-key",
+    "value": "top-secret"
+  }
+]
+```
+
+Secrets can be referenced from environment variables via `secretref:`, mounted as secret volumes, and defined as Key Vault references that are resolved from the emulated Key Vault.
+
+### Update the app and work with revisions
+
+Update the container app with a new environment variable.
+Every change to the app template mints a new revision:
+
+```bash
+az containerapp update \
+  --name quickstart \
+  --resource-group rg-aca-demo \
+  --revision-suffix v2 \
+  --set-env-vars GREETING=hello
+```
+
+List the revisions of the app:
+
+```bash
+az containerapp revision list \
+  --name quickstart \
+  --resource-group rg-aca-demo \
+  --query "[].name" \
+  --output tsv
+```
+
+```bash title="Output"
+quickstart--v1
+quickstart--v2
+```
+
+In the default `Single` revisions mode, the latest ready revision serves all traffic and older revisions are deactivated automatically.
+In `Multiple` mode, revisions stay active and can be deactivated and re-activated with `az containerapp revision deactivate` and `az containerapp revision activate`.
+
+### Run a job
+
+Create a manually triggered job in the same environment:
+
+```bash
+az containerapp job create \
+  --name my-job \
+  --resource-group rg-aca-demo \
+  --environment my-environment \
+  --trigger-type Manual \
+  --replica-timeout 1800 \
+  --image mcr.microsoft.com/k8se/quickstart-jobs:latest \
+  --cpu 0.25 --memory 0.5Gi
+```
+
+Start an execution of the job.
+The execution runs as a real container and the command returns once it reaches a terminal state:
+
+```bash
+az containerapp job start \
+  --name my-job \
+  --resource-group rg-aca-demo
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aca-demo/providers/Microsoft.App/jobs/my-job/executions/my-job-8b31fc2",
+  "name": "my-job-8b31fc2"
+}
+```
+
+List the executions of the job to inspect their status:
+
+```bash
+az containerapp job execution list \
+  --name my-job \
+  --resource-group rg-aca-demo \
+  --query "[].{name:name, status:properties.status}"
+```
+
+```bash title="Output"
+[
+  {
+    "name": "my-job-8b31fc2",
+    "status": "Succeeded"
+  }
+]
+```
+
+### Delete and verify
+
+Delete the container app and the job, then delete the environment:
+
+```bash
+az containerapp delete \
+  --name quickstart \
+  --resource-group rg-aca-demo \
+  --yes
+
+az containerapp job delete \
+  --name my-job \
+  --resource-group rg-aca-demo \
+  --yes
+
+az containerapp env delete \
+  --name my-environment \
+  --resource-group rg-aca-demo \
+  --yes
+```
+
+Deleting a container app removes its containers from the local cluster.
+An environment can only be deleted once all apps, jobs, and managed certificates in it have been removed.
+
+Verify the resource group is now empty:
+
+```bash
+az containerapp list \
+  --resource-group rg-aca-demo
+```
+
+```bash title="Output"
+[]
+```
+
+## Features
+
+- **Real container execution:** Container apps and job executions run as real containers on a local Kubernetes (k3d) cluster that LocalStack provisions per managed environment. Set `LS_AZURE_CONTAINER_APPS_RUNTIME=0` to manage Container Apps resources in control-plane-only mode without starting containers.
+- **Live HTTPS ingress:** Every app with ingress gets an FQDN that resolves to `127.0.0.1` and is served with a valid TLS certificate. CORS policies, IP security restrictions, HTTPS redirects, and session affinity are enforced at the ingress.
+- **Revisions:** Both `Single` and `Multiple` revision modes are supported, including revision minting on template changes, activation and deactivation, and per-revision FQDNs.
+- **Secrets:** Inline secrets and Key Vault references are resolved and injected into containers as environment variables or secret volume mounts.
+- **Private registries:** Registry credentials with a password secret reference are used to pull images, including images hosted in the emulated Azure Container Registry.
+- **Health probes:** Liveness, readiness, and startup probes (HTTP and TCP) are enforced by the local cluster.
+- **Container logs:** `az containerapp logs show` streams logs directly from the running container via each replica's log stream endpoint.
+- **Jobs:** Manually started job executions run to completion and report `Succeeded` or `Failed`; parallelism and replica completion count are honored.
+- **Auxiliary resources:** Dapr components, environment storages, managed certificates, and HTTP route configs support full CRUD with validation. HTTP route configs perform real path-based routing, including exact and prefix matches and prefix rewrites.
+
+## Limitations
+
+- **No autoscaling:** KEDA scale rules are stored and echoed back but not evaluated, and scale-to-zero is not supported. Apps run with a fixed replica count derived from `minReplicas` (at least 1, capped by `maxReplicas`).
+- **No traffic splitting:** Traffic weights across revisions are stored but not enforced at the data plane; the latest ready revision serves all requests.
+- **No automatic job triggers:** Scheduled (cron) and event-driven job triggers are stored but never fire; `az containerapp job start` is the only way to create an execution.
+- **Azure Files storages are metadata-only:** Environment storages can be managed via CRUD, but `AzureFile` and `NfsAzureFile` volumes are skipped at deploy time and the container starts without the mount.
+- **No Dapr sidecar:** Dapr components and app-level Dapr configuration are stored and validated, but no Dapr sidecar is injected into running containers.
+- **No real certificates or domain validation:** Managed certificates skip certificate issuance and DNS validation, custom domains are stored without verification, and custom hostname analysis always reports the domain verification as failed.
+- **No interactive log streaming or exec:** `az containerapp logs show --follow`, system logs (`--type system`), and `az containerapp exec` are not supported.
+
+## Samples
+
+- [Guestbook on Azure Container Apps with Blob Storage and Container Registry](https://github.com/localstack/localstack-azure-samples/tree/main/samples/container-apps-blob-storage/python/)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.App" client:load />
