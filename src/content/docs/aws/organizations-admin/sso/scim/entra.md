@@ -183,19 +183,6 @@ Legacy users can be added to a license assignment group in Entra, provided their
 4. Confirm that **Provision Microsoft Entra ID Groups** is enabled under **Provisioning → Mappings**.
 5. On the next provisioning cycle (or via **Provision on Demand**), Entra will sync the group to LocalStack and assign the corresponding license to all members.
 
-:::danger[License revocation risk]
-
-The Entra group's membership is the source of truth for license assignments on this subscription. Any change to this group in Entra (adding users, removing users, or syncing it) will reconcile the subscription's licenses to match the group exactly. Users who are licensed on this subscription but not in the Entra group will have their licenses revoked, regardless of how the license was originally assigned (manually or via SCIM).
-
-This means:
-
-- If you sync an **empty group**, every license on this subscription will be revoked.
-- If you sync a **partial group** (for example, 2 users in Entra but 5 currently licensed), the 3 users not in the group will lose their licenses.
-
-If you are enabling SCIM on a subscription that already has licensed users, follow the [Migrating Users with Existing Licenses](#migrating-users-with-existing-licenses) steps below **before** any sync occurs. Once SCIM is enabled, manage license assignments exclusively through Entra.
-
-:::
-
 #### Migrating Users with Existing Licenses
 
 If your organization already has users with assigned licenses and you want to manage them through SCIM:
