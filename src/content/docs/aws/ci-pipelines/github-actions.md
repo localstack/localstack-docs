@@ -53,7 +53,7 @@ Where several steps run `lstk`, set `LOCALSTACK_AUTH_TOKEN` once at the job leve
 ### Configuration
 
 To set LocalStack configuration options, pass them as `LOCALSTACK_`-prefixed environment variables.
-`lstk start` forwards those into the container and strips the prefix, so `LOCALSTACK_DEBUG` sets the container's `DEBUG` option.
+`lstk start` forwards those into the container, which strips the prefix, so `LOCALSTACK_DEBUG` sets the container's `DEBUG` option.
 For example:
 
 ```yml showshowLineNumbers

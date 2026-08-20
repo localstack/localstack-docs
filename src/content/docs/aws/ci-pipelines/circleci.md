@@ -51,7 +51,7 @@ workflows:
 ### Configuration
 
 To configure LocalStack use the `environment` key on the job level or a shell command, where the latter takes higher precedence.
-`lstk start` forwards host environment variables prefixed with `LOCALSTACK_` into the container, where the prefix is stripped, so set `LOCALSTACK_DEBUG` to control the container's `DEBUG` option.
+`lstk start` forwards host environment variables prefixed with `LOCALSTACK_` into the container, which strips the prefix, so set `LOCALSTACK_DEBUG` to control the container's `DEBUG` option.
 
 Read more about the [configuration options](/aws/customization/configuration-options) of LocalStack.
 
