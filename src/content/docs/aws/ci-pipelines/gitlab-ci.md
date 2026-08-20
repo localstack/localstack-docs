@@ -18,25 +18,26 @@ You must always use `privileged = true` in your GitLab CI's `config.toml` file w
 For more information, see [GitLab CI Docker-in-Docker](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor) documentation.
 :::
 
+LocalStack requires a [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens), which you must add to the repository's environment variables as `LOCALSTACK_AUTH_TOKEN`.
+Go to your project's **Settings > CI/CD** and expand the **Variables** section.
+Select the **Add Variable** button and fill in the necessary details with `LOCALSTACK_AUTH_TOKEN` as the key and your CI Auth Token as the value.
+After you create the variable, you can use it in the `.gitlab-ci.yml` file.
 
-<details>
-<summary>For LocalStack versions before 3.0.0</summary>
-Under test>variables, add:<br>
-LOCALSTACK_HOSTNAME: localhost.localstack.cloud<br>
-HOSTNAME_EXTERNAL: localhost.localstack.cloud.
-</details>
+However, variables set in the GitLab UI are not automatically passed down to service containers.
+You need to assign them as variables in the UI, and then re-assign them in your `.gitlab-ci.yml`.
 
 #### Service
 
 ```yaml showshowLineNumbers
 ...
 variables:
+  LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
   DOCKER_SOCK: tcp://docker:2375
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
 ...
 services:
-  - name: localstack/localstack:latest
+  - name: localstack/localstack-pro:latest
     alias: localstack
   - name: docker:dind
     alias: docker
@@ -56,6 +57,7 @@ job:
   stage: job
   variables:
     ...
+    LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
     AWS_ENDPOINT_URL: "http://localhost.localstack.cloud:4566"
@@ -71,31 +73,10 @@ job:
     - apk add gcc musl-dev linux-headers py3-pip python3 python3-dev
     - python3 -m pip install localstack awscli
   script:
-    - docker pull localstack/localstack:latest
+    - docker pull localstack/localstack-pro:latest
     - dind_ip="$(getent hosts docker | cut -d' ' -f1)"
     - echo "${dind_ip} localhost.localstack.cloud " >> /etc/hosts
     - DOCKER_HOST="tcp://${dind_ip}:2375" localstack start -d
-```
-
-### Configure a CI Auth Token
-
-You can easily enable LocalStack for AWS by using the `localstack/localstack-pro` image and adding your [CI Auth Token](https://app.localstack.cloud/workspace/auth-tokens) to the repository's environment variables as `LOCALSTACK_AUTH_TOKEN`.
-Go to your project's **Settings > CI/CD** and expand the **Variables** section.
-Select the **Add Variable** button and fill in the necessary details with `LOCALSTACK_AUTH_TOKEN` as the key and your CI Auth Token as the value.
-After you create the variable, you can use it in the `.gitlab-ci.yml` file.
-
-However, variables set in the GitLab UI are not automatically passed down to service containers.
-You need to assign them as variables in the UI, and then re-assign them in your `.gitlab-ci.yml`.
-
-```yaml showshowLineNumbers
-...
-variables:
-  LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
-...
-services:
-  - name: localstack/localstack-pro:latest
-    alias: localstack
-...
 ```
 
 You can check the logs of the LocalStack container to see if the activation was successful.
@@ -175,45 +156,6 @@ job:
 ```
 
 Find more information about cloud pods [here](/aws/developer-tools/snapshots/cloud-pods).
-
-#### Ephemeral Instance (Preview)
-
-```yaml showshowLineNumbers
-...
-variables:
-  LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
-...
-setup-job:
-  stage: build
-  before_script:
-    - |
-      response=$(curl -X POST -d '{"auto_load_pod": "false"}' \
-        -H 'ls-api-key: $LOCALSTACK_API_KEY' \
-        -H 'authorization: token $LOCALSTACK_API_KEY' \
-        -H 'content-type: application/json' \
-        https://api.localstack.cloud/v1/previews/my-gitlab-state)
-      
-      if [ "$endpointUrl" = "null" ] || [ "$endpointUrl" = "" ]; then
-        echo "Unable to create preview environment. API response: $response"
-        exit 1
-      fi
-      echo "Created preview environment with endpoint URL: $endpointUrl"
-
-      echo "export AWS_ENDPOINT_URL=$endpointUrl"
-      echo "$AWS_ENDPOINT_URL" >> ls-endpoint.env
-  ...
-  artifacts:
-    reports:
-      dotenv: ls-endpoint.env
-
-test-job:
-  stage: test
-  script:
-    - echo "$AWS_ENDPOINT_URL"  # Output is the address of the ephemeral instance
-...
-```
-
-Find out more about ephemeral instances [here](/aws/developer-tools/cloud-sandbox/ephemeral-instances).
 
 ## Current Limitations
 
