@@ -28,7 +28,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 # Output path for the generated documentation
-DEFAULT_OUTPUT_PATH = Path("src/content/docs/aws/tooling/extensions/official-extensions.md")
+DEFAULT_OUTPUT_PATH = Path(
+    "src/content/docs/aws/customization/integrations/extensions/official-extensions.md"
+)
 
 # LocalStack Platform API endpoint that returns the extensions marketplace.
 MARKETPLACE_URL = "https://api.localstack.cloud/v1/extensions/marketplace"

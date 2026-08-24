@@ -615,10 +615,6 @@ export default defineConfig({
                               '/aws/customization/integrations/extensions',
                           },
                         },
-                        {
-                          label: 'Official Extensions',
-                          link: 'https://app.localstack.cloud/extensions/library/',
-                        },
                       ],
                     },
                     {
