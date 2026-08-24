@@ -251,10 +251,19 @@ The above example will make LocalStack treat the `ubuntu:focal` Docker image as 
 At startup, LocalStack downloads the following AMIs that can be used to launch Dockerized instances.
 - Ubuntu 22.04: `ami-df5de72bdb3b`
 - Amazon Linux 2023: `ami-024f768332f0`
-- Amazon Linux 2: `ami-07b643b5e45e`
 
 :::note
 The auto download of Docker images for default AMIs can be disabled using the `EC2_DOWNLOAD_DEFAULT_IMAGES=0` configuration variable.
+:::
+
+:::note
+Amazon Linux 2 reached its [AWS end-of-life](https://aws.amazon.com/amazon-linux-2/faqs/) on June 30, 2026, so LocalStack no longer pre-loads the `Amazon Linux 2` AMI (`ami-07b643b5e45e`) by default.
+You can still use it by manually registering it as a Docker-backed AMI:
+
+```bash
+docker pull amazonlinux:2
+docker tag amazonlinux:2 localstack-ec2/amazonlinux-2-ami:ami-07b643b5e45e
+```
 :::
 
 All LocalStack-managed Docker AMIs bear the resource tag `ec2_vm_manager:docker`.
