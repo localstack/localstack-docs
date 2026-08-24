@@ -311,7 +311,7 @@ Keys live behind the `cloudfront-keyvaluestore` service, which addresses a store
 :::tip
 Address the data plane through `localhost.localstack.cloud`, not `localhost` or an IP.
 These endpoint rules prepend the account ID from `--kvs-arn` to the host, so the request goes to `000000000000.<your-endpoint-host>`.
-An IP address can never serve that name, and `000000000000.localhost` resolves on some clients but not others — Terraform fails with `no such host`.
+An IP address can never serve that name, and `000000000000.localhost` resolves on some clients but not others. Terraform fails with `no such host`.
 Only `localhost.localstack.cloud` works everywhere, through its wildcard DNS entry.
 Control-plane commands are unaffected.
 :::
@@ -532,7 +532,7 @@ Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
 
 ## Tenant routing at the edge
 
-A common use of Functions with a KeyValueStore is a tenant pre-router: the function maps the incoming tenant to an environment and passes the decision to the origin, so routing data can change without redeploying the function.
+A common use of Functions with a KeyValueStore is a tenant pre-router. The function maps the incoming tenant to an environment and passes the decision to the origin, so routing data can change without redeploying the function.
 This example maps a tenant hostname to an environment name and stamps it on the request as `x-erp-env`, which is the form that behaves the same on AWS.
 
 Create the store and seed it as shown in [KeyValueStore](#create-a-key-value-store), then write the function:
