@@ -365,6 +365,18 @@ export default defineConfig({
           errorOnRelativeLinks: true,
           errorOnLocalLinks: false, // Allow localhost links in tutorials (they're instructional)
           errorOnInvalidHashes: true,
+          // Generated/static resources that are not Starlight content routes and
+          // therefore cannot be resolved by the validator (they are emitted by
+          // plugins or copied from `public/`). Linked from the 404 page and
+          // agent-facing surfaces.
+          exclude: [
+            '/llms.txt',
+            '/llms-full.txt',
+            '/llms-small.txt',
+            '/sitemap-index.xml',
+            '/agents.md',
+            '/.well-known/**',
+          ],
         }),
         starlightUtils({
           multiSidebar: {
