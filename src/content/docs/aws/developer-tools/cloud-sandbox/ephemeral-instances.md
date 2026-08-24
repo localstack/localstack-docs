@@ -76,9 +76,10 @@ You can view the logs of the Ephemeral Instance by navigating to the **Logs** ta
 
 ### Shut Down the Ephemeral Instance
 
-You can shut down the instance by navigating to the [Ephemeral Instances page](https://app.localstack.cloud/instances/ephemeral) and clicking on the **Shut Down** button.
+Open the Ephemeral Instance in the LocalStack Web Application.
+Click the three-dot menu next to the instance endpoint in the upper-left corner, then select **Shut down**.
 
-![Shutdown the LocalStack Ephemeral Instanc](/images/aws/shutdown-ephemeral-instance.png)
+![Shut down the LocalStack Ephemeral Instance](/images/aws/shutdown-ephemeral-instance.png)
 
 :::danger
 Ephemeral Instances, by default, are created with the latest version of LocalStack.
