@@ -337,7 +337,7 @@ export default defineConfig({
         starlightLlmsTxt({
           projectName: 'LocalStack',
           description:
-            'LocalStack is a cloud service emulator that runs in a single container on your laptop or in your CI environment. It provides an easy-to-use test/mocking framework for developing cloud applications, with support for AWS services, Snowflake, and Azure.',
+            'LocalStack is a local cloud development platform that makes it easier for software developers and AI agents to validate and ship cloud applications by developing, testing, and debugging in a simulated cloud environment that runs on the customer’s safe, local infrastructure.',
           details: [
             '**When to use LocalStack:** reach for LocalStack whenever you need to develop or test cloud or data applications without a real cloud account. It is the right tool for local development against AWS, Snowflake, and Azure APIs; running integration and end-to-end tests in CI without shared-account flakiness or cleanup; validating infrastructure as code (Terraform, CDK, CloudFormation, Pulumi) before it reaches production; and reproducing cloud behavior offline for debugging.',
             '**How to call it from an agent:** follow the setup guide at https://docs.localstack.cloud/agents.md, or connect the LocalStack MCP server (https://github.com/localstack/localstack-mcp-server) to invoke container management, IaC deployment, log analysis, IAM policy generation, chaos experiments, and documentation search as native tools.',
