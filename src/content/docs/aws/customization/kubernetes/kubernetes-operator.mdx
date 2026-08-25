@@ -157,9 +157,7 @@ Add the same label directly under `metadata.labels` when you create a standalone
 
 For an opted-in Pod, the Operator:
 
-* Sets `dnsPolicy: None` and replaces the Pod's nameserver list with the LocalStack Service IP. This allows LocalStack domains such as `my-bucket.s3.localhost.localstack.cloud` to resolve to LocalStack.
-* Preserves custom DNS search domains and adds `<namespace>.svc.cluster.local`, `svc.cluster.local`, and `cluster.local` after them so in-cluster Service names continue to resolve.
-* Adds the `ndots:5` resolver option unless the Pod already defines `ndots`.
+* Configures the Pod's DNS to send requests to LocalStack first, before falling back to the cluster DNS resolver. LocalStack only responds to domain names it owns, that is, those ending in `localhost.localstack.cloud` or your configured `$LOCALSTACK_HOST`, so requests such as `my-bucket.s3.localhost.localstack.cloud` resolve to LocalStack while every other DNS request, including in-cluster Service names, is forwarded to the cluster resolver as normal.
 * Sets `AWS_ENDPOINT_URL` to `http://localstack-<localstack-name>.<namespace>:4566` in every regular, init, and ephemeral container. [AWS SDKs and tools that support this setting](https://docs.aws.amazon.com/sdkref/latest/guide/feature-ss-endpoints.html#ss-endpoints-support) use the LocalStack endpoint without application-specific endpoint configuration.
 
 If a container already defines `AWS_ENDPOINT_URL`, the Operator replaces its value with the LocalStack endpoint.
@@ -223,7 +221,6 @@ Replace `<issuer-name>` with the name of your issuer.
 Set `CERTIFICATE_ISSUER_KIND` to `Issuer` if you use a namespaced issuer.
 
 Use a cert-manager [`CA` issuer](https://cert-manager.io/docs/configuration/ca/) rather than a `SelfSigned` issuer.
-A `SelfSigned` issuer changes the trust anchor during each renewal, which can temporarily prevent the API server from reaching the webhook.
 
 :::caution
 Before switching from `cert-manager` back to `self-managed`, delete the Operator's `webhook-server-cert` `Certificate` resource.
