@@ -491,6 +491,10 @@ export default defineConfig({
                       slug: 'aws/developer-tools/running-localstack/lstk',
                     },
                     {
+                      label: 'lstk Migration Guide',
+                      slug: 'aws/developer-tools/running-localstack/lstk-migration',
+                    },
+                    {
                       label: 'LocalStack MCP Server',
                       slug: 'aws/developer-tools/running-localstack/mcp-server',
                     },
