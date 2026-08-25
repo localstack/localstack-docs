@@ -154,6 +154,27 @@ For example, a container which attempts to deploy a stack and interact with the 
 
 Refer to our [network troubleshooting guide](/aws/customization/networking/) covering several scenarios.
 
+### Why are some containers left behind after I stop LocalStack with Docker Compose?
+
+When LocalStack shuts down, it cleans up the auxiliary containers it started, including k3d containers that back an EKS cluster.
+
+Docker Compose sends `SIGTERM` to the container and then, after a grace period of 10 seconds, follows up with `SIGKILL`.
+That default window might be too short for LocalStack to finish its cleanup in some scenarios, so it is killed mid-teardown and the containers survive as orphans.
+
+To give LocalStack enough time to shut down cleanly, raise `stop_grace_period` on the LocalStack service in your `docker-compose.yml` (for example, `3m`):
+
+```yaml
+services:
+  localstack:
+    image: localstack/localstack-pro:latest
+    stop_grace_period: 3m
+    # ...
+```
+
+If a previous run already left containers behind, remove them before starting LocalStack again.
+
+This applies to Docker Compose specifically. Starting LocalStack with the CLI is not affected, as the CLI waits for LocalStack to finish shutting down.
+
 ### How to resolve the pull rate limit issue for LocalStack's Docker image?
 
 If you receive `ERROR: toomanyrequests: Too Many Requests.` when pulling the LocalStack Docker image, you have reached your pull rate limit.
