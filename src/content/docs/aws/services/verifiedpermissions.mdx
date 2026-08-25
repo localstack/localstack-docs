@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Verified Permissions and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Verified Permissions and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Verified Permissions Policy Store, add a policy to it, and authorize a request with the AWS CLI.
@@ -28,7 +28,7 @@ To create a Verified Permissions Policy Store, use the [`CreatePolicyStore`](htt
 Run the following command to create a Policy Store with Schema validation settings set to `OFF`:
 
 ```bash
-awslocal verifiedpermissions create-policy-store \
+lstk aws verifiedpermissions create-policy-store \
   --validation-settings mode=OFF \
   --description "A local Policy Store"
 ```
@@ -46,7 +46,7 @@ You can list all the Verified Permissions policy stores using the [`ListPolicySt
 Run the following command to list all the Verified Permissions policy stores:
 
 ```bash
-awslocal verifiedpermissions list-policy-stores
+lstk aws verifiedpermissions list-policy-stores
 ```
 
 ### Create a Policy
@@ -67,7 +67,7 @@ Create a JSON file named `static_policy.json` with the following content:
 You can then run this command to create the policy:
 
 ```bash
-awslocal verifiedpermissions create-policy \
+lstk aws verifiedpermissions create-policy \
     --definition file://static_policy.json \
     --policy-store-id q5PCScu9qo4aswMVc0owNN
 ```
@@ -107,7 +107,7 @@ We can now make use of the Policy Store and the Policy to start authorizing requ
 To authorize a request using Verified Permissions, use the [`IsAuthorized`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html) API.
 
 ```bash title="Output"
-awslocal verifiedpermissions is-authorized \
+lstk aws verifiedpermissions is-authorized \
   --policy-store-id q5PCScu9qo4aswMVc0owNN \
   --principal entityType=User,entityId=alice \
   --action actionType=Action,actionId=view \

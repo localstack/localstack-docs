@@ -23,7 +23,7 @@ If you have any questions or uncertainties regarding the licensing implications,
 
 ## Getting started
 
-This guide is designed for users new to LocalStack and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to LocalStack and assumes basic knowledge of the AWS CLI and our [`lstk aws` AWS CLI proxy](/aws/developer-tools/running-localstack/lstk#aws).
 As a general prerequisite, you should have access to the [OpenShift Web Console](https://docs.openshift.com/container-platform/4.14/web_console/web-console-overview.html).
 
 We will demonstrate how you can create local AWS resources using LocalStack using the AWS CLI.
@@ -69,25 +69,32 @@ Click on the **localstack-dev-spaces** pod to view the details.
 You will be able to see the exposed route for the LocalStack container.
 Copy the route URL and use it to interact with the LocalStack container.
 
-To create an S3 bucket and an SQS queue, run the following commands:
+Since LocalStack is running on the cluster rather than on your machine, point `lstk` at the exposed route instead of its default local endpoint.
+Set `LSTK_ENDPOINT_URL` once for the whole session:
 
 ```bash
-export AWS_ENDPOINT_URL='<localstack-route-url>'
-awslocal s3 mb s3://my-bucket
-awslocal sqs create-queue --queue-name my-queue
+export LSTK_ENDPOINT_URL='<localstack-route-url>'
+lstk aws s3 mb s3://my-bucket
+lstk aws sqs create-queue --queue-name my-queue
+```
+
+Alternatively, pass the global `--endpoint-url` flag per command:
+
+```bash
+lstk --endpoint-url '<localstack-route-url>' aws s3 mb s3://my-bucket
+lstk --endpoint-url '<localstack-route-url>' aws sqs create-queue --queue-name my-queue
 ```
 
 In the above commands, replace `<localstack-route-url>` with the route URL of the LocalStack container.
-The `AWS_ENDPOINT_URL` environment variable is used to specify the endpoint URL of the LocalStack container.
 
 :::note
-By default, the endpoint URL for `awslocal` is `http://localhost:4566`.
-Since we are running LocalStack on OpenShift, we need to specify the route URL of the LocalStack container.
-You can swap `awslocal` with the AWS CLI, by specifying the additional `--endpoint-url` parameter.
+By default, `lstk aws` targets the emulator on your local machine.
+Since we are running LocalStack on OpenShift, we need to specify the route URL of the LocalStack container, using either `LSTK_ENDPOINT_URL` or `--endpoint-url`.
+The flag takes precedence over the environment variable.
 :::
 
-You can further use integrations, such as [CDK](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/), [SAM CLI](https://docs.localstack.cloud/user-guide/integrations/aws-sam/), and [Terraform](https://docs.localstack.cloud/user-guide/integrations/terraform/), to interact with the Ephemeral Instance.
-In these integrations, you can change the `AWS_ENDPOINT_URL` environment variable to the endpoint URL of the Ephemeral Instance.
+You can further use the other `lstk` tool proxies, such as [`lstk cdk`](/aws/developer-tools/running-localstack/lstk#cdk), [`lstk sam`](/aws/developer-tools/running-localstack/lstk#sam), and [`lstk terraform`](/aws/developer-tools/running-localstack/lstk#terraform), to interact with the deployment.
+As with `lstk aws`, set `LSTK_ENDPOINT_URL` or pass `--endpoint-url` to point these at the route URL instead of a local emulator.
 
 ### Deleting the LocalStack deployment
 

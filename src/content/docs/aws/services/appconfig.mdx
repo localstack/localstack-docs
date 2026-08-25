@@ -15,7 +15,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to AppConfig and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to AppConfig and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an AppConfig application, environment, configuration profiles & feature flags, and deploy the configuration with the AWS CLI.
@@ -27,7 +27,7 @@ The application is a folder/directory that contains the configuration data for y
 The following command creates an application named `my-app`:
 
 ```bash
-awslocal appconfig create-application \
+lstk aws appconfig create-application \
     --name my-app \
     --description "My application"
 ```
@@ -47,7 +47,7 @@ An environment consists of the deployment group of your AppConfig applications.
 The following command creates an environment named `my-app-env`:
 
 ```bash
-awslocal appconfig create-environment \
+lstk aws appconfig create-environment \
     --application-id 400c285 \
     --name my-app-env \
     --description "My application environment"
@@ -73,7 +73,7 @@ A configuration profile contains for the configurations of your AppConfig applic
 The following command creates a configuration profile named `my-app-config`:
 
 ```bash
-awslocal appconfig create-configuration-profile \
+lstk aws appconfig create-configuration-profile \
     --application-id 400c285 \
     --name my-app-config \
     --location-uri hosted \
@@ -110,7 +110,7 @@ You can now use the [`CreateHostedConfigurationVersion`](https://docs.aws.amazon
 The following command creates a hosted configuration version for the configuration profile you created in the previous step:
 
 ```bash
-awslocal appconfig create-hosted-configuration-version \
+lstk aws appconfig create-hosted-configuration-version \
     --application-id 400c285 \
     --configuration-profile-id 7d748f9 \
     --content-type "application/json" \
@@ -134,7 +134,7 @@ A deployment strategy defines important criteria for rolling out your configurat
 The following command creates a deployment strategy named `my-app-deployment-strategy`:
 
 ```bash
-awslocal appconfig create-deployment-strategy \
+lstk aws appconfig create-deployment-strategy \
     --name my-app-deployment-strategy \
     --description "My application deployment strategy" \
     --deployment-duration-in-minutes 10 \
@@ -155,7 +155,7 @@ You can now use the [`StartDeployment`](https://docs.aws.amazon.com/appconfig/la
 The following command deploys the configuration to the environment you created in the previous step:
 
 ```bash
-awslocal appconfig start-deployment \
+lstk aws appconfig start-deployment \
     --application-id 400c285 \
     --environment-id 3695ea3 \
     --deployment-strategy-id f2f2225 \

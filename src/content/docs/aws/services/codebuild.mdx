@@ -22,7 +22,7 @@ AWS CodeBuild emulation is powered by the [AWS CodeBuild agent](https://docs.aws
 
 This tutorial will show you how to use AWS CodeBuild to test and build a deployable version of a Java executable.
 
-It assumes basic knowledge of the [`awslocal`](https://github.com/localstack/awscli-local) wrapper, Apache Maven, and Java.
+It assumes basic knowledge of the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command, Apache Maven, and Java.
 
 ### Create the source code
 
@@ -178,8 +178,8 @@ Now we have to create two S3 buckets:
 Create the buckets with the following commands:
 
 ```bash
-awslocal s3 mb s3://codebuild-demo-input
-awslocal s3 mb s3://codebuild-demo-output
+lstk aws s3 mb s3://codebuild-demo-input
+lstk aws s3 mb s3://codebuild-demo-output
 ```
 
 Finally, zip the content of the source code directory and upload it to the created source bucket.
@@ -192,7 +192,7 @@ zip -r MessageUtil.zip <source-directory>
 Then, upload `MessageUtil.zip` to the `codebuild-demo-input` bucket with the following command:
 
 ```bash
-awslocal s3 cp MessageUtil.zip s3://codebuild-demo-input
+lstk aws s3 cp MessageUtil.zip s3://codebuild-demo-input
 ```
 
 ### Configuring IAM
@@ -218,7 +218,7 @@ Create a `create-role.json` file with following content:
 Then, run the following command to create the necessary IAM role:
 
 ```bash
-awslocal iam create-role --role-name CodeBuildServiceRole --assume-role-policy-document file://create-role.json
+lstk aws iam create-role --role-name CodeBuildServiceRole --assume-role-policy-document file://create-role.json
 ```
 
 From the command's response, keep note of the role ARN:
@@ -282,7 +282,7 @@ Create a `put-role-policy.json` file with the following content:
 Finally, assign the policy to the role with the following command:
 
 ```bash
-awslocal put-role-policy \
+lstk aws put-role-policy \
     --role-name CodeBuildServiceRole \
     --policy-name CodeBuildServiceRolePolicy \
     --policy-document file://put-role-policy.json
@@ -296,7 +296,7 @@ You can use the CLI to generate the skeleton of the `CreateBuild` request, which
 Save the output of the following command to a file named `create-project.json`.
 
 ```bash
-awslocal codebuild create-project --generate-cli-skeleton
+lstk aws codebuild create-project --generate-cli-skeleton
 ```
 
 From the generated file, change the source and the artifact location to match the S3 bucket names you just created.
@@ -325,7 +325,7 @@ Similarly, fill in the ARN of the CodeBuild service role.
 Now create the project with the following command:
 
 ```bash
-awslocal codebuild create-project --cli-input-json file://create-project.json
+lstk aws codebuild create-project --cli-input-json file://create-project.json
 ```
 
 You have now created a CodeBuild project called `codebuild-demo-project` that uses the S3 buckets you just created as source and artifact.
@@ -340,7 +340,7 @@ See the [Build Environments](#build-environments) section for more details.
 In this final step, you can now execute your build with the following command:
 
 ```bash
-awslocal codebuild start-build --project-name codebuild-demo-project
+lstk aws codebuild start-build --project-name codebuild-demo-project
 ```
 
 Make note of the `id` information given in output, since it can be used to query the status of the build.
@@ -350,7 +350,7 @@ This container will be responsible to start a Docker compose stack that executes
 As said, you can inspect the status of the build with the following command:
 
 ```bash
-awslocal codebuild batch-get-builds --ids <build-id>
+lstk aws codebuild batch-get-builds --ids <build-id>
 ```
 
 The command returns a list of builds.
@@ -365,7 +365,7 @@ Currently, it reports only the final status of the build.
 Once the build is completed, you can verify that the JAR artifact has been uploaded to the correct S3 bucket with the following command:
 
 ```bash
-awslocal s3 ls s3://codebuild-demo-output
+lstk aws s3 ls s3://codebuild-demo-output
 ```
 
 

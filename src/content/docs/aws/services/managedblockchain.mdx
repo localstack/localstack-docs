@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to AMB and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to AMB and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a blockchain network, a node, and a proposal.
@@ -28,7 +28,7 @@ You can create a blockchain network using the [`CreateNetwork`](https://docs.aws
 Run the following command to create a network named `OurBlockchainNet` which uses the Hyperledger Fabric with the following configuration:
 
 ```bash showshowLineNumbers
-awslocal managedblockchain create-network \
+lstk aws managedblockchain create-network \
     --cli-input-json '{
         "Name": "OurBlockchainNet",
         "Description": "OurBlockchainNetDesc",
@@ -83,7 +83,7 @@ You can create a node using the [`CreateNode`](https://docs.aws.amazon.com/manag
 Run the following command to create a node with the following configuration:
 
 ```bash showshowLineNumbers
-awslocal managedblockchain create-node \
+lstk aws managedblockchain create-node \
     --node-configuration '{
     "InstanceType": "bc.t3.small",
     "AvailabilityZone": "us-east-1a",
@@ -120,7 +120,7 @@ You can create a proposal using the [`CreateProposal`](https://docs.aws.amazon.c
 Run the following command to create a proposal with the following configuration:
 
 ```bash
-awslocal managedblockchain create-proposal \
+lstk aws managedblockchain create-proposal \
     --actions "Invitations=[{Principal=000000000000}]" \
     --network-id n-X24AF1AK2GC6MDW11HYW5I5DQC \
     --member-id m-6VWBWHP2Y15F7TQ2DS093RTCW2

@@ -16,13 +16,14 @@ Subsequently, it displays the suggested policy.
 This feature aids in identifying the correct permissions for cloud applications and can help spot logical errors, such as unexpected actions in a policy.
 
 :::note
-IAM Policy Stream is offered as a **preview** feature and is under active development.
+IAM Policy Stream is offered as a **preview** feature and is under active development. `lstk` does not yet support IAM Policy Stream.
+Continue using the legacy [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/) for this feature.
 :::
 
 ## Getting started
 
 This guide is designed for users who are new to the IAM Policy Stream.
-It assumes you have basic knowledge of the AWS CLI (and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script).
+It assumes you have basic knowledge of the AWS CLI (and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk#aws) AWS CLI proxy).
 
 ### Start your LocalStack container
 
@@ -52,7 +53,7 @@ In a separate terminal tab, we will create AWS resources to observe the necessar
 In this example, we are creating an SNS topic using the following command:
 
 ```bash
-awslocal sns create-topic --name test-topic
+lstk aws sns create-topic --name test-topic
 ```
 
 In the other tab, the required policy will be generated.
@@ -97,7 +98,7 @@ To use this feature, open the LocalStack Web Application in your browser, go to 
 Run the following command in your terminal to generate a corresponding policy in the IAM Policy Stream dashboard:
 
 ```bash
-awslocal sns create-topic --name test-topic
+lstk aws sns create-topic --name test-topic
 ```
 
 You will see the following output in the IAM Policy Stream dashboard:

@@ -26,7 +26,7 @@ Recreating the RDS state is recommended for compatibility.
 
 ## Getting started
 
-This guide is designed for users new to RDS and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to RDS and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate the following with the AWS CLI:
@@ -44,7 +44,7 @@ The following command creates a new cluster with the name `db1` and the engine `
 Instances for the cluster must be added manually.
 
 ```bash
-awslocal rds create-db-cluster \
+lstk aws rds create-db-cluster \
     --db-cluster-identifier db1 \
     --engine aurora-postgresql \
     --database-name test \
@@ -67,7 +67,7 @@ awslocal rds create-db-cluster \
 To add an instance you can run the following command:
 
 ```bash
-awslocal rds create-db-instance \
+lstk aws rds create-db-instance \
     --db-instance-identifier db1-instance \
     --db-cluster-identifier db1 \
     --engine aurora-postgresql \
@@ -96,7 +96,7 @@ EOF
 Run the following command to create the secret:
 
 ```bash
-awslocal secretsmanager create-secret \
+lstk aws secretsmanager create-secret \
     --name dbpass \
     --secret-string file://mycreds.json
 ```
@@ -119,7 +119,7 @@ The following command executes a query against the database.
 The query returns the value `123`.
 
 ```bash
-awslocal rds-data execute-statement \
+lstk aws rds-data execute-statement \
     --database test \
     --resource-arn arn:aws:rds:us-east-1:000000000000:cluster:db1 \
     --secret-arn arn:aws:secretsmanager:us-east-1:000000000000:secret:dbpass-cfnAX \
@@ -260,7 +260,7 @@ The database will be created with a single instance, which will be used as the m
 MASTER_USER=hello
 MASTER_PW='MyPassw0rd!'
 DB_NAME=test
-awslocal rds create-db-instance \
+lstk aws rds create-db-instance \
     --master-username $MASTER_USER \
     --master-user-password $MASTER_PW \
     --db-instance-identifier mydb \
@@ -276,8 +276,8 @@ You can retrieve the hostname and port of your created instance either from the 
 Run the following command to retrieve the host and port of the instance:
 
 ```bash
-PORT=$(awslocal rds describe-db-instances --db-instance-identifier mydb | jq -r ".DBInstances[0].Endpoint.Port")
-HOST=$(awslocal rds describe-db-instances --db-instance-identifier mydb | jq -r ".DBInstances[0].Endpoint.Address")
+PORT=$(lstk aws rds describe-db-instances --db-instance-identifier mydb | jq -r ".DBInstances[0].Endpoint.Port")
+HOST=$(lstk aws rds describe-db-instances --db-instance-identifier mydb | jq -r ".DBInstances[0].Endpoint.Address")
 ```
 
 Next, you can connect to the database using the master username and password:
@@ -292,7 +292,7 @@ PGPASSWORD=$MASTER_PW psql -d $DB_NAME -U $MASTER_USER -p $PORT -h $HOST -w -c '
 You can create a token for the user you generated using the [`generate-db-auth-token`](https://docs.aws.amazon.com/cli/latest/reference/rds/generate-db-auth-token.html) command:
 
 ```bash
-TOKEN=$(awslocal rds generate-db-auth-token --username myiam --hostname $HOST --port $PORT)
+TOKEN=$(lstk aws rds generate-db-auth-token --username myiam --hostname $HOST --port $PORT)
 ```
 
 You can now connect to the database utilizing the user you generated and the token obtained in the previous step as the password:

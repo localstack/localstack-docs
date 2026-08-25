@@ -130,8 +130,15 @@ Remember to save the default configuration and restore it after testing.
 
 1. Expose the LocalStack DNS server:
 
-    a) Since version 3.5, the LocalStack CLI does not publish port `53` anymore by default.
-       Use the CLI flag `--host-dns` to expose the port on the host.
+    a) `lstk` does not publish port `53` on the host by default.
+       Add `expose_ports = [53]` to the container block in your `config.toml` to expose it:
+
+     ```toml
+     # .lstk/config.toml
+     [[containers]]
+     type         = "aws"
+     expose_ports = [53]
+     ```
 
     b) For Docker Compose, add the following port mappings to your `docker-compose.yml`:
 
@@ -188,6 +195,11 @@ To use systemd-resolved and the LocalStack domain resolution, try the following 
 Start LocalStack for AWS with `DNS_ADDRESS=127.0.0.1` as environment variable.
 This makes LocalStack bind port 53 on 127.0.0.1, whereas systemd-resolved binds its stub resolver to 127.0.0.53:53, which prevents a conflict.
 Once LocalStack is started, you can test the DNS server using `dig @127.0.0.1 s3.amazonaws.com` versus `dig @127.0.0.53 s3.amazonaws.com`, the former should return an A record `127.0.0.1`, the latter the real AWS DNS result.
+
+:::caution
+The `dns` command is only available in the [deprecated LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli#dns-systemd-resolved).
+`lstk` has no equivalent command, so these steps require the legacy `localstack` CLI.
+:::
 
 Run:
 

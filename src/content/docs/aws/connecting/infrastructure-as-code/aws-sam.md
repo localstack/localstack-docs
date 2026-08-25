@@ -12,29 +12,29 @@ The AWS Serverless Application Model (SAM) is an open-source framework for devel
 It uses a simplified syntax to define functions, APIs, databases, and event source mappings.
 When you deploy, SAM converts its syntax into AWS CloudFormation syntax, helping you create serverless applications more quickly.
 
-LocalStack can work with SAM using the AWS SAM CLI for LocalStack.
-This CLI comes in the form of a `samlocal` wrapper script, which lets you deploy SAM applications on LocalStack.
-This guide explains how to set up local AWS resources using the `samlocal` wrapper script.
+LocalStack can work with SAM using [`lstk sam`](/aws/developer-tools/running-localstack/lstk/#sam), which lets you deploy SAM applications on LocalStack.
+This guide explains how to set up local AWS resources using `lstk sam`.
 
-## `samlocal` wrapper script
+## `lstk sam`
 
-`samlocal` is a wrapper for the `sam` command line interface, facilitating the use of SAM framework with LocalStack.
-When executing deployment commands like `samlocal ["build", "deploy", "validate", "package"]`, the script configures the SAM settings for LocalStack and runs the specified SAM command.
+`lstk sam` proxies the `sam` command line interface, facilitating the use of the SAM framework with LocalStack.
+When executing deployment commands like `lstk sam [ build | deploy | validate | package ]`, it configures the SAM settings for LocalStack and runs the specified SAM command.
 
-### Install the `samlocal` wrapper script
+:::note
+`lstk sam` supersedes the older [`samlocal` wrapper script](/aws/connecting/infrastructure-as-code/deprecated-wrapper-scripts#samlocal), which is deprecated but still available if you need it.
+:::
 
-You can install the `samlocal` wrapper script by running the following command:
+### Install lstk
 
-```bash
-pip install aws-sam-cli-local
-```
+To use `lstk sam`, install `lstk` by following the [`lstk` installation instructions](/aws/developer-tools/running-localstack/lstk/#installation).
+You'll also need the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) (version `1.95.0` or newer) installed and on your `PATH`.
 
 ### Create a new SAM project
 
 You can initialize a new SAM project using the following command:
 
 ```bash
-samlocal init
+lstk sam init
 ```
 
 Select `1` to create a new SAM application using an AWS Quick Start template.
@@ -50,19 +50,29 @@ Then, enter the project name and press `Enter`.
 After initializing the SAM project, enter the project directory and deploy the application using the following command:
 
 ```bash
-samlocal deploy --guided
+lstk sam deploy --guided
 ```
 
 Enter the default values for the deployment, such as the stack name, region, and confirm the changes.
-The `samlocal` wrapper will package and deploy the application to LocalStack.
+`lstk sam` will package and deploy the application to LocalStack.
 
 ### Configuration
 
-| Environment Variable   | Default value                                    | Description                                                             |
-|------------------------|--------------------------------------------------|-------------------------------------------------------------------------|
-| AWS_ENDPOINT_URL       | `http://localhost.localstack.cloud:4566`        | URL at which the `boto3` client can reach LocalStack                   |
-| EDGE_PORT (Deprecated)              | `4566`                              | Port number under which the LocalStack edge service is available        |
-| LOCALSTACK_HOSTNAME (Deprecated)     | `localhost`                         | Host under which the LocalStack edge service is available
+The `lstk sam` command supports several options and environment variables beyond what is available with the standard `sam` command. 
+| Option              | Default         | Description |
+|----------------------|-----------------|--------------|
+| `--region <region>`  | `us-east-1`     | Deployment region |
+| `--account <id>`     | `000000000000`  | Target AWS account id (12 digits) |
+
+`lstk sam`-specific flags must appear **before** the SAM action (for example, `lstk sam --region us-west-2 build`)
+
+| Environment Variable   | Default value | Description |
+|-------------------------|----------------|--------------|
+| `AWS_ENDPOINT_URL`      | -              | Override the auto-resolved LocalStack endpoint |
+| `AWS_ENDPOINT_URL_S3`   | -              | Override the auto-resolved LocalStack S3 endpoint |
+| `LSTK_SAM_CMD`          | `sam`          | Binary to invoke |
+| `AWS_REGION`            | -              | Fallback for `--region` |
+| `AWS_ACCESS_KEY_ID`     | -              | Fallback for `--account` |
 
 ## Debugging on VS Code
 

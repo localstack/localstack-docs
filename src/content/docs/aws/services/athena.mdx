@@ -19,7 +19,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Athena and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Athena and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an Athena table and run a query against it in addition to reading the results with the AWS CLI.
@@ -37,7 +37,7 @@ You can create an S3 bucket using the [`mb`](https://docs.aws.amazon.com/cli/lat
 Run the following command to create a bucket named `athena-bucket`:
 
 ```bash
-awslocal s3 mb s3://athena-bucket
+lstk aws s3 mb s3://athena-bucket
 ```
 
 You can create some sample data using the following commands:
@@ -50,7 +50,7 @@ echo "LocalStack,Athena" >> data.csv
 You can upload the data to your bucket using the [`cp`](https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html) command:
 
 ```bash
-awslocal s3 cp data.csv s3://athena-bucket/data/
+lstk aws s3 cp data.csv s3://athena-bucket/data/
 ```
 
 ### Create an Athena table
@@ -59,7 +59,7 @@ You can create an Athena table using the [`CreateTable`](https://docs.aws.amazon
 Run the following command to create a table named `athena_table`:
 
 ```bash
-awslocal athena start-query-execution \
+lstk aws athena start-query-execution \
     --query-string "create external table tbl01 (name STRING, surname STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION 's3://athena-bucket/data/';" --result-configuration "OutputLocation=s3://athena-bucket/output/"
 ```
 
@@ -73,7 +73,7 @@ You can retrieve information about the query execution using the [`GetQueryExecu
 Run the following command:
 
 ```bash
-awslocal athena get-query-execution --query-execution-id 593acab7
+lstk aws athena get-query-execution --query-execution-id 593acab7
 ```
 
 Replace `593acab7` with the `QueryExecutionId` returned by the [`StartQueryExecution`](https://docs.aws.amazon.com/athena/latest/APIReference/API_StartQueryExecution.html) API.
@@ -84,14 +84,14 @@ You can get the output of the query using the [`GetQueryResults`](https://docs.a
 Run the following command:
 
 ```bash
-awslocal athena get-query-results --query-execution-id 593acab7
+lstk aws athena get-query-results --query-execution-id 593acab7
 ```
 
 You can now read the data from the `tbl01` table and retrieve the data from S3 that was mentioned in your table creation statement.
 Run the following command:
 
 ```bash
-awslocal athena start-query-execution \
+lstk aws athena start-query-execution \
     --query-string "select * from tbl01;" --result-configuration "OutputLocation=s3://athena-bucket/output/"
 ```
 
@@ -101,7 +101,7 @@ You can copy the `ResultConfiguration` from the output and use it to retrieve th
 Run the following command:
 
 ```bash
-awslocal s3 cp s3://athena-bucket/output/593acab7.csv .
+lstk aws s3 cp s3://athena-bucket/output/593acab7.csv .
 cat 593acab7.csv
 ```
 
@@ -124,17 +124,17 @@ wget https://localstack-assets.s3.amazonaws.com/aws-sample-athena-delta-lake.zip
 unzip aws-sample-athena-delta-lake.zip; rm aws-sample-athena-delta-lake.zip
 ```
 
-We can then create an S3 bucket in LocalStack using the [`awslocal`](https://github.com/localstack/awscli-local) command line, and upload the files to the bucket:
+We can then create an S3 bucket in LocalStack using the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command line, and upload the files to the bucket:
 
 ```bash
-awslocal s3 mb s3://test
-awslocal s3 sync /tmp/delta-lake-sample s3://test
+lstk aws s3 mb s3://test
+lstk aws s3 sync /tmp/delta-lake-sample s3://test
 ```
 
 Next, we create the table definitions in Athena:
 
 ```bash
-awslocal athena start-query-execution \
+lstk aws athena start-query-execution \
     --query-string "CREATE EXTERNAL TABLE test (product_id string, product_name string, \
     price bigint, currency string, category string, updated_at double) \
     LOCATION 's3://test/' TBLPROPERTIES ('table_type'='DELTA')"
@@ -147,11 +147,11 @@ Finally, we can now run a `SELECT` query to extract data from the Delta Lake tab
 To query Delta Lake tables, specify `Catalog=deltalake` in the `QueryExecutionContext`:
 
 ```bash
-queryId=$(awslocal athena start-query-execution \
+queryId=$(lstk aws athena start-query-execution \
     --query-string "SELECT * FROM test" \
     --query-execution-context "Database=default,Catalog=deltalake" \
     --result-configuration "OutputLocation=s3://test/output/" | jq -r .QueryExecutionId)
-awslocal athena get-query-results --query-execution-id $queryId
+lstk aws athena get-query-results --query-execution-id $queryId
 ```
 
 The query should yield a result similar to the output below:
@@ -196,7 +196,7 @@ LOCATION 's3://mybucket/prefix/' TBLPROPERTIES ( 'table_type' = 'ICEBERG' )
 To query Iceberg tables, specify `Catalog=iceberg` in the `QueryExecutionContext`:
 
 ```bash
-awslocal athena start-query-execution \
+lstk aws athena start-query-execution \
     --query-string "SELECT * FROM mytable" \
     --query-execution-context "Database=default,Catalog=iceberg" \
     --result-configuration "OutputLocation=s3://mybucket/output/"
@@ -236,7 +236,7 @@ Create a table bucket and a namespace in S3 Tables.
 The bucket holds your Iceberg tables and the namespace organizes them.
 
 ```bash
-awslocal s3tables create-table-bucket --name athena-doc-bucket
+lstk aws s3tables create-table-bucket --name athena-doc-bucket
 ```
 
 ```bash title="Output"
@@ -246,7 +246,7 @@ awslocal s3tables create-table-bucket --name athena-doc-bucket
 ```
 
 ```bash
-awslocal s3tables create-namespace \
+lstk aws s3tables create-namespace \
     --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/athena-doc-bucket \
     --namespace sales
 ```
@@ -266,7 +266,7 @@ Register a Glue catalog that federates to S3 Tables using the [`CreateCatalog`](
 The catalog name `s3tablescatalog` matches the AWS convention used by Athena, EMR, and Redshift.
 
 ```bash
-awslocal glue create-catalog \
+lstk aws glue create-catalog \
     --name s3tablescatalog \
     --catalog-input '{
         "FederatedCatalog": {
@@ -279,7 +279,7 @@ awslocal glue create-catalog \
 You can verify the federated catalog with:
 
 ```bash
-awslocal glue get-catalogs
+lstk aws glue get-catalogs
 ```
 
 ### Register an Athena data catalog
@@ -288,7 +288,7 @@ Register an Athena data catalog that points at a specific table bucket using the
 The `catalog-id` parameter follows the format `s3tablescatalog/<bucket-name>` so that Athena routes queries through the federated catalog path.
 
 ```bash
-awslocal athena create-data-catalog \
+lstk aws athena create-data-catalog \
     --name s3tables-catalog \
     --type GLUE \
     --parameters "catalog-id=s3tablescatalog/athena-doc-bucket"
@@ -297,7 +297,7 @@ awslocal athena create-data-catalog \
 Confirm the data catalog status:
 
 ```bash
-awslocal athena get-data-catalog --name s3tables-catalog
+lstk aws athena get-data-catalog --name s3tables-catalog
 ```
 
 ```bash title="Output"
@@ -319,7 +319,7 @@ Once the data catalog is registered, Athena resolves S3 Tables namespaces as dat
 List the databases exposed by the federated catalog:
 
 ```bash
-awslocal athena list-databases --catalog-name s3tables-catalog
+lstk aws athena list-databases --catalog-name s3tables-catalog
 ```
 
 ```bash title="Output"
@@ -339,7 +339,7 @@ awslocal athena list-databases --catalog-name s3tables-catalog
 You can also describe a single namespace with [`GetDatabase`](https://docs.aws.amazon.com/athena/latest/APIReference/API_GetDatabase.html):
 
 ```bash
-awslocal athena get-database \
+lstk aws athena get-database \
     --catalog-name s3tables-catalog \
     --database-name sales
 ```
@@ -350,7 +350,7 @@ To query S3 Tables data from Athena, reference the data catalog name in the `Que
 The `Catalog` field maps to the Athena data catalog you registered, and `Database` maps to the S3 Tables namespace:
 
 ```bash
-awslocal athena start-query-execution \
+lstk aws athena start-query-execution \
     --query-string "CREATE TABLE orders (id int, customer string, amount double) TBLPROPERTIES ('table_type' = 'ICEBERG')" \
     --query-execution-context "Catalog=s3tables-catalog,Database=sales" \
     --result-configuration "OutputLocation=s3://athena-doc-output/results/"
@@ -359,14 +359,14 @@ awslocal athena start-query-execution \
 Insert and read data using the same `QueryExecutionContext`:
 
 ```bash
-awslocal athena start-query-execution \
+lstk aws athena start-query-execution \
     --query-string "INSERT INTO orders VALUES (1, 'alice', 100.0), (2, 'bob', 250.5)" \
     --query-execution-context "Catalog=s3tables-catalog,Database=sales" \
     --result-configuration "OutputLocation=s3://athena-doc-output/results/"
 ```
 
 ```bash
-awslocal athena start-query-execution \
+lstk aws athena start-query-execution \
     --query-string "SELECT * FROM orders ORDER BY id" \
     --query-execution-context "Catalog=s3tables-catalog,Database=sales" \
     --result-configuration "OutputLocation=s3://athena-doc-output/results/"

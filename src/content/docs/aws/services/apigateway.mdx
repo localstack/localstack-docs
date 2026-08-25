@@ -21,7 +21,7 @@ The supported APIs are available on the API coverage section for [API Gateway V1
 
 ## Getting started
 
-This guide is designed for users new to API Gateway and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to API Gateway and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will use the Lambda proxy integration to integrate an API method with a Lambda function.
@@ -49,12 +49,12 @@ module.exports = {
 ```
 
 The above code defines a function named `apiHandler` that returns a response with a status code of `200` and a body containing the string `Hello from Lambda`.
-Zip the file and upload it to LocalStack using the `awslocal` CLI.
+Zip the file and upload it to LocalStack using the `lstk aws` command.
 Run the following command:
 
 ```bash showshowLineNumbers
 zip function.zip lambda.js
-awslocal lambda create-function \
+lstk aws lambda create-function \
   --function-name apigw-lambda \
   --runtime nodejs16.x \
   --handler lambda.apiHandler \
@@ -71,7 +71,7 @@ We will use the API Gateway's [`CreateRestApi`](https://docs.aws.amazon.com/apig
 Here's an example command:
 
 ```bash
-awslocal apigateway create-rest-api --name 'API Gateway Lambda integration'
+lstk aws apigateway create-rest-api --name 'API Gateway Lambda integration'
 ```
 
 This creates a new REST API named `API Gateway Lambda integration`.
@@ -99,7 +99,7 @@ You'll need this ID for the next step.
 Use the REST API ID generated in the previous step to fetch the resources for the API, using the [`GetResources`](https://docs.aws.amazon.com/apigateway/latest/api/API_GetResources.html) API:
 
 ```bash
-awslocal apigateway get-resources --rest-api-id <REST_API_ID>
+lstk aws apigateway get-resources --rest-api-id <REST_API_ID>
 ```
 
 ```bash title="Output"
@@ -122,7 +122,7 @@ Create a new resource for the API using the [`CreateResource`](https://docs.aws.
 Use the ID of the resource returned in the previous step as the parent ID:
 
 ```bash showshowLineNumbers
-awslocal apigateway create-resource \
+lstk aws apigateway create-resource \
   --rest-api-id <REST_API_ID> \
   --parent-id <PARENT_ID> \
   --path-part "{somethingId}"
@@ -146,7 +146,7 @@ Add a `GET` method to the resource using the [`PutMethod`](https://docs.aws.amaz
 Use the ID of the resource returned in the previous step as the Resource ID:
 
 ```bash showshowLineNumbers
-awslocal apigateway put-method \
+lstk aws apigateway put-method \
   --rest-api-id <REST_API_ID> \
   --resource-id <RESOURCE_ID> \
   --http-method GET \
@@ -168,7 +168,7 @@ awslocal apigateway put-method \
 Now, create a new integration for the method using the [`PutIntegration`](https://docs.aws.amazon.com/apigateway/latest/api/API_PutIntegration.html) API.
 
 ```bash showshowLineNumbers
-awslocal apigateway put-integration \
+lstk aws apigateway put-integration \
   --rest-api-id <REST_API_ID> \
   --resource-id <RESOURCE_ID> \
   --http-method GET \
@@ -186,7 +186,7 @@ We can now proceed with the deployment before invoking the API.
 Create a new deployment for the API using the [`CreateDeployment`](https://docs.aws.amazon.com/apigateway/latest/api/API_CreateDeployment.html) API:
 
 ```bash
-awslocal apigateway create-deployment \
+lstk aws apigateway create-deployment \
   --rest-api-id <REST_API_ID> \
   --stage-name dev
 ```
@@ -346,10 +346,10 @@ functions:
 ```
 
 Upon deployment of the Serverless project, LocalStack creates a new API Gateway V2 endpoint.
-To retrieve the list of APIs and verify the WebSocket endpoint, you can use the `awslocal` CLI:
+To retrieve the list of APIs and verify the WebSocket endpoint, you can use the `lstk aws` CLI:
 
 ```bash
-awslocal apigatewayv2 get-apis
+lstk aws apigatewayv2 get-apis
 ```
 
 ```bash title="Output"
@@ -377,7 +377,7 @@ To push data from a backend service to the WebSocket connection, you can use the
 In LocalStack, use the following CLI command (replace `<connectionId>` with your WebSocket connection ID):
 
 ```bash
-awslocal apigatewaymanagementapi \
+lstk aws apigatewaymanagementapi \
   post-to-connection \
   --connection-id '<connectionId>' \
   --data '{"msg": "Hi"}'
@@ -392,7 +392,7 @@ To assign a custom ID to an API Gateway REST API, use the `create-rest-api` comm
 The following example assigns the custom ID `"myid123"` to the API:
 
 ```bash
-awslocal apigateway create-rest-api --name my-api --tags '{"_custom_id_":"myid123"}'
+lstk aws apigateway create-rest-api --name my-api --tags '{"_custom_id_":"myid123"}'
 ```
 
 ```bash title="Output"
@@ -405,7 +405,7 @@ awslocal apigateway create-rest-api --name my-api --tags '{"_custom_id_":"myid12
 You can also configure the protocol type, the possible values being `HTTP` and `WEBSOCKET`:
 
 ```bash showshowLineNumbers
-awslocal apigatewayv2 create-api \
+lstk aws apigatewayv2 create-api \
   --name=my-api \
   --protocol-type=HTTP --tags="_custom_id_=my-api"
 {

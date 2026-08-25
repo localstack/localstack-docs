@@ -8,7 +8,7 @@ sidebar:
 
 :::note
 Please note that multi-accounts may not work for use-cases that have cross-account and cross-service access.
-Please open a [GitHub Discussion](https://github.com/orgs/localstack/discussions/new/choose) to request and upvote for support for specific use-cases.
+Please contact [LocalStack Support](/aws/help-support/get-help) to request support for specific use-cases.
 :::
 
 LocalStack ships with multi-account support which allows namespacing based on AWS account ID.
@@ -20,14 +20,13 @@ The Access Key ID field can be configured in the AWS CLI in multiple ways: pleas
 
 ## Examples
 
-In following examples, we configure the AWS CLI account ID via environment variable.
+In the following examples, we select the account ID with the `--account` flag of `lstk aws`.
 
 ```bash
-AWS_ACCESS_KEY_ID=000000000001 awslocal ec2 create-key-pair --key-name green-hospital
+lstk aws --account 000000000001 ec2 create-key-pair --key-name green-hospital
+lstk aws --account 000000000002 ec2 create-key-pair --key-name red-medicine
 
-AWS_ACCESS_KEY_ID=000000000002 awslocal ec2 create-key-pair --key-name red-medicine
-
-AWS_ACCESS_KEY_ID=000000000001 awslocal ec2 describe-key-pairs
+lstk aws --account 000000000001 ec2 describe-key-pairs
 {
     "KeyPairs": [
         {
@@ -37,7 +36,7 @@ AWS_ACCESS_KEY_ID=000000000001 awslocal ec2 describe-key-pairs
     ]
 }
 
-AWS_ACCESS_KEY_ID=000000000002 awslocal ec2 describe-key-pairs
+lstk aws --account 000000000002 ec2 describe-key-pairs
 {
     "KeyPairs": [
         {
@@ -48,11 +47,17 @@ AWS_ACCESS_KEY_ID=000000000002 awslocal ec2 describe-key-pairs
 }
 ```
 
+Alternatively, you can set the account ID through the `AWS_ACCESS_KEY_ID` environment variable:
+
+```bash
+AWS_ACCESS_KEY_ID=000000000001 lstk aws ec2 describe-key-pairs
+```
+
 If no explicit Account ID is set, LocalStack falls back to default.
 In this example, no resources are returned.
 
 ```bash
-awslocal ec2 describe-key-pairs
+lstk aws ec2 describe-key-pairs
 {
     "KeyPairs": []
 }

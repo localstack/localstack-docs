@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Elastic Beanstalk and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Elastic Beanstalk and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an Elastic Beanstalk application and environment with the AWS CLI.
@@ -28,7 +28,7 @@ To create an Elastic Beanstalk application, you can use the [`CreateApplication`
 Run the following command to create an application named `my-app`:
 
 ```bash
-awslocal elasticbeanstalk create-application \
+lstk aws elasticbeanstalk create-application \
     --application-name my-app
 ```
 
@@ -46,7 +46,7 @@ You can also use the [`DescribeApplications`](https://docs.aws.amazon.com/elasti
 Run the following command to retrieve information about the `my-app` application, we created earlier:
 
 ```bash
-awslocal elasticbeanstalk describe-applications \
+lstk aws elasticbeanstalk describe-applications \
     --application-names my-app
 ```
 
@@ -56,7 +56,7 @@ To create an Elastic Beanstalk environment, you can use the [`CreateEnvironment`
 Run the following command to create an environment named `my-environment`:
 
 ```bash
-awslocal elasticbeanstalk create-environment \
+lstk aws elasticbeanstalk create-environment \
     --application-name my-app \
     --environment-name my-environment
 ```
@@ -75,7 +75,7 @@ You can also use the [`DescribeEnvironments`](https://docs.aws.amazon.com/elasti
 Run the following command to retrieve information about the `my-environment` environment, we created earlier:
 
 ```bash
-awslocal elasticbeanstalk describe-environments \
+lstk aws elasticbeanstalk describe-environments \
     --environment-names my-environment
 ```
 
@@ -85,7 +85,7 @@ To create an Elastic Beanstalk application version, you can use the [`CreateAppl
 Run the following command to create an application version named `v1`:
 
 ```bash
-awslocal elasticbeanstalk create-application-version \
+lstk aws elasticbeanstalk create-application-version \
     --application-name my-app \
     --version-label v1
 ```
@@ -105,7 +105,7 @@ You can also use the [`DescribeApplicationVersions`](https://docs.aws.amazon.com
 Run the following command to retrieve information about the `v1` application version, we created earlier:
 
 ```bash
-awslocal elasticbeanstalk describe-application-versions \
+lstk aws elasticbeanstalk describe-application-versions \
     --application-name my-app
 ```
 

@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Glue and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Glue and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create databases and table metadata in Glue, run Glue ETL jobs, import databases from Athena, and run Glue Crawlers with the AWS CLI.
@@ -32,9 +32,9 @@ These dependencies are automatically fetched when you start up the service, so p
 The commands below illustrate the creation of some very basic entries (databases, tables) in the Glue data catalog:
 
 ```bash
-awslocal glue create-database --database-input '{"Name":"db1"}'
-awslocal glue create-table --database db1 --table-input '{"Name":"table1"}'
-awslocal glue get-tables --database db1
+lstk aws glue create-database --database-input '{"Name":"db1"}'
+lstk aws glue create-table --database db1 --table-input '{"Name":"table1"}'
+lstk aws glue get-tables --database db1
 ```
 
 ```bash title="Output"
@@ -73,14 +73,14 @@ if __name__ == '__main__':
 You can now copy the script to an S3 bucket:
 
 ```bash
-awslocal s3 mb s3://glue-test
-awslocal s3 cp job.py s3://glue-test/job.py
+lstk aws s3 mb s3://glue-test
+lstk aws s3 cp job.py s3://glue-test/job.py
 ```
 
 Next, you can create a job definition:
 
 ```bash
-awslocal glue create-job \
+lstk aws glue create-job \
     --name job1 \
     --role arn:aws:iam::000000000000:role/glue-role \
     --command '{"Name": "pythonshell", "ScriptLocation": "s3://glue-test/job.py"}'
@@ -89,13 +89,13 @@ awslocal glue create-job \
 You can finally start the job execution:
 
 ```bash
-awslocal glue start-job-run --job-name job1
+lstk aws glue start-job-run --job-name job1
 ```
 
 The returned `JobRunId` can be used to query the status job the job execution, until it becomes `SUCCEEDED`:
 
 ```bash
-awslocal glue get-job-run --job-name job1 --run-id <JobRunId>
+lstk aws glue get-job-run --job-name job1 --run-id <JobRunId>
 ```
 
 ```bash title="Output"
@@ -125,14 +125,14 @@ CREATE EXTERNAL TABLE db2.table2 (a1 Date, a2 STRING, a3 INT) LOCATION 's3://tes
 Then this command will import these DB/table definitions into the Glue data catalog:
 
 ```bash
-awslocal glue import-catalog-to-glue
+lstk aws glue import-catalog-to-glue
 ```
 
 Afterwards, the databases and tables will be available in Glue.
 You can query the databases with the `get-databases` operation:
 
 ```bash
-awslocal glue get-databases
+lstk aws glue get-databases
 ```
 
 ```bash title="Output"
@@ -154,7 +154,7 @@ awslocal glue get-databases
 And you can query the databases with the `get-databases` operation:
 
 ```bash
-awslocal glue get-tables --database-name db2
+lstk aws glue get-tables --database-name db2
 ```
 
 ```bash title="Output"
@@ -190,30 +190,30 @@ The example below illustrates crawling tables and partition metadata from S3 buc
 You can first create an S3 bucket with a couple of items:
 
 ```bash
-awslocal s3 mb s3://test
+lstk aws s3 mb s3://test
 printf "1, 2, 3, 4\n5, 6, 7, 8" > /tmp/file.csv
-awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Jan/day=1/file.csv
-awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Jan/day=2/file.csv
-awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Feb/day=1/file.csv
-awslocal s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Feb/day=2/file.csv
+lstk aws s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Jan/day=1/file.csv
+lstk aws s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Jan/day=2/file.csv
+lstk aws s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Feb/day=1/file.csv
+lstk aws s3 cp /tmp/file.csv s3://test/table1/year=2021/month=Feb/day=2/file.csv
 ```
 
 You can then create and trigger the crawler:
 
 ```bash
-awslocal glue create-database --database-input '{"Name":"db1"}'
-awslocal glue create-crawler \
+lstk aws glue create-database --database-input '{"Name":"db1"}'
+lstk aws glue create-crawler \
     --name c1 \
     --database-name db1 \
     --role arn:aws:iam::000000000000:role/glue-role \
     --targets '{"S3Targets": [{"Path": "s3://test/table1"}]}'
-awslocal glue start-crawler --name c1
+lstk aws glue start-crawler --name c1
 ```
 
 Finally, you can query the table metadata that has been created by the crawler:
 
 ```bash
-awslocal glue get-tables --database-name db1
+lstk aws glue get-tables --database-name db1
 ```
 
 ```bash title="Output"
@@ -228,7 +228,7 @@ awslocal glue get-tables --database-name db1
 You can also query the created table partitions:
 
 ```bash
-awslocal glue get-partitions --database-name db1 --table-name table1
+lstk aws glue get-partitions --database-name db1 --table-name table1
 ```
 
 ```bash title="Output"
@@ -248,7 +248,7 @@ Below is a rough outline of the steps required to get the integration for the JD
 You can first create the local Redshift cluster via:
 
 ```bash
-awslocal redshift create-cluster \
+lstk aws redshift create-cluster \
     --cluster-identifier c1 \
     --node-type dc1.large \
     --master-username test \
@@ -272,21 +272,21 @@ Then you can use any JDBC or Postgres client to create a table `mytable1` in the
 Next, you're creating the Glue database, the JDBC connection, as well as the crawler:
 
 ```bash
-awslocal glue create-database --database-input '{"Name":"gluedb1"}'
-awslocal glue create-connection --connection-input \
+lstk aws glue create-database --database-input '{"Name":"gluedb1"}'
+lstk aws glue create-connection --connection-input \
     {"Name":"conn1","ConnectionType":"JDBC","ConnectionProperties":{"USERNAME":"test","PASSWORD":"test","JDBC_CONNECTION_URL":"jdbc:redshift://localhost.localstack.cloud:4510/db1"}}'
-awslocal glue create-crawler \
+lstk aws glue create-crawler \
     --name c1 \
     --database-name gluedb1 \
     --role arn:aws:iam::000000000000:role/glue-role \
     --targets '{"JdbcTargets":[{"ConnectionName":"conn1","Path":"db1/%/mytable1"}]}'
-awslocal glue start-crawler --name c1
+lstk aws glue start-crawler --name c1
 ```
 
 Once the crawler has started, you have to wait until the `State` turns to `READY` when querying the current state:
 
 ```bash
-awslocal glue get-crawler --name c1
+lstk aws glue get-crawler --name c1
 ```
 
 Once the crawler has finished running and is back in `READY` state, the Glue table within the `gluedb1` DB should have been populated and can be queried via the API.
@@ -305,13 +305,13 @@ Support for other dataformats will be added in the future.
 You can create a schema registry with the following command:
 
 ```bash
-awslocal glue create-registry --registry-name demo-registry
+lstk aws glue create-registry --registry-name demo-registry
 ```
 
 You can create a schema in the newly created registry with the `create-schema` command:
 
 ```bash
-awslocal glue create-schema --schema-name demo-schema \
+lstk aws glue create-schema --schema-name demo-schema \
     --registry-id RegistryName=demo-registry \
     --data-format AVRO \
     --compatibility FORWARD \
@@ -338,7 +338,7 @@ awslocal glue create-schema --schema-name demo-schema \
 Once the schema has been created, you can create a new version:
 
 ```bash
-awslocal glue register-schema-version \
+lstk aws glue register-schema-version \
     --schema-id SchemaName=demo-schema,RegistryName=demo-registry \
     --schema-definition '{"type":"record","namespace":"Demo","name":"Person","fields":[{"name":"Name","type":"string"}, {"name":"Address","type":"string"}]}'
 ```
@@ -396,12 +396,12 @@ print("SQL result:", result.toJSON().collect())
 You can now run the following commands to create and start the Glue job:
 
 ```bash
-awslocal s3 mb s3://test
-awslocal s3 cp job.py s3://test/job.py
-awslocal glue create-job --name job1 --role arn:aws:iam::000000000000:role/test \
+lstk aws s3 mb s3://test
+lstk aws s3 cp job.py s3://test/job.py
+lstk aws glue create-job --name job1 --role arn:aws:iam::000000000000:role/test \
     --glue-version 4.0 \
     --command '{"Name": "pythonshell", "ScriptLocation": "s3://test/job.py"}'
-awslocal glue start-job-run --job-name job1
+lstk aws glue start-job-run --job-name job1
 ```
 
 Retrieve the job run ID from the output of the `start-job-run` command.
@@ -417,7 +417,7 @@ In order to see the logs above, make sure to enable `DEBUG=1` in the LocalStack 
 Alternatively, you can also retrieve the job logs programmatically via the CloudWatch Logs API - for example, using the job run ID from the above command.
 
 ```bash
-awslocal logs get-log-events \
+lstk aws logs get-log-events \
     --log-group-name /aws-glue/jobs/logs-v2 \
     --log-stream-name <JobRunId>
 ```

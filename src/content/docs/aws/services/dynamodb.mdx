@@ -18,7 +18,7 @@ DynamoDB emulation is powered by [DynamoDB Local](https://docs.aws.amazon.com/am
 
 ## Getting started
 
-This guide is designed for users new to DynamoDB and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to DynamoDB and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create DynamoDB table, along with its replicas, and put an item into the table using the AWS CLI.
@@ -29,7 +29,7 @@ You can create a DynamoDB table using the [`CreateTable`](https://docs.aws.amazo
 Execute the following command to create a table named `global01` with a primary key `id`:
 
 ```bash
-awslocal dynamodb create-table \
+lstk aws dynamodb create-table \
     --table-name global01 \
     --key-schema AttributeName=id,KeyType=HASH \
     --attribute-definitions AttributeName=id,AttributeType=S \
@@ -70,7 +70,7 @@ You can create replicas of a DynamoDB table using the [`UpdateTable`](https://do
 Execute the following command to create replicas in `ap-south-1` and `us-west-1` regions:
 
 ```bash
-awslocal dynamodb update-table \
+lstk aws dynamodb update-table \
     --table-name global01 \
     --replica-updates '[{"Create": {"RegionName": "eu-central-1"}}, {"Create": {"RegionName": "us-west-1"}}]' \
     --region ap-south-1
@@ -105,7 +105,7 @@ You can use the [`ListTables`](https://docs.aws.amazon.com/amazondynamodb/latest
 Run the following command to list the tables in the `eu-central-1` region:
 
 ```bash
-awslocal dynamodb list-tables \
+lstk aws dynamodb list-tables \
     --region eu-central-1
 ```
 
@@ -123,7 +123,7 @@ You can insert an item into a DynamoDB table using the [`PutItem`](https://docs.
 Execute the following command to insert an item into the `global01` table:
 
 ```bash
-awslocal dynamodb put-item \
+lstk aws dynamodb put-item \
     --table-name global01 \
     --item '{"id":{"S":"foo"}}' \
     --region eu-central-1
@@ -133,7 +133,7 @@ You can now query the number of items in the table using the [`DescribeTable`](h
 Run the following command to query the number of items in the `global01` table from a different region:
 
 ```bash
-awslocal dynamodb describe-table \
+lstk aws dynamodb describe-table \
     --table-name global01 \
     --query 'Table.ItemCount' \
     --region ap-south-1

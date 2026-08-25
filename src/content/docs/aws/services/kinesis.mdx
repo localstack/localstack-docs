@@ -19,7 +19,7 @@ Emulation for Kinesis is powered by [Kinesis Mock](https://github.com/etspaceman
 
 ## Getting started
 
-This guide is designed for users new to Kinesis Data Streams and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Kinesis Data Streams and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Lambda function to consume events from a Kinesis stream with the AWS CLI.
@@ -45,7 +45,7 @@ Run the following command to create a Lambda function named `ProcessKinesisRecor
 
 ```bash
 zip function.zip index.mjs
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name ProcessKinesisRecords \
     --zip-file fileb://function.zip \
     --handler index.handler \
@@ -96,7 +96,7 @@ You can use the [`Invoke`](https://docs.aws.amazon.com/lambda/latest/dg/API_Invo
 Execute the following command:
 
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
     --function-name ProcessKinesisRecords \
     --payload file://input.txt outputfile.txt
 ```
@@ -107,7 +107,7 @@ You can create a Kinesis Stream using the [`CreateStream`](https://docs.aws.amaz
 Run the following command to create a Kinesis Stream named `lambda-stream`:
 
 ```bash
-awslocal kinesis create-stream \
+lstk aws kinesis create-stream \
   --stream-name lambda-stream \
   --shard-count 1
 ```
@@ -116,7 +116,7 @@ You can retrieve the Stream ARN using the [`DescribeStream`](https://docs.aws.am
 Execute the following command:
 
 ```bash
-awslocal kinesis describe-stream \
+lstk aws kinesis describe-stream \
   --stream-name lambda-stream
 ```
 
@@ -147,7 +147,7 @@ You can add an Event Source to your Lambda function using the [`CreateEventSourc
 Run the following command to add the Kinesis Stream as an Event Source to your Lambda function:
 
 ```bash
-awslocal lambda create-event-source-mapping \
+lstk aws lambda create-event-source-mapping \
     --function-name ProcessKinesisRecords \
     --event-source arn:aws:kinesis:us-east-1:000000000000:stream/lambda-stream \
     --batch-size 100 \
@@ -160,7 +160,7 @@ You can test the event source mapping by adding a record to the Kinesis Stream u
 Run the following command to add a record to the Kinesis Stream:
 
 ```bash
-awslocal kinesis put-record \
+lstk aws kinesis put-record \
     --stream-name lambda-stream \
     --partition-key 1 \
     --data "Hello, this is a test."

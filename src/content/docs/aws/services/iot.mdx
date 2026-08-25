@@ -19,14 +19,14 @@ LocalStack ships a [Message Queuing Telemetry Transport (MQTT)](https://mqtt.org
 
 ## Getting Started
 
-This guide is for users that are new to IoT and assumes a basic knowledge of the AWS CLI and LocalStack [`awslocal`](https://github.com/localstack/awscli-local) wrapper.
+This guide is for users that are new to IoT and assumes a basic knowledge of the AWS CLI and LocalStack [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start LocalStack using your preferred method.
 
 To retrieve the MQTT endpoint, use the [`DescribeEndpoint`](https://docs.aws.amazon.com/iot/latest/apireference/API_DescribeEndpoint.html) operation.
 
 ```bash
-awslocal iot describe-endpoint
+lstk aws iot describe-endpoint
 ```
 
 ```bash title="Output"
@@ -171,7 +171,7 @@ Currently the `principalIdentifier` and `sessionIdentifier` fields in event payl
 LocalStack can publish the [registry events](https://docs.aws.amazon.com/iot/latest/developerguide/registry-events.html), if [you enable it](https://docs.aws.amazon.com/iot/latest/developerguide/iot-events.html#iot-events-enable).
 
 ```bash
-awslocal iot update-event-configurations \
+lstk aws iot update-event-configurations \
     --event-configurations '{"THING":{"Enabled": true}}'
 ```
 
@@ -221,7 +221,7 @@ const device = new iot.device({
 And configure the Lambda environment:
 
 ```bash
-awslocal lambda update-function-configuration \
+lstk aws lambda update-function-configuration \
   --function-name your-function-name \
   --environment "Variables={NODE_TLS_REJECT_UNAUTHORIZED=0}"
 ```
