@@ -7,6 +7,8 @@ sidebar:
 tags: ['Hobby']
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 # Migrating from `localstack` to `lstk`
 
 ## Introduction
@@ -29,17 +31,18 @@ The legacy CLI and the wrapper scripts continue to work, so you can migrate grad
 
 `lstk` is distributed through the LocalStack Homebrew tap and the `@localstack/lstk` npm package. Pre-built binaries for Linux, macOS, and Windows are published on GitHub Releases. Pick whichever fits your environment.
 
-With Homebrew:
-
-```bash
-brew install localstack/tap/lstk
-```
-
-With npm:
-
-```bash
-npm install -g @localstack/lstk
-```
+<Tabs>
+  <TabItem label="Homebrew">
+    ```bash
+    brew install localstack/tap/lstk
+    ```
+  </TabItem>
+  <TabItem label="npm">
+    ```bash
+    npm install -g @localstack/lstk
+    ```
+  </TabItem>
+</Tabs>
 
 Check for correct installation by invoking `lstk --version`. Docker must be installed and running, exactly as before. Homebrew installs shell completions automatically. With the other methods you'll need generate them yourself, using `lstk completion bash|zsh|fish|powershell`. Full instructions are in the [lstk documentation](https://docs.localstack.cloud/aws/developer-tools/running-localstack/lstk/).
 
