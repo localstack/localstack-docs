@@ -375,7 +375,8 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `S3_SKIP_SIGNATURE_VALIDATION`| `0` \| `1` (default) | Used to toggle validation of S3 pre-signed URL request signature. Set to `0` to validate. Note that validation can only pass if the `AWS_SECRET_ACCESS_KEY` is set to `test` or if using credentials returned from `STS.AssumeRole`  |
+| `S3_SKIP_SIGNATURE_VALIDATION`| `0` \| `1` (default) | Used to toggle validation of S3 pre-signed URLs. Set to `0` to validate their signature and expiration. See [Signature validation](/aws/services/s3/#signature-validation) for the credentials accepted by the validation. |
+| `S3_VALIDATE_SIGNATURES` | `0` (default) \| `1` | Used to toggle SigV4 signature validation of regular (non-pre-signed) S3 requests. Set to `1` to validate the request signature and the payload integrity. See [Signature validation](/aws/services/s3/#signature-validation) for the credentials accepted by the validation. |
 | `S3_SKIP_KMS_KEY_VALIDATION` | `0` \| `1` (default) | Used to toggle validation of provided KMS key in S3 operations. |
 
 ### SageMaker
