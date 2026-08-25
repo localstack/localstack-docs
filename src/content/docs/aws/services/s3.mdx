@@ -160,15 +160,15 @@ This is the format that `AWS_ENDPOINT_URL_S3` uses, and it's what most modern AW
 **Path style** requests include the bucket as part of the URL path instead of the hostname:
 
 ```bash
-http://localhost:4566/<bucket-name>/<key-name>
+http://s3.localhost.localstack.cloud:4566/<bucket-name>/<key-name>
 ```
 
-You should only use path-style requests if you have a specific reason:
-- Your bucket names are not DNS-compliant (contain underscores, uppercase letters, etc.)
-- You're using an older SDK or tool that doesn't support virtual-hosted style
-- You have specific networking constraints that prevent using wildcard DNS
+You can combine path-style addressing with the `s3.`-prefixed endpoint, as shown above, or with a bare endpoint (`http://localhost:4566/<bucket-name>/<key-name>`).
 
-To use path-style requests with AWS SDKs, you must explicitly enable it and use a non-S3-prefixed endpoint:
+You should only use path-style requests if you have a specific reason:
+- Your bucket names are not DNS-compliant (for example, they contain underscores).
+- You're using an older SDK or tool that doesn't support virtual-hosted style.
+- You're connecting to LocalStack from another container, for example in **Docker Compose**, using the LocalStack service's container name (such as `http://localstack:4566`). Wildcard subdomains like `<bucket-name>.localstack` are not resolvable in that case, so path-style addressing is required. This is one of the most common reasons users need path-style requests.
 
 :::tip
 To enable path-style requests in [AWS SDKs](https://aws.amazon.com/developer/tools/#SDKs), set the `ForcePathStyle` parameter to `true` in your S3 client configuration.
