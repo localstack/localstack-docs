@@ -516,6 +516,164 @@ This is an evolving feature and current support is scoped as follows:
 - **IAM Permissions are not enforced.** A Capacity Provider is configured with an Operator Role, but the permissions are not enforced by LocalStack. It’s important you check the AWS documentation to ensure you’ve configured this role correctly.
 :::
 
+## Lambda Durable Functions <Badge text="Pro" size="large" />
+
+[Lambda Durable Functions](https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html) run checkpointed, replayable workflows that can continue for up to one year.
+LocalStack supports durable executions for Node.js 22 and 24, Python 3.13 and 3.14, Java 17, 21, and 25, and .NET 8 and 10.
+
+### Create and invoke a durable function
+
+Install the JavaScript durable execution SDK and include it with the function's deployment package:
+
+```bash
+npm install --silent @aws/durable-execution-sdk-js
+zip -qr function.zip index.mjs node_modules package.json package-lock.json
+```
+
+Create `index.mjs` with a checkpointed step followed by a one-second durable wait:
+
+```javascript title="index.mjs" showLineNumbers
+import { withDurableExecution } from "@aws/durable-execution-sdk-js";
+
+export const handler = withDurableExecution(async (event, context) => {
+  const result = await context.step(async () => ({
+    message: `Hello, ${event.name}!`,
+  }));
+
+  await context.wait({ seconds: 1 });
+  return result;
+});
+```
+
+Create the function with a five-minute execution timeout and seven-day retention period:
+
+```bash
+awslocal lambda create-function \
+  --function-name durable-hello \
+  --runtime nodejs22.x \
+  --handler index.handler \
+  --role arn:aws:iam::000000000000:role/lambda-role \
+  --zip-file fileb://function.zip \
+  --timeout 30 \
+  --durable-config '{"ExecutionTimeout":300,"RetentionPeriodInDays":7}'
+```
+
+```bash title="Output"
+{
+  "FunctionName": "durable-hello",
+  "FunctionArn": "arn:aws:lambda:us-east-1:000000000000:function:durable-hello",
+  "Runtime": "nodejs22.x",
+  "State": "Pending",
+  "DurableConfig": {
+    "RetentionPeriodInDays": 7,
+    "ExecutionTimeout": 300
+  }
+}
+```
+
+Wait for the function to become active:
+
+```bash
+awslocal lambda wait function-active-v2 --function-name durable-hello
+```
+
+Create `event.json`:
+
+```json title="event.json"
+{
+  "name": "LocalStack"
+}
+```
+
+Start an asynchronous durable execution.
+Use a qualified function target and a durable execution name, which acts as an idempotency key:
+
+```bash
+EXECUTION_ARN=$(awslocal lambda invoke \
+  --function-name durable-hello \
+  --qualifier '$LATEST' \
+  --invocation-type Event \
+  --durable-execution-name hello-docs \
+  --payload fileb://event.json \
+  response.json \
+  | jq -r '.DurableExecutionArn')
+echo "$EXECUTION_ARN"
+```
+
+```text title="Output"
+arn:aws:lambda:us-east-1:000000000000:function:durable-hello:$LATEST/durable-execution/hello-docs/<execution-id>
+```
+
+After the execution finishes, retrieve its status and result:
+
+```bash
+awslocal lambda get-durable-execution \
+  --durable-execution-arn "$EXECUTION_ARN" \
+  --query '{DurableExecutionName:DurableExecutionName,Status:Status,Result:Result,DurableConfig:DurableConfig}'
+```
+
+```bash title="Output"
+{
+  "DurableExecutionName": "hello-docs",
+  "Status": "SUCCEEDED",
+  "Result": "{\"message\":\"Hello, LocalStack!\"}",
+  "DurableConfig": {
+    "RetentionPeriodInDays": 7,
+    "ExecutionTimeout": 300
+  }
+}
+```
+
+Inspect the execution history to see the checkpoint, suspension, replay, and completion:
+
+```bash
+awslocal lambda get-durable-execution-history \
+  --durable-execution-arn "$EXECUTION_ARN" \
+  --query 'Events[].EventType'
+```
+
+```bash title="Output"
+[
+  "ExecutionStarted",
+  "StepStarted",
+  "StepSucceeded",
+  "WaitStarted",
+  "InvocationCompleted",
+  "WaitSucceeded",
+  "InvocationCompleted",
+  "ExecutionSucceeded"
+]
+```
+
+### Supported behaviors
+
+LocalStack supports the following durable workflow behaviors:
+
+- Synchronous and asynchronous durable invocations with named, idempotent executions.
+- Checkpointed steps, waits, condition polling, and step retries.
+- Callbacks with heartbeats, success and failure responses, and restart-safe timeouts.
+- Chained Lambda invocations, parallel branches, maps, and child contexts.
+- Execution history, stopping and draining executions, retention, persistence, and asynchronous dead-letter queue delivery.
+- Function URL and event source mapping dispatch to durable functions, subject to the AWS execution-time constraints.
+
+### Current Limitations
+
+:::note
+LocalStack Lambda runtime images do not include the durable execution SDK.
+Package the SDK and its dependencies with every durable function deployment artifact.
+This differs from AWS managed Node.js and Python runtimes, which include the SDK for testing and development.
+:::
+
+LocalStack currently has the following limitations:
+
+- `KMSKeyArn` is validated, stored, merged, and returned, but LocalStack does not use the key to encrypt durable execution data.
+- LocalStack does not emit durable execution monitoring events to CloudWatch or EventBridge.
+- LocalStack does not enforce API request-per-second throttling or the account-level running-executions quota.
+- LocalStack enforces the checkpoint protocol limits, including 3,000 operations and 100 MB of written state per execution.
+
+[Lambda Debug Mode](/aws/developer-tools/lambda-tools/remote-debugging/#lambda-debug-mode-preview-) supports durable executions.
+Replays use the debug environment pinned to the execution, and LocalStack defers `ExecutionTimeout` while execution is paused at a breakpoint.
+
 
 ## LocalStack Lambda Runtime Interface Emulator (RIE)
 
