@@ -142,6 +142,8 @@ This environment variable is supported by:
 - **boto3** (Python SDK) with botocore >= 1.29: `boto3.client("s3")` resolves the endpoint automatically
 - **Terraform** with terraform-provider-aws >= 5.x: No `endpoints {}` block needed in your configuration
 
+See AWS's [service-specific endpoint SDK compatibility matrix](https://docs.aws.amazon.com/sdkref/latest/guide/feature-ss-endpoints.html#ss-endpoints-sdk-compat) for the complete, up-to-date list of SDKs and minimum versions that support this variable.
+
 With this variable set, your application code remains unchanged and can run against both LocalStack and real AWS by simply changing the environment.
 
 ### Virtual-Hosted Style Requests
@@ -166,7 +168,7 @@ http://s3.localhost.localstack.cloud:4566/<bucket-name>/<key-name>
 You can combine path-style addressing with the `s3.`-prefixed endpoint, as shown above, or with a bare endpoint (`http://localhost:4566/<bucket-name>/<key-name>`).
 
 You should only use path-style requests if you have a specific reason:
-- Your bucket names are not DNS-compliant (for example, they contain underscores).
+- Your bucket names contain periods. A period is a valid, DNS-compliant character, but the TLS certificate used for virtual-hosted-style buckets doesn't cover names with an extra dot in them, so virtual-hosted-style addressing over HTTPS breaks. See the [bucket naming rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) for the full list of naming restrictions.
 - You're using an older SDK or tool that doesn't support virtual-hosted style.
 - You're connecting to LocalStack from another container, for example in **Docker Compose**, using the LocalStack service's container name (such as `http://localstack:4566`). Wildcard subdomains like `<bucket-name>.localstack` are not resolvable in that case, so path-style addressing is required. This is one of the most common reasons users need path-style requests.
 
