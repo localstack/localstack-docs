@@ -6,16 +6,32 @@ template: doc
 
 LocalStack exposes various configuration options to control its behaviour.
 
-These options can be passed to LocalStack as environment variables like so:
+With `lstk`, these options can be passed as `LOCALSTACK_`-prefixed environment variables when starting the container:
 
 ```bash
-DEBUG=1 localstack start
+LOCALSTACK_DEBUG=1 lstk start
 ```
+
+Alternatively, set them as named environment profiles in your config file and reference them from the container block:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["debug"]
+
+[env.debug]
+DEBUG = "1"
+```
+
+```bash
+lstk start
+```
+
+See [Passing environment variables to the container](/aws/developer-tools/running-localstack/lstk#passing-environment-variables-to-the-container) for details.
 
 To facilitate interoperability, configuration variables can be prefixed with `LOCALSTACK_` in docker.
 For instance, setting `LOCALSTACK_PERSISTENCE=1` is equivalent to `PERSISTENCE=1`.
-
-You can also use [Profiles](#profiles).
 
 Configurations marked as **Deprecated** will be removed in the next major version.
 You can find previously removed configuration variables under [Legacy](#legacy).
@@ -44,13 +60,8 @@ Options that affect the core LocalStack system.
 
 ## CLI
 
-These options are applicable when using the CLI to start LocalStack.
-
-| Variable | Example Values | Description |
-| - | - | - |
-| `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. See [Filesystem Layout](/aws/customization/advanced/filesystem#using-the-cli) |
-| `CONFIG_PROFILE` | | The configuration profile to load. See [Profiles](#profiles) |
-| `CONFIG_DIR` | `~/.localstack` | The path where LocalStack can find configuration profiles and other CLI-specific configuration |
+`lstk` is configured through its config file rather than through environment variables.
+See [Configuration](/aws/developer-tools/running-localstack/lstk#configuration) on the `lstk` page for the config file search order, the field reference, and how to define named environment profiles.
 
 ## Docker
 
@@ -58,6 +69,7 @@ Options to configure how LocalStack interacts with Docker.
 
 | Variable | Example Values | Description |
 | - | - | - |
+| `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. See [Filesystem Layout](/aws/customization/advanced/filesystem) |
 | `DOCKER_FLAGS` | | Allows to pass custom flags (e.g., volume mounts) to "docker run" when running LocalStack in Docker. |
 | `DOCKER_SOCK` | `/var/run/docker.sock` | Path to local Docker UNIX domain socket |
 | `DOCKER_BRIDGE_IP` | `172.17.0.1` | IP of the docker bridge used to enable access between containers |
@@ -95,6 +107,7 @@ This section covers configuration options that are specific to certain AWS servi
 | `BEDROCK_PREWARM` | `0` (default) \| `1` | Pre-warm the Bedrock engine directly on LocalStack startup instead of on demand. |
 | `DEFAULT_BEDROCK_MODEL` | `smollm2:360m` (default) | The model that is used initially to handle text model invocations in Bedrock. Any text-based model available for Ollama is usable. |
 | `BEDROCK_PULL_MODELS` | `deepseek-r1,mistral` \' '' (default)  | A list of models that should get pulled into the model cache on startup. `DEFAULT_BEDROCK_MODEL` is automatically in there |
+| `BEDROCK_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Bedrock containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### BigData (EMR, Athena, Glue)
 
@@ -129,6 +142,7 @@ This section covers configuration options that are specific to certain AWS servi
 | - | - | - |
 | `CODEBUILD_REMOVE_CONTAINERS` | `0`\|`1` (default) | Remove Docker containers associated with a CodeBuild build tasks after execution. Disabling this and dumping container logs might help with troubleshooting failing builds. |
 | `CODEBUILD_ENABLE_CUSTOM_IMAGES` | `0` (default) \|`1` | Enable the usage of arbitrary CodeBuild build images. By default, all the builds are executed in a Amazon Linux 2023 container. |
+| `CODEBUILD_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating CodeBuild build containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### CodePipeline
 
@@ -148,6 +162,7 @@ This section covers configuration options that are specific to certain AWS servi
 | Variable | Example Values | Description |
 | - | - | - |
 | `DOCDB_PROXY_CONTAINER` | `0` (default) \|`1` | Whether the DocumentDB starts the MongoDB container proxied over LocalStack container. When enabled lambda functions can use the `Endpoint` configuration of the DocDB cluster or instance to connect to the DocumentDB. By default the container starts without proxy as standalone container. |
+| `DOCDB_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating DocumentDB containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### DynamoDB
 
@@ -185,13 +200,9 @@ This section covers configuration options that are specific to certain AWS servi
 | `EC2_DOCKER_INIT` | `0`\|`1` (default) | Start container instances with docker-init system, learn more [here](https://docs.docker.com/reference/cli/docker/container/run/#init). Disable this if you want to use a custom init system. |
 | `EC2_DOWNLOAD_DEFAULT_IMAGES` | `0`\|`1` (default) | At startup, LocalStack for AWS downloads latest Ubuntu images from Docker Hub for use as AMIs. This can be disabled for security reasons. |
 | `EC2_EBS_MAX_VOLUME_SIZE` | `1000` (default) | Maximum size (in MiBs) of user-specified EBS block devices mounted into EC2 container instances. |
-| `EC2_HYPERVISOR_URI` | `qemu:///system` (default) | [Libvirt connection URI](https://libvirt.org/uri.html#remote-uris) that indicates the hypervisor host. Only QEMU drivers are supported at this time. |
-| `EC2_LIBVIRT_NETWORK` | `default` (default) | Name of the Libvirt network to use for all instances when using the Libvirt VM manager. |
-| `EC2_LIBVIRT_POOL` | `default` (default) | Name of the Libvirt storage pool to use for all images when using the Libvirt VM manager. |
 | `EC2_MOUNT_BLOCK_DEVICES` | `1`\|`0` (default) | Whether to create and mount user-specified EBS block devices into EC2 container instances. |
-| `EC2_REFERENCE_DOMAIN` | `my-template-vm` | Name of a shut-off Libvirt domain whose configuration will be cloned for all new VMs created by LocalStack. If unset or the domain is not found/not shut-off, LocalStack uses a generic configuration. |
 | `EC2_REMOVE_CONTAINERS` | `0`\|`1` (default) | Controls whether created Docker containers are removed at instance termination or LocalStack shuts down. Disable this if there is a need to examine the container filesystem for debugging. |
-| `EC2_VM_MANAGER` | `docker`(default)\|`libvirt`\|`mock` | Emulation method to use in LocalStack for AWS. |
+| `EC2_VM_MANAGER` | `docker` (default) \| `kubernetes` (Enterprise) \| `mock` | Emulation method to use in LocalStack for AWS. The `kubernetes` value runs instances as Kubernetes pods. |
 
 ### EKS
 
@@ -205,6 +216,7 @@ This section covers configuration options that are specific to certain AWS servi
 | `K3D_START_LB_INGRESS` |      `0` (default)     |  Whether to start the k3d load balancer and Traefik ingress controller automatically when creating an EKS cluster. Set to `1` to enable. (formerly `EKS_START_K3D_LB_INGRESS`, still accepted as a deprecated alias)  |
 | `EKS_PERSIST_CLUSTER_CONTENTS` | `0` (default) | When Persistence is enabled or when saving/loading Cloud Pods, this flag can be used to control whether the content deployed to EKS clusters will be persisted. Set to `1` to enable. |
 | `K3D_CLUSTER_TOKEN` | `localstack-k3d-cluster-token` (default) | Token used to authenticate agent nodes joining a k3d-backed EKS cluster. Setting an explicit token ensures consistent node authentication across k3d versions, which is required for dynamic agent assignment. (formerly `EKS_K3D_CLUSTER_TOKEN`, still accepted as a deprecated alias) |
+| `K3D_VERSION` | `v5.9.0` (default) | Overrides the k3d CLI version used to manage EKS clusters. (formerly `EKS_K3D_VERSION`, still accepted as a deprecated alias) |
 
 :::note
 The EKS configuration variables were renamed to cloud-agnostic names since they're shared across cloud emulators (AWS EKS / Azure AKS). The previous `EKS_*`, `LOCALSTACK_K8S_*`, and `LAMBDA_K8S_*` names still work as deprecated aliases and will be removed in a future release.
@@ -218,6 +230,7 @@ If you configure these options through the LocalStack CLI **v1**, keep the `LOCA
 | - | - | - |
 | `PROVIDER_OVERRIDE_ELASTICACHE` | `legacy` | Use the legacy ElastiCache provider. |
 | `REDIS_CONTAINER_MODE` | `1`\|`0` (default) | Start ElastiCache cache nodes in separate containers instead of in the LocalStack container |
+| `ELASTICACHE_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating ElastiCache containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### ElasticSearch
 
@@ -236,6 +249,7 @@ Also see [OpenSearch configuration variables](#opensearch) which are used to man
 | - | - | - |
 | `GLUE_JOB_EXECUTOR` | `docker` (default) \| `kubernetes` | Whether to run Glue jobs when LocalStack is deployed on Kubernetes. Jobs are run as pods in the Kubernetes cluster. |
 | `DOCKER_GLOBAL_IMAGE_PREFIX` | | Specify custom images for Glue jobs by configuring their custom image repository. |
+| `GLUE_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Glue job containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### IAM
 
@@ -255,6 +269,18 @@ Also see [OpenSearch configuration variables](#opensearch) which are used to man
 | `KINESIS_MOCK_PROVIDER_ENGINE` | `node` (default) \| `scala` | String value of `node` (default) or `scala` that determines the underlying build of Kinesis Mock. |
 | `KINESIS_MOCK_MAXIMUM_HEAP_SIZE` | `512m` (default) | JVM memory format string that sets the maximum memory size for the Kinesis Mock Scala server, corresponds to the JVM `-Xmx` flag. |
 | `KINESIS_MOCK_INITIAL_HEAP_SIZE` | `256m` (default) | JVM memory format string that sets the initial memory size for the Kinesis Mock Scala server, corresponds to the JVM `-Xms` flag. | 
+
+### Kinesis Analytics
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `KINESISANALYTICSV2_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Kinesis Analytics v2 (Flink) containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
+
+### Kafka
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `KAFKA_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Kafka/MSK containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### Lambda
 
@@ -297,6 +323,7 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | Variable | Example Values | Description |
 | - | - | - |
 | `REDIS_CONTAINER_MODE` | `1`\|`0` (default) | Start MemoryDB cluster nodes in separate containers instead of in the LocalStack container |
+| `MEMORYDB_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating MemoryDB containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### MWAA
 
@@ -305,6 +332,12 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | `MWAA_PIP_TRUSTED_HOSTS` | `pypi.org,files.pythonhosted.org` | Comma-separated list of hosts for which SSL verification is not performed when installing Python dependencies for MWAA environment. |
 | `MWAA_S3_POLL_INTERVAL` | `30` (default) | Interval in seconds with which MWAA polls S3 bucket to check for new or updated assets. |
 | `MWAA_DOCKER_FLAGS` | `-e TEST_ENV=1337` | Additional flags provided to the Airflow container. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
+
+### MQ
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `MQ_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating Amazon MQ broker containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### Neptune
 
@@ -336,13 +369,21 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | `MSSQL_IMAGE`                    | `mcr.microsoft.com/mssql/server:2022-latest` | Defines a specific image that should be used when spinning up a SQL server engine. |
 | `MSSQL_ACCEPT_EULA`              | `Y`     | Set to `Y` if you accept the [EULA from MSSQL](https://hub.docker.com/_/microsoft-mssql-server). |
 | `RDS_PG_MAX_CONNECTIONS` | `0` (default) | Sets the maximum number of connections for Postgres RDS instances. |
+| `RDS_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating RDS containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### S3
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `S3_SKIP_SIGNATURE_VALIDATION`| `0` \| `1` (default) | Used to toggle validation of S3 pre-signed URL request signature. Set to `0` to validate. Note that validation can only pass if the `AWS_SECRET_ACCESS_KEY` is set to `test` or if using credentials returned from `STS.AssumeRole`  |
+| `S3_SKIP_SIGNATURE_VALIDATION`| `0` \| `1` (default) | Used to toggle validation of S3 pre-signed URLs. Set to `0` to validate their signature and expiration. See [Signature validation](/aws/services/s3/#signature-validation) for the credentials accepted by the validation. |
+| `S3_VALIDATE_SIGNATURES` | `0` (default) \| `1` | Used to toggle SigV4 signature validation of regular (non-pre-signed) S3 requests. Set to `1` to validate the request signature and the payload integrity. See [Signature validation](/aws/services/s3/#signature-validation) for the credentials accepted by the validation. |
 | `S3_SKIP_KMS_KEY_VALIDATION` | `0` \| `1` (default) | Used to toggle validation of provided KMS key in S3 operations. |
+
+### SageMaker
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `SAGEMAKER_DOCKER_FLAGS` | `-v /certs:/certs` | Additional flags passed to Docker when creating SageMaker training and endpoint containers. Same restrictions as `LAMBDA_DOCKER_FLAGS`. |
 
 ### SNS
 
@@ -366,6 +407,12 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | Variable | Example Values | Description |
 | - | - | - |
 | `SFN_MOCK_CONFIG` | `/tmp/MockConfigFile.json` | Specifies the file path to the mock configuration file that defines mock service integrations for Step Functions. |
+
+### Verified Permissions
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `VERIFIEDPERMISSIONS_DISABLE_JWT_VERIFICATION` | `0` (default) \| `1` | Disables JWT signature verification for OIDC identity sources. When enabled, LocalStack will decode tokens without validating signatures against the issuer's JWKS, allowing use of unreachable or self-signed OIDC providers in local development. |
 
 ## Security
 
@@ -404,7 +451,7 @@ To learn more about these configuration options, see [Persistence](/aws/develope
 | `SNAPSHOT_SAVE_STRATEGY` | `ON_SHUTDOWN`\|`ON_REQUEST`\|`SCHEDULED`\|`MANUAL` | Strategy that governs when LocalStack should make state snapshots |
 | `SNAPSHOT_LOAD_STRATEGY` | `ON_STARTUP`\|`ON_REQUEST`\|`MANUAL` | Strategy that governs when LocalStack restores state snapshots |
 | `SNAPSHOT_FLUSH_INTERVAL` | 15 (default) | The interval (in seconds) between persistence snapshots. It only applies to a `SCHEDULED` save strategy (see [Persistence Mechanism](/aws/developer-tools/snapshots/persistence))|
-| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [state compatibility rules](/aws/developer-tools/snapshots/persistence#state-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
+| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [snapshot compatibility rules](/aws/developer-tools/snapshots/service-coverage#snapshot-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
 
 ## Cloud Pods
 
@@ -416,14 +463,13 @@ To learn more about these configuration options, see [Cloud Pods](/aws/developer
 | `POD_LOAD_CLI_TIMEOUT` | 60 (default) | Timeout in seconds to wait before returning from load operations on the Cloud Pods CLI |
 | `POD_ENCRYPTION` | `0` (default) \| `1` | Whether to encrypt the Cloud Pods artifacts at rest. |
 | `ENABLE_POD_RESOURCES=1` | `0` (default) \| `1`  | Whether to save a detailed Stack Overview including available resources for the Cloud Pod |
-| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [state merging](/aws/developer-tools/snapshots/cloud-pods/#state-merging)) |
+| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [merging snapshots](/aws/developer-tools/snapshots/merging-snapshots/)) |
 
 ## Extensions
 
 | Variable | Example Values | Description |
 | - | - | - |
 | `EXTENSION_AUTO_INSTALL` | | Install a list of extensions automatically at startup. Comma-separated list of extensions directives which will be installed automatically at startup (see [managing extensions](/aws/customization/integrations/extensions/managing-extensions#automating-extensions-installation))|
-| `EXTENSION_DEV_MODE` | `0` (default) \| `1` | Enables development mode for extensions. Refer to the [Extensions Development Guide](/aws/customization/integrations/extensions/developing-extensions) for more information. |
 
 ## Miscellaneous
 
@@ -541,51 +587,3 @@ These configurations have already been removed and **won't have any effect** on 
 | `TMPDIR`| 2.0.0 | `/tmp` (default) |  Temporary folder on the host running the CLI and inside the LocalStack container .|
 | `USE_LIGHT_IMAGE` | 2.0.0 | `1` (default) | Whether to use the light-weight Docker image. Overwritten by `IMAGE_NAME`.|
 | `PORT_WEB_UI` | 0.12.8 | `8080` (default) | Port for the legacy Web UI. Replaced by our [Web Application](https://app.localstack.cloud) |
-
-## Profiles
-
-LocalStack supports configuration profiles which are stored in the `~/.localstack` config directory.
-If the directory does not exist, create it manually.
-A configuration profile is a set of environment variables stored in an `.env` file in the LocalStack config directory.
-
-Here is an example of what configuration profiles might look like:
-
-```bash
-tree ~/.localstack
-/home/username/.localstack
-├── default.env
-├── dev.env
-└── pro.env
-```
-
-Here is an example of what a specific environment profile looks like
-
-```bash
-cat ~/.localstack/pro-debug.env
-LOCALSTACK_AUTH_TOKEN=XXXXX
-DEBUG=1
-DEVELOP=1
-```
-
-You can load a profile by either setting the `env` variable `CONFIG_PROFILE=<profile>` or the `--profile=<profile>` CLI flag when using the CLI.
-Let's take an example to load the `dev.env` profile file if it exists:
-
-```bash
-python -m localstack.cli.main --profile=dev start
-```
-
-If no profile is specified, the `default.env` profile will be loaded.
-While explicitly specified, the environment variables will always overwrite the profile.
-
-To display the config environment variables, you can use the following command:
-
-```bash
-python -m localstack.cli.main --profile=dev config show
-```
-
-:::note
-The `CONFIG_PROFILE` is a CLI feature and cannot be used with a Docker/Docker Compose setup.
-You can look at [alternative means of setting environment variables](https://docs.docker.com/compose/environment-variables/set-environment-variables/) for your Docker Compose setups.
-
-For Docker setups, we recommend passing the environment variables directly to the `docker run` command.
-:::

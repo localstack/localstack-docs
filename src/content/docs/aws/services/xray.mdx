@@ -28,7 +28,7 @@ which provides information on the extent of X-Ray integration with LocalStack.
 ## Getting started
 
 This guide is designed for users new to X-Ray and assumes basic
-knowledge of the AWS CLI and our `awslocal` wrapper script.
+knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create a minimal [trace segment](https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html#api-segmentdocuments-fields)
@@ -54,7 +54,7 @@ DOC=$(cat <<EOF
 EOF
 )
 echo "Sending trace segment to X-Ray API: $DOC"
-awslocal xray put-trace-segments --trace-segment-documents "$DOC"
+lstk aws xray put-trace-segments --trace-segment-documents "$DOC"
 ```
 
 ```bash title="Output"
@@ -71,7 +71,7 @@ Run the following commands in your terminal:
 
 ```bash showLineNumbers
 EPOCH=$(date +%s)
-awslocal xray get-trace-summaries --start-time $(($EPOCH-600)) --end-time $(($EPOCH))
+lstk aws xray get-trace-summaries --start-time $(($EPOCH-600)) --end-time $(($EPOCH))
 {
     "TraceSummaries": [
         {
@@ -98,7 +98,7 @@ You can retrieve the full trace by providing the `TRACE_ID` using the [BatchGetT
 Run the following commands in your terminal (use the same terminal as for the first command):
 
 ```bash
-awslocal xray batch-get-traces --trace-ids $TRACE_ID
+lstk aws xray batch-get-traces --trace-ids $TRACE_ID
 ```
 
 ```bash title="Output"

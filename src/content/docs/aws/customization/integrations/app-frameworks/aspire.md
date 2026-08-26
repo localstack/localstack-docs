@@ -12,7 +12,7 @@ sidebar:
 
 With Aspire, developers can orchestrate cloud-native applications locally using the same AWS resources they deploy in production. By combining Aspire with LocalStack, teams can emulate their full cloud environment—including Lambda, SQS, S3, and DynamoDB—with minimal configuration and no AWS costs.
 
-LocalStack integrates with Aspire through the [`LocalStack.Aspire.Hosting`](https://github.com/localstack-dotnet/dotnet-aspire-for-localstack) package, enabling seamless local development and testing of AWS-powered applications within the Aspire orchestration framework. This package extends the official [AWS integrations for .NET Aspire](https://github.com/aws/customization/integrations-on-dotnet-aspire-for-aws) to provide LocalStack-specific functionality.
+LocalStack integrates with Aspire through the [`LocalStack.Aspire.Hosting`](https://github.com/localstack-dotnet/dotnet-aspire-for-localstack) package, enabling seamless local development and testing of AWS-powered applications within the Aspire orchestration framework. This package extends the official [AWS integrations for .NET Aspire](https://github.com/aws/integrations-on-dotnet-aspire-for-aws) to provide LocalStack-specific functionality.
 
 ## Getting started
 
@@ -168,7 +168,7 @@ An event registration system showcasing distributed tracing and observability pa
 - [Aspire Documentation](https://aspire.dev/)
 - [LocalStack.Aspire.Hosting on GitHub](https://github.com/localstack-dotnet/dotnet-aspire-for-localstack)
 - [LocalStack.Client on GitHub](https://github.com/localstack-dotnet/localstack-dotnet-client)
-- [AWS Aspire Integration](https://github.com/aws/customization/integrations-on-dotnet-aspire-for-aws)
+- [AWS Aspire Integration](https://github.com/aws/integrations-on-dotnet-aspire-for-aws)
 - [AWS SDK for .NET Documentation](https://docs.aws.amazon.com/sdk-for-net/)
 - [LocalStack Serverless .NET Demo](https://github.com/localstack-dotnet/localstack-serverless-dotnet-demo)
 - [OpenTelemetry with Aspire and LocalStack Demo](https://github.com/Blind-Striker/dotnet-otel-aspire-localstack-demo)

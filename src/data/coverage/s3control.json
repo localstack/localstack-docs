@@ -111,13 +111,13 @@
       "CreateMultiRegionAccessPoint": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -332,13 +332,13 @@
       "DeleteMultiRegionAccessPoint": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -410,13 +410,13 @@
       "DescribeMultiRegionAccessPointOperation": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -709,13 +709,13 @@
       "GetMultiRegionAccessPoint": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -968,7 +968,7 @@
     {
       "ListTagsForResource": {
         "implemented": true,
-        "availability": "community",
+        "availability": "pro",
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -1045,8 +1045,8 @@
     },
     {
       "PutBucketLifecycleConfiguration": {
-        "implemented": false,
-        "availability": "",
+        "implemented": true,
+        "availability": "pro",
         "internal_test_suite": false,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -1189,7 +1189,7 @@
     {
       "TagResource": {
         "implemented": true,
-        "availability": "community",
+        "availability": "pro",
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -1202,7 +1202,7 @@
     {
       "UntagResource": {
         "implemented": true,
-        "availability": "community",
+        "availability": "pro",
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -1253,8 +1253,8 @@
     },
     {
       "UpdateStorageLensGroup": {
-        "implemented": true,
-        "availability": "pro",
+        "implemented": false,
+        "availability": "",
         "internal_test_suite": false,
         "external_test_suite": false,
         "terraform_test_suite": false,
@@ -1266,11 +1266,43 @@
     }
   ],
   "details": {
+    "CreateMultiRegionAccessPoint": {
+      "AccountId, ClientToken, Details": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/s3control/test_s3control.py::TestS3ControlMultiRegionAccessPoint::test_get_multi_region_access_point_default_public_access_block",
+            "test": "test_get_multi_region_access_point_default_public_access_block",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AccessPoint.Alias']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "DeleteMultiRegionAccessPoint": {
+      "AccountId, ClientToken, Details": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/s3control/test_s3control.py::TestS3ControlMultiRegionAccessPoint::test_get_multi_region_access_point_default_public_access_block",
+            "test": "test_get_multi_region_access_point_default_public_access_block",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AccessPoint.Alias']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "DeletePublicAccessBlock": {
       "AccountId": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestLegacyS3Control::test_lifecycle_public_access_block",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestLegacyS3Control::test_lifecycle_public_access_block",
             "test": "test_lifecycle_public_access_block",
             "response": "200",
             "error": "",
@@ -1282,11 +1314,43 @@
         ]
       }
     },
+    "DescribeMultiRegionAccessPointOperation": {
+      "AccountId, RequestTokenARN": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/s3control/test_s3control.py::TestS3ControlMultiRegionAccessPoint::test_get_multi_region_access_point_default_public_access_block",
+            "test": "test_get_multi_region_access_point_default_public_access_block",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AccessPoint.Alias']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "GetMultiRegionAccessPoint": {
+      "AccountId, Name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/s3control/test_s3control.py::TestS3ControlMultiRegionAccessPoint::test_get_multi_region_access_point_default_public_access_block",
+            "test": "test_get_multi_region_access_point_default_public_access_block",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..AccessPoint.Alias']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "GetPublicAccessBlock": {
       "AccountId": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestLegacyS3Control::test_lifecycle_public_access_block",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestLegacyS3Control::test_lifecycle_public_access_block",
             "test": "test_lifecycle_public_access_block",
             "response": "200",
             "error": "",
@@ -1296,7 +1360,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestLegacyS3Control::test_public_access_block_validations",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestLegacyS3Control::test_public_access_block_validations",
             "test": "test_public_access_block_validations",
             "response": "403",
             "error": "CommonServiceException",
@@ -1306,7 +1370,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestLegacyS3Control::test_lifecycle_public_access_block",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestLegacyS3Control::test_lifecycle_public_access_block",
             "test": "test_lifecycle_public_access_block",
             "response": "404",
             "error": "CommonServiceException",
@@ -1322,7 +1386,7 @@
       "AccountId, ResourceArn": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
             "test": "test_tag_lifecycle",
             "response": "200",
             "error": "",
@@ -1332,7 +1396,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
             "test": "test_tag_operation_no_bucket",
             "response": "404",
             "error": "NoSuchResource",
@@ -1360,7 +1424,7 @@
       "AccountId, PublicAccessBlockConfiguration": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestLegacyS3Control::test_lifecycle_public_access_block",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestLegacyS3Control::test_lifecycle_public_access_block",
             "test": "test_lifecycle_public_access_block",
             "response": "200",
             "error": "",
@@ -1370,7 +1434,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestLegacyS3Control::test_public_access_block_validations",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestLegacyS3Control::test_public_access_block_validations",
             "test": "test_public_access_block_validations",
             "response": "400",
             "error": "CommonServiceException",
@@ -1380,7 +1444,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestLegacyS3Control::test_public_access_block_validations",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestLegacyS3Control::test_public_access_block_validations",
             "test": "test_public_access_block_validations",
             "response": "403",
             "error": "CommonServiceException",
@@ -1396,7 +1460,17 @@
       "AccountId, ResourceArn, Tags": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3/test_s3_api.py::TestS3BucketAbac::test_bucket_abac_blocks_tagging",
+            "test": "test_bucket_abac_blocks_tagging",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
             "test": "test_tag_lifecycle",
             "response": "204",
             "error": "",
@@ -1406,7 +1480,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_resource_validation",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_resource_validation",
             "test": "test_tag_resource_validation",
             "response": "400",
             "error": "MalformedXML",
@@ -1416,7 +1490,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_resource_validation",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_resource_validation",
             "test": "test_tag_resource_validation",
             "response": "400",
             "error": "InvalidTag",
@@ -1426,7 +1500,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
             "test": "test_tag_operation_no_bucket",
             "response": "404",
             "error": "NoSuchResource",
@@ -1437,6 +1511,26 @@
           }
         ],
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_abac.py::TestIAMABACS3::test_s3_resource_tag_bucket_abac[aws:ResourceTag]",
+            "test": "test_s3_resource_tag_bucket_abac[aws:ResourceTag]",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_abac.py::TestIAMABACS3::test_s3_resource_tag_bucket_abac[s3:BucketTag]",
+            "test": "test_s3_resource_tag_bucket_abac[s3:BucketTag]",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_s3control_against_rgta",
             "test": "test_s3control_against_rgta",
@@ -1454,7 +1548,7 @@
       "AccountId, ResourceArn, TagKeys": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_lifecycle",
             "test": "test_tag_lifecycle",
             "response": "204",
             "error": "",
@@ -1464,7 +1558,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
+            "node_id": "LocalStack Community: tests/aws_basic/services/s3control/test_s3control.py::TestS3ControlTagging::test_tag_operation_no_bucket",
             "test": "test_tag_operation_no_bucket",
             "response": "404",
             "error": "NoSuchResource",
@@ -1475,6 +1569,26 @@
           }
         ],
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_abac.py::TestIAMABACS3::test_s3_resource_tag_bucket_abac[aws:ResourceTag]",
+            "test": "test_s3_resource_tag_bucket_abac[aws:ResourceTag]",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/iam/test_iam_abac.py::TestIAMABACS3::test_s3_resource_tag_bucket_abac[s3:BucketTag]",
+            "test": "test_s3_resource_tag_bucket_abac[s3:BucketTag]",
+            "response": "204",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/s3control/test_s3control.py::TestS3ControlTagging::test_s3control_against_rgta",
             "test": "test_s3control_against_rgta",

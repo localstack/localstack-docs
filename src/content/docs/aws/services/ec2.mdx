@@ -19,7 +19,7 @@ The list of supported APIs can be found on the [API Coverage section](#api-cover
 
 ## Getting started
 
-This guide is designed for users new to EC2 and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to EC2 and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 We will demonstrate how to create an EC2 instance that runs a simple Python web server.
 LocalStack for AWS running on a Linux host is required as network access to containers is not possible on macOS.
 
@@ -33,7 +33,7 @@ To create a key pair, you can use the [`CreateKeyPair`](https://docs.aws.amazon.
 Run the following command to create the key pair and pipe the output to a file named `key.pem`:
 
 ```bash
-awslocal ec2 create-key-pair \
+lstk aws ec2 create-key-pair \
     --key-name my-key \
     --query 'KeyMaterial' \
     --output text | tee key.pem
@@ -69,7 +69,7 @@ icacls.exe key.pem /inheritance:r
 If you already have an SSH public key that you wish to use, such as the one located in your home directory at `~/.ssh/id_rsa.pub`, you can import it instead.
 
 ```bash
-awslocal ec2 import-key-pair --key-name my-key --public-key-material "$(cat ~/.ssh/id_rsa.pub)"
+lstk aws ec2 import-key-pair --key-name my-key --public-key-material "$(cat ~/.ssh/id_rsa.pub)"
 ```
 
 If you only have the SSH private key, a public key can be generated using the following command, and then imported:
@@ -85,7 +85,7 @@ You can add rules to the security group using the [`AuthorizeSecurityGroupIngres
 Run the following command to add a rule to allow inbound traffic on port 8000:
 
 ```bash
-awslocal ec2 authorize-security-group-ingress \
+lstk aws ec2 authorize-security-group-ingress \
     --group-id default \
     --protocol tcp \
     --port 8000 \
@@ -100,7 +100,7 @@ You can fetch the Security Group ID using the [`DescribeSecurityGroups`](https:/
 Run the following command to fetch the Security Group ID:
 
 ```bash
-awslocal ec2 describe-security-groups
+lstk aws ec2 describe-security-groups
 ```
 
 ```bash title="Output"
@@ -132,7 +132,7 @@ You can now run an EC2 instance using the [`RunInstances`](https://docs.aws.amaz
 Run the following command to run an EC2 instance by adding the appropriate Security Group ID that we fetched in the previous step:
 
 ```bash
-awslocal ec2 run-instances \
+lstk aws ec2 run-instances \
     --image-id ami-df5de72bdb3b \
     --count 1 \
     --instance-type t3.nano \
@@ -147,12 +147,12 @@ You can now open the LocalStack logs to find the IP address of the locally emula
 Run the following command to open the LocalStack logs:
 
 ```bash
-localstack logs
+lstk logs
 ```
 
 ```bash title="Output"
-2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f will be accessible via SSH at: 127.0.0.1:12862, 172.17.0.4:22
-2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f port mappings (container -> host): {'8000/tcp': 29043, '22/tcp': 12862}
+emulator | 2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f will be accessible via SSH at: 127.0.0.1:12862, 172.17.0.4:22
+emulator | 2023-08-16T17:18:29.702  INFO --- [   asgi_gw_0] l.s.ec2.vmmanager.docker   : Instance i-b07acefd77a3c415f port mappings (container -> host): {'8000/tcp': 29043, '22/tcp': 12862}
 ```
 
 You can now use the IP address to test the Python Web Server.
@@ -186,7 +186,7 @@ This section assumes that you have created or imported an SSH key pair named `my
 When running the EC2 instance, make sure to pass the `--key-name` parameter to the command:
 
 ```bash
-awslocal ec2 run-instances --key-name my-key ...
+lstk aws ec2 run-instances --key-name my-key ...
 ```
 
 Once the instance is up and running, we can use the `ssh` command to set up an SSH connection.
@@ -207,7 +207,12 @@ All tiers support the mock/CRUD capability.
 For advanced setups, LocalStack for AWS comes with emulation capability for certain resource types so that they behave more closely like AWS.
 
 The underlying method for this can be controlled using the [`EC2_VM_MANAGER`](/aws/customization/configuration-options#ec2) configuration option.
-You may choose between plain mocked resources, containerized or virtualized.
+You may choose between plain mocked resources, containerized emulation, or the [Kubernetes executor](/aws/customization/kubernetes/kubernetes-executor/#ec2-kubernetes-executor).
+
+:::note
+The Libvirt VM manager (`EC2_VM_MANAGER=libvirt`) has been retired and is no longer available.
+If you were using it to launch fully virtualized EC2 instances, switch to the [Docker VM manager](#docker-vm-manager).
+:::
 
 ## Mock VM Manager
 
@@ -248,19 +253,28 @@ docker tag ubuntu:focal localstack-ec2/ubuntu-focal-ami:ami-000001
 The above example will make LocalStack treat the `ubuntu:focal` Docker image as an AMI with name `ubuntu-focal-ami` and ID `ami-000001`.
 
 At startup, LocalStack downloads the following AMIs that can be used to launch Dockerized instances.
-- Ubuntu 22.04: `ami-df5de72bdb3b`
+- Ubuntu 26.04: `ami-61ad6e59d7b0`
 - Amazon Linux 2023: `ami-024f768332f0`
-- Amazon Linux 2: `ami-07b643b5e45e`
 
 :::note
 The auto download of Docker images for default AMIs can be disabled using the `EC2_DOWNLOAD_DEFAULT_IMAGES=0` configuration variable.
+:::
+
+:::note
+Amazon Linux 2 reached its [AWS end-of-life](https://aws.amazon.com/amazon-linux-2/faqs/) on June 30, 2026, so LocalStack no longer pre-loads the `Amazon Linux 2` AMI (`ami-07b643b5e45e`) by default.
+You can still use it by manually registering it as a Docker-backed AMI:
+
+```bash
+docker pull amazonlinux:2
+docker tag amazonlinux:2 localstack-ec2/amazonlinux-2-ami:ami-07b643b5e45e
+```
 :::
 
 All LocalStack-managed Docker AMIs bear the resource tag `ec2_vm_manager:docker`.
 These can be listed using:
 
 ```bash
-awslocal ec2 describe-images \
+lstk aws ec2 describe-images \
     --filters Name=tag:ec2_vm_manager,Values=docker
 ```
 
@@ -318,12 +332,12 @@ The system supports up to 32 ingress ports.
 This constraint is in place to prevent exhausting free ports on the host.
 
 ```bash
-awslocal ec2 authorize-security-group-ingress \
+lstk aws ec2 authorize-security-group-ingress \
   --group-id default \
   --protocol tcp \
   --port 8080
 
-awslocal ec2 describe-security-groups --group-names default
+lstk aws ec2 describe-security-groups --group-names default
 ```
 
 The port mapping details are provided in the logs when the instance starts up.
@@ -359,7 +373,7 @@ EOF
 We can then start an EC2 instance, specifying a block device mapping under the device name `/ebs-dev/sda1`, and pointing to our `init.sh` user data script:
 
 ```bash
-awslocal ec2 run-instances --image-id ami-ff0fea8310f3 --count 1 --instance-type t3.nano \
+lstk aws ec2 run-instances --image-id ami-ff0fea8310f3 --count 1 --instance-type t3.nano \
     --block-device-mapping '{"DeviceName":"/ebs-dev/sda1","Ebs":{"VolumeSize":10}}' \
     --user-data file://init.sh
 ```
@@ -453,243 +467,6 @@ Any operation not listed below will use the mock VM manager.
 | `TerminateInstances`  | Stops the Docker containers that back instances |
 | `CreateFleet`         | Spawns Docker containers or Kubernetes pods to fulfill fleet capacity requests. Supports On-Demand, Spot, and mixed fleets. |
 | `DeleteFleets`        | Stops and removes the underlying containers or pods when `TerminateInstances` is set to `true`. | 
-
-## Libvirt VM Manager
-
-:::note
-The Libvirt VM manager is under active development.
-It is currently offered as a preview and will be part of the Ultimate plan upon release.
-If a functionality you desire is missing, please create a feature request on the [GitHub issue tracker](https://github.com/orgs/localstack/discussions/new/choose).
-:::
-
-The Libvirt VM manager uses the [Libvirt](https://libvirt.org/index.html) API to create fully virtualized EC2 resources.
-This lets you create EC2 setups which closely resemble AWS EC2.
-Currently LocalStack for AWS supports the KVM-accelerated QEMU hypervisor on Linux hosts.
-
-Installation steps for QEMU/KVM will vary based on the Linux distribution on the host machine.
-On Debian/Ubuntu-based distributions, you can run:
-
-```bash
-sudo apt install -y qemu-kvm libvirt-daemon-system
-```
-
-To check CPU support for virtualization, run:
-
-```
-kvm-ok
-```
-
-```bash title="Output"
-INFO: /dev/kvm exists
-KVM acceleration can be used
-```
-
-:::tip
-You may also need to enable virtualization support at hardware level.
-This is often labelled as 'Virtualization Technology', 'VT-d' or 'VT-x' in UEFI/BIOS setups.
-:::
-
-If the Docker host and Libvirt host is the same, the Libvirt socket on the host must be mounted inside the LocalStack container.
-This can be done by including the volume mounts when the LocalStack container is started.
-If you are using the [Docker Compose template](/aws/getting-started/installation#docker-compose), include the following line in `services.localstack.volumes` list:
-
-```text
-"/var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock"
-```
-
-If you are using [Docker CLI](/aws/getting-started/installation#docker-cli), include the following parameter in `docker run`:
-
-```text
--v /var/run/libvirt/libvirt-sock:/var/run/libvirt/libvirt-sock
-```
-
-If you are using a remote Libvirt hypervisor, you can set the [`EC2_HYPERVISOR_URI`](/aws/customization/configuration-options#ec2) config option with a connection URI.
-
-:::tip
-If you encounter an error like `failed to connect to the hypervisor: Permission denied`, you may need to perform additional setup on the hypervisor host.
-Please refer to [Libvirt Wiki](https://wiki.libvirt.org/Failed_to_connect_to_the_hypervisor.html#permission-denied) for more details.
-:::
-
-The Libvirt VM manager currently does not have full support for persistence.
-Underlying virtual machines and volumes are not persisted, only their mock representations are.
-
-### AMIs
-
-All qcow2 images with cloud-init support can be used as AMIs.
-You can find the download links for images of popular OSs below.
-
-<Tabs>
-<TabItem label="Ubuntu">
-Canonical provides official Ubuntu images at [cloud-images.ubuntu.com](https://cloud-images.ubuntu.com/).
-
-Please use the images in qcow2 format ending in `.img`.
-</TabItem>
-<TabItem label="Debian">
-Debian provides cloud images for direct download at [cdimage.debian.org/cdimage/cloud](http://cdimage.debian.org/cdimage/cloud/).
-Please use the `genericcloud` image in qcow2 format.
-</TabItem>
-
-<TabItem label="Fedora">
-The Fedora project maintains the official cloud images at [fedoraproject.org/cloud/download](https://fedoraproject.org/cloud/download).
-
-Please use the qcow2 images.
-</TabItem>
-<TabItem label="Microsoft Windows">
-An evaluation version of Windows Server 2012 R2 is provided by [Cloudbase Solutions](https://cloudbase.it/windows-cloud-images/).
-</TabItem>
-
-</Tabs>
-
-LocalStack does not come preloaded with any AMIs.
-
-Compatible qcow2 images must be placed in the Libvirt storage pool on the host machine.
-By default, this is located at `/var/lib/libvirt/images`.
-If you use a different storage pool, configure it using the [`EC2_LIBVIRT_POOL`](/aws/customization/configuration-options#ec2) option.
-Images must be named with the prefix `ami-` followed by at least 8 hexadecimal characters without an extension, e.g. `ami-1234abcd`.
-
-You may need run the following command to make sure the image is registered with Libvirt (replace `default` with your storage pool name if different):
-
-```bash
-virsh pool-refresh default
-```
-
-```bash title="Output"
-Pool default refreshed
-```
-
-You can then list the images with:
-
-```bash
-virsh vol-list --pool default
-```
-
-```bash title="Output"
- Name                                    Path
---------------------------------------------------------------------------------------------------------
- ami-1234abcd                            /var/lib/libvirt/images/ami-1234abcd
-```
-
-Only the images that follow the above naming scheme will be recognised by LocalStack as AMIs suitable for launching virtualized instances.
-These AMIs will also have the resource tag `ec2_vm_manager:libvirt`.
-
-```bash
-awslocal ec2 describe-images --filters Name=tag:ec2_vm_manager,Values=libvirt
-```
-
-### Instances
-
-Virtualized instances can be launched with `RunInstances` operation and specifying a compatible AMI.
-LocalStack will create and start a Libvirt domain to represent the instance.
-
-When instances are launched, LocalStack uses the [NoCloud](https://cloudinit.readthedocs.io/en/latest/reference/datasources/nocloud.html) datasource to customize the virtual machine.
-The login user is created with the username `localstack` and password `localstack`.
-If a key pair is provided, it will added as an authorised SSH key for this user.
-
-LocalStack shuts down all virtual machines when it terminates.
-The Libvirt domains and volumes are left defined and can be used for debugging, etc.
-
-:::tip
-Use [Virtual Machine Manager](https://virt-manager.org/) or [virsh](https://www.libvirt.org/manpages/virsh.html) to manage the virtual machines outside of LocalStack.
-:::
-
-The Libvirt VM manager supports basic shell scripts for user data.
-This can be passed to the `UserData` parameter of the `RunInstances` operation.
-
-To connect to the graphical display of the instance, first obtain the VNC address using:
-
-```bash
-virsh vncdisplay <instance ID>
-```
-
-```bash title="Output"
-127.0.0.1:0
-```
-
-You can then use a compatible VNC client (e.g. [TigerVNC](https://tigervnc.org/)) to connect and interact with the virtual machine.
-
-![Tiger VNC](/images/aws/tiger-vnc.png)
-
-### Configuration
-
-The Libvirt VM manager supports several configuration options to customize its behavior.
-
-#### Domain Cloning
-
-By default, LocalStack creates VMs using a generic Libvirt domain configuration.
-However, certain hypervisor setups may require specialized configurations that LocalStack cannot automatically detect.
-
-You can use the [`EC2_REFERENCE_DOMAIN`](/aws/customization/configuration-options#ec2) configuration option to specify a pre-configured Libvirt domain that LocalStack will use as a template for all new instances.
-LocalStack clones the domain configuration, updating elements like UUID, MAC addresses, and boot volumes as needed.
-
-To use domain cloning:
-
-1. Create and configure a Libvirt domain with your desired settings using `virt-manager` or `virsh`.
-2. Ensure the domain is in shut-off state.
-3. Set `EC2_REFERENCE_DOMAIN` to the domain name when starting LocalStack.
-
-If the specified domain does not exist or is not in shut-off state, LocalStack falls back to using the generic configuration.
-
-#### Storage Pool and Network
-
-By default, LocalStack uses the Libvirt storage pool and network named `default`.
-If your Libvirt setup uses different names, you can configure them using:
-
-- [`EC2_LIBVIRT_POOL`](/aws/customization/configuration-options#ec2): Name of the Libvirt storage pool for images (defaults to `default`).
-- [`EC2_LIBVIRT_NETWORK`](/aws/customization/configuration-options#ec2): Name of the Libvirt network for instances (defaults to `default`).
-
-### Networking
-
-All instances are assigned interfaces on the configured Libvirt network (see `EC2_LIBVIRT_NETWORK` above).
-This makes it possible to have host/instance as well as instance/instance network communication.
-
-It is possible to allow network access to the LocalStack container from within the virtualized instance.
-This is done by configuring the Docker daemon to use the KVM network.
-Use the following configuration at `/etc/docker/daemon.json` on the host machine:
-
-```json
-{
-  "bridge": "virbr0",
-  "iptables": false
-}
-```
-
-Then restart the Docker daemon:
-
-```bash title="Output"
-sudo systemctl restart docker
-```
-
-You can now start the LocalStack container, obtain its IP address and use it from the virtualized instance.
-
-```bash
-docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' localstack_main
-```
-
-### Elastic Block Stores
-
-LocalStack clones the AMI into an EBS volume when the instance is initialised.
-LocalStack does not resize the instance root volume, instead it inherits the properties of the AMI.
-
-Currently it is not possible to attach additional EBS volumes to instances.
-
-### Instance Metadata Service
-
-The Libvirt VM manager does not support the Instance Metadata Service endpoints.
-
-### Operations
-
-The following table explains the emulated action for various API operations.
-Any operation not listed below will use the mock VM manager.
-
-| Operation             | Notes                                                                                        |
-|:----------------------|:---------------------------------------------------------------------------------------------|
-| `DescribeImages`      | Returns all mock and Libvirt AMIs |
-| `RunInstances`        | Defines and starts a Libvirt domain |
-| `StartInstances`      | Starts an already defined Libvirt domain |
-| `StopInstances`       | Stops a running Libvirt domain |
-| `RebootInstances`     | Restarts a Libvirt domain |
-| `TerminateInstances`  | Stops and undefines a Libvirt domain |
-| `CreateVolume`        | Creates a sparse Libvirt volume |
 
 ## IAM Condition Keys
 

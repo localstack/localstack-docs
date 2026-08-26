@@ -12,12 +12,12 @@ Amazon Verified Permissions is a scalable service for managing fine-grained perm
 It helps secure applications by moving authorization logic outside the app and managing policies in one place, using the [Cedar policy language](https://docs.cedarpolicy.com/) to define access rules.  
 It checks if a principal can take an action on a resource in a specific context in your application.
 
-LocalStack allows you to use the Verified Permissions APIs in your local environment to test your authorization logic, with integrations with other AWS services like Cognito. LocalStack uses the Cedar engine to evaluate permissions, ensuring authorization testing closely matches AWS Verified Permissions behavior.
+LocalStack allows you to use the Verified Permissions APIs in your local environment to test your authorization logic, with integrations with other AWS services like Cognito and support for custom OIDC identity providers. LocalStack uses the Cedar engine to evaluate permissions, ensuring authorization testing closely matches AWS Verified Permissions behavior.
 The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Verified Permissions' integration with LocalStack.
 
 ## Getting started
 
-This guide is designed for users new to Verified Permissions and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Verified Permissions and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Verified Permissions Policy Store, add a policy to it, and authorize a request with the AWS CLI.
@@ -28,7 +28,7 @@ To create a Verified Permissions Policy Store, use the [`CreatePolicyStore`](htt
 Run the following command to create a Policy Store with Schema validation settings set to `OFF`:
 
 ```bash
-awslocal verifiedpermissions create-policy-store \
+lstk aws verifiedpermissions create-policy-store \
   --validation-settings mode=OFF \
   --description "A local Policy Store"
 ```
@@ -46,7 +46,7 @@ You can list all the Verified Permissions policy stores using the [`ListPolicySt
 Run the following command to list all the Verified Permissions policy stores:
 
 ```bash
-awslocal verifiedpermissions list-policy-stores
+lstk aws verifiedpermissions list-policy-stores
 ```
 
 ### Create a Policy
@@ -67,7 +67,7 @@ Create a JSON file named `static_policy.json` with the following content:
 You can then run this command to create the policy:
 
 ```bash
-awslocal verifiedpermissions create-policy \
+lstk aws verifiedpermissions create-policy \
     --definition file://static_policy.json \
     --policy-store-id q5PCScu9qo4aswMVc0owNN
 ```
@@ -107,7 +107,7 @@ We can now make use of the Policy Store and the Policy to start authorizing requ
 To authorize a request using Verified Permissions, use the [`IsAuthorized`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html) API.
 
 ```bash title="Output"
-awslocal verifiedpermissions is-authorized \
+lstk aws verifiedpermissions is-authorized \
   --policy-store-id q5PCScu9qo4aswMVc0owNN \
   --principal entityType=User,entityId=alice \
   --action actionType=Action,actionId=view \
@@ -128,11 +128,25 @@ You should get the following output, indicating that your request was allowed:
 }
 ```
 
+## Identity Sources
+
+LocalStack supports both Cognito User Pools and custom OIDC (OpenID Connect) identity providers as identity sources for Verified Permissions.
+
+When you create an identity source with an [`OpenIdConnectConfiguration`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_OpenIdConnectConfiguration.html), LocalStack:
+- Fetches the OIDC discovery document and JWKS (JSON Web Key Set) from the configured issuer
+- Validates JWT signatures against the issuer's public keys
+- Enforces token expiration (`exp` claim)
+- Extracts principal information and group memberships from token claims
+
+Once the identity source is configured, you can evaluate authorization requests using tokens from that provider with [`IsAuthorizedWithToken`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html) and [`BatchIsAuthorizedWithToken`](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorizedWithToken.html).
+
+:::note
+For local development scenarios where the OIDC issuer may not be reachable or uses a self-signed certificate, you can disable JWT signature verification by setting the `VERIFIEDPERMISSIONS_DISABLE_JWT_VERIFICATION=1` environment variable. See the [Configuration reference](/aws/customization/configuration-options/#verified-permissions) for details.
+:::
+
 ## Current limitations
 
 - No Schema validation when creating a new schema using `PutSchema`, and no Policy validation using said schema when creating policies and template policies.
-- Only Cognito is supported as an `IdentitySource`, external OIDC providers are not yet implemented.
-- The validation around Identity Sources and JWT is not fully yet implemented: the identity source is not validated to have a valid `jwks.json` endpoint, and the issuer, signature and expiration of the incoming JWT are not validated.
 
 ## API Coverage
 

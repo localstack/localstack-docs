@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting Started
 
-This guide is designed for users new to Shield and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Shield and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Shield protection, list all protections, and delete a protection with the AWS CLI.
@@ -28,7 +28,7 @@ To create a Shield protection, use the [`CreateProtection`](https://docs.aws.ama
 The following command creates a Shield protection for a resource:
 
 ```bash
-awslocal shield create-protection \
+lstk aws shield create-protection \
   --name "my-protection" \
   --resource-arn "arn:aws:elasticloadbalancing:us-east-1:000000000000:loadbalancer/app/my-alb/1234567890"
 ```
@@ -45,7 +45,7 @@ To list all Shield protections, use the [`ListProtections`](https://docs.aws.ama
 The following command lists all Shield protections:
 
 ```bash
-awslocal shield list-protections
+lstk aws shield list-protections
 ```
 
 ```bash title="Output"
@@ -67,7 +67,7 @@ To describe a Shield protection, use the [`DescribeProtection`](https://docs.aws
 The following command describes a Shield protection:
 
 ```bash
-awslocal shield describe-protection \
+lstk aws shield describe-protection \
   --protection-id "67908d33-16c0-443d-820a-31c02c4d5976"
 ```
 
@@ -90,7 +90,7 @@ To delete a Shield protection, use the [`DeleteProtection`](https://docs.aws.ama
 The following command deletes a Shield protection:
 
 ```bash
-awslocal shield delete-protection \
+lstk aws shield delete-protection \
   --protection-id "67908d33-16c0-443d-820a-31c02c4d5976"
 ```
 

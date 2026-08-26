@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to CloudWatch and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to CloudWatch and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method and deploy your Lambda functions that will generate some logs.
 You can get the name for your Lambda Functions using the [`ListFunctions`](https://docs.aws.amazon.com/lambda/latest/dg/API_ListFunctions.html) API.
@@ -27,7 +27,7 @@ Fetch the Log Groups using the [`DescribeLogGroups`](https://docs.aws.amazon.com
 Run the following command to get the Log Group name:
 
 ```bash
-awslocal logs describe-log-groups
+lstk aws logs describe-log-groups
 ```
 
 ```bash title="Output"
@@ -55,7 +55,7 @@ Get the log streams for the Log Group using the [`DescribeLogStreams`](https://d
 Run the following command to get the Log Stream name:
 
 ```bash
-awslocal logs describe-log-streams \
+lstk aws logs describe-log-streams \
     --log-group-name /aws/lambda/serverless-local-hello
 ```
 
@@ -80,7 +80,7 @@ You can now fetch the log events using the [`GetLogEvents`](https://docs.aws.ama
 Run the following command to get the logs:
 
 ```bash
-awslocal logs get-log-events \
+lstk aws logs get-log-events \
     --log-group-name '/aws/lambda/serverless-local-hello' --log-stream-name '2023/05/02/[$LATEST]853a59d0767cfaf10d6b29a6790d8b03'
 ```
 
@@ -125,10 +125,10 @@ These features enable you to define and evaluate alarms based on various statist
 Metric alarms in CloudWatch allow you to evaluate the state of a metric by analyzing its data points over a specified period.
 With metric alarms, you can create customized thresholds and define actions based on the metric's behavior.
 
-To get started with creating an alarm in LocalStack using the `awslocal` integration, use the following command:
+To get started with creating an alarm in LocalStack using the `lstk aws` integration, use the following command:
 
 ```bash
-awslocal cloudwatch put-metric-alarm \
+lstk aws cloudwatch put-metric-alarm \
   --alarm-name my-alarm \
   --metric-name Orders \
   --namespace test \
@@ -143,13 +143,13 @@ awslocal cloudwatch put-metric-alarm \
 To monitor the status of the alarm, open a separate terminal and execute the following command:
 
 ```bash
-watch "awslocal cloudwatch describe-alarms --alarm-names my-alarm | jq '.MetricAlarms[0].StateValue'"
+watch "lstk aws cloudwatch describe-alarms --alarm-names my-alarm | jq '.MetricAlarms[0].StateValue'"
 ```
 
 Afterward, you can add some data that will cause a breach and set the `metric-alarm` state to **ALARM** using the following command:
 
 ```bash
-awslocal cloudwatch put-metric-data \
+lstk aws cloudwatch put-metric-data \
     --namespace test \
     --metric-data '[{"MetricName": "Orders", "Value": -1}]'
 ```
@@ -167,7 +167,7 @@ Here's an example demonstrating how to set up an alarm that sends a message to t
 Make sure to replace `<topic-arn>` with the valid ARN of an existing SNS topic.
 
 ```bash
-awslocal cloudwatch put-metric-alarm \
+lstk aws cloudwatch put-metric-alarm \
   --alarm-name my-alarm \
   --metric-name Orders \
   --namespace test \

@@ -19,7 +19,7 @@ The supported APIs are available on the API coverage section for [S3](#api-cover
 
 ## Getting started
 
-This guide is designed for users new to S3 and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to S3 and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create an S3 bucket, manage S3 objects, and generate pre-signed URLs for S3 objects.
@@ -30,14 +30,14 @@ You can create an S3 bucket using the [`CreateBucket`](https://docs.aws.amazon.c
 Run the following command to create an S3 bucket named `sample-bucket`:
 
 ```bash
-awslocal s3api create-bucket --bucket sample-bucket
+lstk aws s3api create-bucket --bucket sample-bucket
 ```
 
 You can list your S3 buckets using the [`ListBuckets`](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-buckets.html) API.
 Run the following command to list your S3 buckets:
 
 ```bash
-awslocal s3api list-buckets
+lstk aws s3api list-buckets
 ```
 
 ```bash title="Output"
@@ -62,7 +62,7 @@ Download a random image from the internet and save it as `image.jpg`.
 Run the following command to upload the file to your S3 bucket:
 
 ```bash
-awslocal s3api put-object \
+lstk aws s3api put-object \
   --bucket sample-bucket \
   --key image.jpg \
   --body image.jpg
@@ -72,7 +72,7 @@ You can list the objects in your S3 bucket using the [`ListObjects`](https://doc
 Run the following command to list the objects in your S3 bucket:
 
 ```bash
-awslocal s3api list-objects \
+lstk aws s3api list-objects \
   --bucket sample-bucket
 ```
 
@@ -99,7 +99,7 @@ If your image has been uploaded successfully, you will see the following output:
 Run the following command to upload a file named `index.html` to your S3 bucket:
 
 ```bash
-awslocal s3api put-object --bucket sample-bucket --key index.html --body index.html
+lstk aws s3api put-object --bucket sample-bucket --key index.html --body index.html
 ```
 
 ```bash title="Output"
@@ -116,13 +116,17 @@ Pre-signed URL allows anyone to retrieve the S3 object with an HTTP GET request.
 Run the following command to generate a pre-signed URL for your S3 object:
 
 ```bash
-awslocal s3 presign s3://sample-bucket/image.jpg
+lstk aws s3 presign s3://sample-bucket/image.jpg
 ```
 
 You will see a generated pre-signed URL for your S3 object.
 You can use [curl](https://curl.se/) or [`wget`](https://www.gnu.org/software/wget/) to retrieve the S3 object using the pre-signed URL.
 
 ## Configuring S3 Endpoint
+By default, LocalStack does not validate the signature or the expiration of pre-signed URLs.
+Check out the [Signature validation](#signature-validation) section to enable it.
+
+## Path-Style and Virtual Hosted-Style Requests
 
 LocalStack supports both [Virtual-Hosted style and Path style](https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html) S3 requests.
 AWS recommends Virtual-Hosted style addressing, and some AWS regions do not support path-style requests at all.
@@ -201,6 +205,100 @@ http://localhost:4566/<bucket-name>/<key-name>
 
 For detailed configuration instructions for specific SDKs and tools, see our [SDK documentation](/aws/customization/integrations/localstack-sdks/) and [Infrastructure as Code guides](/aws/connecting/infrastructure-as-code/).
 
+## Signature validation
+
+Like AWS, S3 in LocalStack can validate the signature of incoming requests and reject requests signed with invalid credentials.
+Signature validation is disabled by default, so that S3 accepts requests signed with any credentials.
+
+Two independent configuration options control signature validation:
+
+- [`S3_SKIP_SIGNATURE_VALIDATION=0`](/aws/customization/configuration-options/#s3) validates [pre-signed URLs](#pre-signed-urls).
+- [`S3_VALIDATE_SIGNATURES=1`](/aws/customization/configuration-options/#s3) validates regular, [SigV4-signed requests](#sigv4-validation).
+
+### Credentials
+
+When signature validation is enabled, requests must be signed with credentials that are valid in LocalStack.
+The following credentials pass validation:
+
+- **Default credentials**: the default `test` access key ID with the `test` secret access key, which works out of the box.
+- **IAM user credentials**: access keys created for an IAM user with [`CreateAccessKey`](https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html).
+  Check out the [IAM documentation](/aws/services/iam/#getting-started) to learn how to create a user and its access keys.
+- **Temporary credentials**: credentials returned by the STS [`AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html) or [`GetSessionToken`](https://docs.aws.amazon.com/STS/latest/APIReference/API_GetSessionToken.html) APIs, used together with their session token.
+
+For example, after [creating a role](/aws/services/sts/#create-an-iam-role), you can retrieve temporary credentials for it using the `AssumeRole` API:
+
+```bash
+awslocal sts assume-role \
+    --role-arn arn:aws:iam::000000000000:role/localstack-role \
+    --role-session-name localstack-session
+```
+
+```bash title="Output"
+{
+    "Credentials": {
+        "AccessKeyId": "ACCESS_KEY_ID",
+        "SecretAccessKey": "SECRET_ACCESS_KEY",
+        "SessionToken": "SESSION_TOKEN",
+        "Expiration": "TIMESTAMP"
+    },
+    ...
+}
+```
+
+Export the returned credentials and use the AWS CLI or your SDK as usual — requests are now signed with the temporary credentials and pass validation:
+
+```bash
+export AWS_ACCESS_KEY_ID=ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY=SECRET_ACCESS_KEY
+export AWS_SESSION_TOKEN=SESSION_TOKEN
+
+awslocal s3api list-buckets
+```
+
+:::note
+An access key ID that was not issued by LocalStack through IAM or STS is expected to be paired with the `test` secret access key.
+Signing a request with such an access key ID and a different secret access key results in a `SignatureDoesNotMatch` error.
+
+One exception is a 12-digit account ID used as access key ID for [multi-account namespacing](/aws/customization/advanced/multi-account-setups/), which cannot pass signature validation.
+To send signed requests to another account than the default, use the credentials of an IAM user created in that account, or temporary credentials of a role assumed in it.
+:::
+
+Signature validation authenticates a request, but does not authorize it: by default, LocalStack does not check whether the credentials are allowed to perform the operation.
+Authorization is handled by [IAM policy enforcement](/aws/developer-tools/security-testing/iam-policy-enforcement/), which can be enabled independently and combined with signature validation for the closest behavior to AWS.
+
+### Pre-signed URLs
+
+A pre-signed URL grants time-limited access to an S3 object: anyone with the URL can access the object without providing credentials.
+You can generate a pre-signed URL as shown in the [Getting started](#generate-a-pre-signed-url-for-s3-object) section.
+
+Presigning is a purely client-side operation: the SDK or the CLI computes the pre-signed URL locally with the credentials it is configured with, without contacting LocalStack.
+The signature is only checked when the pre-signed URL is used.
+For the validation to pass, the URL must therefore be generated with valid [credentials](#credentials).
+
+By default, LocalStack accepts pre-signed URLs with an invalid signature or an expired date.
+Start LocalStack with `S3_SKIP_SIGNATURE_VALIDATION=0` to validate pre-signed URLs like AWS does:
+
+- The signature must match the request. Both SigV2 and SigV4 pre-signed URLs are supported.
+- The URL must not be expired.
+- All `x-amz-*` headers sent with the request must be signed in the URL.
+
+Requests that fail validation are rejected with a `403` error, such as `SignatureDoesNotMatch` for an invalid signature, or `AccessDenied` for an expired URL.
+
+### SigV4 validation
+
+By default, LocalStack accepts regular S3 requests signed with any credentials.
+Start LocalStack with `S3_VALIDATE_SIGNATURES=1` to validate [SigV4-signed requests](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html) like AWS does.
+LocalStack validates the signature in the `Authorization` header, as well as the integrity of the payload declared in the `x-amz-content-sha256` header, including streamed `aws-chunked` uploads.
+
+If your SDK or CLI is configured with valid [credentials](#credentials), validation is fully transparent and does not require any change.
+Requests that fail validation are rejected with the same errors as AWS, such as `SignatureDoesNotMatch` for a signature computed with the wrong secret access key, or `XAmzContentSHA256Mismatch` for a payload that does not match its declared checksum.
+
+:::note
+`S3_VALIDATE_SIGNATURES` only applies to SigV4-signed requests.
+Anonymous requests, such as requests to public buckets or static S3 websites, and CORS preflight requests are not affected.
+Pre-signed URL validation is exclusively controlled by `S3_SKIP_SIGNATURE_VALIDATION`.
+:::
+
 ## Configuring Cross-Origin Resource Sharing on S3
 
 You can configure Cross-Origin Resource Sharing (CORS) on a LocalStack S3 bucket using AWS Command Line Interface (CLI).
@@ -208,7 +306,7 @@ It would allow your local application to communicate directly with an S3 bucket 
 By default, LocalStack will apply specific CORS rules to all requests to allow you to display and access your resources through [LocalStack Web Application](https://app.localstack.cloud).
 If no CORS rules are configured for your S3 bucket, LocalStack will apply default rules unless specified otherwise.
 
-To configure CORS rules for your S3 bucket, you can use the `awslocal` wrapper.
+To configure CORS rules for your S3 bucket, you can use the `lstk aws` command.
 Optionally, you can run a local web application on [localhost:3000](http://localhost:3000).
 You can emulate the same behaviour with an AWS SDK or an integration you use.
 Follow this step-by-step guide to configure CORS rules on your S3 bucket.
@@ -216,7 +314,7 @@ Follow this step-by-step guide to configure CORS rules on your S3 bucket.
 Run the following command on your terminal to create your S3 bucket:
 
 ```bash
-awslocal s3api create-bucket --bucket cors-bucket
+lstk aws s3api create-bucket --bucket cors-bucket
 ```
 
 ```bash title="Output"
@@ -249,13 +347,13 @@ Save the file locally with a name of your choice, for example, `cors-config.json
 Run the following command to apply the CORS configuration to your S3 bucket:
 
 ```bash
-awslocal s3api put-bucket-cors --bucket cors-bucket --cors-configuration file://cors-config.json
+lstk aws s3api put-bucket-cors --bucket cors-bucket --cors-configuration file://cors-config.json
 ```
 
 You can further verify that the CORS configuration was applied successfully by running the following command:
 
 ```bash
-awslocal s3api get-bucket-cors --bucket cors-bucket
+lstk aws s3api get-bucket-cors --bucket cors-bucket
 ```
 
 On applying the configuration successfully, you should see the same JSON configuration file you created earlier.
@@ -284,8 +382,8 @@ We can edit the JSON file `cors-config.json` you created earlier with the follow
 You can now run the same steps as before to update the CORS configuration and verify if it is applied correctly:
 
 ```bash
-awslocal s3api put-bucket-cors --bucket cors-bucket --cors-configuration file://cors-config.json
-awslocal s3api get-bucket-cors --bucket cors-bucket
+lstk aws s3api put-bucket-cors --bucket cors-bucket --cors-configuration file://cors-config.json
+lstk aws s3api get-bucket-cors --bucket cors-bucket
 ```
 
 You can try again to upload files in your bucket from the [LocalStack Web Application](https://app.localstack.cloud) and it should work.

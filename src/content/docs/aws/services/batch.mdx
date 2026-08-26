@@ -19,7 +19,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to AWS Batch and assumes basic knowledge of the AWS CLI and our `awslocal` wrapper script.
+This guide is designed for users new to AWS Batch and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you create and run a Batch job by following these steps:
@@ -39,7 +39,7 @@ LocalStack requires the role to exist with a valid trust policy. When [enforcing
 Run the following command to create a role for ECS task execution:
 
 ```bash
-awslocal iam create-role \
+lstk aws iam create-role \
     --role-name myrole \
     --assume-role-policy-document '{
   "Version": "2025-10-17",
@@ -58,7 +58,7 @@ awslocal iam create-role \
 Then attach the ECS task execution policy:
 
 ```bash
-awslocal iam attach-role-policy \
+lstk aws iam attach-role-policy \
     --role-name myrole \
     --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
 ```
@@ -71,7 +71,7 @@ You can use the [`CreateComputeEnvironment`](https://docs.aws.amazon.com/cli/lat
 Run the following command using the role ARN above (arn:aws:iam::000000000000:role/myrole) to create a managed compute environment with FARGATE:
 
 ```bash
-awslocal batch create-compute-environment \
+lstk aws batch create-compute-environment \
     --compute-environment-name myenv \
     --type MANAGED \
     --state ENABLED \
@@ -91,7 +91,7 @@ You can fetch the ARN using the [`DescribeComputeEnvironments`](https://docs.aws
 Run the following command to fetch the ARN of the compute environment:
 
 ```bash
-awslocal batch describe-compute-environments --compute-environments myenv
+lstk aws batch describe-compute-environments --compute-environments myenv
 ```
 
 ```bash title="Output"
@@ -115,7 +115,7 @@ You can use the ARN to create the job queue using [`CreateJobQueue`](https://doc
 Run the following command to create the job queue:
 
 ```bash
-awslocal batch create-job-queue \
+lstk aws batch create-job-queue \
     --job-queue-name myqueue \
     --priority 1 \
     --compute-environment-order order=0,computeEnvironment=arn:aws:batch:us-east-1:000000000000:compute-environment/myenv \
@@ -130,7 +130,7 @@ Run the following command to create the job definition using the [`RegisterJobDe
 
 
 ```bash
-awslocal batch register-job-definition \
+lstk aws batch register-job-definition \
     --job-definition-name myjobdefn \
     --type container \
     --platform-capabilities FARGATE \
@@ -153,7 +153,7 @@ If you want to pass arguments to the command as [parameters](https://docs.aws.am
 This allows the dynamic passing of values at runtime for specific job definitions.
 
 ```bash
-awslocal batch register-job-definition \
+lstk aws batch register-job-definition \
     --job-definition-name myjobdefn \
     --type container \
     --parameters '{"time":"10"}' \
@@ -181,7 +181,7 @@ This command simulates work being done in the container.
 Run the following command to submit a job to the job queue using the [`SubmitJob`](https://docs.aws.amazon.com/cli/latest/reference/batch/submit-job.html) API:
 
 ```bash
-awslocal batch submit-job \
+lstk aws batch submit-job \
     --job-name myjob \
     --job-queue myqueue \
     --job-definition myjobdefn \
@@ -198,7 +198,7 @@ MNP jobs run on EC2-backed compute environments only. Fargate is not supported.
 To run one, register a job definition with `--type multinode` and a `nodeProperties` object that sets the main node, the number of nodes, and a container per node range:
 
 ```bash
-awslocal batch register-job-definition \
+lstk aws batch register-job-definition \
     --job-definition-name mnp-jobdefn \
     --type multinode \
     --node-properties '{
@@ -223,7 +223,7 @@ awslocal batch register-job-definition \
 Then submit it to an EC2-backed queue:
 
 ```bash
-awslocal batch submit-job \
+lstk aws batch submit-job \
     --job-name mnp-job \
     --job-queue mnp-queue \
     --job-definition mnp-jobdefn
@@ -232,7 +232,7 @@ awslocal batch submit-job \
 The submitted job is the parent. Each node is addressable as a child job using the `<jobId>#<nodeIndex>` notation, which you can inspect with `describe-jobs`:
 
 ```bash
-awslocal batch describe-jobs --jobs "<jobId>#0" "<jobId>#1"
+lstk aws batch describe-jobs --jobs "<jobId>#0" "<jobId>#1"
 ```
 
 Each node also receives additional [environment variables](#environment-variables), such as `AWS_BATCH_JOB_NODE_INDEX` and `AWS_BATCH_JOB_MAIN_NODE_PRIVATE_IPV4_ADDRESS`, that let the nodes coordinate.

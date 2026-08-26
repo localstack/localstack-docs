@@ -8,19 +8,9 @@ sidebar:
 tags: ['Hobby']
 ---
 
-LocalStack Extensions let you customize and extend LocalStack's core functionality by running additional logic and services inside the same container. This feature is available across all LocalStack plans, and is ideal for teams that want deeper control over how LocalStack behaves during development or testing.
+LocalStack Extensions add services and integrations to your LocalStack container. This feature is available across all LocalStack plans.
 
-You can use LocalStack Extensions to:
-
-- Start custom services alongside LocalStack in the same container (see our [Cloudflare Workers Extension](https://localstack.cloud/blog/2023-06-26-develop-your-cloudflare-workers-aws-apps-locally-with-localstack-miniflare/))
-
-- Intercept AWS requests with additional information before they reach your Lambda functions
-
-- Log API calls to custom external backends or monitoring systems
-
-The Extensions API makes it easy to integrate your own logic or extend existing services, all within LocalStack’s runtime.
-
-Officially supported extensions are available in our [Official Extensions Library](https://app.localstack.cloud/extensions/library).
+You can find supported extensions in the [Official Extensions Library](https://app.localstack.cloud/extensions/library).
 
 :::tip
 Want to try out a common LocalStack extension?
@@ -31,4 +21,7 @@ Our [MailHog tutorial](/aws/customization/integrations/extensions/mailhog) teach
 :::note
 The feature and the API are currently in preview stage and may be subject to change.
 Please report any issues or feature requests on [LocalStack Extension's GitHub repository](https://github.com/localstack/localstack-extensions).
+
+The new CLI experience, `lstk`, does not support LocalStack Extensions. There is no `lstk extensions` command suite.
+Continue using the legacy [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/) to install and manage extensions.
 :::

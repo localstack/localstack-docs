@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to MemoryDB and assumes basic knowledge of the AWS CLI and our `awslocal` wrapper script.
+This guide is designed for users new to MemoryDB and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create a MemoryDB cluster and connect to it.
@@ -28,7 +28,7 @@ You can create a MemoryDB cluster using the [`CreateCluster`](https://docs.aws.a
 Run the following command to create a cluster:
 
 ```bash
-awslocal memorydb create-cluster \
+lstk aws memorydb create-cluster \
   --cluster-name my-redis-cluster \
   --node-type db.t4g.small \
   --acl-name open-access
@@ -38,7 +38,7 @@ Once it becomes available, you will be able to use the cluster endpoint for Redi
 Run the following command to retrieve the cluster endpoint using the [`DescribeClusters`](https://docs.aws.amazon.com/memorydb/latest/APIReference/API_DescribeClusters.html) API:
 
 ```bash
-awslocal memorydb describe-clusters --query "Clusters[0].ClusterEndpoint"
+lstk aws memorydb describe-clusters --query "Clusters[0].ClusterEndpoint"
 ```
 
 ```bash title="Output"
@@ -84,7 +84,7 @@ To enable full Valkey emulation:
 2. Create a cluster with the Valkey engine by including the `--engine valkey` flag in your API call:
 
 ```bash
-awslocal memorydb create-cluster \
+lstk aws memorydb create-cluster \
   --cluster-name my-valkey-cluster \
   --node-type db.t4g.small \
   --acl-name open-access \

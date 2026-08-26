@@ -20,7 +20,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users who are new to ACM and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users who are new to ACM and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 ### Request a public certificate
 
@@ -29,7 +29,7 @@ Specify the domain name you want to request the certificate for, and any additio
 Here's an example command:
 
 ```bash showshowLineNumbers
-awslocal acm request-certificate \
+lstk aws acm request-certificate \
    --domain-name www.example.com \
    --validation-method DNS \
    --idempotency-token 1234 \
@@ -51,7 +51,7 @@ This command returns a list of the ARNs of all the certificates that have been r
 Here's an example command:
 
 ```bash
-awslocal acm list-certificates --max-items 10
+lstk aws acm list-certificates --max-items 10
 ```
 
 ### Describe the certificate
@@ -61,7 +61,7 @@ Provide the ARN of the certificate you want to view, and this command will retur
 Here's an example command:
 
 ```bash
-awslocal acm describe-certificate --certificate-arn arn:aws:acm:<region>:account:certificate/<certificate_ID>
+lstk aws acm describe-certificate --certificate-arn arn:aws:acm:<region>:account:certificate/<certificate_ID>
 ```
 
 ### Delete the certificate
@@ -70,7 +70,7 @@ Finally you can use the [`DeleteCertificate` API](https://docs.aws.amazon.com/ac
 Here's an example command:
 
 ```bash
-awslocal acm delete-certificate --certificate-arn arn:aws:acm:<region>:account:certificate/<certificate_ID>
+lstk aws acm delete-certificate --certificate-arn arn:aws:acm:<region>:account:certificate/<certificate_ID>
 ```
 
 ## Resource Browser

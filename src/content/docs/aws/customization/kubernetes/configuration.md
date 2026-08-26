@@ -31,6 +31,7 @@ K8S_ANNOTATIONS=prometheus.io/scrape=true,prometheus.io/port=8080
 ### Pod configuration
 
 `K8S_POD_CONFIG` configures Kubernetes metadata, scheduling, and resource settings for child pods created by supported services such as Lambda and ECS.
+`LOCALSTACK_K8S_POD_CONFIG` configures Kubernetes metadata, scheduling, and resource settings for child pods created by supported services, including Lambda, ECS, CodeBuild, DocumentDB, ElastiCache, Kafka, Kinesis Data Analytics, MWAA, RDS (MySQL and SQL Server engines), Glue, and EC2.
 Use it to define reusable pod profiles with fields such as `nodeSelector`, `tolerations`, `affinity`, `resources`, `labels`, and `annotations`.
 The value must be valid JSON.
 

@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Route53 Resolver and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Route53 Resolver and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a resolver endpoint, list the endpoints, and delete the endpoint with the AWS CLI.
@@ -28,13 +28,13 @@ We will demonstrate how to create a resolver endpoint, list the endpoints, and d
 Fetch the default VPC ID using the following command:
 
 ```bash
-VPC_ID=$(awslocal ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId' --output text)
+VPC_ID=$(lstk aws ec2 describe-vpcs --query 'Vpcs[?IsDefault==`true`].VpcId' --output text)
 ```
 
 Fetch the default VPC's security group ID using the following command:
 
 ```bash
-awslocal ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID --query 'Subnets[].SubnetId'
+lstk aws ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID --query 'Subnets[].SubnetId'
 ```
 
 ```bash title="Output"
@@ -51,7 +51,7 @@ awslocal ec2 describe-subnets --filters Name=vpc-id,Values=$VPC_ID --query 'Subn
 Choose two subnets from the list above and fetch the CIDR block of the subnets which tells you the range of IP addresses within it. Let's fetch the CIDR block of the subnet `subnet-957d6ba6`:
 
 ```bash
-awslocal ec2 describe-subnets --subnet-ids subnet-957d6ba6 --query 'Subnets[*].CidrBlock'
+lstk aws ec2 describe-subnets --subnet-ids subnet-957d6ba6 --query 'Subnets[*].CidrBlock'
 ```
 
 ```bash title="Output"
@@ -63,7 +63,7 @@ awslocal ec2 describe-subnets --subnet-ids subnet-957d6ba6 --query 'Subnets[*].C
 Similarly, fetch the CIDR block of the subnet `subnet-bdd58a47`:
 
 ```bash
-awslocal ec2 describe-subnets --subnet-ids subnet-bdd58a47 --query 'Subnets[*].CidrBlock'
+lstk aws ec2 describe-subnets --subnet-ids subnet-bdd58a47 --query 'Subnets[*].CidrBlock'
 ```
 
 ```bash title="Output"
@@ -76,7 +76,7 @@ Save the CIDR blocks of the subnets as you will need them later.
 Lastly fetch the security group ID of the default VPC:
 
 ```bash
-awslocal ec2 describe-security-groups \
+lstk aws ec2 describe-security-groups \
     --filters Name=vpc-id,Values=$VPC_ID \
     --query 'SecurityGroups[0].GroupId'
 ```
@@ -122,7 +122,7 @@ You can now use the [`CreateResolverEndpoint`](https://docs.aws.amazon.com/Route
 Run the following command:
 
 ```bash
-awslocal route53resolver create-resolver-endpoint \
+lstk aws route53resolver create-resolver-endpoint \
     --cli-input-json file://create-outbound-resolver-endpoint.json
 ```
 
@@ -153,7 +153,7 @@ You can list the resolver endpoints using the [`ListResolverEndpoints`](https://
 Run the following command:
 
 ```bash
-awslocal route53resolver list-resolver-endpoints
+lstk aws route53resolver list-resolver-endpoints
 ```
 
 ```bash title="Output"
@@ -186,7 +186,7 @@ You can delete the resolver endpoint using the [`DeleteResolverEndpoint`](https:
 Run the following command:
 
 ```bash
-awslocal route53resolver delete-resolver-endpoint \
+lstk aws route53resolver delete-resolver-endpoint \
     --resolver-endpoint-id rslvr-out-5d61abaff9de06b99
 ```
 

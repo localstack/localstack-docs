@@ -1,0 +1,428 @@
+---
+title: "Event Hubs"
+description: Get started with Azure Event Hubs on LocalStack
+template: doc
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Event Hubs is a real-time data streaming platform that ingests and processes millions of events per second.
+Producers append events to partitioned logs, and consumers read those logs independently at their own pace, which makes Event Hubs a common backbone for telemetry pipelines, event sourcing, and stream analytics.
+It exposes its data plane over AMQP 1.0, HTTPS, and a Kafka-compatible endpoint. For more information, see [What is Azure Event Hubs?](https://learn.microsoft.com/azure/event-hubs/event-hubs-about)
+
+LocalStack for Azure provides a local environment for building and testing applications that make use of Azure Event Hubs.
+The supported APIs are available on our [API Coverage section](#api-coverage), which provides information on the extent of Event Hubs' integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to Event Hubs and assumes basic knowledge of the Azure CLI and our `lstk az` proxy.
+
+Launch LocalStack using your preferred method. For more information, see [Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running, enable Azure CLI interception by running:
+
+```bash
+lstk az start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the LocalStack for Azure emulator API.
+To revert this configuration, run:
+
+```bash
+lstk az stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to contain your Event Hubs resources:
+
+```bash
+az group create \
+  --name rg-eventhubs-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventhubs-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-eventhubs-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create an Event Hubs namespace
+
+Create an Event Hubs namespace in the resource group:
+
+```bash
+az eventhubs namespace create \
+  --resource-group rg-eventhubs-demo \
+  --name ehnsdoc42 \
+  --location westeurope \
+  --sku Standard
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventhubs-demo/providers/Microsoft.EventHub/namespaces/ehnsdoc42",
+  "name": "ehnsdoc42",
+  "location": "westeurope",
+  "kafkaEnabled": true,
+  "provisioningState": "Succeeded",
+  "serviceBusEndpoint": "https://ehnsdoc42.servicebus.azure.localhost.localstack.cloud:4511",
+  "sku": {
+    "capacity": 1,
+    "name": "Standard",
+    "tier": "Standard"
+  },
+  "status": "Active",
+  ...
+}
+```
+
+:::note
+The namespace endpoint embeds a dynamic port allocated by the emulator, so the port in your output may differ from the one shown here.
+That endpoint serves AMQP, AMQP-over-WebSockets, and the Kafka protocol on the same port.
+:::
+
+### Create an event hub
+
+Create an event hub in the namespace:
+
+```bash
+az eventhubs eventhub create \
+  --resource-group rg-eventhubs-demo \
+  --namespace-name ehnsdoc42 \
+  --name orders-hub \
+  --partition-count 4 \
+  --cleanup-policy Delete \
+  --retention-time 168
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventhubs-demo/providers/Microsoft.EventHub/namespaces/ehnsdoc42/eventhubs/orders-hub",
+  "name": "orders-hub",
+  "location": "westeurope",
+  "messageRetentionInDays": 7,
+  "partitionCount": 4,
+  "partitionIds": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  "retentionDescription": {
+    "cleanupPolicy": "Delete",
+    "retentionTimeInHours": 168
+  },
+  "status": "Active",
+  "type": "Microsoft.EventHub/namespaces/eventhubs",
+  ...
+}
+```
+
+:::note
+As in Azure, the partition count cannot be changed after the event hub is created, and tier limits are enforced: retention is capped at 1 day on Basic and 7 days on Standard, and each tier limits how many event hubs a namespace can hold.
+:::
+
+### Create a consumer group
+
+Create a consumer group for the event hub:
+
+```bash
+az eventhubs eventhub consumer-group create \
+  --resource-group rg-eventhubs-demo \
+  --namespace-name ehnsdoc42 \
+  --eventhub-name orders-hub \
+  --name analytics
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventhubs-demo/providers/Microsoft.EventHub/namespaces/ehnsdoc42/eventhubs/orders-hub/consumergroups/analytics",
+  "name": "analytics",
+  "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
+  ...
+}
+```
+
+List the consumer groups of the event hub:
+
+```bash
+az eventhubs eventhub consumer-group list \
+  --resource-group rg-eventhubs-demo \
+  --namespace-name ehnsdoc42 \
+  --eventhub-name orders-hub \
+  --query "[].name" -o json
+```
+
+```bash title="Output"
+[
+  "$Default",
+  "analytics"
+]
+```
+
+:::note
+The `$Default` consumer group is created automatically with the event hub and cannot be deleted, matching Azure.
+On the Basic tier, custom consumer groups are rejected as in Azure.
+:::
+
+### Manage authorization rules and connection strings
+
+Create a send-only authorization rule on the event hub:
+
+```bash
+az eventhubs eventhub authorization-rule create \
+  --resource-group rg-eventhubs-demo \
+  --namespace-name ehnsdoc42 \
+  --eventhub-name orders-hub \
+  --name send-policy \
+  --rights Send
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventhubs-demo/providers/Microsoft.EventHub/namespaces/ehnsdoc42/eventhubs/orders-hub/authorizationRules/send-policy",
+  "name": "send-policy",
+  "rights": [
+    "Send"
+  ],
+  "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationrules"
+}
+```
+
+List the connection strings for the rule:
+
+```bash
+az eventhubs eventhub authorization-rule keys list \
+  --resource-group rg-eventhubs-demo \
+  --namespace-name ehnsdoc42 \
+  --eventhub-name orders-hub \
+  --name send-policy
+```
+
+```bash title="Output"
+{
+  "keyName": "send-policy",
+  "primaryConnectionString": "Endpoint=sb://ehnsdoc42.servicebus.azure.localhost.localstack.cloud:4511/;SharedAccessKeyName=send-policy;SharedAccessKey=...;UseDevelopmentEmulator=true;EntityPath=orders-hub",
+  "primaryKey": "...",
+  "secondaryConnectionString": "Endpoint=sb://ehnsdoc42.servicebus.azure.localhost.localstack.cloud:4511/;SharedAccessKeyName=send-policy;SharedAccessKey=...;UseDevelopmentEmulator=true;EntityPath=orders-hub",
+  "secondaryKey": "..."
+}
+```
+
+The namespace-level `RootManageSharedAccessKey` rule is created automatically with the namespace:
+
+```bash
+az eventhubs namespace authorization-rule keys list \
+  --resource-group rg-eventhubs-demo \
+  --namespace-name ehnsdoc42 \
+  --name RootManageSharedAccessKey
+```
+
+```bash title="Output"
+{
+  "keyName": "RootManageSharedAccessKey",
+  "primaryConnectionString": "Endpoint=sb://ehnsdoc42.servicebus.azure.localhost.localstack.cloud:4511/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=...;UseDevelopmentEmulator=true",
+  ...
+}
+```
+
+:::note
+Use the connection string exactly as returned.
+The endpoint carries the emulator's dynamic port, and `UseDevelopmentEmulator=true` stops the Azure SDKs from forcing TLS on port 5671, so the official `azure-eventhub` SDKs work against the emulator without any code changes.
+:::
+
+### Send events over HTTP
+
+The Event Hubs runtime REST API accepts events on the namespace endpoint.
+Send a single event to the event hub:
+
+```bash
+curl -sk -i -X POST \
+  "https://ehnsdoc42.servicebus.azure.localhost.localstack.cloud:4566/orders-hub/messages" \
+  -H "Authorization: SharedAccessSignature sr=...&sig=...&se=...&skn=RootManageSharedAccessKey" \
+  -H "Content-Type: application/json" \
+  -d '{"orderId": 1001, "status": "created"}'
+```
+
+```bash title="Output"
+HTTP/2 201
+server: TwistedWeb/26.4.0
+content-type: application/xml; charset=utf-8
+content-length: 0
+```
+
+Route an event to a specific partition by partition key using the `BrokerProperties` header:
+
+```bash
+curl -sk -i -X POST \
+  "https://ehnsdoc42.servicebus.azure.localhost.localstack.cloud:4566/orders-hub/messages" \
+  -H "Authorization: SharedAccessSignature sr=...&sig=...&se=...&skn=RootManageSharedAccessKey" \
+  -H 'BrokerProperties: {"PartitionKey": "customer-42"}' \
+  -H "Content-Type: application/json" \
+  -d '{"orderId": 1002, "status": "created"}'
+```
+
+```bash title="Output"
+HTTP/2 201
+server: TwistedWeb/26.4.0
+content-type: application/xml; charset=utf-8
+content-length: 0
+```
+
+:::note
+The `Authorization` header is required, but the emulator does not verify the SAS signature itself, so any well-formed value is accepted.
+The HTTP API is send-only, as in Azure; to receive events, use the `azure-eventhub` SDKs or the Kafka endpoint with the connection string from the previous step.
+:::
+
+### Capture events to Blob Storage
+
+Event Hubs Capture archives the event stream into a storage account as Avro files.
+Create a storage account for the archives:
+
+```bash
+az storage account create \
+  --resource-group rg-eventhubs-demo \
+  --name stehcapturels \
+  --location westeurope \
+  --sku Standard_LRS
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventhubs-demo/providers/Microsoft.Storage/storageAccounts/stehcapturels",
+  "name": "stehcapturels",
+  "kind": "StorageV2",
+  "location": "westeurope",
+  "primaryEndpoints": {
+    "blob": "https://stehcapturels.blob.core.azure.localhost.localstack.cloud:4566",
+    ...
+  },
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Enable Capture on the event hub:
+
+```bash
+STORAGE_ID=$(az storage account show \
+  --resource-group rg-eventhubs-demo \
+  --name stehcapturels \
+  --query id -o tsv)
+
+az eventhubs eventhub update \
+  --resource-group rg-eventhubs-demo \
+  --namespace-name ehnsdoc42 \
+  --name orders-hub \
+  --enable-capture true \
+  --capture-interval 60 \
+  --capture-size-limit 10485760 \
+  --destination-name EventHubArchive.AzureBlockBlob \
+  --storage-account "$STORAGE_ID" \
+  --blob-container eventhub-capture \
+  --skip-empty-archives true
+```
+
+```bash title="Output"
+{
+  "captureDescription": {
+    "destination": {
+      "blobContainer": "eventhub-capture",
+      "name": "EventHubArchive.AzureBlockBlob",
+      "storageAccountResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-eventhubs-demo/providers/Microsoft.Storage/storageAccounts/stehcapturels"
+    },
+    "enabled": true,
+    "encoding": "Avro",
+    "intervalInSeconds": 60,
+    "sizeLimitInBytes": 10485760,
+    "skipEmptyArchives": true
+  },
+  "name": "orders-hub",
+  ...
+}
+```
+
+Send a few more events, wait for the capture window to elapse (60 seconds here), and list the archives:
+
+```bash
+STORAGE_CONNECTION=$(az storage account show-connection-string \
+  --resource-group rg-eventhubs-demo \
+  --name stehcapturels \
+  --query connectionString -o tsv)
+
+az storage blob list \
+  --container-name eventhub-capture \
+  --connection-string "$STORAGE_CONNECTION" \
+  --query "[].{name:name, bytes:properties.contentLength}" -o json
+```
+
+```bash title="Output"
+[
+  {
+    "bytes": 605,
+    "name": "ehnsdoc42/orders-hub/0/2026/08/09/19/23/32.avro"
+  },
+  {
+    "bytes": 674,
+    "name": "ehnsdoc42/orders-hub/1/2026/08/09/19/23/32.avro"
+  },
+  {
+    "bytes": 605,
+    "name": "ehnsdoc42/orders-hub/2/2026/08/09/19/23/32.avro"
+  },
+  {
+    "bytes": 605,
+    "name": "ehnsdoc42/orders-hub/3/2026/08/09/19/23/32.avro"
+  }
+]
+```
+
+The archives are Avro object-container files in Azure's `EventData` record schema, one per partition and capture window.
+After each archive is written, the emulator raises the `Microsoft.EventHub.CaptureFileCreated` event through [Event Grid](/azure/services/event-grid/) system topics, so downstream automation such as an Azure Function can react to new archives.
+
+## Features
+
+The emulator includes the following core capabilities:
+
+- **Multi-protocol data plane on a single event log**: AMQP 1.0 (what the official `azure-eventhub` SDKs speak, including AMQP-over-WebSockets), a Kafka-compatible endpoint, the HTTP runtime API, and the legacy Atom-XML management API all read and write the same per-partition log, so an event sent over one protocol is readable over the others.
+- **ARM control plane**: CRUD for namespaces, event hubs, consumer groups, authorization rules and keys, network rule sets, schema groups, application groups, geo-disaster-recovery configurations, and dedicated clusters — with tier quotas enforced as in Azure (event hub counts, retention caps, partition limits, and the Basic-tier consumer-group restriction).
+- **Event Hubs Capture**: per-partition Avro archives written to emulated Blob Storage on time- or size-based windows, including `skipEmptyArchives`, and the `Microsoft.EventHub.CaptureFileCreated` system event raised through Event Grid.
+- **Schema Registry**: the data-plane API served on the namespace endpoint, with schema group CRUD, schema registration and versioning, lookup by content, and the tier quota on schema groups.
+- **Checkpointing**: the SDK's event processor pattern works with the blob-backed checkpoint store against emulated Blob Storage.
+- **Kafka-compatible endpoint**: topics map to event hubs, Kafka offsets equal Event Hubs sequence numbers, and consumer-group offsets are stored broker-side; verified with `kafka-python` and `confluent-kafka`.
+- **Emulator-ready connection strings**: `keys list` returns connection strings that the Azure SDKs, Kafka clients, and IaC tools can use verbatim against the emulator.
+
+## Limitations
+
+The current version of the emulator does **not** support the following:
+
+- **Credential verification**: SAS tokens and JWTs are checked for the existence of the target entity, but signatures are not cryptographically verified. The Kafka endpoint listens in plaintext without SASL, whereas real Azure requires `SASL_SSL`.
+- **Azure's partition-key hash**: the partition-key-to-partition mapping is a stable hash, so events with the same key land on the same partition, but the concrete partition ids differ from real Azure.
+- **Kafka namespace isolation**: Kafka topics resolve across all Kafka-enabled namespaces, and Kafka consumer-group offsets and producer ids are held in memory only.
+- **Enforcement of throughput and network controls**: throughput-unit throttling, application-group policies, network rule sets, private endpoints, and geo-disaster-recovery are stored and echoed as metadata, but not enforced — a geo-DR failover changes state without moving events.
+- **Dedicated cluster hardware**: clusters are metadata-level, and Azure's 4-hour cluster deletion moratorium is intentionally skipped so local clean-up is immediate.
+- **Receiving over HTTP**: the HTTP runtime API is send-only, as in Azure; receiving requires AMQP or Kafka.
+- **Persistence**: entities and event data are held in memory and are lost when the emulator restarts. Recreate resources on startup via the CLI or IaC.
+
+## Samples
+
+Explore the following samples to get started with Event Hubs on LocalStack:
+
+- [Payment fraud detection pipeline with Event Hubs, Functions, and Capture](https://github.com/localstack/localstack-azure-samples/tree/main/samples/eventhubs/python)
+- [Cold-path automation with Event Hubs Capture, Event Grid, and Functions](https://github.com/localstack/localstack-azure-samples/tree/main/samples/eventhubs-eventgrid/python)
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.EventHub" client:load />

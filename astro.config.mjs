@@ -483,10 +483,6 @@ export default defineConfig({
                       slug: 'aws/developer-tools/running-localstack',
                     },
                     {
-                      label: 'LocalStack CLI',
-                      slug: 'aws/developer-tools/running-localstack/localstack-cli',
-                    },
-                    {
                       label: 'lstk CLI',
                       slug: 'aws/developer-tools/running-localstack/lstk',
                     },
@@ -497,6 +493,10 @@ export default defineConfig({
                     {
                       label: 'LocalStack Desktop',
                       slug: 'aws/developer-tools/running-localstack/localstack-desktop',
+                    },
+                    {
+                      label: 'Deprecated LocalStack CLI',
+                      slug: 'aws/developer-tools/running-localstack/localstack-cli',
                     },
                   ],
                 },
@@ -614,10 +614,6 @@ export default defineConfig({
                             directory:
                               '/aws/customization/integrations/extensions',
                           },
-                        },
-                        {
-                          label: 'Official Extensions',
-                          link: 'https://app.localstack.cloud/extensions/library/',
                         },
                       ],
                     },

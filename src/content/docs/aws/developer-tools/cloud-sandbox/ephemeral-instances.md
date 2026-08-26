@@ -13,7 +13,8 @@ Ephemeral Instances allows you to run a LocalStack instance in the cloud.
 You can interact with these instances via the LocalStack Web Application, or by configuring your integrations and developer tools with the endpoint URL of the ephemeral instance.
 
 :::note
-Ephemeral Instances is offered as a **preview** feature and is under active development.
+Ephemeral Instances is offered as a **preview** feature. `lstk` does not yet support Ephemeral Instances.
+Continue using the legacy [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/) for this feature.
 :::
 
 ## Getting started
@@ -76,9 +77,10 @@ You can view the logs of the Ephemeral Instance by navigating to the **Logs** ta
 
 ### Shut Down the Ephemeral Instance
 
-You can shut down the instance by navigating to the [Ephemeral Instances page](https://app.localstack.cloud/instances/ephemeral) and clicking on the **Shut Down** button.
+Open the Ephemeral Instance in the LocalStack Web Application.
+Click the three-dot menu next to the instance endpoint in the upper-left corner, then select **Shut down**.
 
-![Shutdown the LocalStack Ephemeral Instanc](/images/aws/shutdown-ephemeral-instance.png)
+![Shut down the LocalStack Ephemeral Instance](/images/aws/shutdown-ephemeral-instance.png)
 
 :::danger
 Ephemeral Instances, by default, are created with the latest version of LocalStack.

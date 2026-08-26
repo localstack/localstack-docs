@@ -1,5 +1,6 @@
 {
   "service": "resource-groups",
+  "pro_support": true,
   "community_support": true,
   "operations": [
     {
@@ -77,20 +78,20 @@
         "aws_validated": true,
         "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "GetGroupQuery": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -110,13 +111,13 @@
       "GetTags": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -225,15 +226,15 @@
     },
     {
       "Tag": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -251,15 +252,15 @@
     },
     {
       "Untag": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -279,26 +280,26 @@
       "UpdateGroup": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "UpdateGroupQuery": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     }
   ],
@@ -307,7 +308,7 @@
       "Configuration, Name": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_get_group_configuration_status",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_get_group_configuration_status",
             "test": "test_get_group_configuration_status",
             "response": "200",
             "error": "",
@@ -321,11 +322,21 @@
       "Description, Name, ResourceQuery, Tags": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
             "test": "test_create_group",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..GroupArn', '$..GroupConfiguration', '$..NextToken']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroupsUpdate::test_update_group_clear_description",
+            "test": "test_update_group_clear_description",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..GroupConfiguration', '$..NextToken']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -335,7 +346,7 @@
       "Name, ResourceQuery": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_resource_groups.py::test_group_defaults",
+            "node_id": "LocalStack Community: tests/aws_basic/services/cloudformation/resources/test_resource_groups.py::test_group_defaults",
             "test": "test_group_defaults",
             "response": "200",
             "error": "",
@@ -345,7 +356,7 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_cloudformation_stack_only_query",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_cloudformation_stack_only_query",
             "test": "test_create_group_cloudformation_stack_only_query",
             "response": "400",
             "error": "BadRequestException",
@@ -355,7 +366,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[json-int-42]",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[json-int-42]",
             "test": "test_create_group_invalid_query[json-int-42]",
             "response": "400",
             "error": "BadRequestException",
@@ -365,7 +376,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[json-list-[1,2,3]]",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[json-list-[1,2,3]]",
             "test": "test_create_group_invalid_query[json-list-[1,2,3]]",
             "response": "400",
             "error": "BadRequestException",
@@ -375,7 +386,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[json-null-null]",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[json-null-null]",
             "test": "test_create_group_invalid_query[json-null-null]",
             "response": "400",
             "error": "BadRequestException",
@@ -385,7 +396,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[json-string-\"hello\"]",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[json-string-\"hello\"]",
             "test": "test_create_group_invalid_query[json-string-\"hello\"]",
             "response": "400",
             "error": "BadRequestException",
@@ -395,7 +406,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[malformed-json-{not json}]",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[malformed-json-{not json}]",
             "test": "test_create_group_invalid_query[malformed-json-{not json}]",
             "response": "400",
             "error": "BadRequestException",
@@ -405,7 +416,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[missing-resource-type-filters-{}]",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_invalid_query[missing-resource-type-filters-{}]",
             "test": "test_create_group_invalid_query[missing-resource-type-filters-{}]",
             "response": "400",
             "error": "BadRequestException",
@@ -415,7 +426,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_query_shapes[resource-type-filters-only-RESOURCE_TYPE_FILTERS_1_0-query1]",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_query_shapes[resource-type-filters-only-RESOURCE_TYPE_FILTERS_1_0-query1]",
             "test": "test_create_group_query_shapes[resource-type-filters-only-RESOURCE_TYPE_FILTERS_1_0-query1]",
             "response": "400",
             "error": "BadRequestException",
@@ -425,7 +436,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_query_shapes[tag-filters-only-TAG_FILTERS_1_0-query0]",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group_query_shapes[tag-filters-only-TAG_FILTERS_1_0-query0]",
             "test": "test_create_group_query_shapes[tag-filters-only-TAG_FILTERS_1_0-query0]",
             "response": "400",
             "error": "BadRequestException",
@@ -434,6 +445,18 @@
             "snapshot_tested": true,
             "origin": "external"
           }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
         ]
       }
     },
@@ -441,7 +464,7 @@
       "GroupName": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_resource_groups.py::test_group_defaults",
+            "node_id": "LocalStack Community: tests/aws_basic/services/cloudformation/resources/test_resource_groups.py::test_group_defaults",
             "test": "test_group_defaults",
             "response": "200",
             "error": "",
@@ -451,7 +474,7 @@
             "origin": "internal"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
             "test": "test_create_group",
             "response": "200",
             "error": "",
@@ -461,7 +484,7 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_get_group_configuration_status",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_get_group_configuration_status",
             "test": "test_get_group_configuration_status",
             "response": "200",
             "error": "",
@@ -471,7 +494,17 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroupsUpdate::test_update_group_clear_description",
+            "test": "test_update_group_clear_description",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..GroupConfiguration', '$..NextToken']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
             "test": "test_create_group",
             "response": "404",
             "error": "NotFoundException",
@@ -480,6 +513,28 @@
             "snapshot_tested": true,
             "origin": "external"
           }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
         ]
       }
     },
@@ -487,7 +542,7 @@
       "GroupName": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/cloudformation/resources/test_resource_groups.py::test_group_defaults",
+            "node_id": "LocalStack Community: tests/aws_basic/services/cloudformation/resources/test_resource_groups.py::test_group_defaults",
             "test": "test_group_defaults",
             "response": "200",
             "error": "",
@@ -497,11 +552,33 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
             "test": "test_create_group",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..GroupArn', '$..GroupConfiguration', '$..NextToken']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroupsUpdate::test_update_group_clear_description",
+            "test": "test_update_group_clear_description",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..GroupConfiguration', '$..NextToken']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -513,7 +590,7 @@
       "Group": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_get_group_configuration_status",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_get_group_configuration_status",
             "test": "test_get_group_configuration_status",
             "response": "200",
             "error": "",
@@ -525,11 +602,43 @@
         ]
       }
     },
+    "GetGroupQuery": {
+      "GroupName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "GetTags": {
+      "Arn": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
     "ListGroups": {
       "- (without any parameters)": {
         "ls_community": [
           {
-            "node_id": "LocalStack Community: tests/aws/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroups::test_create_group",
             "test": "test_create_group",
             "response": "200",
             "error": "",
@@ -537,6 +646,92 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroupsUpdate::test_update_group_clear_description",
+            "test": "test_update_group_clear_description",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..GroupConfiguration', '$..NextToken']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "Tag": {
+      "Arn, Tags": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      }
+    },
+    "Untag": {
+      "Arn, Keys": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      }
+    },
+    "UpdateGroup": {
+      "Description, GroupName": {
+        "ls_community": [
+          {
+            "node_id": "LocalStack Community: tests/aws_basic/services/resource_groups/test_resource_groups.py::TestResourceGroupsUpdate::test_update_group_clear_description",
+            "test": "test_update_group_clear_description",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..GroupConfiguration', '$..NextToken']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      }
+    },
+    "UpdateGroupQuery": {
+      "GroupName, ResourceQuery": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/resource_groups/resource_providers/aws_resourcegroups_group/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..MyArn', '$..GroupArn', '$..Arn', '$..Tags', '$..initial-group.Description', '$..reduced-group.Description']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ]
       }

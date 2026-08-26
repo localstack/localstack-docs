@@ -1,6 +1,6 @@
 ---
 title: Users and Licenses
-description: Invite new users and manage a user's license and legacy API key.
+description: Invite new members and manage a member's license
 template: doc
 sidebar:
     order: 4
@@ -9,15 +9,15 @@ tags: ["Base"]
 
 ## Introduction
 
-The **Users & Licenses** page in the LocalStack Web Application allows workspace administrators to manage user memberships, assign licenses, and transition users from legacy API keys to the new license system.
+The **Users & Licenses** page in the LocalStack Web Application allows workspace administrators to manage workspace memberships and assign licenses.
 
 To access this page:
-1. Click on your name in the top-left corner of the dashboard.
+1. Click your name or organization's name in the top-left corner of the dashboard.
 2. Go to **Settings** → **Users & Licenses** under the **Administration** section.
 
-![Users & Licenses management screen](/images/aws/users-licenses-page.png)
+![Users & Licenses management screen](/images/aws/webapp-managing-users-licenses.png) 
 
-## User Roles
+## Member Roles
 
 Each member of a workspace is either a **Workspace Admin** or a **Workspace Member**. The role determines which parts of the workspace they can access and manage.
 
@@ -25,16 +25,16 @@ The table below summarizes what each role can do:
 
 | Action                                         | Workspace Admin | Workspace Member |
 | ---------------------------------------------- | :-------------: | :--------------: |
-| Invite new users                               |       ✅        |        ❌        |
-| Remove users from workspace                    |       ✅        |        ❌        |
+| Invite new members                             |       ✅        |        ❌        |
+| Remove members from workspace                  |       ✅        |        ❌        |
 | Assign or unassign licenses                    |       ✅        |        ❌        |
-| Change user roles (e.g., promote to Admin)     |       ✅        |        ❌        |
+| Change member roles (e.g., promote to Admin)   |       ✅        |        ❌        |
 | Configure advanced permissions                 |       ✅        |        ❌        |
 | Access Auth Tokens                             |       ✅        |        ✅        |
 | Use assigned LocalStack licenses               |       ✅        |        ✅        |
 
 :::note
-Admins manage the overall pool of licenses for the workspace. Each user is still responsible for configuring their own local environment to use their Auth Token.
+Admins manage the overall pool of licenses for the workspace. Each member is still responsible for configuring their own local environment to use their Auth Token.
 :::
 
 ### Key differences
@@ -43,75 +43,45 @@ Admins manage the overall pool of licenses for the workspace. Each user is still
 - **License management:** Admins distribute available licenses from the subscription plan to specific members through the **Users & Licenses** dashboard.
 - **Role management:** Admins can switch any member between **Admin** and **Member**.
 
-## Managing Users
+## Managing Members
 
-### Inviting Users
+### Inviting Members
 
 To invite someone to your workspace:
 
-- Go to the **Invite User** section.
-- Enter the name and email of the user.
+- Click **Invite Members**.
+- Enter the email of the person you want to invite.
 - Check the option to automatically assign a license (optional).
-- Click **Invite To Workspace**.
+- Send the invite.
 
 If the invitee does not have a LocalStack account, they will receive an email to create one.
 
-The name entered here is only a placeholder until the user completes signup.
-
 :::note
-Only workspace admins can invite users and manage license assignments.
+Only workspace admins can invite members and manage license assignments.
 :::
 
-![Invite user form](/images/aws/invite-user.png)
+### Removing Members
 
-### Removing Users
+To remove a member from the workspace:
 
-To remove a user from the workspace:
-
-- Click on the user entry to expand their details.
-- Click **Remove User from Workspace**.
+- Click the **⋯** menu at the right of their row.
+- Select the option to remove them from the workspace.
 
 You can re-invite them anytime.
 
 ### Managing Roles and Permissions
 
-Click on a user’s entry to view and edit their role.
+Use the **⋯** menu at the right of a member's row to view and edit their role.
 
 - Set them as **Admin** or **Member**
 - Configure advanced permissions if available
 
 ## Managing Licenses
 
-Licenses are part of subscription plans and are shown under the **Licenses** section.
+Licenses are part of subscription plans and are shown in the **License** column of the members list.
 
-- To **assign** a license: Use the dropdown next to a user in the members list.
-- To **unassign** a license: Click the `x` on the license badge next to the user.
+- To **assign** or **change** a license: Click directly on the license name for a member to open the license dropdown.
+- To **unassign** a license: Select the no-license option from the same dropdown.
 - A license can be reassigned at any time.
 
 Changes apply immediately and don’t require user action.
-
-## Migrating from Legacy API Keys
-
-Previously, access was granted via personal developer API keys.
-
-### Why move to Auth Tokens?
-
-- Auth Tokens are more secure and rotate-friendly.
-- Admins can manage licenses without the user needing to change configurations.
-- Users authenticate once with the token; the license is linked automatically.
-
-### Migration Process
-
-1. Go to the **Workspace Members** list.
-2. Assign a license to a user.
-3. Ask the user to switch their config to use an **Auth Token** (available in the **Auth Tokens** page).
-4. Remove the legacy API key once the Auth Token is in use.
-
-:::note
-If a user has both a legacy API key and a license, it only counts as **one** active license
-:::
-
-### Deprecation Notice
-
-Legacy API keys are still supported for now, but will be phased out over the coming months.
-We recommend migrating to licenses and Auth Tokens as soon as possible.

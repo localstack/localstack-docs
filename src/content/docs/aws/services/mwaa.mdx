@@ -16,7 +16,7 @@ The supported APIs are available on the [API Coverage section](#api-coverage).
 
 ## Getting started
 
-This guide is designed for users new to MWAA and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to MWAA and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an Airflow environment and access the Airflow UI.
@@ -27,7 +27,7 @@ Create a S3 bucket that will be used for Airflow resources.
 Run the following command to create a bucket using the [`mb`](https://docs.aws.amazon.com/cli/latest/reference/s3/mb.html) command.
 
 ```bash
-awslocal s3 mb s3://my-mwaa-bucket
+lstk aws s3 mb s3://my-mwaa-bucket
 ```
 
 ### Create an Airflow environment
@@ -36,7 +36,7 @@ You can now create an Airflow environment, using the [`CreateEnvironment`](https
 Run the following command, by specifying the bucket ARN we created earlier:
 
 ```bash
-awslocal mwaa create-environment --dag-s3-path /dags \
+lstk aws mwaa create-environment --dag-s3-path /dags \
         --execution-role-arn arn:aws:iam::000000000000:role/airflow-role \
         --network-configuration {} \
         --source-bucket-arn arn:aws:s3:::my-mwaa-bucket \
@@ -51,7 +51,7 @@ The Airflow UI can be accessed via the URL in the `WebserverUrl` attribute of th
 The username and password are always set to `localstack`.
 
 ```bash
-awslocal mwaa get-environment \
+lstk aws mwaa get-environment \
         --name my-mwaa-env \
         --query Environment.WebserverUrl \
         "http://localhost.localstack.cloud:4510"
@@ -97,7 +97,7 @@ Just upload your DAGs to the designated S3 bucket path, configured by the `DagS3
 For example, the command below uploads a sample DAG named `sample_dag.py` to your S3 bucket named `my-mwaa-bucket`:
 
 ```bash
-awslocal s3 cp sample_dag.py s3://my-mwaa-bucket/dags
+lstk aws s3 cp sample_dag.py s3://my-mwaa-bucket/dags
 ```
 
 LocalStack syncs new and changed objects in the S3 bucket to the Airflow container every 30 seconds.
@@ -111,7 +111,7 @@ LocalStack seamlessly supports plugins packaged according to [AWS specifications
 To integrate your custom plugins into the MWAA environment, upload the packaged `plugins.zip` file to the designated S3 bucket path:
 
 ```bash
-awslocal s3 cp plugins.zip s3://my-mwaa-bucket/plugins.zip
+lstk aws s3 cp plugins.zip s3://my-mwaa-bucket/plugins.zip
 ```
 
 ## Installing Python dependencies
@@ -130,7 +130,7 @@ Once you have your `requirements.txt` file ready, upload it to the designated S3
 Make sure to upload the file to `/requirements.txt` in the bucket:
 
 ```bash
-awslocal s3 cp requirements.txt s3://my-mwaa-bucket/requirements.txt
+lstk aws s3 cp requirements.txt s3://my-mwaa-bucket/requirements.txt
 ```
 
 After the upload, the environment will be automatically updated, and your Apache Airflow setup will be equipped with the new dependencies.

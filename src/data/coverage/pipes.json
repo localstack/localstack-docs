@@ -69,26 +69,26 @@
     },
     {
       "StartPipe": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
     },
     {
       "StopPipe": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": false
       }
@@ -280,7 +280,7 @@
             "test": "test_pipe_logging",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse', '$..StateReason', '$..ExecutionStarted', '$..nextToken', '$..searchedLogStreams']",
+            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse', '$..StateReason', \"$..events[?(@.message.messageType == 'ExecutionStarted')].message.payload\", '$..nextToken', '$..searchedLogStreams']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -297,16 +297,6 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_pipes.py::TestPipesTracing::test_pipes_with_sqs_source_and_sqs_target_with_enrichment",
-            "test": "test_pipes_with_sqs_source_and_sqs_target_with_enrichment",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
             "origin": "external"
           }
         ]
@@ -327,16 +317,6 @@
       },
       "LogConfiguration, Name, RoleArn, Source, SourceParameters, Target": {
         "ls_pro": [
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures",
-            "test": "test_sqs_fifo_dlq_partial_batch_failures",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse']",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures_delete",
             "test": "test_sqs_fifo_dlq_partial_batch_failures_delete",
@@ -407,6 +387,36 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_checkpoint_resume",
+            "test": "test_kinesis_pipe_checkpoint_resume",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_source_stream_deleted_and_recreated",
+            "test": "test_kinesis_pipe_source_stream_deleted_and_recreated",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_stop_start_resume",
+            "test": "test_kinesis_pipe_stop_start_resume",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -984,7 +994,7 @@
             "test": "test_pipe_logging",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse', '$..StateReason', '$..ExecutionStarted', '$..nextToken', '$..searchedLogStreams']",
+            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse', '$..StateReason', \"$..events[?(@.message.messageType == 'ExecutionStarted')].message.payload\", '$..nextToken', '$..searchedLogStreams']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -995,16 +1005,6 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures",
-            "test": "test_sqs_fifo_dlq_partial_batch_failures",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1155,6 +1155,36 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_checkpoint_resume",
+            "test": "test_kinesis_pipe_checkpoint_resume",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_source_stream_deleted_and_recreated",
+            "test": "test_kinesis_pipe_source_stream_deleted_and_recreated",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_stop_start_resume",
+            "test": "test_kinesis_pipe_stop_start_resume",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1350,10 +1380,10 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_pipes.py::TestPipesTracing::test_pipes_with_sqs_source_and_sqs_target_with_enrichment",
-            "test": "test_pipes_with_sqs_source_and_sqs_target_with_enrichment",
-            "response": "200",
-            "error": "",
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_checkpoint_resume",
+            "test": "test_kinesis_pipe_checkpoint_resume",
+            "response": "404",
+            "error": "NotFoundException",
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
@@ -1480,7 +1510,7 @@
             "test": "test_pipe_logging",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse', '$..StateReason', '$..ExecutionStarted', '$..nextToken', '$..searchedLogStreams']",
+            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse', '$..StateReason', \"$..events[?(@.message.messageType == 'ExecutionStarted')].message.payload\", '$..nextToken', '$..searchedLogStreams']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1491,16 +1521,6 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
-            "aws_validated": true,
-            "snapshot_tested": true,
-            "origin": "external"
-          },
-          {
-            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes.py::TestPipes::test_sqs_fifo_dlq_partial_batch_failures",
-            "test": "test_sqs_fifo_dlq_partial_batch_failures",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "['$..message.awsRequest', '$..message.awsResponse']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1651,6 +1671,36 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_checkpoint_resume",
+            "test": "test_kinesis_pipe_checkpoint_resume",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_source_stream_deleted_and_recreated",
+            "test": "test_kinesis_pipe_source_stream_deleted_and_recreated",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_stop_start_resume",
+            "test": "test_kinesis_pipe_stop_start_resume",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1856,16 +1906,6 @@
             "origin": "external"
           },
           {
-            "node_id": "LocalStack Pro: tests/integration/tracing/opentelemetry/test_pipes.py::TestPipesTracing::test_pipes_with_sqs_source_and_sqs_target_with_enrichment",
-            "test": "test_pipes_with_sqs_source_and_sqs_target_with_enrichment",
-            "response": "200",
-            "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
-          },
-          {
             "node_id": "LocalStack Pro: tests/aws/services/cloudformation/resource_providers/pipes/aws_pipes_pipe/test_basic.py::TestBasicCRD::test_black_box",
             "test": "test_black_box",
             "response": "404",
@@ -1883,6 +1923,16 @@
             "snapshot_skipped": "",
             "aws_validated": true,
             "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_checkpoint_resume",
+            "test": "test_kinesis_pipe_checkpoint_resume",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
             "origin": "external"
           },
           {
@@ -1961,6 +2011,48 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "StartPipe": {
+      "Name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_source_stream_deleted_and_recreated",
+            "test": "test_kinesis_pipe_source_stream_deleted_and_recreated",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_stop_start_resume",
+            "test": "test_kinesis_pipe_stop_start_resume",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "StopPipe": {
+      "Name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/pipes/test_pipes_kinesis.py::TestPipesKinesisV2::test_kinesis_pipe_stop_start_resume",
+            "test": "test_kinesis_pipe_stop_start_resume",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StateReason']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"

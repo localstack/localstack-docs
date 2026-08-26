@@ -19,7 +19,7 @@ The policy coverage is documented in the [IAM coverage documentation](/aws/devel
 
 ## Getting started
 
-This guide is designed for users new to IAM and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to IAM and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create a new user named `test`, create an access key pair for the user, and assert that the user is recognized after the access keys are configured in the environment.
@@ -28,7 +28,7 @@ By default, in the absence of custom credentials configuration, all requests to 
 Run the following command to use the [`GetCallerIdentity`](https://docs.aws.amazon.com/cli/latest/reference/sts/get-caller-identity.html) API to confirm that the request is running under the root user:
 
 ```bash
-awslocal sts get-caller-identity
+lstk aws sts get-caller-identity
 ```
 
 ```bash title="Output"
@@ -43,14 +43,14 @@ You can now create a new user named `test` using the [`CreateUser`](https://docs
 Run the following command:
 
 ```bash
-awslocal iam create-user --user-name test
+lstk aws iam create-user --user-name test
 ```
 
 You can now create an access key pair for the user using the [`CreateAccessKey`](https://docs.aws.amazon.com/cli/latest/reference/iam/create-access-key.html) API.
 Run the following command:
 
 ```bash
-awslocal iam create-access-key --user-name test
+lstk aws iam create-access-key --user-name test
 ```
 
 ```bash title="Output"
@@ -71,7 +71,7 @@ Run the following command:
 
 ```bash
 export AWS_ACCESS_KEY_ID=LKIAQAAAAAAAGFWKCM5F AWS_SECRET_ACCESS_KEY=DUulXk2N2yD6rgoBBR9A/5iXa6dBcLyDknr925Q5
-awslocal sts get-caller-identity
+lstk aws sts get-caller-identity
 ```
 
 ```bash title="Output"
@@ -108,6 +108,8 @@ LocalStack provides various tools to help you generate, test, and enforce IAM po
   For additional information, refer to the [IAM Policy Enforcement documentation](/aws/developer-tools/security-testing/iam-policy-enforcement).
 - **Explainable IAM**: Explainable IAM logs outputs related to failed policy evaluations directly to LocalStack logs, aiding in the identification of necessary policies for successful requests.
   More details are available in the [Explainable IAM documentation](/aws/developer-tools/security-testing/explainable-iam).
+- **IAM Policy Simulator**: Test the effect of a principal's policies, including Service Control Policies, without making a real request against your resources.
+  Learn more in the [IAM Policy Simulator documentation](/aws/developer-tools/security-testing/iam-policy-simulator).
 
 ## Examples
 
