@@ -18,7 +18,7 @@ The available operations can be found on the [API coverage](#api-coverage) page.
 ## Getting started
 
 In this guide, we will create a simple pipeline that fetches an object from an S3 bucket and uploads it to a different S3 bucket.
-It is for users that are new to CodePipeline and have a basic knowledge of the AWS CLI and the [`awslocal`](https://github.com/localstack/awscli-local) wrapper.
+It is for users that are new to CodePipeline and have a basic knowledge of the AWS CLI and the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start LocalStack using your preferred method.
 
@@ -27,15 +27,15 @@ Start LocalStack using your preferred method.
 Begin by creating the S3 buckets that will serve as the source and target.
 
 ```bash
-awslocal s3 mb s3://source-bucket
-awslocal s3 mb s3://target-bucket
+lstk aws s3 mb s3://source-bucket
+lstk aws s3 mb s3://target-bucket
 ```
 
 It is important to note the CodePipeline requires source S3 buckets to have versioning enabled.
 This can be done using the S3 [`PutBucketVersioning`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketVersioning.html) operation.
 
 ```bash
-awslocal s3api put-bucket-versioning \
+lstk aws s3api put-bucket-versioning \
     --bucket source-bucket \
     --versioning-configuration Status=Enabled
 ```
@@ -44,13 +44,13 @@ Now create a placeholder file that will flow through the pipeline and upload it 
 
 ```bash
 echo "Hello LocalStack!" > file
-awslocal s3 cp file s3://source-bucket
+lstk aws s3 cp file s3://source-bucket
 ```
 
 Pipelines also require an artifact store, which is also an S3 bucket that is used as intermediate storage.
 
 ```bash
-awslocal s3 mb s3://artifact-store-bucket
+lstk aws s3 mb s3://artifact-store-bucket
 ```
 
 ### Configure IAM
@@ -80,7 +80,7 @@ Create the role and make note of the role ARN:
 Create the role with the following command:
 
 ```bash
-awslocal iam create-role --role-name role --assume-role-policy-document file://role.json | jq .Role.Arn
+lstk aws iam create-role --role-name role --assume-role-policy-document file://role.json | jq .Role.Arn
 ```
 
 Now add a permissions policy to this role that permits read and write access to S3.
@@ -105,7 +105,7 @@ The permissions in the above example policy are relatively broad.
 You might want to use a more focused policy for better security on production systems.
 
 ```bash
-awslocal iam put-role-policy --role-name role --policy-name policy --policy-document file://policy.json
+lstk aws iam put-role-policy --role-name role --policy-name policy --policy-document file://policy.json
 ```
 
 ### Create pipeline
@@ -193,7 +193,7 @@ These correspond to the resources we created earlier.
 Create the pipeline using the following command:
 
 ```bash
-awslocal codepipeline create-pipeline --pipeline file://./declaration.json
+lstk aws codepipeline create-pipeline --pipeline file://./declaration.json
 ```
 
 ### Verify pipeline execution
@@ -204,7 +204,7 @@ The [`CreatePipeline`](https://docs.aws.amazon.com/codepipeline/latest/APIRefere
 This can be confirmed using:
 
 ```bash
-awslocal codepipeline list-pipeline-executions --pipeline-name pipeline
+lstk aws codepipeline list-pipeline-executions --pipeline-name pipeline
 ```
 
 ```bash title="Output"
@@ -231,7 +231,7 @@ The above pipeline execution was successful.
 This means that we can retrieve the `output-file` object from the `target-bucket` S3 bucket.
 
 ```bash
-awslocal s3 cp s3://target-bucket/output-file output-file
+lstk aws s3 cp s3://target-bucket/output-file output-file
 ```
 
 To verify that it is the same file as the original input:
@@ -252,7 +252,7 @@ Using the [`ListActionExecutions`](https://docs.aws.amazon.com/codepipeline/late
 This is useful when debugging the pipeline.
 
 ```bash
-awslocal codepipeline list-action-executions --pipeline-name pipeline
+lstk aws codepipeline list-action-executions --pipeline-name pipeline
 ```
 
 ```bash title="Output"
@@ -354,11 +354,11 @@ Pipelines resources can be [tagged](https://docs.aws.amazon.com/codepipeline/lat
 Tag the pipeline with the following command:
 
 ```bash
-awslocal codepipeline tag-resource \
+lstk aws codepipeline tag-resource \
     --resource-arn arn:aws:codepipeline:eu-central-1:000000000000:pipeline \
     --tags key=purpose,value=tutorial
 
-awslocal codepipeline list-tags-for-resource \
+lstk aws codepipeline list-tags-for-resource \
     --resource-arn arn:aws:codepipeline:eu-central-1:000000000000:pipeline
 ```
 
@@ -376,7 +376,7 @@ awslocal codepipeline list-tags-for-resource \
 Untag the pipeline with the following command:
 
 ```bash
-awslocal codepipeline untag-resource \
+lstk aws codepipeline untag-resource \
     --resource-arn arn:aws:codepipeline:eu-central-1:000000000000:pipeline \
     --tag-keys purpose
 ```

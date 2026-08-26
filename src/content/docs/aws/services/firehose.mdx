@@ -20,7 +20,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Data Firehose and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Data Firehose and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to use Firehose to load Kinesis data into Elasticsearch with S3 Backup with the AWS CLI.
@@ -31,7 +31,7 @@ You can create an Elasticsearch domain using the [`create-elasticsearch-domain`]
 Execute the following command to create a domain named `es-local`:
 
 ```bash
-awslocal es create-elasticsearch-domain --domain-name es-local
+lstk aws es create-elasticsearch-domain --domain-name es-local
 ```
 
 Save the value of the `Endpoint` field from the response, as it will be required further down to confirm the setup.
@@ -44,13 +44,13 @@ Before creating the stream, we need to create an S3 bucket to store our backup d
 You can do this using the [`mb`](https://docs.aws.amazon.com/cli/latest/reference/s3/mb.html) command:
 
 ```bash
-awslocal s3 mb s3://kinesis-activity-backup-local
+lstk aws s3 mb s3://kinesis-activity-backup-local
 ```
 
 You can now use the [`CreateStream`](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_CreateStream.html) API to create a Kinesis stream named `kinesis-es-local-stream` with two shards:
 
 ```bash
-awslocal kinesis create-stream \
+lstk aws kinesis create-stream \
   --stream-name kinesis-es-local-stream \
   --shard-count 2
 ```
@@ -72,7 +72,7 @@ However, when operating within the AWS environment, you need to check the access
 You can use the [`CreateDeliveryStream`](https://docs.aws.amazon.com/firehose/latest/APIReference/API_CreateDeliveryStream.html) API to create a Firehose delivery stream named `activity-to-elasticsearch-local`:
 
 ```bash
-awslocal firehose create-delivery-stream \
+lstk aws firehose create-delivery-stream \
   --delivery-stream-name activity-to-elasticsearch-local \
   --delivery-stream-type KinesisStreamAsSource \
   --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-east-1:000000000000:stream/kinesis-es-local-stream,RoleARN=arn:aws:iam::000000000000:role/Firehose-Reader-Role" \
@@ -94,7 +94,7 @@ You can use the [`describe-elasticsearch-domain`](https://docs.aws.amazon.com/cl
 Run the following command:
 
 ```bash
-awslocal es describe-elasticsearch-domain \
+lstk aws es describe-elasticsearch-domain \
   --domain-name es-local | jq ".DomainStatus.Processing"
 ```
 
@@ -105,7 +105,7 @@ You can add data to the Kinesis stream using the [`PutRecord`](https://docs.aws.
 The following command adds a record to the stream:
 
 ```bash
-awslocal kinesis put-record \
+lstk aws kinesis put-record \
   --stream-name kinesis-es-local-stream \
   --data '{ "target": "barry" }' \
   --partition-key partition
@@ -119,7 +119,7 @@ You can use the [`PutRecord`](https://docs.aws.amazon.com/firehose/latest/APIRef
 The following command adds a record to the stream:
 
 ```bash
-awslocal firehose put-record \
+lstk aws firehose put-record \
   --delivery-stream-name activity-to-elasticsearch-local \
   --record '{ "Data": "eyJ0YXJnZXQiOiAiSGVsbG8gd29ybGQifQ==" }'
 ```

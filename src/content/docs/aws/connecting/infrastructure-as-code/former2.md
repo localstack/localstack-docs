@@ -26,7 +26,7 @@ These outputs enable you to redeploy your resources while spinning a new LocalSt
 
 ## Getting started
 
-This guide is designed for users new to Former2 and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Former2 and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 We will demonstrate how you can create local AWS resources using LocalStack, and import a CloudFormation output via Former2.
 
 ### Install Former2
@@ -49,13 +49,13 @@ Start your LocalStack container using your preferred method with the following e
 - **Mozilla Firefox**: `EXTRA_CORS_ALLOWED_ORIGINS=moz-extension://853c673f-1bd8-4226-a5ff-f1473f7b3d90`
 - **Microsoft Edge**: `EXTRA_CORS_ALLOWED_ORIGINS=extension://okkjnfohglnomdbpimkcdkiojbeiedof`
 
-You can create local AWS resources using the AWS CLI and the `awslocal` wrapper script.
+You can create local AWS resources using the AWS CLI and `lstk aws`.
 For example, you can create a new S3 bucket, SQS queue, and DynamoDB table using the following commands:
 
 ```bash
-awslocal s3 mb s3://my-bucket
-awslocal sqs create-queue --queue-name my-queue
-awslocal dynamodb create-table \
+lstk aws s3 mb s3://my-bucket
+lstk aws sqs create-queue --queue-name my-queue
+lstk aws dynamodb create-table \
     --table-name my-table \
     --attribute-definitions AttributeName=id,AttributeType=S \
     --key-schema AttributeName=id,KeyType=HASH \
@@ -65,19 +65,19 @@ awslocal dynamodb create-table \
 You can verify that the resources were created successfully by running the following command:
 
 ```bash
-localstack logs
+lstk logs
 ```
 
 ```bash title="Output"
-2023-10-14T15:31:08.852  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS s3.CreateBucket => 200
-2023-10-14T15:31:09.356  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS sqs.CreateQueue => 200
-2023-10-14T15:31:12.920  INFO --- [   asgi_gw_0] botocore.credentials       : Found credentials in environment variables.
-2023-10-14T15:31:13.332  INFO --- [   asgi_gw_0] localstack.utils.bootstrap : Execution of "require" took 2028.25ms
-2023-10-14T15:31:13.712  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS dynamodb.CreateTable => 200
+emulator | 2023-10-14T15:31:08.852  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS s3.CreateBucket => 200
+emulator | 2023-10-14T15:31:09.356  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS sqs.CreateQueue => 200
+emulator | 2023-10-14T15:31:12.920  INFO --- [   asgi_gw_0] botocore.credentials       : Found credentials in environment variables.
+emulator | 2023-10-14T15:31:13.332  INFO --- [   asgi_gw_0] localstack.utils.bootstrap : Execution of "require" took 2028.25ms
+emulator | 2023-10-14T15:31:13.712  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS dynamodb.CreateTable => 200
 ```
 
 ```bash
-awslocal s3 ls
+lstk aws s3 ls
 ```
 
 ```bash title="Output"
@@ -85,7 +85,7 @@ awslocal s3 ls
 ```
 
 ```bash
-awslocal sqs list-queues
+lstk aws sqs list-queues
 ```
 
 ```bash title="Output"
@@ -97,7 +97,7 @@ awslocal sqs list-queues
 ```
 
 ```bash
-awslocal dynamodb list-tables
+lstk aws dynamodb list-tables
 ```
 
 ```bash title="Output"

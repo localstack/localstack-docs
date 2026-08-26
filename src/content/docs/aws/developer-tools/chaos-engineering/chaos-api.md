@@ -33,7 +33,7 @@ If you'd like to try it out, please [contact us](https://www.localstack.cloud/de
 
 The prerequisites for this guide are:
 
-- LocalStack for AWS and [LocalStack CLI](/aws/getting-started/installation/) 
+- LocalStack for AWS and [`lstk`](/aws/developer-tools/running-localstack/lstk/#installation)
 - [LocalStack Auth Token](/aws/getting-started/auth-token/)
 - [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
 - [Python](https://www.python.org/downloads/)
@@ -119,7 +119,7 @@ All calls to these services in these regions will return a 503 Service Unavailab
 To see this in action, try to create an S3 bucket in `us-east-1`:
 
 ```bash
-awslocal s3 mb s3://test-bucket --region us-east-1
+lstk aws s3 mb s3://test-bucket --region us-east-1
 ```
 
 ```bash
@@ -129,7 +129,7 @@ make_bucket failed: s3://test-bucket An error occurred (ServiceUnavailableExcept
 However, the same operation, when run in `eu-central-1` will work as expected.
 
 ```bash
-awslocal s3 mb s3://test-bucket --region eu-central-1
+lstk aws s3 mb s3://test-bucket --region eu-central-1
 ```
 
 ```bash

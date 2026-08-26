@@ -16,7 +16,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Lake Formation and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Lake Formation and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to register an S3 bucket as a resource in Lake Formation, grant permissions to a user, and list the resources and permissions.
@@ -26,7 +26,7 @@ We will demonstrate how to register an S3 bucket as a resource in Lake Formation
 Create a new S3 bucket named `test-bucket` using the `mb` command:
 
 ```bash
-awslocal s3 mb s3://test-bucket
+lstk aws s3 mb s3://test-bucket
 ```
 
 You can now register the S3 bucket as a resource in Lake Formation using the [`RegisterResource`](https://docs.aws.amazon.com/lake-formation/latest/dg/API_RegisterResource.html) API.
@@ -42,7 +42,7 @@ Create a file named `input.json` with the following content:
 Run the following command to register the resource:
 
 ```bash
-awslocal lakeformation register-resource \
+lstk aws lakeformation register-resource \
     --cli-input-json file://input.json
 ```
 
@@ -52,7 +52,7 @@ You can list the registered resources using the [`ListResources`](https://docs.a
 Execute the following command to list the resources:
 
 ```bash
-awslocal lakeformation list-resources
+lstk aws lakeformation list-resources
 ```
 
 ```bash title="Output"
@@ -94,7 +94,7 @@ Create a file named `permissions.json` with the following content:
 Run the following command to grant permissions:
 
 ```bash
-awslocal lakeformation grant-permissions \
+lstk aws lakeformation grant-permissions \
     --cli-input-json file://check.json
 ```
 
@@ -104,7 +104,7 @@ You can list the permissions granted to a user or group using the [`ListPermissi
 Execute the following command to list the permissions:
 
 ```bash
-awslocal lakeformation list-permissions
+lstk aws lakeformation list-permissions
 ```
 
 ## API Coverage

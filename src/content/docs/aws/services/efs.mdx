@@ -18,7 +18,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Elastic File System and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Elastic File System and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a file system, apply an IAM resource-based policy, and create a lifecycle configuration using the AWS CLI.
@@ -29,7 +29,7 @@ To create a new, empty file system you can use the [`CreateFileSystem`](https://
 Run the following command to create a new file system:
 
 ```bash
-awslocal efs create-file-system \
+lstk aws efs create-file-system \
     --performance-mode generalPurpose \
     --throughput-mode bursting \
     --encrypted \
@@ -59,7 +59,7 @@ You can also describe the locally available file systems using the [`DescribeFil
 Run the following command to describe the local file systems available:
 
 ```bash
-awslocal efs describe-file-systems
+lstk aws efs describe-file-systems
 ```
 
 You can alternatively pass the `--file-system-id` parameter to the `describe-file-system` command to retrieve information about a specific file system in AWS CLI.
@@ -70,7 +70,7 @@ You can apply an EFS `FileSystemPolicy` to an EFS file system using the [`PutFil
 Run the following command to apply a policy to the file system created in the previous step:
 
 ```bash
-awslocal efs put-file-system-policy \
+lstk aws efs put-file-system-policy \
     --file-system-id <FILE_SYSTEM_ID> \
     --policy "{\"Version\":\"2012-10-17\",\"Id\":\"ExamplePolicy01\",\"Statement\":[{\"Sid\":\"ExampleStatement01\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":[\"elasticfilesystem:ClientMount\",\"elasticfilesystem:ClientWrite\"],\"Resource\":\"arn:aws:elasticfilesystem:us-east-1:000000000000:file-system/fs-34feac549e66b814\"}]}"
 ```
@@ -79,7 +79,7 @@ You can list the file system policies using the [`DescribeFileSystemPolicy`](htt
 Run the following command to list the file system policies:
 
 ```bash
-awslocal efs describe-file-system-policy \
+lstk aws efs describe-file-system-policy \
     --file-system-id <FILE_SYSTEM_ID>
 ```
 
@@ -92,7 +92,7 @@ You can create a lifecycle configuration for an EFS file system using the [`PutL
 Run the following command to create a lifecycle configuration for the file system created in the previous step:
 
 ```bash
-awslocal efs put-lifecycle-configuration \
+lstk aws efs put-lifecycle-configuration \
     --file-system-id <FILE_SYSTEM_ID> \
     --lifecycle-policies "{\"TransitionToIA\":\"AFTER_30_DAYS\"}"
 ```

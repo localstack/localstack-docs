@@ -16,7 +16,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Auto Scaling and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Auto Scaling and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create a launch template, an Auto Scaling group, and attach an instance to the Auto Scaling group using the AWS CLI.
@@ -27,7 +27,7 @@ You can create a launch template that defines the launch configuration for the i
 Run the following command to create a launch template:
 
 ```bash
-awslocal ec2 create-launch-template \
+lstk aws ec2 create-launch-template \
     --launch-template-name my-template-for-auto-scaling \
     --version-description version1 \
     --launch-template-data '{"ImageId":"ami-ff0fea8310f3","InstanceType":"t2.micro"}'
@@ -53,14 +53,14 @@ Before creating an Auto Scaling group, you need to fetch the subnet ID.
 Run the following command to describe the subnets:
 
 ```bash
-awslocal ec2 describe-subnets --output text --query Subnets[0].SubnetId
+lstk aws ec2 describe-subnets --output text --query Subnets[0].SubnetId
 ```
 
 Copy the subnet ID from the output and use it to create the Auto Scaling group.
 Run the following command to create an Auto Scaling group using the [`CreateAutoScalingGroup`](https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_CreateAutoScalingGroup.html) API:
 
 ```bash
-awslocal autoscaling create-auto-scaling-group \
+lstk aws autoscaling create-auto-scaling-group \
     --auto-scaling-group-name my-asg \
     --launch-template LaunchTemplateId=lt-5ccdf1a84f178ba44 \
     --min-size 1 \
@@ -74,7 +74,7 @@ You can describe the Auto Scaling group using the [`DescribeAutoScalingGroups`](
 Run the following command to describe the Auto Scaling group:
 
 ```bash
-awslocal autoscaling describe-auto-scaling-groups
+lstk aws autoscaling describe-auto-scaling-groups
 ```
 
 ```bash title="Output"
@@ -117,7 +117,7 @@ Before that, create an EC2 instance using the [`RunInstances`](https://docs.aws.
 Run the following command to create an EC2 instance locally:
 
 ```bash
-awslocal ec2 run-instances \
+lstk aws ec2 run-instances \
     --image-id ami-ff0fea8310f3 --count 1
 ```
 
@@ -125,7 +125,7 @@ Fetch the instance ID from the output and use it to attach the instance to the A
 Run the following command to attach the instance to the Auto Scaling group:
 
 ```bash
-awslocal autoscaling attach-instances \
+lstk aws autoscaling attach-instances \
     --instance-ids i-0d678c4ecf6018dde \
     --auto-scaling-group-name my-asg
 ```

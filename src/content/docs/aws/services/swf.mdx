@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Simple Workflow Service and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Simple Workflow Service and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to register an SWF domain and workflow using the AWS CLI.
@@ -28,7 +28,7 @@ You can register an SWF domain using the [`RegisterDomain`](https://docs.aws.ama
 Execute the following command to register a domain named `test-domain`:
 
 ```bash
-awslocal swf register-domain \
+lstk aws swf register-domain \
     --name test-domain \
     --workflow-execution-retention-period-in-days 1
 ```
@@ -37,7 +37,7 @@ You can use the [`DescribeDomain`](https://docs.aws.amazon.com/amazonswf/latest/
 Run the following command to describe the `test-domain` domain:
 
 ```bash
-awslocal swf describe-domain \
+lstk aws swf describe-domain \
     --name test-domain
 ```
 
@@ -60,21 +60,21 @@ You can list all registered domains using the [`ListDomains`](https://docs.aws.a
 Run the following command to list all registered domains:
 
 ```bash
-awslocal swf list-domains --registration-status REGISTERED
+lstk aws swf list-domains --registration-status REGISTERED
 ```
 
 To deprecate a domain, use the [`DeprecateDomain`](https://docs.aws.amazon.com/amazonswf/latest/apireference/API_DeprecateDomain.html) API.
 Run the following command to deprecate the `test-domain` domain:
 
 ```bash
-awslocal swf deprecate-domain \
+lstk aws swf deprecate-domain \
     --name test-domain
 ```
 
 You can now list the deprecated domains using the `--registration-status DEPRECATED` flag:
 
 ```bash
-awslocal swf list-domains --registration-status DEPRECATED
+lstk aws swf list-domains --registration-status DEPRECATED
 ```
 
 ### Registering a workflow
@@ -83,7 +83,7 @@ You can register a workflow using the [`RegisterWorkflowType`](https://docs.aws.
 Execute the following command to register a workflow named `test-workflow`:
 
 ```bash showLineNumbers
-awslocal swf register-workflow-type \
+lstk aws swf register-workflow-type \
     --domain test-domain \
     --name test-workflow \
     --default-task-list name=test-task-list \
@@ -97,7 +97,7 @@ You can use the [`DescribeWorkflowType`](https://docs.aws.amazon.com/amazonswf/l
 Run the following command to describe the `test-workflow` workflow:
 
 ```bash
-awslocal swf describe-workflow-type \
+lstk aws swf describe-workflow-type \
     --domain test-domain \
     --workflow-type name=test-workflow,version=1.0
 ```
@@ -131,7 +131,7 @@ You can register an activity using the [`RegisterActivityType`](https://docs.aws
 Execute the following command to register an activity named `test-activity`:
 
 ```bash showLineNumbers
-awslocal swf register-activity-type \
+lstk aws swf register-activity-type \
     --domain test-domain \
     --name test-activity \
     --default-task-list name=test-task-list \
@@ -146,7 +146,7 @@ You can use the [`DescribeActivityType`](https://docs.aws.amazon.com/amazonswf/l
 Run the following command to describe the `test-activity` activity:
 
 ```bash showLineNumbers
-awslocal swf describe-activity-type \
+lstk aws swf describe-activity-type \
     --domain test-domain \
     --activity-type name=test-activity,version=1.0
 ```
@@ -181,7 +181,7 @@ You can start a workflow execution using the [`StartWorkflowExecution`](https://
 Execute the following command to start a workflow execution for the `test-workflow` workflow:
 
 ```bash showLineNumbers
-awslocal swf start-workflow-execution \
+lstk aws swf start-workflow-execution \
     --domain test-domain \
     --workflow-type name=test-workflow,version=1.0 \
     --workflow-id test-workflow-id \

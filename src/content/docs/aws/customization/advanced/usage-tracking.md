@@ -96,7 +96,7 @@ Here is an example of a CLI invocation event:
     "client_time": "2022-08-30 14:46:54.116457"
   },
   "payload": {
-    "cmd": "localstack config validate",
+    "cmd": "lstk start",
     "params": [
       "file"
     ]

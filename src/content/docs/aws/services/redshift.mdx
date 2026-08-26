@@ -21,7 +21,7 @@ For advanced features like Redshift Data API and other emulation capabilities, p
 
 ## Getting started
 
-This guide is designed for users new to RedShift and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to RedShift and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a RedShift cluster and database while using a Glue Crawler to populate the metadata store with the schema of the RedShift database tables using the AWS CLI.
@@ -52,7 +52,7 @@ You can create a RedShift cluster using the [`CreateCluster`](https://docs.aws.a
 The following command will create a RedShift cluster with the variables defined above:
 
 ```bash
-awslocal redshift create-cluster \
+lstk aws redshift create-cluster \
       --cluster-identifier $REDSHIFT_CLUSTER_IDENTIFIER \
       --db-name $REDSHIFT_DATABASE_NAME \
       --master-username $REDSHIFT_USERNAME \
@@ -64,7 +64,7 @@ You can fetch the status of the cluster using the [`DescribeClusters`](https://d
 Run the following command to extract the URL of the cluster:
 
 ```bash
-REDSHIFT_URL=$(awslocal redshift describe-clusters \
+REDSHIFT_URL=$(lstk aws redshift describe-clusters \
       --cluster-identifier $REDSHIFT_CLUSTER_IDENTIFIER | jq -r '(.Clusters[0].Endpoint.Address) + ":" + (.Clusters[0].Endpoint.Port|tostring)')
 ```
 
@@ -74,7 +74,7 @@ You can create a Glue database using the [`CreateDatabase`](https://docs.aws.ama
 The following command will create a Glue database:
 
 ```bash
-awslocal glue create-database \
+lstk aws glue create-database \
       --database-input "{\"Name\": \"$GLUE_DATABASE_NAME\"}"
 ```
 
@@ -82,7 +82,7 @@ You can create a connection to the RedShift cluster using the [`CreateConnection
 The following command will create a Glue connection with the RedShift cluster:
 
 ```bash
-awslocal glue create-connection \
+lstk aws glue create-connection \
       --connection-input "{\"Name\":\"$GLUE_CONNECTION_NAME\", \"ConnectionType\": \"JDBC\", \"ConnectionProperties\": {\"USERNAME\": \"$REDSHIFT_USERNAME\", \"PASSWORD\": \"$REDSHIFT_PASSWORD\", \"JDBC_CONNECTION_URL\": \"jdbc:redshift://$REDSHIFT_URL/$REDSHIFT_DATABASE_NAME\"}}"
 ```
 
@@ -90,7 +90,7 @@ Finally, you can create a Glue crawler using the [`CreateCrawler`](https://docs.
 The following command will create a Glue crawler:
 
 ```bash
-awslocal glue create-crawler \
+lstk aws glue create-crawler \
       --name $GLUE_CRAWLER_NAME \
       --database-name $GLUE_DATABASE_NAME \
       --targets "{\"JdbcTargets\": [{\"ConnectionName\": \"$GLUE_CONNECTION_NAME\", \"Path\": \"$REDSHIFT_DATABASE_NAME/%/$REDSHIFT_TABLE_NAME\"}]}" \
@@ -103,7 +103,7 @@ You can create a table in RedShift using the [`CreateTable`](https://docs.aws.am
 The following command will create a table in RedShift:
 
 ```bash
-REDSHIFT_STATEMENT_ID=$(awslocal redshift-data execute-statement \
+REDSHIFT_STATEMENT_ID=$(lstk aws redshift-data execute-statement \
       --cluster-identifier $REDSHIFT_CLUSTER_IDENTIFIER \
       --database $REDSHIFT_DATABASE_NAME \
       --sql \
@@ -114,7 +114,7 @@ You can check the status of the statement using the [`DescribeStatement`](https:
 The following command will check the status of the statement:
 
 ```bash
-wait "awslocal redshift-data describe-statement \
+wait "lstk aws redshift-data describe-statement \
       --id $REDSHIFT_STATEMENT_ID" ".Status" "FINISHED"
 ```
 
@@ -124,7 +124,7 @@ You can run the crawler using the [`StartCrawler`](https://docs.aws.amazon.com/g
 The following command will run the crawler:
 
 ```bash
-awslocal glue start-crawler \
+lstk aws glue start-crawler \
       --name $GLUE_CRAWLER_NAME
 ```
 
@@ -132,7 +132,7 @@ You can wait for the crawler to finish using the [`GetCrawler`](https://docs.aws
 The following command will wait for the crawler to finish:
 
 ```bash
-wait "awslocal glue get-crawler \
+wait "lstk aws glue get-crawler \
       --name $GLUE_CRAWLER_NAME" ".Crawler.State" "READY"
 ```
 
@@ -140,7 +140,7 @@ You can finally retrieve the schema of the table using the [`GetTable`](https://
 The following command will retrieve the schema of the table:
 
 ```bash
-awslocal glue get-table \
+lstk aws glue get-table \
       --database-name $GLUE_DATABASE_NAME \
       --name "${REDSHIFT_DATABASE_NAME}_${REDSHIFT_SCHEMA_NAME}_${REDSHIFT_TABLE_NAME}"
 ```

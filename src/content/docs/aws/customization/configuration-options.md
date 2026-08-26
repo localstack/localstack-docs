@@ -6,16 +6,32 @@ template: doc
 
 LocalStack exposes various configuration options to control its behaviour.
 
-These options can be passed to LocalStack as environment variables like so:
+With `lstk`, these options can be passed as `LOCALSTACK_`-prefixed environment variables when starting the container:
 
 ```bash
-DEBUG=1 localstack start
+LOCALSTACK_DEBUG=1 lstk start
 ```
+
+Alternatively, set them as named environment profiles in your config file and reference them from the container block:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["debug"]
+
+[env.debug]
+DEBUG = "1"
+```
+
+```bash
+lstk start
+```
+
+See [Passing environment variables to the container](/aws/developer-tools/running-localstack/lstk#passing-environment-variables-to-the-container) for details.
 
 To facilitate interoperability, configuration variables can be prefixed with `LOCALSTACK_` in docker.
 For instance, setting `LOCALSTACK_PERSISTENCE=1` is equivalent to `PERSISTENCE=1`.
-
-You can also use [Profiles](#profiles).
 
 Configurations marked as **Deprecated** will be removed in the next major version.
 You can find previously removed configuration variables under [Legacy](#legacy).
@@ -44,13 +60,8 @@ Options that affect the core LocalStack system.
 
 ## CLI
 
-These options are applicable when using the CLI to start LocalStack.
-
-| Variable | Example Values | Description |
-| - | - | - |
-| `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. See [Filesystem Layout](/aws/customization/advanced/filesystem#using-the-cli) |
-| `CONFIG_PROFILE` | | The configuration profile to load. See [Profiles](#profiles) |
-| `CONFIG_DIR` | `~/.localstack` | The path where LocalStack can find configuration profiles and other CLI-specific configuration |
+`lstk` is configured through its config file rather than through environment variables.
+See [Configuration](/aws/developer-tools/running-localstack/lstk#configuration) on the `lstk` page for the config file search order, the field reference, and how to define named environment profiles.
 
 ## Docker
 
@@ -58,6 +69,7 @@ Options to configure how LocalStack interacts with Docker.
 
 | Variable | Example Values | Description |
 | - | - | - |
+| `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. See [Filesystem Layout](/aws/customization/advanced/filesystem) |
 | `DOCKER_FLAGS` | | Allows to pass custom flags (e.g., volume mounts) to "docker run" when running LocalStack in Docker. |
 | `DOCKER_SOCK` | `/var/run/docker.sock` | Path to local Docker UNIX domain socket |
 | `DOCKER_BRIDGE_IP` | `172.17.0.1` | IP of the docker bridge used to enable access between containers |
@@ -363,7 +375,8 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 
 | Variable | Example Values | Description |
 | - | - | - |
-| `S3_SKIP_SIGNATURE_VALIDATION`| `0` \| `1` (default) | Used to toggle validation of S3 pre-signed URL request signature. Set to `0` to validate. Note that validation can only pass if the `AWS_SECRET_ACCESS_KEY` is set to `test` or if using credentials returned from `STS.AssumeRole`  |
+| `S3_SKIP_SIGNATURE_VALIDATION`| `0` \| `1` (default) | Used to toggle validation of S3 pre-signed URLs. Set to `0` to validate their signature and expiration. See [Signature validation](/aws/services/s3/#signature-validation) for the credentials accepted by the validation. |
+| `S3_VALIDATE_SIGNATURES` | `0` (default) \| `1` | Used to toggle SigV4 signature validation of regular (non-pre-signed) S3 requests. Set to `1` to validate the request signature and the payload integrity. See [Signature validation](/aws/services/s3/#signature-validation) for the credentials accepted by the validation. |
 | `S3_SKIP_KMS_KEY_VALIDATION` | `0` \| `1` (default) | Used to toggle validation of provided KMS key in S3 operations. |
 
 ### SageMaker
@@ -394,6 +407,12 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 | Variable | Example Values | Description |
 | - | - | - |
 | `SFN_MOCK_CONFIG` | `/tmp/MockConfigFile.json` | Specifies the file path to the mock configuration file that defines mock service integrations for Step Functions. |
+
+### Verified Permissions
+
+| Variable | Example Values | Description |
+| - | - | - |
+| `VERIFIEDPERMISSIONS_DISABLE_JWT_VERIFICATION` | `0` (default) \| `1` | Disables JWT signature verification for OIDC identity sources. When enabled, LocalStack will decode tokens without validating signatures against the issuer's JWKS, allowing use of unreachable or self-signed OIDC providers in local development. |
 
 ## Security
 
@@ -432,7 +451,7 @@ To learn more about these configuration options, see [Persistence](/aws/develope
 | `SNAPSHOT_SAVE_STRATEGY` | `ON_SHUTDOWN`\|`ON_REQUEST`\|`SCHEDULED`\|`MANUAL` | Strategy that governs when LocalStack should make state snapshots |
 | `SNAPSHOT_LOAD_STRATEGY` | `ON_STARTUP`\|`ON_REQUEST`\|`MANUAL` | Strategy that governs when LocalStack restores state snapshots |
 | `SNAPSHOT_FLUSH_INTERVAL` | 15 (default) | The interval (in seconds) between persistence snapshots. It only applies to a `SCHEDULED` save strategy (see [Persistence Mechanism](/aws/developer-tools/snapshots/persistence))|
-| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [state compatibility rules](/aws/developer-tools/snapshots/persistence#state-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
+| `DISABLE_COMPATIBILITY_RULES` | `0` (default) \| `1` | Disable the [snapshot compatibility rules](/aws/developer-tools/snapshots/service-coverage#snapshot-compatibility) that prevent loading incompatible state into LocalStack. Applies to both snapshot persistence and Cloud Pods. |
 
 ## Cloud Pods
 
@@ -444,7 +463,7 @@ To learn more about these configuration options, see [Cloud Pods](/aws/developer
 | `POD_LOAD_CLI_TIMEOUT` | 60 (default) | Timeout in seconds to wait before returning from load operations on the Cloud Pods CLI |
 | `POD_ENCRYPTION` | `0` (default) \| `1` | Whether to encrypt the Cloud Pods artifacts at rest. |
 | `ENABLE_POD_RESOURCES=1` | `0` (default) \| `1`  | Whether to save a detailed Stack Overview including available resources for the Cloud Pod |
-| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [state merging](/aws/developer-tools/snapshots/cloud-pods/#state-merging)) |
+| `MERGE_STRATEGY` | `account-region-merge` (default) \| `service-merge` \| `overwrite`  | The merge strategy to apply when loading a Cloud Pod into LocalStack (see [merging snapshots](/aws/developer-tools/snapshots/merging-snapshots/)) |
 
 ## Extensions
 
@@ -568,51 +587,3 @@ These configurations have already been removed and **won't have any effect** on 
 | `TMPDIR`| 2.0.0 | `/tmp` (default) |  Temporary folder on the host running the CLI and inside the LocalStack container .|
 | `USE_LIGHT_IMAGE` | 2.0.0 | `1` (default) | Whether to use the light-weight Docker image. Overwritten by `IMAGE_NAME`.|
 | `PORT_WEB_UI` | 0.12.8 | `8080` (default) | Port for the legacy Web UI. Replaced by our [Web Application](https://app.localstack.cloud) |
-
-## Profiles
-
-LocalStack supports configuration profiles which are stored in the `~/.localstack` config directory.
-If the directory does not exist, create it manually.
-A configuration profile is a set of environment variables stored in an `.env` file in the LocalStack config directory.
-
-Here is an example of what configuration profiles might look like:
-
-```bash
-tree ~/.localstack
-/home/username/.localstack
-├── default.env
-├── dev.env
-└── pro.env
-```
-
-Here is an example of what a specific environment profile looks like
-
-```bash
-cat ~/.localstack/pro-debug.env
-LOCALSTACK_AUTH_TOKEN=XXXXX
-DEBUG=1
-DEVELOP=1
-```
-
-You can load a profile by either setting the `env` variable `CONFIG_PROFILE=<profile>` or the `--profile=<profile>` CLI flag when using the CLI.
-Let's take an example to load the `dev.env` profile file if it exists:
-
-```bash
-python -m localstack.cli.main --profile=dev start
-```
-
-If no profile is specified, the `default.env` profile will be loaded.
-While explicitly specified, the environment variables will always overwrite the profile.
-
-To display the config environment variables, you can use the following command:
-
-```bash
-python -m localstack.cli.main --profile=dev config show
-```
-
-:::note
-The `CONFIG_PROFILE` is a CLI feature and cannot be used with a Docker/Docker Compose setup.
-You can look at [alternative means of setting environment variables](https://docs.docker.com/compose/environment-variables/set-environment-variables/) for your Docker Compose setups.
-
-For Docker setups, we recommend passing the environment variables directly to the `docker run` command.
-:::

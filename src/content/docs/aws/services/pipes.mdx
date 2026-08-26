@@ -26,7 +26,7 @@ If you would like support for more APIs or report bugs, please make a request on
 
 ## Getting started
 
-This guide is designed for users new to EventBridge Pipes and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to EventBridge Pipes and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Pipe with SQS queues as source and target, and send events to the source queue which will be routed to the target queue.
@@ -37,15 +37,15 @@ Create two SQS queues that will be used as source and target for the Pipe.
 Run the following command to create a queue using the [`CreateQueue`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_CreateQueue.html) API:
 
 ```bash
-awslocal sqs create-queue --queue-name source-queue
-awslocal sqs create-queue --queue-name target-queue
+lstk aws sqs create-queue --queue-name source-queue
+lstk aws sqs create-queue --queue-name target-queue
 ```
 
 You can fetch their queue ARNs using the [`GetQueueAttributes`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_GetQueueAttributes.html) API:
 
 ```bash
-SOURCE_QUEUE_ARN=$(awslocal sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/source-queue --attribute-names QueueArn --output text)
-TARGET_QUEUE_ARN=$(awslocal sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/target-queue --attribute-names QueueArn --output text)
+SOURCE_QUEUE_ARN=$(lstk aws sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/source-queue --attribute-names QueueArn --output text)
+TARGET_QUEUE_ARN=$(lstk aws sqs get-queue-attributes --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/target-queue --attribute-names QueueArn --output text)
 ```
 
 ### Create a Pipe
@@ -54,7 +54,7 @@ You can now create a Pipe, using the [`CreatePipe`](https://docs.aws.amazon.com/
 Run the following command, by specifying the source and target queue ARNs we created earlier:
 
 ```bash
-awslocal pipes create-pipe --name sample-pipe \
+lstk aws pipes create-pipe --name sample-pipe \
         --source $SOURCE_QUEUE_ARN \
         --target $TARGET_QUEUE_ARN \
         --role-arn arn:aws:iam::000000000000:role/pipes-role
@@ -76,7 +76,7 @@ awslocal pipes create-pipe --name sample-pipe \
 You can use the [`DescribePipe`](https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_DescribePipe.html) API to get information about the Pipe:
 
 ```bash
-awslocal pipes describe-pipe --name sample-pipe
+lstk aws pipes describe-pipe --name sample-pipe
 ```
 
 ```bash title="Output"
@@ -108,7 +108,7 @@ You can now send events to the source queue, which will be routed to the target 
 Run the following command to send an event to the source queue:
 
 ```bash
-awslocal sqs send-message \
+lstk aws sqs send-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/source-queue \
     --message-body "message-1"
 ```
@@ -118,7 +118,7 @@ awslocal sqs send-message \
 You can fetch the message from the target queue using the [`ReceiveMessage`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html) API:
 
 ```bash
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/target-queue
 ```
 

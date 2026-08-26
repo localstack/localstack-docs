@@ -27,10 +27,19 @@ This offline functionality is enabled by:
 
 - After the image is pushed to the customer-specific ECR repository, the customer can pull and push it to their internal Docker registry.
 - Developers within the customer’s network can then pull the image from this registry.
-- To use the image from the command line interface (CLI), set the `IMAGE_NAME` configuration to the name of the Enterprise image, typically using the command:
-    ```bash
-    IMAGE_NAME=localstack-enterprise localstack start
+- To use the image from the command line interface (CLI), set the `image` field on the container block to the name of the Enterprise image:
+    ```toml
+    # .lstk/config.toml
+    [[containers]]
+    type  = "aws"
+    image = "localstack-enterprise"
     ```
+
+    ```bash
+    lstk start
+    ```
+
+    See [Custom container image](/aws/developer-tools/running-localstack/lstk#custom-container-image) for details, including how `lstk` falls back to a locally present image when a pull fails.
 
 ## "Online" vs "Offline" image
 
@@ -53,7 +62,7 @@ The main integrations are:
 
 - **License activation**: The standard image performs online activation using your `LOCALSTACK_AUTH_TOKEN`. See [Auth Token](/aws/getting-started/auth-token) for activation behavior and fallbacks.
 - **Event reporting (telemetry)**: Used for Stack Insights and related usage analytics. You can disable this via `DISABLE_EVENTS=1`.
-- **Cloud Pods (platform remote)**: Saving/loading pods against the default platform remote uses LocalStack-managed infrastructure. For stricter data residency, configure your own Cloud Pods [remote storage](/aws/developer-tools/snapshots/cloud-pods#remotes).
+- **Cloud Pods (platform remote)**: Saving/loading pods against the default platform remote uses LocalStack-managed infrastructure. See [Cloud Pods](/aws/developer-tools/snapshots/cloud-pods/) for where that data is held. For stricter data residency, consider other [remote storage options](/aws/developer-tools/snapshots/saving-snapshots-to-s3).
 - **Ephemeral instances**: These are managed cloud instances and therefore require connectivity to LocalStack Cloud services.
 
 ### Recommended setup for offline environments

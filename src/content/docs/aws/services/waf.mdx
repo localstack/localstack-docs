@@ -16,7 +16,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is for users who are familiar with the AWS CLI and [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is for users who are familiar with the AWS CLI and [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will walk you through creating, listing, tagging, and viewing tags for Web Access Control Lists (WebACLs) using the Web Application Firewall (WAF) service in a LocalStack environment using the AWS CLI.
@@ -27,7 +27,7 @@ Start by creating a Web Access Control List (WebACL) using the [`CreateWebACL`](
 Run the following command to create a WebACL named `TestWebAcl`:
 
 ```bash showLineNumbers
-awslocal wafv2 create-web-acl \
+lstk aws wafv2 create-web-acl \
     --name TestWebAcl \
     --scope REGIONAL \
     --default-action Allow={} \
@@ -53,7 +53,7 @@ To view all the WebACLs you have created, use the [`ListWebACLs`](https://docs.a
 Run the following command to list the WebACLs:
 
 ```bash
-awslocal wafv2 list-web-acls --scope REGIONAL
+lstk aws wafv2 list-web-acls --scope REGIONAL
 ```
 
 ```bash title="Output"
@@ -77,7 +77,7 @@ Use the [`TagResource`](https://docs.aws.amazon.com/waf/latest/APIReference/API_
 Run the following command to add a tag to the WebACL created in the previous step:
 
 ```bash
-awslocal wafv2 tag-resource \
+lstk aws wafv2 tag-resource \
     --resource-arn arn:aws:wafv2:us-east-1:000000000000:regional/webacl/TestWebAcl/f94fd5bc-e4d4-4280-9f53-51e9441ad51d \
     --tags Key=Name,Value=AWSWAF
 ```
@@ -87,7 +87,7 @@ Use the [`ListTagsForResource`](https://docs.aws.amazon.com/waf/latest/APIRefere
 Run the following command to list the tags for the WebACL created in the previous step:
 
 ```bash
-awslocal wafv2 list-tags-for-resource \
+lstk aws wafv2 list-tags-for-resource \
     --resource-arn arn:aws:wafv2:us-east-1:000000000000:regional/webacl/TestWebAcl/f94fd5bc-e4d4-4280-9f53-51e9441ad51d
 ```
 

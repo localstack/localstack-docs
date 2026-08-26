@@ -16,7 +16,7 @@ You can use Cloud Custodian with LocalStack by just specifying the Cloud Custodi
 
 ## Getting started
 
-This guide is designed for users who are new to Cloud Custodian and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users who are new to Cloud Custodian and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can spin up an EC2 instance and tag it with the key `Custodian`, and then use Cloud Custodian to stop the instance.
@@ -33,12 +33,12 @@ After installing Cloud Custodian, you can configure a [custom LocalStack profile
 
 ### Create an EC2 instance
 
-You can create an EC2 instance using the `awslocal` wrapper script.
+You can create an EC2 instance using `lstk aws`.
 You can use the [`RunInstances`](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html) API to create an EC2 instance.
 The following example creates an EC2 instance with the tag `Custodian` (any value):
 
 ```bash
-awslocal ec2 run-instances \
+lstk aws ec2 run-instances \
     --image-id ami-ff0fea8310f3 \
     --count 1 \
     --instance-type t3.nano \

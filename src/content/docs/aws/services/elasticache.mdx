@@ -22,14 +22,14 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to ElastiCache and assumes basic knowledge of the AWS CLI and our `awslocal` wrapper script.
+This guide is designed for users new to ElastiCache and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 ### Single cache cluster
 
 After starting LocalStack for AWS, you can create a cluster with the following command.
 
 ```bash
-awslocal elasticache create-cache-cluster \
+lstk aws elasticache create-cache-cluster \
   --cache-cluster-id my-redis-cluster \
   --cache-node-type cache.t2.micro \
   --engine redis \
@@ -39,7 +39,7 @@ awslocal elasticache create-cache-cluster \
 Wait for it to be available, then you can use the cluster endpoint for Redis operations.
 
 ```bash
-awslocal elasticache describe-cache-clusters --show-cache-node-info --query "CacheClusters[0].CacheNodes[0].Endpoint"
+lstk aws elasticache describe-cache-clusters --show-cache-node-info --query "CacheClusters[0].CacheNodes[0].Endpoint"
 ```
 
 ```bash title="Output"
@@ -64,7 +64,7 @@ redis-cli -p 4510 get foo
 ### Replication groups in non-cluster mode
 
 ```bash
-awslocal elasticache create-replication-group \
+lstk aws elasticache create-replication-group \
   --replication-group-id my-redis-replication-group \
   --replication-group-description 'my replication group' \
   --engine redis \
@@ -76,13 +76,13 @@ Wait for it to be available.
 When running the following command, you should see one node group when running:
 
 ```bash
-awslocal elasticache describe-replication-groups --replication-group-id my-redis-replication-group
+lstk aws elasticache describe-replication-groups --replication-group-id my-redis-replication-group
 ```
 
 To retrieve the primary endpoint:
 
 ```bash
-awslocal elasticache describe-replication-groups --replication-group-id my-redis-replication-group \
+lstk aws elasticache describe-replication-groups --replication-group-id my-redis-replication-group \
   --query "ReplicationGroups[0].NodeGroups[0].PrimaryEndpoint"
 ```
 
@@ -91,7 +91,7 @@ awslocal elasticache describe-replication-groups --replication-group-id my-redis
 The cluster mode is enabled by using `--num-node-groups` and `--replicas-per-node-group`:
 
 ```bash
-awslocal elasticache create-replication-group \
+lstk aws elasticache create-replication-group \
   --engine redis \
   --replication-group-id my-clustered-redis-replication-group \
   --replication-group-description 'my clustered replication group' \
@@ -104,7 +104,7 @@ Note that the group nodes do not have a primary endpoint.
 Instead they have a `ConfigurationEndpoint`, which you can connect to using `redis-cli -c` where `-c` is for cluster mode.
 
 ```bash
-awslocal elasticache describe-replication-groups --replication-group-id my-clustered-redis-replication-group \
+lstk aws elasticache describe-replication-groups --replication-group-id my-clustered-redis-replication-group \
     --query "ReplicationGroups[0].ConfigurationEndpoint"
 ```
 
@@ -126,7 +126,7 @@ To enable full Valkey emulation:
 2. Create a cluster with the Valkey engine by including the `--engine valkey` flag in your API call:
 
 ```bash
-  awslocal elasticache create-replication-group \
+  lstk aws elasticache create-replication-group \
   --replication-group-id my-valkey-group \
   --replication-group-description "Valkey test group" \
   --engine valkey \

@@ -19,7 +19,7 @@ The supported operations are listed on the [API Coverage section](#api-coverage)
 
 This guide will walk through the process of creating CodeDeploy applications, deployment configuration, deployment groups, and deployments.
 
-Basic knowledge of the AWS CLI and the [`awslocal`](https://github.com/localstack/awscli-local) wrapper is expected.
+Basic knowledge of the AWS CLI and the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command is expected.
 
 Start LocalStack using your preferred method.
 
@@ -29,7 +29,7 @@ An application is a CodeDeploy construct that uniquely identifies your targetted
 Create an application with the [CreateApplication](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateApplication.html) operation:
 
 ```bash
-awslocal deploy create-application --application-name hello --compute-platform Server
+lstk aws deploy create-application --application-name hello --compute-platform Server
 ```
 
 ```bash title="Output"
@@ -41,7 +41,7 @@ awslocal deploy create-application --application-name hello --compute-platform S
 Make note of the application name, which can be used with other operations such as [GetApplication](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetApplication.html), [UpdateApplication](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_UpdateApplication.html) and [DeleteApplication](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_DeleteApplication.html).
 
 ```bash
-awslocal deploy get-application --application-name hello
+lstk aws deploy get-application --application-name hello
 ```
 
 ```bash title="Output"
@@ -58,7 +58,7 @@ awslocal deploy get-application --application-name hello
 You can list all application using [ListApplications](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListApplications.html).
 
 ```bash
-awslocal deploy list-applications
+lstk aws deploy list-applications
 ```
 
 ```bash title="Output"
@@ -76,7 +76,7 @@ A deployment configuration consists of rules for deployment along with success a
 Create a deployment configuration using [CreateDeploymentConfig](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeploymentConfig.html):
 
 ```bash
-awslocal deploy create-deployment-config --deployment-config-name hello-conf \
+lstk aws deploy create-deployment-config --deployment-config-name hello-conf \
     --compute-platform Server  \
     --minimum-healthy-hosts '{"type": "HOST_COUNT", "value": 1}'
 ```
@@ -90,7 +90,7 @@ awslocal deploy create-deployment-config --deployment-config-name hello-conf \
 [ListDeploymentConfigs](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeploymentConfigs.html) can be used to list all available configs:
 
 ```bash
-awslocal deploy list-deployment-configs
+lstk aws deploy list-deployment-configs
 ```
 
 ```bash title="Output"
@@ -104,7 +104,7 @@ awslocal deploy list-deployment-configs
 Use [GetDeploymentConfig](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeploymentConfig.html) and [DeleteDeploymentConfig](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_DeleteDeploymentConfig.html) to manage deployment configurations.
 
 ```bash
-awslocal deploy get-deployment-config --deployment-config-name hello-conf
+lstk aws deploy get-deployment-config --deployment-config-name hello-conf
 ```
 
 ```bash title="Output"
@@ -135,7 +135,7 @@ Deployment groups can be managed with:
 Create a deployment group with [CreateDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeploymentGroup.html):
 
 ```bash
-awslocal deploy create-deployment-group \
+lstk aws deploy create-deployment-group \
     --application-name hello \
     --service-role-arn arn:aws:iam::000000000000:role/role \
     --deployment-group-name hello-group
@@ -150,7 +150,7 @@ awslocal deploy create-deployment-group \
 List all deployment groups for an application with [ListDeploymentGroups](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeploymentGroups.html):
 
 ```bash
-awslocal deploy list-deployment-groups --application-name hello
+lstk aws deploy list-deployment-groups --application-name hello
 ```
 
 ```bash title="Output"
@@ -164,7 +164,7 @@ awslocal deploy list-deployment-groups --application-name hello
 Get a deployment group with [GetDeploymentGroup](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeploymentGroup.html):
 
 ```bash
-awslocal deploy get-deployment-group --application-name hello \
+lstk aws deploy get-deployment-group --application-name hello \
     --deployment-group-name hello-group
 ```
 
@@ -200,7 +200,7 @@ Operations related to deployment management are:
 Create a deployment with [CreateDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html):
 
 ```bash
-awslocal deploy create-deployment \
+lstk aws deploy create-deployment \
     --application-name hello \
     --deployment-group-name hello-group \
     --revision '{"revisionType": "S3", "s3Location": {"bucket": "placeholder", "key": "placeholder", "bundleType": "tar"}}'
@@ -215,7 +215,7 @@ awslocal deploy create-deployment \
 List all deployments for an application with [ListDeployments](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_ListDeployments.html):
 
 ```bash
-awslocal deploy list-deployments
+lstk aws deploy list-deployments
 ```
 
 ```bash title="Output"
@@ -229,7 +229,7 @@ awslocal deploy list-deployments
 Get a deployment with [GetDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_GetDeployment.html):
 
 ```bash
-awslocal deploy get-deployment --deployment-id d-TU3TNCSTO
+lstk aws deploy get-deployment --deployment-id d-TU3TNCSTO
 ```
 
 ```bash title="Output"
@@ -269,13 +269,13 @@ Furthermore, [ContinueDeployment](https://docs.aws.amazon.com/codedeploy/latest/
 Continue a deployment with [ContinueDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_StopDeployment.html):
 
 ```bash
-awslocal deploy continue-deployment --deployment-id d-TU3TNCSTO
+lstk aws deploy continue-deployment --deployment-id d-TU3TNCSTO
 ```
 
 Stop a deployment with [StopDeployment](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_StopDeployment.html):
 
 ```bash
-awslocal deploy stop-deployment --deployment-id d-TU3TNCSTO
+lstk aws deploy stop-deployment --deployment-id d-TU3TNCSTO
 ```
 
 ```bash title="Output"

@@ -29,7 +29,7 @@ LocalStack creates Flink JobManager and TaskManager containers on the Docker net
 **Running LocalStack inside a Kubernetes cluster with the Docker executor is not supported.**
 Mounting the host Docker socket (`/var/run/docker.sock`) into a LocalStack pod is not sufficient — the Docker executor cannot create Flink containers in this topology and applications will remain stuck in `STARTING` indefinitely.
 
-If you are running LocalStack outside of Kubernetes (for example, with Docker Compose or the LocalStack CLI), no additional configuration is required and the Docker executor is used automatically.
+If you are running LocalStack outside of Kubernetes (for example, with Docker Compose or the `lstk` CLI), no additional configuration is required and the Docker executor is used automatically.
 
 ## Getting Started
 
@@ -63,8 +63,8 @@ MSF requires that all application code resides in S3.
 Create an S3 bucket and upload the compiled Flink application jar.
 
 ```bash
-awslocal s3api create-bucket --bucket flink-bucket
-awslocal s3api put-object --bucket flink-bucket --key job.jar --body ./target/flink-kds-s3.jar
+lstk aws s3api create-bucket --bucket flink-bucket
+lstk aws s3api put-object --bucket flink-bucket --key job.jar --body ./target/flink-kds-s3.jar
 ```
 
 ### Output Sink
@@ -74,7 +74,7 @@ As mentioned earlier, this Flink application writes the output to an S3 bucket.
 Create the S3 bucket that will serve as the sink.
 
 ```bash
-awslocal s3api create-bucket --bucket sink-bucket
+lstk aws s3api create-bucket --bucket sink-bucket
 ```
 
 ### Permissions
@@ -99,7 +99,7 @@ Create an IAM role for the running MSF application to assume.
 ```
 
 ```bash
-awslocal iam create-role --role-name msaf-role --assume-role-policy-document file://role.json
+lstk aws iam create-role --role-name msaf-role --assume-role-policy-document file://role.json
 ```
 
 Next create add a permissions policy to this role that permits read and write access to S3.
@@ -119,7 +119,7 @@ Next create add a permissions policy to this role that permits read and write ac
 ```
 
 ```bash
-awslocal iam put-role-policy --role-name msaf-role --policy-name msaf-policy --policy-document file://policy.json
+lstk aws iam put-role-policy --role-name msaf-role --policy-name msaf-policy --policy-document file://policy.json
 ```
 
 Now, when the running MSF application assumes this role, it will have the necessary permissions to write to the S3 sink.
@@ -129,7 +129,7 @@ Now, when the running MSF application assumes this role, it will have the necess
 With all prerequisite resources in place, the Flink application can now be created and started.
 
 ```bash showshowLineNumbers
-awslocal kinesisanalyticsv2 create-application \
+lstk aws kinesisanalyticsv2 create-application \
     --application-name msaf-app \
     --runtime-environment FLINK-1_20 \
     --application-mode STREAMING \
@@ -151,14 +151,14 @@ awslocal kinesisanalyticsv2 create-application \
         }
     }'
 
-awslocal kinesisanalyticsv2 start-application --application-name msaf-app
+lstk aws kinesisanalyticsv2 start-application --application-name msaf-app
 ```
 
 Once the Flink cluster is up and running, the application will stream the results to the sink S3 bucket.
 You can verify this with:
 
 ```bash
-awslocal s3api list-objects --bucket sink-bucket
+lstk aws s3api list-objects --bucket sink-bucket
 ```
 
 ## CloudWatch Logging
@@ -176,7 +176,7 @@ There are following prerequisites for CloudWatch Logs integration:
 To add a logging option:
 
 ```bash showshowLineNumbers
-awslocal kinesisanalyticsv2 add-application-cloud-watch-logging-option \
+lstk aws kinesisanalyticsv2 add-application-cloud-watch-logging-option \
     --application-name msaf-app \
     --cloud-watch-logging-option '{"LogStreamARN": "arn:aws:logs:us-east-1:000000000000:log-group:msaf-log-group:log-stream:msaf-log-stream"}'
 ```
@@ -201,7 +201,7 @@ Enabling CloudWatch Logs integration has a significant performance hit.
 Configured logging options can be retrieved using [DescribeApplication](https://docs.aws.amazon.com/managed-flink/latest/apiv2/API_DescribeApplication.html):
 
 ```bash
-awslocal kinesisanalyticsv2 describe-application --application-name msaf-app | jq .ApplicationDetail.CloudWatchLoggingOptionDescriptions
+lstk aws kinesisanalyticsv2 describe-application --application-name msaf-app | jq .ApplicationDetail.CloudWatchLoggingOptionDescriptions
 ```
 
 ```bash title="Output"
@@ -221,7 +221,7 @@ Log events can be retrieved from CloudWatch Logs using the appropriate operation
 To retrieve all events:
 
 ```bash
-awslocal logs get-log-events --log-group-name msaf-log-group --log-stream-name msaf-log-stream
+lstk aws logs get-log-events --log-group-name msaf-log-group --log-stream-name msaf-log-stream
 ```
 
 LocalStack reports both Flink application and Flink framework logs to CloudWatch.
@@ -234,11 +234,11 @@ You can manage [resource tags](https://docs.aws.amazon.com/managed-flink/latest/
 Tags can also be specified when creating the Flink application using the [CreateApplication](https://docs.aws.amazon.com/managed-flink/latest/apiv2/API_CreateApplication.html) operation.
 
 ```bash
-awslocal kinesisanalyticsv2 tag-resource \
+lstk aws kinesisanalyticsv2 tag-resource \
     --resource-arn arn:aws:kinesisanalytics:us-east-1:000000000000:application/msaf-app \
     --tags Key=country,Value=SE
 
-awslocal kinesisanalyticsv2 list-tags-for-resource \
+lstk aws kinesisanalyticsv2 list-tags-for-resource \
     --resource-arn arn:aws:kinesisanalytics:us-east-1:000000000000:application/msaf-app
 ```
 
@@ -256,7 +256,7 @@ awslocal kinesisanalyticsv2 list-tags-for-resource \
 You can also untag the resource:
 
 ```bash
-awslocal kinesisanalyticsv2 untag-resource \
+lstk aws kinesisanalyticsv2 untag-resource \
     --resource-arn arn:aws:kinesisanalytics:us-east-1:000000000000:application/msaf-app \
     --tag-keys country
 ```

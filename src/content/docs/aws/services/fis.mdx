@@ -43,7 +43,7 @@ Some of these events can automatically be undone after a defined time, such as s
 
 ## Getting started
 
-This guide is designed for users new to FIS and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to FIS and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create an experiment that stops EC2 instances.
@@ -90,7 +90,7 @@ Nonetheless, they are obligatory fields according to AWS specifications and must
 Run the following command to create an FIS experiment template using the configuration file we just created:
 
 ```bash
-awslocal fis create-experiment-template --cli-input-json file://create-experiment.json
+lstk aws fis create-experiment-template --cli-input-json file://create-experiment.json
 ```
 
 The following output would be retrieved:
@@ -133,7 +133,7 @@ The following output would be retrieved:
 You can list all the templates you have created using the [`ListExperimentTemplates`](https://docs.aws.amazon.com/fis/latest/APIReference/API_ListExperimentTemplates.html):
 
 ```bash
-awslocal fis list-experiment-templates
+lstk aws fis list-experiment-templates
 ```
 
 ### Starting the experiment
@@ -141,7 +141,7 @@ awslocal fis list-experiment-templates
 Now let us start an EC2 instance that will match the criteria we specified in the experiment template.
 
 ```bash
-awslocal ec2 run-instances \
+lstk aws ec2 run-instances \
     --image-id ami-024f768332f0 \
     --count 1 \
     --tag-specifications '{"ResourceType": "instance", "Tags": [{"Key": "foo", "Value": "bar"}]}'
@@ -151,7 +151,7 @@ You can start the experiment using the [`StartExperiment`](https://docs.aws.amaz
 Run the following command and specify the ID of the experiment template you created earlier:
 
 ```bash
-awslocal fis start-experiment --experiment-template-id ad16589a-4a91-4aee-88df-c33446605882
+lstk aws fis start-experiment --experiment-template-id ad16589a-4a91-4aee-88df-c33446605882
 ```
 
 ```bash title="Output"
@@ -196,14 +196,14 @@ You can use the [`ListExperiments`](https://docs.aws.amazon.com/fis/latest/APIRe
 Run the following command:
 
 ```bash
-awslocal fis list-experiments
+lstk aws fis list-experiments
 ```
 
 You can fetch the details of your experiment using the [`GetExperiment`](https://docs.aws.amazon.com/fis/latest/APIReference/API_GetExperiment.html) API.
 Run the following command and specify the ID of the experiment you created earlier:
 
 ```bash
-awslocal fis get-experiment --id efee7c02-8733-4d7c-9628-1b60bbec9759
+lstk aws fis get-experiment --id efee7c02-8733-4d7c-9628-1b60bbec9759
 ```
 
 ### Verifying the outcome
@@ -212,7 +212,7 @@ You can now test that the experiment is working as expected by trying to obtain 
 Run the following command:
 
 ```bash
-awslocal ec2 describe-instance-status \
+lstk aws ec2 describe-instance-status \
     --instance-ids i-3c40b52ab72f99c63 \
     --output json \
     --query InstanceStatuses[0].InstanceState

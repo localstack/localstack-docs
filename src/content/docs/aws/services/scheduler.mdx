@@ -17,7 +17,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to EventBridge Scheduler and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to EventBridge Scheduler and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can create a new schedule, list all schedules, and tag a schedule using the EventBridge Scheduler APIs.
@@ -28,14 +28,14 @@ You can create a new SQS queue using the [`CreateQueue`](https://docs.aws.amazon
 Run the following command to create a new SQS queue:
 
 ```bash
-awslocal sqs create-queue --queue-name local-notifications
+lstk aws sqs create-queue --queue-name local-notifications
 ```
 
 You can fetch the Queue ARN using the [`GetQueueAttributes`](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_GetQueueAttributes.html) API.
 Run the following command to fetch the Queue ARN by specifying the Queue URL:
 
 ```bash
-awslocal sqs get-queue-attributes \
+lstk aws sqs get-queue-attributes \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/local-notifications \
     --attribute-names All
 ```
@@ -48,7 +48,7 @@ You can create a new schedule using the [`CreateSchedule`](https://docs.aws.amaz
 Run the following command to create a new schedule:
 
 ```bash
-awslocal scheduler create-schedule \
+lstk aws scheduler create-schedule \
     --name sqs-templated-schedule \
     --schedule-expression 'rate(5 minutes)' \
     --target '{"RoleArn": "arn:aws:iam::000000000000:role/schedule-role", "Arn":"arn:aws:sqs:us-east-1:000000000000:local-notifications", "Input": "test" }' \
@@ -67,7 +67,7 @@ You can list all schedules using the [`ListSchedules`](https://docs.aws.amazon.c
 Run the following command to list all schedules:
 
 ```bash
-awslocal scheduler list-schedules
+lstk aws scheduler list-schedules
 ```
 
 ```bash title="Output"
@@ -94,7 +94,7 @@ You can tag a schedule using the [`TagResource`](https://docs.aws.amazon.com/eve
 Run the following command to tag a schedule:
 
 ```bash
-awslocal scheduler tag-resource \
+lstk aws scheduler tag-resource \
     --resource-arn arn:aws:scheduler:us-east-1:000000000000:schedule/default/sqs-templated-schedule \
     --tags Key=Name,Value=Test
 ```
@@ -103,7 +103,7 @@ You can view the tags associated with a schedule using the [`ListTagsForResource
 Run the following command to list the tags associated with a schedule:
 
 ```bash
-awslocal scheduler list-tags-for-resource \
+lstk aws scheduler list-tags-for-resource \
     --resource-arn arn:aws:scheduler:us-east-1:00000000
 
 ```bash title="Output"

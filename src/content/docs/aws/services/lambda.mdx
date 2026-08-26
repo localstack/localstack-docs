@@ -20,7 +20,7 @@ The supported APIs are available on our [API coverage section](#api-coverage), w
 
 ## Getting started
 
-This guide is designed for users new to Lambda and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to Lambda and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how to create a Lambda function with a Function URL.
@@ -46,7 +46,7 @@ Enter the following command to create a new Lambda function:
 
 ```bash
 zip function.zip index.js
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name localstack-lambda-url-example \
     --runtime nodejs22.x \
     --zip-file fileb://function.zip \
@@ -57,7 +57,7 @@ awslocal lambda create-function \
 :::note
 To create a predictable URL for the function, you can assign a custom ID by specifying the `_custom_id_` tag on the function itself.
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name localstack-lambda-url-example \
     --runtime nodejs22.x \
     --zip-file fileb://function.zip \
@@ -83,13 +83,13 @@ Run the following command to invoke the function:
 <Tabs>
 <TabItem label="AWS CLI v1">
 ```bash
-awslocal lambda invoke --function-name localstack-lambda-url-example \
+lstk aws lambda invoke --function-name localstack-lambda-url-example \
     --payload '{"body": "{\"num1\": \"10\", \"num2\": \"10\"}" }' output.txt
 ```
 </TabItem>
 <TabItem label="AWS CLI v2">
 ```bash
-awslocal lambda invoke --function-name localstack-lambda-url-example \
+lstk aws lambda invoke --function-name localstack-lambda-url-example \
     --cli-binary-format raw-in-base64-out \
     --payload '{"body": "{\"num1\": \"10\", \"num2\": \"10\"}" }' output.txt
 ```
@@ -106,7 +106,7 @@ With the Function URL property, there is now a new way to call a Lambda Function
 To create a URL for invoking the function, run the following command:
 
 ```bash
-awslocal lambda create-function-url-config \
+lstk aws lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
 ```
@@ -118,7 +118,7 @@ The URL will be in the format `http://<XXXXXXXX>.lambda-url.us-east-1.localhost.
 As previously mentioned, when a Lambda Function has a `_custom_id_` tag, LocalStack sets this tag's value as the subdomain in the Function's URL.
 
 ```bash
-awslocal lambda create-function-url-config \
+lstk aws lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
 ```
@@ -133,7 +133,7 @@ awslocal lambda create-function-url-config \
 In addition, if you pass an existing version alias as a `Qualifier` to the request, the created URL will combine the custom ID and the alias in the form `<custom-id>-<alias>`.
 
 ```bash
-awslocal lambda create-function-url-config \
+lstk aws lambda create-function-url-config \
     --function-name localstack-lambda-url-example \
     --auth-type NONE
     --qualifier test-alias
@@ -448,7 +448,7 @@ mkdir -p /tmp/python/
 echo 'def util():' > /tmp/python/testlayer.py
 echo '  print("Output from Lambda layer util function")' >> /tmp/python/testlayer.py
 (cd /tmp; zip -r testlayer.zip python)
-LAYER_ARN=$(awslocal lambda publish-layer-version --layer-name layer1 --zip-file fileb:///tmp/testlayer.zip | jq -r .LayerVersionArn)
+LAYER_ARN=$(lstk aws lambda publish-layer-version --layer-name layer1 --zip-file fileb:///tmp/testlayer.zip | jq -r .LayerVersionArn)
 ```
 
 Next, define a Lambda function that uses our layer:
@@ -458,7 +458,7 @@ echo 'def handler(*args, **kwargs):' > /tmp/testlambda.py
 echo '  import testlayer; testlayer.util()' >> /tmp/testlambda.py
 echo '  print("Debug output from Lambda function")' >> /tmp/testlambda.py
 (cd /tmp; zip testlambda.zip testlambda.py)
-awslocal lambda create-function \
+lstk aws lambda create-function \
   --function-name func1 \
   --runtime python3.8 \
   --role arn:aws:iam::000000000000:role/lambda-role \
@@ -515,6 +515,164 @@ This is an evolving feature and current support is scoped as follows:
 
 - **IAM Permissions are not enforced.** A Capacity Provider is configured with an Operator Role, but the permissions are not enforced by LocalStack. It’s important you check the AWS documentation to ensure you’ve configured this role correctly.
 :::
+
+## Lambda Durable Functions <Badge text="Pro" size="large" />
+
+[Lambda Durable Functions](https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html) run checkpointed, replayable workflows that can continue for up to one year.
+LocalStack supports durable executions for Node.js 22 and 24, Python 3.13 and 3.14, Java 17, 21, and 25, and .NET 8 and 10.
+
+### Create and invoke a durable function
+
+Install the JavaScript durable execution SDK and include it with the function's deployment package:
+
+```bash
+npm install --silent @aws/durable-execution-sdk-js
+zip -qr function.zip index.mjs node_modules package.json package-lock.json
+```
+
+Create `index.mjs` with a checkpointed step followed by a one-second durable wait:
+
+```javascript title="index.mjs" showLineNumbers
+import { withDurableExecution } from "@aws/durable-execution-sdk-js";
+
+export const handler = withDurableExecution(async (event, context) => {
+  const result = await context.step(async () => ({
+    message: `Hello, ${event.name}!`,
+  }));
+
+  await context.wait({ seconds: 1 });
+  return result;
+});
+```
+
+Create the function with a five-minute execution timeout and seven-day retention period:
+
+```bash
+awslocal lambda create-function \
+  --function-name durable-hello \
+  --runtime nodejs22.x \
+  --handler index.handler \
+  --role arn:aws:iam::000000000000:role/lambda-role \
+  --zip-file fileb://function.zip \
+  --timeout 30 \
+  --durable-config '{"ExecutionTimeout":300,"RetentionPeriodInDays":7}'
+```
+
+```bash title="Output"
+{
+  "FunctionName": "durable-hello",
+  "FunctionArn": "arn:aws:lambda:us-east-1:000000000000:function:durable-hello",
+  "Runtime": "nodejs22.x",
+  "State": "Pending",
+  "DurableConfig": {
+    "RetentionPeriodInDays": 7,
+    "ExecutionTimeout": 300
+  }
+}
+```
+
+Wait for the function to become active:
+
+```bash
+awslocal lambda wait function-active-v2 --function-name durable-hello
+```
+
+Create `event.json`:
+
+```json title="event.json"
+{
+  "name": "LocalStack"
+}
+```
+
+Start an asynchronous durable execution.
+Use a qualified function target and a durable execution name, which acts as an idempotency key:
+
+```bash
+EXECUTION_ARN=$(awslocal lambda invoke \
+  --function-name durable-hello \
+  --qualifier '$LATEST' \
+  --invocation-type Event \
+  --durable-execution-name hello-docs \
+  --payload fileb://event.json \
+  response.json \
+  | jq -r '.DurableExecutionArn')
+echo "$EXECUTION_ARN"
+```
+
+```text title="Output"
+arn:aws:lambda:us-east-1:000000000000:function:durable-hello:$LATEST/durable-execution/hello-docs/<execution-id>
+```
+
+After the execution finishes, retrieve its status and result:
+
+```bash
+awslocal lambda get-durable-execution \
+  --durable-execution-arn "$EXECUTION_ARN" \
+  --query '{DurableExecutionName:DurableExecutionName,Status:Status,Result:Result,DurableConfig:DurableConfig}'
+```
+
+```bash title="Output"
+{
+  "DurableExecutionName": "hello-docs",
+  "Status": "SUCCEEDED",
+  "Result": "{\"message\":\"Hello, LocalStack!\"}",
+  "DurableConfig": {
+    "RetentionPeriodInDays": 7,
+    "ExecutionTimeout": 300
+  }
+}
+```
+
+Inspect the execution history to see the checkpoint, suspension, replay, and completion:
+
+```bash
+awslocal lambda get-durable-execution-history \
+  --durable-execution-arn "$EXECUTION_ARN" \
+  --query 'Events[].EventType'
+```
+
+```bash title="Output"
+[
+  "ExecutionStarted",
+  "StepStarted",
+  "StepSucceeded",
+  "WaitStarted",
+  "InvocationCompleted",
+  "WaitSucceeded",
+  "InvocationCompleted",
+  "ExecutionSucceeded"
+]
+```
+
+### Supported behaviors
+
+LocalStack supports the following durable workflow behaviors:
+
+- Synchronous and asynchronous durable invocations with named, idempotent executions.
+- Checkpointed steps, waits, condition polling, and step retries.
+- Callbacks with heartbeats, success and failure responses, and restart-safe timeouts.
+- Chained Lambda invocations, parallel branches, maps, and child contexts.
+- Execution history, stopping and draining executions, retention, persistence, and asynchronous dead-letter queue delivery.
+- Function URL and event source mapping dispatch to durable functions, subject to the AWS execution-time constraints.
+
+### Current Limitations
+
+:::note
+LocalStack Lambda runtime images do not include the durable execution SDK.
+Package the SDK and its dependencies with every durable function deployment artifact.
+This differs from AWS managed Node.js and Python runtimes, which include the SDK for testing and development.
+:::
+
+LocalStack currently has the following limitations:
+
+- `KMSKeyArn` is validated, stored, merged, and returned, but LocalStack does not use the key to encrypt durable execution data.
+- LocalStack does not emit durable execution monitoring events to CloudWatch or EventBridge.
+- LocalStack does not enforce API request-per-second throttling or the account-level running-executions quota.
+- LocalStack enforces the checkpoint protocol limits, including 3,000 operations and 100 MB of written state per execution.
+
+[Lambda Debug Mode](/aws/developer-tools/lambda-tools/remote-debugging/#lambda-debug-mode-preview-) supports durable executions.
+Replays use the debug environment pinned to the execution, and LocalStack defers `ExecutionTimeout` while execution is paused at a breakpoint.
 
 
 ## LocalStack Lambda Runtime Interface Emulator (RIE)
@@ -696,7 +854,7 @@ Refer to our [sample `docker-compose.yml` file](https://github.com/localstack/lo
 If you receive a `ResourceConflictException` when trying to invoke a function, it is currently in a `Pending` state and cannot be executed yet.
 
 ```bash
-awslocal lambda get-function --function-name my-function
+lstk aws lambda get-function --function-name my-function
 ```
 
 ```bash title="Output"
@@ -708,13 +866,13 @@ The function is currently in the following state: Pending
 To wait until the function becomes `active`, you can use the following command:
 
 ```bash
-awslocal lambda wait function-active-v2 --function-name my-function
+lstk aws lambda wait function-active-v2 --function-name my-function
 ```
 
 Alternatively, you can check the function state using the [`GetFunction` API](https://docs.aws.amazon.com/lambda/latest/dg/API_GetFunction.html):
 
 ```bash
-awslocal lambda get-function --function-name my-function
+lstk aws lambda get-function --function-name my-function
 ```
 
 ```bash title="Output"
@@ -733,7 +891,7 @@ awslocal lambda get-function --function-name my-function
 When the function is active, the output will be similar to the following:
 
 ```bash
-awslocal lambda get-function --function-name my-function
+lstk aws lambda get-function --function-name my-function
 ```
 
 ```bash title="Output"

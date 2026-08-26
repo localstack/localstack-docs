@@ -14,14 +14,14 @@ Any cluster created with the Elasticsearch Service will show up in the OpenSearc
 
 ## Creating an Elasticsearch cluster
 
-You can go ahead and use [`awslocal`](https://github.com/localstack/awscli-local) to create a new elasticsearch domain via the `aws es create-elasticsearch-domain` command.
+You can go ahead and use [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) to create a new elasticsearch domain via the `lstk aws es create-elasticsearch-domain` command.
 
 :::note
 Unless you use the Elasticsearch default version, the first time you create a cluster with a specific version, the Elasticsearch binary is downloaded, which may take a while to download.
 :::
 
 ```bash
-awslocal es create-elasticsearch-domain --domain-name my-domain
+lstk aws es create-elasticsearch-domain --domain-name my-domain
 ```
 
 ```bash title="Output"
@@ -74,7 +74,7 @@ In the LocalStack log you will see something like the following, where you can s
 and after some time, you should see that the `Processing` state of the domain is set to `false`:
 
 ```bash
-awslocal es describe-elasticsearch-domain --domain-name my-domain | jq ".DomainStatus.Processing"
+lstk aws es describe-elasticsearch-domain --domain-name my-domain | jq ".DomainStatus.Processing"
 ```
 
 ```bash title="Output"
@@ -162,7 +162,7 @@ This can be used to overwrite the behavior of the endpoint strategies described 
 You can also choose custom domains, however it is important to add the edge port (`80`/`443` or by default `4566`).
 
 ```bash
-awslocal es create-elasticsearch-domain --domain-name my-domain \
+lstk aws es create-elasticsearch-domain --domain-name my-domain \
     --elasticsearch-version 7.10 \
     --domain-endpoint-options '{ "CustomEndpoint": "http://localhost:4566/my-custom-endpoint", "CustomEndpointEnabled": true }'
 ```
@@ -265,7 +265,7 @@ volumes:
 
 2. Create the Elasticsearch domain:
     ```bash
-    awslocal es create-elasticsearch-domain \
+    lstk aws es create-elasticsearch-domain \
         --domain-name mylogs-2 \
         --elasticsearch-version 7.10 \
         --elasticsearch-cluster-config '{ "InstanceType": "m3.xlarge.elasticsearch", "InstanceCount": 4, "DedicatedMasterEnabled": true, "ZoneAwarenessEnabled": true, "DedicatedMasterType": "m3.xlarge.elasticsearch", "DedicatedMasterCount": 3}'
@@ -305,7 +305,7 @@ volumes:
 
 3. If the `Processing` status is true, it means that the cluster is not yet healthy. You can run `describe-elasticsearch-domain` to receive the status:
     ```bash
-    awslocal es describe-elasticsearch-domain --domain-name mylogs-2
+    lstk aws es describe-elasticsearch-domain --domain-name mylogs-2
     ```
 
 4. Check the cluster health endpoint and create indices:
