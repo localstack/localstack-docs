@@ -122,10 +122,6 @@ provider "aws" {
   secret_key                  = "test"
   region                      = "us-east-1"
 
-
-  # only required for non virtual hosted-style endpoint use case.
-  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs#s3_use_path_style
-  s3_use_path_style           = true
   skip_credentials_validation = true
   skip_metadata_api_check     = true
 }
@@ -134,18 +130,34 @@ provider "aws" {
 ### Services
 
 Furthermore, it's necessary to configure the individual services to use LocalStack.
-For S3, this configuration resembles the following snippet, where we've chosen to use the virtual hosted-style endpoint:
+
+#### Using AWS_ENDPOINT_URL_S3 (Recommended for S3)
+
+With terraform-provider-aws version 5.x and later, you can use the `AWS_ENDPOINT_URL_S3` environment variable instead of configuring the endpoint in your Terraform code:
+
+```bash
+export AWS_ENDPOINT_URL_S3=http://s3.localhost.localstack.cloud:4566
+```
+
+This allows your Terraform configuration to work unchanged against both LocalStack and real AWS.
+No `endpoints` block is needed for S3, and virtual-hosted-style addressing is used by default.
+
+#### Configuring Endpoints in Terraform
+
+Alternatively, you can configure service endpoints directly in your provider block.
+For S3, use the virtual hosted-style endpoint:
 
 ```hcl showshowLineNumbers
 endpoints {
-  s3             = "http://s3.localhost.localstack.cloud:4566"
+  s3 = "http://s3.localhost.localstack.cloud:4566"
 }
 ```
 
 :::note
+The S3 endpoint uses the `s3.localhost.localstack.cloud` hostname to support virtual-hosted-style addressing, which AWS recommends and some regions require.
 
-If there are any difficulties resolving this DNS record, you can utilize `http://localhost:4566` as a fallback option in combination with setting `s3_use_path_style = true` in the provider.
-It's worth noting that the S3 service endpoint differs slightly from the other service endpoints due to AWS deprecating path-style based access for hosting buckets.
+If you cannot resolve this DNS record, you can use `http://localhost:4566` as a fallback and enable path-style addressing by adding `s3_use_path_style = true` to the provider configuration.
+Only use path-style if you have a specific requirement for it.
 :::
 
 ### Final Configuration
@@ -159,12 +171,11 @@ provider "aws" {
   secret_key                  = "mock_secret_key"
   region                      = "us-east-1"
 
-  s3_use_path_style           = true
   skip_credentials_validation = true
   skip_metadata_api_check     = true
 
   endpoints {
-    s3             = "http://s3.localhost.localstack.cloud:4566"
+    s3 = "http://s3.localhost.localstack.cloud:4566"
   }
 }
 
@@ -172,6 +183,16 @@ resource "aws_s3_bucket" "test-bucket" {
   bucket = "my-bucket"
 }
 ```
+
+:::tip
+With terraform-provider-aws >= 5.x, you can simplify this further by removing the `endpoints` block and using the environment variable instead:
+
+```bash
+export AWS_ENDPOINT_URL_S3=http://s3.localhost.localstack.cloud:4566
+```
+
+Then your provider configuration only needs the credentials and skip parameters.
+:::
 
 ### Endpoint Configuration
 
@@ -184,7 +205,6 @@ provider "aws" {
   access_key                  = "test"
   secret_key                  = "test"
   region                      = "us-east-1"
-  s3_use_path_style           = true
   skip_credentials_validation = true
   skip_metadata_api_check     = true
 
@@ -215,6 +235,11 @@ provider "aws" {
   }
 }
 ```
+
+:::note
+The S3 endpoint uses `s3.localhost.localstack.cloud` to support virtual-hosted-style addressing (AWS recommended).
+If you need to use path-style addressing instead, change the S3 endpoint to `http://localhost:4566` and add `s3_use_path_style = true` to the provider block.
+:::
 
 :::note
 To heuristically detect whether your Terraform configuration should be deployed against LocalStack, you can use the following snippet:
@@ -264,21 +289,20 @@ provider "aws" {
   access_key                  = "test"
   secret_key                  = "test"
   region                      = "us-east-1"
-  s3_use_path_style           = true
   skip_credentials_validation = true
   skip_metadata_api_check     = true
 
   endpoints {
-    apigateway     = "http://localhost:4566"
-    dynamodb       = "http://localhost:4566"
-    iam            = "http://localhost:4566"
-    kinesis        = "http://localhost:4566"
-    lambda         = "http://localhost:4566"
-    s3             = "http://s3.localhost.localstack.cloud:4566"
-    ses            = "http://localhost:4566"
-    sns            = "http://localhost:4566"
-    sqs            = "http://localhost:4566"
-    sts            = "http://localhost:4566"
+    apigateway = "http://localhost:4566"
+    dynamodb   = "http://localhost:4566"
+    iam        = "http://localhost:4566"
+    kinesis    = "http://localhost:4566"
+    lambda     = "http://localhost:4566"
+    s3         = "http://s3.localhost.localstack.cloud:4566"
+    ses        = "http://localhost:4566"
+    sns        = "http://localhost:4566"
+    sqs        = "http://localhost:4566"
+    sts        = "http://localhost:4566"
   }
 }
 EOF
@@ -286,6 +310,7 @@ EOF
 ```
 
 You can add more service endpoints to the above configuration as needed, and point them to LocalStack (`http://localhost:4566`).
+Note that the S3 endpoint uses `s3.localhost.localstack.cloud` to support virtual-hosted-style addressing.
 
 ## Examples
 
