@@ -23,7 +23,7 @@ If you have any questions or uncertainties regarding the licensing implications,
 
 ## Getting started
 
-This guide is designed for users new to LocalStack and assumes basic knowledge of the AWS CLI and our [`lstk aws` AWS CLI proxy](/aws/developer-tools/running-localstack/lstk#aws).
+This guide is designed for users new to LocalStack and assumes basic knowledge of the AWS CLI and our [`lstk aws` AWS CLI proxy](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#aws).
 As a general prerequisite, you should have access to the [OpenShift Web Console](https://docs.openshift.com/container-platform/4.14/web_console/web-console-overview.html).
 
 We will demonstrate how you can create local AWS resources using LocalStack using the AWS CLI.
@@ -93,7 +93,7 @@ Since we are running LocalStack on OpenShift, we need to specify the route URL o
 The flag takes precedence over the environment variable.
 :::
 
-You can further use the other `lstk` tool proxies, such as [`lstk cdk`](/aws/developer-tools/running-localstack/lstk#cdk), [`lstk sam`](/aws/developer-tools/running-localstack/lstk#sam), and [`lstk terraform`](/aws/developer-tools/running-localstack/lstk#terraform), to interact with the deployment.
+You can further use the other `lstk` tool proxies, such as [`lstk cdk`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#cdk), [`lstk sam`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#sam), and [`lstk terraform`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#terraform), to interact with the deployment.
 As with `lstk aws`, set `LSTK_ENDPOINT_URL` or pass `--endpoint-url` to point these at the route URL instead of a local emulator.
 
 ### Deleting the LocalStack deployment

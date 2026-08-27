@@ -26,7 +26,7 @@ These outputs enable you to redeploy your resources while spinning a new LocalSt
 
 ## Getting started
 
-This guide is designed for users new to Former2 and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
+This guide is designed for users new to Former2 and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#aws) command.
 We will demonstrate how you can create local AWS resources using LocalStack, and import a CloudFormation output via Former2.
 
 ### Install Former2

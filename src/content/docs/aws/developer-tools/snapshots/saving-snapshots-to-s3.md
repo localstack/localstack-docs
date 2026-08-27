@@ -14,7 +14,7 @@ When saving, loading, or listing snapshots in your own S3 bucket, `lstk` uses pr
 
 ## Using the `lstk` CLI
 
-The [`lstk snapshot`](/aws/developer-tools/running-localstack/lstk/#snapshot) command lets you save, load, and list snapshots stored in your own S3 bucket by passing an `s3://bucket/prefix` location alongside a snapshot name.
+The [`lstk snapshot`](/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot) command lets you save, load, and list snapshots stored in your own S3 bucket by passing an `s3://bucket/prefix` location alongside a snapshot name.
 
 The initial step is to export the necessary AWS credentials in your terminal session.
 
@@ -45,7 +45,7 @@ Otherwise LocalStack's [DNS server](/aws/customization/networking/dns-server) re
 
 Disable this feature by setting [`DNS_ADDRESS=0`](/aws/customization/configuration-options/) when starting the emulator, which turns off transparent endpoint injection application-wide.
 On the command line, use `LOCALSTACK_DNS_ADDRESS=0 lstk start` — host variables prefixed with `LOCALSTACK_` are forwarded to the emulator.
-In a `config.toml` [environment profile](/aws/developer-tools/running-localstack/lstk/#passing-environment-variables-to-the-container), use the unprefixed form `DNS_ADDRESS = "0"`.
+In a `config.toml` [environment profile](/aws/developer-tools/running-localstack/lstk/configuration/#passing-environment-variables-to-the-container), use the unprefixed form `DNS_ADDRESS = "0"`.
 :::
 
 Once the snapshot has been saved, you can confirm the presence of the snapshot artifacts in the S3 bucket by running:
@@ -85,4 +85,4 @@ lstk snapshot list s3://ls-s3-bucket-example
 Because data transfer is performed by the emulator rather than the CLI, saving, loading, and listing snapshots in your own S3 bucket require a **running emulator**.
 :::
 
-Comprehensive instructions on using the `lstk snapshot` CLI command, including credential resolution order, are found in the [`lstk` CLI Guide](/aws/developer-tools/running-localstack/lstk/#s3-remotes).
+Comprehensive instructions on using the `lstk snapshot` CLI command, including credential resolution order, are found in the [`lstk` CLI Guide](/aws/developer-tools/running-localstack/lstk/snapshots/#s3-remotes).

@@ -194,7 +194,7 @@ crossplane-test-bucket   True    True     crossplane-test-bucket   30s
 ```
 
 ...
-and the bucket it should also be visible when querying the local S3 buckets in LocalStack via [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws):
+and the bucket it should also be visible when querying the local S3 buckets in LocalStack via [`lstk aws`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#aws):
 
 ```bash
 lstk aws s3 ls

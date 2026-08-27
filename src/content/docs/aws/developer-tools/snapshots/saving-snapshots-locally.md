@@ -13,7 +13,7 @@ Loading a snapshot is significantly faster, and far more convenient, than re-cre
 
 ## Using the `lstk` CLI
 
-The [`lstk` CLI](/aws/developer-tools/running-localstack/lstk/#snapshot) lets you save your instance's state to a local file and load it back into another instance at a later time.
+The [`lstk` CLI](/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot) lets you save your instance's state to a local file and load it back into another instance at a later time.
 
 For example, starting from an empty emulator instance, create an S3 bucket, an SNS topic, and an SQS queue:
 
