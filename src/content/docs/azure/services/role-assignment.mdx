@@ -340,9 +340,12 @@ The default SDK/Terraform service principal and the `az` CLI's `any-app` princip
 ## Limitations
 
 - **RBAC enforcement is opt-in:** By default, role assignments are stored but not evaluated, and all operations succeed regardless of assigned roles. Set `LS_AZURE_ENFORCE_RBAC` to enable enforcement.
+- **Data-plane coverage is partial:** Enforced for Storage (Blob/Queue/Table), Key Vault (secrets and certificates), and Event Grid. Not yet enforced for Storage File, the Service Bus data plane, or Cosmos DB. Azure SQL Database and Azure Database for PostgreSQL/MySQL flexible servers don't use RBAC data actions (their data-plane authorization is Microsoft Entra database authentication), so they're out of scope for RBAC.
+- **Key Vault keys:** Only the secrets and certificates data planes are enforced; the keys data plane is not yet implemented.
 - **Condition-based assignments:** Attribute-based access control (ABAC) conditions in assignments are accepted at the model level but are not evaluated.
 - **Deny assignments:** `Microsoft.Authorization/denyAssignments` are not supported.
-- **Management group scopes:** Assignments at management group scope are not supported.
+- **Management group scopes:** Assignments at management group scope are not supported. Subscription, resource group, and resource scopes are supported, including inheritance down the hierarchy — a role assigned at a broader scope applies to narrower scopes beneath it.
+- **Groups and transitive membership:** A role assigned to a group is not expanded to its members; only assignments made directly to the calling principal are evaluated.
 
 ## Samples
 
