@@ -256,7 +256,7 @@ az containerapp job create \
 ```
 
 Start an execution of the job.
-The execution runs as a real container and the command returns once it reaches a terminal state:
+The command returns as soon as the execution is accepted, so the execution is first reported as `Running`:
 
 ```bash
 az containerapp job start \
@@ -279,6 +279,17 @@ az containerapp job execution list \
   --resource-group rg-aca-demo \
   --query "[].{name:name, status:properties.status}"
 ```
+
+```bash title="Output"
+[
+  {
+    "name": "my-job-8b31fc2",
+    "status": "Running"
+  }
+]
+```
+
+Re-run the command until the status reaches a terminal state, such as `Succeeded` or `Failed`:
 
 ```bash title="Output"
 [
