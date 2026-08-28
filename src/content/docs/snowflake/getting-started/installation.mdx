@@ -18,7 +18,7 @@ LocalStack for Snowflake features require an [Auth Token](/snowflake/getting-sta
 
 ## lstk
 
-`lstk` is a lightweight CLI for LocalStack that manages the authentication and container lifecycle for the AWS, Snowflake, and Azure emulators in a single workflow.
+`lstk` is a lightweight CLI for LocalStack that manages the authentication and container lifecycle in a single workflow.
 
 **Requirement:** You must have a working [Docker installation](https://docs.docker.com/get-docker/) before proceeding.
 
@@ -42,19 +42,17 @@ LocalStack for Snowflake features require an [Auth Token](/snowflake/getting-sta
   </TabItem>
 </Tabs>
 
-### Start the Snowflake emulator
-
-`lstk` starts the AWS emulator by default. Select the Snowflake emulator with `--type snowflake` on your first start; `lstk` records the choice in your `config.toml`, so subsequent `lstk start` calls reuse it:
+### Start lstk
 
 ```bash
-lstk start --type snowflake
+lstk start
 ```
 
-The first execution initiates a browser-based login flow. Subsequent starts use credentials stored in your system keyring.
+The first execution initiates a browser-based login flow and, in an interactive terminal, prompts you to pick which emulator to run — choose `s` for Snowflake. Your choice is written to `config.toml` and used as the default on subsequent runs. Subsequent starts use credentials stored in your system keyring.
 
-Alternatively, run `lstk` interactively with no existing config file and choose `s` for Snowflake when prompted at the first-run emulator picker.
+### Already using lstk with a different default emulator?
 
-To pin the emulator per-project instead of changing your global default, create a project-local `.lstk/config.toml`:
+If your global `config.toml` already defaults to a different emulator (for example, AWS), target Snowflake for a specific project instead by creating a project-local `.lstk/config.toml`:
 
 ```toml
 # .lstk/config.toml
@@ -73,8 +71,8 @@ For more details, see the [lstk documentation](/aws/developer-tools/running-loca
 
 ## Container and orchestration tools
 
-Use these methods when you need explicit container configuration, want to run LocalStack alongside other services, or deploy LocalStack in CI environments.
-For everyday local development, `lstk` is usually simpler.
+Use these methods when you need explicit container configuration or want to run LocalStack alongside other orchestrated services.
+For everyday local development, `lstk` is usually simpler — and `lstk` is also a good fit for CI, see [CI Integration](/snowflake/getting-started/ci-cd/) for `lstk`-based CI examples.
 
 ### Docker Compose
 
@@ -124,7 +122,7 @@ The Docker Compose and Docker CLI examples above use the same runtime settings:
 - Docker reuses a local image if one already exists. Pull explicitly or pin an image tag, such as `localstack/snowflake:<version>`, when you need reproducible CI or team environments.
 - Configuration variables can be prefixed with `LOCALSTACK_` in Docker. For instance, setting `LOCALSTACK_PERSISTENCE=1` is equivalent to `PERSISTENCE=1`.
 
-For more details, see the general [Docker images](/aws/customization/other-installations/docker-images/), [configuration](/aws/customization/configuration-options/), and [networking](/aws/customization/networking/) documentation, which applies across LocalStack products.
+For more details, see the general [Docker images](/aws/customization/other-installations/docker-images/) and [networking](/aws/customization/networking/) documentation, which applies across LocalStack products, and the [Snowflake configuration](/snowflake/capabilities/configuration/) reference.
 :::
 
 ## Graphical user interfaces (GUIs)

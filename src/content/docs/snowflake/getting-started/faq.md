@@ -42,7 +42,7 @@ SF_LOG = "trace"
 ```
 
 ```bash
-lstk start --type snowflake
+lstk start
 ```
 
 If you're using `docker-compose`, simply add these variables to the `environment` section of the YAML configuration file instead.

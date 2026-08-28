@@ -19,7 +19,7 @@ A successful walkthrough results in:
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) engine installed and running.
-- A [LocalStack account](https://app.localstack.cloud/sign-up) and a valid [LocalStack Auth Token](/snowflake/getting-started/auth-token/).
+- A [LocalStack account](https://app.localstack.cloud/sign-up) with a license that includes Snowflake features — see the [Auth Token guide](/snowflake/getting-started/auth-token/).
 - [Snowflake CLI](https://docs.snowflake.com/en/developer-guide/snowflake-cli/installation/installation) (`snow`) installed.
 
 If you haven't installed LocalStack yet, follow the [installation guide](/snowflake/getting-started/installation/) to get started.
@@ -29,7 +29,7 @@ If you haven't installed LocalStack yet, follow the [installation guide](/snowfl
 Start the Snowflake emulator:
 
 ```bash
-lstk start --type snowflake
+lstk start
 ```
 
 The first run triggers a browser-based authentication flow. After authentication, `lstk` pulls the LocalStack for Snowflake image and initializes the container, then prints a confirmation banner once the emulator is ready.
@@ -47,7 +47,9 @@ snow connection add \
     --host snowflake.localhost.localstack.cloud
 ```
 
+:::note
 You might be prompted for additional optional parameters, such as the connection port, database name, or warehouse name. These can be skipped.
+:::
 
 Test the connection:
 
