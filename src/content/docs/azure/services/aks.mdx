@@ -1,0 +1,399 @@
+---
+title: "Azure Kubernetes Service (AKS)"
+description: Get started with Azure Kubernetes Service on LocalStack
+template: doc
+resourceProvider: Microsoft.ContainerService
+resourceType: Microsoft.ContainerService/managedClusters
+---
+
+import AzureFeatureCoverage from "../../../../components/feature-coverage/AzureFeatureCoverage";
+
+## Introduction
+
+Azure Kubernetes Service (AKS) is Azure's managed Kubernetes offering. Azure operates the control
+plane while you manage node pools of worker machines that run your workloads. For more information,
+see [What is Azure Kubernetes Service?](https://learn.microsoft.com/en-us/azure/aks/what-is-aks).
+
+LocalStack for Azure creates real, working Kubernetes clusters on your machine. `az aks create`
+produces a cluster backed by [k3d](https://k3d.io/) that you can reach with `kubectl`, so manifests,
+Helm charts, and operators behave as they would against a cluster in the cloud. The supported APIs
+are available on our [API Coverage section](#api-coverage), which provides information on the extent
+of AKS's integration with LocalStack.
+
+## Getting started
+
+This guide is designed for users new to AKS and assumes basic knowledge of the Azure CLI, `kubectl`,
+and our `lstk az` proxy.
+
+Launch LocalStack using your preferred method. For more information, see
+[Introduction to LocalStack for Azure](/azure/getting-started/). Once the container is running,
+enable Azure CLI interception by running:
+
+```bash
+lstk az start-interception
+```
+
+This command points the `az` CLI away from the public Azure management REST API and toward the
+LocalStack for Azure emulator API. To revert this configuration, run:
+
+```bash
+lstk az stop-interception
+```
+
+This reconfigures the `az` CLI to send commands to the official Azure management REST API.
+
+### Create a resource group
+
+Create a resource group to hold the cluster:
+
+```bash
+az group create \
+  --name rg-aks-demo \
+  --location westeurope
+```
+
+```bash title="Output"
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-aks-demo",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "rg-aks-demo",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+### Create a cluster
+
+Create a cluster with a single node in its system node pool:
+
+```bash
+az aks create \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --node-count 1 \
+  --generate-ssh-keys
+```
+
+The command returns when the cluster is ready to use. Locally that takes a couple of minutes: the
+emulator provisions a k3d cluster, so what you get back is a live API server, not a mock.
+
+```bash title="Output"
+{
+  "currentKubernetesVersion": "1.34.4",
+  "fqdn": "aks-demo-rg-aks-demo-000000-oq7mpqgx.hcp.westeurope.azmk8s.io",
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-aks-demo/providers/Microsoft.ContainerService/managedClusters/aks-demo",
+  "kubernetesVersion": "1.34",
+  "location": "westeurope",
+  "name": "aks-demo",
+  "nodeResourceGroup": "MC_rg-aks-demo_aks-demo_westeurope",
+  "powerState": {
+    "code": "Running"
+  },
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+### Show and list clusters
+
+Retrieve the details of a single cluster:
+
+```bash
+az aks show \
+  --resource-group rg-aks-demo \
+  --name aks-demo
+```
+
+```bash title="Output"
+{
+  "currentKubernetesVersion": "1.34.4",
+  "dnsPrefix": "aks-demo-rg-aks-demo-000000",
+  "kubernetesVersion": "1.34",
+  "location": "westeurope",
+  "name": "aks-demo",
+  "nodeResourceGroup": "MC_rg-aks-demo_aks-demo_westeurope",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+List the clusters in a resource group:
+
+```bash
+az aks list \
+  --resource-group rg-aks-demo \
+  --output table
+```
+
+```bash title="Output"
+Name      Location    ResourceGroup    KubernetesVersion    CurrentKubernetesVersion    ProvisioningState    Fqdn
+--------  ----------  ---------------  -------------------  --------------------------  -------------------  -------------------------------------------------------------
+aks-demo  westeurope  rg-aks-demo      1.34                 1.34.4                      Succeeded            aks-demo-rg-aks-demo-000000-oq7mpqgx.hcp.westeurope.azmk8s.io
+```
+
+### Update a cluster
+
+`az aks update` changes the properties of an existing cluster. The following example sets resource
+tags:
+
+```bash
+az aks update \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --tags environment=local team=platform
+```
+
+```bash title="Output"
+{
+  "name": "aks-demo",
+  "provisioningState": "Succeeded",
+  "tags": {
+    "environment": "local",
+    "team": "platform"
+  },
+  ...
+}
+```
+
+### Connect with kubectl
+
+Merge the cluster credentials into your local kubeconfig:
+
+```bash
+az aks get-credentials \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --overwrite-existing
+```
+
+```bash title="Output"
+Merged "aks-demo" as current context in /home/user/.kube/config
+```
+
+Query the nodes:
+
+```bash
+kubectl get nodes
+```
+
+```bash title="Output"
+NAME                               STATUS   ROLES           AGE    VERSION
+aks-nodepool1-5829393-vmss000000   Ready    <none>          99s    v1.36.2+k3s1
+k3d-aks-demo-7da4c24d-server-0     Ready    control-plane   2m1s   v1.36.2+k3s1
+```
+
+:::note
+Unlike in the cloud, where the control plane is hidden, the local cluster also lists its k3d
+control-plane node. Agent nodes carry the same `aks-<pool>-...-vmss` naming scheme as real AKS
+nodes, and the `VERSION` column reflects the underlying k3s runtime rather than the cluster's
+`kubernetesVersion`.
+:::
+
+### Manage node pools
+
+Add a user node pool with two nodes:
+
+```bash
+az aks nodepool add \
+  --resource-group rg-aks-demo \
+  --cluster-name aks-demo \
+  --name workers \
+  --mode User \
+  --node-count 2
+```
+
+```bash title="Output"
+{
+  "count": 2,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg-aks-demo/providers/Microsoft.ContainerService/managedClusters/aks-demo/agentPools/workers",
+  "mode": "User",
+  "name": "workers",
+  "orchestratorVersion": "1.34",
+  "osType": "Linux",
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+List the node pools of the cluster:
+
+```bash
+az aks nodepool list \
+  --resource-group rg-aks-demo \
+  --cluster-name aks-demo \
+  --output table
+```
+
+```bash title="Output"
+Name       OsType    VmSize    Count    MaxPods    ProvisioningState    Mode
+---------  --------  --------  -------  ---------  -------------------  ------
+nodepool1  Linux               1        250        Succeeded            System
+workers    Linux               2        250        Succeeded            User
+```
+
+Inspect a single node pool:
+
+```bash
+az aks nodepool show \
+  --resource-group rg-aks-demo \
+  --cluster-name aks-demo \
+  --name workers
+```
+
+```bash title="Output"
+{
+  "count": 2,
+  "mode": "User",
+  "name": "workers",
+  "orchestratorVersion": "1.34",
+  "osType": "Linux",
+  "powerState": {
+    "code": "Running"
+  },
+  "provisioningState": "Succeeded",
+  ...
+}
+```
+
+Delete the node pool when you no longer need it:
+
+```bash
+az aks nodepool delete \
+  --resource-group rg-aks-demo \
+  --cluster-name aks-demo \
+  --name workers
+```
+
+### Stop, start, and delete
+
+Stop the cluster to free local resources while preserving its state:
+
+```bash
+az aks stop \
+  --resource-group rg-aks-demo \
+  --name aks-demo
+```
+
+Verify that the cluster has stopped by confirming that `powerState` reports `Stopped`:
+
+```bash
+az aks show \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --query powerState.code \
+  --output tsv
+```
+
+Start the cluster again. It restarts with the previous control plane state and number of agent nodes:
+
+```bash
+az aks start \
+  --resource-group rg-aks-demo \
+  --name aks-demo
+```
+
+Delete the cluster once you are done. A deleted cluster cannot be recovered:
+
+```bash
+az aks delete \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --yes
+```
+
+### Teardown
+
+Remove the resource group and any resources it still contains:
+
+```bash
+az group delete \
+  --name rg-aks-demo \
+  --yes
+```
+
+Disable Azure CLI interception to point the `az` CLI back to the official Azure management REST API:
+
+```bash
+lstk az stop-interception
+```
+
+## Features
+
+The local control plane implements the following capabilities:
+
+- **Networking**: Azure CNI overlay with the Cilium data plane, Cilium and Calico network
+  policies, Hubble observability, and the managed Gateway API add-on with NGINX Gateway Fabric
+  as its implementation.
+- **Storage**: The Secrets Store CSI driver for Azure Key Vault and the Azure Files CSI driver.
+  The Azure Disk CSI driver is in progress.
+- **Scaling**: The cluster autoscaler, node auto-provisioning based on the AKS Karpenter provider,
+  the Kubernetes Event-driven Autoscaling (KEDA) add-on, and the Vertical Pod Autoscaler.
+- **Identity**: Microsoft Entra Workload ID with a working OIDC issuer, so pods can exchange
+  service account tokens for Azure credentials without secrets.
+- **Operations**: Multiple node pools with tags, labels, and taints, the Azure cloud controller
+  manager reconciling `LoadBalancer` services, and cluster stop and start.
+- **Tooling**: The same clusters can be provisioned with the Azure CLI, Terraform, or Bicep.
+
+## Cluster-creation scripts
+
+The [aks-samples](https://github.com/localstack-samples/aks-samples) repository provides two
+interchangeable scripts that provision a production-shaped cluster, complete with a virtual
+network, a container registry, a Log Analytics workspace, and system and user node pools. The
+repository maintains both scripts to run against real Azure and the emulator; they differ in the
+cluster identity:
+
+| Script | Cluster identity | When to use |
+| ------ | ---------------- | ----------- |
+| [01-system-assigned-managed-identity.sh](https://github.com/localstack-samples/aks-samples/blob/main/scripts/01-system-assigned-managed-identity.sh) | System-assigned managed identity | Simplest option: Azure creates and manages the identity lifecycle together with the cluster. |
+| [01-user-assigned-managed-identity.sh](https://github.com/localstack-samples/aks-samples/blob/main/scripts/01-user-assigned-managed-identity.sh) | User-assigned managed identity | Use when you need a stable, pre-created identity that can be reused across resources and granted role assignments ahead of time. |
+
+Both scripts are idempotent and safe to re-run. The same folder also contains optional add-on
+installers for [Prometheus](https://github.com/localstack-samples/aks-samples/blob/main/scripts/02-install-prometheus.sh),
+the [NGINX ingress controller](https://github.com/localstack-samples/aks-samples/blob/main/scripts/03-install-nginx-ingress-controller.sh),
+the [Gateway API CRDs](https://github.com/localstack-samples/aks-samples/blob/main/scripts/04-install-gateway-api.sh),
+[NGINX Gateway Fabric](https://github.com/localstack-samples/aks-samples/blob/main/scripts/05-install-nginx-gateway-fabric.sh),
+and [cert-manager](https://github.com/localstack-samples/aks-samples/blob/main/scripts/06-install-cert-manager.sh).
+
+## Samples
+
+Every sample deploys the same Vacation Planner web application, a small Python
+[Flask](https://flask.palletsprojects.com/) single-page app. Only the data service, its
+provisioning, and the way the app authenticates to it change from one sample to the next.
+
+| Sample | Description |
+| ------ | ----------- |
+| [web-app-sql-database](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-sql-database) | Stores activities in an Azure SQL Database, connecting with a SQL login over TDS. |
+| [web-app-mysql-flexible-server](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-mysql-flexible-server) | Stores activities in an Azure Database for MySQL flexible server. |
+| [web-app-postgresql-flexible-server](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-postgresql-flexible-server) | Stores activities in an Azure Database for PostgreSQL flexible server. |
+| [web-app-in-cluster-postgresql](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-in-cluster-postgresql) | Stores activities in an in-cluster PostgreSQL database deployed as a Kubernetes StatefulSet, with a primary and two streaming replicas. |
+| [web-app-cosmosdb-mongodb-api](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-cosmosdb-mongodb-api) | Stores activities in a collection of an Azure Cosmos DB for MongoDB account. |
+| [web-app-cosmosdb-nosql-api](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-cosmosdb-nosql-api) | Stores activities in a container of an Azure Cosmos DB for NoSQL account. |
+| [web-app-blob-storage](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-blob-storage) | Stores activities in an Azure Blob Storage container, using a connection string. |
+| [web-app-file-storage](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-file-storage) | Stores activities as text files on an Azure Files share mounted by the Azure Files CSI driver, over either SMB or NFS. |
+| [web-app-managed-identity](https://github.com/localstack-samples/aks-samples/tree/main/samples/web-app-managed-identity) | Stores activities in Azure Blob Storage, authenticating with Microsoft Entra Workload ID instead of a secret, and optionally exposes the app through the Gateway API with a managed TLS certificate. |
+
+## Tutorials
+
+The same repository includes standalone tutorials that exercise individual AKS capabilities. Unlike
+the samples, they do not deploy the web application:
+
+| Tutorial | Description |
+| -------- | ----------- |
+| [policies](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/policies) | Kubernetes network policies that enforce zero-trust traffic control with Calico and Cilium: cluster-wide default-deny, DNS-aware egress, and L3/L4/L7 ingress. |
+| [ccm](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/ccm) | Exercises the Azure cloud controller manager: public and internal `LoadBalancer` services, source ranges, the nodeIP backend-pool variant, and an NGINX ingress controller. |
+| [gateway-api](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/gateway-api) | Enables the managed Gateway API CRDs, installs NGINX Gateway Fabric, and routes traffic to a backend through a `Gateway` and an `HTTPRoute`. |
+| [keda](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda) | Event-driven autoscaling with the KEDA add-on: a producer creates a backlog on an Azure event source and a `ScaledObject` scales a consumer from zero to four replicas and back. |
+| [keda/service-bus](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda/service-bus) | Scales a consumer on an Azure Service Bus queue with the `azure-servicebus` scaler, authenticating with Microsoft Entra Workload ID. Start here if you are new to KEDA. |
+| [keda/queue-storage](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda/queue-storage) | Scales a consumer on an Azure Storage queue with the `azure-queue` scaler. Workload identity is used end to end, so no data-plane secret exists anywhere. |
+| [keda/event-hubs](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda/event-hubs) | Scales a consumer on an Azure Event Hubs hub with the `azure-eventhub` scaler, whose backlog is the distance between the last enqueued event and the consumer group's blob checkpoints. |
+| [key-vault-csi-driver](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/key-vault-csi-driver) | Mounts secrets from Azure Key Vault into a pod with the Secrets Store CSI driver, in both the workload identity and the user-assigned managed identity access modes. |
+| [terraform/tags-labels-taints](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/terraform/tags-labels-taints) | Deploys a modular, feature-rich AKS stack with Terraform, steering workloads across agent pools with Azure resource tags, node labels, and taints, then validates them through both the ARM and Kubernetes APIs. |
+| [bicep/tags-labels-taints](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/bicep/tags-labels-taints) | The same modular AKS stack built with Bicep, with parameters and outputs that mirror the Terraform tutorial one-to-one. |
+
+## API Coverage
+
+<AzureFeatureCoverage service="Microsoft.ContainerService" client:load />
