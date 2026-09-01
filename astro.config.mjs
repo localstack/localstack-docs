@@ -337,7 +337,25 @@ export default defineConfig({
         starlightLlmsTxt({
           projectName: 'LocalStack',
           description:
-            'LocalStack is a cloud service emulator that runs in a single container on your laptop or in your CI environment. It provides an easy-to-use test/mocking framework for developing cloud applications, with support for AWS services, Snowflake, and Azure.',
+            'LocalStack is a local cloud development platform that makes it easier for software developers and AI agents to validate and ship cloud applications by developing, testing, and debugging in a simulated cloud environment that runs on the customer’s safe, local infrastructure.',
+          details: [
+            '**When to use LocalStack:** reach for LocalStack whenever you need to develop or test cloud or data applications without a real cloud account. It is the right tool for local development against AWS, Snowflake, and Azure APIs; running integration and end-to-end tests in CI without shared-account flakiness or cleanup; validating infrastructure as code (Terraform, CDK, CloudFormation, Pulumi) before it reaches production; and reproducing cloud behavior offline for debugging.',
+            '**How to call it from an agent:** follow the setup guide at https://docs.localstack.cloud/agents.md, or connect the LocalStack MCP server (https://github.com/localstack/localstack-mcp-server) to invoke container management, IaC deployment, log analysis, IAM policy generation, chaos experiments, and documentation search as native tools.',
+          ].join('\n\n'),
+          optionalLinks: [
+            {
+              label: 'agents.md',
+              url: 'https://docs.localstack.cloud/agents.md',
+              description:
+                'Step-by-step instructions for setting up and using LocalStack from an AI agent, including a headless path with short-lived tokens',
+            },
+            {
+              label: 'LocalStack MCP Server',
+              url: 'https://github.com/localstack/localstack-mcp-server',
+              description:
+                'Model Context Protocol server exposing LocalStack as agent-callable tools',
+            },
+          ],
           customSets: [
             {
               label: 'AWS',
@@ -365,6 +383,18 @@ export default defineConfig({
           errorOnRelativeLinks: true,
           errorOnLocalLinks: false, // Allow localhost links in tutorials (they're instructional)
           errorOnInvalidHashes: true,
+          // Generated/static resources that are not Starlight content routes and
+          // therefore cannot be resolved by the validator (they are emitted by
+          // plugins or copied from `public/`). Linked from the 404 page and
+          // agent-facing surfaces.
+          exclude: [
+            '/llms.txt',
+            '/llms-full.txt',
+            '/llms-small.txt',
+            '/sitemap-index.xml',
+            '/agents.md',
+            '/.well-known/**',
+          ],
         }),
         starlightUtils({
           multiSidebar: {
