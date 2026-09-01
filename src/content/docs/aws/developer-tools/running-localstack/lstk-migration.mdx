@@ -1,0 +1,295 @@
+---
+title: lstk Migration Guide 
+description: Migration guide for lstk, the new command-line interface for LocalStack.
+template: doc
+sidebar:
+  order: 11
+tags: ['Hobby']
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+# Migrating from `localstack` to `lstk`
+
+## Introduction
+
+`lstk` is the new command-line interface for LocalStack. It is a single, self-contained binary that starts and manages the emulator, runs the AWS CLI and your infrastructure-as-code tools, and saves and restores emulator state. In other words, it replaces both the Python-based `localstack` CLI and the family of wrapper scripts that many projects installed alongside it. Those scripts are `awslocal`, `tflocal`, `samlocal`, and `cdklocal`.
+
+There are three good reasons to start using `lstk`:
+
+1. Installation is simpler, because there is no Python environment to manage, and no separate wrapper script to install for each tool you use.
+2. `lstk` works with every LocalStack emulator, not just AWS. Snowflake and Azure are supported today, and future emulators will be available too.
+3. `lstk` is the place for new CLI functionality to be added from now on. The `localstack` CLI is deprecated, and will no longer be supported.
+
+What does not change is LocalStack itself. The emulator is the same Docker image with the same behavior and the same configuration variables (`DEBUG`, `SERVICES`, `PERSISTENCE`, and the rest). You are changing the tool you drive LocalStack with, not the LocalStack emulator itself. For most teams the migration is a short exercise in translating a handful of commands in shell history, scripts, and CI pipelines.
+
+:::note 
+The legacy CLI and the wrapper scripts continue to work, so you can migrate gradually rather than all at once. A small number of features are still only available with the legacy `localstack` CLI. Those are listed under [Unsupported features](#unsupported-features).
+:::
+
+## Installation
+
+`lstk` is distributed through the LocalStack Homebrew tap and the `@localstack/lstk` npm package. Pre-built binaries for Linux, macOS, and Windows are published on GitHub Releases. Pick whichever fits your environment.
+
+<Tabs>
+  <TabItem label="Homebrew">
+    ```bash
+    brew install localstack/tap/lstk
+    ```
+  </TabItem>
+  <TabItem label="npm">
+    ```bash
+    npm install -g @localstack/lstk
+    ```
+  </TabItem>
+</Tabs>
+
+Check for correct installation by invoking `lstk --version`. Docker must be installed and running, exactly as before. Homebrew installs shell completions automatically. With the other methods you'll need generate them yourself, using `lstk completion bash|zsh|fish|powershell`. Full instructions are in the [lstk documentation](https://docs.localstack.cloud/aws/developer-tools/running-localstack/lstk/).
+
+There is no need to uninstall the `localstack` CLI, as the two can exist side by side. This is useful while you migrate, and necessary if you rely on a feature that is not yet available with `lstk`. However, we recommend against using them at the same time. Each CLI starts and manages its own LocalStack container, so stop whichever is running before you start the other.
+
+## Logging in
+
+Both CLIs need a LocalStack license to run the emulator, but they ask for it in different ways. With the `localstack` CLI you copied an auth token out of the web application and stored it with `localstack auth set-token`, or exported `LOCALSTACK_AUTH_TOKEN` yourself.
+
+`lstk` replaces that with a browser-based login triggered automatically: simply running `lstk` or `lstk start` takes you through the login flow the first time, opening a browser window for you to approve the request. The credential is then stored securely on your machine. There is no token to copy, and none to keep in your shell profile.
+
+Run `lstk login` directly if you want to authenticate ahead of time, or to switch accounts:
+
+```bash
+lstk login
+```
+
+Similarly, use `lstk logout` to remove the auth token from your machine.
+
+Continuous integration has no browser, so auth tokens remain the right approach there. Set `LOCALSTACK_AUTH_TOKEN` as a secret in your pipeline, and `lstk` will use it without any login step. Use a CI Auth Token rather than a personal developer token, as described in the [Auth Token documentation](https://docs.localstack.cloud/aws/getting-started/auth-token/#ci-environments).
+
+## The `config.toml` file
+
+`lstk` keeps its settings in a TOML file named `config.toml`. This is the central place for describing the LocalStack container you want to run: which emulator to start, which image tag to use, which port to publish, and which environment variables to pass through. Where the `localstack` CLI took all of this as flags and environment variables at start-up, `lstk` reads it from this file on every run.
+
+You do not need to write the file by hand. `lstk` creates a default `config.toml` the first time you run it, and `lstk config path` prints the location of the file currently in effect:
+
+```bash
+lstk config path
+```
+
+A bare-bones file looks like this:
+
+```toml
+[[containers]]
+type = "aws"      # aws, snowflake, or azure
+tag  = "latest"   # image tag to run
+port = "4566"     # host port to publish
+```
+
+`lstk` looks for `.lstk/config.toml` in the current directory first, and falls back to a user-level file in your personal home directory (such as `/Users/maureen/.config/lstk/config.toml`). A project can therefore carry its own settings in version control, while your personal defaults apply outside of that project. To use a file somewhere else entirely, pass `lstk --config <path>`. The [Configuration parameters](#configuration-parameters) section covers what else you can put in it.
+
+## Starting, stopping, restarting, and upgrading
+
+Day-to-day lifecycle management is where the two CLIs line up most closely, and the commands you already know have direct counterparts. The most noticeable difference is that `lstk start` completes only once the emulator is ready to serve requests, so the familiar pattern of starting in the background and then waiting is no longer necessary. Running `lstk` with no arguments does the same thing as `lstk start`.
+
+The other difference is presentation. In a terminal, `lstk` renders a compact interactive view of what it is doing. When its output is piped, redirected, or running in CI, it prints plain text instead. You can force the plain output at any time with `--non-interactive`.
+
+| With `localstack` | With `lstk` |
+| --- | --- |
+| `localstack start`, `localstack start -d` | `lstk start`, or simply `lstk` |
+| `localstack wait` | Not needed, as `lstk` waits until the emulator is ready. |
+| `localstack stop` | `lstk stop` |
+| `localstack restart` | `lstk restart` |
+| `localstack status docker` | `lstk status` |
+| `localstack logs -f -n 100` | `lstk logs --follow --tail 100` |
+| `localstack start -s snowflake` | `lstk start -t snowflake` |
+| `localstack update localstack-cli` | `lstk update` |
+
+`lstk status` is worth a second look for AWS users. Alongside the endpoint, container, version, and uptime, it lists the resources currently deployed in the AWS emulator. That makes it a quick way to confirm that a script or a snapshot did what you expected.
+
+Upgrading now involves two separate things. First, `lstk update` upgrades the CLI itself, using whichever method you installed it with, and it also offers the upgrade when you start the emulator. Second, the emulator image is upgraded independently, by choosing an image tag in your `config.toml` file. Use `latest` to track the newest monthly emulator release, or pin a specific version such as `2026.4`. See the command reference for the full set of options.
+
+## Configuration parameters
+
+LocalStack's own configuration variables are unchanged. `DEBUG`, `SERVICES`, `PERSISTENCE`, `EXTENSION_AUTO_INSTALL` and everything else in the configuration reference mean exactly what they meant before. What changes is how you get them into the container.
+
+For a one-off run, pass the variable on the command line as you always have, with a `LOCALSTACK_` prefix so that `lstk` knows to forward it to the emulator:
+
+```bash
+LOCALSTACK_DEBUG=1 lstk start
+```
+
+For anything you use more than once, put it in the `config.toml` file instead. The file describes the container you want to run, and groups environment variables into named profiles that you can switch on and off:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "latest"
+port = "4566"
+env  = ["dev"]
+
+[env.dev]
+DEBUG = "1"
+SERVICES = "s3,sqs"
+```
+
+With that in place, `lstk start` is the whole command. The configuration section of the docs describes every available field.
+
+## Infrastructure as code
+
+If you deploy infrastructure into LocalStack, you have almost certainly been using the wrapper scripts: `awslocal` for the AWS CLI, and `tflocal`, `cdklocal`, or `samlocal` for Terraform, the CDK, and SAM. Each script existed to point its underlying tool at LocalStack instead of AWS. `lstk` folds all four into subcommands, so there is nothing extra to install and one less thing to keep up to date.
+
+| Wrapper script | With `lstk` |
+| --- | --- |
+| `awslocal s3 ls` | `lstk aws s3 ls` |
+| `tflocal init`, `tflocal apply` | `lstk terraform init`, `lstk tf apply` |
+| `cdklocal bootstrap`, `cdklocal deploy` | `lstk cdk bootstrap`, `lstk cdk deploy` |
+| `samlocal build`, `samlocal deploy` | `lstk sam build`, `lstk sam deploy` |
+
+These subcommands are simply wrappers around the standard commands. You must still install the AWS CLI, Terraform, the CDK, or SAM yourself, and `lstk` runs them with the endpoint, credentials, and region configured to point to LocalStack. Everything you type after the subcommand is passed through untouched, and the output and exit code come back unchanged. In practice, migrating a script means prefixing each of these commands with `lstk`, such as `lstk aws`.
+
+## Snapshots
+
+Saving and restoring emulator state is no longer split across two command groups that behave differently. Previously, `localstack state` wrote to a local file, while `localstack pod` published Cloud Pods to the LocalStack platform. `lstk` merges them into a single `snapshot` command group where the destination decides where the snapshot is saved. Use a path for a local file, a `pod:` reference for a Cloud Pod, or an `s3://` location for your own bucket.
+
+```bash
+lstk snapshot save ./my-state          # a local file
+lstk snapshot save pod:my-baseline     # a Cloud Pod
+lstk snapshot load pod:my-baseline     # restore it, starting the emulator if needed
+```
+
+Because saving and loading are such common operations, `lstk save` and `lstk load` are available as shorthands.
+
+| With `localstack` | With `lstk` |
+| --- | --- |
+| `localstack state export`, `localstack state import` | `lstk snapshot save <path>`, `lstk snapshot load <path>` |
+| `localstack pod save`, `localstack pod load` | `lstk snapshot save pod:<name>`, `lstk snapshot load pod:<name>` |
+| `localstack pod list`, `localstack pod versions` | `lstk snapshot list`, `lstk snapshot versions pod:<name>` |
+| `localstack pod inspect`, `localstack pod delete` | `lstk snapshot show pod:<name>`, `lstk snapshot remove pod:<name>` |
+| `localstack state reset` | `lstk reset` |
+
+The underlying concepts are unchanged. Every save to an existing Cloud Pod creates a new version, and you can load an earlier version by appending the version number to the reference, as in `pod:my-baseline:3`. The merge strategies that control how a loaded snapshot combines with running state are unchanged, and are selected with `--merge`. Snapshots can be restricted to a subset of services with `--services`.
+
+Two related features are also available. The first is automatic persistence, where the emulator saves and restores its own state across restarts. It is enabled with `lstk start --persist`, the equivalent of the `PERSISTENCE` variable. The second is auto-loading. A snapshot can be loaded every time the emulator starts, by naming it in your configuration file. That replaces the old auto-load behavior. The snapshots documentation covers local snapshots, Cloud Pods, S3 storage, merging, and persistence in detail.
+
+## Accessing remote emulators
+
+Not every LocalStack instance is started by `lstk`. You might instead use `docker-compose.yml`, or run it on a remote machine, or share a single deployment with others in your team. `lstk` works with these too. The global `--endpoint-url` option instructs `lstk` to communicate with an emulator that wasn't started locally by `lstk`:
+
+```bash
+lstk --endpoint-url http://localhost:4566 status
+lstk --endpoint-url https://localstack.example.com aws s3 ls
+```
+
+If you target the same instance repeatedly, set `LSTK_ENDPOINT_URL` in your environment:
+
+```bash
+export LSTK_ENDPOINT_URL=https://localstack.example.com
+lstk aws s3 ls
+lstk snapshot save pod:my-baseline
+```
+
+Every `lstk` subcommand that communicates with a running emulator works as expected, including `lstk status`, the AWS CLI and infrastructure-as-code wrappers, and the snapshot commands. However, commands that manage the container itself, such as starting or stopping it or clearing its volume, do not support the `--endpoint-url` option. This is because `lstk` did not create the container and does not control its lifecycle.
+
+## Using `lstk` with Continuous Integration
+
+Continuous integration is where LocalStack does much of its work, and the shape of a pipeline does not change when you move to `lstk`. You still install a CLI, start the emulator, run your tests against it, and let the job tear everything down at the end. The steps are simply shorter than they used to be.
+
+There is no dedicated GitHub Action for `lstk`. The existing setup-localstack Action installs the legacy CLI, so for now you install `lstk` in a step of your own and call it directly. The npm package is often the most convenient option on a hosted runner. The pre-built binaries suit images where Node.js is not available.
+
+Authentication is the only part that differs from your personal machine. `lstk login` needs a browser, so a CI pipeline must supply a CI Auth Token through the `LOCALSTACK_AUTH_TOKEN` environment variable instead, normally from your CI system secret store. No login step is required.
+
+A GitHub Actions job then looks like this:
+
+```yaml
+- name: Install lstk
+  run: npm install -g @localstack/lstk
+
+- name: Start LocalStack
+  env:
+    LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+  run: lstk start
+
+- name: Run tests
+  run: |
+    lstk aws s3 mb s3://test-bucket
+    make test
+
+- name: Reset the emulator between test suites
+  run: lstk reset --force
+
+- name: Run integration tests
+  run: make integration-test
+```
+
+A couple of practices from the legacy `localstack` CLI are being dropped here. `lstk start` returns only once the emulator is ready, removing the need to explicitly wait for it to become ready. Additionally, subcommand output will be in plain text (not interactive) when running in CI, so commands that would normally ask for confirmation, such as `lstk reset` and `lstk volume clear`, require an additional `--force` option, as in the reset step above.
+
+If your pipeline seeds LocalStack with fixtures or infrastructure before the tests run, snapshots are worth a look. Saving a snapshot once and loading it at the start of each job with `lstk snapshot load` is usually much faster than re-running Terraform or a long list of AWS CLI commands.
+
+The same three steps apply to GitLab CI, CircleCI, Jenkins, and the others. Only the syntax around them changes. See the CI/CD documentation for the general guidance, and the CI pipelines section for per-platform examples.
+
+## Migrating your existing configuration
+
+Much of the work in a migration is not learning new commands but relocating settings. Start by gathering everything that currently configures LocalStack: flags on your `localstack start` command line, environment variables set in a shell profile, alias, or Makefile, any `~/.localstack` profile files, and the environment section of a `docker-compose.yml` file if you have one. Nearly all of it maps onto fields in the `lstk` configuration file.
+
+| Previously | In `config.toml` |
+| --- | --- |
+| `localstack start -e DEBUG=1 -e SERVICES=s3,sqs` | An `[env.<name>]` profile, referenced by `env` on the container |
+| `localstack start -v ./init.sh:/etc/localstack/init/ready.d/init.sh` | `volumes = ["./init.sh:/etc/localstack/init/ready.d/init.sh"]` |
+| `IMAGE_NAME=localstack-enterprise` | `image = "localstack-enterprise"` |
+| A pinned LocalStack version | `tag = "2026.4"` |
+| `LOCALSTACK_VOLUME_DIR=./volume` | `volume = "./volume"` |
+| `localstack start -s snowflake` | `type = "snowflake"` |
+| `localstack start --host-dns` | `expose_ports = [53]` |
+| `AUTO_LOAD_POD=my-baseline` | `snapshot = "pod:my-baseline"` |
+
+To illustrate, the following before-and-after shows the mapping. Where you previously ran:
+
+```bash
+DEBUG=1 PERSISTENCE=1 localstack start -d \
+  -e SERVICES=s3,sqs \
+  -v ./init.sh:/etc/localstack/init/ready.d/init.sh
+localstack wait
+```
+
+you would now write a `.lstk/config.toml` in the project.
+
+```toml
+[[containers]]
+type    = "aws"
+port    = "4566"
+env     = ["dev"]
+volumes = ["./init.sh:/etc/localstack/init/ready.d/init.sh"]
+
+[env.dev]
+DEBUG = "1"
+SERVICES = "s3,sqs"
+PERSISTENCE = "1"
+```
+
+then start it with `lstk start`. Because the `config.toml` file lives in the repository, everyone on the team gets the same environment. Your CI jobs also pick up the same file.
+
+The existing `CONFIG_PROFILE` mechanism in the `localstack` CLI and its `~/.localstack/*.env` files have no direct equivalent with `lstk`. The recommended replacement is a per-project `.lstk/config.toml`. If you need to switch between several configurations for the same project, keep them as separate files and choose between them with `lstk --config <path>`.
+
+## Unsupported features
+
+A handful of capabilities have not moved to `lstk`, although they may do so in a future release. In most cases the recommendation is to keep the `localstack` CLI installed for that one task, but migrate the rest of your workflow to `lstk`. The table below is deliberately high-level, and you should follow the linked documentation for more detail.
+
+If you are an active user of one of these unsupported features, please contact LocalStack Support.
+
+| Not supported in `lstk` | Recommended alternative |
+| --- | --- |
+| [Ephemeral Instances](https://docs.localstack.cloud/aws/developer-tools/cloud-sandbox/ephemeral-instances/) | Use the `localstack` CLI or the LocalStack Console. Ephemeral Instances are a preview feature and are not yet available in `lstk`. |
+| [AWS Replicator](https://docs.localstack.cloud/aws/developer-tools/aws-replicator/) | Use the `localstack` CLI, version 4.2.0 or newer. Also a preview feature. |
+| [IAM Policy Stream](https://docs.localstack.cloud/aws/developer-tools/security-testing/iam-policy-stream/) | Use the `localstack` CLI, or the dashboard in the LocalStack Console. IAM enforcement itself needs no CLI support and can be switched on with configuration variables, which `lstk` passes through as usual. |
+| [Extensions](https://docs.localstack.cloud/aws/customization/integrations/extensions/) | Use the `localstack` CLI to install, manage, and develop extensions. To install one at start-up without the CLI, set `EXTENSION_AUTO_INSTALL` in your configuration. |
+| [Cloud Pod](https://docs.localstack.cloud/aws/developer-tools/snapshots/cloud-pods/) publishing, snapshot encryption, and version messages | These features remain available only in the `localstack` CLI. `lstk` covers the everyday save, load, list, and inspect operations. |
+| [Cloud Pod](https://docs.localstack.cloud/aws/developer-tools/snapshots/cloud-pods/) remotes other than S3 | Use the `localstack` CLI. `lstk` supports the LocalStack platform and your own S3 bucket, with the location passed inline rather than registered in advance. |
+| [Host DNS setup](https://docs.localstack.cloud/aws/customization/networking/dns-server/) on Linux | Use the `localstack` CLI for the one-off resolver configuration. Publishing the DNS port itself is supported through the `expose_ports` setting. |
+| Arbitrary Docker options, such as custom networks | Use `docker-compose.yml` when you need full control of the container and the many Docker configuration options. The `lstk` configuration file covers only the basic features, such as the image, tag, port, exposed ports, volumes, and environment variables. |
+| Shell access to the container (`localstack ssh`) | Use `docker exec -it localstack-aws bash`. Note that `lstk` names its container `localstack-[aws,azure,snowflake]`. |
+| [GitHub Action](https://github.com/localstack/setup-localstack) | There is no GitHub Action for `lstk` yet, and the existing `setup-localstack` Action installs the `localstack` CLI. Install `lstk` in a step of your own instead, as shown in [Using lstk with Continuous Integration](#using-lstk-with-continuous-integration). |
+
+## Next steps 
+
+- The lstk reference documents every command, flag, and configuration field.
+- The configuration options page lists the LocalStack variables themselves, which are unchanged.
+- The snapshots section covers local snapshots, Cloud Pods, persistence, and merging.
+- The deprecated wrapper scripts and legacy CLI pages remain available for as long as you need them.
