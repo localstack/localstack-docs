@@ -39,7 +39,7 @@ This offline functionality is enabled by:
     lstk start
     ```
 
-    See [Custom container image](/aws/developer-tools/running-localstack/lstk#custom-container-image) for details, including how `lstk` falls back to a locally present image when a pull fails.
+    See [Custom container image](/aws/developer-tools/running-localstack/lstk/configuration/#custom-container-image) for details, including how `lstk` falls back to a locally present image when a pull fails.
 
 ## "Online" vs "Offline" image
 

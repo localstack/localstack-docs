@@ -37,7 +37,7 @@ retains your data long-term. If your organization requires snapshots to remain w
 
 ## Using the `lstk` CLI
 
-You can save and load snapshots to or from your Cloud Pods repository using the [`lstk snapshot`](/aws/developer-tools/running-localstack/lstk/#snapshot) command.
+You can save and load snapshots to or from your Cloud Pods repository using the [`lstk snapshot`](/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot) command.
 
 ```bash
 lstk snapshot --help
@@ -216,7 +216,7 @@ lstk snapshot load pod:sample-application:1
 • Services: s3
 ```
 
-Comprehensive instructions on using the `lstk snapshot` CLI command are found in the [`lstk` CLI Guide](/aws/developer-tools/running-localstack/lstk/#snapshot).
+Comprehensive instructions on using the `lstk snapshot` CLI command are found in the [`lstk` CLI Guide](/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot).
 
 :::note
 The snapshots stored in a Cloud Pod may not remain compatible if used with a different version of LocalStack.
@@ -299,7 +299,7 @@ To confirm the successful injection of the container state, visit the respective
 
 In addition to loading snapshots through the Command-Line Interface (CLI) or the Console, you can configure the automatic loading of one or more Cloud Pods upon the startup of the LocalStack instance.
 
-The recommended way to automatically load a snapshot from a Cloud Pod at startup is to set the `snapshot` field in your `lstk` [`config.toml`](/aws/developer-tools/running-localstack/lstk/#auto-loading-a-snapshot-on-start).
+The recommended way to automatically load a snapshot from a Cloud Pod at startup is to set the `snapshot` field in your `lstk` [`config.toml`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#auto-loading-a-snapshot-on-start).
 
 However, if you run the LocalStack container directly, for example via Docker Compose or `docker run`, you can instead use the `AUTO_LOAD_POD` [configuration variable](/aws/customization/configuration-options/).
 `AUTO_LOAD_POD` can accept multiple Cloud Pod names separated by commas.
@@ -309,7 +309,7 @@ When autoloading multiple Cloud Pods, later pods might overwrite the state of ea
 
 <Tabs>
 <TabItem label="lstk CLI">
-Set the `snapshot` field on the container block in your [`config.toml`](/aws/developer-tools/running-localstack/lstk/#auto-loading-a-snapshot-on-start) to the Cloud Pod's `pod:` REF:
+Set the `snapshot` field on the container block in your [`config.toml`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#auto-loading-a-snapshot-on-start) to the Cloud Pod's `pod:` REF:
 
 ```toml
 [[containers]]

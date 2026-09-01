@@ -12,7 +12,7 @@ The AWS Serverless Application Model (SAM) is an open-source framework for devel
 It uses a simplified syntax to define functions, APIs, databases, and event source mappings.
 When you deploy, SAM converts its syntax into AWS CloudFormation syntax, helping you create serverless applications more quickly.
 
-LocalStack can work with SAM using [`lstk sam`](/aws/developer-tools/running-localstack/lstk/#sam), which lets you deploy SAM applications on LocalStack.
+LocalStack can work with SAM using [`lstk sam`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#sam), which lets you deploy SAM applications on LocalStack.
 This guide explains how to set up local AWS resources using `lstk sam`.
 
 ## `lstk sam`
