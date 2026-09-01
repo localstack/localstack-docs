@@ -156,10 +156,9 @@ Refer to our [network troubleshooting guide](/aws/customization/networking/) cov
 
 ### Why are some containers left behind after I stop LocalStack with Docker Compose?
 
-When LocalStack shuts down, it cleans up the auxiliary containers it started, including k3d containers that back an EKS cluster.
+When LocalStack shuts down, it cleans up the auxiliary containers it started for services such as Lambda, ECS, RDS or EKS. If it is stopped before that cleanup finishes, those containers are left running.
 
-Docker Compose sends `SIGTERM` to the container and then, after a grace period of 10 seconds, follows up with `SIGKILL`.
-That default window might be too short for LocalStack to finish its cleanup in some scenarios, so it is killed mid-teardown and the containers survive as orphans.
+By default, LocalStack gets only a few seconds. Docker Compose sends `SIGTERM` to the container and follows up with `SIGKILL` once `stop_grace_period` expires (10 seconds by default), and LocalStack stops waiting for its own cleanup after `SHUTDOWN_TIMEOUT` (5 seconds by default). Whichever window runs out first, LocalStack is stopped mid-cleanup and the containers survive as orphans. Cleanup that takes longer than a few seconds is the most likely to be cut short.
 
 To give LocalStack enough time to shut down cleanly, raise `stop_grace_period` on the LocalStack service in your `docker-compose.yml` (for example, `3m`):
 
@@ -168,12 +167,16 @@ services:
   localstack:
     image: localstack/localstack-pro:latest
     stop_grace_period: 3m
+    environment:
+        - SHUTDOWN_TIMEOUT=180
     # ...
 ```
 
-If a previous run already left containers behind, remove them before starting LocalStack again.
+Raise them together. If you raise only `stop_grace_period`, LocalStack still gives up on its cleanup after 5 seconds and the container then stays up until the grace period runs out, so every docker compose stop waits the full three minutes.
 
-This applies to Docker Compose specifically. Starting LocalStack with the CLI is not affected, as the CLI waits for LocalStack to finish shutting down.
+If a previous run already left containers behind, run docker ps and remove the ones LocalStack started before starting it again.
+
+This applies to Docker Compose specifically. Starting LocalStack with `lstk` is not affected, as `lstk` waits for LocalStack to finish shutting down.
 
 ### How to resolve the pull rate limit issue for LocalStack's Docker image?
 
