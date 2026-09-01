@@ -1,0 +1,179 @@
+---
+title: lstk Automation & CI
+description: Global options, non-interactive mode, structured JSON output, environment variables, tracing, and logging for scripting lstk.
+template: doc
+tags: ['Hobby']
+---
+
+## Global options
+
+These options are available for all commands:
+
+| Option              | Description                                                                |
+|:--------------------|:------------------------------------------------------------------------------|
+| `--config <path>`   | Path to a specific TOML config file                                        |
+| `--non-interactive` | Disable the interactive TUI, use plain output                              |
+| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `stop`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
+| `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
+| `--type <type>`, `-t <type>` | Emulator type to start: `aws`, `snowflake`, or `azure` (on `start`/bare `lstk`; records the choice in config). See [Selecting the emulator with `--type`](/snowflake/developer-tools/lstk/lifecycle-commands/#selecting-the-emulator-with---type). |
+| `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
+| `--no-snapshot`     | Skip auto-loading the configured snapshot (on `start`/bare `lstk`)          |
+| `--timeout <duration>` | Startup readiness deadline for `start`/bare `lstk`, as a Go duration; overrides `LSTK_STARTUP_TIMEOUT` for one run. See [`start`](/snowflake/developer-tools/lstk/lifecycle-commands/#start). |
+| `-v`, `--version`   | Print the version and exit                                                 |
+| `-h`, `--help`      | Print help and exit                                                        |
+
+## Interactive and non-interactive mode
+
+`lstk` automatically selects its output mode:
+
+- **Interactive mode** (TUI): used when both stdin and stdout are connected to a terminal.
+  Commands like `start`, `stop`, `restart`, `status`, `login`, `update`, and the confirmation prompts of `reset`/`volume clear` display a Bubble Tea-powered terminal UI.
+- **Non-interactive mode** (plain text): used when the output is piped, redirected, or running in CI.
+  Force this in a TTY with `--non-interactive`.
+
+```bash
+# Force plain output even in an interactive terminal
+lstk --non-interactive start
+```
+
+:::note
+`lstk login` requires an interactive terminal; if you need to authenticate in CI, set `LOCALSTACK_AUTH_TOKEN` instead.
+Commands that mutate state without prompting in CI (`reset`, `volume clear`) require `--force`.
+`lstk setup aws` works non-interactively — it writes the profile with defaults and needs `--force` only to overwrite a conflicting `localstack` profile.
+:::
+
+## Structured output
+
+The global `--json` flag makes a command emit a single, machine-readable JSON object on stdout instead of human-oriented text, for scripting and CI.
+JSON support is available per command: `stop`, `reset`, and `update` accept `--json`.
+Any other command rejects it with an error envelope (`error.code: NOT_JSON_CAPABLE`) rather than silently printing plain text.
+
+Every JSON-capable command writes **exactly one** JSON object with the following envelope shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "stop",
+  "status": "ok",
+  "data": {
+    "emulators": [
+      { "type": "aws", "name": "localstack-aws", "wasRunning": true }
+    ]
+  },
+  "warnings": [],
+  "error": null
+}
+```
+
+| Field           | Type            | Description                                                                                          |
+|:----------------|:-----------------|:--------------------------------------------------------------------------------------------------------|
+| `schemaVersion` | integer         | Wire-format version of the envelope, always `1` for this schema. Check it once before parsing.        |
+| `command`       | string          | The command that produced the envelope (e.g. `"stop"`, `"reset"`).                                   |
+| `status`        | string          | `"ok"` or `"error"` — branch on this first.                                                          |
+| `data`          | object or `null`| Command-specific result. Non-null when `status` is `"ok"`, `null` when it is `"error"`.              |
+| `warnings`      | array           | Non-fatal notices, always present (empty array when there are none). Each entry is `{ "code", "message" }`. |
+| `error`         | object or `null`| The machine-readable failure. Non-null when `status` is `"error"`, `null` otherwise.                 |
+
+When `status` is `"error"`, the `error` object carries a stable `code` (e.g. `EMULATOR_NOT_RUNNING`, `CONFIRMATION_REQUIRED`, `RUNTIME_UNAVAILABLE`), a coarse `category`, a human-readable `message` (informational only — branch on `code`, not `message`), and a `retryable` boolean:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "reset",
+  "status": "error",
+  "data": null,
+  "warnings": [],
+  "error": {
+    "code": "CONFIRMATION_REQUIRED",
+    "category": "USAGE",
+    "message": "reset requires confirmation; use --force to skip in non-interactive mode",
+    "retryable": false
+  }
+}
+```
+
+### Exit codes
+
+For a full enumeration, read `error.code` from the envelope; the process exit code carries only the two most common, mechanically-remediable failures:
+
+| Exit code | Meaning                                                                                     |
+|:----------|:-------------------------------------------------------------------------------------------|
+| `0`       | `status: "ok"`.                                                                             |
+| `1`       | `status: "error"` for any code other than the two below.                                    |
+| `2`       | A Cobra-level usage error that occurred before `--json` could be recognized (plain-text error on stderr, not an envelope). |
+| `3`       | `error.code == "CONFIRMATION_REQUIRED"` (re-run with `--force`).                            |
+| `4`       | `error.code == "AUTH_REQUIRED"` (run `lstk login` or set `LOCALSTACK_AUTH_TOKEN`).          |
+
+:::note
+`--json` implies non-interactive behavior: no TUI and no prompts.
+Combining it with a destructive command that would otherwise prompt (`reset`) still requires `--force`, which surfaces as `CONFIRMATION_REQUIRED` (exit code `3`) when omitted.
+:::
+
+## Environment variables
+
+The following environment variables configure `lstk` itself (not the LocalStack container):
+
+| Variable                     | Description                                                                                                      |
+|:-------------------------------|:---------------------------------------------------------------------------------------------------------------------|
+| `LOCALSTACK_AUTH_TOKEN`      | Auth token for non-interactive runs or to skip browser login. Used when no keyring token is stored.              |
+| `LOCALSTACK_HOST`            | Override the host (and optional port) used when resolving and printing the emulator endpoint, and when writing the AWS CLI profile. Bypasses the `localhost.localstack.cloud` DNS probe. |
+| `LOCALSTACK_DISABLE_EVENTS`  | Set to `1` to disable anonymous telemetry event reporting.                                                       |
+| `DOCKER_HOST`                | Override the Docker daemon socket (e.g. `unix:///home/user/.colima/default/docker.sock`).                        |
+| `LSTK_KEYRING`               | Set to `file` to force file-based token storage instead of the system keyring.                                   |
+| `LSTK_STARTUP_TIMEOUT`       | Startup readiness deadline for `lstk start`, as a Go duration (e.g. `90s`, `2m`). Zero/unset uses the per-mode default (20s interactive, 60s non-interactive). See [`start`](/snowflake/developer-tools/lstk/lifecycle-commands/#start). |
+| `LSTK_MERGE_STRATEGY`        | Default merge strategy for `snapshot load` / `load` (`account-region-merge`, `overwrite`, or `service-merge`) when `--merge` is not passed. An explicit `--merge` always wins. |
+| `LSTK_OTEL`                  | Set to `1` to enable OpenTelemetry trace export (disabled by default). See [OpenTelemetry tracing](#opentelemetry-tracing). |
+| `LSTK_GITHUB_TOKEN`          | Optional GitHub token used when checking for or downloading `lstk` updates (raises GitHub API rate limits).      |
+| `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
+| `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
+
+When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock` or `~/.config/colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
+
+When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
+
+### Container-injected variables
+
+`lstk` injects several environment variables into the LocalStack container on every start, in addition to any profiles you configure:
+
+| Variable                   | Default value                                | Description                                  |
+|:-----------------------------|:-------------------------------------------------|:---------------------------------------------|
+| `LOCALSTACK_AUTH_TOKEN`    | (your resolved token)                        | Passed from the CLI to activate the license. |
+| `GATEWAY_LISTEN`           | `:4566,:443`                                 | Ports the emulator binds inside the container. |
+| `MAIN_CONTAINER_NAME`      | `localstack-aws`                             | Container name for internal references.       |
+| `LOCALSTACK_HOST`          | `localhost.localstack.cloud:<host port>`     | Hostname/port the emulator advertises.        |
+| `LOCALSTACK_PERSISTENCE`   | `1` (only with `--persist`)                  | Enables state persistence across restarts.    |
+| `LOCALSTACK_CLIENT_NAME`   | `lstk`                                       | Identifies the client that started the emulator. |
+| `LOCALSTACK_CLIENT_VERSION`| (the `lstk` version)                         | Version of the client that started the emulator. |
+
+When a Docker socket is detected it is bind-mounted into the container and `DOCKER_HOST=unix:///var/run/docker.sock` is injected so the emulator can spawn its own containers.
+`lstk` also forwards host environment variables matching `CI` and `LOCALSTACK_*` (the host `LOCALSTACK_AUTH_TOKEN` is dropped so it cannot override the token resolved by `lstk`).
+
+The container also gets port mappings for `4566`, `443`, and the service port range `4510-4559`.
+
+:::note
+`GATEWAY_LISTEN` is read from the container's resolved environment (set it via an `[env.*]` profile), not hardcoded.
+Beyond controlling which ports the emulator binds, its host part sets the host publish IP for all published ports: a value like `GATEWAY_LISTEN = "0.0.0.0:4566,0.0.0.0:443"` exposes the emulator beyond loopback (e.g. on a remote host), whereas the default binds to `127.0.0.1` only.
+:::
+
+## OpenTelemetry tracing
+
+`lstk` can export traces of its own command execution over OTLP/HTTP.
+Tracing is **disabled by default**.
+Enable it with:
+
+```bash
+LSTK_OTEL=1 lstk start
+```
+
+When enabled, every command is wrapped in a span (e.g. `lstk.start`) recording the exit code and any error.
+`lstk` does not hardcode an export target, so the OpenTelemetry Go SDK reads the standard `OTEL_EXPORTER_OTLP_*` environment variables automatically (default target: OTLP/HTTP at `localhost:4318`).
+You need an OTLP-compatible backend running to receive the traces.
+
+## Logging
+
+`lstk` writes its own diagnostic logs to `lstk.log` in the same directory as the active config file.
+This is separate from the LocalStack container logs (which you view with [`lstk logs`](/snowflake/developer-tools/lstk/lifecycle-commands/#logs)).
+
+- The log file is created automatically and appended to across runs.
+- When the file exceeds **1 MB**, it is cleared on the next run.
+- Use `lstk config path` to find the config directory; `lstk.log` sits alongside `config.toml`.
