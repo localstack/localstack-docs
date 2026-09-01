@@ -19,7 +19,7 @@ The code in this tutorial is available on [GitHub](https://github.com/localstack
 
 ## Prerequisites
 
-- [`localstack` CLI](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
+- [`lstk`](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
 - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`awslocal` wrapper](/aws/connecting/aws-cli/#localstack-aws-cli-awslocal)
 - Python 3.10 installed locally
@@ -141,9 +141,9 @@ Start your LocalStack container in your preferred terminal/shell.
 
 ```bash showLineNumbers
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-DEBUG=1 \
-LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=180 \
-localstack start --stack snowflake
+LOCALSTACK_DEBUG=1 \
+LOCALSTACK_LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=180 \
+lstk start --type snowflake
 ```
 
 > The `DEBUG=1` environment variable is set to enable debug logs. It would allow you to see the SQL queries executed by the Lambda function. The `LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT` environment variable is set to increase the Lambda function's timeout to 180 seconds.
@@ -170,7 +170,7 @@ awslocal lambda invoke --function-name localstack-snowflake-lambda-example \
 	--payload '{"body": "test"}' output.txt
 ```
 
-You will receive a response with the details of the invocation. You can view the output in the `output.txt` file. To see the SQL queries executed by the Lambda function, check the logs by navigating to LocalStack logs (`localstack logs`).
+You will receive a response with the details of the invocation. You can view the output in the `output.txt` file. To see the SQL queries executed by the Lambda function, check the logs by navigating to LocalStack logs (`lstk logs`).
 
 ```bash
 2024-02-07T17:33:36.763 DEBUG --- [   asgi_gw_3] l.s.l.i.version_manager    : [localstack-snowflake-lambda-example-b0813b21-ad5f-4ec7-8fb4-53147df9695e] Total # of rows: 3
