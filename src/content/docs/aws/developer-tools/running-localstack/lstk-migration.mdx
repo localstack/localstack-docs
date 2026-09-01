@@ -52,7 +52,9 @@ There is no need to uninstall the `localstack` CLI, as the two can exist side by
 
 Both CLIs need a LocalStack license to run the emulator, but they ask for it in different ways. With the `localstack` CLI you copied an auth token out of the web application and stored it with `localstack auth set-token`, or exported `LOCALSTACK_AUTH_TOKEN` yourself.
 
-`lstk` replaces that with a browser-based login. Run `lstk login` and approve the request in the browser window that opens. The credential is then stored securely on your machine. There is no token to copy, and none to keep in your shell profile.
+`lstk` replaces that with a browser-based login triggered automatically: simply running `lstk` or `lstk start` takes you through the login flow the first time, opening a browser window for you to approve the request. The credential is then stored securely on your machine. There is no token to copy, and none to keep in your shell profile.
+
+Run `lstk login` directly if you want to authenticate ahead of time, or to switch accounts:
 
 ```bash
 lstk login
@@ -274,16 +276,16 @@ If you are an active user of one of these unsupported features, please contact L
 
 | Not supported in `lstk` | Recommended alternative |
 | --- | --- |
-| Ephemeral Instances | Use the `localstack` CLI or the LocalStack Console. Ephemeral Instances are a preview feature and are not yet available in `lstk`. |
-| AWS Replicator | Use the `localstack` CLI, version 4.2.0 or newer. Also a preview feature. |
-| IAM Policy Stream | Use the `localstack` CLI, or the dashboard in the LocalStack Console. IAM enforcement itself needs no CLI support and can be switched on with configuration variables, which `lstk` passes through as usual. |
-| Extensions | Use the `localstack` CLI to install, manage, and develop extensions. To install one at start-up without the CLI, set `EXTENSION_AUTO_INSTALL` in your configuration. |
-| Cloud Pod publishing, snapshot encryption, and version messages | These features remain available only in the `localstack` CLI. `lstk` covers the everyday save, load, list, and inspect operations. |
-| Cloud Pod remotes other than S3 | Use the `localstack` CLI. `lstk` supports the LocalStack platform and your own S3 bucket, with the location passed inline rather than registered in advance. |
-| Host DNS setup on Linux | Use the `localstack` CLI for the one-off resolver configuration. Publishing the DNS port itself is supported through the `expose_ports` setting. |
+| [Ephemeral Instances](https://docs.localstack.cloud/aws/developer-tools/cloud-sandbox/ephemeral-instances/) | Use the `localstack` CLI or the LocalStack Console. Ephemeral Instances are a preview feature and are not yet available in `lstk`. |
+| [AWS Replicator](https://docs.localstack.cloud/aws/developer-tools/aws-replicator/) | Use the `localstack` CLI, version 4.2.0 or newer. Also a preview feature. |
+| [IAM Policy Stream](https://docs.localstack.cloud/aws/developer-tools/security-testing/iam-policy-stream/) | Use the `localstack` CLI, or the dashboard in the LocalStack Console. IAM enforcement itself needs no CLI support and can be switched on with configuration variables, which `lstk` passes through as usual. |
+| [Extensions](https://docs.localstack.cloud/aws/customization/integrations/extensions/) | Use the `localstack` CLI to install, manage, and develop extensions. To install one at start-up without the CLI, set `EXTENSION_AUTO_INSTALL` in your configuration. |
+| [Cloud Pod](https://docs.localstack.cloud/aws/developer-tools/snapshots/cloud-pods/) publishing, snapshot encryption, and version messages | These features remain available only in the `localstack` CLI. `lstk` covers the everyday save, load, list, and inspect operations. |
+| [Cloud Pod](https://docs.localstack.cloud/aws/developer-tools/snapshots/cloud-pods/) remotes other than S3 | Use the `localstack` CLI. `lstk` supports the LocalStack platform and your own S3 bucket, with the location passed inline rather than registered in advance. |
+| [Host DNS setup](https://docs.localstack.cloud/aws/customization/networking/dns-server/) on Linux | Use the `localstack` CLI for the one-off resolver configuration. Publishing the DNS port itself is supported through the `expose_ports` setting. |
 | Arbitrary Docker options, such as custom networks | Use `docker-compose.yml` when you need full control of the container and the many Docker configuration options. The `lstk` configuration file covers only the basic features, such as the image, tag, port, exposed ports, volumes, and environment variables. |
 | Shell access to the container (`localstack ssh`) | Use `docker exec -it localstack-aws bash`. Note that `lstk` names its container `localstack-[aws,azure,snowflake]`. |
-| GitHub Action | There is no GitHub Action for `lstk` yet, and the existing setup-localstack Action installs the `localstack` CLI. Install `lstk` in a step of your own instead, as shown in [Using lstk with Continuous Integration](#using-lstk-with-continuous-integration). |
+| [GitHub Action](https://github.com/localstack/setup-localstack) | There is no GitHub Action for `lstk` yet, and the existing `setup-localstack` Action installs the `localstack` CLI. Install `lstk` in a step of your own instead, as shown in [Using lstk with Continuous Integration](#using-lstk-with-continuous-integration). |
 
 ## Next steps 
 
