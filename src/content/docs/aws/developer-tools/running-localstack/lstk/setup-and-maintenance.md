@@ -54,7 +54,7 @@ export AWS_PROFILE=localstack
 aws s3 ls
 ```
 
-The endpoint host is resolved the same way as for [`lstk aws`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#endpoint-resolution) (probing `localhost.localstack.cloud` and falling back to `127.0.0.1`), and [`LOCALSTACK_HOST`](/aws/developer-tools/running-localstack/lstk/automation/#environment-variables) overrides the host and port written into the profile.
+The endpoint host is resolved the same way as for [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#endpoint-resolution) (probing `localhost.localstack.cloud` and falling back to `127.0.0.1`), and [`LOCALSTACK_HOST`](/aws/developer-tools/running-localstack/lstk/automation/#environment-variables) overrides the host and port written into the profile.
 The port comes from your AWS emulator's configured `port` (default `4566`); if no `aws` emulator is configured, the command fails with `no aws emulator configured`.
 
 If the `localstack` profile is already configured correctly, `lstk` reports `LocalStack AWS profile is already configured.` and makes no changes.
@@ -65,7 +65,7 @@ The former `lstk config profile` command has been removed; use `lstk setup aws`.
 
 ### `setup azure`
 
-Prepare an isolated Azure CLI configuration directory (under the `lstk` config dir, via `AZURE_CONFIG_DIR`) that routes [`lstk az`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#az) commands to the LocalStack Azure emulator.
+Prepare an isolated Azure CLI configuration directory (under the `lstk` config dir, via `AZURE_CONFIG_DIR`) that routes [`lstk az`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#az) commands to the LocalStack Azure emulator.
 Your global `~/.azure` configuration is left untouched.
 
 ```bash
@@ -78,7 +78,7 @@ lstk setup az
 It requires the `az` CLI to be installed and a running LocalStack Azure emulator.
 
 Run this once; afterwards use `lstk az <args>` to run Azure CLI commands against LocalStack.
-To instead redirect your **global** `az` (so existing scripts run unmodified against LocalStack), see [`lstk az start-interception`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#global-interception-optional).
+To instead redirect your **global** `az` (so existing scripts run unmodified against LocalStack), see [`lstk az start-interception`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#global-interception-optional).
 
 ## `config`
 

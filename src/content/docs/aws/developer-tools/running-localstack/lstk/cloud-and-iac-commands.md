@@ -1,6 +1,6 @@
 ---
-title: lstk AWS & IaC Commands
-description: The aws, az, terraform, cdk, and sam commands that proxy developer tools against LocalStack.
+title: lstk Cloud & IaC Commands
+description: The aws, az, terraform, cdk, and sam commands that proxy cloud and infrastructure-as-code tools against LocalStack.
 template: doc
 tags: ['Hobby']
 ---

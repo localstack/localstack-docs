@@ -215,6 +215,7 @@ lstk logs --follow --verbose
 
 Discard the running AWS emulator's in-memory state (all created resources such as S3 buckets and Lambda functions are dropped).
 The emulator **keeps running**; only its state is cleared.
+`reset` is **AWS-only** and errors out with `reset is only supported for the AWS emulator` for the Snowflake and Azure emulators.
 
 ```bash
 lstk reset

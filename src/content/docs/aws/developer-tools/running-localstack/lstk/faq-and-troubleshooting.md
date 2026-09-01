@@ -31,7 +31,7 @@ See [Passing environment variables to the container](/aws/developer-tools/runnin
 ### How do I save and restore emulator state?
 
 Use [`lstk snapshot save`](/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot-save) to capture the running AWS emulator's state to a local file or a Cloud Pod, and [`lstk snapshot load`](/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot-load) (or the `lstk save` / `lstk load` aliases) to restore it.
-To drop in-memory state without writing a snapshot, use [`lstk reset`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#reset).
+To drop in-memory state without writing a snapshot, use [`lstk reset`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#reset) (AWS emulator only).
 
 ### How do I pin a specific LocalStack version?
 

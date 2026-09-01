@@ -503,8 +503,8 @@ export default defineConfig({
                           slug: 'aws/developer-tools/running-localstack/lstk/lifecycle-commands',
                         },
                         {
-                          label: 'AWS & IaC Commands',
-                          slug: 'aws/developer-tools/running-localstack/lstk/aws-and-iac-commands',
+                          label: 'Cloud & IaC Commands',
+                          slug: 'aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands',
                         },
                         {
                           label: 'Snapshots',

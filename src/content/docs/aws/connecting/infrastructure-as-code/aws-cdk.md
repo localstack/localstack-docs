@@ -14,7 +14,7 @@ The AWS Cloud Development Kit (CDK) is an Infrastructure-as-Code (IaC) tool usin
 
 ## AWS CDK CLI for LocalStack
 
-[`lstk cdk`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#cdk) proxies the [AWS CDK](https://github.com/aws/aws-cdk) library against local APIs provided by LocalStack. It requires the AWS CDK CLI version `2.177.0` or newer on your `PATH`.
+[`lstk cdk`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#cdk) proxies the [AWS CDK](https://github.com/aws/aws-cdk) library against local APIs provided by LocalStack. It requires the AWS CDK CLI version `2.177.0` or newer on your `PATH`.
 
 :::note
 `lstk cdk` supersedes the older [`cdklocal` wrapper script](/aws/connecting/infrastructure-as-code/deprecated-wrapper-scripts#cdklocal), which is deprecated but still available if you need it.
@@ -75,7 +75,7 @@ lstk cdk deploy
 > Do you wish to deploy these changes (y/n)? y
 ```
 
-Once the deployment is done, you can inspect the created resources via the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/aws-and-iac-commands/#aws) command line
+Once the deployment is done, you can inspect the created resources via the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command line
 
 ```bash
 lstk aws sns list-topics

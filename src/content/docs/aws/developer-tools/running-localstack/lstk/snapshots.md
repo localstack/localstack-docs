@@ -13,8 +13,8 @@ The `snapshot` command groups five subcommands — `save`, `load`, `list`, `remo
 
 :::note
 Snapshots are best supported on the **AWS emulator**.
-`snapshot save`/`load` (and the `save`/`load` aliases) also work for the Snowflake and Azure emulators, but their snapshot support is experimental and not fully tested — `lstk` prints a warning such as `Snapshot support for the snowflake emulator is experimental and not fully tested.`
-[`reset`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#reset) remains **AWS-only** and errors out with `reset is only supported for the AWS emulator` otherwise.
+`snapshot save`/`load` (and the `save`/`load` aliases) also work for the Snowflake emulator, but its snapshot support is experimental and not fully tested — `lstk` prints a warning such as `Snapshot support for the snowflake emulator is experimental and not fully tested.`
+Azure emulator persistence is still a work in progress and is not yet supported.
 :::
 
 ## `snapshot save`
@@ -96,7 +96,9 @@ Set [`LSTK_MERGE_STRATEGY`](/aws/developer-tools/running-localstack/lstk/automat
 
 Pass `--dry-run` with a `pod:` ref to preview a load before committing to it: `lstk` queries the platform and prints, per service, how many resources the snapshot would add or modify under the chosen merge strategy, without touching running state. It is supported for `pod:` refs only (other refs are rejected) and requires the emulator to already be running, since it does not auto-start one.
 
-The aliases behave identically:
+### `save`/`load` aliases
+
+`snapshot save` and `snapshot load` are also exposed as the top-level aliases `lstk save` and `lstk load`. The aliases behave identically:
 
 ```bash
 lstk save pod:my-baseline
