@@ -21,14 +21,13 @@ State Management is an essential feature that supports various use-cases, such a
 
 LocalStack’s Persistence mechanism enables the saving and restoration of the entire LocalStack state. It functions as a **pause and resume** feature, allowing you to take a snapshot of your LocalStack instance and save this data to disk. This mechanism ensures a quick and efficient way to preserve and continue your work with Snowflake resources locally.
 
-To start snapshot-based persistence, launch LocalStack with the configuration option `PERSISTENCE=1`. This setting instructs LocalStack to save all local Snowflake resources and their respective application states into the LocalStack Volume Directory. Upon restarting LocalStack, you'll be able to resume your activities exactly where you left off.
+To start snapshot-based persistence, launch LocalStack with the `--persist` command-line option, or the configuration option `PERSISTENCE=1`. This setting instructs LocalStack to save all local Snowflake resources and their respective application states into the LocalStack Volume Directory. Upon restarting LocalStack, you'll be able to resume your activities exactly where you left off.
 
 <Tabs>
-<TabItem label="LocalStack CLI">
+<TabItem label="lstk">
 ```bash
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-PERSISTENCE=1 \
-localstack start --stack snowflake
+lstk start --persist
 ```
 </TabItem>
 <TabItem label="Docker Compose">
@@ -69,17 +68,17 @@ The Export/Import State feature enables you to export the state of your LocalSta
 To export the state, you can run the following command:
 
 ```bash
-localstack state export '<file-name>'
+lstk snapshot save '<file-name>'
 ```
 
-You can use the `<file-name>` argument to specify a file path to export the state to. If you do not specify a file path, the state will be exported to the current working directory into a file named `ls-state-export`.
+You can use the `<file-name>` argument to specify a file path to export the state to. If you do not specify a file path, the state will be exported to the current working directory into an auto-named snapshot file.
 
 ### Import the State
 
 To import the state, you can run the following command:
 
 ```bash
-localstack state import '<file-name>'
+lstk snapshot load '<file-name>'
 ```
 
 The `<file-name>` argument is required and specifies the file path to import the state from. The file should be generated from a previous export.

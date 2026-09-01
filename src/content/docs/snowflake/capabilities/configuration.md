@@ -8,11 +8,29 @@ label:
 
 LocalStack exposes various configuration options to control its behaviour.
 
-These options can be passed to LocalStack as environment variables like so:
+With `lstk`, these options can be passed as `LOCALSTACK_`-prefixed environment variables when starting the container:
 
 ```bash
-DEBUG=1 localstack start --stack snowflake
+LOCALSTACK_DEBUG=1 lstk start
 ```
+
+Alternatively, set them as named environment profiles in your config file and reference them from the container block:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "snowflake"
+env  = ["debug"]
+
+[env.debug]
+DEBUG = "1"
+```
+
+```bash
+lstk start
+```
+
+See [Passing environment variables to the container](/aws/developer-tools/running-localstack/lstk#passing-environment-variables-to-the-container) for details.
 
 ## Core
 
@@ -35,11 +53,11 @@ Options that affect the core Snowflake emulator functionality.
 
 By default, the Snowflake emulator accepts requests for hostnames such as `snowflake.localhost.localstack.cloud` and other `*.snowflake.*` hostnames.
 If you expose the emulator through a custom DNS name, for example in Kubernetes or behind an ingress, set `SF_HOSTNAMES` to the exact hostnames clients use to reach the emulator.
-When you use the `localstack` CLI, add the `LOCALSTACK_` prefix so the CLI passes the variable to the container:
+When you use `lstk`, add the `LOCALSTACK_` prefix so the CLI passes the variable to the container:
 
 ```bash
 LOCALSTACK_SF_HOSTNAMES=snowflake.internal.example.com,snowflake.internal,snowflake.localhost.localstack.cloud \
-localstack start --stack snowflake
+lstk start
 ```
 
 The first hostname in `SF_HOSTNAMES` is used as the primary hostname for local connection defaults and generated URLs.
@@ -75,7 +93,7 @@ If your custom hostname also needs a matching TLS certificate, use LocalStack's 
 LOCALSTACK_SF_HOSTNAMES=snowflake.internal.example.com \
 CUSTOM_SSL_CERT_PATH=/var/lib/localstack/custom/cert.pem \
 SKIP_SSL_CERT_DOWNLOAD=1 \
-localstack start --stack snowflake
+lstk start
 ```
 
 The file referenced by `CUSTOM_SSL_CERT_PATH` must contain a certificate and private key that match the hostname used by your Snowflake clients.
@@ -83,13 +101,8 @@ For more general guidance on adding trusted certificates to LocalStack, see [Cus
 
 ## CLI
 
-These options are applicable when using the CLI to start LocalStack.
-
-| Variable | Example Values | Description |
-| - | - | - |
-| `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. |
-| `CONFIG_PROFILE` | | The configuration profile to load. See [Profiles](#profiles) |
-| `CONFIG_DIR` | `~/.localstack` | The path where LocalStack can find configuration profiles and other CLI-specific configuration |
+`lstk` is configured through its config file rather than through environment variables.
+See [Configuration](/aws/developer-tools/running-localstack/lstk#configuration) on the `lstk` page for the config file search order, the field reference, and how to define named environment profiles.
 
 ## Docker
 
@@ -97,55 +110,10 @@ Options to configure how LocalStack interacts with Docker.
 
 | Variable | Example Values | Description |
 | - | - | - |
+| `LOCALSTACK_VOLUME_DIR` | `~/.cache/localstack/volume` (on Linux) | The location on the host of the LocalStack volume directory mount. |
 | `DOCKER_FLAGS` | | Allows to pass custom flags (e.g., volume mounts) to "docker run" when running LocalStack in Docker. |
 | `DOCKER_SOCK` | `/var/run/docker.sock` | Path to local Docker UNIX domain socket |
 | `DOCKER_BRIDGE_IP` | `172.17.0.1` | IP of the Docker bridge used to enable access between containers |
 | `LEGACY_DOCKER_CLIENT` | `0`\|`1` | Whether LocalStack should use the command-line Docker client and subprocess execution to run Docker commands, rather than the Docker SDK. |
 | `DOCKER_CMD` | `docker` (default), `sudo docker`| Shell command used to run Docker containers (only used in combination with `LEGACY_DOCKER_CLIENT`) |
 | `FORCE_NONINTERACTIVE` | | When running with Docker, disables the `--interactive` and `--tty` flags. Useful when running headless. |
-
-## Profiles
-
-LocalStack supports configuration profiles which are stored in the `~/.localstack` config directory.
-A configuration profile is a set of environment variables stored in a `*.env` file in the LocalStack config directory.
-
-Here is an example of what configuration profiles might look like:
-
-```bash
-tree ~/.localstack
-/home/username/.localstack
-├── default.env
-├── dev.env
-└── pro.env
-```
-
-Here is an example of what a specific environment profile looks like
-
-```bash
-cat ~/.localstack/pro-debug.env
-LOCALSTACK_AUTH_TOKEN=XXXXX
-SF_LOG=trace
-SF_S3_ENDPOINT=s3.localhost.localstack.cloud:4566
-```
-
-You can load a profile by either setting the environment variable `CONFIG_PROFILE=<profile>` or the `--profile=<profile>` CLI flag when using the CLI.
-Let's take an example to load the `dev.env` profile file if it exists:
-
-```bash
-localstack --profile=dev start --stack snowflake
-```
-
-If no profile is specified, the `default.env` profile will be loaded.
-If explicitly specified, any environment variables will overwrite the configurations defined in the profile.
-
-To display the config environment variables, you can use the following command:
-
-```bash
-localstack --profile=dev config show
-```
-
-:::note
-The `CONFIG_PROFILE` is a CLI feature and cannot be used directly with a docker-compose setup.
-You can look at [alternative means of setting environment variables](https://docs.docker.com/compose/environment-variables/set-environment-variables/) for your Docker Compose setups.
-For Docker setups, we recommend passing the environment variables directly to the `docker run` command.
-:::
