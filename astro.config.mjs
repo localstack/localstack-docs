@@ -901,7 +901,48 @@ export default defineConfig({
               label: 'Developer Tools',
               collapsed: true,
               items: [
-                { autogenerate: { directory: 'azure/developer-tools' } },
+                {
+                  label: 'lstk CLI',
+                  collapsed: true,
+                  items: [
+                    {
+                      label: 'Overview',
+                      slug: 'azure/developer-tools/lstk',
+                    },
+                    {
+                      label: 'Authentication',
+                      slug: 'azure/developer-tools/lstk/authentication',
+                    },
+                    {
+                      label: 'Configuration',
+                      slug: 'azure/developer-tools/lstk/configuration',
+                    },
+                    {
+                      label: 'Lifecycle Commands',
+                      slug: 'azure/developer-tools/lstk/lifecycle-commands',
+                    },
+                    {
+                      label: 'Cloud & IaC Commands',
+                      slug: 'azure/developer-tools/lstk/cloud-and-iac-commands',
+                    },
+                    {
+                      label: 'Snapshots',
+                      slug: 'azure/developer-tools/lstk/snapshots',
+                    },
+                    {
+                      label: 'Automation & CI',
+                      slug: 'azure/developer-tools/lstk/automation',
+                    },
+                    {
+                      label: 'Setup & Maintenance',
+                      slug: 'azure/developer-tools/lstk/setup-and-maintenance',
+                    },
+                    {
+                      label: 'FAQ & Troubleshooting',
+                      slug: 'azure/developer-tools/lstk/faq-and-troubleshooting',
+                    },
+                  ],
+                },
               ],
             },
             {

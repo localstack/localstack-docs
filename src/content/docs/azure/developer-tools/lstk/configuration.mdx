@@ -1,0 +1,189 @@
+---
+title: lstk Configuration
+description: The lstk config.toml file, emulator types, environment variables, custom images, and volume mounts.
+template: doc
+tags: ['Hobby']
+---
+
+`lstk` uses a TOML configuration file, created automatically on first run.
+
+## Config file search order
+
+`lstk` uses the first `config.toml` it finds in this order:
+
+1. `./.lstk/config.toml`: project-local config in the current directory.
+2. `$HOME/.config/lstk/config.toml`: user config (created here if `$HOME/.config/` exists).
+3. OS default:
+   - **macOS**: `$HOME/Library/Application Support/lstk/config.toml`
+   - **Windows**: `%AppData%\lstk\config.toml`
+   - **Linux**: `$XDG_CONFIG_HOME/lstk/config.toml` or `$HOME/.config/lstk/config.toml`
+
+On first run, the config is created at path #2 if `$HOME/.config/` already exists; otherwise at the OS default (#3).
+
+To see the active config file path:
+
+```bash
+lstk config path
+```
+
+To use a specific config file:
+
+```bash
+lstk --config /path/to/config.toml start
+```
+
+## Default configuration
+
+The default `config.toml` created on first run. The `type` field reflects whichever emulator you chose at first run (see [Emulator types](#emulator-types)); the example below shows the `aws` default:
+
+```toml
+[[containers]]
+type = "aws"      # Emulator type. Supported: "aws", "snowflake", "azure"
+tag  = "latest"   # Docker image tag, e.g. "latest", "2026.4"
+port = "4566"     # Host port the emulator will be accessible on
+# image = ""      # Full image override (e.g. an internal mirror or offline image)
+# volume = ""     # Host directory for persistent state (default: OS cache dir)
+# volumes = []    # Docker-style "host:container[:ro]" bind mounts (see Volumes)
+# env = []        # Named environment profiles to apply (see [env.*] sections below)
+# snapshot = ""   # Snapshot REF to auto-load after start (AWS only)
+```
+
+## Config field reference
+
+| Field      | Type     | Default    | Description                                                                                          |
+|:-----------|:---------|:-----------|:-----------------------------------------------------------------------------------------------------|
+| `type`     | string   | `"aws"`    | Emulator type. One of `"aws"`, `"snowflake"`, `"azure"`. Run a single `[[containers]]` block at a time. See [Emulator types](#emulator-types). |
+| `tag`      | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.4"`, etc.). Useful for pinning a specific version. Zero-padded months (`"2026.04"`) are normalized to `"2026.4"`. |
+| `port`     | string   | `"4566"`   | Host port the emulator listens on (1–65535). The in-container port is always `4566`.                 |
+| `image`    | string   | (default)  | Full image reference that overrides the default Docker Hub image, e.g. an internal-registry mirror or a locally loaded offline image. If it already carries a tag, `tag` is ignored; otherwise `tag` (or `latest`) is appended. |
+| `volume`   | string   | (OS cache) | Host directory for persistent emulator state. Defaults to `<os-cache>/lstk/volume/<container-name>`. See also `volumes`. |
+| `volumes`  | string[] | `[]`       | Docker-style `"host:container[:ro]"` bind mounts (e.g. init hooks). May also carry the persistence mount (target `/var/lib/localstack`). See [Volume mounts](#volume-mounts). |
+| `env`      | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
+| `snapshot` | string   | `""`       | Snapshot REF (e.g. `pod:my-baseline` or a local path) to auto-load after the emulator starts. AWS emulator only. See [Auto-loading a snapshot on start](/azure/developer-tools/lstk/lifecycle-commands/#auto-loading-a-snapshot-on-start). |
+
+:::note
+There is no `update_prompt` config key.
+`lstk` always checks for available updates on startup.
+Once you choose to skip a version, `lstk` records it under the `[cli]` table as `update_skipped_version` and stops prompting for that version.
+This value is written automatically and is not meant to be hand-edited (see [`update`](/azure/developer-tools/lstk/setup-and-maintenance/#update)).
+:::
+
+## Emulator types
+
+`lstk` can run more than one kind of emulator.
+The `type` field in your `config.toml` selects which one:
+
+| Type        | Docker image                  | Description                          |
+|:------------|:------------------------------|:-------------------------------------|
+| `aws`       | `localstack/localstack-pro`   | LocalStack AWS emulator (default).   |
+| `snowflake` | `localstack/snowflake`        | LocalStack Snowflake emulator.       |
+| `azure`     | `localstack/localstack-azure` | LocalStack Azure emulator.           |
+
+On the first interactive run, `lstk` prompts you to pick an emulator (`a` for AWS, `s` for Snowflake, `z` for Azure) and writes your choice to `config.toml`.
+In non-interactive mode the default `aws` emulator is used if no config file is found.
+
+Lifecycle commands operate on the emulators defined in your `config.toml`.
+Run a single `[[containers]]` block at a time; the AWS-specific commands (`status` resources, `aws`, `reset`, `setup aws`) require an `aws` emulator to be configured.
+
+:::note
+The AWS emulator's license is validated by `lstk` before the container starts.
+The Snowflake and Azure emulators validate their own license inside the container at startup, so `lstk` skips its pre-flight license check for them.
+If your license does not include the selected emulator, the container exits and `lstk` reports the missing entitlement.
+:::
+
+## Passing environment variables to the container
+
+Define reusable environment profiles under `[env.<name>]` and reference them in your container config:
+
+```toml
+[[containers]]
+type = "aws"
+tag  = "latest"
+port = "4566"
+env  = ["debug", "ci"]
+
+[env.debug]
+DEBUG = "1"
+ENFORCE_IAM = "1"
+PERSISTENCE = "1"
+
+[env.ci]
+SERVICES = "s3,sqs"
+EAGER_SERVICE_LOADING = "1"
+```
+
+When `lstk start` runs, the key-value pairs from each referenced profile are injected as environment variables into the LocalStack container.
+Keys are uppercased automatically.
+
+:::note
+If you reference an `env` profile name that doesn't exist in your config, `lstk` returns an error: `environment "..." referenced in container config not found`.
+:::
+
+In addition to your custom profiles, `lstk` always injects several variables into the container.
+See [Container-injected variables](/azure/developer-tools/lstk/automation/#container-injected-variables) for the full list.
+
+## Custom container image
+
+By default the emulator image is pulled from Docker Hub (`localstack/localstack-pro`, `localstack/snowflake`, or `localstack/localstack-azure` depending on `type`).
+Set `image` on a container block to override it — for example, to pull from an internal-registry mirror or to run a locally loaded image in an air-gapped environment:
+
+```toml
+[[containers]]
+type  = "aws"
+image = "registry.internal.example.com/localstack/localstack-pro"
+tag   = "2026.4"
+```
+
+If `image` already carries a tag (e.g. `...:2026.4`), the separate `tag` field is ignored; otherwise `tag` (or `latest`) is appended.
+See [Offline and enterprise environments](/azure/developer-tools/lstk/setup-and-maintenance/#offline-and-enterprise-environments) for how `lstk` falls back to a locally present image when a pull fails.
+
+## Volume mounts
+
+Beyond the single persistence directory set by `volume`, a container block can declare arbitrary Docker-style bind mounts with `volumes`.
+Each entry is a `"host:container[:ro]"` spec — useful, for example, for mounting an initialization script into `/etc/localstack/init/{boot,start,ready,shutdown}.d`, or a directory to persist state across restarts:
+
+```toml
+[[containers]]
+type = "azure"
+port = "4566"
+volumes = [
+  "./init-ready.sh:/etc/localstack/init/ready.d/init-ready.sh",
+  "./data:/var/lib/localstack",
+]
+```
+
+- A `volumes` entry whose container target is `/var/lib/localstack` sets the persistence directory (the same mount `volume` configures); this is what [`lstk volume path`](/azure/developer-tools/lstk/lifecycle-commands/#volume) and [`lstk volume clear`](/azure/developer-tools/lstk/lifecycle-commands/#volume) resolve.
+- Relative host sources and a leading `~/` are resolved against the config file's directory. This differs from the legacy `volume` field, whose value is passed to Docker verbatim.
+- Setting the persistence directory through both `volume` and a `volumes` entry with a different source is a validation error.
+
+`volume` and `volumes` overlap only for the persistence mount: `volume` can *only* set the persistence directory, while `volumes` is a superset that can also express init hooks and other mounts.
+
+## Using a project-local config
+
+Place a `.lstk/config.toml` in your project directory.
+When you run `lstk` from that directory, the local config takes precedence over the global one.
+This lets each project pin its own emulator type, image tag, and environment profiles.
+
+For example, a project that targets the Snowflake emulator can keep its own config:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "snowflake"
+port = "4566"
+```
+
+An AWS project might instead pin a specific image tag and enable a debug profile:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+tag  = "2026.4"
+port = "4566"
+env  = ["dev"]
+
+[env.dev]
+DEBUG = "1"
+PERSISTENCE = "1"
+```

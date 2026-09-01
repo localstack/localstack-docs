@@ -1,0 +1,169 @@
+---
+title: lstk CLI
+description: Overview, installation, and quick start for lstk, the modern CLI for managing LocalStack.
+template: doc
+tags: ['Hobby']
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Introduction
+
+`lstk` is a high-performance command-line interface for LocalStack, built in Go.
+It provides a built-in terminal UI (TUI) for interactive use and plain text output for CI/CD pipelines and scripting.
+
+`lstk` handles the full emulator lifecycle: authentication, pulling the Docker image, starting, stopping, and restarting the container, streaming logs, and checking status.
+It can also save and load emulator state (as local snapshots or Cloud Pods) reset running state, run AWS CLI commands against the emulator, and manage the on-disk volume.
+Running `lstk` with no arguments takes you through the entire startup flow automatically.
+
+`lstk` also proxies developer tools so they run directly against LocalStack: the AWS CLI (`lstk aws`), the Azure CLI (`lstk az`), Terraform (`lstk terraform`), the AWS CDK (`lstk cdk`), and the AWS SAM CLI (`lstk sam`).
+
+This section is split into focused pages:
+
+- **Overview** (this page): installation, quick start, and shell completions.
+- [Authentication](/azure/developer-tools/lstk/authentication/): logging in and out, and how `lstk` resolves your auth token.
+- [Configuration](/azure/developer-tools/lstk/configuration/): the `config.toml` file, emulator types, environment variables, and volumes.
+- [Lifecycle commands](/azure/developer-tools/lstk/lifecycle-commands/): `start`, `stop`, `restart`, `status`, `logs`, `reset`, `volume`.
+- [Cloud & IaC commands](/azure/developer-tools/lstk/cloud-and-iac-commands/): `aws`, `az`, `terraform`, `cdk`, `sam`.
+- [Snapshots](/azure/developer-tools/lstk/snapshots/): save and load emulator state with `snapshot save`/`load`/`list`/`remove`/`show`.
+- [Automation & CI](/azure/developer-tools/lstk/automation/): global options, non-interactive mode, structured output, and environment variables.
+- [Setup & maintenance](/azure/developer-tools/lstk/setup-and-maintenance/): `setup`, `config`, `update`, and offline/enterprise environments.
+- [FAQ & Troubleshooting](/azure/developer-tools/lstk/faq-and-troubleshooting/).
+
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed and running.
+- A [LocalStack account](https://www.localstack.cloud/pricing) with a [license](/azure/getting-started/auth-token/#managing-your-license), and `lstk` handles authentication for you (see [Authentication](/azure/developer-tools/lstk/authentication/)).
+
+## Installation
+
+<Tabs>
+<TabItem label="Homebrew (macOS/Linux)">
+
+```bash
+brew install localstack/tap/lstk
+```
+
+Homebrew also installs shell completions for bash, zsh, and fish automatically.
+
+</TabItem>
+<TabItem label="npm">
+
+```bash
+npm install -g @localstack/lstk
+```
+
+</TabItem>
+<TabItem label="Pre-built binaries">
+
+Download the binary for your platform from [GitHub Releases](https://github.com/localstack/lstk/releases), extract it, and place it on your `PATH`.
+
+</TabItem>
+</Tabs>
+
+Verify the installation:
+
+```bash
+lstk --version
+```
+
+### Updating
+
+`lstk` can update itself.
+It detects how it was originally installed (Homebrew, npm, or binary) and uses the matching update method:
+
+```bash
+# Check for updates without installing
+lstk update --check
+
+# Update to the latest version
+lstk update
+```
+
+See the [`update`](/azure/developer-tools/lstk/setup-and-maintenance/#update) command for details, including the start-time update notification.
+
+## Quick start
+
+```bash
+lstk
+```
+
+Running `lstk` without arguments performs the full startup sequence: authenticates you automatically, pulls the latest image if needed, and starts the LocalStack container.
+In an interactive terminal it launches the TUI; in a non-interactive environment it prints plain text output.
+
+On the very first interactive run, `lstk` prompts you to pick which emulator to run (AWS, Snowflake, or Azure) and writes your choice to `config.toml`.
+See [Emulator types](/azure/developer-tools/lstk/configuration/#emulator-types) for the available options.
+
+For CI or headless environments, set `LOCALSTACK_AUTH_TOKEN` and use `--non-interactive`:
+
+```bash
+LOCALSTACK_AUTH_TOKEN=<your-ci-auth-token> lstk --non-interactive
+```
+
+CI environments require a CI Auth Token; a personal Developer Auth Token cannot be used there.
+
+## Shell completions
+
+`lstk` includes completion scripts for bash, zsh, fish, and powershell.
+If you installed via Homebrew, completions are set up automatically.
+
+For manual setup:
+
+<Tabs>
+<TabItem label="Bash">
+
+```bash
+# Load in current session
+eval "$(lstk completion bash)"
+
+# Persist (Linux)
+lstk completion bash > /etc/bash_completion.d/lstk
+
+# Persist (macOS with Homebrew)
+lstk completion bash > $(brew --prefix)/etc/bash_completion.d/lstk
+```
+
+:::note
+Use `eval "$(lstk completion bash)"` rather than `source <(lstk completion bash)`.
+The `lstk` script works with or without the `bash-completion` package (it bundles a fallback for stock macOS bash 3.2), but `source <(...)` is a silent no-op on that shell.
+:::
+
+</TabItem>
+<TabItem label="Zsh">
+
+```bash
+# Load in current session
+source <(lstk completion zsh)
+
+# Persist (Linux)
+lstk completion zsh > "${fpath[1]}/_lstk"
+
+# Persist (macOS with Homebrew)
+lstk completion zsh > $(brew --prefix)/share/zsh/site-functions/_lstk
+```
+
+</TabItem>
+<TabItem label="Fish">
+
+```bash
+# Load in current session
+lstk completion fish | source
+
+# Persist
+lstk completion fish > ~/.config/fish/completions/lstk.fish
+```
+
+</TabItem>
+</Tabs>
+
+Restart your shell after persisting completions.
+
+### `completion`
+
+Generate shell completion scripts.
+
+```bash
+lstk completion [bash|zsh|fish|powershell]
+```
+
+See [Shell completions](#shell-completions) above for setup instructions.
