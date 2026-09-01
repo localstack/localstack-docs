@@ -843,9 +843,56 @@ export default defineConfig({
               ],
             },
             {
-              label: 'Tooling',
+              label: 'Developer Tools',
               collapsed: true,
-              items: [{ autogenerate: { directory: '/snowflake/tooling' } }],
+              items: [
+                {
+                  label: 'User Interface',
+                  slug: 'snowflake/developer-tools/user-interface',
+                },
+                {
+                  label: 'lstk CLI',
+                  collapsed: true,
+                  items: [
+                    {
+                      label: 'Overview',
+                      slug: 'snowflake/developer-tools/lstk',
+                    },
+                    {
+                      label: 'Authentication',
+                      slug: 'snowflake/developer-tools/lstk/authentication',
+                    },
+                    {
+                      label: 'Configuration',
+                      slug: 'snowflake/developer-tools/lstk/configuration',
+                    },
+                    {
+                      label: 'Lifecycle Commands',
+                      slug: 'snowflake/developer-tools/lstk/lifecycle-commands',
+                    },
+                    {
+                      label: 'Cloud & IaC Commands',
+                      slug: 'snowflake/developer-tools/lstk/cloud-and-iac-commands',
+                    },
+                    {
+                      label: 'Snapshots',
+                      slug: 'snowflake/developer-tools/lstk/snapshots',
+                    },
+                    {
+                      label: 'Automation & CI',
+                      slug: 'snowflake/developer-tools/lstk/automation',
+                    },
+                    {
+                      label: 'Setup & Maintenance',
+                      slug: 'snowflake/developer-tools/lstk/setup-and-maintenance',
+                    },
+                    {
+                      label: 'FAQ & Troubleshooting',
+                      slug: 'snowflake/developer-tools/lstk/faq-and-troubleshooting',
+                    },
+                  ],
+                },
+              ],
             },
             {
               label: 'Integrations',

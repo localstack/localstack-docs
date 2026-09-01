@@ -17,7 +17,7 @@ This guide explains how to set up the Snowflake emulator and use Snowflake CLI t
 - A [LocalStack Auth Token](/snowflake/getting-started/auth-token/)
 - [Snowflake CLI](/snowflake/integrations/snow-cli/)
 
-LocalStack for Snowflake works with popular Snowflake integrations to run your SQL queries. This guide uses the [Snowflake CLI](/snowflake/integrations/snow-cli/), but you can also use [SnowSQL](/snowflake/integrations/snow-sql/), [DBeaver](/snowflake/integrations/dbeaver/) or the [LocalStack Web Application](/snowflake/tooling/user-interface/) for this purpose.
+LocalStack for Snowflake works with popular Snowflake integrations to run your SQL queries. This guide uses the [Snowflake CLI](/snowflake/integrations/snow-cli/), but you can also use [SnowSQL](/snowflake/integrations/snow-sql/), [DBeaver](/snowflake/integrations/dbeaver/) or the [LocalStack Web Application](/snowflake/developer-tools/user-interface/) for this purpose.
 
 :::note
 Each integration link includes the connection instructions needed to work with the emulator. Please be sure to follow those setup steps before running queries.
