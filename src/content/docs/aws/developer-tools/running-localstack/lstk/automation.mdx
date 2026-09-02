@@ -151,9 +151,19 @@ The following environment variables configure `lstk` itself (not the LocalStack 
 | `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
 | `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
 
-When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock` or `~/.config/colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
-
 When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
+
+### Container runtime discovery
+
+`lstk` talks to a Docker-compatible runtime and works with Docker Desktop, Rancher Desktop, Colima, OrbStack, Lima, and Podman. When `DOCKER_HOST` is not set, it resolves the daemon endpoint in this order:
+
+1. **`DOCKER_HOST`**, if set, always wins.
+2. **`DOCKER_CONTEXT`** or the active Docker CLI context, when it is non-default and reachable (a stale or unreachable context is skipped rather than failing).
+3. On **Linux**, a live `/var/run/docker.sock` — a running Docker daemon is preferred over a co-installed runtime such as Podman.
+4. A probe of known runtime sockets (Docker Desktop, Rancher Desktop, Colima, OrbStack, Podman, Lima). Each candidate is dialed, not just checked for existence, so a leftover socket file never shadows a live daemon.
+5. The Docker SDK's own default.
+
+If no runtime is reachable, the error tailors its suggested start command (`rdctl start`, `colima start`, `podman machine start`, …) to the runtime it detects. Set `DOCKER_HOST` to point at a specific socket to bypass discovery entirely.
 
 ### Container-injected variables
 
