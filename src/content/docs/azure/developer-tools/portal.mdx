@@ -1,0 +1,85 @@
+---
+title: Azure Portal (emulated)
+description: A local Azure Portal served by the emulator itself — browse, create, and manage your emulated Azure resources visually, with no extra installation.
+template: doc
+---
+
+## Introduction
+
+The LocalStack Azure emulator can serve an emulated version of the Azure Portal directly from its own edge port.
+It gives you a visual way to work with your emulated resources — browse and filter everything in your local subscription, create resources through guided wizards, inspect blobs and Key Vault secrets, and invoke any ARM operation the emulator implements — without installing anything beyond the emulator you already run.
+
+:::caution
+The emulated portal is a **preview feature** and is disabled by default.
+It is not affiliated with or connected to the real Azure Portal — everything it shows and everything it does stays inside your local emulator.
+:::
+
+## Enabling the portal
+
+Set `LS_AZURE_PORTAL=1` on the emulator container and open:
+
+```
+http://localhost:4566/_localstack/portal/
+```
+
+With `lstk`, add the flag to an environment profile in your config:
+
+```toml
+[[containers]]
+type = "azure"
+tag  = "latest"
+port = "4566"
+env  = ["portal"]
+
+[env.portal]
+LS_AZURE_PORTAL = "1"
+```
+
+Or with plain Docker:
+
+```bash
+docker run -d -p 4566:4566 \
+  -e LOCALSTACK_AUTH_TOKEN=$LOCALSTACK_AUTH_TOKEN \
+  -e LS_AZURE_PORTAL=1 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  localstack/localstack-azure
+```
+
+When the flag is not set, the portal is fully inactive: the URL returns 404 and no portal code is loaded.
+
+There is no separate port, container, or install step — the portal is served on the same edge port as the emulator's API, so it works wherever the emulator works.
+
+## What you can do
+
+- **Browse resources** — all resource groups and resources in your emulated subscription, with filtering, sorting, and configurable columns.
+- **Create resources** — guided create wizards for supported resource types.
+- **Work with data** — a storage browser for blob containers (create, upload, download, delete), and Key Vault secrets and certificates.
+- **Invoke any implemented operation** — the API operations drawer lists every ARM operation your emulator implements and lets you run it with your own parameters and request body.
+- **See real coverage** — actions the emulator does not implement are greyed out with a reason, rather than failing unexpectedly.
+
+## Always in sync with your emulator
+
+The portal computes its capability catalog at runtime from the emulator it is running inside.
+It never claims an operation your emulator version does not support, and it picks up newly implemented operations automatically — there is no separate portal version to keep in step with the emulator.
+
+## Identity and sign-in
+
+The portal's sign-in screen is a **mock**: one click signs you in, and no credentials are collected.
+Inside the emulator, the portal acts as the default operator principal — the same identity used by the `az` CLI integration, SDKs, and Terraform.
+If you enable RBAC enforcement (`LS_AZURE_ENFORCE_RBAC=1`), portal requests are evaluated like any other operator traffic.
+
+## Things to know
+
+:::note
+- **Local only.** The portal manages emulated resources in your local emulator. Nothing it does touches a real Azure subscription, and no data leaves your machine.
+- **Same trust model as the emulator API.** Anyone who can reach port 4566 can use the portal, just as they can use the emulator's REST API. Do not expose the edge port to untrusted networks.
+- **State follows the emulator.** Resources created in the portal live in the emulator's state — without persistence configured, they are gone after a restart.
+- **A subset of the real portal.** The emulated portal covers the resource types and operations the emulator implements; it is not a re-implementation of every Azure Portal blade.
+- **Telemetry.** Portal-originated requests are not counted in the emulator's usage analytics.
+:::
+
+## Troubleshooting
+
+- **404 at `/_localstack/portal/`** — the `LS_AZURE_PORTAL` flag is not set on the container.
+- **Page loads but shows errors** — check `http://localhost:4566/_localstack/portal/api/meta/health`; it reports the emulator edition and the identity the portal is acting as.
+- **A resource action is greyed out** — the emulator does not implement that operation yet; the tooltip names the gap.
