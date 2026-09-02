@@ -9,12 +9,11 @@ tags: ['Hobby']
 
 Manage emulator snapshots.
 A snapshot captures the running emulator's state, either as a local file on disk, as a Cloud Pod on the LocalStack platform, or in your own S3 bucket.
-The `snapshot` command groups five subcommands — `save`, `load`, `list`, `remove`, and `show`. The first two are also exposed as the top-level aliases `lstk save` and `lstk load`.
+The `snapshot` command groups six subcommands — `save`, `load`, `list`, `remove`, `show`, and `versions`. The first two are also exposed as the top-level aliases `lstk save` and `lstk load`.
 
 :::note
 Snapshots are best supported on the **AWS emulator**.
-`snapshot save`/`load` (and the `save`/`load` aliases) also work for the Snowflake emulator, but its snapshot support is experimental and not fully tested — `lstk` prints a warning such as `Snapshot support for the snowflake emulator is experimental and not fully tested.`
-Azure emulator persistence is still a work in progress and is not yet supported.
+`snapshot save`/`load` (and the `save`/`load` aliases) also work for the Snowflake and Azure emulators, but their snapshot support is experimental and not fully tested — for a non-AWS emulator `lstk` prints a warning such as `Snapshot support for the snowflake emulator is experimental and not fully tested.`
 :::
 
 ## `snapshot save`
@@ -50,6 +49,8 @@ The optional `[destination]` argument takes one of these forms:
 
 Pod operations require an auth token (`LOCALSTACK_AUTH_TOKEN` or a prior `lstk login`); local-file snapshots do not.
 
+Every save to an existing `pod:` snapshot creates a new **version** rather than replacing it; use [`snapshot versions`](#snapshot-versions) to list them and [`snapshot load`](#snapshot-load)/[`snapshot show`](#snapshot-show) with a `pod:<name>:<version>` ref to act on a specific one. `save` itself rejects a version suffix (you cannot save "as version 3").
+
 By default a snapshot captures every service's state. Pass `-s`/`--services` with a comma-separated list to limit it to a subset; this applies uniformly to local files, `pod:` Cloud Pods, and `s3://` remotes.
 
 | Option              | Description                                                                                   |
@@ -66,8 +67,11 @@ Load a snapshot into the emulator, **auto-starting it first** if it is not alrea
 lstk snapshot load my-baseline
 lstk snapshot load ./checkpoint
 
-# Load from a Cloud Pod (requires auth)
+# Load from a Cloud Pod (requires auth; latest version)
 lstk snapshot load pod:my-baseline
+
+# Load a specific version of a Cloud Pod
+lstk snapshot load pod:my-baseline:3
 
 # Load from your own S3 bucket (pod name is required)
 lstk snapshot load my-pod s3://my-bucket/prefix
@@ -80,6 +84,7 @@ lstk snapshot load pod:my-baseline --dry-run
 ```
 
 The `REF` argument is required and identifies a local path/name or a `pod:<name>` Cloud Pod.
+For a Cloud Pod you can append a version (`pod:<name>:<version>`) to load an older version; the latest is used when no version is given.
 To load from S3, pass the pod name followed by an `s3://bucket/prefix` location (see [S3 remotes](#s3-remotes)).
 
 | Option               | Description                                                                                              |
@@ -154,10 +159,29 @@ Show metadata for a single Cloud Pod snapshot on the LocalStack platform: its na
 This subcommand is cloud-only and requires authentication.
 
 ```bash
+# Latest version
 lstk snapshot show pod:my-baseline
+
+# A specific version
+lstk snapshot show pod:my-baseline:3
 ```
 
 The required `REF` argument must be a `pod:<name>` Cloud Pod reference.
+It defaults to the latest version; append `:<version>` to inspect an older one. Use [`snapshot versions`](#snapshot-versions) to see which versions exist.
+
+## `snapshot versions`
+
+List the version history of a Cloud Pod on the LocalStack platform.
+Every save to an existing pod adds a new version; this prints each version's number, created date, LocalStack version, and services.
+This subcommand is cloud-only and requires authentication.
+
+```bash
+lstk snapshot versions pod:my-baseline
+```
+
+The required `REF` argument must be a `pod:<name>` Cloud Pod reference.
+Only Cloud Pods have versions — local files and `s3://` remotes do not, and passing a version suffix to `versions` is rejected.
+Act on a specific version elsewhere by appending it to the ref, e.g. `lstk snapshot load pod:my-baseline:3` or `lstk snapshot show pod:my-baseline:3`.
 
 ## S3 remotes
 

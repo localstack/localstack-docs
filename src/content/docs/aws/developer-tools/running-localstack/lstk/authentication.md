@@ -7,14 +7,14 @@ tags: ['Hobby']
 
 `lstk` resolves your auth token in the following order:
 
-1. **System keyring**: a token stored by a previous `lstk login`.
-2. **`LOCALSTACK_AUTH_TOKEN` environment variable**: used only when the keyring has no token.
+1. **`LOCALSTACK_AUTH_TOKEN` environment variable**: takes precedence over a stored token.
+2. **System keyring**: a token stored by a previous `lstk login`, used when the environment variable is not set.
 3. **Browser login**: triggered automatically in interactive mode when neither of the above provides a token.
 
-:::caution
-The keyring token takes precedence over `LOCALSTACK_AUTH_TOKEN`.
-If you set or change the environment variable but a keyring token already exists, the environment variable is ignored.
-Run `lstk logout` to clear the stored keyring token first.
+:::note
+`LOCALSTACK_AUTH_TOKEN` takes precedence over a token in the keyring.
+A per-invocation token (a CI secret, or `LOCALSTACK_AUTH_TOKEN=... lstk start` for a second account) therefore overrides a previous `lstk login` without needing `lstk logout` first.
+To go back to the stored token, unset the environment variable.
 :::
 
 ## Logging in
