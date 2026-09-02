@@ -41,7 +41,7 @@ The exit code and `stdout`/`stderr` of the underlying `aws` process are passed t
 
 | Option              | Description                                                                                       |
 |:--------------------|:--------------------------------------------------------------------------------------------------|
-| `--account <id>`    | Target a specific 12-digit LocalStack account (default `000000000000`). Place it right after `aws`, before the AWS CLI command (e.g. `s3`). Falls back to a 12-digit `AWS_ACCESS_KEY_ID`. See [Selecting the account](#selecting-the-account). |
+| `--account <id>`    | Target a specific 12-digit LocalStack account (default `000000000000`). Must appear immediately after `lstk aws`, before the AWS CLI's own action. Falls back to a 12-digit `AWS_ACCESS_KEY_ID`. See [Selecting the account](#selecting-the-account). |
 | `--non-interactive` | Suppress the loading spinner. Unlike other commands, this flag is stripped before invoking `aws` (not forwarded). |
 
 :::note
@@ -72,7 +72,7 @@ LocalStack derives the AWS account from the access key id it receives, so `lstk 
 lstk aws --account 111111111111 s3 mb s3://my-bucket
 ```
 
-Place `--account` right after `aws`, before the AWS CLI command (`s3` in the example above). Putting it before the `aws` word (`lstk --account … aws`) is rejected with a placement error, and putting it after the AWS CLI command is forwarded to `aws` unchanged rather than interpreted by `lstk`. When it is omitted, `lstk` falls back to a 12-digit `AWS_ACCESS_KEY_ID` if one is set, then to the default account `000000000000`. The same leading-flag account selection is available on [`lstk terraform`](#terraform) and [`lstk sam`](#sam); `lstk cdk` does not support it.
+The flag must appear immediately after `lstk aws`, before the AWS CLI's own action (placing it before `lstk aws` is a placement error; placing it after the action is not caught — `lstk` silently forwards it to the `aws` CLI, which then rejects it). When it is omitted, `lstk` falls back to a 12-digit `AWS_ACCESS_KEY_ID` if one is set, then to the default account `000000000000`. The same leading-flag account selection is available on [`lstk terraform`](#terraform) and [`lstk sam`](#sam); `lstk cdk` does not support it.
 
 ### Tab completion
 
