@@ -89,6 +89,23 @@ function StrategyBadge({
   );
 }
 
+function ResourceType({ value }: { value: string }) {
+  return (
+    <>
+      {value.split('::').map((part, index) => (
+        <React.Fragment key={`${part}-${index}`}>
+          {index > 0 && (
+            <>
+              ::<wbr />
+            </>
+          )}
+          {part}
+        </React.Fragment>
+      ))}
+    </>
+  );
+}
+
 function PolicyList({ statements }: { statements: string[] }) {
   if (!statements.length) {
     return (
@@ -98,7 +115,10 @@ function PolicyList({ statements }: { statements: string[] }) {
     );
   }
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+    <div
+      className="replicator-policy-list"
+      style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}
+    >
       {statements.map((statement) => (
         <code
           key={statement}
@@ -126,6 +146,7 @@ function Identifier({ value }: { value: string | null }) {
   }
   return (
     <code
+      className="replicator-identifier"
       style={{
         fontSize: '12px',
         padding: '2px 6px',
@@ -194,7 +215,13 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function ResourceDetails({ resource }: { resource: ResourceCoverage }) {
   return (
-    <div style={{ padding: '16px 20px', background: 'var(--sl-color-gray-7, var(--sl-color-gray-6))' }}>
+    <div
+      className="replicator-details"
+      style={{
+        padding: '16px 20px',
+        background: 'var(--sl-color-gray-7, var(--sl-color-gray-6))',
+      }}
+    >
       {resource.single && (
         <DetailSection strategy="single">
           <Field label="Identifier">
@@ -220,7 +247,10 @@ function ResourceDetails({ resource }: { resource: ResourceCoverage }) {
       {resource.resource_tree && (
         <DetailSection strategy="tree">
           <Field label="Replicated related resources">
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            <div
+              className="replicator-related-resources"
+              style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}
+            >
               {resource.resource_tree.resources.map((r) => (
                 <code
                   key={r}
@@ -288,7 +318,10 @@ export default function ReplicatorCoverage() {
     setExpanded((prev) => ({ ...prev, [resourceType]: !prev[resourceType] }));
 
   return (
-    <div className="w-full" style={{ fontFamily: 'var(--font-aeonik-fono)' }}>
+    <div
+      className="replicator-coverage w-full"
+      style={{ fontFamily: 'var(--font-aeonik-fono)' }}
+    >
       <div
         style={{
           display: 'flex',
@@ -312,6 +345,7 @@ export default function ReplicatorCoverage() {
 
       <div
         role="table"
+        className="replicator-coverage-table"
         style={{
           border: '1px solid var(--sl-color-gray-5)',
           borderRadius: '8px',
@@ -321,7 +355,7 @@ export default function ReplicatorCoverage() {
       >
         <div
           role="row"
-          className="hidden md:grid"
+          className="replicator-coverage-header"
           style={{
             gridTemplateColumns:
               '1.75rem minmax(0, 1fr) 9rem minmax(0, 14rem)',
@@ -355,7 +389,7 @@ export default function ReplicatorCoverage() {
                 type="button"
                 onClick={() => toggle(resource.resource_type)}
                 aria-expanded={isOpen}
-                className="replicator-row w-full grid items-start gap-x-3 gap-y-2 grid-cols-[1.75rem_minmax(0,1fr)] md:grid-cols-[1.75rem_minmax(0,1fr)_9rem_minmax(0,14rem)] md:items-center hover:bg-[var(--sl-color-gray-6)] transition-colors"
+                className="replicator-row w-full hover:bg-[var(--sl-color-gray-6)] transition-colors"
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -377,31 +411,25 @@ export default function ReplicatorCoverage() {
                   }}
                 />
                 <code
+                  className="replicator-resource-type"
                   style={{
-                    minWidth: 0,
                     fontSize: '13px',
                     padding: '2px 6px',
                     borderRadius: '4px',
                     background: 'var(--sl-color-gray-6)',
                     border: '1px solid var(--sl-color-gray-5)',
-                    whiteSpace: 'normal',
-                    overflowWrap: 'anywhere',
-                    wordBreak: 'break-word',
-                    justifySelf: 'start',
                   }}
                 >
-                  {resource.resource_type}
+                  <ResourceType value={resource.resource_type} />
                 </code>
                 <span
-                  className="col-start-2 md:col-start-auto"
+                  className="replicator-service"
                   style={{
                     fontSize: '14px',
-                    overflowWrap: 'anywhere',
-                    minWidth: 0,
                   }}
                 >
                   <span
-                    className="md:hidden"
+                    className="replicator-mobile-label"
                     style={{
                       color: 'var(--sl-color-gray-3)',
                       marginRight: '6px',
@@ -412,7 +440,7 @@ export default function ReplicatorCoverage() {
                   {resource.service}
                 </span>
                 <div
-                  className="col-start-2 md:col-start-auto"
+                  className="replicator-strategies"
                   style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}
                 >
                   <StrategyBadge strategy="single" active={!!resource.single} />
