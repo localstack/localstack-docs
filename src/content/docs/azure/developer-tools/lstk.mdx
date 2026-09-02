@@ -93,14 +93,14 @@ CI environments require a CI Auth Token; a personal Developer Auth Token cannot 
 
 `lstk` resolves your auth token in the following order:
 
-1. **System keyring**: a token stored by a previous `lstk login`.
-2. **`LOCALSTACK_AUTH_TOKEN` environment variable**: used only when the keyring has no token.
+1. **`LOCALSTACK_AUTH_TOKEN` environment variable**: takes precedence over a stored token.
+2. **System keyring**: a token stored by a previous `lstk login`, used when the environment variable is not set.
 3. **Browser login**: triggered automatically in interactive mode when neither of the above provides a token.
 
-:::caution
-The keyring token takes precedence over `LOCALSTACK_AUTH_TOKEN`.
-If you set or change the environment variable but a keyring token already exists, the environment variable is ignored.
-Run `lstk logout` to clear the stored keyring token first.
+:::note
+`LOCALSTACK_AUTH_TOKEN` takes precedence over a token in the keyring.
+A per-invocation token (a CI secret, or `LOCALSTACK_AUTH_TOKEN=... lstk start` for a second account) therefore overrides a previous `lstk login` without needing `lstk logout` first.
+To go back to the stored token, unset the environment variable.
 :::
 
 ### Logging in
@@ -170,7 +170,9 @@ The default `config.toml` created on first run:
 type = "aws"      # Emulator type. Supported: "aws", "snowflake", "azure"
 tag  = "latest"   # Docker image tag, e.g. "latest", "2026.4"
 port = "4566"     # Host port the emulator will be accessible on
+# container_name = ""  # Override the derived container name (also MAIN_CONTAINER_NAME)
 # image = ""      # Full image override (e.g. an internal mirror or offline image)
+# expose_ports = []    # Extra container ports to publish, e.g. [53] for the DNS server
 # volume = ""     # Host directory for persistent state (default: OS cache dir)
 # volumes = []    # Docker-style "host:container[:ro]" bind mounts (see Volumes)
 # env = []        # Named environment profiles to apply (see [env.*] sections below)
@@ -184,7 +186,9 @@ port = "4566"     # Host port the emulator will be accessible on
 | `type`     | string   | `"aws"`    | Emulator type. One of `"aws"`, `"snowflake"`, `"azure"`. Run a single `[[containers]]` block at a time. See [Emulator types](#emulator-types). |
 | `tag`      | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.4"`, etc.). Useful for pinning a specific version. Zero-padded months (`"2026.04"`) are normalized to `"2026.4"`. |
 | `port`     | string   | `"4566"`   | Host port the emulator listens on (1–65535). The in-container port is always `4566`.                 |
+| `container_name` | string | (derived) | Override the derived container name (`localstack-<type>`, plus `-<tag>` when `tag` is not `"latest"`). This is also what the emulator reports as `MAIN_CONTAINER_NAME`. Set it when something outside `lstk` addresses the emulator by a fixed name, e.g. a sidecar proxy on a CI agent. |
 | `image`    | string   | (default)  | Full image reference that overrides the default Docker Hub image, e.g. an internal-registry mirror or a locally loaded offline image. If it already carries a tag, `tag` is ignored; otherwise `tag` (or `latest`) is appended. |
+| `expose_ports` | (int \| string)[] | `[]` | Publish additional container ports on the host, beyond the gateway and service ports `lstk` publishes by default. Each entry is a bare port number (published on the same host port) or a Docker-style `"[host:]container[/proto]"` string — e.g. `expose_ports = [53]` to use the emulator's DNS server as the host's resolver, or `expose_ports = ["5354:5353/udp"]`. |
 | `volume`   | string   | (OS cache) | Host directory for persistent emulator state. Defaults to `<os-cache>/lstk/volume/<container-name>`. See also `volumes`. |
 | `volumes`  | string[] | `[]`       | Docker-style `"host:container[:ro]"` bind mounts (e.g. init hooks). May also carry the persistence mount (target `/var/lib/localstack`). See [Volume mounts](#volume-mounts). |
 | `env`      | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
@@ -549,6 +553,7 @@ The exit code and `stdout`/`stderr` of the underlying `aws` process are passed t
 
 | Option              | Description                                                                                       |
 |:--------------------|:--------------------------------------------------------------------------------------------------|
+| `--account <id>`    | Target a specific 12-digit LocalStack account (default `000000000000`). Must appear immediately after `lstk aws`, before the AWS CLI's own action. Falls back to a 12-digit `AWS_ACCESS_KEY_ID`. See [Selecting the account](#selecting-the-account). |
 | `--non-interactive` | Suppress the loading spinner. Unlike other commands, this flag is stripped before invoking `aws` (not forwarded). |
 
 :::note
@@ -571,13 +576,23 @@ By default, `lstk` probes whether `localhost.localstack.cloud` resolves to `127.
 Set [`LOCALSTACK_HOST`](#environment-variables) to override the host:port used to reach LocalStack and skip the DNS probe.
 The port comes from the AWS container's `port` in `config.toml` (default `4566`).
 
+#### Selecting the account
+
+LocalStack derives the AWS account from the access key id it receives, so `lstk aws --account <id>` targets a specific 12-digit LocalStack account by controlling the credentials `aws` runs with (a neutral, real-looking `AKIA…`/`ASIA…` key never reaches the emulator):
+
+```bash
+lstk aws --account 111111111111 s3 mb s3://my-bucket
+```
+
+The flag must appear immediately after `lstk aws`, before the AWS CLI's own action (placing it before `lstk aws` is a placement error; placing it after the action is not caught — `lstk` silently forwards it to the `aws` CLI, which then rejects it). When it is omitted, `lstk` falls back to a 12-digit `AWS_ACCESS_KEY_ID` if one is set, then to the default account `000000000000`. The same leading-flag account selection is available on [`lstk terraform`](#terraform) and [`lstk sam`](#sam); `lstk cdk` does not support it.
+
 ### `az`
 
 Run Azure CLI commands against the running LocalStack Azure emulator.
 `lstk az` runs `az` with an isolated `AZURE_CONFIG_DIR` in which a custom Azure cloud is registered against LocalStack's endpoints, so your global `~/.azure` configuration is left untouched and plain `az` keeps talking to real Azure.
 
 Run [`lstk setup azure`](#setup-azure) once before using this mode.
-Everything after `lstk az` is forwarded verbatim to the host `az` binary, and its exit code and output are passed through unchanged.
+Arguments are forwarded to the host `az` binary, and its exit code and output are passed through unchanged. `lstk`'s own flags (`--non-interactive`, `--config`) are consumed by `lstk` rather than forwarded — for example `lstk az --non-interactive …` suppresses the loading spinner instead of passing the flag to `az`.
 
 ```bash
 lstk az group list
@@ -676,7 +691,7 @@ When you interrupt a proxied tool (for example Ctrl+C or `kill` during `lstk ter
 
 Manage emulator snapshots.
 A snapshot captures the running emulator's state, either as a local file on disk, as a Cloud Pod on the LocalStack platform, or in your own S3 bucket.
-The `snapshot` command groups five subcommands — `save`, `load`, `list`, `remove`, and `show`. The first two are also exposed as the top-level aliases `lstk save` and `lstk load`.
+The `snapshot` command groups six subcommands — `save`, `load`, `list`, `remove`, `show`, and `versions`. The first two are also exposed as the top-level aliases `lstk save` and `lstk load`.
 
 :::note
 Snapshots are best supported on the **AWS emulator**.
@@ -717,6 +732,8 @@ The optional `[destination]` argument takes one of these forms:
 
 Pod operations require an auth token (`LOCALSTACK_AUTH_TOKEN` or a prior `lstk login`); local-file snapshots do not.
 
+Every save to an existing `pod:` snapshot creates a new **version** rather than replacing it; use [`snapshot versions`](#snapshot-versions) to list them and [`snapshot load`](#snapshot-load)/[`snapshot show`](#snapshot-show) with a `pod:<name>:<version>` ref to act on a specific one. `save` itself rejects a version suffix (you cannot save "as version 3").
+
 By default a snapshot captures every service's state. Pass `-s`/`--services` with a comma-separated list to limit it to a subset; this applies uniformly to local files, `pod:` Cloud Pods, and `s3://` remotes.
 
 | Option              | Description                                                                                   |
@@ -733,8 +750,11 @@ Load a snapshot into the emulator, **auto-starting it first** if it is not alrea
 lstk snapshot load my-baseline
 lstk snapshot load ./checkpoint
 
-# Load from a Cloud Pod (requires auth)
+# Load from a Cloud Pod (requires auth; latest version)
 lstk snapshot load pod:my-baseline
+
+# Load a specific version of a Cloud Pod
+lstk snapshot load pod:my-baseline:3
 
 # Load from your own S3 bucket (pod name is required)
 lstk snapshot load my-pod s3://my-bucket/prefix
@@ -747,6 +767,7 @@ lstk snapshot load pod:my-baseline --dry-run
 ```
 
 The `REF` argument is required and identifies a local path/name or a `pod:<name>` Cloud Pod.
+For a Cloud Pod you can append a version (`pod:<name>:<version>`) to load an older version; the latest is used when no version is given.
 To load from S3, pass the pod name followed by an `s3://bucket/prefix` location (see [S3 remotes](#s3-remotes)).
 
 | Option               | Description                                                                                              |
@@ -819,10 +840,29 @@ Show metadata for a single Cloud Pod snapshot on the LocalStack platform: its na
 This subcommand is cloud-only and requires authentication.
 
 ```bash
+# Latest version
 lstk snapshot show pod:my-baseline
+
+# A specific version
+lstk snapshot show pod:my-baseline:3
 ```
 
 The required `REF` argument must be a `pod:<name>` Cloud Pod reference.
+It defaults to the latest version; append `:<version>` to inspect an older one. Use [`snapshot versions`](#snapshot-versions) to see which versions exist.
+
+#### `snapshot versions`
+
+List the version history of a Cloud Pod on the LocalStack platform.
+Every save to an existing pod adds a new version; this prints each version's number, created date, LocalStack version, and services.
+This subcommand is cloud-only and requires authentication.
+
+```bash
+lstk snapshot versions pod:my-baseline
+```
+
+The required `REF` argument must be a `pod:<name>` Cloud Pod reference.
+Only Cloud Pods have versions — local files and `s3://` remotes do not, and passing a version suffix to `versions` is rejected.
+Act on a specific version elsewhere by appending it to the ref, e.g. `lstk snapshot load pod:my-baseline:3` or `lstk snapshot show pod:my-baseline:3`.
 
 #### S3 remotes
 
@@ -1122,7 +1162,7 @@ By install method:
 
 - **Homebrew** (binary under a `Caskroom` path): runs `brew upgrade localstack/tap/lstk`.
 - **npm** (binary under `node_modules`): runs `npm install -g @localstack/lstk@latest`.
-- **Binary** (anything else): downloads the release asset for your OS/arch from GitHub, extracts it, and replaces the running executable in place.
+- **Binary** (anything else): downloads the release asset for your OS/arch from GitHub, verifies its SHA-256 against the release's `checksums.txt` (a missing, malformed, or mismatched checksum aborts the update), extracts it, and replaces the running executable in place.
 
 With `--check`, `lstk` only reports whether a newer version is available and exits without downloading or installing anything.
 
@@ -1179,6 +1219,7 @@ These options are available for all commands:
 | Option              | Description                                                                |
 |:--------------------|:---------------------------------------------------------------------------|
 | `--config <path>`   | Path to a specific TOML config file                                        |
+| `--endpoint-url <url>` | Target an existing, externally-managed emulator at this URL instead of discovering one via local Docker. See [Targeting an external emulator](#targeting-an-external-emulator). |
 | `--non-interactive` | Disable the interactive TUI, use plain output                              |
 | `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `stop`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
 | `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
@@ -1208,6 +1249,28 @@ lstk --non-interactive start
 Commands that mutate state without prompting in CI (`reset`, `volume clear`) require `--force`.
 `lstk setup aws` works non-interactively — it writes the profile with defaults and needs `--force` only to overwrite a conflicting `localstack` profile.
 :::
+
+## Targeting an external emulator
+
+By default `lstk` discovers the emulator it manages through local Docker.
+The `--endpoint-url <url>` global flag (or the `LSTK_ENDPOINT_URL` environment variable) instead points a command at an emulator `lstk` did not start — a Docker Compose or host-network deployment, one running in CI or on another machine, or a LocalStack cloud-hosted ephemeral instance.
+
+```bash
+# Run against an emulator reachable at a custom URL
+lstk az group list --endpoint-url http://localhost:4566
+
+# Equivalent via the environment
+LSTK_ENDPOINT_URL=https://my-ephemeral-instance.localstack.cloud lstk status
+```
+
+The endpoint is resolved from, in order of precedence: the `--endpoint-url` flag, `LSTK_ENDPOINT_URL`, then `AWS_ENDPOINT_URL` (a full synonym for `LSTK_ENDPOINT_URL`, one tier lower).
+Both `http://` and `https://` URLs are accepted (any other scheme is rejected), and the scheme is preserved end-to-end, so `https://` ephemeral instances work.
+
+The commands that accept an external endpoint are the ones that only *talk to* an already-running emulator: `aws`, `az`, `terraform`/`tf`, `cdk`, `sam`, `status`, `reset`, and the `snapshot` `save`/`load`/`remove` subcommands (including the `lstk save`/`lstk load` aliases) and `list s3://…`.
+
+Commands that manage the emulator's lifecycle or on-disk state have no remote equivalent and **reject** any endpoint source: `start`, the bare `lstk`, `stop`, `restart`, `logs`, and `volume`.
+
+The emulator's type (AWS, Azure, or Snowflake) is auto-detected by probing the endpoint's health API — there is no override flag or config setting, and an inconclusive probe is a hard failure. The AWS-only tools (`terraform`, `cdk`, `sam`) reject an endpoint whose detected type is not AWS.
 
 ## Structured output
 
@@ -1282,7 +1345,8 @@ The following environment variables configure `lstk` itself (not the LocalStack 
 
 | Variable                     | Description                                                                                                      |
 |:-----------------------------|:-----------------------------------------------------------------------------------------------------------------|
-| `LOCALSTACK_AUTH_TOKEN`      | Auth token for non-interactive runs or to skip browser login. Used when no keyring token is stored.              |
+| `LOCALSTACK_AUTH_TOKEN`      | Auth token for non-interactive runs or to skip browser login. Takes precedence over a token stored in the keyring. |
+| `LSTK_ENDPOINT_URL`          | Target an existing, externally-managed emulator at this URL (equivalent to `--endpoint-url`). `AWS_ENDPOINT_URL` is a lower-precedence synonym. See [Targeting an external emulator](#targeting-an-external-emulator). |
 | `LOCALSTACK_HOST`            | Override the host (and optional port) used when resolving and printing the emulator endpoint, and when writing the AWS CLI profile. Bypasses the `localhost.localstack.cloud` DNS probe. |
 | `LOCALSTACK_DISABLE_EVENTS`  | Set to `1` to disable anonymous telemetry event reporting.                                                       |
 | `DOCKER_HOST`                | Override the Docker daemon socket (e.g. `unix:///home/user/.colima/default/docker.sock`).                        |
@@ -1294,9 +1358,19 @@ The following environment variables configure `lstk` itself (not the LocalStack 
 | `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
 | `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
 
-When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock` or `~/.config/colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
-
 When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
+
+### Container runtime discovery
+
+`lstk` talks to a Docker-compatible runtime and works with Docker Desktop, Rancher Desktop, Colima, OrbStack, Lima, and Podman. When `DOCKER_HOST` is not set, it resolves the daemon endpoint in this order:
+
+1. **`DOCKER_HOST`**, if set, always wins.
+2. **`DOCKER_CONTEXT`** or the active Docker CLI context, when it is non-default and reachable (a stale or unreachable context is skipped rather than failing).
+3. On **Linux**, a live `/var/run/docker.sock` — a running Docker daemon is preferred over a co-installed runtime such as Podman.
+4. A probe of known runtime sockets (Docker Desktop, Rancher Desktop, Colima, OrbStack, Podman, Lima). Each candidate is dialed, not just checked for existence, so a leftover socket file never shadows a live daemon.
+5. The Docker SDK's own default.
+
+If no runtime is reachable, the error tailors its suggested start command (`rdctl start`, `colima start`, `podman machine start`, …) to the runtime it detects. Set `DOCKER_HOST` to point at a specific socket to bypass discovery entirely.
 
 ### Container-injected variables
 
@@ -1359,6 +1433,7 @@ Pair this behavior with a custom [`image`](#custom-container-image) that points 
 
 `lstk` includes completion scripts for bash, zsh, fish, and powershell.
 If you installed via Homebrew, completions are set up automatically.
+Once completion is enabled, `lstk aws <TAB>` also completes AWS services, operations, and parameters using the AWS CLI's own completer.
 
 For manual setup:
 
@@ -1454,22 +1529,16 @@ port = "4566"
 
 ### Port 443 already in use
 
-By default, LocalStack binds to both port `4566` and port `443` inside the container (controlled by the `GATEWAY_LISTEN` variable).
-On some systems, particularly Windows with Hyper-V, IIS, or VPN software, port 443 may already be in use.
+By default, LocalStack publishes both port `4566` and port `443` (controlled by the `GATEWAY_LISTEN` variable).
+On some systems port 443 is already taken — Windows with Hyper-V, IIS, or VPN software, or an ingress proxy such as Rancher Desktop's Traefik.
 
-**Symptoms:**
+Because port 443 comes from the **default** `GATEWAY_LISTEN`, a busy 443 is **not fatal**: `lstk` drops that publication with a warning and starts anyway, and HTTPS is still served on the edge port `4566`. You only need to act if you want to silence the warning or bind 443 elsewhere.
 
-```text
-failed to start LocalStack: Error response from daemon: ports are not available:
-exposing port TCP 127.0.0.1:443 -> 127.0.0.1:0: listen tcp4 127.0.0.1:443: bind:
-address already in use
-```
-
-**Fix:** Override `GATEWAY_LISTEN` to bind only to port 4566:
+To skip port 443 entirely, override `GATEWAY_LISTEN` to bind only to `4566`:
 
 ```toml
 [[containers]]
-type = "aws"
+type = "azure"
 tag  = "latest"
 port = "4566"
 env  = ["nossl"]
@@ -1478,7 +1547,9 @@ env  = ["nossl"]
 GATEWAY_LISTEN = "0.0.0.0:4566"
 ```
 
-This tells the container to skip the port 443 binding entirely.
+:::note
+A port you list **explicitly** in a custom `GATEWAY_LISTEN` is treated as a hard requirement, so a busy one there fails the start rather than being dropped. Only the `443` from the default value is best-effort.
+:::
 
 ### Docker is not running
 
@@ -1489,9 +1560,8 @@ If Docker is not reachable, you will see an error like:
 Error: runtime not healthy
 ```
 
-**Fix:** Start Docker Desktop (macOS/Windows) or the Docker daemon (`sudo systemctl start docker` on Linux).
-If you use Colima or OrbStack, make sure the VM is running.
-You can also point `lstk` at a custom socket with `DOCKER_HOST`.
+**Fix:** Start your container runtime. `lstk` works with Docker Desktop, Rancher Desktop, Colima, OrbStack, Lima, and Podman — start the Docker daemon (`sudo systemctl start docker` on Linux) or the relevant VM (`rdctl start`, `colima start`, `podman machine start`, …). When the runtime is unavailable, `lstk`'s error tailors its suggested start command to whichever runtime it detects.
+You can also point `lstk` at a specific socket with `DOCKER_HOST`. See [Container runtime discovery](#container-runtime-discovery) for how the daemon is located.
 
 ### Authentication required in non-interactive mode
 
