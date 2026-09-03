@@ -14,7 +14,7 @@ These options are available for all commands:
 | `--config <path>`   | Path to a specific TOML config file                                        |
 | `--endpoint-url <url>` | Target an existing, externally-managed emulator at this URL instead of discovering one via local Docker. See [Targeting an external emulator](#targeting-an-external-emulator). |
 | `--non-interactive` | Disable the interactive TUI, use plain output                              |
-| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `stop`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
+| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `start`, `stop`, `status`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
 | `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
 | `--type <type>`, `-t <type>` | Emulator type to start: `aws`, `snowflake`, or `azure` (on `start`/bare `lstk`; records the choice in config). See [Selecting the emulator with `--type`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#selecting-the-emulator-with---type). |
 | `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
@@ -68,7 +68,7 @@ The emulator's type (AWS, Azure, or Snowflake) is auto-detected by probing the e
 ## Structured output
 
 The global `--json` flag makes a command emit a single, machine-readable JSON object on stdout instead of human-oriented text, for scripting and CI.
-JSON support is available per command: `stop`, `reset`, and `update` accept `--json`.
+JSON support is available per command: `start`, `stop`, `status`, `reset`, and `update` accept `--json`.
 Any other command rejects it with an error envelope (`error.code: NOT_JSON_CAPABLE`) rather than silently printing plain text.
 
 Every JSON-capable command writes **exactly one** JSON object with the following envelope shape:
