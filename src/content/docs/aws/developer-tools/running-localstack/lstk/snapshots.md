@@ -13,7 +13,8 @@ The `snapshot` command groups six subcommands — `save`, `load`, `list`, `remov
 
 :::note
 Snapshots are best supported on the **AWS emulator**.
-`snapshot save`/`load` (and the `save`/`load` aliases) also work for the Snowflake and Azure emulators, but their snapshot support is experimental and not fully tested — for a non-AWS emulator `lstk` prints a warning such as `Snapshot support for the snowflake emulator is experimental and not fully tested.`
+`snapshot save`/`load` (and the `save`/`load` aliases) also work for the Snowflake emulator, but its snapshot support is experimental and not fully tested — `lstk` prints a warning such as `Snapshot support for the snowflake emulator is experimental and not fully tested.`
+The Azure emulator does not support snapshots.
 :::
 
 ## `snapshot save`
