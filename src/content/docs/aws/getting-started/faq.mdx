@@ -158,23 +158,23 @@ Refer to our [network troubleshooting guide](/aws/customization/networking/) cov
 
 When LocalStack shuts down, it cleans up the auxiliary containers it started for services such as Lambda, ECS, RDS or EKS. If it is stopped before that cleanup finishes, those containers are left running.
 
-By default, LocalStack gets only a few seconds. Docker Compose sends `SIGTERM` to the container and follows up with `SIGKILL` once `stop_grace_period` expires (10 seconds by default), and LocalStack stops waiting for its own cleanup after `SHUTDOWN_TIMEOUT` (5 seconds by default). Whichever window runs out first, LocalStack is stopped mid-cleanup and the containers survive as orphans. Cleanup that takes longer than a few seconds is the most likely to be cut short.
+By default, LocalStack gets only a few seconds in which to shut down. Docker Compose sends `SIGTERM` to the container and follows up with `SIGKILL` once `stop_grace_period` expires (10 seconds by default), and LocalStack stops waiting for its own cleanup after `SHUTDOWN_TIMEOUT` (5 seconds by default). Whichever window runs out first, LocalStack is stopped mid-cleanup and the containers survive as orphans. Cleanup that takes longer than a few seconds is the most likely to be cut short.
 
-To give LocalStack enough time to shut down cleanly, raise `stop_grace_period` on the LocalStack service in your `docker-compose.yml` (for example, `3m`):
+To give LocalStack enough time to shut down cleanly, increase `stop_grace_period` on the LocalStack service in your `docker-compose.yml` (for example, `3m`):
 
 ```yaml
 services:
   localstack:
     image: localstack/localstack-pro:latest
-    stop_grace_period: 3m
+    stop_grace_period: 180s
     environment:
         - SHUTDOWN_TIMEOUT=180
     # ...
 ```
 
-Raise them together. If you raise only `stop_grace_period`, LocalStack still gives up on its cleanup after 5 seconds and the container then stays up until the grace period runs out, so every docker compose stop waits the full three minutes.
+Increase both settings. If you increase only `stop_grace_period`, LocalStack still gives up on its cleanup after 5 seconds and the container then stays up until the grace period runs out, so every `docker compose stop` waits the full three minutes.
 
-If a previous run already left containers behind, run docker ps and remove the ones LocalStack started before starting it again.
+If a previous run already left containers behind, run `docker ps` and remove the ones LocalStack started before starting it again.
 
 This applies to Docker Compose specifically. Starting LocalStack with `lstk` is not affected, as `lstk` waits for LocalStack to finish shutting down.
 
