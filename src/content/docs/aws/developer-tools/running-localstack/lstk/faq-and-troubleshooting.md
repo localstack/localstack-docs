@@ -9,11 +9,11 @@ tags: ['Hobby']
 
 ### Can I use `lstk` with Docker Compose?
 
-No. `lstk` manages its own Docker container directly.
-If you use a `docker-compose.yml` to run LocalStack, you do not need `lstk`, and vice versa.
-Do not mix `lstk start` with a Docker Compose setup; they are separate, independent methods.
+Yes, for the commands that talk to an already-running emulator.
+`lstk start` and the other lifecycle commands manage their own Docker container and are not meant to drive a Compose-managed instance, so don't point `lstk start` at one.
+But if you run LocalStack from a `docker-compose.yml`, you can still use `lstk`'s emulator-facing commands against it — `aws`, `az`, `terraform`/`cdk`/`sam`, `status`, `reset`, and `snapshot` — by passing `--endpoint-url <url>` (or setting `LSTK_ENDPOINT_URL`) to target the Compose deployment.
 
-For Docker Compose configuration, see the [Docker Compose installation guide](/aws/getting-started/installation/#docker-compose).
+See [Targeting an external emulator](/aws/developer-tools/running-localstack/lstk/automation/#targeting-an-external-emulator) for the commands that accept an endpoint, and the [Docker Compose installation guide](/aws/getting-started/installation/#docker-compose) for the Compose setup itself.
 
 ### Which Docker image does `lstk` use?
 
@@ -48,18 +48,12 @@ port = "4566"
 
 ### Port 443 already in use
 
-By default, LocalStack binds to both port `4566` and port `443` inside the container (controlled by the `GATEWAY_LISTEN` variable).
-On some systems, particularly Windows with Hyper-V, IIS, or VPN software, port 443 may already be in use.
+By default, LocalStack publishes both port `4566` and port `443` (controlled by the `GATEWAY_LISTEN` variable).
+On some systems port 443 is already taken — Windows with Hyper-V, IIS, or VPN software, or an ingress proxy such as Rancher Desktop's Traefik.
 
-**Symptoms:**
+Because port 443 comes from the **default** `GATEWAY_LISTEN`, a busy 443 is **not fatal**: `lstk` drops that publication with a warning and starts anyway, and HTTPS is still served on the edge port `4566`. You only need to act if you want to silence the warning or bind 443 elsewhere.
 
-```text
-failed to start LocalStack: Error response from daemon: ports are not available:
-exposing port TCP 127.0.0.1:443 -> 127.0.0.1:0: listen tcp4 127.0.0.1:443: bind:
-address already in use
-```
-
-**Fix:** Override `GATEWAY_LISTEN` to bind only to port 4566:
+To skip port 443 entirely, override `GATEWAY_LISTEN` to bind only to `4566`:
 
 ```toml
 [[containers]]
@@ -72,7 +66,9 @@ env  = ["nossl"]
 GATEWAY_LISTEN = "0.0.0.0:4566"
 ```
 
-This tells the container to skip the port 443 binding entirely.
+:::note
+A port you list **explicitly** in a custom `GATEWAY_LISTEN` is treated as a hard requirement, so a busy one there fails the start rather than being dropped. Only the `443` from the default value is best-effort.
+:::
 
 ### Docker is not running
 
@@ -83,9 +79,8 @@ If Docker is not reachable, you will see an error like:
 Error: runtime not healthy
 ```
 
-**Fix:** Start Docker Desktop (macOS/Windows) or the Docker daemon (`sudo systemctl start docker` on Linux).
-If you use Colima or OrbStack, make sure the VM is running.
-You can also point `lstk` at a custom socket with `DOCKER_HOST`.
+**Fix:** Start your container runtime. `lstk` works with Docker Desktop, Rancher Desktop, Colima, OrbStack, Lima, and Podman — start the Docker daemon (`sudo systemctl start docker` on Linux) or the relevant VM (`rdctl start`, `colima start`, `podman machine start`, …). When the runtime is unavailable, `lstk`'s error tailors its suggested start command to whichever runtime it detects.
+You can also point `lstk` at a specific socket with `DOCKER_HOST`. See [Container runtime discovery](/aws/developer-tools/running-localstack/lstk/automation/#container-runtime-discovery) for how the daemon is located.
 
 ### Authentication required in non-interactive mode
 

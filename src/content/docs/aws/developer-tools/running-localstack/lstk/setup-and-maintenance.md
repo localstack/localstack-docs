@@ -130,7 +130,7 @@ By install method:
 
 - **Homebrew** (binary under a `Caskroom` path): runs `brew upgrade localstack/tap/lstk`.
 - **npm** (binary under `node_modules`): runs `npm install -g @localstack/lstk@latest`.
-- **Binary** (anything else): downloads the release asset for your OS/arch from GitHub, extracts it, and replaces the running executable in place.
+- **Binary** (anything else): downloads the release asset for your OS/arch from GitHub, verifies its SHA-256 against the release's `checksums.txt` (a missing, malformed, or mismatched checksum aborts the update), extracts it, and replaces the running executable in place.
 
 With `--check`, `lstk` only reports whether a newer version is available and exits without downloading or installing anything.
 

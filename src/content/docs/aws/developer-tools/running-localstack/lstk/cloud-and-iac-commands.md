@@ -10,6 +10,7 @@ tags: ['Hobby']
 :::note
 Like `lstk aws`, the `az`, `terraform`, `cdk`, and `sam` proxies do not start the emulator — start it first with [`lstk start`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#start).
 Each requires the corresponding third-party CLI to be installed and on your `PATH`.
+To run any of them against an emulator `lstk` did not start, pass [`--endpoint-url`](/aws/developer-tools/running-localstack/lstk/automation/#targeting-an-external-emulator) (or set `LSTK_ENDPOINT_URL`).
 :::
 
 :::note
@@ -40,6 +41,7 @@ The exit code and `stdout`/`stderr` of the underlying `aws` process are passed t
 
 | Option              | Description                                                                                       |
 |:--------------------|:--------------------------------------------------------------------------------------------------|
+| `--account <id>`    | Target a specific 12-digit LocalStack account (default `000000000000`). Must appear immediately after `lstk aws`, before the AWS CLI's own action. Falls back to a 12-digit `AWS_ACCESS_KEY_ID`. See [Selecting the account](#selecting-the-account). |
 | `--non-interactive` | Suppress the loading spinner. Unlike other commands, this flag is stripped before invoking `aws` (not forwarded). |
 
 :::note
@@ -62,13 +64,27 @@ By default, `lstk` probes whether `localhost.localstack.cloud` resolves to `127.
 Set [`LOCALSTACK_HOST`](/aws/developer-tools/running-localstack/lstk/automation/#environment-variables) to override the host:port used to reach LocalStack and skip the DNS probe.
 The port comes from the AWS container's `port` in `config.toml` (default `4566`).
 
+### Selecting the account
+
+LocalStack derives the AWS account from the access key id it receives, so `lstk aws --account <id>` targets a specific 12-digit LocalStack account by controlling the credentials `aws` runs with (a neutral, real-looking `AKIA…`/`ASIA…` key never reaches the emulator):
+
+```bash
+lstk aws --account 111111111111 s3 mb s3://my-bucket
+```
+
+The flag must appear immediately after `lstk aws`, before the AWS CLI's own action (placing it before `lstk aws` is a placement error; placing it after the action is not caught — `lstk` silently forwards it to the `aws` CLI, which then rejects it). When it is omitted, `lstk` falls back to a 12-digit `AWS_ACCESS_KEY_ID` if one is set, then to the default account `000000000000`. The same leading-flag account selection is available on [`lstk terraform`](#terraform) and [`lstk sam`](#sam); `lstk cdk` does not support it.
+
+### Tab completion
+
+`lstk aws <TAB>` completes AWS services, operations, and parameters using the AWS CLI's own completer. It is enabled together with the rest of `lstk`'s completion — see [Shell completions](/aws/developer-tools/running-localstack/lstk/#shell-completions).
+
 ## `az`
 
 Run Azure CLI commands against the running LocalStack Azure emulator.
 `lstk az` runs `az` with an isolated `AZURE_CONFIG_DIR` in which a custom Azure cloud is registered against LocalStack's endpoints, so your global `~/.azure` configuration is left untouched and plain `az` keeps talking to real Azure.
 
 Run [`lstk setup azure`](/aws/developer-tools/running-localstack/lstk/setup-and-maintenance/#setup-azure) once before using this mode.
-Everything after `lstk az` is forwarded verbatim to the host `az` binary, and its exit code and output are passed through unchanged.
+Arguments are forwarded to the host `az` binary, and its exit code and output are passed through unchanged. `lstk`'s own flags (`--non-interactive`, `--config`) are consumed by `lstk` rather than forwarded — for example `lstk az --non-interactive …` suppresses the loading spinner instead of passing the flag to `az`.
 
 ```bash
 lstk az group list

@@ -47,6 +47,8 @@ lstk start --persist
 For finer-grained control, you can also set `PERSISTENCE = "1"` in an environment profile (see [Passing environment variables to the container](/aws/developer-tools/running-localstack/lstk/configuration/#passing-environment-variables-to-the-container)).
 :::
 
+`start` supports [`--json`](/aws/developer-tools/running-localstack/lstk/automation/#structured-output) (as does the bare `lstk` command, which reports `"command": "start"`): the `data` payload is a flat object describing the started emulator — its `emulator` type, `container` name, `endpoint`, `version`, whether it was `alreadyRunning`, and whether `persistence` is enabled.
+
 ### Selecting the emulator with `--type`
 
 `--type` (shorthand `-t`, also available on the bare `lstk` command) is the non-interactive answer to the first-run emulator picker.
@@ -177,6 +179,8 @@ SQS      my-queue     us-east-1  000000000000
 
 In an interactive terminal the output is rendered through the TUI; in non-interactive mode (or with `--non-interactive`) the same content is printed as plain text, with the resource table shown at full width when stdout is not a TTY.
 The Snowflake and Azure emulators show the instance summary only and never report resources.
+
+`status` supports [`--json`](/aws/developer-tools/running-localstack/lstk/automation/#structured-output): the `data` payload lists one entry per configured emulator with its running state, health, version, host, and (for the AWS emulator) a `resourceSummary` and the deployed `resources`. Pass `--no-resources` to omit the resource details for a faster response when polling. `--json` also honors [`--endpoint-url`](/aws/developer-tools/running-localstack/lstk/automation/#targeting-an-external-emulator) to report on an emulator `lstk` did not start.
 
 ## `logs`
 

@@ -12,8 +12,9 @@ These options are available for all commands:
 | Option              | Description                                                                |
 |:--------------------|:------------------------------------------------------------------------------|
 | `--config <path>`   | Path to a specific TOML config file                                        |
+| `--endpoint-url <url>` | Target an existing, externally-managed emulator at this URL instead of discovering one via local Docker. See [Targeting an external emulator](#targeting-an-external-emulator). |
 | `--non-interactive` | Disable the interactive TUI, use plain output                              |
-| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `stop`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
+| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `start`, `stop`, `status`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
 | `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
 | `--type <type>`, `-t <type>` | Emulator type to start: `aws`, `snowflake`, or `azure` (on `start`/bare `lstk`; records the choice in config). See [Selecting the emulator with `--type`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#selecting-the-emulator-with---type). |
 | `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
@@ -42,10 +43,32 @@ Commands that mutate state without prompting in CI (`reset`, `volume clear`) req
 `lstk setup aws` works non-interactively — it writes the profile with defaults and needs `--force` only to overwrite a conflicting `localstack` profile.
 :::
 
+## Targeting an external emulator
+
+By default `lstk` discovers the emulator it manages through local Docker.
+The `--endpoint-url <url>` global flag (or the `LSTK_ENDPOINT_URL` environment variable) instead points a command at an emulator `lstk` did not start — a Docker Compose or host-network deployment, one running in CI or on another machine, or a LocalStack cloud-hosted ephemeral instance.
+
+```bash
+# Run against an emulator reachable at a custom URL
+lstk aws --endpoint-url http://localhost:4566 s3 ls
+
+# Equivalent via the environment
+LSTK_ENDPOINT_URL=https://my-ephemeral-instance.localstack.cloud lstk status
+```
+
+The endpoint is resolved from, in order of precedence: the `--endpoint-url` flag, `LSTK_ENDPOINT_URL`, then `AWS_ENDPOINT_URL` (a full synonym for `LSTK_ENDPOINT_URL`, one tier lower).
+Both `http://` and `https://` URLs are accepted (any other scheme is rejected), and the scheme is preserved end-to-end, so `https://` ephemeral instances work.
+
+The commands that accept an external endpoint are the ones that only *talk to* an already-running emulator: [`aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws), [`az`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#az), [`terraform`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#terraform)/`tf`, [`cdk`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#cdk), [`sam`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#sam), [`status`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#status), [`reset`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#reset), and the [`snapshot`](/aws/developer-tools/running-localstack/lstk/snapshots/) `save`/`load`/`remove` subcommands (including the `lstk save`/`lstk load` aliases) and `list s3://…`.
+
+Commands that manage the emulator's lifecycle or on-disk state have no remote equivalent and **reject** any endpoint source: `start`, the bare `lstk`, `stop`, `restart`, `logs`, and `volume`.
+
+The emulator's type (AWS, Azure, or Snowflake) is auto-detected by probing the endpoint's health API — there is no override flag or config setting, and an inconclusive probe is a hard failure. The AWS-only tools (`terraform`, `cdk`, `sam`) reject an endpoint whose detected type is not AWS.
+
 ## Structured output
 
 The global `--json` flag makes a command emit a single, machine-readable JSON object on stdout instead of human-oriented text, for scripting and CI.
-JSON support is available per command: `stop`, `reset`, and `update` accept `--json`.
+JSON support is available per command: `start`, `stop`, `status`, `reset`, and `update` accept `--json`.
 Any other command rejects it with an error envelope (`error.code: NOT_JSON_CAPABLE`) rather than silently printing plain text.
 
 Every JSON-capable command writes **exactly one** JSON object with the following envelope shape:
@@ -115,7 +138,8 @@ The following environment variables configure `lstk` itself (not the LocalStack 
 
 | Variable                     | Description                                                                                                      |
 |:-------------------------------|:---------------------------------------------------------------------------------------------------------------------|
-| `LOCALSTACK_AUTH_TOKEN`      | Auth token for non-interactive runs or to skip browser login. Used when no keyring token is stored.              |
+| `LOCALSTACK_AUTH_TOKEN`      | Auth token for non-interactive runs or to skip browser login. Takes precedence over a token stored in the keyring. |
+| `LSTK_ENDPOINT_URL`          | Target an existing, externally-managed emulator at this URL (equivalent to `--endpoint-url`). `AWS_ENDPOINT_URL` is a lower-precedence synonym. See [Targeting an external emulator](#targeting-an-external-emulator). |
 | `LOCALSTACK_HOST`            | Override the host (and optional port) used when resolving and printing the emulator endpoint, and when writing the AWS CLI profile. Bypasses the `localhost.localstack.cloud` DNS probe. |
 | `LOCALSTACK_DISABLE_EVENTS`  | Set to `1` to disable anonymous telemetry event reporting.                                                       |
 | `DOCKER_HOST`                | Override the Docker daemon socket (e.g. `unix:///home/user/.colima/default/docker.sock`).                        |
@@ -127,9 +151,19 @@ The following environment variables configure `lstk` itself (not the LocalStack 
 | `LSTK_API_ENDPOINT`          | Override the LocalStack platform API base URL. Default: `https://api.localstack.cloud`.                          |
 | `LSTK_WEB_APP_URL`           | Override the LocalStack Web Application URL used for browser login. Default: `https://app.localstack.cloud`.     |
 
-When `DOCKER_HOST` is not set, `lstk` tries the default Docker socket and then probes common alternatives (Colima at `~/.colima/default/docker.sock` or `~/.config/colima/default/docker.sock`, OrbStack at `~/.orbstack/run/docker.sock`).
-
 When `LSTK_OTEL` is enabled, the standard `OTEL_EXPORTER_OTLP_*` environment variables are honored by the OpenTelemetry SDK.
+
+### Container runtime discovery
+
+`lstk` talks to a Docker-compatible runtime and works with Docker Desktop, Rancher Desktop, Colima, OrbStack, Lima, and Podman. When `DOCKER_HOST` is not set, it resolves the daemon endpoint in this order:
+
+1. **`DOCKER_HOST`**, if set, always wins.
+2. **`DOCKER_CONTEXT`** or the active Docker CLI context, when it is non-default and reachable (a stale or unreachable context is skipped rather than failing).
+3. On **Linux**, a live `/var/run/docker.sock` — a running Docker daemon is preferred over a co-installed runtime such as Podman.
+4. A probe of known runtime sockets (Docker Desktop, Rancher Desktop, Colima, OrbStack, Podman, Lima). Each candidate is dialed, not just checked for existence, so a leftover socket file never shadows a live daemon.
+5. The Docker SDK's own default.
+
+If no runtime is reachable, the error tailors its suggested start command (`rdctl start`, `colima start`, `podman machine start`, …) to the runtime it detects. Set `DOCKER_HOST` to point at a specific socket to bypass discovery entirely.
 
 ### Container-injected variables
 

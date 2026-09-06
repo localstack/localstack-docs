@@ -41,7 +41,9 @@ The default `config.toml` created on first run. The `type` field reflects whiche
 type = "aws"      # Emulator type. Supported: "aws", "snowflake", "azure"
 tag  = "latest"   # Docker image tag, e.g. "latest", "2026.4"
 port = "4566"     # Host port the emulator will be accessible on
+# container_name = ""  # Override the derived container name (also MAIN_CONTAINER_NAME)
 # image = ""      # Full image override (e.g. an internal mirror or offline image)
+# expose_ports = []    # Extra container ports to publish, e.g. [53] for the DNS server
 # volume = ""     # Host directory for persistent state (default: OS cache dir)
 # volumes = []    # Docker-style "host:container[:ro]" bind mounts (see Volumes)
 # env = []        # Named environment profiles to apply (see [env.*] sections below)
@@ -55,7 +57,9 @@ port = "4566"     # Host port the emulator will be accessible on
 | `type`     | string   | `"aws"`    | Emulator type. One of `"aws"`, `"snowflake"`, `"azure"`. Run a single `[[containers]]` block at a time. See [Emulator types](#emulator-types). |
 | `tag`      | string   | `"latest"` | Docker image tag (`"latest"`, `"2026.4"`, etc.). Useful for pinning a specific version. Zero-padded months (`"2026.04"`) are normalized to `"2026.4"`. |
 | `port`     | string   | `"4566"`   | Host port the emulator listens on (1–65535). The in-container port is always `4566`.                 |
+| `container_name` | string | (derived) | Override the derived container name (`localstack-<type>`, plus `-<tag>` when `tag` is not `"latest"`). This is also what the emulator reports as `MAIN_CONTAINER_NAME`. Set it when something outside `lstk` addresses the emulator by a fixed name, e.g. a sidecar proxy on a CI agent. |
 | `image`    | string   | (default)  | Full image reference that overrides the default Docker Hub image, e.g. an internal-registry mirror or a locally loaded offline image. If it already carries a tag, `tag` is ignored; otherwise `tag` (or `latest`) is appended. |
+| `expose_ports` | (int \| string)[] | `[]` | Publish additional container ports on the host, beyond the gateway and service ports `lstk` publishes by default. Each entry is a bare port number (published on the same host port) or a Docker-style `"[host:]container[/proto]"` string — e.g. `expose_ports = [53]` to use the emulator's DNS server as the host's resolver, or `expose_ports = ["5354:5353/udp"]`. |
 | `volume`   | string   | (OS cache) | Host directory for persistent emulator state. Defaults to `<os-cache>/lstk/volume/<container-name>`. See also `volumes`. |
 | `volumes`  | string[] | `[]`       | Docker-style `"host:container[:ro]"` bind mounts (e.g. init hooks). May also carry the persistence mount (target `/var/lib/localstack`). See [Volume mounts](#volume-mounts). |
 | `env`      | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
