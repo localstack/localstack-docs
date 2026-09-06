@@ -9,11 +9,11 @@ tags: ['Hobby']
 
 ### Can I use `lstk` with Docker Compose?
 
-No. `lstk` manages its own Docker container directly.
-If you use a `docker-compose.yml` to run LocalStack, you do not need `lstk`, and vice versa.
-Do not mix `lstk start` with a Docker Compose setup; they are separate, independent methods.
+Yes, for the commands that talk to an already-running emulator.
+`lstk start` and the other lifecycle commands manage their own Docker container and are not meant to drive a Compose-managed instance, so don't point `lstk start` at one.
+But if you run LocalStack from a `docker-compose.yml`, you can still use `lstk`'s emulator-facing commands against it — `aws`, `az`, `terraform`/`cdk`/`sam`, `status`, `reset`, and `snapshot` — by passing `--endpoint-url <url>` (or setting `LSTK_ENDPOINT_URL`) to target the Compose deployment.
 
-For Docker Compose configuration, see the [Docker Compose installation guide](/aws/getting-started/installation/#docker-compose).
+See [Targeting an external emulator](/aws/developer-tools/running-localstack/lstk/automation/#targeting-an-external-emulator) for the commands that accept an endpoint, and the [Docker Compose installation guide](/aws/getting-started/installation/#docker-compose) for the Compose setup itself.
 
 ### Which Docker image does `lstk` use?
 
