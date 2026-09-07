@@ -26,7 +26,7 @@ Specifically, you will use the [LocalStack Web Application](https://app.localsta
 
 ## Prerequisites
 
-- Complete the [Getting Started's 'Local Development' section](/aws/getting-started/local-development/), but **skip Step 6**. You don't want to run run the cleanup step because your `messages-api` Lambda function and `Messages` DynamoDB table should still be deployed.
+- Complete the [Getting Started's 'Local Development' section](/aws/getting-started/local-development/), but **skip Step 6**. You don't want to run the cleanup step because your `messages-api` Lambda function and `Messages` DynamoDB table should still be deployed.
 - The LocalStack container from the Getting Started must still be running. If you closed your terminal, the container keeps running in the background. Verify by running:
 
   ```bash
@@ -95,12 +95,12 @@ Stack Overview is a **preview** feature. It only tracks a defined set of [suppor
 
 ### Step 3: Trigger the Lambda and inspect data with the Resource Browsers
 
-Many supported services in LocalStack for AWS come with a resource browse that allows you to view configuration details and manage individual resources. Use it here to check the Lambda function's configuration, trigger the function, and then validate that a new row lands in DynamoDB.
+Many supported services in LocalStack for AWS come with a resource browser that allows you to view configuration details and manage individual resources. Use it here to check the Lambda function's configuration, trigger the function, and then validate that a new row lands in DynamoDB.
 
 <Steps>
 
 1. Navigate to the [**Status** tab](https://app.localstack.cloud/inst/default/status). It displays a list of the running services at the top as well as additional services that are available to use within the LocalStack emulator.
-2. Under **Running** services, click **Lambda**, then, within the **Functions** tab, and click the `messages-api` function. From here you can review the function's details including the ARN, runtime, handler, and the `TABLE_NAME` environment variable pointing at `Messages`. You can also update the function code, invoke the function, and view the function logs.
+2. Under **Running** services, click **Lambda**, then, within the **Functions** tab, click the `messages-api` function. From here you can review the function's details including the ARN, runtime, handler, and the `TABLE_NAME` environment variable pointing at `Messages`. You can also update the function code, invoke the function, and view the function logs.
    ![Lambda Resource Browser showing the details of a deployed Lambda function](/images/aws/lambda-resource-browser.jpg)
 3. Click **Invoke** to open the invoke dialog and paste the following JSON payload into the input field:
    ```json
@@ -126,7 +126,7 @@ With the Lambda invoked, switch to the DynamoDB side to see what it wrote:
 
 <Steps>
 
-1. Back in the [**Status** tab](https://app.localstack.cloud/inst/default/status) and click on **DynamoDB** and then, fromthe **Tables** tab, click the `Messages` table. This will open the table details page where you can view the table's details including the table name, key schema, and the number of items in the table.
+1. Back in the [**Status** tab](https://app.localstack.cloud/inst/default/status), click on **DynamoDB** and then, from the **Tables** tab, click the `Messages` table. This will open the table details page where you can view the table's details including the table name, key schema, and the number of items in the table.
 2. Click the **Items** tab to view the table's contents. You should see the message you posted _and_ the new one you just sent.
    ![DynamoDB Resource Browser showing the Items list](/images/aws/dynamodb-resource-browser.jpg)
 
@@ -172,7 +172,7 @@ Now let's clear the instance and confirm it's actually gone and then restore it:
 **Expected result:** Return to the [**Stack Overview** tab](https://app.localstack.cloud/inst/default/overview) again. You should see the `messages-api` and `Messages` tables are back. Opening the DynamoDB table in the resource browser and clicking the **Items** tab will show the items you saved before the restart are back as well. Cloud Pods restored the _data_ in the table, not just the table definition.
 
 :::note
-You can do the same save/restore flow from `lstk` instead of the web applicatin using the `lstk snapshot save` and `lstk snapshot load` commands. For more details, see the [lstk documentation](https://docs.localstack.cloud/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot).
+You can do the same save/restore flow from `lstk` instead of the web application using the `lstk snapshot save` and `lstk snapshot load` commands. For more details, see the [lstk documentation](https://docs.localstack.cloud/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot).
 :::
 
 ### Step 5: Trace the request flow with App Inspector
@@ -202,7 +202,7 @@ You can do the same save/restore flow from `lstk` instead of the web applicatin 
 
 </Steps>
 
-**Expected result:** App Inpsector correctly captures the two operations you triggered. Clicking on an operation will open the operation details panel. This will show a diagram of the request flow and the service, action, resource ARN, duration, status, and the exact request/response payload. In this case, the operations details are extremely simple and don't show any errors, but this kind of detail is invaluable for debugging and understanding the flow of your application.
+**Expected result:** App Inspector correctly captures the two operations you triggered. Clicking on an operation will open the operation details panel. This will show a diagram of the request flow and the service, action, resource ARN, duration, status, and the exact request/response payload. In this case, the operations details are extremely simple and don't show any errors, but this kind of detail is invaluable for debugging and understanding the flow of your application.
 
 :::note
 App Inspector requires LocalStack **2026.04.0** or later. If you don't see it in the sidebar, check your version with `lstk status` and update your image.
