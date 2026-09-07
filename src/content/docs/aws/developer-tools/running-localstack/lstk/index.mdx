@@ -24,13 +24,13 @@ Running `lstk` with no arguments takes you through the entire startup flow autom
 
 This section is split into focused pages:
 
-- **Overview** (this page): installation, quick start, and shell completions.
+- **Overview** (this page): installation, quick start, global options, and shell completions.
 - [Authentication](/aws/developer-tools/running-localstack/lstk/authentication/): logging in and out, and how `lstk` resolves your auth token.
 - [Configuration](/aws/developer-tools/running-localstack/lstk/configuration/): the `config.toml` file, emulator types, environment variables, and volumes.
 - [Lifecycle commands](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/): `start`, `stop`, `restart`, `status`, `logs`, `reset`, `volume`.
 - [Cloud & IaC commands](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/): `aws`, `az`, `terraform`, `cdk`, `sam`.
-- [Snapshots](/aws/developer-tools/running-localstack/lstk/snapshots/): save and load emulator state with `snapshot save`/`load`/`list`/`remove`/`show`.
-- [Automation & CI](/aws/developer-tools/running-localstack/lstk/automation/): global options, non-interactive mode, structured output, and environment variables.
+- [Snapshots](/aws/developer-tools/running-localstack/lstk/snapshots/): save and load emulator state with `snapshot save`/`load`/`list`/`remove`/`show`/`versions`.
+- [Automation & CI](/aws/developer-tools/running-localstack/lstk/automation/): non-interactive mode, structured output, targeting an external emulator, and environment variables.
 - [Setup & maintenance](/aws/developer-tools/running-localstack/lstk/setup-and-maintenance/): `setup`, `config`, `update`, and offline/enterprise environments.
 - [FAQ & Troubleshooting](/aws/developer-tools/running-localstack/lstk/faq-and-troubleshooting/).
 
@@ -105,6 +105,26 @@ LOCALSTACK_AUTH_TOKEN=<your-ci-auth-token> lstk --non-interactive
 ```
 
 CI environments require a CI Auth Token; a personal Developer Auth Token cannot be used there.
+
+## Global options
+
+These options are available for all commands:
+
+| Option              | Description                                                                |
+|:--------------------|:------------------------------------------------------------------------------|
+| `--config <path>`   | Path to a specific TOML config file                                        |
+| `--endpoint-url <url>` | Target an existing, externally-managed emulator at this URL instead of discovering one via local Docker. See [Targeting an external emulator](/aws/developer-tools/running-localstack/lstk/automation/#targeting-an-external-emulator). |
+| `--non-interactive` | Disable the interactive TUI, use plain output                              |
+| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `start`, `stop`, `status`, `reset`, and `update`; any other command rejects it. See [Structured output](/aws/developer-tools/running-localstack/lstk/automation/#structured-output). |
+| `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
+| `--type <type>`, `-t <type>` | Emulator type to start: `aws`, `snowflake`, or `azure` (on `start`/bare `lstk`; records the choice in config). See [Selecting the emulator with `--type`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#selecting-the-emulator-with---type). |
+| `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
+| `--no-snapshot`     | Skip auto-loading the configured snapshot (on `start`/bare `lstk`)          |
+| `--timeout <duration>` | Startup readiness deadline for `start`/bare `lstk`, as a Go duration; overrides `LSTK_STARTUP_TIMEOUT` for one run. See [`start`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#start). |
+| `-v`, `--version`   | Print the version and exit                                                 |
+| `-h`, `--help`      | Print help and exit                                                        |
+
+These apply to both interactive and non-interactive (scripted/CI) use, see [Automation & CI](/aws/developer-tools/running-localstack/lstk/automation/) for the details behind `--non-interactive`, `--json`, and `--endpoint-url`.
 
 ## Shell completions
 
