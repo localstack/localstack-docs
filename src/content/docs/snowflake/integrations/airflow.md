@@ -13,7 +13,7 @@ On this page we outline how to set up the connection between local Airflow and t
 
 ## Create an Airflow environment via MWAA in LocalStack
 
-In order to create an Airflow environment in local MWAA, we can use the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command:
+In order to create an Airflow environment in local MWAA, we can use the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command:
 
 ```bash showLineNumbers
 lstk aws s3 mb s3://my-mwaa-bucket

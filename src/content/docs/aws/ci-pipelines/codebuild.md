@@ -76,7 +76,7 @@ phases:
 ...
 ```
 
-Settings that apply to every run belong in an [`[env.*]` profile](/aws/developer-tools/running-localstack/lstk/#configuration) in a `.lstk/config.toml` committed to your repository, which also lets you pin the image tag.
+Settings that apply to every run belong in an [`[env.*]` profile](/aws/developer-tools/running-localstack/lstk/configuration/) in a `.lstk/config.toml` committed to your repository, which also lets you pin the image tag.
 Read more about the [configuration options](/aws/customization/configuration-options) of LocalStack.
 
 ### Dump LocalStack logs
@@ -192,7 +192,7 @@ cache:
   toomanyrequests: You have reached your pull rate limit. You may increase the limit by authenticating and upgrading: https://www.docker.com/increase-rate-limit
   ```
 
-  To resolve this, either use your Docker Hub account credentials to pull the image, or point `lstk` at LocalStack's public ECR mirror with the [`image` field](/aws/developer-tools/running-localstack/lstk/#custom-container-image) in `.lstk/config.toml`:
+  To resolve this, either use your Docker Hub account credentials to pull the image, or point `lstk` at LocalStack's public ECR mirror with the [`image` field](/aws/developer-tools/running-localstack/lstk/configuration/#custom-container-image) in `.lstk/config.toml`:
 
   ```toml
   [[containers]]

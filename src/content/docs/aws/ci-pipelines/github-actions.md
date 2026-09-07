@@ -46,7 +46,7 @@ You can then install `lstk` and start the emulator, passing the secret to the st
 ```
 
 `lstk start` pulls the image, validates your license, and returns only once the emulator is ready, so no separate wait step is needed.
-To pin the image tag, commit a [`.lstk/config.toml`](/aws/developer-tools/running-localstack/lstk/#configuration) to your repository rather than passing it on the command line.
+To pin the image tag, commit a [`.lstk/config.toml`](/aws/developer-tools/running-localstack/lstk/configuration/) to your repository rather than passing it on the command line.
 Where several steps run `lstk`, set `LOCALSTACK_AUTH_TOKEN` once at the job level instead of repeating it on every step.
 `lstk setup aws` writes a `localstack` AWS profile for the runner's `aws` binary to use. It is optional, but without it `lstk` notes on every call that no profile was found.
 
@@ -65,7 +65,7 @@ For example:
 ```
 
 You can add extra configuration options as further `LOCALSTACK_`-prefixed variables.
-Settings that apply to every run belong in an [`[env.*]` profile](/aws/developer-tools/running-localstack/lstk/#configuration) in `.lstk/config.toml` instead.
+Settings that apply to every run belong in an [`[env.*]` profile](/aws/developer-tools/running-localstack/lstk/configuration/) in `.lstk/config.toml` instead.
 
 ### Dump Localstack logs
 

@@ -16,7 +16,7 @@ You can use Cloud Custodian with LocalStack by just specifying the Cloud Custodi
 
 ## Getting started
 
-This guide is designed for users who are new to Cloud Custodian and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command.
+This guide is designed for users who are new to Cloud Custodian and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command.
 
 Start your LocalStack container using your preferred method.
 We will demonstrate how you can spin up an EC2 instance and tag it with the key `Custodian`, and then use Cloud Custodian to stop the instance.

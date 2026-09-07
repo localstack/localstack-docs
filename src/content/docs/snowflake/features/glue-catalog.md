@@ -12,7 +12,7 @@ The Snowflake emulator can connect to this Glue Iceberg REST endpoint through a 
 
 ## Getting started
 
-This guide walks through creating an Iceberg table in S3 Tables through the Glue Iceberg REST endpoint, registering that table with the Snowflake emulator through a Glue catalog integration, and querying it with SQL. It assumes basic knowledge of the AWS CLI, our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command, and Snowflake.
+This guide walks through creating an Iceberg table in S3 Tables through the Glue Iceberg REST endpoint, registering that table with the Snowflake emulator through a Glue catalog integration, and querying it with SQL. It assumes basic knowledge of the AWS CLI, our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command, and Snowflake.
 
 In this guide, you will:
 

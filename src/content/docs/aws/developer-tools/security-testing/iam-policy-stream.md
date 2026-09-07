@@ -23,7 +23,7 @@ Continue using the legacy [LocalStack CLI](/aws/developer-tools/running-localsta
 ## Getting started
 
 This guide is designed for users who are new to the IAM Policy Stream.
-It assumes you have basic knowledge of the AWS CLI (and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk#aws) AWS CLI proxy).
+It assumes you have basic knowledge of the AWS CLI (and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) AWS CLI proxy).
 
 ### Start your LocalStack container
 

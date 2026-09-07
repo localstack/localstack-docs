@@ -16,7 +16,7 @@ Enable `DEBUG=1` to surface the full log output.
 
 ## Getting started
 
-This guide is designed for users new to Explainable IAM and assumes basic knowledge of the AWS CLI and our [`lstk aws` AWS CLI proxy](/aws/developer-tools/running-localstack/lstk#aws).
+This guide is designed for users new to Explainable IAM and assumes basic knowledge of the AWS CLI and our [`lstk aws` AWS CLI proxy](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws).
 
 Start your LocalStack container with the `DEBUG=1` and `ENFORCE_IAM=1` environment variables set:
 

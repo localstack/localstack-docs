@@ -20,7 +20,7 @@ With LocalStack's Snowflake emulator, you can create catalog integrations that c
 
 - [`lstk`](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command
 - Python 3.10+ with `pyiceberg` and `pyarrow` installed
 
 ## Start LocalStack

@@ -28,7 +28,7 @@ DEBUG = "1"
 lstk start
 ```
 
-See [Passing environment variables to the container](/aws/developer-tools/running-localstack/lstk#passing-environment-variables-to-the-container) for details.
+See [Passing environment variables to the container](/aws/developer-tools/running-localstack/lstk/configuration/#passing-environment-variables-to-the-container) for details.
 
 To facilitate interoperability, configuration variables can be prefixed with `LOCALSTACK_` in docker.
 For instance, setting `LOCALSTACK_PERSISTENCE=1` is equivalent to `PERSISTENCE=1`.
@@ -61,7 +61,7 @@ Options that affect the core LocalStack system.
 ## CLI
 
 `lstk` is configured through its config file rather than through environment variables.
-See [Configuration](/aws/developer-tools/running-localstack/lstk#configuration) on the `lstk` page for the config file search order, the field reference, and how to define named environment profiles.
+See [Configuration](/aws/developer-tools/running-localstack/lstk/configuration/) on the `lstk` page for the config file search order, the field reference, and how to define named environment profiles.
 
 ## Docker
 

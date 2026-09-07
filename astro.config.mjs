@@ -484,7 +484,45 @@ export default defineConfig({
                     },
                     {
                       label: 'lstk CLI',
-                      slug: 'aws/developer-tools/running-localstack/lstk',
+                      collapsed: true,
+                      items: [
+                        {
+                          label: 'Overview',
+                          slug: 'aws/developer-tools/running-localstack/lstk',
+                        },
+                        {
+                          label: 'Authentication',
+                          slug: 'aws/developer-tools/running-localstack/lstk/authentication',
+                        },
+                        {
+                          label: 'Configuration',
+                          slug: 'aws/developer-tools/running-localstack/lstk/configuration',
+                        },
+                        {
+                          label: 'Lifecycle Commands',
+                          slug: 'aws/developer-tools/running-localstack/lstk/lifecycle-commands',
+                        },
+                        {
+                          label: 'Cloud & IaC Commands',
+                          slug: 'aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands',
+                        },
+                        {
+                          label: 'Snapshots',
+                          slug: 'aws/developer-tools/running-localstack/lstk/snapshots',
+                        },
+                        {
+                          label: 'Automation & CI',
+                          slug: 'aws/developer-tools/running-localstack/lstk/automation',
+                        },
+                        {
+                          label: 'Setup & Maintenance',
+                          slug: 'aws/developer-tools/running-localstack/lstk/setup-and-maintenance',
+                        },
+                        {
+                          label: 'FAQ & Troubleshooting',
+                          slug: 'aws/developer-tools/running-localstack/lstk/faq-and-troubleshooting',
+                        },
+                      ],
                     },
                     {
                       label: 'LocalStack MCP Server',
