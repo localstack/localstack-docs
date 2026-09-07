@@ -13,6 +13,20 @@ Starting with the end-of-March 2026 release, LocalStack for Snowflake follows [c
 For example, `2026.03.0` is the initial March 2026 release.
 :::
 
+## 2026.08.0
+
+- Add Snowflake-Next preview, a new-generation emulator planned to become the default soon. In internal testing it ran the regression suite more than 10 times faster than the current emulator. Enable it to try `STREAM` (including `STREAM ON VIEW`), zero-copy `CLONE`, and Time Travel.
+- `RESULT_SCAN` now processes results from `SHOW`, `DESC`, `LIST`, and other status-returning commands, handles empty `SHOW` results, and returns Snowflake-style errors for failed or in-progress queries instead of unrelated syntax errors.
+- `LISTAGG` and `ARRAY_AGG` support multiple ordered aggregates with separate `WITHIN GROUP` clauses in a single `SELECT` statement, each using independent ordering.
+- Long-running queries now remain in progress until execution finishes, instead of returning early.
+- `SHOW <objects> IN SCHEMA` now limits results to the requested schema for views, materialized views, sequences, and file formats.
+- `SHOW VIEWS` identifies materialized views via the `is_materialized` field; `SHOW MATERIALIZED VIEWS` returns the view definition in the `text` field.
+- `ALTER PIPE`, `DESC PIPE`, and `DROP PIPE` now resolve fully qualified names independent of the session's current schema.
+- `DROP PIPE IF EXISTS` no longer errors when the pipe doesn't exist.
+- `CREATE TAG IF NOT EXISTS` is now idempotent.
+- Dropping a database or schema now removes only the tags it owns, preserving tags in other namespaces.
+- Migrate the Docker image base from Debian sid (rolling) to Debian trixie (stable release).
+
 ## 2026.07.0
 
 - Tables and data stored with `PERSISTENCE=1` remain available after the emulator restarts.
