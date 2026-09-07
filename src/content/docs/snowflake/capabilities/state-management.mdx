@@ -29,6 +29,17 @@ To start snapshot-based persistence, launch LocalStack with the `--persist` comm
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
 lstk start --persist
 ```
+
+To resume a persisted session after the emulator has stopped, or to restart a session while keeping persistence on, pass `--persist` again:
+
+```bash
+lstk stop
+lstk start --persist
+```
+
+```bash
+lstk restart --persist
+```
 </TabItem>
 <TabItem label="Docker Compose">
 ```yaml showLineNumbers
@@ -68,17 +79,17 @@ The Export/Import State feature enables you to export the state of your LocalSta
 To export the state, you can run the following command:
 
 ```bash
-lstk snapshot save '<file-name>'
+lstk snapshot save '<path-to-snapshot-file>'
 ```
 
-You can use the `<file-name>` argument to specify a file path to export the state to. If you do not specify a file path, the state will be exported to the current working directory into an auto-named snapshot file.
+You can use the `<path-to-snapshot-file>` argument to specify a file path to export the state to. If you do not specify a file path, the state will be exported to the current working directory into an auto-named snapshot file. See the [lstk snapshot documentation](/aws/developer-tools/running-localstack/lstk/#snapshot) for the full list of supported save destinations, including local files and remote Cloud Pods.
 
 ### Import the State
 
 To import the state, you can run the following command:
 
 ```bash
-lstk snapshot load '<file-name>'
+lstk snapshot load '<path-to-snapshot-file>'
 ```
 
-The `<file-name>` argument is required and specifies the file path to import the state from. The file should be generated from a previous export.
+The `<path-to-snapshot-file>` argument is required and specifies the file path to import the state from. The file should be generated from a previous export.

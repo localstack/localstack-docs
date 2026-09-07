@@ -21,7 +21,7 @@ The code in this tutorial is available on [GitHub](https://github.com/localstack
 
 - [`lstk`](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`awslocal` wrapper](/aws/connecting/aws-cli/#localstack-aws-cli-awslocal)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command
 - Python 3.10 installed locally
 
 ## Create the Lambda function
@@ -150,10 +150,10 @@ lstk start --type snowflake
 
 ## Deploy the Lambda function
 
-You can now deploy the Lambda function to LocalStack using the `awslocal` CLI. Run the following command:
+You can now deploy the Lambda function to LocalStack using `lstk aws`. Run the following command:
 
 ```bash showLineNumbers
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name localstack-snowflake-lambda-example \
 	--runtime python3.10 \
 	--timeout 180 \
@@ -162,10 +162,10 @@ awslocal lambda create-function \
 	--role arn:aws:iam::000000000000:role/lambda-role
 ```
 
-After successfully deploying the Lambda function, you will receive a response with the details of the function. You can now invoke the function using the `awslocal` CLI:
+After successfully deploying the Lambda function, you will receive a response with the details of the function. You can now invoke the function using `lstk aws`:
 
 ```bash showLineNumbers
-awslocal lambda invoke --function-name localstack-snowflake-lambda-example \
+lstk aws lambda invoke --function-name localstack-snowflake-lambda-example \
 	--cli-binary-format raw-in-base64-out \
 	--payload '{"body": "test"}' output.txt
 ```

@@ -53,10 +53,19 @@ Options that affect the core Snowflake emulator functionality.
 
 By default, the Snowflake emulator accepts requests for hostnames such as `snowflake.localhost.localstack.cloud` and other `*.snowflake.*` hostnames.
 If you expose the emulator through a custom DNS name, for example in Kubernetes or behind an ingress, set `SF_HOSTNAMES` to the exact hostnames clients use to reach the emulator.
-When you use `lstk`, add the `LOCALSTACK_` prefix so the CLI passes the variable to the container:
+When you use `lstk`, set this as a named environment profile in your config file:
+
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "snowflake"
+env  = ["custom"]
+
+[env.custom]
+SF_HOSTNAMES = "snowflake.internal.example.com,snowflake.internal,snowflake.localhost.localstack.cloud"
+```
 
 ```bash
-LOCALSTACK_SF_HOSTNAMES=snowflake.internal.example.com,snowflake.internal,snowflake.localhost.localstack.cloud \
 lstk start
 ```
 
@@ -89,10 +98,19 @@ If you previously used `SF_HOSTNAME_REGEX`, migrate to `SF_HOSTNAMES` and list e
 
 If your custom hostname also needs a matching TLS certificate, use LocalStack's standard certificate configuration options:
 
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "snowflake"
+env  = ["custom"]
+
+[env.custom]
+SF_HOSTNAMES = "snowflake.internal.example.com"
+CUSTOM_SSL_CERT_PATH = "/var/lib/localstack/custom/cert.pem"
+SKIP_SSL_CERT_DOWNLOAD = "1"
+```
+
 ```bash
-LOCALSTACK_SF_HOSTNAMES=snowflake.internal.example.com \
-CUSTOM_SSL_CERT_PATH=/var/lib/localstack/custom/cert.pem \
-SKIP_SSL_CERT_DOWNLOAD=1 \
 lstk start
 ```
 

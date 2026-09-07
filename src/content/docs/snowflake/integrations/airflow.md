@@ -13,11 +13,11 @@ On this page we outline how to set up the connection between local Airflow and t
 
 ## Create an Airflow environment via MWAA in LocalStack
 
-In order to create an Airflow environment in local MWAA, we can use the [`awslocal`](https://github.com/localstack/awscli-local) command:
+In order to create an Airflow environment in local MWAA, we can use the [`lstk aws`](/aws/developer-tools/running-localstack/lstk/#aws) command:
 
 ```bash showLineNumbers
-awslocal s3 mb s3://my-mwaa-bucket
-awslocal mwaa create-environment --dag-s3-path /dags \
+lstk aws s3 mb s3://my-mwaa-bucket
+lstk aws mwaa create-environment --dag-s3-path /dags \
         --execution-role-arn arn:aws:iam::000000000000:role/airflow-role \
         --network-configuration {} \
         --source-bucket-arn arn:aws:s3:::my-mwaa-bucket \
@@ -141,7 +141,7 @@ In a future release, we're looking to integrate these patches directly into the 
 Next, we copy the `my_dag.py` file to the `/dags` folder within the `my-mwaa-bucket` S3 bucket, to trigger the deployment of the DAG in Airflow:
 
 ```bash
-awslocal s3 cp my_dag.py s3://my-mwaa-bucket/dags/
+lstk aws s3 cp my_dag.py s3://my-mwaa-bucket/dags/
 ```
 
 You should then be able to open the Airflow UI (e.g., http://localhost.localstack.cloud:4510/dags) to view the status of the DAG and trigger a DAG run.
