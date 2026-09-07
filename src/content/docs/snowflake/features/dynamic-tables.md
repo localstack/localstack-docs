@@ -100,10 +100,10 @@ A Dynamic Iceberg Table consists of three key concepts:
 
 ### Create an S3 bucket
 
-Create a local S3 bucket using the `mb` command with the `awslocal` CLI:
+Create a local S3 bucket using the `mb` command with `lstk aws`:
 
 ```bash
-awslocal s3 mb s3://test-bucket
+lstk aws s3 mb s3://test-bucket
 ```
 
 ### Create an external volume

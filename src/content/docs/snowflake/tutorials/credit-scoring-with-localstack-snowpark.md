@@ -27,7 +27,7 @@ Start your LocalStack container in your preferred terminal/shell.
 
 ```bash
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-lstk start --type snowflake
+lstk start
 ```
 
 ## Create a Snowpark session

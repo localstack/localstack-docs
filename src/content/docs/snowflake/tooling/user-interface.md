@@ -23,7 +23,7 @@ This guide is designed for users new to the Snowflake emulator Web UI. Start you
 
 ```bash
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-localstack start --stack snowflake
+lstk start
 ```
 
 Navigate to [**https://app.localstack.cloud/inst/default/snowflake**](https://app.localstack.cloud/inst/default/snowflake) to access the User Interface.
