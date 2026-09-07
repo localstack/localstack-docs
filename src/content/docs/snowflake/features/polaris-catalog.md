@@ -99,10 +99,10 @@ curl -s -X PUT http://localhost:8181/api/management/v1/catalogs/polaris/catalog-
 
 ### Create a bucket
 
-Create a bucket using the `awslocal` command:
+Create a bucket using the `lstk aws` command:
 
 ```bash
-awslocal s3 mb s3://$BUCKET_NAME
+lstk aws s3 mb s3://$BUCKET_NAME
 ```
 
 ### Create an external volume
@@ -181,7 +181,7 @@ The output should be:
 All data will be persisted under:
 
 ```bash
-awslocal s3 ls s3://$BUCKET_NAME/test/test_namespace/
+lstk aws s3 ls s3://$BUCKET_NAME/test/test_namespace/
 ```
 
 You will see:
