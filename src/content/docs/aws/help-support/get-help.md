@@ -84,7 +84,12 @@ To use LocalStack’s diagnostics endpoint:
 - Set the environment variable `LS_LOG=trace`
 - Start LocalStack
 - Run the affected task(s)
-- Call the diagnostic endpoint `curl -s localhost.localstack.cloud:4566/_localstack/diagnose > diagnose.json && zip diagnose.zip diagnose.json && rm diagnose.json` (Endpoint URL depends on your configuration)
+- Call the diagnostic endpoint (the endpoint URL depends on your configuration):
+
+  ```bash title="Collect diagnostics"
+  curl -s localhost.localstack.cloud:4566/_localstack/diagnose > diagnose.json && zip diagnose.zip diagnose.json && rm diagnose.json
+  ```
+
 - Once you have the `diagnose.zip` file, please send it to our support team via our email at [support@localstack.cloud](mailto:support@localstack.cloud), or via your existing support ticket.
 :::
 

@@ -33,7 +33,7 @@ In this tutorial, we will explore creating a Lambda function using a container i
 Before diving into this tutorial, make sure you have the following prerequisites:
 
 - [LocalStack for AWS](https://localstack.cloud/pricing/)
-- [awslocal](/aws/connecting/aws-cli#localstack-aws-cli-awslocal)
+- [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws)
 - [Python](https://www.python.org/downloads/)
 - [Docker](https://docker.io/)
 
@@ -106,18 +106,17 @@ The resulting image will contain your function code and any specified dependenci
 
 Now that the initial setup is complete let's explore how to leverage LocalStack's AWS emulation by pushing our image to ECR and deploying the Lambda container image.
 Start LocalStack by executing the following command.
-Make sure to replace `<your-auth-token>` with your actual Auth Token:
 
 ```bash
-LOCALSTACK_AUTH_TOKEN=<your-auth-token> ECR_ENDPOINT_STRATEGY=off DEBUG=1 localstack start -d
+LOCALSTACK_ECR_ENDPOINT_STRATEGY=off LOCALSTACK_DEBUG=1 lstk start
 ```
 
 Once the LocalStack container is running, we can create a new ECR repository to store our container image.
-Use the `awslocal` CLI to achieve this.
+Use the `lstk aws` CLI to achieve this.
 Run the following command to create the repository, replacing `localstack-lambda-container-image` with the desired name for your repository:
 
 ```bash
-awslocal ecr create-repository --repository-name localstack-lambda-container-image
+lstk aws ecr create-repository --repository-name localstack-lambda-container-image
 ```
 
 ```bash title="Output"
@@ -156,7 +155,7 @@ In the above commands, we specify the `repositoryUri` as the image name to push 
 After executing these commands, you can verify that the image is successfully pushed to the repository by using the `describe-images` command:
 
 ```bash
-awslocal ecr describe-images --repository-name localstack-lambda-container-image
+lstk aws ecr describe-images --repository-name localstack-lambda-container-image
 ```
 
 ```bash title="Output"
@@ -193,7 +192,7 @@ More information can be found [in our documentation regarding ARM support.](/aws
 :::
 
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name localstack-lambda-container-image \
     --package-type Image \
     --code ImageUri="localhost.localstack.cloud:4510/localstack-lambda-container-image" \
@@ -253,7 +252,7 @@ Here's an explanation of each flag:
 To invoke the Lambda function, you can use the `invoke` command:
 
 ```bash
-awslocal lambda invoke --function-name localstack-lambda-container-image /tmp/lambda.out
+lstk aws lambda invoke --function-name localstack-lambda-container-image /tmp/lambda.out
 ```
 
 ```bash title="Output"

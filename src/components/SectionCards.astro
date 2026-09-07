@@ -7,9 +7,10 @@ interface Props {
   title?: string;
   customTitles?: Record<string, string>;
   useDirectFiles?: boolean;
+  excludeFiles?: string[];
 }
 
-const { basePath, title, customTitles = {}, useDirectFiles = false } = Astro.props;
+const { basePath, title, customTitles = {}, useDirectFiles = false, excludeFiles = [] } = Astro.props;
 
 // Get sections - either index files from subdirectories or direct files
 const allSections = await getCollection('docs', ({ id }) => {
@@ -49,14 +50,18 @@ const sortedSections = allSections.sort((a, b) => {
   return titleA.localeCompare(titleB);
 });
 
-const sectionData = sortedSections.map(section => {
+const sectionData = sortedSections.flatMap(section => {
   // Extract the key name from the section ID
   const relativePath = section.id.substring(basePath.length);
   const keyName = relativePath.split('/').filter(part => part !== '')[0];
-  
+
   // For direct files, we need to remove the file extension from the key
   const cleanKey = useDirectFiles ? keyName.replace(/\.(md|mdx)$/, '') : keyName;
-  
+
+  if (excludeFiles.includes(cleanKey)) {
+    return [];
+  }
+
   // Use custom title if provided, otherwise fall back to the section title
   const sectionTitle = customTitles[cleanKey] || section.data.title || section.data.linkTitle || 'Unknown Section';
   const description = section.data.description || `Learn more about ${sectionTitle}`;

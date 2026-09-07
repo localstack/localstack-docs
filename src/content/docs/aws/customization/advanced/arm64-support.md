@@ -12,7 +12,7 @@ This manifest contains links to a Linux AMD64 as well as a Linux ARM64 image.
 
 ## Pulling the LocalStack image
 
-With the multi-arch Docker manifest, your Docker client (and therefore [`lstk`](/aws/getting-started/installation/#lstk)) now automatically selects the image according to your platform:
+With the multi-arch Docker manifest, your Docker client (and therefore [`lstk`](/aws/developer-tools/running-localstack/lstk)) now automatically selects the image according to your platform:
 
 ```bash
 docker pull localstack/localstack

@@ -26,9 +26,9 @@ This sample app consists of a React frontend and a Spring Boot backend, integrat
 
 Make sure the following tools and dependencies are installed and configured on your local machine before proceeding:
 
-- **LocalStack** (preferably Team or Pro edition for advanced features)
+- **LocalStack for AWS**
 - **Terraform CLI**
-- **AWS CLI** with the [awslocal](https://docs.localstack.cloud/aws/connecting/aws-cli/#localstack-aws-cli-awslocal) wrapper for LocalStack
+- **AWS CLI** with the [`lstk aws`](https://docs.localstack.cloud/aws/connecting/aws-cli/#localstack-aws-cli-lstk-aws) command for LocalStack
 - **Maven 3.8.5+** and **Java 17** for Spring Boot backend
 - **Node.js** and **npm** for React frontend
 - **make** (optional, but recommended for simplified commands)
@@ -51,8 +51,7 @@ This command builds the Lambda validator JAR and installs frontend Node.js packa
 Start LocalStack in the background with your authorization token configured:
 
 ```
-localstack auth set-token <your-auth-token>
-localstack start -d
+lstk start
 ```
 
 Use the provided Makefile to deploy all infrastructure components:
@@ -115,7 +114,7 @@ This project illustrates:
 - Reactive messaging using SNS and SQS.
 - Seamless switching between AWS and LocalStack via Spring Profiles.
 - Integration testing using Testcontainers.
-- Using LocalStack CLI wrappers (`awslocal`, `tflocal`) for streamlined local development.
+- Using LocalStack's `lstk aws` and `lstk terraform` commands for streamlined local development.
 - Infrastructure as Code testing enabling consistent, repeatable environment setups.
 
 

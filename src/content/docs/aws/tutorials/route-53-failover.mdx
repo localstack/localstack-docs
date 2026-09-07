@@ -32,7 +32,7 @@ In this example, there's an active-primary and passive-standby configuration.
 Route53 routes traffic to the primary region, which processes product-related requests through API Gateway and Lambda functions, with data stored in DynamoDB.
 If the primary region fails, Route53 redirects to the standby region, maintained in sync by a replication Lambda function.
 
-For this particular example, we'll be using a [sample application repository](https://github.com/localstack-samples/samples-chaos-engineering/tree/main/route53-failover).
+For this particular example, we'll be using a [sample application repository](https://github.com/localstack-samples/sample-chaos-serverless-multi-region-failover).
 Clone the repository, and follow the instructions below to get started.
 
 ### Prerequisites
@@ -40,7 +40,7 @@ Clone the repository, and follow the instructions below to get started.
 The general prerequisites for this guide are:
 
 - LocalStack for AWS with [LocalStack Auth Token](/aws/getting-started/auth-token)
-- [AWS CLI](/aws/connecting/aws-cli) with the [`awslocal` wrapper](/aws/connecting/aws-cli#localstack-aws-cli-awslocal)
+- [AWS CLI](/aws/connecting/aws-cli) with the [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws) command
 - [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
 - [Python-3](https://www.python.org/downloads/)
 - `dig`
@@ -51,6 +51,12 @@ Ensure to set your Auth Token as an environment variable during this process.
 ```bash
 LOCALSTACK_AUTH_TOKEN=<YOUR_LOCALSTACK_AUTH_TOKEN>
 docker compose up
+```
+
+Given that you've started LocalStack via `docker-compose`, you'll need to configure the `lstk` CLI to contact your container:
+
+```bash
+export LSTK_ENDPOINT_URL=http://localhost.localstack.cloud:4566
 ```
 
 ### Architecture
@@ -80,14 +86,14 @@ Let's begin by setting up a hosted zone in Route53 named `hello-localstack.com` 
 
 ```bash
 HOSTED_ZONE_NAME=hello-localstack.com
-HOSTED_ZONE_ID=$(awslocal route53 create-hosted-zone --name $HOSTED_ZONE_NAME --caller-reference foo | jq -r .HostedZone.Id)
+HOSTED_ZONE_ID=$(lstk aws route53 create-hosted-zone --name $HOSTED_ZONE_NAME --caller-reference foo | jq -r .HostedZone.Id)
 ```
 
 Then, define the health check ID for the API Gateway available in the `us-west-1` region:
 
 ```bash
 HEALTH_CHECK_ID=$(
-awslocal route53 create-health-check \
+lstk aws route53 create-health-check \
 --caller-reference foobar \
 --health-check-config '{
     "FullyQualifiedDomainName": "12345.execute-api.localhost.localstack.cloud",
@@ -106,7 +112,7 @@ To update DNS records in the specified Route53 hosted zone (`$HOSTED_ZONE_ID`), 
 Set a TTL (Time to Live) of 60 seconds for these records.
 
 ```bash
-awslocal route53 change-resource-record-sets \
+lstk aws route53 change-resource-record-sets \
 --hosted-zone $HOSTED_ZONE_ID \
 --change-batch '{
     "Changes": [
@@ -142,7 +148,7 @@ The first record points to `12345.$HOSTED_ZONE_NAME` and is linked with the earl
 The second record points to `67890.$HOSTED_ZONE_NAME` and is set as the secondary failover target.
 
 ```bash
-awslocal route53 change-resource-record-sets \
+lstk aws route53 change-resource-record-sets \
 --hosted-zone-id $HOSTED_ZONE_ID \
 --change-batch '{
     "Changes": [

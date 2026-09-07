@@ -20,7 +20,7 @@ In particular, the setup consists of the following two steps.
 
 This guide assumes that you have the following tools installed.
 
-- LocalStack ([Install](/aws/getting-started/installation))
+- The `lstk` CLI ([Install](/aws/developer-tools/running-localstack/lstk/#installation))
 - Serverless ([Install](https://www.serverless.com/framework/docs/getting-started/))
 
 It also assumes that you already have a Serverless app set up consisting of a couple of Lambda functions and a `serverless.yml` file similar to the following.
@@ -134,7 +134,7 @@ You can now deploy your Serverless service to LocalStack.
 First, start LocalStack by running
 
 ```bash
-localstack start
+lstk start
 ```
 
 Then deploy the endpoint by running

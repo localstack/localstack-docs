@@ -28,8 +28,8 @@ In this tutorial, we will demonstrate how to provision and initialize an Amazon 
 For this tutorial, you will need:
 
 - [LocalStack for AWS](https://localstack.cloud/pricing/) with a valid auth token
-- [AWS CLI](https://docs.localstack.cloud/user-guide/integrations/aws-cli/) with the [`awslocal` wrapper](https://docs.localstack.cloud/user-guide/integrations/aws-cli/#localstack-aws-cli-awslocal)
-- [AWS CDK](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/) with the [`cdklocal`](https://www.npmjs.com/package/aws-cdk-local) wrapper
+- [AWS CLI](https://docs.localstack.cloud/user-guide/integrations/aws-cli/) with the [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws) command
+- [AWS CDK](https://docs.localstack.cloud/user-guide/integrations/aws-cdk/) with the [`lstk cdk`](/aws/connecting/infrastructure-as-code/aws-cdk#aws-cdk-cli-for-localstack) command
 - [Node.js](https://nodejs.org/en/download/) (version 16 or later)
 - [Docker](https://docker.io/)
 - MySQL or PostgreSQL client (for testing database connections)
@@ -79,8 +79,7 @@ make install
 Start LocalStack with your auth token:
 
 ```bash
-localstack auth set-token <your-auth-token>
-localstack start
+lstk start
 ```
 
 > **Note**: By default, LocalStack uses the MariaDB engine for RDS (see [RDS documentation](https://docs.localstack.cloud/user-guide/aws/rds/#mysql-engine)). To use the real MySQL engine in a separate Docker container, set the environment variable `RDS_MYSQL_DOCKER=1`.
@@ -92,7 +91,7 @@ Deploy the sample application using CDK:
 ```bash
 make deploy
 # or manually:
-cdklocal deploy
+lstk cdk deploy
 ```
 
 The deployment process will:
@@ -133,7 +132,7 @@ The deployed Lambda function `my-lambda-rds-query-helper` can execute SQL querie
 
 **For AWS CLI v1:**
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
   --function-name my-lambda-rds-query-helper \
   --payload '{"sqlQuery": "select Author from books", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
   output
@@ -141,7 +140,7 @@ awslocal lambda invoke \
 
 **For AWS CLI v2:**
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
   --cli-binary-format raw-in-base64-out \
   --function-name my-lambda-rds-query-helper \
   --payload '{"sqlQuery": "select Author from books", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
@@ -169,7 +168,7 @@ You can also run more detailed queries to explore the data:
 
 **Query all book details:**
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
   --cli-binary-format raw-in-base64-out \
   --function-name my-lambda-rds-query-helper \
   --payload '{"sqlQuery": "SELECT * FROM books LIMIT 5", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
@@ -182,7 +181,7 @@ Test various database operations to verify the initialization:
 
 **Check table structure:**
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
   --cli-binary-format raw-in-base64-out \
   --function-name my-lambda-rds-query-helper \
   --payload '{"sqlQuery": "DESCRIBE books", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
@@ -191,7 +190,7 @@ awslocal lambda invoke \
 
 **Count records:**
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
   --cli-binary-format raw-in-base64-out \
   --function-name my-lambda-rds-query-helper \
   --payload '{"sqlQuery": "SELECT COUNT(*) as total_books FROM books", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
@@ -200,7 +199,7 @@ awslocal lambda invoke \
 
 **Filter by author:**
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
   --cli-binary-format raw-in-base64-out \
   --function-name my-lambda-rds-query-helper \
   --payload '{"sqlQuery": "SELECT title, published_year FROM books WHERE author = \"George Orwell\"", "secretName":"/rdsinitexample/rds/creds/mysql-01"}' \
@@ -213,10 +212,10 @@ For more comprehensive testing, you can connect directly to the RDS instance usi
 
 ```bash
 # Get the database endpoint
-awslocal rds describe-db-instances --query 'DBInstances[0].Endpoint.Address' --output text
+lstk aws rds describe-db-instances --query 'DBInstances[0].Endpoint.Address' --output text
 
 # Get credentials from Secrets Manager
-awslocal secretsmanager get-secret-value --secret-id /rdsinitexample/rds/creds/mysql-01 --query SecretString --output text
+lstk aws secretsmanager get-secret-value --secret-id /rdsinitexample/rds/creds/mysql-01 --query SecretString --output text
 ```
 
 Connect using the MySQL command-line client:

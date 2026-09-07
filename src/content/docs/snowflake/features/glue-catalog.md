@@ -12,7 +12,7 @@ The Snowflake emulator can connect to this Glue Iceberg REST endpoint through a 
 
 ## Getting started
 
-This guide walks through creating an Iceberg table in S3 Tables through the Glue Iceberg REST endpoint, registering that table with the Snowflake emulator through a Glue catalog integration, and querying it with SQL. It assumes basic knowledge of the AWS CLI, our [`awslocal`](/aws/connecting/aws-cli/#localstack-aws-cli-awslocal) wrapper, and Snowflake.
+This guide walks through creating an Iceberg table in S3 Tables through the Glue Iceberg REST endpoint, registering that table with the Snowflake emulator through a Glue catalog integration, and querying it with SQL. It assumes basic knowledge of the AWS CLI, our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command, and Snowflake.
 
 In this guide, you will:
 
@@ -29,7 +29,7 @@ Start your Snowflake emulator and connect to it using an SQL client in order to 
 The Glue Iceberg REST endpoint serves tables stored in S3 Tables. Create a table bucket:
 
 ```bash
-awslocal s3tables create-table-bucket --name my-table-bucket
+lstk aws s3tables create-table-bucket --name my-table-bucket
 ```
 
 ```bash title="Output"
@@ -41,7 +41,7 @@ awslocal s3tables create-table-bucket --name my-table-bucket
 Now create a namespace to hold the Iceberg table:
 
 ```bash
-awslocal s3tables create-namespace \
+lstk aws s3tables create-namespace \
     --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
     --namespace my_namespace
 ```
@@ -60,7 +60,7 @@ awslocal s3tables create-namespace \
 Glue exposes S3 Tables buckets through a federated catalog. Register a catalog named `s3tablescatalog` that federates to all S3 Tables buckets in the account:
 
 ```bash showLineNumbers
-awslocal glue create-catalog \
+lstk aws glue create-catalog \
     --name s3tablescatalog \
     --catalog-input '{
         "FederatedCatalog": {
@@ -75,7 +75,7 @@ awslocal glue create-catalog \
 Confirm the catalog was registered:
 
 ```bash
-awslocal glue get-catalogs
+lstk aws glue get-catalogs
 ```
 
 The response includes a `CatalogList` entry with `Name: s3tablescatalog` and a `FederatedCatalog` block pointing at S3 Tables. Snowflake will reference this catalog through its `WAREHOUSE` identifier in the form `<account-id>:s3tablescatalog/<table-bucket-name>`.

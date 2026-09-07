@@ -19,7 +19,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 To create a new DocumentDB cluster we use the `create-db-cluster` command as follows:
 
 ```bash
-awslocal docdb create-db-cluster \
+lstk aws docdb create-db-cluster \
   --db-cluster-identifier test-docdb-cluster \
   --engine docdb
 ```
@@ -67,7 +67,7 @@ As we did not specify a `MasterUsername` or `MasterUserPassword` for the creatio
 To create a new database, we can use the `create-db-instance` command, like in this example:
 
 ```bash
-awslocal docdb create-db-instance \
+lstk aws docdb create-db-instance \
   --db-instance-identifier test-company \
   --db-instance-class db.r5.large \
   --engine docdb \
@@ -122,7 +122,7 @@ Some noticeable fields:
 To obtain detailed information about the cluster, we use the `describe-db-cluster` command:
 
 ```bash
-awslocal docdb describe-db-clusters \
+lstk aws docdb describe-db-clusters \
   --db-cluster-identifier test-docdb-cluster
 ```
 
@@ -227,7 +227,7 @@ We included a snippet at the very end.
 We assume you have a `MasterUsername` and `MasterUserPassword` set for DocDB e.g:
 
 ```bash
-awslocal docdb create-db-cluster \
+lstk aws docdb create-db-cluster \
   --db-cluster-identifier test-docdb \
    --engine docdb \
    --master-user-password S3cretPwd! \
@@ -306,10 +306,10 @@ Make sure you are inside `resources` directory and run:
 zip -r function.zip .
 ```
 
-Finally, we can create the `lambda` function using `awslocal`:
+Finally, we can create the `lambda` function using `lstk aws`:
 
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
   --function-name MyNodeLambda \
   --runtime nodejs16.x \
   --role arn:aws:iam::000000000000:role/lambda-role \
@@ -321,7 +321,7 @@ awslocal lambda create-function \
 You can invoke the lambda by calling:
 
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
   --function-name MyNodeLambda \
   outfile
 ```

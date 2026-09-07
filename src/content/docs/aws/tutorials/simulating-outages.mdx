@@ -25,11 +25,11 @@ Chaos API offers a means to deliberately introduce failures and observe their im
 In this tutorial we study the effects of outages on a sample AWS application.
 We use the Chaos API to simulate the outage and design a mitigation to make the application resilient against database outages.
 
-This tutorial is designed for users new to the Chaos API and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This tutorial is designed for users new to the Chaos API and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws) command.
 In this example, we will use the Chaos API to create controlled outages in a DynamoDB database.
 The aim is to test the software's behavior and error handling capabilities.
 
-For this particular example, we'll be using a [sample application repository](https://github.com/localstack-samples/samples-chaos-engineering/tree/master/chaos-api).
+For this particular example, we'll be using a [sample application repository](https://github.com/localstack-samples/sample-chaos-api-serverless).
 Clone the repository, and follow the instructions below to get started.
 
 ### Prerequisites
@@ -37,7 +37,7 @@ Clone the repository, and follow the instructions below to get started.
 The general prerequisites for this guide are:
 
 - LocalStack for AWS with [LocalStack Auth Token](/aws/getting-started/auth-token)
-- [AWS CLI](/aws/connecting/aws-cli) with the [`awslocal` wrapper](/aws/connecting/aws-cli#localstack-aws-cli-awslocal)
+- [AWS CLI](/aws/connecting/aws-cli) with the [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws) command
 - [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
 
 Start LocalStack by using the `docker-compose.yml` file from the repository.
@@ -47,6 +47,12 @@ The cloud resources will be automatically created upon the LocalStack start.
 ```bash
 LOCALSTACK_AUTH_TOKEN=<YOUR_LOCALSTACK_AUTH_TOKEN>
 docker compose up
+```
+
+Given that you've started LocalStack via `docker-compose`, you'll need to configure the `lstk` CLI to contact your container:
+
+```bash
+export LSTK_ENDPOINT_URL=http://localhost.localstack.cloud:4566
 ```
 
 ### Architecture
@@ -80,7 +86,7 @@ Product added/updated successfully.
 After ending the outage, confirm that previously failed items are stored successfully:
 
 ```bash
-awslocal dynamodb scan --table-name Products
+lstk aws dynamodb scan --table-name Products
 ```
 
 Expected output:
@@ -184,7 +190,7 @@ With the outage now ended, the Product that initially failed to reach the databa
 This can be confirmed by scanning the database.
 
 ```bash
-awslocal dynamodb scan --table-name Products
+lstk aws dynamodb scan --table-name Products
 ```
 
 ```bash title="Output"

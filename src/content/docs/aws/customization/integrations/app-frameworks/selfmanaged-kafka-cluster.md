@@ -22,7 +22,7 @@ docker-compose up -d
 2. Create the Lambda function:
 
 ```bash showshowLineNumbers
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name fun1 \
     --handler lambda.handler \
     --runtime python3.8 \
@@ -54,7 +54,7 @@ awslocal lambda create-function \
 3. Create an example secret:
 
 ```bash showshowLineNumbers
-awslocal secretsmanager create-secret --name localstack
+lstk aws secretsmanager create-secret --name localstack
 {
     "ARN": "arn:aws:secretsmanager:us-east-1:000000000000:secret:localstack-TDIuI",
     "Name": "localstack",
@@ -72,7 +72,7 @@ Created topic t1.
 5. Create the event source mapping to your local kafka cluster:
 
 ```bash showshowLineNumbers
-awslocal lambda create-event-source-mapping \
+lstk aws lambda create-event-source-mapping \
     --topics t1 \
     --source-access-configuration Type=SASL_SCRAM_512_AUTH,URI=arn:aws:secretsmanager:us-east-1:000000000000:secret:localstack-TDIuI \
     --function-name arn:aws:lambda:us-east-1:000000000000:function:fun1 \

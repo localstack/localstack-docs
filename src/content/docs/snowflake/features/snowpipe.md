@@ -18,10 +18,10 @@ In this guide, you will create a stage, and a pipe to load data from a local S3 
 
 ### Create an S3 bucket
 
-You can create a local S3 bucket using the `mb` command with the `awslocal` CLI.
+You can create a local S3 bucket using the `mb` command with `lstk aws`.
 
 ```bash
-awslocal s3 mb s3://test-bucket
+lstk aws s3 mb s3://test-bucket
 ```
 
 ### Create a stage
@@ -70,7 +70,7 @@ Retrieve the `notification_channel` value from the output of the `DESC PIPE` que
 You can use the [`PutBucketNotificationConfiguration`](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketNotificationConfiguration.html) API to create a bucket notification configuration that sends notifications to Snowflake when new files are uploaded to the S3 bucket.
 
 ```bash showLineNumbers
-awslocal s3api put-bucket-notification-configuration \
+lstk aws s3api put-bucket-notification-configuration \
     --bucket test-bucket \
     --notification-configuration file://notification.json
 ```
@@ -104,7 +104,7 @@ Copy a JSON file to the S3 bucket to trigger the pipe to load the data into the 
 Upload the file to the S3 bucket:
 
 ```bash
-awslocal s3 cp test.json s3://test-bucket/
+lstk aws s3 cp test.json s3://test-bucket/
 ```
 
 ### Check the data

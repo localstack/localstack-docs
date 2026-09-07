@@ -18,10 +18,6 @@ For IdP-specific setup instructions, see:
 - [SCIM with Okta](/aws/organizations-admin/sso/scim/okta/)
 - [SCIM with Microsoft Entra ID](/aws/organizations-admin/sso/scim/entra/)
 
-:::note
-License assignment via SCIM is currently supported with **Okta** only. Microsoft Entra ID supports user provisioning, deprovisioning, and role management, but not license assignment.
-:::
-
 ## Prerequisites
 
 - An active Enterprise subscription with the SCIM feature enabled
@@ -62,6 +58,8 @@ There are two ways roles and permissions are applied to SCIM-provisioned users:
   ![SCIM user role and permission settings](/images/aws/SCIM-permissions.png)
 
 - **Role assignment via SCIM role groups** - workspace roles (**admin** / **member**) can be assigned and changed directly from your IdP by syncing role groups. See **Role Management** for [Okta](/aws/organizations-admin/sso/scim/okta/#role-management) or [Microsoft Entra ID](/aws/organizations-admin/sso/scim/entra/#role-management).
+
+- **License assignment via SCIM license groups** - licenses for a subscription can be assigned and revoked directly from your IdP by syncing license groups. See **License Management** for [Okta](/aws/organizations-admin/sso/scim/okta/#license-management) or [Microsoft Entra ID](/aws/organizations-admin/sso/scim/entra/#license-management).
 
 Granular permissions beyond the workspace role (e.g. specific CI credential grants) are not individually assignable via SCIM - they are controlled by the provisioning-time presets above or managed directly in the LocalStack web app.
 

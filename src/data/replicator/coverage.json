@@ -1,5 +1,37 @@
 [
     {
+        "resource_type": "AWS::ApiGateway::RestApi",
+        "service": "apigateway",
+        "single": {
+            "policy_statements": [
+                "apigateway:GET"
+            ],
+            "identifier": "RestApiId"
+        },
+        "batch": {
+            "policy_statements": [
+                "apigateway:GET"
+            ],
+            "identifier": null
+        }
+    },
+    {
+        "resource_type": "AWS::ApiGatewayV2::Api",
+        "service": "apigatewayv2",
+        "single": {
+            "policy_statements": [
+                "apigateway:GET"
+            ],
+            "identifier": "ApiId"
+        },
+        "batch": {
+            "policy_statements": [
+                "apigateway:GET"
+            ],
+            "identifier": "Optional<json string filters for get_apis>"
+        }
+    },
+    {
         "resource_type": "AWS::DynamoDB::Table",
         "service": "dynamodb",
         "single": {
@@ -150,6 +182,34 @@
                 "kms:ListResourceTags"
             ],
             "identifier": "KeyId"
+        }
+    },
+    {
+        "resource_type": "AWS::Kinesis::Stream",
+        "service": "kinesis",
+        "single": {
+            "policy_statements": [
+                "kinesis:DescribeStreamSummary",
+                "kinesis:ListTagsForResource"
+            ],
+            "identifier": "StreamName"
+        },
+        "batch": {
+            "policy_statements": [
+                "kinesis:ListStreams",
+                "kinesis:DescribeStreamSummary",
+                "kinesis:ListTagsForResource"
+            ],
+            "identifier": null
+        },
+        "resource_tree": {
+            "resources": [
+                "AWS::KMS::Key"
+            ],
+            "extra_policy_statements": [
+                "kms:DescribeKey",
+                "kms:ListResourceTags"
+            ]
         }
     },
     {
@@ -397,6 +457,39 @@
                 "cloudformation:GetResource"
             ],
             "identifier": "TopicArn"
+        }
+    },
+    {
+        "resource_type": "AWS::SQS::Queue",
+        "service": "sqs",
+        "single": {
+            "policy_statements": [
+                "sqs:GetQueueUrl",
+                "sqs:GetQueueAttributes",
+                "sqs:ListQueueTags"
+            ],
+            "identifier": "QueueUrl"
+        },
+        "batch": {
+            "policy_statements": [
+                "sqs:ListQueues",
+                "sqs:GetQueueAttributes",
+                "sqs:ListQueueTags"
+            ],
+            "identifier": "Optional queue name prefix filter (ListQueues QueueNamePrefix)"
+        },
+        "resource_tree": {
+            "resources": [
+                "AWS::KMS::Key",
+                "AWS::SQS::Queue"
+            ],
+            "extra_policy_statements": [
+                "kms:DescribeKey",
+                "kms:ListResourceTags",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+                "sqs:ListQueueTags"
+            ]
         }
     },
     {

@@ -142,7 +142,7 @@ To create the Lambda function, you just need to take care of two things:
 So, using the AWS example, this would be:
 
 ```bash
-awslocal lambda create-function --function-name my-cool-local-function \
+lstk aws lambda create-function --function-name my-cool-local-function \
     --code S3Bucket="hot-reload",S3Key="/tmp/aws-doc-sdk-examples/python/example_code/lambda" \
     --handler lambda_handler_basic.lambda_handler \
     --runtime python3.8 \
@@ -153,23 +153,12 @@ You can also check out some of our [Deployment Configuration Examples](#deployme
 
 We can also quickly make sure that it works by invoking it with a simple payload:
 
-<Tabs>
-<TabItem label="AWS CLI v1">
 ```bash
-awslocal lambda invoke --function-name my-cool-local-function \
-    --payload '{"action": "increment", "number": 3}' \
-    output.txt
-```
-</TabItem>
-<TabItem label="AWS CLI v2">
-```bash
-awslocal lambda invoke --function-name my-cool-local-function \
+lstk aws lambda invoke --function-name my-cool-local-function \
     --cli-binary-format raw-in-base64-out \
     --payload '{"action": "increment", "number": 3}' \
     output.txt
 ```
-</TabItem>
-</Tabs>
 
 The invocation returns itself returns:
 
@@ -332,10 +321,10 @@ To create the Lambda function, you need to take care of two things:
 * Set the S3 key to the path of the directory your lambda function resides in.
   The handler is then referenced by the filename of your lambda code and the function in that code that needs to be invoked.
 
-Create the Lambda Function using the `awslocal` CLI:
+Create the Lambda Function using `lstk aws`:
 
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name hello-world \
     --runtime "nodejs16.x" \
     --role arn:aws:iam::123456789012:role/lambda-ex \
@@ -345,25 +334,13 @@ awslocal lambda create-function \
 
 You can quickly make sure that it works by invoking it with a simple payload:
 
-<Tabs>
-<TabItem label="AWS CLI v1">
 ```bash
-awslocal lambda invoke \
-    --function-name hello-world \
-    --payload '{"action": "test"}' \
-    output.txt
-```
-</TabItem>
-<TabItem label="AWS CLI v2">
-```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
     --function-name hello-world \
     --cli-binary-format raw-in-base64-out \
     --payload '{"action": "test"}' \
     output.txt
 ```
-</TabItem>
-</Tabs>
 
 The invocation returns itself returns:
 
@@ -422,10 +399,10 @@ This is enabled using the [`nodemon-webpack-plugin`](https://www.npmjs.com/packa
 
 ##### Creating the Lambda Function with Webpack
 
-You can now create the Lambda function using the `awslocal` CLI:
+You can now create the Lambda function using `lstk aws`:
 
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name localstack-example \
     --runtime nodejs18.x \
     --role arn:aws:iam::000000000000:role/lambda-ex \
@@ -436,7 +413,7 @@ awslocal lambda create-function \
 Additionally, you can create a Lambda Function URL with the following command:
 
 ```bash
-function_url=$(awslocal lambda create-function-url-config \
+function_url=$(lstk aws lambda create-function-url-config \
     --function-name localstack-example \
     --auth-type NONE | jq -r '.FunctionUrl')
 ```
@@ -629,8 +606,8 @@ LAMBDA_MOUNT_CWD=$(pwd)/build/hot serverless deploy --stage local
 <TabItem label="AWS Cloud Development Kit (CDK)">
 ```bash
 STAGE=local && LAMBDA_MOUNT_CWD=$(pwd)/build/hot &&
-  cdklocal bootstrap aws://000000000000/$(AWS_REGION) && \
-  cdklocal deploy
+  lstk cdk bootstrap aws://000000000000/$(AWS_REGION) && \
+  lstk cdk deploy
 ```
 </TabItem>
 <TabItem label="Terraform">
@@ -686,7 +663,7 @@ Please note that this environment variable name is arbitrary - you can use any y
 You can then deploy a hot-reloading function with the following command:
 
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
   --function-name test-function \
   --code S3Bucket=hot-reload,S3Key='$HOST_LAMBDA_DIR/src' \
   --handler handler.handler \

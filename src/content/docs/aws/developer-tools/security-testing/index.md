@@ -13,3 +13,4 @@ LocalStack supports the following security testing features:
 - Enforce IAM policies to simulate realistic permission boundaries in your application
 - Retrieve Policy engine logs for debugging and understanding how policies are evaluated
 - Apply IAM policy streams to discover required permissions and resolve access issues efficiently
+- Simulate IAM policies, including Service Control Policies, to check access decisions before making live requests

@@ -42,7 +42,7 @@ This guide describes how to use the AWS Toolkit for VS Code to debug Lambda func
 
 ### Prerequisites
 
-* Upgrade to LocalStack v4.8 (or higher) for both your LocalStack CLI and your LocalStack Docker image.
+* Install the [`lstk` CLI](/aws/developer-tools/running-localstack/lstk)
 * [VS Code](https://code.visualstudio.com/) (>= v1.83.0)
 * [AWS Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode) (>= v3.74)
 * [LocalStack Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=LocalStack.localstack) (>= v1.2.0)
@@ -196,10 +196,19 @@ necessary tools and flexibility to troubleshoot effectively.
 
 To enable Lambda Debug Mode, set the `LAMBDA_DEBUG_MODE` environment variable as shown below:
 
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["lambda-debug"]
+
+[env.lambda-debug]
+LAMBDA_DEBUG_MODE = "1"
+LAMBDA_DOCKER_FLAGS = "-p 19891:19891"
+```
+
 ```bash
-LAMBDA_DEBUG_MODE=1 \
-LAMBDA_DOCKER_FLAGS='-p 19891:19891' \
-localstack start
+lstk start
 ```
 
 When enabled, Lambda Debug Mode automatically adjusts timeouts to accommodate debugging needs:
@@ -217,11 +226,21 @@ Manually setting `LAMBDA_DOCKER_FLAGS` is unnecessary when using this configurat
 Here is an example of mounting a `debug_config.yaml` in your LocalStack container to start your Debug Mode:
 
 <Tabs>
-<TabItem label="LocalStack CLI">
+<TabItem label="lstk">
+```toml
+# .lstk/config.toml
+[[containers]]
+type    = "aws"
+env     = ["lambda-debug-advanced"]
+volumes = ["/path/to/debug-config.yaml:/tmp/lambda_debug_mode_config.yaml"]
+
+[env.lambda-debug-advanced]
+LAMBDA_DEBUG_MODE = "1"
+LAMBDA_DEBUG_MODE_CONFIG_PATH = "/tmp/debug_config.yaml"
+```
+
 ```bash
-LOCALSTACK_LAMBDA_DEBUG_MODE=1 \
-LOCALSTACK_LAMBDA_DEBUG_MODE_CONFIG_PATH=/tmp/debug_config.yaml \
-localstack start --volume /path/to/debug-config.yaml:/tmp/lambda_debug_mode_config.yaml
+lstk start
 ```
 </TabItem>
 <TabItem label="Docker Compose">
@@ -338,8 +357,18 @@ to [iterate quickly over your function code](/aws/developer-tools/lambda-tools/h
 
 First, make sure that LocalStack is started with the following configuration (see the [Configuration docs](/aws/customization/configuration-options#lambda) for more information):
 
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["lambda-debug"]
+
+[env.lambda-debug]
+LAMBDA_DOCKER_FLAGS = "-p 19891:19891"
+```
+
 ```bash
-LAMBDA_DOCKER_FLAGS='-p 19891:19891' localstack start
+lstk start
 ```
 
 #### Preparing your code
@@ -479,7 +508,7 @@ To create the Lambda function, you just need to take care of two things:
 Using the AWS CLI, this would be:
 
 ```bash
-awslocal lambda create-function --function-name my-cool-local-function \
+lstk aws lambda create-function --function-name my-cool-local-function \
     --code S3Bucket="hot-reload",S3Key="$(pwd)/" \
     --handler handler.handler \
     --runtime python3.13 \
@@ -489,23 +518,12 @@ awslocal lambda create-function --function-name my-cool-local-function \
 
 We can quickly verify that it works by invoking it with a simple payload:
 
-<Tabs>
-<TabItem label="AWS CLI v1">
 ```bash
-awslocal lambda invoke --function-name my-cool-local-function \
-    --payload '{"message": "Hello from LocalStack!"}' \
-    output.txt
-```
-</TabItem>
-<TabItem label="AWS CLI v2">
-```bash
-awslocal lambda invoke --function-name my-cool-local-function \
+lstk aws lambda invoke --function-name my-cool-local-function \
     --cli-binary-format raw-in-base64-out \
     --payload '{"message": "Hello from LocalStack!"}' \
     output.txt
 ```
-</TabItem>
-</Tabs>
 
 ### Debugging JVM Lambda functions
 
@@ -527,7 +545,7 @@ services:
 When creating your Lambda function, set the `_JAVA_OPTIONS` environment variable like so:
 
 ```bash
-awslocal lambda create-function --function-name debugfunc \
+lstk aws lambda create-function --function-name debugfunc \
     --zip-file fileb://java-handler.zip \
     --handler myindex.handler \
     --runtime java8.al2 \
@@ -688,7 +706,7 @@ exports.handler = async (event) => {
 Create the lambda function using:
 
 ```bash
-awslocal lambda create-function --function-name func1 \
+lstk aws lambda create-function --function-name func1 \
     --code S3Bucket="hot-reload",S3Key="$(pwd)/" \
     --handler myindex.handler \
     --runtime nodejs14.x \
@@ -700,23 +718,12 @@ Now to debug your lambda function, click on the `Debug` icon with
 `Attach to Remote Node.js` configuration selected, and then invoke your
 lambda function:
 
-<Tabs>
-<TabItem label="AWS CLI v1">
 ```bash
-awslocal lambda invoke --function-name func1 \
-    --payload '{"hello":"world"}' \
-    output.txt
-```
-</TabItem>
-<TabItem label="AWS CLI v2">
-```bash
-awslocal lambda invoke --function-name func1 \
+lstk aws lambda invoke --function-name func1 \
     --cli-binary-format raw-in-base64-out \
     --payload '{"hello":"world"}' \
     output.txt
 ```
-</TabItem>
-</Tabs>
 
 
 ## Examples

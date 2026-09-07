@@ -37,7 +37,6 @@ Here, administrators can configure and manage:
 - User and license management
 - Authentication tokens
 - Subscriptions and billing
-- Legacy CI/API keys (if applicable)
 
 These options are available under the **Administration** section.
 

@@ -6,8 +6,6 @@ sidebar:
     order: 3
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
-
 ## Introduction
 
 LocalStack provides local cloud services, such as [OpenSearch](/aws/services/opensearch) or [Elasticsearch](/aws/services/es), which might utilize external software bound to specific ports.
@@ -41,17 +39,8 @@ By adjusting these environment variables, you can customize the port range accor
 
 If you wish to run multiple instances of LocalStack simultaneously, it is essential to ensure that the edge port (default: `4566`) and external service ports are mapped to non-overlapping ranges.
 
-Here's how you can achieve this using when either using the CLI or docker-compose to start your LocalStack instances:
+Here's how you can achieve this using docker-compose to start your LocalStack instances:
 
-<Tabs>
-  <TabItem label="LocalStack CLI">
-```bash
-GATEWAY_LISTEN=0.0.0.0:4566 EXTERNAL_SERVICE_PORTS_START=4510 EXTERNAL_SERVICE_PORTS_END=4559 MAIN_CONTAINER_NAME=localstack-main-1 localstack start
-GATEWAY_LISTEN=0.0.0.0:4666 EXTERNAL_SERVICE_PORTS_START=4610 EXTERNAL_SERVICE_PORTS_END=4659 MAIN_CONTAINER_NAME=localstack-main-2 localstack start
-GATEWAY_LISTEN=0.0.0.0:4766 EXTERNAL_SERVICE_PORTS_START=4710 EXTERNAL_SERVICE_PORTS_END=4759 MAIN_CONTAINER_NAME=localstack-main-3 localstack start
-```
-  </TabItem>
-  <TabItem label="docker-compose">
 ```yaml showshowLineNumbers
 services:
   localstack-main-1:
@@ -99,9 +88,7 @@ services:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
 ```
-  </TabItem>
-</Tabs>
 
 By customizing the `GATEWAY_LISTEN` and `EXTERNAL_SERVICE_PORTS_START`/`EXTERNAL_SERVICE_PORTS_END` values for each instance, you can ensure that they operate on distinct port ranges, preventing any conflicts and enabling smooth execution of multiple LocalStack instances.
-Please make sure to set `MAIN_CONTAINER_NAME` for following usages of the LocalStack CLI to specify which instance of LocalStack you want to address with the specific CLI command.
+Each instance is given a distinct `MAIN_CONTAINER_NAME` so that it can be addressed individually.
 

@@ -3,94 +3,55 @@ title: CircleCI
 description: Use LocalStack in CircleCI.
 template: doc
 sidebar:
-    order: 2
+    order: 3
 ---
 
 ## Introduction
 
 [CircleCI](https://circleci.com) is a continuous integration and continuous delivery (CI/CD) platform which uses a configuration file (usually named `.circleci/config.yml`) to define the build, test, and deployment workflows.
-This guide shows how to run LocalStack in CircleCI using the LocalStack Docker image and the LocalStack CLI.
+This guide shows how to run LocalStack in CircleCI using the [`lstk` CLI](/aws/developer-tools/running-localstack/lstk/).
 
 ## Snippets
 
 ### Start up LocalStack
 
-#### Default
-
 ```yaml showshowLineNumbers
 version: '2.1'
-orbs:
-  python: circleci/python@4.0.0
 jobs:
   localstack-test:
     machine:
       image: ubuntu-2204:current
     steps:
       - checkout
+      # LOCALSTACK_AUTH_TOKEN comes from the project's environment variables
       - run:
-          name: Install LocalStack CLI and awslocal
-          command: |
-            python3 -m pip install --user --upgrade pip
-            python3 -m pip install --user localstack awscli-local[ver1]
-            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
+          name: Install lstk
+          command: npm install -g @localstack/lstk
+      - run:
+          name: Configure the AWS profile
+          command: lstk setup aws
       - run:
           name: Start LocalStack
-          command: |
-            source "$BASH_ENV"
-            docker pull localstack/localstack:latest
-            localstack start -d
-            localstack wait -t 60
+          command: lstk start
       - run:
           name: Test LocalStack
           command: |
-            awslocal s3 mb s3://test-bucket
-            awslocal s3 ls
+            lstk aws s3 mb s3://test-bucket
+            lstk aws s3 ls
 workflows:
   localstack-test:
     jobs:
       - localstack-test
 ```
 
-#### Async
-
-```yaml showshowLineNumbers
-version: '2.1'
-orbs:
-  python: circleci/python@4.0.0
-jobs:
-  localstack-test:
-    machine:
-      image: ubuntu-2204:current
-    steps:
-      - checkout
-      - run:
-          name: Install LocalStack CLI and awslocal
-          command: |
-            python3 -m pip install --user --upgrade pip
-            python3 -m pip install --user localstack awscli-local[ver1]
-            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
-      - run:
-          name: Start LocalStack in background
-          command: |
-            source "$BASH_ENV"
-            docker pull localstack/localstack:latest
-            localstack start -d
-      - run:
-          name: Execute setup and tests
-          command: |
-            source "$BASH_ENV"
-            localstack wait -t 60
-            awslocal sqs create-queue --queue-name test-queue
-            awslocal sqs list-queues
-workflows:
-  localstack-test:
-    jobs:
-      - localstack-test
-```
+`lstk start` pulls the image, validates your license, and returns only once the emulator is ready, so no separate wait step is needed.
+`lstk aws` proxies the `aws` binary with LocalStack's endpoint and credentials applied, so the AWS CLI must be available on the runner; add an install step if your image does not provide it.
+`lstk setup aws` writes a `localstack` AWS profile for that binary to use. It is optional, but without it `lstk` notes on every call that no profile was found.
 
 ### Configuration
 
 To configure LocalStack use the `environment` key on the job level or a shell command, where the latter takes higher precedence.
+`lstk start` forwards host environment variables prefixed with `LOCALSTACK_` into the container, which strips the prefix, so set `LOCALSTACK_DEBUG` to control the container's `DEBUG` option.
 
 Read more about the [configuration options](/aws/customization/configuration-options) of LocalStack.
 
@@ -103,11 +64,11 @@ jobs:
     machine:
       image: ubuntu-2204:current
     environment:
-      DEBUG: 1
-      LS_LOG: trace
+      LOCALSTACK_DEBUG: "1"
+      LOCALSTACK_LS_LOG: "trace"
     steps:
       ...
-      - run: localstack start -d
+      - run: lstk start
 ...
 ```
 
@@ -123,15 +84,15 @@ jobs:
       - run:
           name: Configure LocalStack
           command: |
-            echo 'export DEBUG=1' >> "$BASH_ENV"
-            echo 'export LS_LOG=trace' >> "$BASH_ENV"
+            echo 'export LOCALSTACK_DEBUG=1' >> "$BASH_ENV"
+            echo 'export LOCALSTACK_LS_LOG=trace' >> "$BASH_ENV"
 ...
 ```
 
 ### Configuring a CI Auth Token
 
 To enable LocalStack for AWS, you need to add your LocalStack CI Auth Token to the project's environment variables.
-The LocalStack container will automatically pick it up and activate the licensed features.
+`lstk` will automatically pick it up and activate the licensed features.
 
 Go to the [CI Auth Token page](https://app.localstack.cloud/workspace/auth-tokens) and copy your CI Auth Token.
 To add the CI Auth Token to your CircleCI project, follow these steps:
@@ -143,38 +104,6 @@ To add the CI Auth Token to your CircleCI project, follow these steps:
 - Paste your CI Auth Token into the input field.
 
 After adding the variable, CircleCI injects `LOCALSTACK_AUTH_TOKEN` into your job environment.
-
-```yaml showshowLineNumbers
-version: '2.1'
-orbs:
-  python: circleci/python@4.0.0
-jobs:
-  localstack-test:
-    machine:
-      image: ubuntu-2204:current
-    steps:
-      - checkout
-      - run:
-          name: Install LocalStack CLI and awslocal
-          command: |
-            python3 -m pip install --user --upgrade pip
-            python3 -m pip install --user localstack awscli-local[ver1]
-            echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
-      - run:
-          name: Start LocalStack
-          command: |
-            source "$BASH_ENV"
-            docker pull localstack/localstack:latest
-            localstack start -d
-            localstack wait -t 60
-      - run:
-          name: Verify LocalStack setup
-          command: localstack logs | rg "activated|auth token|ready"
-workflows:
-  localstack-test:
-    jobs:
-      - localstack-test
-```
 
 ### Dump LocalStack logs
 
@@ -188,7 +117,8 @@ jobs:
 ...
       - run:
           name: Dump LocalStack logs
-          command: localstack logs | tee localstack.log
+          when: always
+          command: lstk logs --verbose | tee localstack.log
       - store_artifacts:
           path: localstack.log
           name: localstack-logs
@@ -222,21 +152,18 @@ jobs:
       image: ubuntu-2204:current
 
     steps:
-      - run: python3 -m pip install localstack awscli-local[ver1]
-      - run: |
-          docker pull localstack/localstack:latest
-          localstack start -d
-          localstack wait -t 60
+      - run: npm install -g @localstack/lstk
+      - run: lstk start
       ...
       - run:
           name: Load state if exists
-          command: localstack pod load <POD_NAME> || true
+          command: lstk load pod:<POD_NAME> || true
       ...
       # Deploy infrastructure changes
       ...
       - run:
           name: Save Cloud Pod
-          command: localstack pod save <POD_NAME>
+          command: lstk save pod:<POD_NAME>
 
 
 workflows:
@@ -255,15 +182,12 @@ jobs:
       image: ubuntu-2204:current
 
     steps:
-      - run: python3 -m pip install localstack awscli-local[ver1]
-      - run: |
-          docker pull localstack/localstack:latest
-          localstack start -d
-          localstack wait -t 60
+      - run: npm install -g @localstack/lstk
+      - run: lstk start
       ...
       - run:
           name: Load Cloud Pod
-          command: localstack pod load <POD_NAME>
+          command: lstk load pod:<POD_NAME>
       ...
       # Run some tests
 
@@ -302,21 +226,18 @@ jobs:
       image: ubuntu-2204:current
 
     steps:
-      - run: python3 -m pip install localstack awscli-local[ver1]
-      - run: |
-          docker pull localstack/localstack:latest
-          localstack start -d
-          localstack wait -t 60
+      - run: npm install -g @localstack/lstk
+      - run: lstk start
       ...
       - run:
           name: Load Cloud Pod
-          command: localstack pod load <POD_NAME> || true
+          command: lstk load pod:<POD_NAME> || true
       ...
       # Deploy infrastructure
       ...
       - run:
           name: Save Cloud Pod
-          command: localstack pod save <POD_NAME>
+          command: lstk save pod:<POD_NAME>
       - run:
           name: Trigger other workflows
           # Replace placeholders with right values
@@ -333,15 +254,12 @@ jobs:
       image: ubuntu-2204:current
 
     steps:
-      - run: python3 -m pip install localstack awscli-local[ver1]
-      - run: |
-          docker pull localstack/localstack:latest
-          localstack start -d
-          localstack wait -t 60
+      - run: npm install -g @localstack/lstk
+      - run: lstk start
       ...
       - run:
           name: Load state if exists
-          command: localstack pod load <POD_NAME> || true
+          command: lstk load pod:<POD_NAME> || true
       ...
 
 
@@ -362,110 +280,6 @@ workflows:
       ...
 ```
 
-#### Ephemeral Instance (Preview)
-
-Find out more about [Ephemeral Instances](/aws/developer-tools/cloud-sandbox/ephemeral-instances).
-
-##### Same job
-
-```yaml showshowLineNumbers
-...
-jobs:
-  do-work:
-    machine:
-      image: ubuntu-2204:current
-    steps:
-      - run:
-          name: Create Ephemeral Instance
-          command: |
-            response=$(curl -X POST \
-              -H "ls-api-key: $LOCALSTACK_AUTH_TOKEN" \
-              -H "authorization: token $LOCALSTACK_AUTH_TOKEN" \
-              -H "content-type: application/json" \
-              -d '{"auto_load_pod":"false"}' \
-              https://api.localstack.cloud/v1/previews/my-circleci-state)
-            endpoint_url=$(echo "$response" | jq -r '.endpointUrl')
-            if [ -z "$endpoint_url" ] || [ "$endpoint_url" = "null" ]; then
-              echo "Unable to create preview environment. API response: $response"
-              exit 1
-            fi
-            echo "export AWS_ENDPOINT_URL=$endpoint_url" >> "$BASH_ENV"
-      - run:
-        name: Output the ephemeral instance address
-        command: echo "$AWS_ENDPOINT_URL"
-...
-workflows:
-  use-ephemeral-instance:
-    jobs:
-      - do-work
-...
-```
-
-##### Multiple jobs
-
-```yaml showshowLineNumbers
-...
-jobs:
-  setup-instance:
-    machine:
-      image: ubuntu-2204:current
-    steps:
-      - run:
-          name: Create Ephemeral Instance
-          command: |
-            response=$(curl -X POST \
-              -H "ls-api-key: $LOCALSTACK_AUTH_TOKEN" \
-              -H "authorization: token $LOCALSTACK_AUTH_TOKEN" \
-              -H "content-type: application/json" \
-              -d '{"auto_load_pod":"false"}' \
-              https://api.localstack.cloud/v1/previews/my-circleci-state)
-            endpoint_url=$(echo "$response" | jq -r '.endpointUrl')
-            if [ -z "$endpoint_url" ] || [ "$endpoint_url" = "null" ]; then
-              echo "Unable to create preview environment. API response: $response"
-              exit 1
-            fi
-            echo "export AWS_ENDPOINT_URL=$endpoint_url" >> ls-env-vars
-      - run:
-        name: Persist AWS Endpoint URL
-        command: cat ls-env-vars
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ls-env-vars
-
-  run-test:
-    machine:
-      image: ubuntu-2204:current
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-        name: Set up LS env variables
-        command: cat ./ls-env-vars >> $BASH_ENV
-      - run:
-        name: Output the ephemeral instance address
-        command: echo "$AWS_ENDPOINT_URL"
-...
-      # Run any logic against the Ephemeral Instance,
-      # then stop when not needed anymore
-      - run:
-          name: Stop Ephemeral Instance
-          command: |
-            # Replace <PREVIEW_ID> with the id returned by the API in setup-instance.
-            curl -X DELETE \
-              -H "ls-api-key: $LOCALSTACK_AUTH_TOKEN" \
-              -H "authorization: token $LOCALSTACK_AUTH_TOKEN" \
-              https://api.localstack.cloud/v1/previews/<PREVIEW_ID>
-
-...
-workflows:
-  use-ephemeral-instance:
-    jobs:
-      - setup-instance
-      - run-test
-...
-```
-
 #### Workspace
 
 This strategy persist LocalStack's state between jobs for the current workflow.
@@ -477,41 +291,37 @@ jobs:
     machine:
       image: ubuntu-2204:current
     steps:
-      - run: python3 -m pip install localstack awscli-local[ver1]
-      - run: |
-          docker pull localstack/localstack:latest
-          localstack start -d
-          localstack wait -t 60
+      - run: npm install -g @localstack/lstk
+      - run: lstk start
       ...
       # LocalStack already running and deployed infrastructure
       - run:
-          name: Export state
-          command: localstack state export ls-state.zip
+          name: Save a snapshot
+          command: lstk save ./ls-state.snapshot
       - persist_to_workspace:
-        paths:
-          - ls-state.zip
+          paths:
+            - ls-state.snapshot
       # Store state as artifact for local debugging
-      - store_artifact:
-          key: ls-state
-          paths: ls-state.zip
+      - store_artifacts:
+          path: ls-state.snapshot
+          name: ls-state
 ...
   localstack-load-state:
     machine:
       image: ubuntu-2204:current
     steps:
-      - run: python3 -m pip install localstack awscli-local[ver1]
-      - run: |
-          docker pull localstack/localstack:latest
-          localstack start -d
-          localstack wait -t 60
+      - run: npm install -g @localstack/lstk
+      - run: lstk start
       ...
       # LocalStack already running
       - attach_workspace:
           at: .
       - run:
-          name: Import state
+          name: Load the snapshot
           command: |
-            test -f ls-state.zip && localstack state import ls-state.zip
+            if [ -f ls-state.snapshot ]; then
+              lstk load ./ls-state.snapshot --merge=overwrite
+            fi
 ...
   workflows:
   localstack-build:
@@ -520,7 +330,7 @@ jobs:
       - localstack-load-state
 ```
 
-More information about Localstack's [state import/export](/aws/developer-tools/snapshots/export-import-state).
+More information about Localstack's [snapshots](/aws/developer-tools/snapshots/saving-snapshots-locally).
 
 #### Cache
 
@@ -534,11 +344,8 @@ jobs:
     machine:
       image: ubuntu-2204:current
     steps:
-      - run: python3 -m pip install localstack awscli-local[ver1]
-      - run: |
-          docker pull localstack/localstack:latest
-          localstack start -d
-          localstack wait -t 60
+      - run: npm install -g @localstack/lstk
+      - run: lstk start
       ...
       # LocalStack already running
       # Let's restore previous workflow run's LocalStack state
@@ -546,34 +353,37 @@ jobs:
           # Use latest "ls-state" prefixed cache
           key: ls-state-
       - run:
-          name: Import state
-          command: test -f ls-state.zip && localstack state import ls-state.zip
+          name: Load the snapshot
+          command: |
+            if [ -f ls-state.snapshot ]; then
+              lstk load ./ls-state.snapshot --merge=overwrite
+            fi
       ...
       # Infrastructure had been updated
       # Let's update cached LocalStack state
       - run:
-          name: Export state
-          command: localstack state export ls-state.zip
+          name: Save a snapshot
+          command: lstk save ./ls-state.snapshot
       - save_cache:
-          key: ls-state-{{checksum ls-state.zip}}
-          paths: ls-state.zip
+          key: ls-state-{{checksum ls-state.snapshot}}
+          paths: ls-state.snapshot
   ...
   localstack-do-work:
     machine:
       image: ubuntu-2204:current
     steps:
-      - run: python3 -m pip install localstack awscli-local[ver1]
-      - run: |
-          docker pull localstack/localstack:latest
-          localstack start -d
-          localstack wait -t 60
+      - run: npm install -g @localstack/lstk
+      - run: lstk start
       # LocalStack already running
       - restore_cache:
           # Use latest "ls-state" prefixed cache
           key: ls-state-
       - run:
-          name: Import state
-          command: test -f ls-state.zip && localstack state import ls-state.zip
+          name: Load the snapshot
+          command: |
+            if [ -f ls-state.snapshot ]; then
+              lstk load ./ls-state.snapshot --merge=overwrite
+            fi
       ...
 
 
@@ -586,4 +396,4 @@ workflows:
       ...
 ```
 
-More information about [state management](/aws/developer-tools/snapshots/export-import-state).
+More information about [snapshots](/aws/developer-tools/snapshots/saving-snapshots-locally).

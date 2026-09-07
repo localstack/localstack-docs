@@ -38,7 +38,7 @@ Additionally, we will demonstrate how to set up ELB endpoints to efficiently for
 - LocalStack for AWS
 - [Serverless framework](https://www.serverless.com/framework/docs/getting-started/)
 - [Node.js & `npm`](https://nodejs.org/en/download/)
-- [awslocal](https://github.com/localstack/awscli-local)
+- [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws)
 - [curl](https://curl.se/) and [jq](https://jqlang.github.io/jq/)
 
 ## Architecture
@@ -306,7 +306,7 @@ Now that we have completed the initial setup, let's run LocalStack's AWS emulati
 Start LocalStack by running the following command:
 
 ```bash
-LOCALSTACK_AUTH_TOKEN=<your-auth-token> localstack start -d
+lstk start
 ```
 
 This command launches LocalStack in the background, enabling you to use the AWS services locally. Now, let's deploy our Serverless project and verify the resources created in LocalStack.
@@ -344,7 +344,7 @@ This output confirms the successful deployment of your Serverless service to the
 You can run the following command to verify that the functions and the load balancers have been deployed:
 
 ```bash showLineNumbers
-awslocal lambda list-functions
+lstk aws lambda list-functions
 {
     "Functions": [
         {
@@ -366,7 +366,7 @@ awslocal lambda list-functions
     ]
 }
 
-awslocal elbv2 describe-load-balancers
+lstk aws elbv2 describe-load-balancers
 {
     "LoadBalancers": [
         {
@@ -391,7 +391,7 @@ The ALB endpoints for the two Lambda functions, hello1 and hello2, are accessibl
 
 Here in the testing phase we will test endpoints, do a validation check which includes health check and error handling. To test these endpoints, you can use the curl command along with the jq tool for better formatting.
 
-1. **Verify Deployment:** Use the commands `awslocal lambda list-functions` and `awslocal elbv2 describe-load-balancers` respectively to confirm the existince of Lambda and ALB respectively
+1. **Verify Deployment:** Use the commands `lstk aws lambda list-functions` and `lstk aws elbv2 describe-load-balancers` respectively to confirm the existince of Lambda and ALB respectively
 2. **Test Endpoints:** Run the following commands:
 
 ```bash
@@ -404,7 +404,7 @@ Both commands send an HTTP GET request to the endpoints and uses `jq` to format 
 
 3. **Health Checks:** Describe target health:
 ```bash
-awslocal elbv2 describe-target-health --target-group-arn $(awslocal elbv2 describe-target-groups --load-balancer-arn $(awslocal elbv2 describe-load-balancers --names lb-test-1 --query 'LoadBalancers[0].LoadBalancerArn' --output text) --query 'TargetGroups[0].TargetGroupArn' --output text)
+lstk aws elbv2 describe-target-health --target-group-arn $(lstk aws elbv2 describe-target-groups --load-balancer-arn $(lstk aws elbv2 describe-load-balancers --names lb-test-1 --query 'LoadBalancers[0].LoadBalancerArn' --output text) --query 'TargetGroups[0].TargetGroupArn' --output text)
 ```
 
 4. **Invalid Path:** Test fallback/redirect:
@@ -414,10 +414,10 @@ curl -I http://lb-test-1.elb.localhost.localstack.cloud:4566/invalid
 
 5. **Logs Validation:** Check Lambda logs for invocations:
 ```bash
-awslocal logs describe-log-groups --query 'logGroups[].logGroupName' | jq -r '.[] | select(contains("hello1"))' | xargs -I {} awslocal logs tail {} --follow
+lstk aws logs describe-log-groups --query 'logGroups[].logGroupName' | jq -r '.[] | select(contains("hello1"))' | xargs -I {} lstk aws logs tail {} --follow
 ```
 
-If tests fail, you can ensure LocalStack is healthy (`localstack status services`), check ports (default `4566`), and restart if needed.
+If tests fail, you can ensure LocalStack is healthy (`lstk status`), check ports (default `4566`), and restart if needed.
 
 ## Conclusion
 

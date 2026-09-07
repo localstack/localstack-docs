@@ -42,16 +42,16 @@ First, we setup the required resources.
 Therefore, we create a kinesis stream, a log group and log stream.
 Then we can configure the subscription filter.
 ```bash
-awslocal kinesis create-stream --stream-name "logtest" --shard-count 1
-kinesis_arn=$(awslocal kinesis describe-stream --stream-name "logtest" | jq -r .StreamDescription.StreamARN)
+lstk aws kinesis create-stream --stream-name "logtest" --shard-count 1
+kinesis_arn=$(lstk aws kinesis describe-stream --stream-name "logtest" | jq -r .StreamDescription.StreamARN)
 
-awslocal logs create-log-group --log-group-name test
+lstk aws logs create-log-group --log-group-name test
 
-awslocal logs create-log-stream \
+lstk aws logs create-log-stream \
     --log-group-name test \
     --log-stream-name test
 
-awslocal logs put-subscription-filter \
+lstk aws logs put-subscription-filter \
     --log-group-name "test" \
     --filter-name "kinesis_test" \
     --filter-pattern "" \
@@ -63,7 +63,7 @@ Next, we can add a log event, that will be forwarded to Kinesis.
 
 ```bash
 timestamp=$(($(date +'%s * 1000 + %-N / 1000000')))
-awslocal logs put-log-events --log-group-name test --log-stream-name test --log-events "[{\"timestamp\": ${timestamp} , \"message\": \"hello from cloudwatch\"}]"
+lstk aws logs put-log-events --log-group-name test --log-stream-name test --log-events "[{\"timestamp\": ${timestamp} , \"message\": \"hello from cloudwatch\"}]"
 ```
 
 Now we can retrieve the data.
@@ -71,8 +71,8 @@ In our example, there will only be one record.
 The data record is base64 encoded and compressed in gzip format:
 
 ```bash
-shard_iterator=$(awslocal kinesis get-shard-iterator --stream-name logtest --shard-id shardId-000000000000 --shard-iterator-type TRIM_HORIZON | jq -r .ShardIterator)
-record=$(awslocal kinesis get-records --limit 10 --shard-iterator $shard_iterator | jq -r '.Records[0].Data')
+shard_iterator=$(lstk aws kinesis get-shard-iterator --stream-name logtest --shard-id shardId-000000000000 --shard-iterator-type TRIM_HORIZON | jq -r .ShardIterator)
+record=$(lstk aws kinesis get-records --limit 10 --shard-iterator $shard_iterator | jq -r '.Records[0].Data')
 echo $record | base64 -d | zcat
 ```
 
@@ -89,13 +89,13 @@ Metric filters can be used to automatically create CloudWatch metrics.
 In the following example we are interested in logs that include a key-value pair `"foo": "bar"` and create a metric filter.
 
 ```bash
-awslocal logs create-log-group --log-group-name test-filter
+lstk aws logs create-log-group --log-group-name test-filter
 
-awslocal logs create-log-stream \
+lstk aws logs create-log-stream \
 --log-group-name test-filter \
 --log-stream-name test-filter-stream
 
-awslocal logs put-metric-filter \
+lstk aws logs put-metric-filter \
   --log-group-name test-filter \
   --filter-name my-filter \
   --filter-pattern "{$.foo = \"bar\"}" \
@@ -107,7 +107,7 @@ Next, we can insert some values:
 
 ```bash
 timestamp=$(($(date +'%s * 1000 + %-N / 1000000')))
-awslocal logs put-log-events --log-group-name test-filter \
+lstk aws logs put-log-events --log-group-name test-filter \
    --log-stream-name test-filter-stream \
    --log-events \
     timestamp=$timestamp,message='"{\"foo\":\"bar\", \"hello\": \"world\"}"' \
@@ -119,7 +119,7 @@ Now we can check that the metric was indeed created:
 
 ```bash
 end=$(date +%s)
-awslocal cloudwatch get-metric-statistics --namespace MyNamespace \
+lstk aws cloudwatch get-metric-statistics --namespace MyNamespace \
     --metric-name MyMetric --statistics Sum  --period 3600 \
     --start-time 1659621274 --end-time $end
 ```
@@ -134,7 +134,7 @@ For purely JSON structured log messages, you can use JSON filter patterns to tra
 Enclose your pattern in curly braces, like this:
 
 ```bash
-awslocal logs filter-log-events --log-group-name test-filter --filter-pattern "{$.foo = \"bar\"}"
+lstk aws logs filter-log-events --log-group-name test-filter --filter-pattern "{$.foo = \"bar\"}"
 ```
 
 This returns all events whose top level "foo" key has the "bar" value.
@@ -145,7 +145,7 @@ You can use a simplified regex syntax for regular expression matching.
 Enclose your pattern in percentage signs like this:
 
 ```bash
-awslocal logs filter-log-events --log-group-name test-filter --filter-pattern "\%[fF]oo\%"
+lstk aws logs filter-log-events --log-group-name test-filter --filter-pattern "\%[fF]oo\%"
 ```
 
 This returns all events containing "Foo" or "foo".
@@ -156,7 +156,7 @@ For a complete set of the supported syntax, check [the official AWS documentatio
 If not specified otherwise in the pattern, we look for a match in the whole event message:
 
 ```bash
-awslocal logs filter-log-events --log-group-name test-filter --filter-pattern "foo"
+lstk aws logs filter-log-events --log-group-name test-filter --filter-pattern "foo"
 ```
 
 ## Resource Browser

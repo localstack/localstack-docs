@@ -16,7 +16,7 @@ This documentation provides step-by-step guidance on how to access LocalStack se
 
 Suppose you have LocalStack installed on your machine and want to access it using the AWS CLI.
 To connect, you must expose port 4566 from your LocalStack instance and connect to `localhost` or a domain name that points to `localhost`.
-While the LocalStack CLI does this automatically, when running the Docker container directly or with docker compose, you must configure it manually.
+While [`lstk`](/aws/developer-tools/running-localstack/lstk) does this automatically, when running the Docker container directly or with docker compose, you must configure it manually.
 Check out the [getting started documentation](/aws/getting-started/installation) for more information.
 
 :::tip
@@ -93,7 +93,6 @@ All subdomains of `localhost.localstack.cloud` will also resolve to the LocalSta
 
 To configure your application container:
 
-* add a user-managed docker network;
 * either determine your LocalStack container IP, or configure your LocalStack container to have a fixed known IP address;
 * set the DNS server of your application container to the IP address of the LocalStack container.
 
@@ -101,16 +100,15 @@ To configure your application container:
 <TabItem label="CLI">
 ```bash
 # start localstack
-localstack start -d --network ls
-localstack wait
+lstk start
 
 # get the ip address of the LocalStack container
-docker inspect localstack-main | \
+docker inspect localstack-aws | \
  jq -r '.[0].NetworkSettings.Networks | to_entries | .[].value.IPAddress'
 # prints 172.27.0.2
 
 # run your application container
-docker run --rm -it --dns 172.27.0.2 --network ls <arguments> <image name>
+docker run --rm -it --dns 172.27.0.2 <arguments> <image name>
 ```
 </TabItem>
 <TabItem label="Docker">
@@ -234,9 +232,19 @@ Please update your LocalStack container and see the [instructions](#from-your-co
 LocalStack must listen to the address of the host, or `0.0.0.0`.
 
 <Tabs>
-<TabItem label="CLI">
+<TabItem label="lstk">
+```toml
+# .lstk/config.toml
+[[containers]]
+type = "aws"
+env  = ["listen-all"]
+
+[env.listen-all]
+GATEWAY_LISTEN = "0.0.0.0"
+```
+
 ```bash
-GATEWAY_LISTEN="0.0.0.0" localstack start
+lstk start
 ```
 </TabItem>
 <TabItem label="Docker">

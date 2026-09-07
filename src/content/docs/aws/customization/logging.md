@@ -4,7 +4,7 @@ description: Control LocalStack log output, verbosity, and error reporting.
 template: doc
 ---
 
-LocalStack supports logging output and error reporting through the `localstack` CLI or a Docker/Docker Compose based setup.
+LocalStack supports logging output and error reporting through the `lstk` CLI or a Docker/Docker Compose based setup.
 LocalStack's logging setup allows you to:
 
 - Discover errors in your code during development & testing.
@@ -52,11 +52,22 @@ Requests to HTTP endpoints are logged in a similar way.
 
 ## Log inspection
 
-You can inspect the logs of the LocalStack container using the `localstack` CLI or your Docker/Docker Compose setup.
-With the `localstack` CLI, you can run the following command to inspect the logs of the LocalStack container:
+You can inspect the logs of the LocalStack container using [`lstk`](/aws/developer-tools/running-localstack/lstk) or your Docker/Docker Compose setup.
+With `lstk`, you can run the following command to inspect the logs of the LocalStack container:
 
 ```bash
-localstack logs
+lstk logs
+```
+
+By default this prints the currently available logs, with noisy internal lines filtered out.
+Add `--follow` to stream logs in real time, and `--verbose` to show every line unfiltered:
+
+```bash
+# Stream filtered logs in real-time
+lstk logs --follow
+
+# Stream all logs without filtering
+lstk logs --follow --verbose
 ```
 
 With Docker/Docker-Compose, you can run `docker ps` to get the container ID of the LocalStack container and then run `docker logs <container-id>` to inspect the logs.

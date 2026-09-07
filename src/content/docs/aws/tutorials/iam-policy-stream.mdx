@@ -19,7 +19,7 @@ When you're developing cloud and serverless applications, you need to grant acce
 To handle this, you create IAM roles and assign permissions through policies.
 However, configuring these policies can be challenging, especially if you want to ensure minimal access of all principals to your resources.
 
-[LocalStack IAM Policy Stream](https://app.localstack.cloud/policy-stream) automates the generation of IAM policies for your AWS API requests on your local machine.
+[LocalStack IAM Policy Stream](https://app.localstack.cloud/inst/default/policy-stream) automates the generation of IAM policies for your AWS API requests on your local machine.
 This stream helps you identify the necessary permissions for your cloud application and allows you to detect logical errors, such as unexpected actions in your policies.
 
 This tutorial will guide you through setting up IAM Policy Stream for a locally running AWS application.
@@ -41,10 +41,10 @@ Additionally, it serves as a useful learning tool, helping users understand the 
 
 ## Prerequisites
 
-- [LocalStack CLI](/aws/getting-started/installation)  with  [`LOCALSTACK_AUTH_TOKEN`](/aws/getting-started/auth-token)
+- [`lstk`](/aws/getting-started/installation#lstk)  with  [`LOCALSTACK_AUTH_TOKEN`](/aws/getting-started/auth-token)
 - [Docker](https://docs.docker.com/get-docker/)
-- [Terraform](https://developer.hashicorp.com/terraform/install) & [`tflocal` wrapper](https://github.com/localstack/terraform-local)
-- [AWS](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html)  CLI with  [`awslocal` wrapper](https://github.com/localstack/awscli-local)
+- [Terraform](https://developer.hashicorp.com/terraform/install) & [`lstk terraform`](/aws/connecting/infrastructure-as-code/terraform#lstk-terraform)
+- [AWS](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-install.html)  CLI with  [`lstk aws`](/aws/connecting/aws-cli#localstack-aws-cli-lstk-aws)
 - [LocalStack account](https://www.localstack.cloud/pricing)
 - [`jq`](https://jqlang.github.io/jq/download/)
 
@@ -74,13 +74,13 @@ With LocalStack's IAM enforcement enabled, you can thoroughly test your policy a
 Launch the LocalStack container on your local machine using the specified command:
 
 ```bash
-DEBUG=1 IAM_SOFT_MODE=1 localstack start
+LOCALSTACK_DEBUG=1 LOCALSTACK_IAM_SOFT_MODE=1 lstk start
 ```
 
 In the above command:
 
-- `DEBUG=1` turns on detailed logging to check API calls and IAM violations.
-- `IAM_SOFT_MODE=1` lets you test IAM enforcement by logging violations without stopping the API calls.
+- `LOCALSTACK_DEBUG=1` turns on detailed logging to check API calls and IAM violations.
+- `LOCALSTACK_IAM_SOFT_MODE=1` lets you test IAM enforcement by logging violations without stopping the API calls.
 
 ### Create the Terraform configuration
 
@@ -116,12 +116,12 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
 
 ### Deploy the Terraform configuration
 
-You can use `tflocal` to deploy your Terraform configuration within the LocalStack environment.
+You can use `lstk terraform` to deploy your Terraform configuration within the LocalStack environment.
 Run the following commands to initialize and apply the Terraform configuration:
 
 ```bash
-tflocal init
-tflocal apply
+lstk terraform init
+lstk terraform apply
 ```
 
 You will be prompted to confirm the changes.
@@ -145,7 +145,7 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 
 ### Start the IAM Policy Stream
 
-Access the [LocalStack Web Application](https://app.localstack.cloud/) and go to the [IAM Policy Stream dashboard](https://app.localstack.cloud/policy-stream).
+Access the [LocalStack Web Application](https://app.localstack.cloud/) and go to the [IAM Policy Stream dashboard](https://app.localstack.cloud/inst/default/policy-stream).
 This feature enables you to directly examine the generated policies, displaying the precise permissions required for each API call.
 
 ![IAM Policy Stream dashboard](/images/aws/iam-policy-stream-dashboard.png)
@@ -159,11 +159,11 @@ Create a new file named `some-log-file.log` and upload it to the S3 bucket using
 
 ```bash
 echo "Hello, LocalStack" > some-log-file.log
-awslocal s3 cp some-log-file.log s3://s3-event-notification-bucket/
+lstk aws s3 cp some-log-file.log s3://s3-event-notification-bucket/
 ```
 
 Uploading a file will activate an event notification, sending a message to the SQS queue.
-However, since the SQS queue lacks the necessary permissions, an IAM violation will appear in the [IAM Policy Stream dashboard](https://app.localstack.cloud/policy-stream).
+However, since the SQS queue lacks the necessary permissions, an IAM violation will appear in the [IAM Policy Stream dashboard](https://app.localstack.cloud/inst/default/policy-stream).
 
 ![IAM Policy Stream showcasing an IAM violation](/images/aws/iam-policy-stream-violation.png)
 
@@ -221,14 +221,14 @@ POLICY
 Now, re-apply the Terraform configuration to update the SQS queue with the new policy:
 
 ```bash
-tflocal apply
+lstk terraform apply
 ```
 
 Next, trigger the event notification again by uploading a file to the S3 bucket.
 You can confirm that the S3 bucket is correctly set up for event notifications through the SQS queue by checking if the message is received in the SQS queue:
 
 ```bash
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/s3-event-notification-queue
 ```
 
@@ -273,13 +273,13 @@ This section demonstrates how to test your IAM policies and verify both deny and
 
 ### Testing Scenario 1: Deny (Without IAM Policy)
 
-When you first upload a file to the S3 bucket without the proper SQS queue policy in place, the S3 service will be denied permission to send messages to the SQS queue.
+When you first upload a file to the S3 bucket without the proper SQS queue policy in place, S3 has no permission to send messages to the SQS queue, and the violation is reported.
 
 **Upload a test file:**
 
 ```bash
 echo "Test file content" > test-file.log
-awslocal s3 cp test-file.log s3://s3-event-notification-bucket/
+lstk aws s3 cp test-file.log s3://s3-event-notification-bucket/
 ```
 
 **Expected output - IAM Violation in LocalStack logs:**
@@ -305,19 +305,28 @@ The dashboard clearly shows:
 **Attempting to receive messages from the queue:**
 
 ```bash
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/s3-event-notification-queue
 ```
 
-**Expected output - No messages (because S3 was denied):**
+**Expected output - the message is still delivered, because soft mode does not block the call:**
 
 ```json
 {
-    "Messages": []
+    "Messages": [
+        {
+            "MessageId": "5da627c5-5b4b-4202-a499-510222727e43",
+            "ReceiptHandle": "NWMyZDA1MDEtM2NlYi00MzBjLWIyNjQtYjM2ZjNmYmQxZTAyIGFybjphd3M6c3FzOnVzLWVhc3QtMTowMDAwMDAwMDAwMDA6czMtZXZlbnQtbm90aWZpY2F0aW9uLXF1ZXVlIDVkYTYyN2M1LTViNGItNDIwMi1hNDk5LTUxMDIyMjcyN2U0MyAxNzg2NjY1NzQ3LjQ3ODI1MTI=",
+            "MD5OfBody": "dee5cf145a0678a0ac02e3b38aa302f7",
+            "Body": "{\"Records\": [{\"eventVersion\": \"2.1\", \"eventSource\": \"aws:s3\", \"awsRegion\": \"us-east-1\", \"eventName\": \"ObjectCreated:Put\", \"s3\": {\"bucket\": {\"name\": \"s3-event-notification-bucket\"}, \"object\": {\"key\": \"test-file.log\", \"size\": 18}}}]}"
+        }
+    ]
 }
 ```
 
-Or you may receive no output at all, indicating an empty queue.
+:::note
+In a production environment, where the same policy gap would be enforced by real AWS IAM, this `SendMessage` call would fail and the message would never arrive.
+:::
 
 ### Testing Scenario 2: Allow (With IAM Policy)
 
@@ -353,7 +362,7 @@ After applying the IAM policy generated by the Policy Stream to your SQS queue, 
 
 ```bash
 echo "Test file with policy" > test-file-2.log
-awslocal s3 cp test-file-2.log s3://s3-event-notification-bucket/
+lstk aws s3 cp test-file-2.log s3://s3-event-notification-bucket/
 ```
 
 **Expected output - Success (no IAM violation):**
@@ -362,12 +371,15 @@ awslocal s3 cp test-file-2.log s3://s3-event-notification-bucket/
 upload: ./test-file-2.log to s3://s3-event-notification-bucket/test-file-2.log
 ```
 
-**LocalStack logs showing successful permission:**
+**LocalStack logs:**
 
-```shell
-2024-07-09T05:35:22.123 DEBUG --- [et.reactor-2] l.s.i.p.handler            : Request for service 'sqs' by principal 's3.amazonaws.com' for operation 'SendMessage' allowed.
-2024-07-09T05:35:22.123 DEBUG --- [et.reactor-2] l.s.i.p.handler            : 1 permissions have been explicitly allowed: ["Action 'sqs:SendMessage' for 'arn:aws:sqs:us-east-1:000000000000:s3-event-notification-queue'"]
+An allowed request produces no output from the IAM policy handler — only denials are logged.
+
+```bash
+lstk logs | grep "i.p.handler"
 ```
+
+Only the entries from the earlier, un-permitted upload should remain.
 
 **IAM Policy Stream Dashboard showing no violations:**
 
@@ -378,7 +390,7 @@ The dashboard shows all actions with green checkmarks, indicating successful exe
 **Receive the message from the queue:**
 
 ```bash
-awslocal sqs receive-message \
+lstk aws sqs receive-message \
     --queue-url http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/s3-event-notification-queue
 ```
 
@@ -405,7 +417,7 @@ To ensure your IAM policies are correctly configured:
 
 - **No IAM violations** appear in the IAM Policy Stream dashboard
 - **Messages are successfully delivered** to the SQS queue
-- **LocalStack logs show "allowed"** for the `SendMessage` operation
+- **No new violation entries** are logged for the `SendMessage` operation after the policy is applied
 - **All API calls display green checkmarks** in the Policy Stream dashboard
 
 ## Conclusion

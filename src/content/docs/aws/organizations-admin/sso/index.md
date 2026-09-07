@@ -321,7 +321,7 @@ For each new member that joins your org, you can specify user roles and permissi
 - **Default User Role**:  The Role that should be assigned to users of your organization signing up via SSO.
   In most cases, this should be a Member.
 - **Default User Permissions**: Use this to define which permissions should be assigned to users of your organization signing up via SSO.
-  - Tip: In order to enable self-serve licences (i.e., allowing your users to allocate themselves their own license), make sure to select the **Allow member to issue a license for themselves (or a legacy API key)** permission.
+  - Tip: In order to enable self-serve licences (i.e., allowing your users to allocate themselves their own license), make sure to select the **Allow member to issue a license for themselves** permission.
 
 
 ![User Roles and Permissions](/images/aws/roles-permissions.png)

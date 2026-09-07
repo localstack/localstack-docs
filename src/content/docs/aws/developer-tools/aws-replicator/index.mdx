@@ -17,17 +17,13 @@ The AWS Replicator solves this by creating identical copies of existing AWS reso
 This lets you replicate external dependencies before deploying your application, without changing existing stacks or building custom bootstrap infrastructure.
 
 :::note
-The AWS Replicator supports only [selected resources](#supported-resources).
+The AWS Replicator is in a preview state, supporting only [selected resources](#supported-resources). The new CLI experience, `lstk`, does not yet support the AWS Replicator. 
+Continue using the legacy [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/) version 4.2.0 or newer.
 :::
 
 ## Getting started
 
 A valid `LOCALSTACK_AUTH_TOKEN` must be configured to start the LocalStack for AWS image.
-
-:::note
-The Replicator is available from LocalStack CLI version 4.2.0.
-If you encounter issues, update your [LocalStack CLI](/aws/developer-tools/running-localstack/localstack-cli/#installation).
-:::
 
 ### Retrieve credentials to access AWS
 
@@ -81,7 +77,7 @@ The [supported resources](#supported-resources) table shows which strategies are
 Two options apply regardless of strategy:
 
 - **Cross-region source discovery**: if the resource lives in a different AWS region than your credentials' default region (or its ARN has no region component, as with S3 buckets), set a source region explicitly.
-- **Skip existing resources**: by default a job fails if the target resource already exists. Set `ignore_already_existing` to skip it instead and continue the job.
+- **Skip existing resources**: by default a job fails if the target resource already exists. Set [`ignore_already_existing`](#skip-existing-resources) to skip it instead and continue the job.
 
 #### Using the LocalStack CLI
 
@@ -148,7 +144,46 @@ localstack replicator start \
 
 Check the [supported resources](#supported-resources) table for which resource types accept extra configuration and which keys they support.
 
-By default, a job fails if the target resource already exists. To skip it instead and continue the job, add `--extra-config ignore_already_existing=true`.
+##### Skip existing resources
+
+By default, a replication job fails when creating a resource that already exists in LocalStack.
+To keep the existing resource unchanged and continue the job, set `ignore_already_existing` to `true`:
+
+```bash
+localstack replicator start \
+  --resource-type AWS::SSM::Parameter \
+  --resource-identifier myparam \
+  --extra-config ignore_already_existing=true
+```
+
+```json title="Output"
+{
+  "job_id": "50005865-1589-4f6d-a720-c86f5a5dd021",
+  "state": "TESTING_CONNECTION",
+  "resources": {"succeeded": [], "failed": [], "skipped": []},
+  "error_message": null,
+  "type": "SINGLE_RESOURCE",
+  "explore_strategy": "SIMPLE"
+}
+```
+
+Only conflicts caused by an existing target resource are skipped.
+The Replicator does not overwrite or synchronize the existing resource, and other errors still fail the job.
+After the job completes, the identifier appears in `resources.skipped` and the job state is `SUCCEEDED`:
+
+```json
+{
+  "job_id": "50005865-1589-4f6d-a720-c86f5a5dd021",
+  "state": "SUCCEEDED",
+  "resources": {"succeeded": [], "failed": [], "skipped": ["myparam"]},
+  "error_message": null,
+  "type": "SINGLE_RESOURCE",
+  "explore_strategy": "SIMPLE"
+}
+```
+
+The option applies to single, batch, and tree replication jobs.
+Tree replication also automatically skips some shared related resources, such as an IAM managed policy referenced by multiple roles.
 
 #### Using the HTTP API
 
@@ -237,7 +272,7 @@ For example, to replicate an entire organization tree:
 When omitted, `explore_strategy` defaults to `SIMPLE`, which replicates only the requested resource.
 The related resources replicated by `TREE` are listed in the [supported resources](#supported-resources) table, along with the additional IAM actions they require.
 
-`replication_job_config` also accepts `source_region_name` and `ignore_already_existing`, and any resource-specific extra configuration such as `master_user_password`, as additional keys alongside `resource_type`/`resource_identifier`.
+`replication_job_config` also accepts `source_region_name`, any resource-specific extra configuration such as `master_user_password`, and `ignore_already_existing: true` to use the [skip existing resources](#skip-existing-resources) behavior.
 
 To list every replication job instead of one, send a `GET` request to the same `/_localstack/replicator/jobs` endpoint without a job ID.
 
@@ -271,7 +306,7 @@ This command returns the job status in JSON format. For example, here's a single
 ```
 
 `state` is one of `TESTING_CONNECTION`, `RUNNING`, `SUCCEEDED`, or `ERROR`.
-`resources` lists the identifiers of resources that succeeded, failed, or were skipped (see `ignore_already_existing` above) — for a single-resource job these lists have at most one entry, for a batch job they can have many:
+`resources` lists the identifiers of resources that succeeded, failed, or were [skipped](#skip-existing-resources) — for a single-resource job these lists have at most one entry, for a batch job they can have many:
 
 ```json
 {
