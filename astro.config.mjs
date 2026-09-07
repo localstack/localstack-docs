@@ -519,6 +519,10 @@ export default defineConfig({
                           slug: 'aws/developer-tools/running-localstack/lstk/setup-and-maintenance',
                         },
                         {
+                          label: 'Migration Guide',
+                          slug: 'aws/developer-tools/running-localstack/lstk/migration',
+                        },
+                        {
                           label: 'FAQ & Troubleshooting',
                           slug: 'aws/developer-tools/running-localstack/lstk/faq-and-troubleshooting',
                         },

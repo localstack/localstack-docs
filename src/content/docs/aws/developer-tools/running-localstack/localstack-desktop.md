@@ -3,7 +3,7 @@ title: LocalStack Desktop
 description: Getting started with the LocalStack Desktop application.
 template: doc
 sidebar:
-    order: 9
+    order: 12
 tags: ["Base"]
 ---
 
