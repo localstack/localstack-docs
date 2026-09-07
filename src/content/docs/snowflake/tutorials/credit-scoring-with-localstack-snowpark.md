@@ -14,7 +14,7 @@ The Jupyter Notebook and the dataset used in this tutorial are available on [Git
 
 ## Prerequisites
 
-- [`lstk`](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
+- [`lstk`](/snowflake/getting-started/installation/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
 - [Snowpark](/snowflake/integrations/snowpark) with other Python libraries
 - [Jupyter Notebook](https://jupyter.org/install#jupyter-notebook)

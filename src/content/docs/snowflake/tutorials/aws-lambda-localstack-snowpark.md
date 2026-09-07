@@ -19,7 +19,7 @@ The code in this tutorial is available on [GitHub](https://github.com/localstack
 
 ## Prerequisites
 
-- [`lstk`](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
+- [`lstk`](/snowflake/getting-started/installation/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
 - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command
 - Python 3.10 installed locally
@@ -146,7 +146,7 @@ LOCALSTACK_LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=180 \
 lstk start --type snowflake
 ```
 
-> The `DEBUG=1` environment variable is set to enable debug logs. It would allow you to see the SQL queries executed by the Lambda function. The `LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT` environment variable is set to increase the Lambda function's timeout to 180 seconds.
+> The `LOCALSTACK_DEBUG=1` environment variable is set to enable debug logs. It would allow you to see the SQL queries executed by the Lambda function. The `LOCALSTACK_LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT` environment variable is set to increase the Lambda function's timeout to 180 seconds.
 
 ## Deploy the Lambda function
 
