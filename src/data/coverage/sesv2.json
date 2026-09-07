@@ -308,8 +308,8 @@
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": true
       }
@@ -594,8 +594,8 @@
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": true
       }
@@ -815,8 +815,8 @@
         "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": true
       }
@@ -1187,67 +1187,67 @@
     },
     {
       "PutEmailIdentityConfigurationSetAttributes": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "PutEmailIdentityDkimAttributes": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "PutEmailIdentityDkimSigningAttributes": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "PutEmailIdentityFeedbackAttributes": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
       "PutEmailIdentityMailFromAttributes": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -1461,8 +1461,32 @@
   ],
   "details": {
     "CreateEmailIdentity": {
+      "ConfigurationSetName, EmailIdentity": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      },
       "EmailIdentity": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identities",
             "test": "test_email_identities",
@@ -1471,6 +1495,16 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_display_name_normalization",
+            "test": "test_email_identity_display_name_normalization",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           },
           {
@@ -1526,21 +1560,15 @@
       "EmailIdentity": {
         "ls_pro": [
           {
-            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identities",
-            "test": "test_email_identities",
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "",
-            "aws_validated": false,
-            "snapshot_tested": false,
-            "origin": "external"
-          }
-        ]
-      }
-    },
-    "GetEmailIdentity": {
-      "EmailIdentity": {
-        "ls_pro": [
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identities",
             "test": "test_email_identities",
@@ -1552,6 +1580,102 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_display_name_normalization",
+            "test": "test_email_identity_display_name_normalization",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_display_name_normalization",
+            "test": "test_email_identity_display_name_normalization",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "GetEmailIdentity": {
+      "EmailIdentity": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identities",
+            "test": "test_email_identities",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": false,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_display_name_normalization",
+            "test": "test_email_identity_display_name_normalization",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identities",
             "test": "test_email_identities",
             "response": "404",
@@ -1559,6 +1683,16 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_display_name_normalization",
+            "test": "test_email_identity_display_name_normalization",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
@@ -1575,6 +1709,136 @@
             "snapshot_skipped": "",
             "aws_validated": false,
             "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_display_name_normalization",
+            "test": "test_email_identity_display_name_normalization",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "PutEmailIdentityConfigurationSetAttributes": {
+      "ConfigurationSetName, EmailIdentity": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "404",
+            "error": "NotFoundException",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "PutEmailIdentityDkimAttributes": {
+      "EmailIdentity, SigningEnabled": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "PutEmailIdentityDkimSigningAttributes": {
+      "EmailIdentity, SigningAttributes, SigningAttributesOrigin": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "PutEmailIdentityFeedbackAttributes": {
+      "EmailForwardingEnabled, EmailIdentity": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
+        ]
+      }
+    },
+    "PutEmailIdentityMailFromAttributes": {
+      "BehaviorOnMxFailure, EmailIdentity, MailFromDomain": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
             "origin": "external"
           }
         ]
