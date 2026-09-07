@@ -74,6 +74,77 @@ h3 {
   }
 }
 
+/* The coverage component can be narrower than the viewport when Starlight sidebars are visible. */
+.replicator-coverage {
+  container-type: inline-size;
+}
+
+.replicator-coverage-header,
+.replicator-row {
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr) 9rem minmax(0, 14rem);
+  align-items: center;
+  gap: 12px;
+}
+
+.replicator-resource-type {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  padding: 2px 6px;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.replicator-service,
+.replicator-strategies {
+  min-width: 0;
+}
+
+.replicator-mobile-label {
+  display: none;
+}
+
+.replicator-policy-list code,
+.replicator-related-resources code,
+.replicator-identifier {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@container (max-width: 46rem) {
+  .replicator-coverage-header {
+    display: none;
+  }
+
+  .replicator-row {
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .replicator-resource-type,
+  .replicator-service,
+  .replicator-strategies {
+    grid-column: 2;
+  }
+
+  .replicator-mobile-label {
+    display: inline;
+  }
+}
+
+@container (max-width: 24rem) {
+  .replicator-row {
+    padding: 12px !important;
+  }
+
+  .replicator-details {
+    padding: 16px !important;
+  }
+}
+
 /* Product Cards Styles */
 .product-card {
   color: #ffffff !important;

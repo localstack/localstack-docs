@@ -18,10 +18,10 @@ In this guide, you will create an external volume, and an Iceberg table to store
 
 ### Create an S3 bucket
 
-You can create a local S3 bucket using the `mb` command with the `awslocal` CLI.
+You can create a local S3 bucket using the `mb` command with `lstk aws`.
 
 ```bash
-awslocal s3 mb s3://test-bucket
+lstk aws s3 mb s3://test-bucket
 ```
 
 ### Create an external volume
@@ -81,5 +81,5 @@ The output should be:
 You can also list the content of the S3 bucket:
 
 ```bash
-awslocal s3 ls --recursive s3://test-bucket/
+lstk aws s3 ls --recursive s3://test-bucket/
 ```

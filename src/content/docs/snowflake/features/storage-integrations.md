@@ -18,16 +18,16 @@ In this guide, you will create a Snowflake Storage Integration with Amazon S3 an
 
 ### Create an S3 bucket
 
-You can create a local S3 bucket using the `mb` command with the `awslocal` CLI.
+You can create a local S3 bucket using the `mb` command with `lstk aws`.
 
 ```bash
-awslocal s3 mb s3://testbucket
+lstk aws s3 mb s3://testbucket
 ```
 
 Upload some sample CSV file into the S3 bucket using the following command:
 
 ```bash 
-awslocal s3 cp file.csv s3://testbucket
+lstk aws s3 cp file.csv s3://testbucket
 ```
 
 ### Create a Storage Integration

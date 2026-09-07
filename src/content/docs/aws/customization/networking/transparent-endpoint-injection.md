@@ -69,6 +69,13 @@ Use this configuration with caution because we generally do not recommend connec
 
 In LocalStack for AWS and Lambda, Transparent Endpoint Injection automatically disables SSL certificate validation of the AWS SDK for the
 most common Lambda runtimes including Python, Node.js, and Java (SDK v1).
+
+:::note
+Python Lambdas that bundle botocore 1.43.54 or newer (which added validation that rejects an empty `AWS_CA_BUNDLE`) work by default under Transparent Endpoint Injection: LocalStack no longer sets an empty `AWS_CA_BUNDLE` when `AWS_ENDPOINT_URL` injection is active, since that mode reaches LocalStack over plain HTTP and needs no certificate handling.
+
+If you instead run with `LAMBDA_DISABLE_AWS_ENDPOINT_URL=1` (DNS-based injection), LocalStack still sets an empty `AWS_CA_BUNDLE` to disable certificate verification, because the SDK connects to real AWS hostnames that resolve to LocalStack over TLS with a non-matching certificate. This is incompatible with a bundled botocore 1.43.54 or newer, which rejects the empty value with an `InvalidConfigError`. If you hit this combination, set `DISABLE_TRANSPARENT_ENDPOINT_INJECTION=1` instead.
+:::
+
 For other services and unsupported Lambda runtimes, you may have to configure your AWS clients to accept self-signed certificates because
 we are repointing AWS domain names (e.g., `*.amazonaws.com`) to `localhost.localstack.cloud`.
 For example, the following command fails with an SSL error:

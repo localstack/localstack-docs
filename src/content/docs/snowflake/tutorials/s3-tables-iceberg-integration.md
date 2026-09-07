@@ -18,9 +18,9 @@ With LocalStack's Snowflake emulator, you can create catalog integrations that c
 
 ## Prerequisites
 
-- [`localstack` CLI](/snowflake/getting-started/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
+- [`lstk`](/snowflake/getting-started/installation/) with a [`LOCALSTACK_AUTH_TOKEN`](/snowflake/getting-started/auth-token/)
 - [LocalStack for Snowflake](/snowflake/getting-started/)
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`awslocal` wrapper](/aws/connecting/aws-cli/#localstack-aws-cli-awslocal)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) & [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command
 - Python 3.10+ with `pyiceberg` and `pyarrow` installed
 
 ## Start LocalStack
@@ -29,7 +29,7 @@ Start your LocalStack container with the Snowflake emulator enabled.
 
 ```bash
 export LOCALSTACK_AUTH_TOKEN=<your_auth_token>
-localstack start --stack snowflake
+lstk start
 ```
 
 ## Create S3 Tables resources
@@ -41,7 +41,7 @@ Before configuring Snowflake, you need to create S3 Tables resources using the A
 Create a table bucket to store your Iceberg tables.
 
 ```bash
-awslocal s3tables create-table-bucket --name my-table-bucket
+lstk aws s3tables create-table-bucket --name my-table-bucket
 ```
 
 ```bash title="Output"
@@ -55,7 +55,7 @@ awslocal s3tables create-table-bucket --name my-table-bucket
 Create a namespace within the table bucket to organize your tables.
 
 ```bash
-awslocal s3tables create-namespace \
+lstk aws s3tables create-namespace \
     --table-bucket-arn arn:aws:s3tables:us-east-1:000000000000:bucket/my-table-bucket \
     --namespace my_namespace
 ```
