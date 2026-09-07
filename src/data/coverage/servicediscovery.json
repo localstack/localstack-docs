@@ -316,15 +316,15 @@
     },
     {
       "UpdateHttpNamespace": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -355,15 +355,15 @@
     },
     {
       "UpdatePublicDnsNamespace": {
-        "implemented": false,
-        "availability": "",
-        "internal_test_suite": false,
+        "implemented": true,
+        "availability": "pro",
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
-        "k8s_test_suite": false
+        "k8s_test_suite": true
       }
     },
     {
@@ -395,14 +395,38 @@
   ],
   "details": {
     "CreateHttpNamespace": {
+      "CreatorRequestId, Description, Name": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      },
       "CreatorRequestId, Name": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_service_connect_defaults",
+            "test": "test_create_service_service_connect_defaults",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_with_service_connect_persists_configuration",
             "test": "test_create_service_with_service_connect_persists_configuration",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..enableECSManagedTags', '$..enableExecuteCommand', '$..placementConstraints', '$..propagateTags', '$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..healthCheckGracePeriodSeconds', '$..currentServiceRevisions', '$..deploymentConfiguration.bakeTimeInMinutes', '$..deploymentConfiguration.strategy', '$..resourceManagementType', '$..roleArn', '$..platformFamily', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "snapshot_skipped": "['$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..currentServiceRevisions', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..id']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -482,11 +506,31 @@
       "CreatorRequestId, Name, Vpc": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_discovery_integration",
             "test": "test_service_discovery_integration",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..Attributes.AVAILABILITY_ZONE']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_update_service_service_registries",
+            "test": "test_update_service_service_registries",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..deployments..id', '$..deployments..rolloutStateReason', '$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -572,6 +616,26 @@
       "CreatorRequestId, Name": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/test_servicediscovery.py::TestServicediscovery::test_create_service_exceptions",
             "test": "test_create_service_exceptions",
             "response": "200",
@@ -652,6 +716,16 @@
       "CreatorRequestId, DnsConfig, Name": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/test_servicediscovery.py::TestServicediscovery::test_create_service_exceptions",
             "test": "test_create_service_exceptions",
             "response": "200",
@@ -676,11 +750,31 @@
       "CreatorRequestId, DnsConfig, Name, NamespaceId": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_discovery_integration",
             "test": "test_service_discovery_integration",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..Attributes.AVAILABILITY_ZONE']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_update_service_service_registries",
+            "test": "test_update_service_service_registries",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..deployments..id', '$..deployments..rolloutStateReason', '$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -756,13 +850,33 @@
       "Id": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_service_connect_defaults",
+            "test": "test_create_service_service_connect_defaults",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_with_service_connect_persists_configuration",
             "test": "test_create_service_with_service_connect_persists_configuration",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..enableECSManagedTags', '$..enableExecuteCommand', '$..placementConstraints', '$..propagateTags', '$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..healthCheckGracePeriodSeconds', '$..currentServiceRevisions', '$..deploymentConfiguration.bakeTimeInMinutes', '$..deploymentConfiguration.strategy', '$..resourceManagementType', '$..roleArn', '$..platformFamily', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "snapshot_skipped": "['$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..currentServiceRevisions', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..id']",
             "aws_validated": true,
             "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
             "origin": "external"
           },
           {
@@ -776,11 +890,51 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_update_service_service_registries",
+            "test": "test_update_service_service_registries",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..deployments..id', '$..deployments..rolloutStateReason', '$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_privatednsnamespace/test_basic.py::TestBasic::test_update",
             "test": "test_update",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -916,11 +1070,41 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "400",
+            "error": "NamespaceNotFound",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_privatednsnamespace/test_basic.py::TestBasic::test_update",
             "test": "test_update",
             "response": "400",
             "error": "NamespaceNotFound",
             "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "400",
+            "error": "NamespaceNotFound",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "400",
+            "error": "NamespaceNotFound",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -942,6 +1126,16 @@
       "Id": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_discovery_integration",
             "test": "test_service_discovery_integration",
             "response": "200",
@@ -950,6 +1144,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_update_service_service_registries",
+            "test": "test_update_service_service_registries",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..deployments..id', '$..deployments..rolloutStateReason', '$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/test_servicediscovery.py::TestServicediscovery::test_create_service_exceptions",
@@ -1012,6 +1226,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "400",
+            "error": "ServiceNotFound",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/test_servicediscovery.py::TestServicediscovery::test_service_crud",
             "test": "test_service_crud",
             "response": "400",
@@ -1027,6 +1251,16 @@
     "DeregisterInstance": {
       "InstanceId, ServiceId": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/test_servicediscovery.py::TestServicediscovery::test_filtering_http_namespace",
             "test": "test_filtering_http_namespace",
@@ -1234,11 +1468,61 @@
       "Id": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_service_connect_defaults",
+            "test": "test_create_service_service_connect_defaults",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_service_connect_defaults",
+            "test": "test_create_service_service_connect_defaults",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_with_service_connect_persists_configuration",
             "test": "test_create_service_with_service_connect_persists_configuration",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..enableECSManagedTags', '$..enableExecuteCommand', '$..placementConstraints', '$..propagateTags', '$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..healthCheckGracePeriodSeconds', '$..currentServiceRevisions', '$..deploymentConfiguration.bakeTimeInMinutes', '$..deploymentConfiguration.strategy', '$..resourceManagementType', '$..roleArn', '$..platformFamily', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "snapshot_skipped": "['$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..currentServiceRevisions', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..id']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_with_service_connect_persists_configuration",
+            "test": "test_create_service_with_service_connect_persists_configuration",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..currentServiceRevisions', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..id']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1262,6 +1546,36 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/test_servicediscovery.py::TestServicediscovery::test_create_untagged_namespace",
@@ -1310,13 +1624,33 @@
       "OperationId": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_service_connect_defaults",
+            "test": "test_create_service_service_connect_defaults",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_create_service_with_service_connect_persists_configuration",
             "test": "test_create_service_with_service_connect_persists_configuration",
             "response": "200",
             "error": "",
-            "snapshot_skipped": "['$..enableECSManagedTags', '$..enableExecuteCommand', '$..placementConstraints', '$..propagateTags', '$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..healthCheckGracePeriodSeconds', '$..currentServiceRevisions', '$..deploymentConfiguration.bakeTimeInMinutes', '$..deploymentConfiguration.strategy', '$..resourceManagementType', '$..roleArn', '$..platformFamily', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources']",
+            "snapshot_skipped": "['$..deployments..rolloutState', '$..deployments..rolloutStateReason', '$..status', '$..currentServiceRevisions', '$..platformVersion', '$..deployments..networkConfiguration', '$..deployments..serviceConnectResources', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..id']",
             "aws_validated": true,
             "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
             "origin": "external"
           },
           {
@@ -1330,11 +1664,51 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_update_service_service_registries",
+            "test": "test_update_service_service_registries",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..deployments..id', '$..deployments..rolloutStateReason', '$..currentServiceRevisions', '$..deploymentConfiguration.deploymentCircuitBreaker.resetOnHealthyTask', '$..deploymentConfiguration.deploymentCircuitBreaker.thresholdConfiguration', '$..deployments..networkConfiguration']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_privatednsnamespace/test_basic.py::TestBasic::test_update",
             "test": "test_update",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1426,6 +1800,16 @@
       "Id": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/test_servicediscovery.py::TestServicediscovery::test_service_crud",
             "test": "test_service_crud",
             "response": "200",
@@ -1482,6 +1866,16 @@
       "ServiceId": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_discovery_integration",
             "test": "test_service_discovery_integration",
             "response": "200",
@@ -1499,6 +1893,16 @@
             "snapshot_skipped": "['$..InstancesRevision', '$..CreatorRequestId', '$..Service.CreatorRequestId', '$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Service.ResourceOwner', '$..Services..ResourceOwner', '$..ResourceOwner', '$..ServiceArn', '$..Instances..HealthStatus', '$..Service.CreatedByAccount', '$..Services..CreatedByAccount', '$..CreatedByAccount', '$..Instance.CreatedByAccount']",
             "aws_validated": true,
             "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "400",
+            "error": "ResourceNotFoundException",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
             "origin": "external"
           }
         ]
@@ -1602,6 +2006,16 @@
       "- (without any parameters)": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_discovery_integration",
             "test": "test_service_discovery_integration",
             "response": "200",
@@ -1642,11 +2056,41 @@
       "ResourceARN": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_privatednsnamespace/test_basic.py::TestBasic::test_update",
             "test": "test_update",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -1677,6 +2121,16 @@
     "RegisterInstance": {
       "Attributes, CreatorRequestId, InstanceId, ServiceId": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_deregisters_discovery_instances_on_scale_down",
+            "test": "test_service_deregisters_discovery_instances_on_scale_down",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "",
+            "aws_validated": true,
+            "snapshot_tested": false,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/ecs/test_ecs.py::TestServiceCrud::test_service_discovery_integration",
             "test": "test_service_discovery_integration",
@@ -1744,11 +2198,41 @@
       "ResourceARN, Tags": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_privatednsnamespace/test_basic.py::TestBasic::test_update",
             "test": "test_update",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1780,11 +2264,41 @@
       "ResourceARN, TagKeys": {
         "ls_pro": [
           {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_privatednsnamespace/test_basic.py::TestBasic::test_update",
             "test": "test_update",
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1798,6 +2312,22 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          }
+        ]
+      }
+    },
+    "UpdateHttpNamespace": {
+      "Id, Namespace, UpdaterRequestId": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_httpnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..CreatorRequestId', '$..ResourceOwner']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ]
       }
@@ -1818,9 +2348,35 @@
         ]
       }
     },
+    "UpdatePublicDnsNamespace": {
+      "Id, Namespace, UpdaterRequestId": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_publicdnsnamespace/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Namespace.CreatorRequestId', '$..Namespace.ResourceOwner', '$..Namespace.Properties.DnsProperties.HostedZoneId', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      }
+    },
     "UpdateService": {
       "Id, Service": {
         "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/resource_providers/aws_servicediscovery_service/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Service.CreatedByAccount', '$..Service.CreatorRequestId', '$..Service.ResourceOwner', '$..Tags']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
           {
             "node_id": "LocalStack Pro: tests/aws/services/servicediscovery/test_servicediscovery.py::TestServicediscovery::test_register_instance",
             "test": "test_register_instance",

@@ -748,11 +748,11 @@
       "SetReceiptRulePosition": {
         "implemented": true,
         "availability": "pro",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": true
       }
@@ -852,11 +852,11 @@
       "UpdateReceiptRule": {
         "implemented": true,
         "availability": "community",
-        "internal_test_suite": false,
+        "internal_test_suite": true,
         "external_test_suite": false,
         "terraform_test_suite": false,
-        "aws_validated": false,
-        "snapshot_tested": false,
+        "aws_validated": true,
+        "snapshot_tested": true,
         "snapshot_skipped": "",
         "k8s_test_suite": true
       }
@@ -1037,6 +1037,28 @@
             "snapshot_tested": true,
             "origin": "external"
           }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
         ]
       }
     },
@@ -1149,6 +1171,18 @@
             "snapshot_tested": true,
             "origin": "external"
           }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_set_receipt_rule_position_self_reference_is_noop",
+            "test": "test_set_receipt_rule_position_self_reference_is_noop",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
         ]
       },
       "Rule, RuleSetName": {
@@ -1171,6 +1205,36 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..Actions..S3Action.KmsKeyArn', '$..Actions..S3Action.ObjectKeyPrefix', '$..Actions..S3Action.TopicArn', '$..TlsPolicy', '$..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_set_receipt_rule_position_self_reference_is_noop",
+            "test": "test_set_receipt_rule_position_self_reference_is_noop",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update_renames_rule",
+            "test": "test_update_renames_rule",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1219,6 +1283,36 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..Actions..S3Action.KmsKeyArn', '$..Actions..S3Action.ObjectKeyPrefix', '$..Actions..S3Action.TopicArn', '$..TlsPolicy', '$..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_set_receipt_rule_position_self_reference_is_noop",
+            "test": "test_set_receipt_rule_position_self_reference_is_noop",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update_renames_rule",
+            "test": "test_update_renames_rule",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1457,6 +1551,28 @@
             "snapshot_tested": true,
             "origin": "external"
           }
+        ],
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_emailidentity/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus', '$..Tags', '$..VerificationInfo']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/sesv2/test_sesv2.py::TestSesv2::test_email_identity_attributes",
+            "test": "test_email_identity_attributes",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..VerificationStatus', '$..DkimAttributes.Status', '$..DkimAttributes.SigningAttributesOrigin', '$..DkimAttributes.NextSigningKeyLength', '$..DkimAttributes.CurrentSigningKeyLength', '$..DkimAttributes.LastKeyGenerationTimestamp', '$..DkimAttributes.SigningHostedZone', '$..MailFromAttributes.MailFromDomainStatus']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          }
         ]
       }
     },
@@ -1570,6 +1686,26 @@
             "origin": "internal"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update_renames_rule",
+            "test": "test_update_renames_rule",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ses/test_ses.py::TestSes::test_receipt_rule",
             "test": "test_receipt_rule",
             "response": "200",
@@ -1578,6 +1714,26 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "400",
+            "error": "RuleSetDoesNotExistException",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update_renames_rule",
+            "test": "test_update_renames_rule",
+            "response": "400",
+            "error": "RuleSetDoesNotExistException",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           },
           {
             "node_id": "LocalStack Pro: tests/aws/services/ses/test_ses.py::TestSes::test_receipt_rule",
@@ -1613,6 +1769,36 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..Actions..S3Action.KmsKeyArn', '$..Actions..S3Action.ObjectKeyPrefix', '$..Actions..S3Action.TopicArn', '$..TlsPolicy', '$..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_set_receipt_rule_position_self_reference_is_noop",
+            "test": "test_set_receipt_rule_position_self_reference_is_noop",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update_renames_rule",
+            "test": "test_update_renames_rule",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "internal"
@@ -1784,6 +1970,16 @@
             "origin": "external"
           },
           {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
             "node_id": "LocalStack Pro: tests/aws/services/ses/test_ses.py::TestSes::test_receipt_rule",
             "test": "test_receipt_rule",
             "response": "200",
@@ -1827,6 +2023,36 @@
             "response": "200",
             "error": "",
             "snapshot_skipped": "['$..StackResourceDetail.DriftInformation', '$..StackResourceDetail.Metadata', '$..Actions..S3Action.KmsKeyArn', '$..Actions..S3Action.ObjectKeyPrefix', '$..Actions..S3Action.TopicArn', '$..TlsPolicy', '$..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_set_receipt_rule_position_self_reference_is_noop",
+            "test": "test_set_receipt_rule_position_self_reference_is_noop",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update_renames_rule",
+            "test": "test_update_renames_rule",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
@@ -2536,6 +2762,62 @@
             "aws_validated": true,
             "snapshot_tested": true,
             "origin": "external"
+          }
+        ]
+      }
+    },
+    "SetReceiptRulePosition": {
+      "After, RuleName, RuleSetName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_set_receipt_rule_position_self_reference_is_noop",
+            "test": "test_set_receipt_rule_position_self_reference_is_noop",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$..Rules..TlsPolicy', '$..Rules..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "external"
+          },
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      },
+      "RuleName, RuleSetName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
+          }
+        ]
+      }
+    },
+    "UpdateReceiptRule": {
+      "Rule, RuleSetName": {
+        "ls_pro": [
+          {
+            "node_id": "LocalStack Pro: tests/aws/services/ses/resource_providers/aws_ses_receiptrule/test_basic.py::TestBasic::test_update",
+            "test": "test_update",
+            "response": "200",
+            "error": "",
+            "snapshot_skipped": "['$.initial-rule..TlsPolicy', '$.initial-rule..ScanEnabled', '$.initial-rule-set..TlsPolicy', '$.initial-rule-set..ScanEnabled', '$.updated-rule-set..TlsPolicy', '$.updated-rule-set..ScanEnabled', '$.reduced-rule..TlsPolicy', '$.reduced-rule..ScanEnabled', '$.reduced-rule-set..TlsPolicy', '$.reduced-rule-set..ScanEnabled']",
+            "aws_validated": true,
+            "snapshot_tested": true,
+            "origin": "internal"
           }
         ]
       }
