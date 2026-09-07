@@ -30,7 +30,7 @@ DEBUG = "1"
 lstk start
 ```
 
-See [Passing environment variables to the container](/aws/developer-tools/running-localstack/lstk#passing-environment-variables-to-the-container) for details.
+See [Passing environment variables to the container](/aws/developer-tools/running-localstack/lstk/configuration/#passing-environment-variables-to-the-container) for details.
 
 ## Core
 
@@ -120,7 +120,7 @@ For more general guidance on adding trusted certificates to LocalStack, see [Cus
 ## CLI
 
 `lstk` is configured through its config file rather than through environment variables.
-See [Configuration](/aws/developer-tools/running-localstack/lstk#configuration) on the `lstk` page for the config file search order, the field reference, and how to define named environment profiles.
+See [Configuration](/aws/developer-tools/running-localstack/lstk/configuration/) on the `lstk` page for the config file search order, the field reference, and how to define named environment profiles.
 
 ## Docker
 
