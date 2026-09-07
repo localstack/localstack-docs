@@ -1,27 +1,9 @@
 ---
 title: lstk Automation & CI
-description: Global options, non-interactive mode, structured JSON output, environment variables, tracing, and logging for scripting lstk.
+description: Non-interactive mode, structured JSON output, targeting an external emulator, environment variables, tracing, and logging for scripting lstk.
 template: doc
 tags: ['Hobby']
 ---
-
-## Global options
-
-These options are available for all commands:
-
-| Option              | Description                                                                |
-|:--------------------|:------------------------------------------------------------------------------|
-| `--config <path>`   | Path to a specific TOML config file                                        |
-| `--endpoint-url <url>` | Target an existing, externally-managed emulator at this URL instead of discovering one via local Docker. See [Targeting an external emulator](#targeting-an-external-emulator). |
-| `--non-interactive` | Disable the interactive TUI, use plain output                              |
-| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `start`, `stop`, `status`, `reset`, and `update`; any other command rejects it. See [Structured output](#structured-output). |
-| `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
-| `--type <type>`, `-t <type>` | Emulator type to start: `aws`, `snowflake`, or `azure` (on `start`/bare `lstk`; records the choice in config). See [Selecting the emulator with `--type`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#selecting-the-emulator-with---type). |
-| `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
-| `--no-snapshot`     | Skip auto-loading the configured snapshot (on `start`/bare `lstk`)          |
-| `--timeout <duration>` | Startup readiness deadline for `start`/bare `lstk`, as a Go duration; overrides `LSTK_STARTUP_TIMEOUT` for one run. See [`start`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#start). |
-| `-v`, `--version`   | Print the version and exit                                                 |
-| `-h`, `--help`      | Print help and exit                                                        |
 
 ## Interactive and non-interactive mode
 
