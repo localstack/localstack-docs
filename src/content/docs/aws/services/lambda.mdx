@@ -548,7 +548,7 @@ export const handler = withDurableExecution(async (event, context) => {
 Create the function with a five-minute execution timeout and seven-day retention period:
 
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
   --function-name durable-hello \
   --runtime nodejs22.x \
   --handler index.handler \
@@ -574,7 +574,7 @@ awslocal lambda create-function \
 Wait for the function to become active:
 
 ```bash
-awslocal lambda wait function-active-v2 --function-name durable-hello
+lstk aws lambda wait function-active-v2 --function-name durable-hello
 ```
 
 Create `event.json`:
@@ -589,7 +589,7 @@ Start an asynchronous durable execution.
 Use a qualified function target and a durable execution name, which acts as an idempotency key:
 
 ```bash
-EXECUTION_ARN=$(awslocal lambda invoke \
+EXECUTION_ARN=$(lstk aws lambda invoke \
   --function-name durable-hello \
   --qualifier '$LATEST' \
   --invocation-type Event \
@@ -607,7 +607,7 @@ arn:aws:lambda:us-east-1:000000000000:function:durable-hello:$LATEST/durable-exe
 After the execution finishes, retrieve its status and result:
 
 ```bash
-awslocal lambda get-durable-execution \
+lstk aws lambda get-durable-execution \
   --durable-execution-arn "$EXECUTION_ARN" \
   --query '{DurableExecutionName:DurableExecutionName,Status:Status,Result:Result,DurableConfig:DurableConfig}'
 ```
@@ -627,7 +627,7 @@ awslocal lambda get-durable-execution \
 Inspect the execution history to see the checkpoint, suspension, replay, and completion:
 
 ```bash
-awslocal lambda get-durable-execution-history \
+lstk aws lambda get-durable-execution-history \
   --durable-execution-arn "$EXECUTION_ARN" \
   --query 'Events[].EventType'
 ```
