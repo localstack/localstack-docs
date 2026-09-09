@@ -54,7 +54,7 @@ For every new doc or major change you draft, you must generate a short **Audit T
 - **Confidence & Gaps Assessment:** Explicitly state if data was thin or if you encountered places where LocalStack's behavior diverged from AWS. Note any features you deliberately omitted due to lack of verified local support.
 
 #### Anti-Hallucination Guardrails
-- **Zero-Tolerance for Fictional APIs:** Never invent `awslocal` commands, CLI flags, configuration variables, or JSON output fields. If a flag or parameter is not explicitly found in active AWS documentation or LocalStack's data/source code, do not write it down.
+- **Zero-Tolerance for Fictional APIs:** Never invent `lstk aws`, `lstk cdk`, or `lstk terraform` commands, CLI flags, configuration variables, or JSON output fields. If a flag or parameter is not explicitly found in active AWS documentation or LocalStack's data/source code, do not write it down.
 
 
 
@@ -94,7 +94,7 @@ Follow the writing conventions below. Draft the full doc, not just sections.
 ### What to always include in a service doc
 
 1. **Introduction**: What the AWS service does (2–4 sentences). What LocalStack lets you do with it. Link to the API coverage section.
-2. **Getting started**: A short, self-contained walkthrough using `awslocal` commands. Assume the user has LocalStack running. Show real commands with real expected output.
+2. **Getting started**: A short, self-contained walkthrough using [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) commands. Assume the user has LocalStack running. Show real commands with real expected output.
 3. **Feature sections**: Cover notable behaviors, limitations, or LocalStack-specific quirks. Use `:::note` or `:::tip` callouts for important caveats.
 4. **Resource Browser**: If the service has a LocalStack Web App Resource Browser, include a section with a screenshot and a bulleted list of actions available.
 5. **Examples**: Links to relevant sample apps from `github.com/localstack-samples` or tutorials on the docs site.
@@ -104,7 +104,7 @@ Follow the writing conventions below. Draft the full doc, not just sections.
 
 1. **Introduction**: The problem being solved and what the reader will build.
 2. **Architecture diagram**: If the tutorial involves multiple services, include a diagram.
-3. **Prerequisites**: Bulleted list: LocalStack, awslocal, any other tools. State if Pro plan is required.
+3. **Prerequisites**: Bulleted list: LocalStack, `lstk` (and the relevant `lstk aws`/`lstk terraform`/`lstk cdk`/`lstk sam` proxy), any other tools. State if Pro plan is required.
 4. **Step-by-step tutorial**: Use `###` for each step. Each step should have a clear goal, the command(s) to run, and the expected output.
 5. No "Summary" section at the end: just end with the last meaningful step or a "Next steps" pointing to related content.
 
@@ -133,7 +133,7 @@ The supported APIs are available on the [API coverage section](#api-coverage).
 
 ## Getting started
 
-This guide is designed for users new to [Service] and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to [Service] and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command.
 
 Start your LocalStack container using your preferred method.
 
@@ -142,7 +142,7 @@ Start your LocalStack container using your preferred method.
 [Explanation sentence.]
 
 ```bash
-awslocal <service> <command> --option value
+lstk aws <service> <command> --option value
 ```
 
 ```bash title="Output"
@@ -212,7 +212,7 @@ leadimage: "tutorial-banner-filename.png"
 ## Prerequisites
 
 - [LocalStack](https://localstack.cloud/) with an [auth token](https://app.localstack.cloud/workspace/auth-tokens) (Pro plan required)
-- [awslocal](https://github.com/localstack/awscli-local)
+- [`lstk`](/aws/developer-tools/running-localstack/lstk/) and its [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command
 - [Other tool](link)
 
 ## Tutorial: [Goal]
@@ -236,13 +236,13 @@ command here
 
 ### CLI commands
 
-Always use `awslocal` (not `aws`). Every command block must:
+Always use `lstk aws` (not `aws`, and not the deprecated `awslocal` wrapper). For Terraform, CDK, or SAM examples, use `lstk terraform`, `lstk cdk`, or `lstk sam` respectively (not `tflocal`, `cdklocal`, or `samlocal`). Every command block must:
 - Show the command itself
 - Show the expected output in a separate block with `title="Output"`
 
 ````mdx
 ```bash
-awslocal s3api create-bucket --bucket my-bucket
+lstk aws s3api create-bucket --bucket my-bucket
 ```
 
 ```bash title="Output"
@@ -257,7 +257,7 @@ awslocal s3api create-bucket --bucket my-bucket
 Use `\` for line continuation:
 
 ```bash
-awslocal lambda create-function \
+lstk aws lambda create-function \
     --function-name my-function \
     --runtime python3.11 \
     --handler handler.handler \
