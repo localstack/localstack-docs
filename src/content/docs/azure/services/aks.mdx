@@ -334,17 +334,17 @@ The local control plane implements the following capabilities:
   the Kubernetes Event-driven Autoscaling (KEDA) add-on, and the Vertical Pod Autoscaler.
 - **Identity**: Microsoft Entra Workload ID with a working OIDC issuer, so pods can exchange
   service account tokens for Azure credentials without secrets.
-- **Operations**: Multiple node pools with tags, labels, and taints, the Azure cloud controller
-  manager reconciling `LoadBalancer` services, and cluster stop and start.
+- **Operations**: Multiple node pools with tags, labels, and taints; the Azure cloud controller
+  manager reconciling `LoadBalancer` services; and cluster stop and start.
 - **Tooling**: The same clusters can be provisioned with the Azure CLI, Terraform, or Bicep.
 
 ## Cluster-creation scripts
 
 The [aks-samples](https://github.com/localstack-samples/aks-samples) repository provides two
 interchangeable scripts that provision a production-shaped cluster, complete with a virtual
-network, a container registry, a Log Analytics workspace, and system and user node pools. The
-repository maintains both scripts to run against real Azure and the emulator; they differ in the
-cluster identity:
+network, a container registry, a Log Analytics workspace, and system and user node pools. Both
+scripts run unchanged against real Azure and the emulator; they differ only in the cluster
+identity:
 
 | Script | Cluster identity | When to use |
 | ------ | ---------------- | ----------- |
@@ -386,7 +386,7 @@ the samples, they do not deploy the web application:
 | [policies](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/policies) | Kubernetes network policies that enforce zero-trust traffic control with Calico and Cilium: cluster-wide default-deny, DNS-aware egress, and L3/L4/L7 ingress. |
 | [ccm](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/ccm) | Exercises the Azure cloud controller manager: public and internal `LoadBalancer` services, source ranges, the nodeIP backend-pool variant, and an NGINX ingress controller. |
 | [gateway-api](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/gateway-api) | Enables the managed Gateway API CRDs, installs NGINX Gateway Fabric, and routes traffic to a backend through a `Gateway` and an `HTTPRoute`. |
-| [keda](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda) | Event-driven autoscaling with the KEDA add-on: a producer creates a backlog on an Azure event source and a `ScaledObject` scales a consumer from zero to four replicas and back. |
+| [keda](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda) | Event-driven autoscaling with the KEDA add-on: a producer creates a backlog on an Azure event source, and a `ScaledObject` scales a consumer from zero to four replicas and back. |
 | [keda/service-bus](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda/service-bus) | Scales a consumer on an Azure Service Bus queue with the `azure-servicebus` scaler, authenticating with Microsoft Entra Workload ID. Start here if you are new to KEDA. |
 | [keda/queue-storage](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda/queue-storage) | Scales a consumer on an Azure Storage queue with the `azure-queue` scaler. Workload identity is used end to end, so no data-plane secret exists anywhere. |
 | [keda/event-hubs](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda/event-hubs) | Scales a consumer on an Azure Event Hubs hub with the `azure-eventhub` scaler, whose backlog is the distance between the last enqueued event and the consumer group's blob checkpoints. |
