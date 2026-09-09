@@ -1,0 +1,49 @@
+# Reports on (and optionally deletes) stale head branches. See
+# scripts/delete-stale-branches.sh for the exact eligibility rules: the
+# default branch and any branch with an open PR are never touched. Merged-PR
+# branches are always eligible; closed-unmerged or PR-less branches only
+# become eligible once they pass the age threshold, and PR-less branches are
+# always reported rather than auto-deleted.
+#
+# Runs as a dry-run report every week. To actually delete branches, trigger
+# this workflow manually with "execute" checked.
+name: Cleanup stale branches
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Age threshold (days) for closed/PR-less branches"
+        required: false
+        default: "90"
+        type: string
+      execute:
+        description: "Delete the eligible branches (unchecked = dry run / report only)"
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    - cron: "0 9 * * 1" # Weekly dry-run report, Monday 09:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    name: Report / delete stale branches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run cleanup script
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DAYS: ${{ github.event.inputs.days || '90' }}
+          EXECUTE: ${{ github.event.inputs.execute }}
+        run: |
+          ARGS=(--days "$DAYS")
+          if [[ "$EXECUTE" == "true" ]]; then
+            ARGS+=(--execute --yes)
+          fi
+          bash scripts/delete-stale-branches.sh "${ARGS[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
