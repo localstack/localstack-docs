@@ -637,6 +637,16 @@ On newer Apple Silicon hardware (for example Apple M4), the container can crash 
 This is a known incompatibility between the `cryptography` library (version 47.0.0 and newer) and older Linux guest kernels running under Apple's Virtualization Framework: the library tries to use ARM CPU instructions the kernel does not fully support.
 It mainly affects Colima or Podman with an older guest kernel (for example `6.8.0-39`); a fully updated Docker Desktop is generally not affected.
 
+The supervisor decodes and logs a fatal signal like this unconditionally, without needing `DEBUG=1`:
+
+```text
+localstack process (PID 24) was terminated by signal 4 (SIGILL) (exit code 252). If there is no traceback above, the crash happened in native code, ...
+```
+
+It also enables Python's `faulthandler` in the `localstack` process by default (`PYTHONFAULTHANDLER=1`), so a native crash such as this one prints a Python and C stack trace before the process dies, for example pointing directly at the `cryptography` import.
+Set `PYTHONFAULTHANDLER=0` yourself if you need to opt out.
+Exit-code semantics are unchanged, the container still exits with the crashed process's status.
+
 **Workaround:** disable the faulty ARM capability detection by setting `OPENSSL_armcap=0` on the container:
 
 ```yaml
