@@ -190,19 +190,19 @@ The following example uses the `subnet_id` variable set in the [Getting started]
 
 ```bash
 # Create the load balancer
-loadBalancer=$(awslocal elbv2 create-load-balancer \
+loadBalancer=$(lstk aws elbv2 create-load-balancer \
     --name multi-listener-lb \
     --subnets $subnet_id | jq -r '.LoadBalancers[].LoadBalancerArn')
 
 # Listener on port 80
-awslocal elbv2 create-listener \
+lstk aws elbv2 create-listener \
     --load-balancer-arn $loadBalancer \
     --protocol HTTP \
     --port 80 \
     --default-actions '{"Type":"fixed-response","FixedResponseConfig":{"StatusCode":"200","MessageBody":"Listener 80","ContentType":"text/plain"}}'
 
 # Listener on port 8080
-awslocal elbv2 create-listener \
+lstk aws elbv2 create-listener \
     --load-balancer-arn $loadBalancer \
     --protocol HTTP \
     --port 8080 \

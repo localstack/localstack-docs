@@ -83,7 +83,7 @@ function handler(event) {
 Create the function with [`CreateFunction`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateFunction.html):
 
 ```bash
-awslocal cloudfront create-function \
+lstk aws cloudfront create-function \
     --name stamp-env \
     --function-code fileb://stamp-env.js \
     --function-config 'Comment=stamp the environment,Runtime=cloudfront-js-2.0'
@@ -135,7 +135,7 @@ Write the event object to a file:
 Pass the ETag returned by `create-function` as `--if-match`:
 
 ```bash
-awslocal cloudfront test-function \
+lstk aws cloudfront test-function \
     --name stamp-env \
     --if-match 54ddd071 \
     --event-object fileb://event.json \
@@ -173,7 +173,7 @@ Use it for debugging, but do not assert on it in tests.
 [`PublishFunction`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_PublishFunction.html) marks the function ready to associate with a distribution:
 
 ```bash
-awslocal cloudfront publish-function --name stamp-env --if-match 54ddd071
+lstk aws cloudfront publish-function --name stamp-env --if-match 54ddd071
 ```
 
 ```bash title="Output"
@@ -282,7 +282,7 @@ On a plan without the data plane you can create a store and associate it with a 
 Create a store with [`CreateKeyValueStore`](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateKeyValueStore.html):
 
 ```bash
-awslocal cloudfront create-key-value-store \
+lstk aws cloudfront create-key-value-store \
     --name tenant-map \
     --comment "tenant to environment"
 ```
@@ -317,7 +317,7 @@ Control-plane commands are unaffected.
 :::
 
 :::tip
-When you use `awslocal`, install the AWS Common Runtime once with `pip install 'botocore[crt]'`.
+When you use `lstk aws`, install the AWS Common Runtime once with `pip install 'botocore[crt]'`.
 These requests are signed with SigV4A, which a `pip`-installed AWS CLI cannot sign without it.
 :::
 
@@ -332,7 +332,7 @@ Writes require the current ETag in `--if-match`.
 Read it from the data plane with [`DescribeKeyValueStore`](https://docs.aws.amazon.com/cloudfront-keyvaluestore/latest/APIReference/API_DescribeKeyValueStore.html):
 
 ```bash
-awslocal cloudfront-keyvaluestore describe-key-value-store --kvs-arn "$KVS_ARN"
+lstk aws cloudfront-keyvaluestore describe-key-value-store --kvs-arn "$KVS_ARN"
 ```
 
 ```bash title="Output"
@@ -350,7 +350,7 @@ awslocal cloudfront-keyvaluestore describe-key-value-store --kvs-arn "$KVS_ARN"
 Write several keys at once with [`UpdateKeys`](https://docs.aws.amazon.com/cloudfront-keyvaluestore/latest/APIReference/API_UpdateKeys.html), which also accepts `--deletes`:
 
 ```bash
-awslocal cloudfront-keyvaluestore update-keys \
+lstk aws cloudfront-keyvaluestore update-keys \
     --kvs-arn "$KVS_ARN" \
     --if-match 02CDEC9C \
     --puts 'Key=tenant-a.example.com,Value=prod' 'Key=tenant-b.example.com,Value=prod-sand'
@@ -369,7 +369,7 @@ awslocal cloudfront-keyvaluestore update-keys \
 List the contents with [`ListKeys`](https://docs.aws.amazon.com/cloudfront-keyvaluestore/latest/APIReference/API_ListKeys.html):
 
 ```bash
-awslocal cloudfront-keyvaluestore list-keys --kvs-arn "$KVS_ARN"
+lstk aws cloudfront-keyvaluestore list-keys --kvs-arn "$KVS_ARN"
 ```
 
 ```bash title="Output"
@@ -390,7 +390,7 @@ awslocal cloudfront-keyvaluestore list-keys --kvs-arn "$KVS_ARN"
 Single keys are handled with [`PutKey`](https://docs.aws.amazon.com/cloudfront-keyvaluestore/latest/APIReference/API_PutKey.html), [`GetKey`](https://docs.aws.amazon.com/cloudfront-keyvaluestore/latest/APIReference/API_GetKey.html) and [`DeleteKey`](https://docs.aws.amazon.com/cloudfront-keyvaluestore/latest/APIReference/API_DeleteKey.html):
 
 ```bash
-awslocal cloudfront-keyvaluestore get-key --kvs-arn "$KVS_ARN" --key tenant-a.example.com
+lstk aws cloudfront-keyvaluestore get-key --kvs-arn "$KVS_ARN" --key tenant-a.example.com
 ```
 
 ```bash title="Output"
@@ -441,7 +441,7 @@ Concurrency and lookup failures surface as follows:
 Associate the store when you create the function, through `KeyValueStoreAssociations`:
 
 ```bash
-awslocal cloudfront create-function \
+lstk aws cloudfront create-function \
     --name tenant-router \
     --function-code fileb://tenant-router.js \
     --function-config "Comment=tenant pre-router,Runtime=cloudfront-js-2.0,KeyValueStoreAssociations={Quantity=1,Items=[{KeyValueStoreARN=$KVS_ARN}]}"
@@ -553,19 +553,19 @@ async function handler(event) {
 Create the function with the store associated, then publish it:
 
 ```bash
-export FUNCTION_ETAG=$(awslocal cloudfront create-function \
+export FUNCTION_ETAG=$(lstk aws cloudfront create-function \
     --name tenant-router \
     --function-code fileb://tenant-router.js \
     --function-config "Comment=tenant pre-router,Runtime=cloudfront-js-2.0,KeyValueStoreAssociations={Quantity=1,Items=[{KeyValueStoreARN=$KVS_ARN}]}" \
     --query ETag --output text)
-awslocal cloudfront publish-function --name tenant-router --if-match "$FUNCTION_ETAG"
+lstk aws cloudfront publish-function --name tenant-router --if-match "$FUNCTION_ETAG"
 ```
 
 Confirm the routing decision with `test-function` before wiring up a distribution.
 With `host` set to `tenant-b.example.com` in `event.json`, the function resolves the tenant through the store:
 
 ```bash
-awslocal cloudfront test-function \
+lstk aws cloudfront test-function \
     --name tenant-router \
     --if-match "$FUNCTION_ETAG" \
     --event-object fileb://event.json \
@@ -621,7 +621,7 @@ To exercise the same path over a real request, create a distribution that lists 
 ```
 
 ```bash
-awslocal cloudfront create-distribution \
+lstk aws cloudfront create-distribution \
     --distribution-config file://distribution-config.json \
     --query '{Id:Distribution.Id,DomainName:Distribution.DomainName}'
 ```
