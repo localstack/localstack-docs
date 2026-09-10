@@ -4,7 +4,7 @@ export function HeroSection() {
       textAlign: 'center',
       marginBottom: '3rem'
     }}>
-      
+
       <p style={{
         fontSize: '18px',
         lineHeight: 1.6,
@@ -12,10 +12,9 @@ export function HeroSection() {
         maxWidth: '900px',
         margin: '0 auto 3rem auto'
       }}>
-        LocalStack is a local cloud emulator that lets you build and test cloud applications entirely on your machine. 
-        Spin up fully functional local environments that mirror real cloud behavior — including AWS services and Snowflake — without 
-        provisioning real cloud infrastructure. Whether you're validating IaC templates, running integration tests, or iterating on 
-        data pipelines, LocalStack integrates seamlessly with your tools and CI/CD pipelines to help you ship faster and safer.
+        LocalStack runs AWS, Snowflake, and Azure APIs in containers on your own machine, so you can build,
+        test, and debug cloud applications without a real cloud account. You use the same SDKs, CLIs, and
+        infrastructure-as-code tools you already work with, then deploy to the real cloud when you are ready.
       </p>
 
       <h2 style={{
@@ -28,4 +27,4 @@ export function HeroSection() {
       </h2>
     </div>
   );
-} 
+}
