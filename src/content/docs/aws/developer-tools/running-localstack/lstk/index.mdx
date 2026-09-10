@@ -131,7 +131,7 @@ These apply to both interactive and non-interactive (scripted/CI) use, see [Auto
 `lstk` includes completion scripts for bash, zsh, fish, and powershell.
 If you installed via Homebrew, completions are set up automatically.
 
-For manual setup:
+Run `lstk completion` to print these instructions in your terminal.
 
 <Tabs>
 <TabItem label="Bash">
@@ -140,11 +140,11 @@ For manual setup:
 # Load in current session
 eval "$(lstk completion bash)"
 
-# Persist (Linux)
-lstk completion bash > /etc/bash_completion.d/lstk
+# Load in new sessions (Linux)
+echo 'eval "$(lstk completion bash)"' >> ~/.bashrc
 
-# Persist (macOS with Homebrew)
-lstk completion bash > $(brew --prefix)/etc/bash_completion.d/lstk
+# Load in new sessions (macOS)
+echo 'eval "$(lstk completion bash)"' >> ~/.bash_profile
 ```
 
 :::note
@@ -157,14 +157,18 @@ The `lstk` script works with or without the `bash-completion` package (it bundle
 
 ```bash
 # Load in current session
+autoload -Uz compinit && compinit
 source <(lstk completion zsh)
 
-# Persist (Linux)
-lstk completion zsh > "${fpath[1]}/_lstk"
-
-# Persist (macOS with Homebrew)
-lstk completion zsh > $(brew --prefix)/share/zsh/site-functions/_lstk
+# Load in new sessions (Linux, macOS)
+echo 'autoload -Uz compinit && compinit' >> ~/.zshrc
+echo 'source <(lstk completion zsh)' >> ~/.zshrc
 ```
+
+:::note
+The `compinit` line is required, not optional: the generated script calls `compdef`, which does not exist until `compinit` has run.
+A second `compinit` is harmless if your `~/.zshrc` already runs one.
+:::
 
 </TabItem>
 <TabItem label="Fish">
@@ -173,14 +177,30 @@ lstk completion zsh > $(brew --prefix)/share/zsh/site-functions/_lstk
 # Load in current session
 lstk completion fish | source
 
-# Persist
+# Load in new sessions (Linux, macOS)
 lstk completion fish > ~/.config/fish/completions/lstk.fish
 ```
 
 </TabItem>
+<TabItem label="PowerShell">
+
+```powershell
+# Load in current session
+lstk completion powershell | Out-String | Invoke-Expression
+
+# Load in new sessions (Windows, Linux, macOS)
+if (!(Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force }
+lstk completion powershell | Out-File -Append -Encoding utf8 $PROFILE
+```
+
+:::note
+Use `Out-File -Encoding utf8` rather than `>>`, which writes UTF-16LE on PowerShell 5.1 and leaves a profile PowerShell cannot parse.
+:::
+
+</TabItem>
 </Tabs>
 
-Restart your shell after persisting completions.
+Open a new shell for the changes to take effect.
 
 ### `completion`
 
