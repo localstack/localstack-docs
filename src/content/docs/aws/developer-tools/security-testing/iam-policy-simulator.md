@@ -23,7 +23,7 @@ Unlike [IAM Policy Enforcement](/aws/developer-tools/security-testing/iam-policy
 
 ## Getting started
 
-This guide is designed for users new to the IAM Policy Simulator and assumes basic knowledge of the AWS CLI and our [`awslocal`](https://github.com/localstack/awscli-local) wrapper script.
+This guide is designed for users new to the IAM Policy Simulator and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command.
 
 Start your LocalStack container using your preferred method.
 
@@ -32,17 +32,17 @@ Start your LocalStack container using your preferred method.
 Create a user and attach a policy that only allows `s3:CreateBucket`:
 
 ```bash
-awslocal iam create-user --user-name test-user
+lstk aws iam create-user --user-name test-user
 ```
 
 ```bash
-awslocal iam create-policy \
+lstk aws iam create-policy \
     --policy-name allow-create-bucket \
     --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":"s3:CreateBucket","Resource":"*"}]}'
 ```
 
 ```bash
-awslocal iam attach-user-policy \
+lstk aws iam attach-user-policy \
     --user-name test-user \
     --policy-arn arn:aws:iam::000000000000:policy/allow-create-bucket
 ```
@@ -52,7 +52,7 @@ awslocal iam attach-user-policy \
 Use `simulate-principal-policy` to check whether `test-user` can create and delete an S3 bucket, without actually calling S3:
 
 ```bash
-awslocal iam simulate-principal-policy \
+lstk aws iam simulate-principal-policy \
     --policy-source-arn arn:aws:iam::000000000000:user/test-user \
     --action-names s3:CreateBucket s3:DeleteBucket \
     --resource-arns "*"

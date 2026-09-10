@@ -19,8 +19,8 @@ Before starting, make sure you have the following:
 - A [LocalStack Auth Token](https://docs.localstack.cloud/getting-started/auth-token/) exported as `LOCALSTACK_AUTH_TOKEN`
 - [Docker](https://docs.docker.com/get-docker/)
 - [`kind`](https://kind.sigs.k8s.io/)
-- [Terraform](https://www.terraform.io/downloads) (v1.11.1 or later) with the [`tflocal`](https://docs.localstack.cloud/user-guide/integrations/terraform/) wrapper
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) with the [`awslocal`](https://docs.localstack.cloud/user-guide/integrations/aws-cli/#localstack-aws-cli-awslocal) wrapper
+- [Terraform](https://www.terraform.io/downloads) (v1.11.1 or later) and [`lstk terraform`](/aws/connecting/infrastructure-as-code/terraform#lstk-terraform)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws)
 - [`kubectl`](https://kubernetes.io/docs/reference/kubectl/)
 - [`jq`](https://jqlang.github.io/jq/download/)
 - [`k9s`](https://k9scli.io/) (optional, for visual cluster monitoring)
@@ -118,7 +118,7 @@ kubectl port-forward -n workspace svc/localstack-env-1 4566
 This runs in the foreground. Open a new terminal for the remaining steps. Verify LocalStack is accessible:
 
 ```bash
-awslocal sts get-caller-identity
+lstk aws sts get-caller-identity
 ```
 
 You can also confirm connectivity using the [LocalStack Web Application](https://app.localstack.cloud/inst/default/overview).
@@ -136,8 +136,8 @@ The Terraform configuration provisions the following resources on LocalStack:
 Both the database and Lambda function run as separate pods in the cluster, managed by LocalStack's Kubernetes executor.
 
 ```bash
-tflocal init -upgrade
-tflocal apply -auto-approve
+lstk terraform init -upgrade
+lstk terraform apply -auto-approve
 ```
 
 The deployment takes a few minutes as the MySQL pod needs to start up. Monitor progress with `k9s` or:
@@ -153,7 +153,7 @@ The Lambda module is configured for ARM64 by default. If you are on an Intel/AMD
 ### Step 7: Invoke the Lambda function
 
 ```bash
-awslocal lambda invoke \
+lstk aws lambda invoke \
     --function-name myfunction \
     --payload '{}' /dev/stdout | jq .
 ```
@@ -191,7 +191,7 @@ You should see the LocalStack pod (`localstack-*`), the MySQL database pod (`ls-
 To tear down all resources:
 
 ```bash
-tflocal apply -destroy -auto-approve
+lstk terraform apply -destroy -auto-approve
 kubectl delete -f ./localstack-instance.yml
 kubectl delete secret -n workspace localstack-auth-token
 ```
@@ -201,14 +201,14 @@ kubectl delete secret -n workspace localstack-auth-token
 ### LocalStack pod is stuck in `Pending` or `ImagePullBackOff`
 Verify that your Auth Token secret was created correctly and that your cluster nodes can pull from the LocalStack registry. Check pod events with `kubectl describe pod -n workspace <pod-name>`.
 
-### `awslocal sts get-caller-identity` times out
+### `lstk aws sts get-caller-identity` times out
 Confirm that port forwarding is still running in a separate terminal. If it dropped, restart it with `kubectl port-forward -n workspace svc/localstack-env-1 4566`.
 
 ### Lambda invocation returns an error after the first call
 The first invocation takes up to 30 seconds for the Lambda pod to start. Wait and retry.
 
 ### Terraform apply fails with a connection error
-Ensure port forwarding is active before running `tflocal apply`. LocalStack must be accessible on `localhost:4566`.
+Ensure port forwarding is active before running `lstk terraform apply`. LocalStack must be accessible on `localhost:4566`.
 
 ### MySQL pod does not start
 Check cluster resource availability. The MySQL pod requires sufficient CPU and memory. Run `kubectl describe pod -n workspace <ls-mysql-pod-name>` to inspect scheduling events.
