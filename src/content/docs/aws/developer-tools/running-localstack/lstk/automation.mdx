@@ -50,7 +50,7 @@ The emulator's type (AWS, Azure, or Snowflake) is auto-detected by probing the e
 ## Structured output
 
 The global `--json` flag makes a command emit a single, machine-readable JSON object on stdout instead of human-oriented text, for scripting and CI.
-JSON support is available per command: `start`, `stop`, `status`, `reset`, and `update` accept `--json`.
+JSON support is available per command: `start`, `stop`, `status`, `reset`, `update`, and `doctor` accept `--json`.
 Any other command rejects it with an error envelope (`error.code: NOT_JSON_CAPABLE`) rather than silently printing plain text.
 
 Every JSON-capable command writes **exactly one** JSON object with the following envelope shape:
@@ -108,6 +108,9 @@ For a full enumeration, read `error.code` from the envelope; the process exit co
 | `2`       | A Cobra-level usage error that occurred before `--json` could be recognized (plain-text error on stderr, not an envelope). |
 | `3`       | `error.code == "CONFIRMATION_REQUIRED"` (re-run with `--force`).                            |
 | `4`       | `error.code == "AUTH_REQUIRED"` (run `lstk login` or set `LOCALSTACK_AUTH_TOKEN`).          |
+
+`lstk doctor` is the exception: its exit code reports the severity of what it found (`0` healthy, `1` fixable, `2` blocking, `3` a check could not complete), with or without `--json`.
+See [Doctor exit codes](/aws/developer-tools/running-localstack/lstk/doctor/#exit-codes).
 
 :::note
 `--json` implies non-interactive behavior: no TUI and no prompts.

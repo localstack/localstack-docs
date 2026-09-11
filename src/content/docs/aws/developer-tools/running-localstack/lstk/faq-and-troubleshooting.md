@@ -33,6 +33,12 @@ See [Passing environment variables to the container](/aws/developer-tools/runnin
 Use [`lstk snapshot save`](/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot-save) to capture the running AWS emulator's state to a local file or a Cloud Pod, and [`lstk snapshot load`](/aws/developer-tools/running-localstack/lstk/snapshots/#snapshot-load) (or the `lstk save` / `lstk load` aliases) to restore it.
 To drop in-memory state without writing a snapshot, use [`lstk reset`](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#reset) (AWS emulator only).
 
+### How do I check whether my machine can run LocalStack?
+
+Run [`lstk doctor`](/aws/developer-tools/running-localstack/lstk/doctor/).
+It checks DNS and HTTPS access to the LocalStack API, corporate proxies and TLS interception, the container engine, available memory and disk, and local hostname resolution, and prints a fix for every failed check.
+Use `lstk --json doctor` for machine-readable output in CI.
+
 ### How do I pin a specific LocalStack version?
 
 Set the `tag` field in your `config.toml` to a specific version tag:
@@ -45,6 +51,15 @@ port = "4566"
 ```
 
 ## Troubleshooting
+
+Start with the built-in diagnostics:
+
+```bash
+lstk doctor
+```
+
+`lstk doctor` covers the most common causes of a failed start (no container engine, blocked or intercepted access to `api.localstack.cloud`, too little memory or disk) and tells you whether each finding blocks LocalStack or is fixable with a configuration change.
+The entries below cover those cases in more detail, plus problems doctor does not check.
 
 ### Port 443 already in use
 
@@ -79,6 +94,8 @@ If Docker is not reachable, you will see an error like:
 Error: runtime not healthy
 ```
 
+The `container.engine` check of `lstk doctor` reports the same condition and names the runtime it expected to find.
+
 **Fix:** Start your container runtime. `lstk` works with Docker Desktop, Rancher Desktop, Colima, OrbStack, Lima, and Podman — start the Docker daemon (`sudo systemctl start docker` on Linux) or the relevant VM (`rdctl start`, `colima start`, `podman machine start`, …). When the runtime is unavailable, `lstk`'s error tailors its suggested start command to whichever runtime it detects.
 You can also point `lstk` at a specific socket with `DOCKER_HOST`. See [Container runtime discovery](/aws/developer-tools/running-localstack/lstk/automation/#container-runtime-discovery) for how the daemon is located.
 
@@ -102,7 +119,8 @@ You can find your auth token on the [Auth Tokens page](https://app.localstack.cl
 
 ### License validation failed
 
-If your auth token is invalid, expired, or not linked to an active license, the LocalStack container exits with a license error:
+If your auth token is invalid, expired, or not linked to an active license, the LocalStack container exits with a license error.
+If the container cannot reach the license server at all, the cause is network access rather than the token: run `lstk doctor network` to tell the two apart.
 
 ```text
 The license activation failed for the following reason:
@@ -118,6 +136,7 @@ No credentials were found in the environment.
 ### Image pull failed
 
 If `lstk` cannot pull the Docker image, check your network connection and Docker configuration.
+`lstk doctor network` shows whether a proxy is configured and whether outbound HTTPS from this machine is intercepted; a corporate CA that doctor flags for LocalStack usually needs to be trusted by Docker as well.
 On corporate networks, you may need to configure Docker's proxy settings, see [How do I configure LocalStack to use my corporate HTTP and HTTPS proxy?](/aws/getting-started/faq/#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy).
 
 ### Unknown environment profile
@@ -142,3 +161,4 @@ DEBUG = "1"
 ### Getting help
 
 If the steps above don't resolve your issue, see [Get Help](/aws/help-support/get-help/) for the available support channels, including the support email and in-app chat.
+Attach the output of `lstk --json doctor` to your request; it contains no credentials and gives the support team the same view of your environment that doctor had.

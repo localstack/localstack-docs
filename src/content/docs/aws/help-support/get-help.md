@@ -59,6 +59,9 @@ For more details, see [Enterprise Support](/aws/help-support/enterprise-support/
 
 To help us troubleshoot your issue efficiently, please include the following information:
 
+- **Environment diagnostics**  
+  The output of [`lstk --json doctor`](/aws/developer-tools/running-localstack/lstk/doctor/), especially for startup, activation, proxy, or network issues. It contains no credentials.
+
 - **Logs**  
    aws emulator container logs with the environment variables `SF_LOG=trace` and `DEBUG=1` enabled  
 
@@ -103,6 +106,7 @@ Ensure that you avoid sending the diagnostic output to public channels or forums
 
 Before contacting support, we recommend:
 
+- Running [`lstk doctor`](/aws/developer-tools/running-localstack/lstk/doctor/) and applying the fixes it suggests  
 - Reviewing the documentation and FAQs  
 - Verifying your configuration settings  
 - Checking logs for errors or warnings  

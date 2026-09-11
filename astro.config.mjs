@@ -507,6 +507,10 @@ export default defineConfig({
                           slug: 'aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands',
                         },
                         {
+                          label: 'Doctor',
+                          slug: 'aws/developer-tools/running-localstack/lstk/doctor',
+                        },
+                        {
                           label: 'Snapshots',
                           slug: 'aws/developer-tools/running-localstack/lstk/snapshots',
                         },

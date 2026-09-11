@@ -273,6 +273,19 @@ The FAQs below are ordered by topic — debug logging first, then license activa
 
 If LocalStack exits with `exit code 55` or never finishes starting, start with [enabling debug logs](#how-do-i-enable-verbose-debug-logs-for-localstack-startup) and read the last lines of the log to identify which sub-case applies.
 
+### How do I check whether my machine and network are ready to run LocalStack?
+
+If you have [`lstk`](/aws/developer-tools/running-localstack/lstk/) installed, run its built-in diagnostics:
+
+```shell
+lstk doctor
+```
+
+It checks DNS and HTTPS access to `api.localstack.cloud`, detects corporate proxies and TLS interception and whether LocalStack would trust the presented certificate, verifies that a container engine is reachable, checks available memory and disk, and confirms that `localhost.localstack.cloud` resolves.
+Each failed check prints a concrete fix and states whether it blocks LocalStack or only affects one feature.
+Most of the FAQs below correspond to a doctor check; run it first to find out which one applies to you.
+See [lstk Doctor](/aws/developer-tools/running-localstack/lstk/doctor/) for the full list of checks and the JSON output for CI.
+
 ### How do I enable verbose debug logs for LocalStack startup?
 
 Almost every startup ticket can be resolved within minutes once the full debug log is available.
@@ -342,6 +355,15 @@ If any required hostname is blocked, startup will fail.
 A quick connectivity check from the host that runs LocalStack:
 
 ```shell
+lstk doctor network
+```
+
+The `network.dns`, `network.https`, and `network.certificate` checks cover resolution, the HTTPS connection (through your proxy if one is configured), and certificate trust for `api.localstack.cloud`.
+To check the other hostnames, pass them with `--target`, for example `lstk doctor network --target assets.localstack.cloud:443`.
+
+Without `lstk`, run the equivalent manual checks:
+
+```shell
 curl -v https://api.localstack.cloud/v1/health
 dig api.localstack.cloud
 ```
@@ -353,7 +375,7 @@ You expect HTTP `200` and DNS `status: NOERROR`. If either fails, jump to [How d
 When LocalStack prints `Could not reach the LocalStack licensing server… outbound HTTPS traffic is allowed` and exits with code 55, this is a **network problem, not a license problem**.
 The LocalStack container cannot reach `api.localstack.cloud:443`.
 
-Work through these steps in order:
+If you use `lstk`, run `lstk doctor network` first: it distinguishes a DNS failure from a dropped connection and from a TLS interception problem, and prints the fix for each. Then work through these steps in order:
 
 1. [Verify outbound connectivity from inside the container](#how-do-i-verify-outbound-connectivity-from-inside-the-localstack-container).
 2. [Configure LocalStack to use your corporate HTTP/HTTPS proxy](#how-do-i-configure-localstack-to-use-my-corporate-http-and-https-proxy).
@@ -455,7 +477,11 @@ SSL errors during startup usually show up as Python tracebacks ending in one of:
 - `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Basic Constraints of CA cert not marked critical`
 
 All three mean Python (inside the LocalStack container) refused to trust the certificate presented by the server.
-Before fixing, diagnose the root cause. From inside the LocalStack container — or any host on the same network — run:
+Before fixing, diagnose the root cause.
+
+If you use `lstk`, `lstk doctor network` does this for you: its `network.certificate` check validates the chain the same way LocalStack does, reports the issuing CA, and distinguishes an untrusted corporate CA (fixable with `REQUESTS_CA_BUNDLE`) from a CA certificate that LocalStack's strict verification rejects even once trusted.
+
+To check manually, from inside the LocalStack container — or any host on the same network — run:
 
 ```shell
 echo | openssl s_client -connect api.localstack.cloud:443 -servername api.localstack.cloud 2>/dev/null \

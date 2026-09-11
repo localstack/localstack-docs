@@ -25,6 +25,11 @@ A typical CI job with LocalStack follows this flow:
 
 This gives every pipeline run a fresh AWS-compatible environment without creating cloud resources in an AWS account.
 
+:::tip
+On self-hosted or locked-down runners, add [`lstk --json doctor`](/aws/developer-tools/running-localstack/lstk/doctor/) as a step before starting LocalStack.
+It exits with code `2` when the runner cannot reach the LocalStack API or has no container engine, and its JSON output names the exact finding, so a misconfigured runner fails fast with a diagnosis instead of a timeout.
+:::
+
 ## What changes from local development
 
 CI runs are usually more constrained than local development:

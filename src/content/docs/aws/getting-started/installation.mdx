@@ -46,6 +46,22 @@ LocalStack for AWS features require an [Auth Token](/aws/getting-started/auth-to
 
 {/* prettier-ignore-end */}
 
+### Check your environment
+
+Before the first start, let `lstk` verify that your machine and network can run LocalStack:
+
+```bash
+lstk doctor
+```
+
+```bash title="Output"
+✔︎ All checks passed
+```
+
+`lstk doctor` checks DNS and HTTPS access to the LocalStack API, corporate proxies and TLS interception, the container engine, and available memory and disk.
+Every failed check comes with a concrete fix, so you can resolve blockers before they surface as confusing startup errors.
+See [lstk Doctor](/aws/developer-tools/running-localstack/lstk/doctor/) for the full list of checks.
+
 ### Start lstk
 
 ```bash
@@ -146,7 +162,14 @@ Installation issues typically fall into one of three areas: getting your chosen 
 
 ### lstk
 
-If you installed via [`lstk`](#lstk) and LocalStack fails to start, authenticate, or pull its image, see [lstk troubleshooting](/aws/developer-tools/running-localstack/lstk/faq-and-troubleshooting/#troubleshooting).
+If you installed via [`lstk`](#lstk) and LocalStack fails to start, authenticate, or pull its image, run the built-in diagnostics first:
+
+```bash
+lstk doctor
+```
+
+It reports whether the problem is blocking or fixable and prints the fix for each finding. See [lstk Doctor](/aws/developer-tools/running-localstack/lstk/doctor/) for what it checks.
+For issues it does not cover, see [lstk troubleshooting](/aws/developer-tools/running-localstack/lstk/faq-and-troubleshooting/#troubleshooting).
 
 For first-run authentication (browser login, keyring tokens, or `LOCALSTACK_AUTH_TOKEN` in CI), refer to [Authentication](/aws/developer-tools/running-localstack/lstk/authentication/) and the [Auth Token guide](/aws/getting-started/auth-token/).
 
@@ -154,6 +177,7 @@ For first-run authentication (browser login, keyring tokens, or `LOCALSTACK_AUTH
 
 If you started LocalStack with [Docker Compose](#docker-compose) or the [Docker CLI](#docker-cli):
 
+- **Host cannot reach the LocalStack API, corporate proxy, or TLS interception**: if `lstk` is installed, run [`lstk doctor network`](/aws/developer-tools/running-localstack/lstk/doctor/) on the host. It diagnoses DNS, HTTPS, proxy, and certificate problems that also affect a Compose- or Docker-managed container.
 - **License or credential errors**: see [Auth Token troubleshooting](/aws/getting-started/auth-token/#troubleshooting).
 - **Container exits during startup, proxy/DNS/TLS issues, or port conflicts**: see [Startup Troubleshooting FAQs](/aws/getting-started/faq/#startup-troubleshooting-faqs).
 - **DNS server or port conflicts**: see the [DNS Server guide](/aws/customization/networking/dns-server/).
@@ -205,7 +229,7 @@ To enable verbose startup logging, capture logs from a failed container, or shar
 
 ### Network connectivity
 
-If your application cannot reach LocalStack after installation, see the [networking documentation](/aws/customization/networking/).
+If your application cannot reach LocalStack after installation, run `lstk doctor network` to confirm that `localhost.localstack.cloud` and the S3 and Step Functions hostnames derived from it resolve on your machine, then see the [networking documentation](/aws/customization/networking/).
 
 ## Next steps
 
