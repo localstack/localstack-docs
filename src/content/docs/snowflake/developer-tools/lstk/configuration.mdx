@@ -34,18 +34,18 @@ lstk --config /path/to/config.toml start
 
 ## Default configuration
 
-The default `config.toml` created on first run. The `type` field reflects whichever emulator you chose at first run (see [Emulator types](#emulator-types)); the example below shows the `aws` default:
+The default `config.toml` created on first run. The `type` field reflects whichever emulator you chose at first run (see [Emulator types](#emulator-types)); the example below shows the `snowflake` default:
 
 ```toml
 [[containers]]
-type = "aws"      # Emulator type. Supported: "aws", "snowflake", "azure"
-tag  = "latest"   # Docker image tag, e.g. "latest", "2026.4"
-port = "4566"     # Host port the emulator will be accessible on
-# image = ""      # Full image override (e.g. an internal mirror or offline image)
-# volume = ""     # Host directory for persistent state (default: OS cache dir)
-# volumes = []    # Docker-style "host:container[:ro]" bind mounts (see Volumes)
-# env = []        # Named environment profiles to apply (see [env.*] sections below)
-# snapshot = ""   # Snapshot REF to auto-load after start (AWS only)
+type = "snowflake" # Emulator type. Supported: "aws", "snowflake", "azure"
+tag  = "latest"    # Docker image tag, e.g. "latest", "2026.4"
+port = "4566"      # Host port the emulator will be accessible on
+# image = ""       # Full image override (e.g. an internal mirror or offline image)
+# volume = ""      # Host directory for persistent state (default: OS cache dir)
+# volumes = []     # Docker-style "host:container[:ro]" bind mounts (see Volumes)
+# env = []         # Named environment profiles to apply (see [env.*] sections below)
+# snapshot = ""    # Snapshot REF to auto-load after start (AWS only)
 ```
 
 ## Config field reference
@@ -59,7 +59,7 @@ port = "4566"     # Host port the emulator will be accessible on
 | `volume`   | string   | (OS cache) | Host directory for persistent emulator state. Defaults to `<os-cache>/lstk/volume/<container-name>`. See also `volumes`. |
 | `volumes`  | string[] | `[]`       | Docker-style `"host:container[:ro]"` bind mounts (e.g. init hooks). May also carry the persistence mount (target `/var/lib/localstack`). See [Volume mounts](#volume-mounts). |
 | `env`      | string[] | `[]`       | List of named environment profiles to inject into the container (see below).                         |
-| `snapshot` | string   | `""`       | Snapshot REF (e.g. `pod:my-baseline` or a local path) to auto-load after the emulator starts. AWS emulator only. See [Auto-loading a snapshot on start](/snowflake/developer-tools/lstk/lifecycle-commands/#auto-loading-a-snapshot-on-start). |
+| `snapshot` | string   | `""`       | Snapshot REF (e.g. `pod:my-baseline` or a local path) to auto-load after the emulator starts. AWS emulator only; not available for Snowflake. See [Auto-loading a snapshot on start](/aws/developer-tools/running-localstack/lstk/lifecycle-commands/#auto-loading-a-snapshot-on-start) in the AWS docs. |
 
 :::note
 There is no `update_prompt` config key.
@@ -97,19 +97,15 @@ Define reusable environment profiles under `[env.<name>]` and reference them in 
 
 ```toml
 [[containers]]
-type = "aws"
+type = "snowflake"
 tag  = "latest"
 port = "4566"
-env  = ["debug", "ci"]
+env  = ["debug"]
 
 [env.debug]
 DEBUG = "1"
-ENFORCE_IAM = "1"
+SF_LOG = "debug"
 PERSISTENCE = "1"
-
-[env.ci]
-SERVICES = "s3,sqs"
-EAGER_SERVICE_LOADING = "1"
 ```
 
 When `lstk start` runs, the key-value pairs from each referenced profile are injected as environment variables into the LocalStack container.
@@ -129,8 +125,8 @@ Set `image` on a container block to override it — for example, to pull from an
 
 ```toml
 [[containers]]
-type  = "aws"
-image = "registry.internal.example.com/localstack/localstack-pro"
+type  = "snowflake"
+image = "registry.internal.example.com/localstack/snowflake"
 tag   = "2026.4"
 ```
 
@@ -173,12 +169,12 @@ type = "snowflake"
 port = "4566"
 ```
 
-An AWS project might instead pin a specific image tag and enable a debug profile:
+A project that also wants to pin a specific image tag and enable a debug profile might instead use:
 
 ```toml
 # .lstk/config.toml
 [[containers]]
-type = "aws"
+type = "snowflake"
 tag  = "2026.4"
 port = "4566"
 env  = ["dev"]

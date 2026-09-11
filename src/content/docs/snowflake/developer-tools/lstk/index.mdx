@@ -30,7 +30,7 @@ This section is split into focused pages:
 - [Lifecycle commands](/snowflake/developer-tools/lstk/lifecycle-commands/): `start`, `stop`, `restart`, `status`, `logs`, `reset`, `volume`.
 - [Cloud & IaC commands](/snowflake/developer-tools/lstk/cloud-and-iac-commands/): `aws`, `az`, `terraform`, `cdk`, `sam`.
 - [Snapshots](/snowflake/developer-tools/lstk/snapshots/): save and load emulator state with `snapshot save`/`load`/`list`/`remove`/`show`.
-- [Automation & CI](/snowflake/developer-tools/lstk/automation/): non-interactive mode, structured output, and environment variables.
+- [Automation & CI](/snowflake/developer-tools/lstk/automation/): non-interactive mode, structured output, targeting an external emulator, and environment variables.
 - [Setup & maintenance](/snowflake/developer-tools/lstk/setup-and-maintenance/): `setup`, `config`, `update`, and offline/enterprise environments.
 - [FAQ & Troubleshooting](/snowflake/developer-tools/lstk/faq-and-troubleshooting/).
 
@@ -113,8 +113,9 @@ These options are available for all commands:
 | Option              | Description                                                                |
 |:--------------------|:------------------------------------------------------------------------------|
 | `--config <path>`   | Path to a specific TOML config file                                        |
+| `--endpoint-url <url>` | Target an existing, externally-managed emulator at this URL instead of discovering one via local Docker. See [Targeting an external emulator](/snowflake/developer-tools/lstk/automation/#targeting-an-external-emulator). |
 | `--non-interactive` | Disable the interactive TUI, use plain output                              |
-| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `stop`, `reset`, and `update`; any other command rejects it. See [Structured output](/snowflake/developer-tools/lstk/automation/#structured-output). |
+| `--json`            | Emit a single machine-readable JSON envelope on stdout instead of human-oriented output. Supported by `start`, `stop`, `status`, `reset`, and `update`; any other command rejects it. See [Structured output](/snowflake/developer-tools/lstk/automation/#structured-output). |
 | `--persist`         | Persist emulator state across restarts (on `start`/bare `lstk` and `restart`) |
 | `--type <type>`, `-t <type>` | Emulator type to start: `aws`, `snowflake`, or `azure` (on `start`/bare `lstk`; records the choice in config). See [Selecting the emulator with `--type`](/snowflake/developer-tools/lstk/lifecycle-commands/#selecting-the-emulator-with---type). |
 | `--snapshot <REF>`  | Snapshot REF to auto-load after start (on `start`/bare `lstk`; overrides config for one run) |
@@ -123,7 +124,7 @@ These options are available for all commands:
 | `-v`, `--version`   | Print the version and exit                                                 |
 | `-h`, `--help`      | Print help and exit                                                        |
 
-These apply to both interactive and non-interactive (scripted/CI) use, see [Automation & CI](/snowflake/developer-tools/lstk/automation/) for the details behind `--non-interactive` and `--json`.
+These apply to both interactive and non-interactive (scripted/CI) use, see [Automation & CI](/snowflake/developer-tools/lstk/automation/) for the details behind `--non-interactive`, `--json`, and `--endpoint-url`.
 
 ## Shell completions
 

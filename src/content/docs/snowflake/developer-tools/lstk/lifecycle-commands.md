@@ -47,6 +47,8 @@ lstk start --persist
 For finer-grained control, you can also set `PERSISTENCE = "1"` in an environment profile (see [Passing environment variables to the container](/snowflake/developer-tools/lstk/configuration/#passing-environment-variables-to-the-container)).
 :::
 
+`start` supports [`--json`](/snowflake/developer-tools/lstk/automation/#structured-output) (as does the bare `lstk` command, which reports `"command": "start"`): the `data` payload is a flat object describing the started emulator, its `emulator` type, `container` name, `endpoint`, `version`, whether it was `alreadyRunning`, and whether `persistence` is enabled.
+
 ### Selecting the emulator with `--type`
 
 `--type` (shorthand `-t`, also available on the bare `lstk` command) is the non-interactive answer to the first-run emulator picker.
@@ -71,31 +73,6 @@ When switching an existing config to a different type:
 - `port`, `env`, and `snapshot` are kept silently.
 
 `--type` is a flag only; passing the emulator as a positional (`lstk start azure`) is rejected with a hint pointing at `--type`.
-
-### Auto-loading a snapshot on start
-
-For the **AWS emulator**, you can have `lstk` load a snapshot automatically every time it starts the emulator.
-Set the `snapshot` field on the container block to any load REF (a `pod:<name>` Cloud Pod or a local path):
-
-```toml
-[[containers]]
-type     = "aws"
-port     = "4566"
-snapshot = "pod:my-baseline"
-```
-
-The snapshot is loaded only when the emulator is **freshly started** this run; if it is already running, the auto-load is skipped.
-Override it for a single run with `--snapshot REF`, or skip it entirely with `--no-snapshot`:
-
-```bash
-# Start and load a different snapshot for this run only
-lstk start --snapshot pod:other-baseline
-
-# Start without loading the configured snapshot
-lstk start --no-snapshot
-```
-
-The `snapshot` field is only read on start; [`snapshot save`](/snowflake/developer-tools/lstk/snapshots/#snapshot-save) never writes it back into your config.
 
 ## `stop`
 
@@ -143,12 +120,11 @@ lstk --non-interactive status
 For each emulator configured in your `config.toml` (the `[[containers]]` entries), `status` reports whether it is running and, if so, prints an instance summary:
 
 ```text
-LocalStack AWS Emulator is running
-• Endpoint: localhost:4566
-• Persistence: Enabled
-• Container: localstack-aws
-• Version: 4.0.0
-• Uptime: 1h 12m 4s
+✔︎ LocalStack Snowflake Emulator is running
+• Endpoint: snowflake.localhost.localstack.cloud:4566
+• Container: localstack-snowflake
+• Version: 2026.9.0.dev113
+• Uptime: 30s
 ```
 
 - **Endpoint** is the live `host:port`, queried from Docker, so it stays correct even if the configured `port` was changed while the container kept running.
@@ -158,7 +134,7 @@ LocalStack AWS Emulator is running
 If an emulator is not running, `status` prints an error and exits non-zero without checking the remaining emulators:
 
 ```text
-LocalStack AWS Emulator is not running
+LocalStack Snowflake Emulator is not running
 
   Start LocalStack: lstk
   See help: lstk -h
@@ -177,6 +153,8 @@ SQS      my-queue     us-east-1  000000000000
 
 In an interactive terminal the output is rendered through the TUI; in non-interactive mode (or with `--non-interactive`) the same content is printed as plain text, with the resource table shown at full width when stdout is not a TTY.
 The Snowflake and Azure emulators show the instance summary only and never report resources.
+
+`status` supports [`--json`](/snowflake/developer-tools/lstk/automation/#structured-output): the `data` payload lists one entry per configured emulator with its running state, health, version, and host. For the AWS emulator it also includes a `resourceSummary` and the deployed `resources`, which `--no-resources` omits for a faster response when polling. `--json` also honors [`--endpoint-url`](/snowflake/developer-tools/lstk/automation/#targeting-an-external-emulator) to report on an emulator `lstk` did not start.
 
 ## `logs`
 

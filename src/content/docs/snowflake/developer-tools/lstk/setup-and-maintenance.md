@@ -15,6 +15,10 @@ lstk setup aws
 lstk setup azure
 ```
 
+:::note
+There is no `setup snowflake` subcommand. `setup aws` and `setup azure` exist because `lstk` wraps the AWS and Azure CLIs and needs to point their own profiles at the emulator; the Snowflake emulator has no CLI for `lstk` to wrap in that way. Snowflake clients connect through their own `config.toml` connection profiles instead, and a single one can hold multiple named connections. See [Integrations](/snowflake/integrations/) for how to connect SnowSQL, drivers, BI tools, and other clients to the emulator.
+:::
+
 ### `setup aws`
 
 Create or update a `localstack` profile in `~/.aws/config` and `~/.aws/credentials` so the AWS CLI and SDKs can target LocalStack.
