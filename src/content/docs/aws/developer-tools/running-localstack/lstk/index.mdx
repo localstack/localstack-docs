@@ -131,57 +131,6 @@ These apply to both interactive and non-interactive (scripted/CI) use, see [Auto
 `lstk` includes completion scripts for bash, zsh, fish, and powershell.
 If you installed via Homebrew, completions are set up automatically.
 
-For manual setup:
-
-<Tabs>
-<TabItem label="Bash">
-
-```bash
-# Load in current session
-eval "$(lstk completion bash)"
-
-# Persist (Linux)
-lstk completion bash > /etc/bash_completion.d/lstk
-
-# Persist (macOS with Homebrew)
-lstk completion bash > $(brew --prefix)/etc/bash_completion.d/lstk
-```
-
-:::note
-Use `eval "$(lstk completion bash)"` rather than `source <(lstk completion bash)`.
-The `lstk` script works with or without the `bash-completion` package (it bundles a fallback for stock macOS bash 3.2), but `source <(...)` is a silent no-op on that shell.
-:::
-
-</TabItem>
-<TabItem label="Zsh">
-
-```bash
-# Load in current session
-source <(lstk completion zsh)
-
-# Persist (Linux)
-lstk completion zsh > "${fpath[1]}/_lstk"
-
-# Persist (macOS with Homebrew)
-lstk completion zsh > $(brew --prefix)/share/zsh/site-functions/_lstk
-```
-
-</TabItem>
-<TabItem label="Fish">
-
-```bash
-# Load in current session
-lstk completion fish | source
-
-# Persist
-lstk completion fish > ~/.config/fish/completions/lstk.fish
-```
-
-</TabItem>
-</Tabs>
-
-Restart your shell after persisting completions.
-
 ### `completion`
 
 Generate shell completion scripts.
@@ -190,4 +139,4 @@ Generate shell completion scripts.
 lstk completion [bash|zsh|fish|powershell]
 ```
 
-See [Shell completions](#shell-completions) above for setup instructions.
+Run `lstk completion` to print setup instructions in your terminal.
