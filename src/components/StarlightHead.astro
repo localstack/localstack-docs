@@ -2,6 +2,96 @@
 import { Font } from 'astro:assets';
 
 const { head } = Astro.locals.starlightRoute;
+
+// Absolute site origin used for social + structured-data URLs.
+const SITE = 'https://docs.localstack.cloud';
+const ogImage = `${SITE}/images/social/localstack-docs-og.png`;
+
+// Only the homepage carries the site-identity graph: it is the canonical place
+// agents and crawlers resolve the LocalStack organization + product identity,
+// and keeps the JSON-LD off every one of the ~500 doc pages.
+const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isHome = pathname === '/';
+
+const LOCALSTACK_DESCRIPTION =
+  'LocalStack is a local cloud development platform that makes it easier for software developers and AI agents to validate and ship cloud applications by developing, testing, and debugging in a simulated cloud environment that runs on the customer’s safe, local infrastructure.';
+
+// Site-identity structured data (schema.org JSON-LD). The Organization node
+// carries contactPoint + PostalAddress so agents can verify the business and
+// answer contact queries; WebSite and SoftwareApplication describe the docs and
+// the product they document.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${SITE}/#organization`,
+      name: 'LocalStack',
+      legalName: 'LocalStack GmbH',
+      url: 'https://www.localstack.cloud',
+      logo: `${SITE}/images/favicons/android-chrome-512x512.png`,
+      description: LOCALSTACK_DESCRIPTION,
+      email: 'support@localstack.cloud',
+      foundingDate: '2020',
+      contactPoint: [
+        {
+          '@type': 'ContactPoint',
+          contactType: 'customer support',
+          email: 'support@localstack.cloud',
+          url: `${SITE}/aws/help-support/`,
+          availableLanguage: ['English'],
+        },
+      ],
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Uetlibergstrasse 95',
+        postalCode: '8045',
+        addressLocality: 'Zurich',
+        addressCountry: 'CH',
+      },
+      sameAs: [
+        'https://github.com/localstack',
+        'https://www.linkedin.com/company/localstack-cloud/',
+        'https://www.youtube.com/@localstack',
+        'https://www.localstack.cloud',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE}/#website`,
+      url: SITE,
+      name: 'LocalStack Docs',
+      description: LOCALSTACK_DESCRIPTION,
+      inLanguage: 'en',
+      publisher: { '@id': `${SITE}/#organization` },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${SITE}/#software`,
+      name: 'LocalStack',
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'macOS, Linux, Windows',
+      description: LOCALSTACK_DESCRIPTION,
+      url: 'https://www.localstack.cloud',
+      softwareHelp: SITE,
+      publisher: { '@id': `${SITE}/#organization` },
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        description:
+          'Available in Hobby, Starter, Ultimate, and Enterprise tiers.',
+        url: 'https://www.localstack.cloud/pricing',
+      },
+    },
+  ],
+};
+
+// Escape "<" so a value can never terminate the surrounding <script> element.
+const structuredDataJson = JSON.stringify(structuredData).replace(
+  /</g,
+  '\\u003c',
+);
 ---
 
 <Font cssVariable="--font-aeonik-pro" preload />
@@ -12,4 +102,16 @@ const { head } = Astro.locals.starlightRoute;
   head.map(({ tag: Tag, attrs, content }) => (
     <Tag {...attrs} set:html={content} />
   ))
+}
+
+{/* Social preview image (Starlight emits og:type / twitter:card but no image). */}
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:image" content={ogImage} />
+
+{
+  isHome && (
+    <script type="application/ld+json" set:html={structuredDataJson} />
+  )
 }
