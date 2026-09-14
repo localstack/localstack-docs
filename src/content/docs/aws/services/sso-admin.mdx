@@ -20,7 +20,7 @@ The supported APIs are available on our [API Coverage section](#api-coverage), w
 This guide is designed for users new to SSO Admin and assumes basic knowledge of the AWS CLI and our [`lstk aws`](/aws/developer-tools/running-localstack/lstk/cloud-and-iac-commands/#aws) command.
 
 Start your LocalStack container using your preferred method.
-We will demonstrate how to create a permission set, add tags to a permission set, and list permission sets.
+We will demonstrate how to create a permission set, add tags to a permission set, list permission sets, and assign a permission set to an account.
 
 ### Create a permission set
 
@@ -76,6 +76,79 @@ lstk aws sso-admin list-tags-for-resource --resource-arn arn:aws:sso:::instance/
         {
             "Key": "Name",
             "Value": "my-permission-set"
+        }
+    ]
+}
+```
+
+### Create a group in Identity Store
+
+Account assignments grant a principal, a user or group, access to an AWS account through a permission set.
+Create a group to use as the principal with the [Identity Store](/aws/services/identitystore/) [`CreateGroup`](https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/API_CreateGroup.html) API:
+
+```bash
+lstk aws identitystore create-group --identity-store-id testls
+```
+
+```bash title="Output"
+{
+    "GroupId": "67c95b67-1445-4499-b6f8-c87b8b355832",
+    "IdentityStoreId": "testls"
+}
+```
+
+Copy the `GroupId` value, you will need it in the next step.
+
+### Create an account assignment
+
+You can assign a permission set to a principal for a specific AWS account using the [`CreateAccountAssignment`](https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_CreateAccountAssignment.html) API.
+
+```bash
+lstk aws sso-admin create-account-assignment \
+    --instance-arn arn:aws:sso:::instance/d-1234567890 \
+    --target-id 000000000000 \
+    --target-type AWS_ACCOUNT \
+    --permission-set-arn arn:aws:sso:::instance/d-1234567890/ps-lm0rshcjz3tikab8 \
+    --principal-type GROUP \
+    --principal-id 67c95b67-1445-4499-b6f8-c87b8b355832
+```
+
+```bash title="Output"
+{
+    "AccountAssignmentCreationStatus": {
+        "CreatedDate": "2026-09-09T21:42:17.819038+02:00",
+        "PermissionSetArn": "arn:aws:sso:::instance/d-1234567890/ps-lm0rshcjz3tikab8",
+        "PrincipalId": "67c95b67-1445-4499-b6f8-c87b8b355832",
+        "PrincipalType": "GROUP",
+        "RequestId": "dfa5ac6f-e06f-42ff-b3a9-a7f0b8c58fb0",
+        "Status": "SUCCEEDED",
+        "TargetId": "000000000000",
+        "TargetType": "AWS_ACCOUNT"
+    }
+}
+```
+
+`TargetId` is the AWS account to grant access to, `000000000000` is LocalStack's default account.
+
+### List account assignments
+
+You can list the account assignments for a permission set using the [`ListAccountAssignments`](https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_ListAccountAssignments.html) API.
+
+```bash
+lstk aws sso-admin list-account-assignments \
+    --instance-arn arn:aws:sso:::instance/d-1234567890 \
+    --account-id 000000000000 \
+    --permission-set-arn arn:aws:sso:::instance/d-1234567890/ps-lm0rshcjz3tikab8
+```
+
+```bash title="Output"
+{
+    "AccountAssignments": [
+        {
+            "AccountId": "000000000000",
+            "PermissionSetArn": "arn:aws:sso:::instance/d-1234567890/ps-lm0rshcjz3tikab8",
+            "PrincipalId": "67c95b67-1445-4499-b6f8-c87b8b355832",
+            "PrincipalType": "GROUP"
         }
     ]
 }
