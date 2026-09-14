@@ -19,7 +19,7 @@ A typical CI job with LocalStack follows this flow:
 1. Check out your application code.
 2. Start LocalStack in the CI runner.
 3. Configure a CI Auth Token through the CI provider's secret manager.
-4. Deploy test infrastructure with tools such as `awslocal`, `tflocal`, `cdklocal`, or your application's test harness.
+4. Deploy test infrastructure with the [`lstk`](/aws/developer-tools/running-localstack/lstk/) CLI proxies (`lstk aws`, `lstk terraform`, `lstk cdk`, `lstk sam`) or your application's test harness.
 5. Run integration tests against the LocalStack endpoint.
 6. Collect logs, test reports, and artifacts from the job.
 
@@ -49,11 +49,11 @@ For brevity, these snippets show only the LocalStack startup shape. Apart from t
   <TabItem label="GitHub Actions">
 
     ```yaml
+    - name: Install lstk
+      run: npm install -g @localstack/lstk
+
     - name: Start LocalStack
-      uses: LocalStack/setup-localstack@main
-      with:
-        image-tag: 'latest'
-        install-awslocal: 'true'
+      run: lstk start
       env:
         LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
     ```
@@ -65,8 +65,6 @@ For brevity, these snippets show only the LocalStack startup shape. Apart from t
 
     ```yaml
     version: '2.1'
-    orbs:
-      python: circleci/python@4.0.0
     jobs:
       localstack-test:
         machine:
@@ -74,18 +72,11 @@ For brevity, these snippets show only the LocalStack startup shape. Apart from t
         steps:
           - checkout
           - run:
-              name: Install lstk and awslocal
-              command: |
-                python3 -m pip install --user --upgrade pip
-                python3 -m pip install --user localstack awscli-local[ver1]
-                echo 'export PATH=$HOME/.local/bin:$PATH' >> "$BASH_ENV"
+              name: Install lstk
+              command: npm install -g @localstack/lstk
           - run:
               name: Start LocalStack
-              command: |
-                source "$BASH_ENV"
-                docker pull localstack/localstack:latest
-                localstack start -d
-                localstack wait -t 60
+              command: lstk start
     ```
 
     See the [CircleCI guide](/aws/ci-pipelines/circleci/) for the full setup.
@@ -94,7 +85,7 @@ For brevity, these snippets show only the LocalStack startup shape. Apart from t
   <TabItem label="Bitbucket">
 
     ```yaml
-    image: python:3.9
+    image: node:22
 
     definitions:
       services:
@@ -108,12 +99,11 @@ For brevity, these snippets show only the LocalStack startup shape. Apart from t
             services:
               - docker
             script:
-              - export DOCKER_SOCK=$DOCKER_HOST
-              - export AWS_ENDPOINT_URL="http://localhost.localstack.cloud:4566"
+              - export LSTK_ENDPOINT_URL="http://localhost.localstack.cloud:4566"
               - echo "${BITBUCKET_DOCKER_HOST_INTERNAL} localhost.localstack.cloud " >> /etc/hosts
-              - pip install localstack awscli-local
-              - docker run -d --rm -p 4566:4566 -p 4510-4559:4510-4559 -e DOCKER_SOCK=tcp://${BITBUCKET_DOCKER_HOST_INTERNAL}:2375 -e DOCKER_HOST=tcp://${BITBUCKET_DOCKER_HOST_INTERNAL}:2375 --name localstack-main localstack/localstack
-              - localstack wait -t 60
+              - npm install -g @localstack/lstk
+              - docker run -d --rm -p 4566:4566 -p 4510-4559:4510-4559 -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN:?} -e DOCKER_SOCK=tcp://${BITBUCKET_DOCKER_HOST_INTERNAL}:2375 -e DOCKER_HOST=tcp://${BITBUCKET_DOCKER_HOST_INTERNAL}:2375 --name localstack-aws localstack/localstack-pro
+              - lstk aws s3 mb s3://test-bucket
     ```
 
     See the [Bitbucket Pipelines guide](/aws/ci-pipelines/bitbucket/) for the full setup.
@@ -125,12 +115,15 @@ For brevity, these snippets show only the LocalStack startup shape. Apart from t
     version: 0.2
 
     phases:
+      install:
+        runtime-versions:
+          nodejs: 22
+        commands:
+          - npm install -g @localstack/lstk
       pre_build:
         commands:
-          - pip3 install localstack awscli
-          - docker pull public.ecr.aws/localstack/localstack:latest
-          - localstack start -d
-          - localstack wait -t 30
+          - lstk setup aws
+          - lstk start
     ```
 
     See the [CodeBuild guide](/aws/ci-pipelines/codebuild/) for the full setup.
@@ -139,27 +132,24 @@ For brevity, these snippets show only the LocalStack startup shape. Apart from t
   <TabItem label="GitLab CI">
 
     ```yaml
+    image: node:22
+
     stages:
-      - test
+      - job
 
-    variables:
-      DOCKER_HOST: tcp://docker:2375
-      DOCKER_TLS_CERTDIR: ""
-      LOCALSTACK_HOST: "localstack:4566"
-
-    services:
-      - name: localstack/localstack:latest
-        alias: localstack
-      - name: docker:dind
-        alias: docker
-        command: ["--tls=false"]
-
-    localstack-test:
-      stage: test
-      image: python:3.11
+    job:
+      stage: job
+      variables:
+        DOCKER_HOST: tcp://docker:2375
+        DOCKER_TLS_CERTDIR: ""
+        LOCALSTACK_AUTH_TOKEN: $LOCALSTACK_AUTH_TOKEN
+        LOCALSTACK_HOST: localhost.localstack.cloud:4566
+      services:
+        - name: docker:dind
       script:
-        - pip install awscli-local
-        - awslocal s3 mb s3://test-bucket
+        - npm install -g @localstack/lstk
+        - lstk start
+        - lstk aws s3 mb s3://test-bucket
     ```
 
     See the [GitLab CI guide](/aws/ci-pipelines/gitlab-ci/) for the full setup.
@@ -168,19 +158,18 @@ For brevity, these snippets show only the LocalStack startup shape. Apart from t
   <TabItem label="Travis CI">
 
     ```yaml
-    language: python
+    language: node_js
+
+    node_js:
+      - "22"
 
     services:
       - docker
 
-    python:
-      - "3.8"
-
     before_install:
-      - python -m pip install localstack awscli-local[ver1]
-      - docker pull localstack/localstack
-      - localstack start -d
-      - localstack wait -t 30
+      - npm install -g @localstack/lstk
+      - lstk setup aws
+      - lstk start
     ```
 
     See the [Travis CI guide](/aws/ci-pipelines/travis-ci/) for the full setup.

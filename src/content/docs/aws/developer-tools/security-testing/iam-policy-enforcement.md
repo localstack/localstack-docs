@@ -153,12 +153,12 @@ We will add an SCP that denies the action and confirm that the request is blocke
 In **Terminal 1**, create an organization and a service control policy that denies `s3:CreateBucket`:
 
 ```bash
-awslocal organizations create-organization --feature-set ALL
+lstk aws organizations create-organization --feature-set ALL
 ```
 
 
 ```bash
-awslocal organizations create-policy \
+lstk aws organizations create-policy \
     --name deny-create-bucket \
     --type SERVICE_CONTROL_POLICY \
     --description "Deny S3 bucket creation" \
@@ -168,7 +168,7 @@ awslocal organizations create-policy \
 Attach the SCP to the target account:
 
 ```bash
-awslocal organizations attach-policy \
+lstk aws organizations attach-policy \
     --policy-id <POLICY_ID> \
     --target-id <TARGET_ID>
 ```
@@ -176,7 +176,7 @@ awslocal organizations attach-policy \
 Back in **Terminal 2**, attempt to create the bucket again as user `test`:
 
 ```bash
-awslocal s3 mb s3://mybucket
+lstk aws s3 mb s3://mybucket
 ```
 
 Even though the user's identity-based policy allows `s3:CreateBucket`, the SCP guardrail blocks the request, and the denial message names the responsible SCP:
