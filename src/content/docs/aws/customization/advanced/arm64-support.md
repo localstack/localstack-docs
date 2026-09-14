@@ -79,6 +79,11 @@ docker run --privileged --rm tonistiigi/binfmt --install amd64
 
 ## Troubleshooting
 
+### Container exits with SIGILL on Apple Silicon
+
+On newer Apple Silicon hardware (for example Apple M4), running under Colima or Podman with an older Linux guest kernel can cause the container to crash immediately after license activation with exit code `252` (SIGILL).
+See [Why does the LocalStack container exit immediately with SIGILL (exit code 252) on Apple Silicon?](/aws/getting-started/faq/#why-does-the-localstack-container-exit-immediately-with-sigill-exit-code-252-on-apple-silicon) for the workaround and permanent fix.
+
 ### Pulling images for other architectures
 
 :::note
