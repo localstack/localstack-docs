@@ -1,0 +1,182 @@
+# This workflow runs an AI reviewer agent against every pull request that
+# touches LocalStack for AWS docs. It never edits files: it reads
+# agents-tester.md, independently re-verifies the changed docs (coverage
+# data, live AWS docs, sample links, the real build), and posts a
+# severity-tagged Verification Report as a pull request comment.
+name: Docs Tester
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "src/content/docs/aws/**"
+
+# A new push to the PR replaces the in-flight review for that PR.
+concurrency:
+  group: docs-tester-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  # Needed to post the Verification Report as a PR comment. If this
+  # workflow is ever opened up to forked PRs, switch to
+  # pull_request_target (with the checkout pinned to the base ref) or move
+  # the comment step to a separate workflow_run job, since GITHUB_TOKEN is
+  # read-only for pull_request events triggered from forks.
+  pull-requests: write
+
+jobs:
+  review-aws-docs-pr:
+    name: Review AWS docs changes
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 30
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: List changed AWS docs
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --name-only --diff-filter=ACMR "$BASE_SHA" "$HEAD_SHA" -- 'src/content/docs/aws/**' > "$RUNNER_TEMP/changed-files.txt"
+
+          if [ ! -s "$RUNNER_TEMP/changed-files.txt" ]; then
+            echo "::notice::No added, changed, or renamed files under src/content/docs/aws/. Nothing to review."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          echo "Files to review:"
+          cat "$RUNNER_TEMP/changed-files.txt"
+
+      - name: Set up Node.js 22
+        if: steps.changed.outputs.has_changes == 'true'
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.changed.outputs.has_changes == 'true'
+        run: npm ci
+
+      - name: Install the Claude Code CLI
+        if: steps.changed.outputs.has_changes == 'true'
+        run: npm install -g @anthropic-ai/claude-code@2.1.218
+
+      - name: Write the MCP configuration
+        # Keep this file out of the repository tree. The file contains secrets.
+        if: steps.changed.outputs.has_changes == 'true'
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+        run: |
+          cat > "$RUNNER_TEMP/mcp-config.json" <<EOF
+          {
+            "mcpServers": {
+              "linear": {
+                "type": "http",
+                "url": "https://mcp.linear.app/mcp",
+                "headers": {
+                  "Authorization": "Bearer $LINEAR_API_KEY"
+                }
+              },
+              "localstack": {
+                "command": "npx",
+                "args": ["-y", "@localstack/localstack-mcp-server"],
+                "env": {
+                  "LOCALSTACK_AUTH_TOKEN": "$LOCALSTACK_AUTH_TOKEN"
+                }
+              }
+            }
+          }
+          EOF
+
+      - name: Run the tester agent
+        if: steps.changed.outputs.has_changes == 'true'
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          CHANGED_FILES="$(cat "$RUNNER_TEMP/changed-files.txt")"
+
+          # The quoted heredoc keeps the prompt text out of shell expansion.
+          PROMPT="$(cat <<'PROMPT_EOF'
+          Review pull request #__PR_NUMBER__ ("__PR_TITLE__") in the LocalStack docs repository.
+          You run unattended in GitHub Actions. No person can answer questions during the run. You are not the writer: you did not author this change.
+
+          The changed AWS docs files in this pull request are:
+          __CHANGED_FILES__
+
+          Compare their content at commit __BASE_SHA__ (before) against __HEAD_SHA__ (current, already checked out) to see exactly what changed, for example with `git diff __BASE_SHA__ __HEAD_SHA__ -- <path>` or `git show __BASE_SHA__:<path>`.
+
+          1. Read agents-tester.md in the repository root fully before reviewing anything. Read agents.md too, so you know what the writer was supposed to do, but treat every claim in both the diff and any linked Linear ticket as unverified until you check the source yourself.
+          2. If the pull request title, branch name, or description names a Linear ticket (a "TEAM-123" style ID such as DOC-363), use the Linear MCP tools to read it. Treat it as context, not as evidence.
+          3. Follow agents-tester.md's process for every changed file: understand what changed, re-derive ground truth independently (coverage JSON, live AWS docs, linked samples), check against sibling doc conventions, verify writing style and tone, and run "npm run build" yourself.
+          4. Use the LocalStack MCP tools only to look up documentation and service metadata. Do not start containers. Do not deploy infrastructure. Do not run AWS commands.
+          5. You have no file-editing tools in this run by design: this workflow enforces "report, don't fix" at the tool-permission level, not just as an instruction. Do not attempt to edit any file.
+          6. Produce ONE combined Verification Report covering every changed file, using the exact Markdown structure from agents-tester.md's "MANDATORY VERIFICATION REPORT" section (one Findings table per file, plus the shared Sources/Unverifiable/Build Output/Verdict sections).
+          7. End your final message with a line that is exactly one of the following, matching the strictest verdict across all reviewed files:
+          VERDICT: PASS
+          VERDICT: PASS_WITH_MINOR_FINDINGS
+          VERDICT: FAIL
+          VERDICT: ESCALATE
+          8. Your entire final message is posted verbatim as a pull request comment. Write it as the complete Verification Report followed by the VERDICT line, with nothing else after it.
+          PROMPT_EOF
+          )"
+          PROMPT="${PROMPT//__PR_NUMBER__/$PR_NUMBER}"
+          PROMPT="${PROMPT//__PR_TITLE__/$PR_TITLE}"
+          PROMPT="${PROMPT//__CHANGED_FILES__/$CHANGED_FILES}"
+          PROMPT="${PROMPT//__BASE_SHA__/$BASE_SHA}"
+          PROMPT="${PROMPT//__HEAD_SHA__/$HEAD_SHA}"
+
+          claude -p "$PROMPT" \
+            --model claude-sonnet-4-5-20250929 \
+            --max-turns 60 \
+            --mcp-config "$RUNNER_TEMP/mcp-config.json" \
+            --strict-mcp-config \
+            --allowedTools "Read,Grep,Glob,WebFetch,WebSearch,Bash(npm ci),Bash(npm run build),Bash(git diff:*),Bash(git show:*),Bash(git log:*),Bash(ls:*),mcp__linear,mcp__localstack" \
+            --output-format json \
+            > "$RUNNER_TEMP/agent-output.json"
+
+      - name: Extract the Verification Report and verdict
+        if: steps.changed.outputs.has_changes == 'true'
+        id: report
+        run: |
+          jq -r '.result // "The tester agent produced no output."' "$RUNNER_TEMP/agent-output.json" > "$RUNNER_TEMP/report.md"
+
+          if grep -qE '^VERDICT: (FAIL|ESCALATE)\s*$' "$RUNNER_TEMP/report.md"; then
+            echo "verdict=blocking" >> "$GITHUB_OUTPUT"
+          else
+            echo "verdict=ok" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post the Verification Report
+        if: steps.changed.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo "## Docs Tester: Verification Report"
+            echo ""
+            cat "$RUNNER_TEMP/report.md"
+          } > "$RUNNER_TEMP/comment.md"
+
+          gh pr comment "$PR_NUMBER" --body-file "$RUNNER_TEMP/comment.md"
+          cat "$RUNNER_TEMP/comment.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail the check on a blocking verdict
+        if: steps.changed.outputs.has_changes == 'true' && steps.report.outputs.verdict == 'blocking'
+        run: |
+          echo "::error::The tester agent returned a FAIL or ESCALATE verdict. See the pull request comment for the Verification Report."
+          exit 1
