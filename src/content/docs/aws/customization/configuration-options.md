@@ -362,6 +362,7 @@ Please consult the [migration guide](/aws/services/lambda#migrating-to-lambda-v2
 
 | Variable | Example Values | Description |
 | - | - | - |
+| `TF_COMPAT_MODE` | `0` (default) \| `1` | Enables Terraform-compatible API responses. For RDS DB instances and clusters, setting this option to `1` advertises the requested database port, or the engine's canonical port when none is specified, instead of the dynamically allocated host port. This prevents Terraform from detecting port drift. The database remains bound to the dynamically allocated port, so the advertised port is not reachable from the host. |
 | `RDS_CLUSTER_ENDPOINT_HOST_ONLY` | `1` (default) \| `0` | Whether the cluster endpoint returns the host only (which is AWS parity). If set to `0` it will return `<host>:<port>`. |
 | `RDS_PG_CUSTOM_VERSIONS`         | `0` \| `1` (default) | Whether to install and use custom Postgres versions for RDS (or alternatively, use default version 15). |
 | `RDS_MYSQL_DOCKER`               | `1` (default) \| `0` | Whether to disable MySQL engines (and use MariaDB instead). MySQL engine for cluster/instances will start in a new docker container. If you have troubles running MySQL in docker, you can disable the feature. |
