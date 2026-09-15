@@ -321,6 +321,285 @@ Disable Azure CLI interception to point the `az` CLI back to the official Azure 
 lstk az stop-interception
 ```
 
+## Autoscale workloads with KEDA
+
+[Kubernetes Event-driven Autoscaling (KEDA)](https://learn.microsoft.com/en-us/azure/aks/keda-about)
+scales workloads from the amount of pending work instead of CPU or memory usage. Its `ScaledObject`
+resources can scale consumers against emulated Service Bus queues, Storage queues, and Event Hubs
+backlogs.
+
+Enable the managed KEDA add-on, OIDC issuer, and Workload Identity on the cluster:
+
+```bash
+az aks update \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --enable-keda \
+  --enable-oidc-issuer \
+  --enable-workload-identity
+```
+
+Verify that the add-on is enabled and its deployments are ready:
+
+```bash
+az aks show \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --query workloadAutoScalerProfile.keda.enabled \
+  --output tsv
+
+kubectl get deployments \
+  --namespace kube-system \
+  --selector app.kubernetes.io/part-of=keda-operator
+```
+
+```bash title="Output"
+true
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+keda-admission             1/1     1            1           1m
+keda-metrics-apiserver     1/1     1            1           1m
+keda-operator              1/1     1            1           1m
+```
+
+### Configure Workload Identity
+
+KEDA 2.15 and later use
+[Microsoft Entra Workload ID](https://learn.microsoft.com/en-us/azure/aks/keda-workload-identity)
+instead of Azure AD Pod Identity. Create a user-assigned managed identity and federate it to the
+KEDA operator service account:
+
+```bash
+KEDA_IDENTITY=aks-keda-identity
+
+az identity create \
+  --name "$KEDA_IDENTITY" \
+  --resource-group rg-aks-demo \
+  --location westeurope
+
+KEDA_CLIENT_ID=$(az identity show \
+  --name "$KEDA_IDENTITY" \
+  --resource-group rg-aks-demo \
+  --query clientId \
+  --output tsv)
+
+OIDC_ISSUER=$(az aks show \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --query oidcIssuerProfile.issuerUrl \
+  --output tsv)
+
+az identity federated-credential create \
+  --name keda-operator \
+  --identity-name "$KEDA_IDENTITY" \
+  --resource-group rg-aks-demo \
+  --issuer "$OIDC_ISSUER" \
+  --subject system:serviceaccount:kube-system:keda-operator \
+  --audience api://AzureADTokenExchange
+```
+
+Annotate the operator service account with the identity's client ID, then restart the operator to
+apply the identity:
+
+```bash
+kubectl annotate serviceaccount keda-operator \
+  --namespace kube-system \
+  "azure.workload.identity/client-id=${KEDA_CLIENT_ID}" \
+  --overwrite
+
+kubectl rollout restart deployment keda-operator \
+  --namespace kube-system
+
+kubectl rollout status deployment keda-operator \
+  --namespace kube-system \
+  --timeout=300s
+```
+
+Grant the identity the data-plane role required by the scaler. This Service Bus example creates a
+queue and grants **Azure Service Bus Data Owner** on the namespace:
+
+```bash
+SERVICE_BUS_NAMESPACE=sbkedademo
+SERVICE_BUS_QUEUE=work-items
+
+az servicebus namespace create \
+  --name "$SERVICE_BUS_NAMESPACE" \
+  --resource-group rg-aks-demo \
+  --location westeurope \
+  --sku Standard
+
+az servicebus queue create \
+  --name "$SERVICE_BUS_QUEUE" \
+  --namespace-name "$SERVICE_BUS_NAMESPACE" \
+  --resource-group rg-aks-demo
+
+KEDA_PRINCIPAL_ID=$(az identity show \
+  --name "$KEDA_IDENTITY" \
+  --resource-group rg-aks-demo \
+  --query principalId \
+  --output tsv)
+
+SERVICE_BUS_ID=$(az servicebus namespace show \
+  --name "$SERVICE_BUS_NAMESPACE" \
+  --resource-group rg-aks-demo \
+  --query id \
+  --output tsv)
+
+az role assignment create \
+  --role "Azure Service Bus Data Owner" \
+  --assignee-object-id "$KEDA_PRINCIPAL_ID" \
+  --assignee-principal-type ServicePrincipal \
+  --scope "$SERVICE_BUS_ID"
+```
+
+### Configure private scaler endpoints
+
+Service Bus and Storage Queue scalers use `cloud: Private` when targeting the emulator. Derive the
+`endpointSuffix` from the endpoints returned by Azure Resource Manager instead of hardcoding it:
+
+```bash
+SERVICE_BUS_ENDPOINT=$(az servicebus namespace show \
+  --name "$SERVICE_BUS_NAMESPACE" \
+  --resource-group rg-aks-demo \
+  --query serviceBusEndpoint \
+  --output tsv)
+
+ARM_ENDPOINT=$(az cloud show \
+  --query endpoints.resourceManager \
+  --output tsv)
+
+SERVICE_BUS_HOST="${SERVICE_BUS_ENDPOINT#*://}"
+SERVICE_BUS_HOST="${SERVICE_BUS_HOST%%/*}"
+SERVICE_BUS_HOST="${SERVICE_BUS_HOST%%:*}"
+ARM_ENDPOINT="${ARM_ENDPOINT%/}"
+ARM_PORT="${ARM_ENDPOINT##*:}"
+if [[ "$ARM_PORT" == "$ARM_ENDPOINT" || "$ARM_PORT" == *"/"* ]]; then
+  ARM_PORT=443
+fi
+
+SERVICE_BUS_SUFFIX="${SERVICE_BUS_HOST#${SERVICE_BUS_NAMESPACE}.}:${ARM_PORT}"
+printf '%s\n' "$SERVICE_BUS_SUFFIX"
+```
+
+```bash title="Output"
+servicebus.azure.localhost.localstack.cloud:4566
+```
+
+Use the derived suffix in the `ScaledObject`. The target `Deployment` can start with zero replicas;
+KEDA creates and manages its Horizontal Pod Autoscaler:
+
+```yaml title="service-bus-scaler.yaml"
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: service-bus-auth
+spec:
+  podIdentity:
+    provider: azure-workload
+    identityId: "<managed-identity-client-id>"
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: service-bus-scaler
+spec:
+  scaleTargetRef:
+    name: service-bus-consumer
+  pollingInterval: 5
+  cooldownPeriod: 30
+  minReplicaCount: 0
+  maxReplicaCount: 4
+  triggers:
+    - type: azure-servicebus
+      metadata:
+        queueName: work-items
+        namespace: sbkedademo
+        messageCount: "5"
+        cloud: Private
+        endpointSuffix: servicebus.azure.localhost.localstack.cloud:4566
+      authenticationRef:
+        name: service-bus-auth
+```
+
+For an Azure Storage Queue scaler, derive the suffix from the storage account's
+`primaryEndpoints.queue` property and use the same private-cloud pattern:
+
+```yaml
+triggers:
+  - type: azure-queue
+    metadata:
+      queueName: jobs
+      accountName: stkedademo
+      queueLength: "5"
+      cloud: Private
+      endpointSuffix: queue.core.azure.localhost.localstack.cloud:4566
+```
+
+Event Hubs scalers use development-emulator connection strings exposed on the target deployment:
+
+```yaml
+triggers:
+  - type: azure-eventhub
+    metadata:
+      consumerGroup: keda-consumer
+      unprocessedEventThreshold: "5"
+      blobContainer: eh-checkpoints
+      checkpointStrategy: blobMetadata
+      connectionFromEnv: EVENTHUB_CONNECTION
+      storageConnectionFromEnv: STORAGE_CONNECTION
+```
+
+LocalStack returns Service Bus and Event Hubs connection strings with an `sb://` endpoint and
+`UseDevelopmentEmulator=true`.
+
+:::note
+For Event Hubs triggers, use the connection-string authentication shown above. Workload Identity
+authentication for Event Hubs triggers is not currently supported by the emulator.
+:::
+
+The [AKS KEDA tutorials](https://github.com/localstack-samples/aks-samples/tree/main/tutorials/keda)
+contain complete producer and consumer applications for Service Bus, Storage Queue, and Event Hubs.
+Each tutorial verifies that a backlog scales its consumer from zero to multiple replicas, drains
+without dead-lettering messages, and scales back to zero.
+
+```bash title="Service Bus tutorial output"
+Observed scale-out: 0 -> 2 -> 3 -> 4
+PASS: the consumer drained the work-items queue with no dead-lettered messages
+PASS: the sb-consumer deployment scaled back to zero replicas
+SUCCESS: KEDA scaled the sb-consumer deployment from zero to 4 replicas and back to zero
+```
+
+### Disable KEDA
+
+Delete your KEDA custom resources before disabling the add-on:
+
+```bash
+kubectl delete scaledobject service-bus-scaler
+kubectl wait \
+  --for=delete scaledobject/service-bus-scaler \
+  --timeout=60s
+```
+
+Then disable the managed add-on with `az aks update`:
+
+```bash
+az aks update \
+  --resource-group rg-aks-demo \
+  --name aks-demo \
+  --disable-keda \
+  --query workloadAutoScalerProfile.keda.enabled \
+  --output tsv
+```
+
+```bash title="Output"
+false
+```
+
+:::caution
+Delete all `ScaledObject`, `ScaledJob`, and `TriggerAuthentication` resources, or their containing
+namespaces, before disabling KEDA.
+:::
+
 ## Features
 
 The local control plane implements the following capabilities:
